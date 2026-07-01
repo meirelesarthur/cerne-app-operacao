@@ -12,10 +12,13 @@ interface FazendasState {
   activeFarmId: string
   view: FarmView
   syncQueue: SyncItem[]
+  /** pesagem do dia registrada? Pré-requisito da transferência de lote (spec §5.1/§5.2/DUV-179). */
+  pesagemDoDiaFeita: boolean
   setActiveFarm: (id: string) => void
   setView: (v: FarmView) => void
   enqueueSync: (item: SyncItem) => void
   clearSync: () => void
+  registrarPesagemDoDia: () => void
   activeFarm: () => Farm
 }
 
@@ -24,9 +27,11 @@ export const useFazendasStore = create<FazendasState>((set, get) => ({
   activeFarmId: FAZENDAS[0].id,
   view: 'gerencial',
   syncQueue: [],
+  pesagemDoDiaFeita: false,
   setActiveFarm: (id) => set({ activeFarmId: id }),
   setView: (v) => set({ view: v }),
   enqueueSync: (item) => set((s) => ({ syncQueue: [...s.syncQueue, item] })),
   clearSync: () => set({ syncQueue: [] }),
+  registrarPesagemDoDia: () => set({ pesagemDoDiaFeita: true }),
   activeFarm: () => get().farms.find((f) => f.id === get().activeFarmId) ?? get().farms[0],
 }))

@@ -50,15 +50,16 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Consultas Gerenciais (hub read-only + placeholder de mapa)
 - [x] Fonte Outfit self-hospedada (@fontsource) — sem dependência de rede
 
-## Fase 4 — Visão Operacional (7 fluxos)
-- [ ] Componentes de form: `FormField`, `FormSelect`, `SearchSelect`, `Stepper`, `FileUpload`
-- [ ] Pesagem (input manual + nota da balança)
-- [ ] Eventos de Ciclo do Rebanho
-- [ ] Arraçoamento / Nutrição (sem rateio)
-- [ ] Venda de Animais (mês congelado bloqueia edição)
-- [ ] Recebimento / Entrada por XML (NF-e)
-- [ ] Aplicação de Insumos / Ocorrências Agrícolas
-- [ ] Regra: transferência exige pesagem do dia (bloqueio funcional real)
+## Fase 4 — Visão Operacional (7 fluxos)  ✅
+- [x] Componentes de form: `FormField`, `TextInput`, `Textarea`, `FormSelect`, `SearchSelect`, `Stepper`, `Checkbox`, `FileUpload`, `Tooltip`
+- [x] Scaffold `FlowShell` (contexto + rodapé + chip offline) + `SuccessScreen` (efeitos no web)
+- [x] Pesagem (input manual grande + nota da balança; registra pesagem do dia)
+- [x] Eventos de Ciclo do Rebanho (form dinâmico por tipo)
+- [x] Arraçoamento / Nutrição (sem rateio — LACUNA)
+- [x] Venda de Animais (mês congelado bloqueia edição + contagem/total validados)
+- [x] Recebimento / Entrada por XML (upload + conferência de itens)
+- [x] Aplicação de Insumos / Ocorrências Agrícolas (validação mínima)
+- [x] Regra: transferência exige pesagem do dia → bloqueio funcional real (verificado)
 
 ## Fase 5 — Módulos-casca
 - [ ] Bank · Crédito · Marketplace · Armazém (header + bottom tab próprio + EmptyState)
