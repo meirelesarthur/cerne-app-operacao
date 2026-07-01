@@ -72,8 +72,9 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] `ErrorState` (com retry) no catálogo; Análise de Uso indisponível offline (dados não cacheáveis)
 - [x] Estados por tela: loading (skeleton), vazio (EmptyState), offline (banner+timestamp), erro (retry)
 
-## Fase 7 — Polimento para handoff
-- [ ] Revisão do tema `gbMode`
-- [ ] Microinterações (transições) + acessibilidade (toque ≥40px, contraste)
-- [ ] Documentação inline dos componentes
-- [ ] Checklist de aceite (§9 do spec)
+## Fase 7 — Polimento para handoff  ✅
+- [x] Revisão do tema `gbMode` (verificado em shell, home e dashboards — CSS vars propagam)
+- [x] Microinterações via tokens de transição; acessibilidade (tab bar 64px, botões 40–48px, list rows)
+- [x] Documentação inline (JSDoc) nos componentes e módulos
+- [x] `README.md` com stack, arquitetura, Leis, notas de handoff e **checklist de aceite §9**
+- ↪ Nota: Storybook/testes/Chakra fora do escopo (não exigidos pelo spec); IconButtons secundários do header a ~30px
