@@ -11,6 +11,7 @@
     "tokens:export": "tsx scripts/export-tokens-dtcg.ts"
   },
   "dependencies": {
+    "@fontsource/outfit": "^5.2.8",
     "lucide-react": "^0.414.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

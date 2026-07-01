@@ -6,6 +6,8 @@ import { AtividadesScreen } from './screens/AtividadesScreen'
 import { FarmListScreen } from './screens/FarmListScreen'
 import { MaisScreen } from './screens/MaisScreen'
 import { EmSection } from './screens/EmSection'
+import { AdminDashboard } from './admin/AdminDashboard'
+import { DashFinanceiro } from './admin/DashFinanceiro'
 
 /**
  * Módulo Fazendas (ex-"Cerne") — módulo completo do superapp.
@@ -30,10 +32,10 @@ export function FazendasModule() {
           <Route index element={<FazendasHome />} />
           <Route path="atividades" element={<AtividadesScreen />} />
           <Route path="fazendas" element={<FarmListScreen />} />
-          <Route path="financeiro" element={<EmSection title="Financeiro" />} />
+          <Route path="financeiro" element={<DashFinanceiro />} />
           <Route path="mais" element={<MaisScreen />} />
           <Route path="mais/sync" element={<EmSection title="Fila de sincronização" />} />
-          <Route path="dashboards/:dashId" element={<EmSection title="Dashboard" />} />
+          <Route path="dashboards/:dashId" element={<AdminDashboard />} />
           <Route path="campo/:flowId" element={<EmSection title="Lançamento" />} />
           <Route path="*" element={<Navigate to="/fazendas" replace />} />
         </Routes>

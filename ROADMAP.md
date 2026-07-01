@@ -38,15 +38,17 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Telas de aba: Home (Gerencial/Campo), Atividades, Fazendas, Mais
 - [x] `Heading`/`SectionTitle` (Lei 1) + refactor das páginas da Fase 1 · verificação visual OK
 
-## Fase 3 — Visão Administrativa (7 dashboards)
-- [ ] Charts SVG: `SparklineArea`, `BarChart`, `DonutChart`, `ProgressBar`, `KpiStatCard`, `ChartCard`
-- [ ] Financeiro (comentário `grouper_id=7`)
-- [ ] Pecuária de Corte (bloco produtivo/reprodutivo desativado)
-- [ ] Confinamento / Lotação de Currais
-- [ ] Ativos / Depreciação
-- [ ] Suprimentos (selo "Dados de exemplo")
-- [ ] Análise de Uso (badge "Acesso restrito")
-- [ ] Consultas Gerenciais (read-only + placeholder de mapa)
+## Fase 3 — Visão Administrativa (7 dashboards)  ✅
+- [x] Charts SVG: `SparklineArea`, `BarChart`, `DonutChart`, `ProgressBar`, `KpiStatCard`, `ChartCard`
+- [x] Scaffold `DashboardScreen` (skeleton de load + banner offline com timestamp) + `useSimulatedLoad`
+- [x] Financeiro (comentário `grouper_id=7` no mock)
+- [x] Pecuária de Corte (bloco produtivo/reprodutivo desativado com cadeado)
+- [x] Confinamento / Lotação de Currais (grid + progress por ocupação + bottom sheet)
+- [x] Ativos / Depreciação
+- [x] Suprimentos (filtro por tipo + selo "Dados de exemplo")
+- [x] Análise de Uso (badge "Acesso restrito")
+- [x] Consultas Gerenciais (hub read-only + placeholder de mapa)
+- [x] Fonte Outfit self-hospedada (@fontsource) — sem dependência de rede
 
 ## Fase 4 — Visão Operacional (7 fluxos)
 - [ ] Componentes de form: `FormField`, `FormSelect`, `SearchSelect`, `Stepper`, `FileUpload`

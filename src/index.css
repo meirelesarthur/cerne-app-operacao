@@ -1,6 +1,5 @@
-/* Outfit — única família permitida (Lei 3). Self-host via @fontsource seria ideal em produção;
-   no protótipo importamos do Google Fonts. */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+/* Outfit — única família permitida (Lei 3), self-hospedada via @fontsource (importada em main.tsx).
+   Sem dependência de rede em runtime. */
 @import './styles/tokens.css';
 
 @tailwind base;
