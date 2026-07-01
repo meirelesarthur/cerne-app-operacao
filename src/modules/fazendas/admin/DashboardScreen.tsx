@@ -11,6 +11,8 @@ export interface DashboardScreenProps {
   title: string
   /** marca a tela como de acesso restrito (spec §4.6). */
   restricted?: boolean
+  /** oculta o banner de dados em cache (ex.: telas não cacheáveis offline). */
+  hideOfflineBanner?: boolean
   children: ReactNode
 }
 
@@ -18,7 +20,7 @@ export interface DashboardScreenProps {
  * Scaffold comum dos dashboards administrativos (spec §7.1): cabeçalho, banner de offline
  * com timestamp da última sincronização, e skeleton de carregamento.
  */
-export function DashboardScreen({ title, restricted, children }: DashboardScreenProps) {
+export function DashboardScreen({ title, restricted, hideOfflineBanner, children }: DashboardScreenProps) {
   const isOnline = useShellStore((s) => s.isOnline)
   const state = useSimulatedLoad()
 
@@ -35,7 +37,7 @@ export function DashboardScreen({ title, restricted, children }: DashboardScreen
         }
       />
 
-      {!isOnline && (
+      {!isOnline && !hideOfflineBanner && (
         <Banner tone="info" icon={<CloudOff size={14} />}>
           Dados de 01/07 às 08:00 — última sincronização.
         </Banner>

@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { FarmSwitcher } from './components/FarmSwitcher'
 import { ViewSwitch } from './components/ViewSwitch'
+import { SyncBanner } from './components/SyncBanner'
 import { FazendasHome } from './screens/FazendasHome'
 import { AtividadesScreen } from './screens/AtividadesScreen'
 import { FarmListScreen } from './screens/FarmListScreen'
@@ -27,6 +28,8 @@ export function FazendasModule() {
       <div className="px-4 pb-3" style={{ background: 'var(--nav-bg)' }}>
         <ViewSwitch />
       </div>
+
+      <SyncBanner />
 
       <div className="no-scrollbar flex-1 overflow-y-auto bg-canvas">
         <Routes>

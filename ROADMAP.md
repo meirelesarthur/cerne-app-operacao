@@ -66,9 +66,11 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Tela de entrada do módulo-casca com identidade + prévia das áreas planejadas
 - [x] Card de deep-link "crédito pré-aprovado" em Fazendas → módulo Crédito (verificado)
 
-## Fase 6 — Estados transversais
-- [ ] Offline/sync: `DevToolbar` alterna `isOnline`; `SyncBanner` + banner de pendências
-- [ ] Revisão de skeleton/erro/vazio no módulo Fazendas
+## Fase 6 — Estados transversais  ✅
+- [x] Offline/sync: `DevToolbar` alterna `isOnline`; `SyncBanner` com contagem de pendências + "Sincronizar"
+- [x] Fluxo completo verificado: lançamento offline → fila → banner → sincronizar → fila limpa
+- [x] `ErrorState` (com retry) no catálogo; Análise de Uso indisponível offline (dados não cacheáveis)
+- [x] Estados por tela: loading (skeleton), vazio (EmptyState), offline (banner+timestamp), erro (retry)
 
 ## Fase 7 — Polimento para handoff
 - [ ] Revisão do tema `gbMode`

@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { ChevronDown, Circle } from 'lucide-react'
+import { ErrorState } from '@/components/ui/ErrorState'
 import { DashboardScreen } from './DashboardScreen'
 import { USO_FAZENDAS } from '../mocks/dashboards'
+import { useShellStore } from '@/shell/state/shellStore'
 import { cn } from '@/lib/cn'
 
 const PERIODOS = ['Hoje', '7 dias', '30 dias'] as const
@@ -13,6 +15,22 @@ const PERIODOS = ['Hoje', '7 dias', '30 dias'] as const
 export function DashUso() {
   const [periodo, setPeriodo] = useState<(typeof PERIODOS)[number]>('Hoje')
   const [expandido, setExpandido] = useState<string | null>(USO_FAZENDAS[0].id)
+  const [tentativa, setTentativa] = useState(0)
+  const isOnline = useShellStore((s) => s.isOnline)
+
+  // Dados multi-tenant em tempo real não são cacheáveis offline → estado de erro com retry (spec §7.1).
+  if (!isOnline) {
+    return (
+      <DashboardScreen title="Análise de Uso" restricted hideOfflineBanner key={tentativa}>
+        <ErrorState
+          title="Indisponível offline"
+          description="A atividade de usuários em tempo real exige conexão. Reconecte para visualizar."
+          onRetry={() => setTentativa((n) => n + 1)}
+          className="flex-1 justify-center"
+        />
+      </DashboardScreen>
+    )
+  }
 
   return (
     <DashboardScreen title="Análise de Uso" restricted>
