@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'
+import { Heading } from './Heading'
 
 export interface EmptyStateProps {
   icon?: LucideIcon
@@ -18,7 +19,7 @@ export function EmptyState({ icon: Icon, title, description, action, className }
           <Icon size={26} strokeWidth={1.5} />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-fg">{title}</h3>
+      <Heading level={3}>{title}</Heading>
       {description && <p className="mt-1 max-w-[280px] text-md text-fg-muted">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>

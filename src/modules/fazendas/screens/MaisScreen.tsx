@@ -1,0 +1,73 @@
+import { useNavigate } from 'react-router-dom'
+import {
+  Wallet,
+  Beef,
+  Warehouse,
+  Package,
+  Boxes,
+  Activity as ActivityIcon,
+  Users,
+  Search,
+  RefreshCw,
+  ChevronRight,
+} from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { Heading, SectionTitle } from '@/components/ui/Heading'
+
+interface LinkItem {
+  label: string
+  icon: LucideIcon
+  to: string
+}
+
+const GROUPS: { title: string; items: LinkItem[] }[] = [
+  {
+    title: 'Dashboards gerenciais',
+    items: [
+      { label: 'Financeiro', icon: Wallet, to: '/fazendas/dashboards/financeiro' },
+      { label: 'Pecuária de Corte', icon: Beef, to: '/fazendas/dashboards/pecuaria' },
+      { label: 'Lotação de Currais', icon: Warehouse, to: '/fazendas/dashboards/confinamento' },
+      { label: 'Ativos / Depreciação', icon: Package, to: '/fazendas/dashboards/ativos' },
+      { label: 'Suprimentos', icon: Boxes, to: '/fazendas/dashboards/suprimentos' },
+      { label: 'Análise de Uso', icon: Users, to: '/fazendas/dashboards/uso' },
+      { label: 'Consultas Gerenciais', icon: Search, to: '/fazendas/dashboards/consultas' },
+    ],
+  },
+  {
+    title: 'Operacional',
+    items: [
+      { label: 'Fila de sincronização', icon: RefreshCw, to: '/fazendas/mais/sync' },
+      { label: 'Todas as atividades', icon: ActivityIcon, to: '/fazendas/atividades' },
+    ],
+  },
+]
+
+/** Menu "Mais" (spec §3.2) — hub expandido com acesso a dashboards e áreas do módulo. */
+export function MaisScreen() {
+  const navigate = useNavigate()
+  return (
+    <div className="flex flex-col gap-5 p-4">
+      <Heading level={2}>Mais</Heading>
+      {GROUPS.map((g) => (
+        <div key={g.title}>
+          <SectionTitle className="mb-2">{g.title}</SectionTitle>
+          <div className="overflow-hidden rounded-2xl border border-border-default bg-surface">
+            {g.items.map((it) => (
+              <button
+                key={it.label}
+                onClick={() => navigate(it.to)}
+                className="flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-subtle text-accent">
+                  <it.icon size={18} />
+                </span>
+                <span className="flex-1 font-medium text-fg">{it.label}</span>
+                <ChevronRight size={16} className="text-fg-subtle" />
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}

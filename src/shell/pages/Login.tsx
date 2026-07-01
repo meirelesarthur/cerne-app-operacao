@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { Sprout } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { Heading } from '@/components/ui/Heading'
 
 /**
  * Login do Shell (mock) — usa os tokens component.login (split-screen adaptado a mobile).
@@ -15,7 +16,9 @@ export function Login() {
         <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-accent shadow-brand">
           <Sprout size={32} />
         </div>
-        <h1 className="text-3xl font-extrabold">GB CERNE</h1>
+        <Heading level={1} className="text-white">
+          GB CERNE
+        </Heading>
         <p className="mt-2 max-w-[260px] text-md text-white/70">
           Superapp corporativo do agronegócio — suas fazendas, banco, crédito e mais em um só lugar.
         </p>

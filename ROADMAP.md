@@ -30,11 +30,13 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] `PhoneFrame` (moldura mobile) + verificação visual (troca de módulo + gbMode)
 - ↪ ícone "olho"/modo consulta: fica para a Fase 2 (contextual ao módulo Fazendas)
 
-## Fase 2 — Módulo Fazendas · Home + navegação
-- [ ] `FazendasModule`: header do módulo com `FarmSwitcher` (pill + bottom sheet)
-- [ ] `ViewSwitch` segmentado [Gerencial | Campo] + `ContextBadge`
-- [ ] `fazendasStore` (visão ativa, fazenda ativa, fila de sync)
-- [ ] Home: `ShortcutGrid`, `DashboardCard` (claro + escuro), `ActivityListItem`
+## Fase 2 — Módulo Fazendas · Home + navegação  ✅
+- [x] `FazendasModule`: header do módulo com `FarmSwitcher` (pill + bottom sheet) + rotas internas
+- [x] `ViewSwitch` segmentado [Gerencial | Campo] + `ContextBadge` + ícone "olho"/modo consulta
+- [x] `fazendasStore` (visão ativa, fazenda ativa, fila de sync) + mocks (fazendas, atividades)
+- [x] Home: `ShortcutGrid`, `DashboardCard` (claro + escuro), `SparklineArea`, `ActivityListItem`
+- [x] Telas de aba: Home (Gerencial/Campo), Atividades, Fazendas, Mais
+- [x] `Heading`/`SectionTitle` (Lei 1) + refactor das páginas da Fase 1 · verificação visual OK
 
 ## Fase 3 — Visão Administrativa (7 dashboards)
 - [ ] Charts SVG: `SparklineArea`, `BarChart`, `DonutChart`, `ProgressBar`, `KpiStatCard`, `ChartCard`

@@ -8,6 +8,7 @@ import { Banner } from '@/components/ui/Banner'
 import { useShellStore } from '@/shell/state/shellStore'
 import { PlaceholderModule } from '@/modules/PlaceholderModule'
 import { FazendasModule } from '@/modules/fazendas/FazendasModule'
+import { useFazendasStore } from '@/modules/fazendas/state/fazendasStore'
 
 /**
  * Layout do Shell (spec §3.1): header global fixo + barra de módulos + conteúdo do módulo ativo
@@ -17,13 +18,20 @@ export function ShellLayout() {
   const { moduleId } = useParams()
   const module = getModule(moduleId)
   const isOnline = useShellStore((s) => s.isOnline)
+  const view = useFazendasStore((s) => s.view)
+  const setView = useFazendasStore((s) => s.setView)
 
   if (!module) return <Navigate to="/fazendas" replace />
+
+  const isFazendas = module.id === 'fazendas'
 
   return (
     <div className="flex h-full flex-col">
       <div className="shrink-0">
-        <ShellHeader />
+        <ShellHeader
+          onConsultMode={isFazendas ? () => setView('gerencial') : undefined}
+          consultActive={isFazendas && view === 'gerencial'}
+        />
         <ModuleSwitcher activeId={module.id} />
       </div>
 
