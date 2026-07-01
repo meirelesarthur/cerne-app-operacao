@@ -20,13 +20,15 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] `shell/moduleConfig.ts` (registro dos 5 módulos) + `shell/state/shellStore.ts` (zustand) — `c25058c`
 - [x] Build de produção + typecheck passando · `npm run tokens:export` ok
 
-## Fase 1 — Shell
-- [ ] `ShellLayout`: header global (saudação, sino c/ badge, ícone "olho"/modo consulta)
-- [ ] `ModuleSwitcher` (barra de módulos, scroll horizontal, item ativo sublinhado)
-- [ ] `BottomTabBar` genérico consumindo `moduleConfig`
-- [ ] `DevToolbar` (toggle offline + toggle tema)
-- [ ] Roteamento react-router `/:moduleId/*` (troca módulo mantém header do Shell)
-- [ ] Telas do Shell: Login, Onboarding, Notificações, Perfil/Configurações
+## Fase 1 — Shell  ✅
+- [x] `ShellLayout`: header global (saudação, sino c/ badge) + banner offline
+- [x] `ModuleSwitcher` (barra de módulos, scroll horizontal, item ativo sublinhado)
+- [x] `BottomTabBar` genérico consumindo `moduleConfig`
+- [x] `DevToolbar` (toggle offline + toggle tema)
+- [x] Roteamento react-router `/:moduleId/*` (troca módulo mantém header do Shell)
+- [x] Telas do Shell: Login, Onboarding, Notificações, Perfil/Configurações
+- [x] `PhoneFrame` (moldura mobile) + verificação visual (troca de módulo + gbMode)
+- ↪ ícone "olho"/modo consulta: fica para a Fase 2 (contextual ao módulo Fazendas)
 
 ## Fase 2 — Módulo Fazendas · Home + navegação
 - [ ] `FazendasModule`: header do módulo com `FarmSwitcher` (pill + bottom sheet)

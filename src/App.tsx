@@ -1,18 +1,35 @@
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
+import { PhoneFrame } from './shell/components/PhoneFrame'
+import { DevToolbar } from './shell/components/DevToolbar'
+import { ShellLayout } from './shell/ShellLayout'
+import { Login } from './shell/pages/Login'
+import { Onboarding } from './shell/pages/Onboarding'
+import { Notificacoes } from './shell/pages/Notificacoes'
+import { PerfilConfig } from './shell/pages/PerfilConfig'
 
 /**
- * App raiz. Na Fase 0 exibe apenas um smoke test da fundação (tokens + tema).
- * Substituído na Fase 1 pelo RouterProvider com o Shell.
+ * Raiz do app. Roteamento em dois níveis (spec §7.3):
+ *   /:moduleId/*  → ShellLayout escolhe o módulo e injeta seu bottom tab bar
+ *   telas de Shell (login/onboarding/notificações/perfil) ficam fora da moldura de módulo.
  */
 export function App() {
   return (
     <ThemeProvider>
-      <div className="flex min-h-full items-center justify-center bg-canvas p-6">
-        <div className="w-full max-w-phone rounded-2xl bg-surface p-6 shadow-card">
-          <h1 className="text-2xl font-bold text-fg">GB CERNE</h1>
-          <p className="mt-1 text-md text-fg-muted">Fundação carregada — tokens, tema e componentes base.</p>
-        </div>
-      </div>
+      <BrowserRouter>
+        <PhoneFrame>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/notificacoes" element={<Notificacoes />} />
+            <Route path="/perfil" element={<PerfilConfig />} />
+            <Route path="/:moduleId/*" element={<ShellLayout />} />
+            <Route path="/" element={<Navigate to="/fazendas" replace />} />
+            <Route path="*" element={<Navigate to="/fazendas" replace />} />
+          </Routes>
+          <DevToolbar />
+        </PhoneFrame>
+      </BrowserRouter>
     </ThemeProvider>
   )
 }
