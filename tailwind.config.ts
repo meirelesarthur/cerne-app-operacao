@@ -1,0 +1,59 @@
+import type { Config } from 'tailwindcss'
+import { primitive, font, space, radius, shadow } from './src/design/tokens'
+
+/**
+ * Tailwind derivado de src/design/tokens.ts (Lei 3).
+ * Não hardcode valores aqui — importe dos tokens.
+ * gbMode (tema escuro) é ativado via data-theme="gbMode" na raiz.
+ */
+export default {
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  darkMode: ['selector', '[data-theme="gbMode"]'],
+  theme: {
+    extend: {
+      colors: {
+        brand: primitive.brand,
+        neutral: primitive.neutral,
+        red: primitive.red,
+        amber: primitive.amber,
+        blue: primitive.blue,
+        // papéis theme-aware expostos como CSS vars (definidas em tokens.css)
+        canvas: 'var(--bg-canvas)',
+        surface: 'var(--bg-surface)',
+        'surface-subtle': 'var(--bg-subtle)',
+        fg: 'var(--fg-default)',
+        'fg-muted': 'var(--fg-muted)',
+        'fg-subtle': 'var(--fg-subtle)',
+        'border-default': 'var(--border-default)',
+        accent: 'var(--accent-default)',
+        'accent-hover': 'var(--accent-hover)',
+        'accent-subtle': 'var(--accent-subtle)',
+      },
+      fontFamily: { sans: ['Outfit', 'sans-serif'] },
+      fontSize: font.size,
+      fontWeight: {
+        normal: String(font.weight.normal),
+        medium: String(font.weight.medium),
+        semibold: String(font.weight.semibold),
+        bold: String(font.weight.bold),
+        extrabold: String(font.weight.extrabold),
+      },
+      lineHeight: {
+        tight: String(font.lineHeight.tight),
+        snug: String(font.lineHeight.snug),
+        normal: String(font.lineHeight.normal),
+        relaxed: String(font.lineHeight.relaxed),
+      },
+      spacing: space,
+      borderRadius: radius,
+      boxShadow: {
+        card: 'var(--shadow-card)',
+        'card-hover': 'var(--shadow-card-hover)',
+        modal: 'var(--shadow-modal)',
+        brand: shadow.brand,
+      },
+      maxWidth: { phone: '420px' },
+    },
+  },
+  plugins: [],
+} satisfies Config

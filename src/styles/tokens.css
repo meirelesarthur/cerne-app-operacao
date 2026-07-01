@@ -1,0 +1,70 @@
+/**
+ * Variáveis CSS theme-aware (light | gbMode).
+ * Espelham themePalette de src/design/tokens.ts. Trocadas via data-theme na raiz
+ * (ver ThemeContext). Componentes Tailwind referenciam via classes (bg-canvas, text-fg, ...).
+ */
+
+:root,
+[data-theme='light'] {
+  --fg-default: #111827;
+  --fg-muted: #6b7280;
+  --fg-subtle: #9ca3af;
+  --fg-inverse: #ffffff;
+
+  --bg-canvas: #f0f0f0;
+  --bg-surface: #ffffff;
+  --bg-subtle: #fafafa;
+  --bg-raised: #ffffff;
+
+  --border-default: #e5e7eb;
+  --border-strong: #d1d5db;
+  --border-subtle: #f3f4f6;
+
+  --accent-default: #059669;
+  --accent-hover: #047857;
+  --accent-subtle: #f0fdf4;
+  --accent-contrast: #ffffff;
+
+  --nav-bg: #064e3b;
+  --nav-fg: #d1fae5;
+  --nav-active: #ffffff;
+  --nav-border: rgba(255, 255, 255, 0.12);
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-modal: 0 20px 48px rgba(0, 0, 0, 0.24);
+
+  color-scheme: light;
+}
+
+[data-theme='gbMode'] {
+  --fg-default: #e2f0e8;
+  --fg-muted: #8fb3a2;
+  --fg-subtle: #5f7d6e;
+  --fg-inverse: #051008;
+
+  --bg-canvas: #051008;
+  --bg-surface: #0e2a1d;
+  --bg-subtle: #0a2016;
+  --bg-raised: #123a28;
+
+  --border-default: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --border-subtle: rgba(255, 255, 255, 0.06);
+
+  --accent-default: #10b981;
+  --accent-hover: #34d399;
+  --accent-subtle: rgba(16, 185, 129, 0.14);
+  --accent-contrast: #051008;
+
+  --nav-bg: #081a12;
+  --nav-fg: #8fb3a2;
+  --nav-active: #4ade80;
+  --nav-border: rgba(255, 255, 255, 0.1);
+
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-card-hover: 0 6px 16px rgba(0, 0, 0, 0.5);
+  --shadow-modal: 0 20px 48px rgba(0, 0, 0, 0.6);
+
+  color-scheme: dark;
+}
