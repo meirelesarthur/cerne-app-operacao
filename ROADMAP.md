@@ -61,9 +61,10 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Aplicação de Insumos / Ocorrências Agrícolas (validação mínima)
 - [x] Regra: transferência exige pesagem do dia → bloqueio funcional real (verificado)
 
-## Fase 5 — Módulos-casca
-- [ ] Bank · Crédito · Marketplace · Armazém (header + bottom tab próprio + EmptyState)
-- [ ] Card de deep-link "crédito pré-aprovado" em Fazendas → módulo Crédito
+## Fase 5 — Módulos-casca  ✅
+- [x] Bank · Crédito · Marketplace · Armazém (header + bottom tab próprio + tela de entrada + abas em desenvolvimento)
+- [x] Tela de entrada do módulo-casca com identidade + prévia das áreas planejadas
+- [x] Card de deep-link "crédito pré-aprovado" em Fazendas → módulo Crédito (verificado)
 
 ## Fase 6 — Estados transversais
 - [ ] Offline/sync: `DevToolbar` alterna `isOnline`; `SyncBanner` + banner de pendências

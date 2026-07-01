@@ -20,6 +20,7 @@ import { Chip } from '@/components/ui/Chip'
 import { ShortcutGrid, type Shortcut } from '../components/ShortcutGrid'
 import { ContextBadge } from '../components/ContextBadge'
 import { ActivityListItem } from '../components/ActivityListItem'
+import { CreditoBanner } from '../components/CreditoBanner'
 import { useFazendasStore } from '../state/fazendasStore'
 import { ATIVIDADES } from '../mocks/atividades'
 
@@ -53,6 +54,8 @@ function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> 
       </div>
 
       <ShortcutGrid items={adminShortcuts} columns={5} />
+
+      <CreditoBanner />
 
       <div className="grid grid-cols-2 gap-3">
         <DashboardCard icon={Wallet} label="Receita" value="R$ 2,4 mi" delta={12} spark={[8, 10, 9, 12, 14, 13, 16]} />
