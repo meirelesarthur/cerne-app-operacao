@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { t } from '@/design/tokens'
-import { ViewSwitch } from './components/ViewSwitch'
 import { SyncBanner } from './components/SyncBanner'
 import { FazendasHome } from './screens/FazendasHome'
 import { AtividadesScreen } from './screens/AtividadesScreen'
@@ -20,11 +19,7 @@ import { CampoFlow } from './operacional/CampoFlow'
 export function FazendasModule() {
   return (
     <div className="flex h-full flex-col" style={{ background: t.component.header.tabsBg }}>
-      {/* Barra de visão do módulo — a pílula de fazenda vive no header do Shell (premium clean) */}
-      <div className="px-4 pb-3 pt-1">
-        <ViewSwitch />
-      </div>
-
+      {/* O switch Gerencial ⇄ Campo vive no menu "Mais" (RevealMenu) — interface limpa */}
       <SyncBanner />
 
       <div className="no-scrollbar flex-1 overflow-y-auto rounded-t-3xl bg-surface">

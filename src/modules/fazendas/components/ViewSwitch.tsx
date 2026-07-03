@@ -12,7 +12,7 @@ const OPTIONS: { value: FarmView; label: string; icon: typeof LayoutDashboard }[
   { value: 'campo', label: 'Campo', icon: ClipboardList },
 ]
 
-export function ViewSwitch() {
+export function ViewSwitch({ onChange }: { onChange?: (view: FarmView) => void }) {
   const view = useFazendasStore((s) => s.view)
   const setView = useFazendasStore((s) => s.setView)
 
@@ -25,7 +25,10 @@ export function ViewSwitch() {
             key={opt.value}
             role="tab"
             aria-selected={active}
-            onClick={() => setView(opt.value)}
+            onClick={() => {
+              setView(opt.value)
+              onChange?.(opt.value)
+            }}
             className={cn(
               'flex flex-1 items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-semibold transition-colors',
               active ? 'bg-white text-brand-700 shadow-card' : 'text-white/80',
