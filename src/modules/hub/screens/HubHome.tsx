@@ -14,7 +14,7 @@ import {
 import { useShellStore } from '@/shell/state/shellStore'
 import { useSimulatedLoad } from '@/lib/useSimulatedLoad'
 import { t } from '@/design/tokens'
-import { SALDO, RESUMO_MES, TRANSACOES, CREDITO_PREAPROVADO } from '../mocks/banking'
+import { SALDO, RESUMO_MES, TRANSACOES, CREDITO_PREAPROVADO } from '@/modules/bank/mocks/banking'
 import { HUB_APPS } from '../mocks/apps'
 
 /** delay escalonado de entrada por seção (motion tokenizado, ver Lei 3) */

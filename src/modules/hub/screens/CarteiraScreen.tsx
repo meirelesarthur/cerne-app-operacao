@@ -13,7 +13,7 @@ import {
 import { useShellStore } from '@/shell/state/shellStore'
 import { useSimulatedLoad } from '@/lib/useSimulatedLoad'
 import { t } from '@/design/tokens'
-import { SALDO, RESUMO_MES, TRANSACOES } from '../mocks/banking'
+import { SALDO, RESUMO_MES, TRANSACOES } from '@/modules/bank/mocks/banking'
 
 const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
 

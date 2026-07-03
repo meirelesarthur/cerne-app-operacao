@@ -20,6 +20,16 @@ export const CREDITO_PREAPROVADO = {
   condicao: 'Custeio safra 25/26 · a partir de 1,29% a.m.',
 }
 
+export const CARTAO = {
+  final: '4821',
+  titular: 'ARTHUR M',
+  bandeira: 'Mastercard',
+  tipo: 'GB Corp · Crédito',
+  limiteDisponivel: 'R$ 96.500,00',
+  limiteTotal: 'R$ 150.000,00',
+  usoPct: 36,
+}
+
 export const TRANSACOES: TransactionItem[] = [
   { id: 'tx1', title: 'Venda de gado · Frigorífico Boi Forte', subtitle: 'TED recebida', time: 'hoje, 09:12', value: 'R$ 86.400,00', direction: 'in' },
   { id: 'tx2', title: 'Agropecuária Vale Verde', subtitle: 'Pix · insumos', time: 'hoje, 08:05', value: 'R$ 12.380,00', direction: 'out' },
