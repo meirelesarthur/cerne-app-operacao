@@ -53,6 +53,13 @@
   }
 }
 
+/* Acessibilidade de motion: usuários com reduced-motion não recebem entradas animadas */
+@media (prefers-reduced-motion: reduce) {
+  .animate-rise {
+    animation: none;
+  }
+}
+
 /* Esconde scrollbar horizontal da barra de módulos mantendo o scroll */
 .no-scrollbar {
   -ms-overflow-style: none;

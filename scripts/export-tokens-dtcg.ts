@@ -20,6 +20,7 @@ import {
   radius,
   shadow,
   chart,
+  animation,
   component,
   themePalette,
 } from '../src/design/tokens'
@@ -32,6 +33,18 @@ type DTCGGroup = { [k: string]: DTCGToken | DTCGGroup }
 const color = (v: string): DTCGToken => ({ $value: v, $type: 'color' })
 const dimension = (v: string): DTCGToken => ({ $value: v, $type: 'dimension' })
 const number = (v: number): DTCGToken => ({ $value: v, $type: 'number' })
+
+// '150ms' → { value: 150, unit: 'ms' } (forma estrutural DTCG para duration)
+const duration = (v: string): DTCGToken => {
+  const m = v.match(/^(-?[\d.]+)(ms|s)$/)
+  return { $type: 'duration', $value: m ? { value: Number(m[1]), unit: m[2] } : v }
+}
+
+// 'cubic-bezier(a, b, c, d)' → [a, b, c, d] (forma estrutural DTCG para cubicBezier)
+const cubicBezier = (v: string): DTCGToken => {
+  const m = v.match(/^cubic-bezier\(([^)]+)\)$/)
+  return { $type: 'cubicBezier', $value: m ? m[1].split(',').map((n) => Number(n.trim())) : v }
+}
 
 function mapColors(scale: Record<string | number, string>): DTCGGroup {
   const out: DTCGGroup = {}
@@ -100,12 +113,22 @@ const dtcg = {
       axis: color(chart.axis),
       series: { $value: chart.series, $type: 'color' },
     },
+    animation: {
+      duration: Object.fromEntries(Object.entries(animation.duration).map(([k, v]) => [k, duration(v)])),
+      easing: Object.fromEntries(Object.entries(animation.easing).map(([k, v]) => [k, cubicBezier(v)])),
+      stagger: duration(animation.stagger),
+    },
   },
   light: mapThemePalette('light'),
   gbMode: mapThemePalette('gbMode'),
   component: {
     dashboardTile: mapColors(component.dashboardTile),
     login: mapColors(component.login),
+    hub: {
+      bankCard: mapColors(component.hub.bankCard),
+      glass: mapColors(component.hub.glass),
+      glassBlur: dimension(component.hub.glassBlur),
+    },
   },
 } as const
 

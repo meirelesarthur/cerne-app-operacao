@@ -1,5 +1,5 @@
 import type { Config } from 'tailwindcss'
-import { primitive, font, space, radius, shadow } from './src/design/tokens'
+import { primitive, font, space, radius, shadow, animation } from './src/design/tokens'
 
 /**
  * Tailwind derivado de src/design/tokens.ts (Lei 3).
@@ -53,6 +53,16 @@ export default {
         brand: shadow.brand,
       },
       maxWidth: { phone: '420px' },
+      keyframes: {
+        rise: {
+          from: { opacity: '0', transform: `translateY(${space[3]})` },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+      },
+      animation: {
+        // entrada de seções/cards (ease-out, interruptível, 60fps: transform+opacity)
+        rise: `rise ${animation.duration.slow} ${animation.easing.out} both`,
+      },
     },
   },
   plugins: [],

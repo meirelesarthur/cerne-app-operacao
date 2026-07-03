@@ -264,6 +264,8 @@ export const animation = {
     inOut: 'cubic-bezier(0.4, 0, 0.2, 1)',
     spring: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
   },
+  /** passo de escalonamento entre itens em entradas de lista/grid (stagger) */
+  stagger: '40ms',
 } as const
 
 export const zIndex = {
@@ -309,6 +311,25 @@ export const component = {
     leftBg: '#081a12',
     rightBg: '#fafaf9',
     accentGlow: 'rgba(5,150,105,0.05)',
+  },
+  // New-UI — hub agregador do superapp (módulo Início) com Banking central
+  hub: {
+    /** cartão de saldo premium: gradiente institucional profundo + glow da marca */
+    bankCard: {
+      from: '#064e3b',
+      to: '#022c22',
+      glow: 'rgba(74,222,128,0.20)',
+      divider: 'rgba(255,255,255,0.14)',
+      fgMuted: 'rgba(255,255,255,0.72)',
+      skeleton: 'rgba(255,255,255,0.16)',
+    },
+    /** superfícies glass sutis para destaques sobre o canvas */
+    glass: {
+      light: 'rgba(255,255,255,0.70)',
+      dark: 'rgba(14,42,29,0.55)',
+      border: 'rgba(255,255,255,0.16)',
+    },
+    glassBlur: '14px',
   },
 } as const
 
