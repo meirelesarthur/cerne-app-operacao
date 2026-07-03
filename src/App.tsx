@@ -24,8 +24,8 @@ export function App() {
             <Route path="/notificacoes" element={<Notificacoes />} />
             <Route path="/perfil" element={<PerfilConfig />} />
             <Route path="/:moduleId/*" element={<ShellLayout />} />
-            <Route path="/" element={<Navigate to="/fazendas" replace />} />
-            <Route path="*" element={<Navigate to="/fazendas" replace />} />
+            <Route path="/" element={<Navigate to="/inicio" replace />} />
+            <Route path="*" element={<Navigate to="/inicio" replace />} />
           </Routes>
           <DevToolbar />
         </PhoneFrame>

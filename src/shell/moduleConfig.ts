@@ -17,6 +17,7 @@ import {
   Boxes,
   ArrowLeftRight,
   ListOrdered,
+  LayoutGrid,
 } from 'lucide-react'
 
 /**
@@ -47,6 +48,18 @@ export interface ModuleDef {
 }
 
 export const MODULES: ModuleDef[] = [
+  {
+    // New-UI — hub agregador: porta de entrada do superapp, Banking central
+    id: 'inicio',
+    label: 'Início',
+    icon: Home,
+    homeRoute: '/inicio',
+    bottomTabs: [
+      { id: 'home', label: 'Início', icon: Home, path: '' },
+      { id: 'apps', label: 'Apps', icon: LayoutGrid, path: 'apps' },
+      { id: 'carteira', label: 'Carteira', icon: Wallet, path: 'carteira' },
+    ],
+  },
   {
     id: 'fazendas',
     label: 'Fazendas',

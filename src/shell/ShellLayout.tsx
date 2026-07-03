@@ -7,6 +7,7 @@ import { BottomTabBar } from '@/shell/components/BottomTabBar'
 import { Banner } from '@/components/ui/Banner'
 import { useShellStore } from '@/shell/state/shellStore'
 import { PlaceholderModule } from '@/modules/PlaceholderModule'
+import { HubModule } from '@/modules/hub/HubModule'
 import { FazendasModule } from '@/modules/fazendas/FazendasModule'
 import { useFazendasStore } from '@/modules/fazendas/state/fazendasStore'
 
@@ -21,7 +22,7 @@ export function ShellLayout() {
   const view = useFazendasStore((s) => s.view)
   const setView = useFazendasStore((s) => s.setView)
 
-  if (!module) return <Navigate to="/fazendas" replace />
+  if (!module) return <Navigate to="/inicio" replace />
 
   const isFazendas = module.id === 'fazendas'
 
@@ -42,7 +43,13 @@ export function ShellLayout() {
       )}
 
       <main className="no-scrollbar flex-1 overflow-y-auto">
-        {module.id === 'fazendas' ? <FazendasModule /> : <PlaceholderModule module={module} />}
+        {module.id === 'inicio' ? (
+          <HubModule />
+        ) : module.id === 'fazendas' ? (
+          <FazendasModule />
+        ) : (
+          <PlaceholderModule module={module} />
+        )}
       </main>
 
       <div className="shrink-0">

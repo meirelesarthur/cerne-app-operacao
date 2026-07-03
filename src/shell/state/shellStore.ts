@@ -25,8 +25,11 @@ interface ShellState {
   notifications: AppNotification[]
   /** toggle de dev (spec §7.3) — simula perda de conexão para demonstrar banners de sync. */
   isOnline: boolean
+  /** privacidade do Banking no hub — oculta saldo/valores em todas as telas do Início. */
+  balanceHidden: boolean
   setOnline: (v: boolean) => void
   toggleOnline: () => void
+  toggleBalanceHidden: () => void
   markAllRead: () => void
   unreadCount: () => number
 }
@@ -42,8 +45,10 @@ export const useShellStore = create<ShellState>((set, get) => ({
   user: { name: 'Arthur', initials: 'AM', role: 'ambos' },
   notifications: MOCK_NOTIFICATIONS,
   isOnline: true,
+  balanceHidden: false,
   setOnline: (v) => set({ isOnline: v }),
   toggleOnline: () => set((s) => ({ isOnline: !s.isOnline })),
+  toggleBalanceHidden: () => set((s) => ({ balanceHidden: !s.balanceHidden })),
   markAllRead: () => set((s) => ({ notifications: s.notifications.map((n) => ({ ...n, read: true })) })),
   unreadCount: () => get().notifications.filter((n) => !n.read).length,
 }))
