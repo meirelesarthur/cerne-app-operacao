@@ -17,12 +17,18 @@ import {
 import { DashboardCard } from '@/components/ui/DashboardCard'
 import { Heading, SectionTitle } from '@/components/ui/Heading'
 import { Chip } from '@/components/ui/Chip'
+import { Card } from '@/components/ui/Card'
+import { BentoTile } from '@/components/ui/BentoTile'
 import { ShortcutGrid, type Shortcut } from '../components/ShortcutGrid'
 import { ContextBadge } from '../components/ContextBadge'
 import { ActivityListItem } from '../components/ActivityListItem'
 import { CreditoBanner } from '../components/CreditoBanner'
 import { useFazendasStore } from '../state/fazendasStore'
 import { ATIVIDADES } from '../mocks/atividades'
+import { t } from '@/design/tokens'
+
+/** delay escalonado de entrada por tile (motion tokenizado, ver Lei 3) */
+const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
 
 /**
  * Home do módulo Fazendas (aba Dashboard), reproduzindo o padrão do print.
@@ -83,15 +89,6 @@ function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> 
 function HomeCampo({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
   const syncQueue = useFazendasStore((s) => s.syncQueue)
 
-  const campoShortcuts: Shortcut[] = [
-    { id: 'pesagem', label: 'Pesagem', icon: Scale, tone: 'brand', onClick: () => navigate('/fazendas/campo/pesagem') },
-    { id: 'ciclo', label: 'Ciclo rebanho', icon: ArrowLeftRight, tone: 'blue', onClick: () => navigate('/fazendas/campo/ciclo') },
-    { id: 'arracoamento', label: 'Arraçoamento', icon: Wheat, tone: 'amber', onClick: () => navigate('/fazendas/campo/arracoamento') },
-    { id: 'venda', label: 'Venda', icon: Truck, tone: 'purple', onClick: () => navigate('/fazendas/campo/venda') },
-    { id: 'nfe', label: 'Entrada NF-e', icon: FileText, tone: 'blue', onClick: () => navigate('/fazendas/campo/recebimento') },
-    { id: 'insumos', label: 'Insumos', icon: Sprout, tone: 'brand', onClick: () => navigate('/fazendas/campo/insumos') },
-  ]
-
   return (
     <div className="flex flex-col">
       <ContextBadge />
@@ -101,20 +98,82 @@ function HomeCampo({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
           <p className="mt-0.5 text-sm text-fg-muted">Escolha o tipo de registro para começar.</p>
         </div>
 
-        <ShortcutGrid items={campoShortcuts} columns={4} />
-
-        <div className="rounded-2xl border border-border-default bg-surface p-4">
-          <div className="flex items-center justify-between">
-            <SectionTitle>Fila de sincronização</SectionTitle>
-            <Chip tone={syncQueue.length ? 'amber' : 'brand'}>
-              {syncQueue.length ? `${syncQueue.length} pendente(s)` : 'Tudo sincronizado'}
-            </Chip>
+        <div className="grid grid-cols-3 gap-3">
+          {/* Linha 1 — 3 tiles pequenos */}
+          <div className="animate-rise h-full" style={stagger(0)}>
+            <BentoTile
+              icon={Scale}
+              label="Pesagem"
+              caption="Balança conectada"
+              tone="brand"
+              onClick={() => navigate('/fazendas/campo/pesagem')}
+            />
           </div>
-          <p className="mt-2 text-sm text-fg-muted">
-            {syncQueue.length
-              ? 'Lançamentos feitos offline serão enviados quando a conexão voltar.'
-              : 'Nenhum lançamento aguardando envio.'}
-          </p>
+          <div className="animate-rise h-full" style={stagger(1)}>
+            <BentoTile
+              icon={ArrowLeftRight}
+              label="Ciclo rebanho"
+              caption="Entradas e saídas"
+              tone="blue"
+              onClick={() => navigate('/fazendas/campo/ciclo')}
+            />
+          </div>
+          <div className="animate-rise h-full" style={stagger(2)}>
+            <BentoTile
+              icon={Wheat}
+              label="Arraçoamento"
+              caption="Trato do dia"
+              tone="amber"
+              onClick={() => navigate('/fazendas/campo/arracoamento')}
+            />
+          </div>
+
+          {/* Linha 2 — assimétrica: venda (2 col) + NF-e (destaque) */}
+          <div className="col-span-2 animate-rise h-full" style={stagger(3)}>
+            <BentoTile
+              icon={Truck}
+              label="Venda"
+              caption="GTA, romaneio e frete"
+              tone="purple"
+              iconSize="lg"
+              onClick={() => navigate('/fazendas/campo/venda')}
+            />
+          </div>
+          <div className="animate-rise h-full" style={stagger(4)}>
+            <BentoTile
+              icon={FileText}
+              label="Entrada NF-e"
+              caption="Importar XML"
+              variant="accent"
+              onClick={() => navigate('/fazendas/campo/recebimento')}
+            />
+          </div>
+
+          {/* Linha 3 — assimétrica invertida: insumos + fila de sincronização (2 col) */}
+          <div className="animate-rise h-full" style={stagger(5)}>
+            <BentoTile
+              icon={Sprout}
+              label="Insumos"
+              caption="Aplicações e retiradas"
+              tone="brand"
+              onClick={() => navigate('/fazendas/campo/insumos')}
+            />
+          </div>
+          <div className="col-span-2 animate-rise h-full" style={stagger(6)}>
+            <Card className="h-full">
+              <div className="flex items-center justify-between">
+                <SectionTitle>Fila de sincronização</SectionTitle>
+                <Chip tone={syncQueue.length ? 'amber' : 'brand'}>
+                  {syncQueue.length ? `${syncQueue.length} pendente(s)` : 'Tudo sincronizado'}
+                </Chip>
+              </div>
+              <p className="mt-2 text-sm text-fg-muted">
+                {syncQueue.length
+                  ? 'Lançamentos feitos offline serão enviados quando a conexão voltar.'
+                  : 'Nenhum lançamento aguardando envio.'}
+              </p>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
