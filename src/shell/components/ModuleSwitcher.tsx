@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { MODULES } from '@/shell/moduleConfig'
+import { t } from '@/design/tokens'
 import { cn } from '@/lib/cn'
 
 /**
@@ -12,7 +13,7 @@ export function ModuleSwitcher({ activeId }: { activeId: string }) {
   return (
     <nav
       className="no-scrollbar flex gap-1 overflow-x-auto px-2"
-      style={{ background: 'var(--nav-bg)' }}
+      style={{ background: t.component.header.tabsBg }}
       aria-label="Módulos"
     >
       {MODULES.map((m) => {
@@ -23,7 +24,7 @@ export function ModuleSwitcher({ activeId }: { activeId: string }) {
             onClick={() => navigate(m.homeRoute)}
             className={cn(
               'relative whitespace-nowrap px-3 py-2.5 text-md font-semibold transition-colors',
-              active ? 'text-white' : 'text-white/55 hover:text-white/80',
+              active ? 'text-white' : 'text-white/45 hover:text-white/80',
             )}
             aria-current={active ? 'page' : undefined}
           >

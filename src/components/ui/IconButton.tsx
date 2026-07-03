@@ -16,10 +16,16 @@ const sizeCls: Record<Size, string> = {
   lg: 'h-9 w-9',
 }
 
+const onDarkSizeCls: Record<Size, string> = {
+  sm: 'h-6 w-6',
+  md: 'h-10 w-10',
+  lg: 'h-10 w-10',
+}
+
 const variantCls = {
   ghost: 'text-fg hover:bg-surface-subtle',
   solid: 'bg-surface border border-border-default text-fg hover:bg-surface-subtle',
-  onDark: 'text-white/90 hover:bg-white/10',
+  onDark: 'border border-white/20 bg-white/5 text-white/90 hover:bg-white/15',
 } as const
 
 export function IconButton({ size = 'md', label, children, variant = 'ghost', className, ...rest }: IconButtonProps) {
@@ -29,8 +35,9 @@ export function IconButton({ size = 'md', label, children, variant = 'ghost', cl
       aria-label={label}
       title={label}
       className={cn(
-        'inline-flex items-center justify-center rounded-lg transition-colors focus-visible:outline-none',
-        sizeCls[size],
+        'inline-flex items-center justify-center transition-colors focus-visible:outline-none',
+        variant === 'onDark' ? 'rounded-full' : 'rounded-lg',
+        variant === 'onDark' ? onDarkSizeCls[size] : sizeCls[size],
         variantCls[variant],
         className,
       )}

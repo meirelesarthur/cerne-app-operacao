@@ -62,14 +62,14 @@ export function DashboardCard({
       className={cn(
         'flex flex-col rounded-2xl p-4 text-left shadow-card transition-shadow',
         onClick && 'hover:shadow-card-hover active:scale-[0.99]',
-        dark ? 'text-white' : 'border border-border-default bg-surface',
+        dark ? 'text-white' : 'border border-border-tint bg-kpi',
       )}
     >
       <div className="flex items-start justify-between">
         <span
           className={cn(
             'flex h-9 w-9 items-center justify-center rounded-xl',
-            dark ? 'bg-white/15 text-white' : 'bg-accent-subtle text-accent',
+            dark ? 'bg-white/15 text-white' : 'border border-border-tint bg-accent-subtle text-accent',
           )}
         >
           <Icon size={18} />

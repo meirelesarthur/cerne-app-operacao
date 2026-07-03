@@ -25,6 +25,8 @@ export default {
         'fg-muted': 'var(--fg-muted)',
         'fg-subtle': 'var(--fg-subtle)',
         'border-default': 'var(--border-default)',
+        'border-tint': 'var(--border-tint)',
+        kpi: 'var(--bg-kpi)',
         accent: 'var(--accent-default)',
         'accent-hover': 'var(--accent-hover)',
         'accent-subtle': 'var(--accent-subtle)',

@@ -136,6 +136,8 @@ const dtcg = {
       bg: color(component.revealMenu.bg),
       itemStagger: duration(component.revealMenu.itemStagger),
     },
+    header: mapColors(component.header),
+    kpi: mapColors(component.kpi),
   },
 } as const
 

@@ -18,9 +18,9 @@ export interface BentoTileProps {
 }
 
 const toneCls: Record<NonNullable<BentoTileProps['tone']>, string> = {
-  brand: 'bg-accent-subtle text-accent',
-  blue: 'bg-blue-50 text-blue-600',
-  amber: 'bg-amber-50 text-amber-600',
+  brand: 'bg-accent-subtle text-accent border border-border-tint',
+  blue: 'bg-blue-50 text-blue-600 border border-blue-100',
+  amber: 'bg-amber-50 text-amber-600 border border-amber-100',
   purple: '',
 }
 
@@ -76,13 +76,21 @@ export function BentoTile({
       type="button"
       onClick={onClick}
       className={cn(
-        'flex h-full min-h-[104px] w-full flex-col items-start justify-between gap-3 rounded-3xl border border-border-default bg-surface p-4 text-left shadow-card transition-all hover:shadow-card-hover active:scale-[0.97]',
+        'flex h-full min-h-[104px] w-full flex-col items-start justify-between gap-3 rounded-3xl border border-border-default bg-surface p-4 text-left transition-all hover:border-border-strong active:scale-[0.97]',
         className,
       )}
     >
       <span
         className={cn('flex items-center justify-center rounded-2xl', iconBoxCls, !isPurple && toneCls[tone])}
-        style={isPurple ? { backgroundColor: t.color.accent.purple.bg, color: t.color.accent.purple.solid } : undefined}
+        style={
+          isPurple
+            ? {
+                backgroundColor: t.color.accent.purple.bg,
+                color: t.color.accent.purple.solid,
+                border: `1px solid ${t.color.accent.purple.border}`,
+              }
+            : undefined
+        }
       >
         <Icon size={iconGlyphSize} aria-hidden="true" />
       </span>

@@ -98,8 +98,8 @@ const feedback = {
 } as const
 
 const accent = {
-  purple: { bg: '#f5f3ff', solid: '#7c3aed' },
-  cyan: { bg: '#ecfeff', solid: '#0891b2' },
+  purple: { bg: '#f5f3ff', solid: '#7c3aed', border: '#ddd6fe' },
+  cyan: { bg: '#ecfeff', solid: '#0891b2', border: '#a5f3fc' },
 } as const
 
 const state = {
@@ -130,8 +130,8 @@ export const color = {
 // 2b. theme-aware — consumido via ThemeContext / useTheme()
 export interface ThemePalette {
   fg: { default: string; muted: string; subtle: string; inverse: string }
-  bg: { canvas: string; surface: string; subtle: string; raised: string }
-  border: { default: string; strong: string; subtle: string }
+  bg: { canvas: string; surface: string; subtle: string; raised: string; kpi: string }
+  border: { default: string; strong: string; subtle: string; tint: string }
   accent: { default: string; hover: string; subtle: string; contrast: string }
   nav: { bg: string; fg: string; active: string; border: string }
   shadow: { card: string; cardHover: string; modal: string }
@@ -140,20 +140,20 @@ export interface ThemePalette {
 export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
   light: {
     fg: { default: primitive.neutral[900], muted: primitive.neutral[500], subtle: primitive.neutral[400], inverse: primitive.neutral[0] },
-    bg: { canvas: '#f0f0f0', surface: primitive.neutral[0], subtle: primitive.neutral[50], raised: primitive.neutral[0] },
-    border: { default: primitive.neutral[200], strong: primitive.neutral[300], subtle: primitive.neutral[150] },
+    bg: { canvas: '#f5f5f5', surface: primitive.neutral[0], subtle: primitive.neutral[50], raised: primitive.neutral[0], kpi: '#f8fffe' },
+    border: { default: primitive.neutral[200], strong: primitive.neutral[300], subtle: primitive.neutral[150], tint: primitive.brand[100] },
     accent: { default: primitive.brand[600], hover: primitive.brand[700], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
-    nav: { bg: primitive.brand[900], fg: '#d1fae5', active: '#ffffff', border: 'rgba(255,255,255,0.12)' },
+    nav: { bg: primitive.brand[900], fg: '#d1fae5', active: '#4ade80', border: 'rgba(255,255,255,0.12)' },
     shadow: {
-      card: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
-      cardHover: '0 4px 12px rgba(0,0,0,0.08)',
+      card: 'none',
+      cardHover: '0 2px 12px rgba(0,0,0,0.06)',
       modal: '0 20px 48px rgba(0,0,0,0.24)',
     },
   },
   gbMode: {
     fg: { default: '#e2f0e8', muted: '#8fb3a2', subtle: '#5f7d6e', inverse: '#051008' },
-    bg: { canvas: '#051008', surface: '#0e2a1d', subtle: '#0a2016', raised: '#123a28' },
-    border: { default: 'rgba(255,255,255,0.10)', strong: 'rgba(255,255,255,0.18)', subtle: 'rgba(255,255,255,0.06)' },
+    bg: { canvas: '#051008', surface: '#0e2a1d', subtle: '#0a2016', raised: '#123a28', kpi: '#0e2a1d' },
+    border: { default: 'rgba(255,255,255,0.10)', strong: 'rgba(255,255,255,0.18)', subtle: 'rgba(255,255,255,0.06)', tint: 'rgba(255,255,255,0.10)' },
     accent: { default: '#10b981', hover: '#34d399', subtle: 'rgba(16,185,129,0.14)', contrast: '#051008' },
     nav: { bg: '#081a12', fg: '#8fb3a2', active: '#4ade80', border: 'rgba(255,255,255,0.10)' },
     shadow: {
@@ -338,6 +338,18 @@ export const component = {
     menuWidth: '78%',
     bg: '#081a12',
     itemStagger: '30ms',
+  },
+  /** header global do Shell (premium clean): gradiente verde profundo + decoração de onda */
+  header: {
+    from: '#09291a',
+    mid: '#064e3b',
+    to: '#0b5c47',
+    tabsBg: '#065f46',
+    wave: 'rgba(134,239,172,0.08)',
+  },
+  /** fundo levemente tintado para KPIs em cards claros */
+  kpi: {
+    bg: '#f8fffe',
   },
 } as const
 
