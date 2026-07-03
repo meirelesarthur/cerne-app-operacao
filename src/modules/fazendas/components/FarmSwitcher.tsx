@@ -19,11 +19,11 @@ export function FarmSwitcher() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1.5 text-md font-semibold text-white backdrop-blur-sm"
+        className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 py-1.5 pl-2.5 pr-3 text-md font-medium text-white"
       >
-        <Leaf size={15} />
+        <Leaf size={14} className="text-brand-400" />
         {active.name}
-        <ChevronDown size={15} className="opacity-80" />
+        <ChevronDown size={14} className="text-white/50" />
       </button>
 
       <BottomSheet open={open} onClose={() => setOpen(false)} title="Trocar de fazenda">

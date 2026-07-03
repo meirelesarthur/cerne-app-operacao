@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { FarmSwitcher } from './components/FarmSwitcher'
+import { t } from '@/design/tokens'
 import { ViewSwitch } from './components/ViewSwitch'
 import { SyncBanner } from './components/SyncBanner'
 import { FazendasHome } from './screens/FazendasHome'
@@ -19,19 +19,15 @@ import { CampoFlow } from './operacional/CampoFlow'
  */
 export function FazendasModule() {
   return (
-    <div className="flex h-full flex-col">
-      {/* Header do módulo — pertence ao Fazendas, some ao trocar de módulo (spec §3.5) */}
-      <div className="flex items-center gap-2 px-4 pb-3" style={{ background: 'var(--nav-bg)' }}>
-        <FarmSwitcher />
-        <div className="flex-1" />
-      </div>
-      <div className="px-4 pb-3" style={{ background: 'var(--nav-bg)' }}>
+    <div className="flex h-full flex-col" style={{ background: t.component.header.tabsBg }}>
+      {/* Barra de visão do módulo — a pílula de fazenda vive no header do Shell (premium clean) */}
+      <div className="px-4 pb-3 pt-1">
         <ViewSwitch />
       </div>
 
       <SyncBanner />
 
-      <div className="no-scrollbar flex-1 overflow-y-auto bg-canvas">
+      <div className="no-scrollbar flex-1 overflow-y-auto rounded-t-3xl bg-surface">
         <Routes>
           <Route index element={<FazendasHome />} />
           <Route path="atividades" element={<AtividadesScreen />} />

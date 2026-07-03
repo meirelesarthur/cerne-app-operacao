@@ -14,6 +14,8 @@ import { BankModule } from '@/modules/bank/BankModule'
 import { CreditoModule } from '@/modules/credito/CreditoModule'
 import { MarketplaceModule } from '@/modules/marketplace/MarketplaceModule'
 import { ArmazemModule } from '@/modules/armazem/ArmazemModule'
+import { FarmSwitcher } from '@/modules/fazendas/components/FarmSwitcher'
+import { CreditoPill } from '@/modules/fazendas/components/CreditoPill'
 import { useFazendasStore } from '@/modules/fazendas/state/fazendasStore'
 import { t } from '@/design/tokens'
 import { cn } from '@/lib/cn'
@@ -61,7 +63,15 @@ export function ShellLayout() {
           <ShellHeader
             onConsultMode={isFazendas ? () => setView('gerencial') : undefined}
             consultActive={isFazendas && view === 'gerencial'}
-          />
+          >
+            {/* contexto do módulo dentro do gradiente (premium clean) */}
+            {isFazendas && (
+              <>
+                <FarmSwitcher />
+                <CreditoPill />
+              </>
+            )}
+          </ShellHeader>
           <ModuleSwitcher activeId={module.id} />
         </div>
 
@@ -71,23 +81,31 @@ export function ShellLayout() {
           </Banner>
         )}
 
-        <main className="no-scrollbar flex-1 overflow-y-auto">
-          {module.id === 'inicio' ? (
-            <HubModule />
-          ) : module.id === 'fazendas' ? (
-            <FazendasModule />
-          ) : module.id === 'bank' ? (
-            <BankModule />
-          ) : module.id === 'credito' ? (
-            <CreditoModule />
-          ) : module.id === 'marketplace' ? (
-            <MarketplaceModule />
-          ) : module.id === 'armazem' ? (
-            <ArmazemModule />
-          ) : (
-            <PlaceholderModule module={module} />
-          )}
-        </main>
+        {/* sheet claro com topo arredondado sobre o verde do header */}
+        <div className="min-h-0 flex-1" style={{ background: t.component.header.tabsBg }}>
+          <main
+            className={cn(
+              'no-scrollbar h-full overflow-y-auto',
+              !isFazendas && 'rounded-t-3xl bg-surface', // Fazendas monta o próprio sheet (barra de visão + sync)
+            )}
+          >
+            {module.id === 'inicio' ? (
+              <HubModule />
+            ) : module.id === 'fazendas' ? (
+              <FazendasModule />
+            ) : module.id === 'bank' ? (
+              <BankModule />
+            ) : module.id === 'credito' ? (
+              <CreditoModule />
+            ) : module.id === 'marketplace' ? (
+              <MarketplaceModule />
+            ) : module.id === 'armazem' ? (
+              <ArmazemModule />
+            ) : (
+              <PlaceholderModule module={module} />
+            )}
+          </main>
+        </div>
 
         <div className="shrink-0">
           <BottomTabBar module={module} />

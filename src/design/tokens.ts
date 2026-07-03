@@ -346,6 +346,11 @@ export const component = {
     to: '#0b5c47',
     tabsBg: '#065f46',
     wave: 'rgba(134,239,172,0.08)',
+    /** pílulas de contexto dentro do header (fazenda ativa, crédito) */
+    pillBg: 'rgba(255,255,255,0.09)',
+    pillBorder: 'rgba(255,255,255,0.16)',
+    creditBg: 'rgba(74,222,128,0.10)',
+    creditBorder: 'rgba(74,222,128,0.25)',
   },
   /** fundo levemente tintado para KPIs em cards claros */
   kpi: {
