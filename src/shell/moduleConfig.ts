@@ -18,6 +18,7 @@ import {
   ArrowLeftRight,
   ListOrdered,
   LayoutGrid,
+  Menu,
 } from 'lucide-react'
 
 /**
@@ -34,6 +35,8 @@ export interface BottomTab {
   path: string
   /** botão central elevado (ex.: "Registrar" em campo) */
   elevated?: boolean
+  /** ação especial em vez de navegação (ex.: 'menu' abre o RevealMenu global) */
+  action?: 'menu'
 }
 
 export interface ModuleDef {
@@ -58,6 +61,7 @@ export const MODULES: ModuleDef[] = [
       { id: 'home', label: 'Início', icon: Home, path: '' },
       { id: 'apps', label: 'Apps', icon: LayoutGrid, path: 'apps' },
       { id: 'carteira', label: 'Carteira', icon: Wallet, path: 'carteira' },
+      { id: 'menu', label: 'Menu', icon: Menu, path: 'menu', action: 'menu' },
     ],
   },
   {
@@ -70,7 +74,7 @@ export const MODULES: ModuleDef[] = [
       { id: 'fazendas', label: 'Fazendas', icon: Sprout, path: 'fazendas' },
       { id: 'atividades', label: 'Atividades', icon: Activity, path: 'atividades' },
       { id: 'financeiro', label: 'Financeiro', icon: Wallet, path: 'financeiro' },
-      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais' },
+      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
     ],
   },
   {
@@ -84,7 +88,7 @@ export const MODULES: ModuleDef[] = [
       { id: 'extrato', label: 'Extrato', icon: Receipt, path: 'extrato' },
       { id: 'pagamentos', label: 'Pagamentos', icon: ArrowLeftRight, path: 'pagamentos' },
       { id: 'cartoes', label: 'Cartões', icon: CreditCard, path: 'cartoes' },
-      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais' },
+      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
     ],
   },
   {
@@ -97,7 +101,7 @@ export const MODULES: ModuleDef[] = [
       { id: 'inicio', label: 'Início', icon: Home, path: '' },
       { id: 'propostas', label: 'Minhas Propostas', icon: FileText, path: 'propostas' },
       { id: 'simular', label: 'Simular', icon: Calculator, path: 'simular' },
-      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais' },
+      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
     ],
   },
   {
@@ -110,7 +114,7 @@ export const MODULES: ModuleDef[] = [
       { id: 'inicio', label: 'Início', icon: Home, path: '' },
       { id: 'categorias', label: 'Categorias', icon: ListOrdered, path: 'categorias' },
       { id: 'pedidos', label: 'Pedidos', icon: Receipt, path: 'pedidos' },
-      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais' },
+      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
     ],
   },
   {
@@ -123,7 +127,7 @@ export const MODULES: ModuleDef[] = [
       { id: 'inicio', label: 'Início', icon: Home, path: '' },
       { id: 'estoque', label: 'Estoque', icon: Boxes, path: 'estoque' },
       { id: 'movimentacoes', label: 'Movimentações', icon: ArrowLeftRight, path: 'movimentacoes' },
-      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais' },
+      { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
     ],
   },
 ]

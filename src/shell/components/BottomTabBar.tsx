@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import type { ModuleDef } from '@/shell/moduleConfig'
+import { useShellStore } from '@/shell/state/shellStore'
 import { cn } from '@/lib/cn'
 
 /**
@@ -9,6 +10,8 @@ import { cn } from '@/lib/cn'
 export function BottomTabBar({ module }: { module: ModuleDef }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const menuOpen = useShellStore((s) => s.menuOpen)
+  const openMenu = useShellStore((s) => s.openMenu)
 
   // sub-path atual dentro do módulo (ex.: /fazendas/atividades → "atividades")
   const rest = location.pathname.replace(new RegExp(`^/${module.id}/?`), '')
@@ -24,6 +27,25 @@ export function BottomTabBar({ module }: { module: ModuleDef }) {
         const active = tab.path === activePath
         const Icon = tab.icon
         const target = tab.path ? `/${module.id}/${tab.path}` : `/${module.id}`
+
+        // aba de ação: abre o RevealMenu global em vez de navegar
+        if (tab.action === 'menu') {
+          return (
+            <button
+              key={tab.id}
+              onClick={openMenu}
+              aria-haspopup="dialog"
+              aria-expanded={menuOpen}
+              className={cn(
+                'flex flex-1 flex-col items-center justify-center gap-1 transition-colors',
+                menuOpen ? 'text-accent' : 'text-fg-subtle hover:text-fg-muted',
+              )}
+            >
+              <Icon size={22} strokeWidth={menuOpen ? 2.4 : 1.8} />
+              <span className="text-[10px] font-semibold leading-none">{tab.label}</span>
+            </button>
+          )
+        }
 
         if (tab.elevated) {
           return (

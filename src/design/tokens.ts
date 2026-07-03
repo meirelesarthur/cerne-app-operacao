@@ -331,6 +331,14 @@ export const component = {
     },
     glassBlur: '14px',
   },
+  /** menu "reveal" global (aba Mais/Menu): app encolhe à esquerda, menu escuro desliza da direita */
+  revealMenu: {
+    appScale: 0.78,
+    appShiftX: '-58%',
+    menuWidth: '78%',
+    bg: '#081a12',
+    itemStagger: '30ms',
+  },
 } as const
 
 /* ------------------------------------------------------------------ *

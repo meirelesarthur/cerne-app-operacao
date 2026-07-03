@@ -53,6 +53,14 @@ export default {
         brand: shadow.brand,
       },
       maxWidth: { phone: '420px' },
+      transitionDuration: {
+        spring: animation.duration.slower,
+        slow: animation.duration.slow,
+      },
+      transitionTimingFunction: {
+        spring: animation.easing.spring,
+        out: animation.easing.out,
+      },
       keyframes: {
         rise: {
           from: { opacity: '0', transform: `translateY(${space[3]})` },

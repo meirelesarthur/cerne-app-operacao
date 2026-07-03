@@ -27,11 +27,16 @@ interface ShellState {
   isOnline: boolean
   /** privacidade do Banking no hub — oculta saldo/valores em todas as telas do Início. */
   balanceHidden: boolean
+  /** menu "reveal" global (aba Mais/Menu) — spec do superapp. */
+  menuOpen: boolean
   setOnline: (v: boolean) => void
   toggleOnline: () => void
   toggleBalanceHidden: () => void
   markAllRead: () => void
   unreadCount: () => number
+  openMenu: () => void
+  closeMenu: () => void
+  toggleMenu: () => void
 }
 
 const MOCK_NOTIFICATIONS: AppNotification[] = [
@@ -46,9 +51,13 @@ export const useShellStore = create<ShellState>((set, get) => ({
   notifications: MOCK_NOTIFICATIONS,
   isOnline: true,
   balanceHidden: false,
+  menuOpen: false,
   setOnline: (v) => set({ isOnline: v }),
   toggleOnline: () => set((s) => ({ isOnline: !s.isOnline })),
   toggleBalanceHidden: () => set((s) => ({ balanceHidden: !s.balanceHidden })),
   markAllRead: () => set((s) => ({ notifications: s.notifications.map((n) => ({ ...n, read: true })) })),
   unreadCount: () => get().notifications.filter((n) => !n.read).length,
+  openMenu: () => set({ menuOpen: true }),
+  closeMenu: () => set({ menuOpen: false }),
+  toggleMenu: () => set((s) => ({ menuOpen: !s.menuOpen })),
 }))

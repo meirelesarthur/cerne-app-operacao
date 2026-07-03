@@ -129,6 +129,13 @@ const dtcg = {
       glass: mapColors(component.hub.glass),
       glassBlur: dimension(component.hub.glassBlur),
     },
+    revealMenu: {
+      appScale: number(component.revealMenu.appScale),
+      appShiftX: dimension(component.revealMenu.appShiftX),
+      menuWidth: dimension(component.revealMenu.menuWidth),
+      bg: color(component.revealMenu.bg),
+      itemStagger: duration(component.revealMenu.itemStagger),
+    },
   },
 } as const
 
