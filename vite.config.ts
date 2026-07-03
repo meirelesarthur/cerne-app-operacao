@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5173,
+    // respeita a porta atribuída pelo harness de preview (PORT); fallback 5173
+    port: Number(process.env.PORT) || 5173,
   },
 })
