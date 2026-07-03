@@ -19,6 +19,11 @@ import {
   ListOrdered,
   LayoutGrid,
   Menu,
+  Beef,
+  Package,
+  Users,
+  Search,
+  RefreshCw,
 } from 'lucide-react'
 
 /**
@@ -39,6 +44,19 @@ export interface BottomTab {
   action?: 'menu'
 }
 
+export interface ModuleMenuItem {
+  id: string
+  label: string
+  icon: LucideIcon
+  /** rota absoluta do destino */
+  route: string
+}
+
+export interface ModuleMenuSection {
+  title: string
+  items: ModuleMenuItem[]
+}
+
 export interface ModuleDef {
   id: string
   label: string
@@ -48,6 +66,24 @@ export interface ModuleDef {
   bottomTabs: BottomTab[]
   /** módulo-casca (placeholder) x módulo completo */
   placeholder?: boolean
+  /**
+   * funcionalidades exibidas no RevealMenu (aba Mais) — contextuais ao módulo.
+   * Quando ausente, o menu deriva uma seção única das bottomTabs navegáveis.
+   */
+  menuSections?: ModuleMenuSection[]
+}
+
+/** Fallback do RevealMenu: seção única derivada das abas navegáveis do módulo. */
+export function getMenuSections(module: ModuleDef): ModuleMenuSection[] {
+  if (module.menuSections) return module.menuSections
+  return [
+    {
+      title: 'Funcionalidades',
+      items: module.bottomTabs
+        .filter((tab) => tab.path !== '' && !tab.action)
+        .map((tab) => ({ id: tab.id, label: tab.label, icon: tab.icon, route: `/${module.id}/${tab.path}` })),
+    },
+  ]
 }
 
 export const MODULES: ModuleDef[] = [
@@ -75,6 +111,27 @@ export const MODULES: ModuleDef[] = [
       { id: 'atividades', label: 'Atividades', icon: Activity, path: 'atividades' },
       { id: 'financeiro', label: 'Financeiro', icon: Wallet, path: 'financeiro' },
       { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
+    ],
+    menuSections: [
+      {
+        title: 'Dashboards gerenciais',
+        items: [
+          { id: 'financeiro', label: 'Financeiro', icon: Wallet, route: '/fazendas/dashboards/financeiro' },
+          { id: 'pecuaria', label: 'Pecuária de Corte', icon: Beef, route: '/fazendas/dashboards/pecuaria' },
+          { id: 'confinamento', label: 'Lotação de Currais', icon: Warehouse, route: '/fazendas/dashboards/confinamento' },
+          { id: 'ativos', label: 'Ativos / Depreciação', icon: Package, route: '/fazendas/dashboards/ativos' },
+          { id: 'suprimentos', label: 'Suprimentos', icon: Boxes, route: '/fazendas/dashboards/suprimentos' },
+          { id: 'uso', label: 'Análise de Uso', icon: Users, route: '/fazendas/dashboards/uso' },
+          { id: 'consultas', label: 'Consultas Gerenciais', icon: Search, route: '/fazendas/dashboards/consultas' },
+        ],
+      },
+      {
+        title: 'Operacional',
+        items: [
+          { id: 'sync', label: 'Fila de sincronização', icon: RefreshCw, route: '/fazendas/mais/sync' },
+          { id: 'atividades', label: 'Todas as atividades', icon: Activity, route: '/fazendas/atividades' },
+        ],
+      },
     ],
   },
   {

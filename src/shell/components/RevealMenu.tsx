@@ -4,7 +4,7 @@ import { Bell, Settings, Moon, LogOut, ChevronRight } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { MenuItem } from '@/components/ui/MenuItem'
 import { Badge } from '@/components/ui/Badge'
-import { MODULES } from '@/shell/moduleConfig'
+import { getMenuSections, type ModuleDef } from '@/shell/moduleConfig'
 import { useShellStore } from '@/shell/state/shellStore'
 import { useTheme } from '@/context/ThemeContext'
 import { t } from '@/design/tokens'
@@ -17,10 +17,12 @@ const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${rm.itemStagger}
 
 /**
  * Painel do menu "reveal" global (New-UI): revelado à direita enquanto o app
- * encolhe para a esquerda. Navegação de módulos + conta + tema, tudo sobre
- * fundo escuro institucional. Fecha em Esc, ao navegar ou ao tocar no app.
+ * encolhe para a esquerda. Contextual ao módulo ativo — lista as demais
+ * funcionalidades do módulo (menuSections do moduleConfig, com fallback
+ * derivado das bottomTabs) + seção de conta. Fecha em Esc, ao navegar ou
+ * ao tocar no app.
  */
-export function RevealMenu() {
+export function RevealMenu({ module }: { module: ModuleDef }) {
   const navigate = useNavigate()
   const location = useLocation()
   const menuOpen = useShellStore((s) => s.menuOpen)
@@ -50,12 +52,18 @@ export function RevealMenu() {
   }
 
   const roleLabel = user.role === 'operador' ? 'Operador' : 'Administrador'
+  const sections = getMenuSections(module)
+  const ModuleIcon = module.icon
+
+  // índice corrido para o stagger atravessar seções de tamanhos variados
+  let idx = 0
+  const next = () => stagger(idx++)
 
   return (
     <aside
       role={menuOpen ? 'dialog' : undefined}
       aria-modal={menuOpen || undefined}
-      aria-label="Menu do superapp"
+      aria-label={`Menu do módulo ${module.label}`}
       aria-hidden={!menuOpen}
       className={cn(
         'no-scrollbar absolute inset-y-0 right-0 flex flex-col gap-1 overflow-y-auto px-4 py-6',
@@ -70,8 +78,8 @@ export function RevealMenu() {
           <button
             type="button"
             onClick={() => go('/perfil')}
-            className="animate-rise mb-4 flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/10"
-            style={stagger(0)}
+            className="animate-rise mb-3 flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/10"
+            style={next()}
           >
             <Avatar name={user.name} initials={user.initials} size="lg" />
             <span className="min-w-0 flex-1">
@@ -81,29 +89,41 @@ export function RevealMenu() {
             <ChevronRight size={18} className="shrink-0 text-white/40" aria-hidden="true" />
           </button>
 
-          {/* módulos do superapp */}
-          <p className="animate-rise px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-white/40" style={stagger(1)}>
-            Módulos
-          </p>
-          {MODULES.map((m, i) => (
-            <div key={m.id} className="animate-rise" style={stagger(2 + i)}>
-              <MenuItem
-                variant="onDark"
-                icon={m.icon}
-                label={m.label}
-                active={location.pathname.startsWith(m.homeRoute)}
-                onClick={() => go(m.homeRoute)}
-              />
+          {/* contexto do módulo ativo */}
+          <div className="animate-rise mb-2 flex items-center gap-2 px-3" style={next()}>
+            <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 text-white/80">
+              <ModuleIcon size={15} aria-hidden="true" />
+            </span>
+            <span className="text-sm font-semibold text-white/80">{module.label}</span>
+          </div>
+
+          {/* funcionalidades do módulo atual */}
+          {sections.map((section) => (
+            <div key={section.title} className="contents">
+              <p className="animate-rise px-3 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-white/40" style={next()}>
+                {section.title}
+              </p>
+              {section.items.map((item) => (
+                <div key={item.id} className="animate-rise" style={next()}>
+                  <MenuItem
+                    variant="onDark"
+                    icon={item.icon}
+                    label={item.label}
+                    active={location.pathname === item.route}
+                    onClick={() => go(item.route)}
+                  />
+                </div>
+              ))}
             </div>
           ))}
 
-          <div className="animate-rise my-3 border-t border-white/10" style={stagger(8)} aria-hidden="true" />
+          <div className="animate-rise my-3 border-t border-white/10" style={next()} aria-hidden="true" />
 
           {/* conta e preferências */}
-          <p className="animate-rise px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-white/40" style={stagger(8)}>
+          <p className="animate-rise px-3 pb-1 text-xs font-semibold uppercase tracking-wide text-white/40" style={next()}>
             Conta
           </p>
-          <div className="animate-rise" style={stagger(9)}>
+          <div className="animate-rise" style={next()}>
             <MenuItem
               variant="onDark"
               icon={Bell}
@@ -112,10 +132,10 @@ export function RevealMenu() {
               onClick={() => go('/notificacoes')}
             />
           </div>
-          <div className="animate-rise" style={stagger(10)}>
+          <div className="animate-rise" style={next()}>
             <MenuItem variant="onDark" icon={Settings} label="Configurações" onClick={() => go('/perfil')} />
           </div>
-          <div className="animate-rise" style={stagger(11)}>
+          <div className="animate-rise" style={next()}>
             <MenuItem
               variant="onDark"
               icon={Moon}
@@ -127,7 +147,7 @@ export function RevealMenu() {
           </div>
 
           <div className="mt-auto pt-4">
-            <div className="animate-rise" style={stagger(12)}>
+            <div className="animate-rise" style={next()}>
               <MenuItem variant="onDark" tone="danger" icon={LogOut} label="Sair" onClick={() => go('/login')} />
             </div>
           </div>

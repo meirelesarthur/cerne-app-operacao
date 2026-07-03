@@ -43,7 +43,7 @@ export function ShellLayout() {
 
   return (
     <div className="relative h-full overflow-hidden" style={{ background: menuOpen ? rm.bg : undefined }}>
-      <RevealMenu />
+      <RevealMenu module={module} />
 
       {/* o app inteiro — encolhe como cartão quando o menu abre */}
       <div
