@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Sprout, Tractor, FileText, Users, ArrowRight, HandCoins } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { Card, Button, Chip, SectionTitle } from '@/components/ui'
+import { Card, Button, Chip, SectionTitle, BottomSheet } from '@/components/ui'
 import type { ChipTone } from '@/components/ui'
 import { t } from '@/design/tokens'
 import {
@@ -12,6 +12,7 @@ import {
   PRAZOS_SIMULACAO,
   LINHAS,
   PROPOSTAS,
+  type LinhaCredito,
   type PropostaStatus,
 } from '../mocks/credito'
 
@@ -39,23 +40,35 @@ const STATUS_TONE: Record<PropostaStatus, ChipTone> = {
   contratada: 'blue',
 }
 
+export interface CreditoHomeProps {
+  /** Quando true (rota /credito/simular), rola automaticamente até o simulador ao montar. */
+  scrollToSimulador?: boolean
+}
+
 /**
  * Home do módulo Crédito: oferta pré-aprovada em destaque, simulador rápido
  * (valor × prazo → parcela estimada), linhas de crédito disponíveis e as
  * propostas mais recentes do produtor.
  */
-export function CreditoHome() {
+export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }: CreditoHomeProps = {}) {
   const navigate = useNavigate()
   const simuladorRef = useRef<HTMLDivElement>(null)
   const [valorSelecionado, setValorSelecionado] = useState<string>(VALORES_SIMULACAO[2])
   const [prazoSelecionado, setPrazoSelecionado] = useState<number>(PRAZOS_SIMULACAO[1])
+  const [linhaSelecionada, setLinhaSelecionada] = useState<LinhaCredito | null>(null)
 
   const opcaoAtual = SIMULACAO.find((s) => s.valor === valorSelecionado && s.prazo === prazoSelecionado)
   const linhaAtual = LINHAS.find((l) => l.id === 'custeio-safra')
 
-  const scrollToSimulador = () => {
+  const handleScrollToSimulador = () => {
     simuladorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
+
+  useEffect(() => {
+    if (autoScrollToSimulador) handleScrollToSimulador()
+    // roda apenas na montagem da rota /credito/simular
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -89,7 +102,7 @@ export function CreditoHome() {
           </p>
 
           <div className="relative mt-4">
-            <Button variant="secondary" onClick={scrollToSimulador}>
+            <Button variant="secondary" onClick={handleScrollToSimulador}>
               Simular agora
             </Button>
           </div>
@@ -145,7 +158,7 @@ export function CreditoHome() {
           {LINHAS.map((linha) => {
             const Icon = LINHA_ICONS[linha.id] ?? FileText
             return (
-              <Card key={linha.id} interactive onClick={() => navigate('/credito/propostas')}>
+              <Card key={linha.id} interactive onClick={() => setLinhaSelecionada(linha)}>
                 <div className="flex items-center gap-3">
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
                     <Icon size={22} aria-hidden="true" />
@@ -188,6 +201,32 @@ export function CreditoHome() {
           ))}
         </Card>
       </div>
+
+      <BottomSheet
+        open={!!linhaSelecionada}
+        onClose={() => setLinhaSelecionada(null)}
+        title={linhaSelecionada?.nome}
+      >
+        {linhaSelecionada && (
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <span className="text-fg-muted">Taxa</span>
+              <span className="font-semibold text-fg">{linhaSelecionada.taxa}</span>
+            </div>
+            <p className="text-sm text-fg-subtle">{linhaSelecionada.descricao}</p>
+            <Button
+              fullWidth
+              className="mt-2"
+              onClick={() => {
+                setLinhaSelecionada(null)
+                handleScrollToSimulador()
+              }}
+            >
+              Simular esta linha
+            </Button>
+          </div>
+        )}
+      </BottomSheet>
     </div>
   )
 }
