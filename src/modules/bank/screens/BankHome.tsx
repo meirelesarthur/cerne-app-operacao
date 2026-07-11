@@ -17,11 +17,10 @@ import { useShellStore } from '@/shell/state/shellStore'
 import { useSimulatedLoad } from '@/lib/useSimulatedLoad'
 import { t } from '@/design/tokens'
 import { SALDO, RESUMO_MES, TRANSACOES, CARTAO } from '@/modules/bank/mocks/banking'
+import { BankCardVisual } from '@/modules/bank/components/BankCardVisual'
 
 /** delay escalonado de entrada por seção (motion tokenizado, ver Lei 3) */
 const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
-
-const hubCard = t.component.hub.bankCard
 
 /**
  * Home do módulo GB Bank (New-UI): saldo, ações rápidas, cartão corporativo,
@@ -75,30 +74,8 @@ export function BankHome() {
       {/* Cartão corporativo */}
       <div className="animate-rise" style={stagger(2)}>
         <SectionTitle className="mb-2">Meu cartão</SectionTitle>
-        <Card padded={false} className="overflow-hidden">
-          <div
-            className="relative overflow-hidden p-5 text-white"
-            style={{ background: `linear-gradient(135deg, ${hubCard.from} 0%, ${hubCard.to} 100%)` }}
-          >
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-8 -top-14 h-40 w-40 rounded-full"
-              style={{ background: `radial-gradient(circle, ${hubCard.glow} 0%, transparent 70%)` }}
-            />
-            <div className="relative flex items-start justify-between">
-              <div>
-                <p className="text-xs font-medium" style={{ color: hubCard.fgMuted }}>
-                  {CARTAO.tipo}
-                </p>
-                <p className="mt-0.5 text-sm font-semibold">{CARTAO.titular}</p>
-              </div>
-              <span className="text-sm font-bold italic tracking-tight">{CARTAO.bandeira}</span>
-            </div>
-            <p className="relative mt-6 text-lg font-semibold tabular-nums tracking-widest">
-              •••• •••• •••• {CARTAO.final}
-            </p>
-          </div>
-
+        <Card padded={false} interactive onClick={() => navigate('/bank/cartoes')} className="overflow-hidden">
+          <BankCardVisual />
           <div className="p-4">
             <div className="flex items-center justify-between text-sm">
               <span className="text-fg-muted">Limite disponível</span>
