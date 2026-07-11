@@ -31,12 +31,14 @@ const LINHA_ICONS: Record<string, LucideIcon> = {
 const STATUS_LABEL: Record<PropostaStatus, string> = {
   analise: 'Em análise',
   aprovada: 'Aprovada',
+  recusada: 'Recusada',
   contratada: 'Contratada',
 }
 
 const STATUS_TONE: Record<PropostaStatus, ChipTone> = {
   analise: 'amber',
   aprovada: 'brand',
+  recusada: 'red',
   contratada: 'blue',
 }
 

@@ -71,7 +71,21 @@ export const LINHAS: LinhaCredito[] = [
   },
 ]
 
-export type PropostaStatus = 'analise' | 'aprovada' | 'contratada'
+export type PropostaStatus = 'analise' | 'aprovada' | 'recusada' | 'contratada'
+
+/** Documento exigido para análise da proposta. */
+export interface DocumentoProposta {
+  nome: string
+  enviado: boolean
+}
+
+/** Datas das etapas percorridas pela proposta — alimenta a timeline do detalhe. */
+export interface HistoricoProposta {
+  enviada: string
+  analise?: string
+  decisao?: string
+  contratada?: string
+}
 
 export interface Proposta {
   id: string
@@ -79,11 +93,107 @@ export interface Proposta {
   valor: string
   data: string
   status: PropostaStatus
+  prazo: number
+  taxa: string
+  historico: HistoricoProposta
+  documentos: DocumentoProposta[]
 }
 
 /** Propostas de crédito em andamento ou concluídas do produtor. */
 export const PROPOSTAS: Proposta[] = [
-  { id: 'prop1', linha: 'Custeio Safra 25/26', valor: 'R$ 250.000,00', data: '28/06', status: 'analise' },
-  { id: 'prop2', linha: 'Investimento — Máquinas', valor: 'R$ 180.000,00', data: '15/06', status: 'aprovada' },
-  { id: 'prop3', linha: 'CPR Financeira', valor: 'R$ 96.500,00', data: '02/05', status: 'contratada' },
+  {
+    id: 'prop1',
+    linha: 'Custeio Safra 25/26',
+    valor: 'R$ 250.000,00',
+    data: '28/06',
+    status: 'analise',
+    prazo: 12,
+    taxa: '1,29% a.m.',
+    historico: { enviada: '28/06', analise: '29/06' },
+    documentos: [
+      { nome: 'CPF/CNPJ', enviado: true },
+      { nome: 'Comprovante de renda', enviado: true },
+      { nome: 'Matrícula do imóvel rural', enviado: false },
+    ],
+  },
+  {
+    id: 'prop2',
+    linha: 'Investimento — Máquinas',
+    valor: 'R$ 180.000,00',
+    data: '15/06',
+    status: 'aprovada',
+    prazo: 24,
+    taxa: '1,45% a.m.',
+    historico: { enviada: '15/06', analise: '17/06', decisao: '20/06' },
+    documentos: [
+      { nome: 'CPF/CNPJ', enviado: true },
+      { nome: 'Comprovante de renda', enviado: true },
+      { nome: 'Nota fiscal proforma', enviado: true },
+    ],
+  },
+  {
+    id: 'prop3',
+    linha: 'CPR Financeira',
+    valor: 'R$ 96.500,00',
+    data: '02/05',
+    status: 'contratada',
+    prazo: 24,
+    taxa: '1,19% a.m.',
+    historico: { enviada: '02/05', analise: '04/05', decisao: '08/05', contratada: '12/05' },
+    documentos: [
+      { nome: 'CPF/CNPJ', enviado: true },
+      { nome: 'CPR assinada', enviado: true },
+      { nome: 'Comprovante de safra', enviado: true },
+    ],
+  },
+  {
+    id: 'prop4',
+    linha: 'Consórcio Agro',
+    valor: 'R$ 120.000,00',
+    data: '10/04',
+    status: 'recusada',
+    prazo: 36,
+    taxa: 'taxa adm 0,12% a.m.',
+    historico: { enviada: '10/04', analise: '12/04', decisao: '18/04' },
+    documentos: [
+      { nome: 'CPF/CNPJ', enviado: true },
+      { nome: 'Comprovante de renda', enviado: false },
+    ],
+  },
+]
+
+/** Contrato de crédito ativo — origem de uma proposta contratada. */
+export interface Contrato {
+  id: string
+  linha: string
+  valor: string
+  parcelasPagas: number
+  parcelasTotal: number
+  proximaParcela: string
+  vencimento: string
+  saldoDevedor: string
+}
+
+/** Contratos ativos do produtor (parcelas pré-computadas — ver nota acima). */
+export const CONTRATOS: Contrato[] = [
+  {
+    id: 'contrato1',
+    linha: 'CPR Financeira',
+    valor: 'R$ 96.500,00',
+    parcelasPagas: 8,
+    parcelasTotal: 24,
+    proximaParcela: 'R$ 4.520,33',
+    vencimento: '05/08',
+    saldoDevedor: 'R$ 68.220,17',
+  },
+  {
+    id: 'contrato2',
+    linha: 'Custeio Safra 24/25',
+    valor: 'R$ 150.000,00',
+    parcelasPagas: 11,
+    parcelasTotal: 12,
+    proximaParcela: 'R$ 13.187,50',
+    vencimento: '20/07',
+    saldoDevedor: 'R$ 13.187,50',
+  },
 ]

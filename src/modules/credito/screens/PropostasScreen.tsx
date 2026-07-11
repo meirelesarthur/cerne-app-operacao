@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom'
+import { ArrowRight } from 'lucide-react'
 import { Heading, KpiStatCard, Card, Chip } from '@/components/ui'
 import type { ChipTone } from '@/components/ui'
 import { PROPOSTAS, type PropostaStatus } from '../mocks/credito'
@@ -5,12 +7,14 @@ import { PROPOSTAS, type PropostaStatus } from '../mocks/credito'
 const STATUS_LABEL: Record<PropostaStatus, string> = {
   analise: 'Em análise',
   aprovada: 'Aprovada',
+  recusada: 'Recusada',
   contratada: 'Contratada',
 }
 
 const STATUS_TONE: Record<PropostaStatus, ChipTone> = {
   analise: 'amber',
   aprovada: 'brand',
+  recusada: 'red',
   contratada: 'blue',
 }
 
@@ -24,6 +28,8 @@ const TOTAL_APROVADO = 'R$ 276.500,00'
  * listagem completa das propostas em andamento ou concluídas.
  */
 export function PropostasScreen() {
+  const navigate = useNavigate()
+
   return (
     <div className="flex flex-col gap-6 p-4">
       <Heading level={2}>Minhas propostas</Heading>
@@ -33,20 +39,23 @@ export function PropostasScreen() {
         <KpiStatCard label="Aprovado" value={TOTAL_APROVADO} tone="positive" />
       </div>
 
-      <Card padded={false} className="px-4">
+      <div className="flex flex-col gap-3">
         {PROPOSTAS.map((proposta) => (
-          <div key={proposta.id} className="flex items-center gap-3 border-b border-border-default py-3 last:border-0">
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-fg">{proposta.linha}</p>
-              <p className="mt-0.5 text-xs text-fg-muted">{proposta.data}</p>
+          <Card key={proposta.id} interactive onClick={() => navigate(`/credito/proposta/${proposta.id}`)}>
+            <div className="flex items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-fg">{proposta.linha}</p>
+                <p className="mt-0.5 text-xs text-fg-muted">{proposta.data}</p>
+              </div>
+              <div className="flex shrink-0 flex-col items-end gap-1">
+                <p className="text-sm font-semibold tabular-nums text-fg">{proposta.valor}</p>
+                <Chip tone={STATUS_TONE[proposta.status]}>{STATUS_LABEL[proposta.status]}</Chip>
+              </div>
+              <ArrowRight size={16} className="shrink-0 text-fg-subtle" aria-hidden="true" />
             </div>
-            <div className="flex shrink-0 flex-col items-end gap-1">
-              <p className="text-sm font-semibold tabular-nums text-fg">{proposta.valor}</p>
-              <Chip tone={STATUS_TONE[proposta.status]}>{STATUS_LABEL[proposta.status]}</Chip>
-            </div>
-          </div>
+          </Card>
         ))}
-      </Card>
+      </div>
     </div>
   )
 }
