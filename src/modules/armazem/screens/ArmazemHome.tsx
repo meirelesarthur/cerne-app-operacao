@@ -1,26 +1,28 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { TriangleAlert, ArrowDownLeft, ArrowUpRight, ShoppingBag, ArrowRight } from 'lucide-react'
-import { Card, Chip, Heading, KpiStatCard, ProgressBar, SectionTitle, Skeleton } from '@/components/ui'
+import { TriangleAlert, ShoppingBag, ArrowRight } from 'lucide-react'
+import { Card, Chip, Heading, KpiStatCard, SectionTitle, Skeleton, TransactionListItem } from '@/components/ui'
 import { useSimulatedLoad } from '@/lib/useSimulatedLoad'
 import { t } from '@/design/tokens'
-import { KPIS, UNIDADES, MOVIMENTACOES, ALERTAS, type UnidadeStatus } from '../mocks/estoque'
+import { KPIS, UNIDADES, MOVIMENTACOES, ALERTAS, type Unidade, type Movimentacao } from '../mocks/estoque'
+import { toTransactionItem } from '../lib/movimentacoes'
+import { UnidadeCard } from '../components/UnidadeCard'
+import { UnidadeDetailSheet } from '../components/UnidadeDetailSheet'
+import { MovimentacaoDetailSheet } from '../components/MovimentacaoDetailSheet'
 
 /** delay escalonado de entrada por seção (motion tokenizado, ver Lei 3) */
 const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
 
-const STATUS_CHIP: Record<UnidadeStatus, { tone: 'brand' | 'amber' | 'red'; label: string }> = {
-  ok: { tone: 'brand', label: 'Normal' },
-  atencao: { tone: 'amber', label: 'Atenção' },
-  critico: { tone: 'red', label: 'Crítico' },
-}
-
 /**
  * Home do módulo Armazém: ocupação e alertas em destaque, unidades de
- * armazenagem com nível de estoque e últimas movimentações físicas.
+ * armazenagem (cards interativos com detalhe) e últimas movimentações
+ * físicas (itens interativos com detalhe) — spec D2.
  */
 export function ArmazemHome() {
   const navigate = useNavigate()
   const loading = useSimulatedLoad(700) === 'loading'
+  const [selectedUnidade, setSelectedUnidade] = useState<Unidade | null>(null)
+  const [selectedMov, setSelectedMov] = useState<Movimentacao | null>(null)
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -66,69 +68,27 @@ export function ArmazemHome() {
         </Card>
       </div>
 
-      {/* Unidades de armazenagem */}
+      {/* Unidades de armazenagem — cards interativos, abrem detalhe da unidade */}
       <div className="animate-rise" style={stagger(2)}>
         <SectionTitle className="mb-2">Unidades de armazenagem</SectionTitle>
         <div className="flex flex-col gap-3">
-          {UNIDADES.map((unidade) => {
-            const chip = STATUS_CHIP[unidade.status]
-            return (
-              <Card key={unidade.id}>
-                <div className="flex items-center justify-between gap-2">
-                  <p className="truncate text-sm font-semibold text-fg">{unidade.nome}</p>
-                  <Chip tone={chip.tone} className="shrink-0">
-                    {chip.label}
-                  </Chip>
-                </div>
-                <p className="mt-0.5 text-xs text-fg-muted">
-                  {unidade.produto} · {unidade.capacidade}
-                </p>
-                <div className="mt-3 flex items-center gap-3">
-                  <ProgressBar value={unidade.ocupacaoPct} colorByOccupancy className="flex-1" />
-                  <span className="shrink-0 text-sm font-semibold tabular-nums text-fg">
-                    {unidade.ocupacaoPct}%
-                  </span>
-                </div>
-              </Card>
-            )
-          })}
+          {UNIDADES.map((unidade) => (
+            <UnidadeCard key={unidade.id} unidade={unidade} onClick={() => setSelectedUnidade(unidade)} />
+          ))}
         </div>
       </div>
 
-      {/* Movimentações recentes */}
+      {/* Movimentações recentes — itens interativos, abrem detalhe da movimentação */}
       <div className="animate-rise" style={stagger(3)}>
         <SectionTitle className="mb-2">Movimentações recentes</SectionTitle>
         <Card padded={false} className="px-4">
-          {MOVIMENTACOES.map((mov) => {
-            const isEntrada = mov.tipo === 'entrada'
-            return (
-              <div
-                key={mov.id}
-                className="flex items-center gap-3 border-b border-border-default py-3 last:border-0"
-              >
-                <span
-                  className={
-                    isEntrada
-                      ? 'flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent'
-                      : 'flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-subtle text-fg-muted'
-                  }
-                  aria-hidden="true"
-                >
-                  {isEntrada ? <ArrowDownLeft size={18} /> : <ArrowUpRight size={18} />}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-fg">{mov.item}</p>
-                  <p className="truncate text-xs text-fg-muted">{mov.origem}</p>
-                </div>
-                <div className="shrink-0 text-right">
-                  <p className={isEntrada ? 'text-sm font-bold tabular-nums text-accent' : 'text-sm font-bold tabular-nums text-fg'}>
-                    {mov.quantidade}
-                  </p>
-                  <p className="text-xs text-fg-subtle">{mov.tempo}</p>
-                </div>
-              </div>
-            )
-          })}
+          {MOVIMENTACOES.map((mov) => (
+            <TransactionListItem
+              key={mov.id}
+              transaction={toTransactionItem(mov)}
+              onClick={() => setSelectedMov(mov)}
+            />
+          ))}
         </Card>
       </div>
 
@@ -147,6 +107,9 @@ export function ArmazemHome() {
           </div>
         </Card>
       </div>
+
+      <UnidadeDetailSheet unidade={selectedUnidade} onClose={() => setSelectedUnidade(null)} />
+      <MovimentacaoDetailSheet movimentacao={selectedMov} onClose={() => setSelectedMov(null)} />
     </div>
   )
 }
