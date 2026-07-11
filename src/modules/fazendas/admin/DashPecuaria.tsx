@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import { Wallet, Package, Beef, HeartPulse, Baby } from 'lucide-react'
 import { DashboardCard } from '@/components/ui/DashboardCard'
 import { SectionTitle } from '@/components/ui/Heading'
 import { ActivityListItem } from '../components/ActivityListItem'
+import { ActivityDetailSheet } from '../components/ActivityDetailSheet'
 import { DashboardScreen } from './DashboardScreen'
 import { PECUARIA } from '../mocks/dashboards'
 import { ATIVIDADES } from '../mocks/atividades'
+import type { Activity } from '../types'
 
 const ICONS = [Wallet, Package, Beef]
 
@@ -13,6 +16,8 @@ const ICONS = [Wallet, Package, Beef]
  * Bloco Financeiro ativo; bloco Produtivo/Reprodutivo DESATIVADO (LACUNA no legado, §7.2).
  */
 export function DashPecuaria() {
+  const [selected, setSelected] = useState<Activity | null>(null)
+
   return (
     <DashboardScreen title="Pecuária de Corte">
       <SectionTitle className="mb-2">Financeiro</SectionTitle>
@@ -43,9 +48,11 @@ export function DashPecuaria() {
         {ATIVIDADES.filter((a) => ['pesagem', 'evento', 'venda'].includes(a.kind))
           .slice(0, 4)
           .map((a) => (
-            <ActivityListItem key={a.id} activity={a} />
+            <ActivityListItem key={a.id} activity={a} onClick={() => setSelected(a)} />
           ))}
       </div>
+
+      <ActivityDetailSheet activity={selected} onClose={() => setSelected(null)} />
     </DashboardScreen>
   )
 }

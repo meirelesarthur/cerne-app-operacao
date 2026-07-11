@@ -3,7 +3,8 @@ import type { LucideIcon } from 'lucide-react'
 import { Chip, type ChipTone } from '@/components/ui/Chip'
 import type { Activity, ActivityStatus } from '../types'
 
-const KIND_ICON: Record<Activity['kind'], LucideIcon> = {
+/** Ícone por tipo de atividade — fonte única, reutilizado no ActivityDetailSheet (Lei 2). */
+export const KIND_ICON: Record<Activity['kind'], LucideIcon> = {
   pesagem: Scale,
   evento: ArrowLeftRight,
   nfe: FileText,
@@ -12,7 +13,8 @@ const KIND_ICON: Record<Activity['kind'], LucideIcon> = {
   arracoamento: Wheat,
 }
 
-const STATUS_META: Record<ActivityStatus, { label: string; tone: ChipTone }> = {
+/** Rótulo + tom de status — fonte única, reutilizado no ActivityDetailSheet (Lei 2). */
+export const STATUS_META: Record<ActivityStatus, { label: string; tone: ChipTone }> = {
   andamento: { label: 'Em andamento', tone: 'blue' },
   concluida: { label: 'Concluída', tone: 'brand' },
   autorizada: { label: 'Autorizada', tone: 'brand' },

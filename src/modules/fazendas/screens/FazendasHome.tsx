@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Wallet,
@@ -22,9 +23,11 @@ import { BentoTile } from '@/components/ui/BentoTile'
 import { ShortcutGrid, type Shortcut } from '../components/ShortcutGrid'
 import { ContextBadge } from '../components/ContextBadge'
 import { ActivityListItem } from '../components/ActivityListItem'
+import { ActivityDetailSheet } from '../components/ActivityDetailSheet'
 import { CreditoBanner } from '../components/CreditoBanner'
 import { useFazendasStore } from '../state/fazendasStore'
 import { ATIVIDADES } from '../mocks/atividades'
+import type { Activity } from '../types'
 import { t } from '@/design/tokens'
 
 /** delay escalonado de entrada por tile (motion tokenizado, ver Lei 3) */
@@ -42,6 +45,8 @@ export function FazendasHome() {
 }
 
 function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
+  const [selected, setSelected] = useState<Activity | null>(null)
+
   const adminShortcuts: Shortcut[] = [
     { id: 'financeiro', label: 'Financeiro', icon: Wallet, tone: 'brand', onClick: () => navigate('/fazendas/dashboards/financeiro') },
     { id: 'pecuaria', label: 'Pecuária', icon: Beef, tone: 'blue', onClick: () => navigate('/fazendas/dashboards/pecuaria') },
@@ -78,10 +83,12 @@ function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> 
         </div>
         <div className="rounded-2xl border border-border-default bg-surface px-3">
           {ATIVIDADES.slice(0, 4).map((a) => (
-            <ActivityListItem key={a.id} activity={a} />
+            <ActivityListItem key={a.id} activity={a} onClick={() => setSelected(a)} />
           ))}
         </div>
       </div>
+
+      <ActivityDetailSheet activity={selected} onClose={() => setSelected(null)} />
     </div>
   )
 }
