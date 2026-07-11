@@ -3,6 +3,7 @@ import { Construction } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
 import { BankHome } from './screens/BankHome'
 import { ExtratoScreen } from './screens/ExtratoScreen'
+import { BankMaisScreen } from './screens/BankMaisScreen'
 
 /**
  * Módulo GB Bank (New-UI): home investor-ready com saldo, ações rápidas,
@@ -36,16 +37,39 @@ export function BankModule() {
         }
       />
       <Route
-        path="mais"
+        path="pix"
         element={
           <EmptyState
             icon={Construction}
-            title="Bank · Mais"
+            title="Bank · Pix"
             description="Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase."
             className="h-full justify-center"
           />
         }
       />
+      <Route
+        path="limites"
+        element={
+          <EmptyState
+            icon={Construction}
+            title="Bank · Limites"
+            description="Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase."
+            className="h-full justify-center"
+          />
+        }
+      />
+      <Route
+        path="ajuda"
+        element={
+          <EmptyState
+            icon={Construction}
+            title="Bank · Ajuda"
+            description="Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase."
+            className="h-full justify-center"
+          />
+        }
+      />
+      <Route path="mais" element={<BankMaisScreen />} />
       <Route path="*" element={<Navigate to="/bank" replace />} />
     </Routes>
   )

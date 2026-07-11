@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { Construction } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
 import { ArmazemHome } from './screens/ArmazemHome'
+import { ArmazemMaisScreen } from './screens/ArmazemMaisScreen'
 
 /**
  * Módulo Armazém: home operacional completa + demais abas em desenvolvimento
@@ -24,9 +25,14 @@ export function ArmazemModule() {
         }
       />
       <Route
-        path="mais"
-        element={<EmptyState icon={Construction} title="Armazém · Mais" className="h-full justify-center" />}
+        path="unidades"
+        element={<EmptyState icon={Construction} title="Armazém · Unidades" className="h-full justify-center" />}
       />
+      <Route
+        path="relatorios"
+        element={<EmptyState icon={Construction} title="Armazém · Relatórios" className="h-full justify-center" />}
+      />
+      <Route path="mais" element={<ArmazemMaisScreen />} />
       <Route path="*" element={<Navigate to="/armazem" replace />} />
     </Routes>
   )
