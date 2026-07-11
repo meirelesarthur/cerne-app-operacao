@@ -73,29 +73,30 @@ Bank: `pagamentos`, `cartoes`, `mais` · Crédito: `mais` · Marketplace: `categ
 Marcação `[x]` a cada etapa concluída, com o commit correspondente (Conventional Commits, Lei 4).
 Um commit por unidade lógica. Push somente sob demanda.
 
-### Fase A — Quick wins (elimina a sensação de "app quebrado")  ⬜
+### Fase A — Quick wins (elimina a sensação de "app quebrado")  ✅
 Baixo esforço, alto impacto. Nenhuma tela nova de conteúdo — plugar navegação e reaproveitar estado.
 
-- [ ] **A1.** Fila de sincronização real (`/fazendas/mais/sync`) consumindo `fazendasStore.syncQueue`
-  (estado já existe) — substituir `EmSection` por lista de itens com status. `feat: tela de fila de sync`
-- [ ] **A2.** Deep-link de notificação: `onClick` no item de `Notificacoes.tsx` navegando ao `moduleId`
-  de origem. `feat: notificacao navega para o modulo de origem`
-- [ ] **A3.** Back no Onboarding: adicionar `SubPageHeader` (ou botão voltar) rumo ao Login.
-  `fix: onboarding sem saida de volta`
-- [ ] **A4.** "Mais" decente nos 4 módulos-casca: substituir `EmptyState` cru pelo padrão do
-  `MaisScreen` de Fazendas (lista de links). `feat: telas Mais dos modulos casca`
-- [ ] **A5.** Corrigir destinos enganosos: `Simular` (Crédito) e cards que caem em lugar genérico —
-  ao menos apontar para placeholder honesto até a tela real existir (Fase C/D). `fix: destinos de navegacao enganosos`
-- [ ] **A6.** Limpeza de dead code: remover/reconectar `PlaceholderModule` e o campo `placeholder`.
-  `refactor: remove modulo placeholder orfao`
+- [x] **A1.** Fila de sincronização real (`/fazendas/mais/sync`) consumindo `fazendasStore.syncQueue`
+  (estado já existe) — substituir `EmSection` por lista de itens com status. — `9d56023`
+- [x] **A2.** Deep-link de notificação: `onClick` no item de `Notificacoes.tsx` navegando ao `moduleId`
+  de origem. — `2a825ea`
+- [x] **A3.** Back no Onboarding: `IconButton` de voltar rumo ao Login (SubPageHeader destoaria do
+  layout full-bleed). — `d572084`
+- [x] **A4.** "Mais" decente nos 4 módulos-casca: padrão do `MaisScreen` de Fazendas + rotas
+  auxiliares (pix, limites, contratos, favoritos, unidades, relatórios, ajuda). — `2f58d16`
+- [x] **A5.** Destinos enganosos: `Simular` rola ao simulador (`scrollToSimulador`); cards de produto
+  e de linha de crédito abrem `BottomSheet` honesto com dados do mock. — `772d226`
+- [x] **A6.** Limpeza de dead code: `PlaceholderModule` deletado, fallback `Navigate /inicio`,
+  campo `placeholder` removido do `ModuleDef`. — `b54878c`
 
-### Fase B — Telas de detalhe reaproveitáveis (maior alavancagem)  ⬜
+### Fase B — Telas de detalhe reaproveitáveis (maior alavancagem)  ✅
 Cada uma destrava vários becos de uma vez.
 
-- [ ] **B1.** **Detalhe de Atividade** — tela/`BottomSheet` acionada por `ActivityListItem`; ligar
-  `onClick` nos 3 pontos de uso (FazendasHome, AtividadesScreen, DashPecuaria). `feat: detalhe de atividade`
-- [ ] **B2.** **Detalhe de Transação** — tela/`BottomSheet` acionada por `TransactionListItem`; ligar
-  `onClick` nos 4 pontos de uso (HubHome, Carteira, BankHome, Extrato). `feat: detalhe de transacao`
+- [x] **B1.** **Detalhe de Atividade** — `ActivityDetailSheet` reutilizando `KIND_ICON`/`STATUS_META`
+  da lista (Lei 2); `onClick` nos 3 pontos de uso (FazendasHome, AtividadesScreen, DashPecuaria). — `5db1c10`
+- [x] **B2.** **Detalhe de Transação** — `TransactionDetailSheet` no catálogo `ui/` (comprovante com
+  direção acessível, `tabular-nums`, prop `hidden` p/ `balanceHidden`, ID de operação com copiar);
+  `onClick` nos 4 pontos de uso (HubHome, Carteira, BankHome, Extrato). — `291e99c`
 
 ### Fase C — Módulo Bank (o placeholder mais "pisado")  ⬜
 `Bank › Pagamentos` recebe o tráfego de 8 `QuickAction` (Pix/Pagar/Transferir/Cobrar).
