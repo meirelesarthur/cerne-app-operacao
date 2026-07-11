@@ -7,7 +7,6 @@ import { BottomTabBar } from '@/shell/components/BottomTabBar'
 import { RevealMenu } from '@/shell/components/RevealMenu'
 import { Banner } from '@/components/ui/Banner'
 import { useShellStore } from '@/shell/state/shellStore'
-import { PlaceholderModule } from '@/modules/PlaceholderModule'
 import { HubModule } from '@/modules/hub/HubModule'
 import { FazendasModule } from '@/modules/fazendas/FazendasModule'
 import { BankModule } from '@/modules/bank/BankModule'
@@ -102,7 +101,7 @@ export function ShellLayout() {
             ) : module.id === 'armazem' ? (
               <ArmazemModule />
             ) : (
-              <PlaceholderModule module={module} />
+              <Navigate to="/inicio" replace />
             )}
           </main>
         </div>

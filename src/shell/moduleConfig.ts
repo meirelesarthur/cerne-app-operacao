@@ -64,8 +64,6 @@ export interface ModuleDef {
   /** rota inicial absoluta do módulo */
   homeRoute: string
   bottomTabs: BottomTab[]
-  /** módulo-casca (placeholder) x módulo completo */
-  placeholder?: boolean
   /**
    * funcionalidades exibidas no RevealMenu (aba Mais) — contextuais ao módulo.
    * Quando ausente, o menu deriva uma seção única das bottomTabs navegáveis.
@@ -139,7 +137,6 @@ export const MODULES: ModuleDef[] = [
     label: 'Bank',
     icon: Landmark,
     homeRoute: '/bank',
-    placeholder: true,
     bottomTabs: [
       { id: 'inicio', label: 'Início', icon: Home, path: '' },
       { id: 'extrato', label: 'Extrato', icon: Receipt, path: 'extrato' },
@@ -153,7 +150,6 @@ export const MODULES: ModuleDef[] = [
     label: 'Crédito',
     icon: HandCoins,
     homeRoute: '/credito',
-    placeholder: true,
     bottomTabs: [
       { id: 'inicio', label: 'Início', icon: Home, path: '' },
       { id: 'propostas', label: 'Minhas Propostas', icon: FileText, path: 'propostas' },
@@ -166,7 +162,6 @@ export const MODULES: ModuleDef[] = [
     label: 'Marketplace',
     icon: ShoppingBag,
     homeRoute: '/marketplace',
-    placeholder: true,
     bottomTabs: [
       { id: 'inicio', label: 'Início', icon: Home, path: '' },
       { id: 'categorias', label: 'Categorias', icon: ListOrdered, path: 'categorias' },
@@ -179,7 +174,6 @@ export const MODULES: ModuleDef[] = [
     label: 'Armazém',
     icon: Warehouse,
     homeRoute: '/armazem',
-    placeholder: true,
     bottomTabs: [
       { id: 'inicio', label: 'Início', icon: Home, path: '' },
       { id: 'estoque', label: 'Estoque', icon: Boxes, path: 'estoque' },
