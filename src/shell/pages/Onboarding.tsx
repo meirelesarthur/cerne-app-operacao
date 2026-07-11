@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom'
-import { Sprout, Landmark, HandCoins, ShoppingBag } from 'lucide-react'
+import { Sprout, Landmark, HandCoins, ShoppingBag, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Heading } from '@/components/ui/Heading'
+import { IconButton } from '@/components/ui/IconButton'
 
 const HIGHLIGHTS = [
   { icon: Sprout, title: 'Fazendas', desc: 'Dashboards gerenciais e lançamentos de campo.' },
@@ -17,7 +18,13 @@ export function Onboarding() {
 
   return (
     <div className="flex h-full flex-col bg-canvas px-6 py-8">
-      <Heading level={2}>Um app, vários módulos</Heading>
+      <IconButton label="Voltar para o login" className="self-start" onClick={() => navigate('/login')}>
+        <ArrowLeft size={20} />
+      </IconButton>
+
+      <Heading level={2} className="mt-4">
+        Um app, vários módulos
+      </Heading>
       <p className="mt-1 text-md text-fg-muted">Cada módulo é um app da empresa, agora unificado.</p>
 
       <div className="mt-6 flex flex-1 flex-col gap-3">
