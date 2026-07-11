@@ -3,6 +3,10 @@ import { Construction } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
 import { MarketplaceHome } from './screens/MarketplaceHome'
 import { MarketplaceMaisScreen } from './screens/MarketplaceMaisScreen'
+import { ProdutoDetalhe } from './screens/ProdutoDetalhe'
+import { MarketplaceCategorias } from './screens/MarketplaceCategorias'
+import { MarketplacePedidos } from './screens/MarketplacePedidos'
+import { MarketplaceFavoritos } from './screens/MarketplaceFavoritos'
 
 /**
  * Módulo Marketplace (New-UI): home com busca, categorias e ofertas de insumos.
@@ -12,39 +16,10 @@ export function MarketplaceModule() {
   return (
     <Routes>
       <Route index element={<MarketplaceHome />} />
-      <Route
-        path="categorias"
-        element={
-          <EmptyState
-            icon={Construction}
-            title="Marketplace · Categorias"
-            description="Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase."
-            className="h-full justify-center"
-          />
-        }
-      />
-      <Route
-        path="pedidos"
-        element={
-          <EmptyState
-            icon={Construction}
-            title="Marketplace · Pedidos"
-            description="Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase."
-            className="h-full justify-center"
-          />
-        }
-      />
-      <Route
-        path="favoritos"
-        element={
-          <EmptyState
-            icon={Construction}
-            title="Marketplace · Favoritos"
-            description="Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase."
-            className="h-full justify-center"
-          />
-        }
-      />
+      <Route path="produto/:id" element={<ProdutoDetalhe />} />
+      <Route path="categorias" element={<MarketplaceCategorias />} />
+      <Route path="pedidos" element={<MarketplacePedidos />} />
+      <Route path="favoritos" element={<MarketplaceFavoritos />} />
       <Route
         path="ajuda"
         element={

@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Search, SearchX, Truck, Construction } from 'lucide-react'
-import { Card, Chip, Tag, Button, TextInput, EmptyState, Skeleton, BottomSheet } from '@/components/ui'
+import { useLocation, useNavigate } from 'react-router-dom'
+import { Search, SearchX, Truck } from 'lucide-react'
+import { Card, Chip, Tag, Button, TextInput, EmptyState, Skeleton } from '@/components/ui'
 import { useSimulatedLoad } from '@/lib/useSimulatedLoad'
 import { t } from '@/design/tokens'
-import { CATEGORIAS, PRODUTOS, OFERTA_DESTAQUE, type Produto } from '../mocks/produtos'
+import { CATEGORIAS, PRODUTOS, OFERTA_DESTAQUE } from '../mocks/produtos'
 
 /** delay escalonado de entrada por seção (motion tokenizado, ver Lei 3) */
 const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
@@ -15,10 +15,12 @@ const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.sta
  */
 export function MarketplaceHome() {
   const navigate = useNavigate()
+  const location = useLocation()
   const loading = useSimulatedLoad(700) === 'loading'
   const [busca, setBusca] = useState('')
-  const [categoriaAtiva, setCategoriaAtiva] = useState<string | null>(null)
-  const [produtoSelecionado, setProdutoSelecionado] = useState<Produto | null>(null)
+  const [categoriaAtiva, setCategoriaAtiva] = useState<string | null>(
+    () => (location.state as { categoriaId?: string } | null)?.categoriaId ?? null,
+  )
 
   const produtosFiltrados = useMemo(() => {
     const termo = busca.trim().toLowerCase()
@@ -129,7 +131,11 @@ export function MarketplaceHome() {
               const categoria = CATEGORIAS.find((c) => c.id === produto.categoriaId)
               const Icon = categoria?.icon
               return (
-                <Card key={produto.id} interactive onClick={() => setProdutoSelecionado(produto)}>
+                <Card
+                  key={produto.id}
+                  interactive
+                  onClick={() => navigate(`/marketplace/produto/${produto.id}`)}
+                >
                   <div className="flex h-20 items-center justify-center rounded-xl bg-accent-subtle text-accent">
                     {Icon && <Icon size={28} aria-hidden="true" />}
                   </div>
@@ -155,31 +161,6 @@ export function MarketplaceHome() {
           </div>
         )}
       </div>
-
-      <BottomSheet
-        open={!!produtoSelecionado}
-        onClose={() => setProdutoSelecionado(null)}
-        title={produtoSelecionado?.nome}
-      >
-        {produtoSelecionado && (
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-fg-muted">Vendedor</span>
-              <span className="font-semibold text-fg">{produtoSelecionado.vendedor}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-fg-muted">Preço</span>
-              <span className="font-semibold tabular-nums text-fg">
-                {produtoSelecionado.preco}{' '}
-                <span className="text-xs font-normal text-fg-muted">/{produtoSelecionado.unidade}</span>
-              </span>
-            </div>
-            <Chip tone="amber" icon={<Construction size={12} aria-hidden="true" />} className="w-fit">
-              Página do produto em desenvolvimento
-            </Chip>
-          </div>
-        )}
-      </BottomSheet>
     </div>
   )
 }
