@@ -49,21 +49,27 @@ export const CURRAIS: Curral[] = [
 ]
 
 /* ---- Ativos / Depreciação (§4.5) ---- */
+export type AtivoEstado = 'ativo' | 'manutencao'
 export interface Ativo {
   id: string
   nome: string
   categoria: string
+  /** ano de aquisição do ativo. */
+  ano: number
   aquisicao: string
   depreciado: number
+  /** valor residual estimado (aquisição − depreciação acumulada). */
+  valorResidual: string
   proximaManutencao: string
+  estado: AtivoEstado
 }
 export const ATIVOS: Ativo[] = [
-  { id: 'at1', nome: 'Trator John Deere 6110', categoria: 'Máquinas', aquisicao: 'R$ 380 mil', depreciado: 45, proximaManutencao: '15/07' },
-  { id: 'at2', nome: 'Colheitadeira CR7', categoria: 'Máquinas', aquisicao: 'R$ 620 mil', depreciado: 30, proximaManutencao: '02/08' },
-  { id: 'at3', nome: 'Caminhão Boiadeiro', categoria: 'Veículos', aquisicao: 'R$ 240 mil', depreciado: 68, proximaManutencao: '20/07' },
-  { id: 'at4', nome: 'Balança de Curral', categoria: 'Equipamentos', aquisicao: 'R$ 45 mil', depreciado: 20, proximaManutencao: '10/09' },
-  { id: 'at5', nome: 'Pivô de Irrigação', categoria: 'Infraestrutura', aquisicao: 'R$ 310 mil', depreciado: 55, proximaManutencao: '28/08' },
-  { id: 'at6', nome: 'Pulverizador Autopropelido', categoria: 'Máquinas', aquisicao: 'R$ 290 mil', depreciado: 38, proximaManutencao: '05/08' },
+  { id: 'at1', nome: 'Trator John Deere 6110', categoria: 'Máquinas', ano: 2021, aquisicao: 'R$ 380 mil', depreciado: 45, valorResidual: 'R$ 209 mil', proximaManutencao: '15/07', estado: 'ativo' },
+  { id: 'at2', nome: 'Colheitadeira CR7', categoria: 'Máquinas', ano: 2022, aquisicao: 'R$ 620 mil', depreciado: 30, valorResidual: 'R$ 434 mil', proximaManutencao: '02/08', estado: 'ativo' },
+  { id: 'at3', nome: 'Caminhão Boiadeiro', categoria: 'Veículos', ano: 2020, aquisicao: 'R$ 240 mil', depreciado: 68, valorResidual: 'R$ 77 mil', proximaManutencao: '20/07', estado: 'manutencao' },
+  { id: 'at4', nome: 'Balança de Curral', categoria: 'Equipamentos', ano: 2023, aquisicao: 'R$ 45 mil', depreciado: 20, valorResidual: 'R$ 36 mil', proximaManutencao: '10/09', estado: 'ativo' },
+  { id: 'at5', nome: 'Pivô de Irrigação', categoria: 'Infraestrutura', ano: 2019, aquisicao: 'R$ 310 mil', depreciado: 55, valorResidual: 'R$ 140 mil', proximaManutencao: '28/08', estado: 'manutencao' },
+  { id: 'at6', nome: 'Pulverizador Autopropelido', categoria: 'Máquinas', ano: 2022, aquisicao: 'R$ 290 mil', depreciado: 38, valorResidual: 'R$ 180 mil', proximaManutencao: '05/08', estado: 'ativo' },
 ]
 export const ATIVOS_RESUMO = { total: 'R$ 1,88 mi', depreciacao: 'R$ 720 mil', liquido: 'R$ 1,16 mi' }
 
@@ -72,18 +78,108 @@ export type CotacaoStatus = 'cotacao' | 'aprovada' | 'recusada'
 export interface Cotacao {
   id: string
   fornecedor: string
+  /** produto/serviço cotado — usado no cabeçalho do detalhe. */
+  produto: string
   tipo: 'Produto' | 'Serviço' | 'Frete' | 'Manutenção'
   total: string
   itens: number
   status: CotacaoStatus
+  /** unidade de referência do preço unitário (ex.: "saca 40kg", "hora técnica"). */
+  unidade: string
+  /** preço unitário vigente, já formatado (tabular-nums na exibição). */
+  precoAtual: string
+  /** variação percentual frente à cotação anterior; positivo = alta, negativo = queda. */
+  variacao: number
+  /** validade da cotação atual. */
+  validade: string
+  /** mini-histórico de preço unitário (3 pontos, mais recente por último). */
+  historico: number[]
 }
 export const COTACOES: Cotacao[] = [
-  { id: 'q1', fornecedor: 'Agropecuária Vale', tipo: 'Produto', total: 'R$ 48.900', itens: 12, status: 'aprovada' },
-  { id: 'q2', fornecedor: 'Nutrição Total', tipo: 'Produto', total: 'R$ 132.400', itens: 8, status: 'cotacao' },
-  { id: 'q3', fornecedor: 'TransBoi Logística', tipo: 'Frete', total: 'R$ 22.100', itens: 3, status: 'cotacao' },
-  { id: 'q4', fornecedor: 'MecAgro Serviços', tipo: 'Manutenção', total: 'R$ 15.700', itens: 5, status: 'recusada' },
-  { id: 'q5', fornecedor: 'Veterinária Campo', tipo: 'Serviço', total: 'R$ 9.300', itens: 4, status: 'aprovada' },
-  { id: 'q6', fornecedor: 'Sementes Sul', tipo: 'Produto', total: 'R$ 61.200', itens: 15, status: 'cotacao' },
+  {
+    id: 'q1',
+    fornecedor: 'Agropecuária Vale',
+    produto: 'Ração Confinamento',
+    tipo: 'Produto',
+    total: 'R$ 48.900',
+    itens: 12,
+    status: 'aprovada',
+    unidade: 'saca 40kg',
+    precoAtual: 'R$ 118,50',
+    variacao: -2.4,
+    validade: '18/07',
+    historico: [124, 121, 118.5],
+  },
+  {
+    id: 'q2',
+    fornecedor: 'Nutrição Total',
+    produto: 'Sal Mineral',
+    tipo: 'Produto',
+    total: 'R$ 132.400',
+    itens: 8,
+    status: 'cotacao',
+    unidade: 'saca 25kg',
+    precoAtual: 'R$ 62,90',
+    variacao: 1.8,
+    validade: '22/07',
+    historico: [60.4, 61.8, 62.9],
+  },
+  {
+    id: 'q3',
+    fornecedor: 'TransBoi Logística',
+    produto: 'Frete Rodoviário',
+    tipo: 'Frete',
+    total: 'R$ 22.100',
+    itens: 3,
+    status: 'cotacao',
+    unidade: 'km rodado',
+    precoAtual: 'R$ 4,35',
+    variacao: 3.1,
+    validade: '15/07',
+    historico: [4.05, 4.2, 4.35],
+  },
+  {
+    id: 'q4',
+    fornecedor: 'MecAgro Serviços',
+    produto: 'Revisão Hidráulica',
+    tipo: 'Manutenção',
+    total: 'R$ 15.700',
+    itens: 5,
+    status: 'recusada',
+    unidade: 'hora técnica',
+    precoAtual: 'R$ 185,00',
+    variacao: -5.6,
+    validade: '10/07',
+    historico: [205, 196, 185],
+  },
+  {
+    id: 'q5',
+    fornecedor: 'Veterinária Campo',
+    produto: 'Vacina Aftosa (aplicação)',
+    tipo: 'Serviço',
+    total: 'R$ 9.300',
+    itens: 4,
+    status: 'aprovada',
+    unidade: 'dose',
+    precoAtual: 'R$ 7,80',
+    variacao: 0.9,
+    validade: '30/07',
+    historico: [7.6, 7.7, 7.8],
+  },
+  {
+    id: 'q6',
+    fornecedor: 'Sementes Sul',
+    produto: 'Semente Braquiária',
+    tipo: 'Produto',
+    total: 'R$ 61.200',
+    itens: 15,
+    status: 'cotacao',
+    unidade: 'kg',
+    precoAtual: 'R$ 24,60',
+    variacao: -3.5,
+    validade: '25/07',
+    historico: [26.1, 25.2, 24.6],
+  },
 ]
 
 /* ---- Análise de Uso (§4.6) ---- */
