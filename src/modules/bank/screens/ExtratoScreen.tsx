@@ -1,6 +1,14 @@
 import { useState } from 'react'
 import { Inbox } from 'lucide-react'
-import { Heading, Button, Card, EmptyState, TransactionListItem } from '@/components/ui'
+import {
+  Heading,
+  Button,
+  Card,
+  EmptyState,
+  TransactionListItem,
+  TransactionDetailSheet,
+  type TransactionItem,
+} from '@/components/ui'
 import { useShellStore } from '@/shell/state/shellStore'
 import { SALDO, TRANSACOES } from '@/modules/bank/mocks/banking'
 
@@ -12,6 +20,7 @@ type Filtro = 'tudo' | 'in' | 'out'
  */
 export function ExtratoScreen() {
   const [filtro, setFiltro] = useState<Filtro>('tudo')
+  const [selected, setSelected] = useState<TransactionItem | null>(null)
   const balanceHidden = useShellStore((s) => s.balanceHidden)
 
   const transacoesFiltradas = TRANSACOES.filter((tx) => filtro === 'tudo' || tx.direction === filtro)
@@ -47,10 +56,12 @@ export function ExtratoScreen() {
       ) : (
         <Card padded={false} className="px-4">
           {transacoesFiltradas.map((tx) => (
-            <TransactionListItem key={tx.id} transaction={tx} />
+            <TransactionListItem key={tx.id} transaction={tx} onClick={() => setSelected(tx)} />
           ))}
         </Card>
       )}
+
+      <TransactionDetailSheet transaction={selected} onClose={() => setSelected(null)} hidden={balanceHidden} />
     </div>
   )
 }

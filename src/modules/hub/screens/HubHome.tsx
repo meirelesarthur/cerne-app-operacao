@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Zap, ScanLine, ArrowLeftRight, Receipt, ArrowRight, ArrowDownLeft, ArrowUpRight, HandCoins } from 'lucide-react'
 import {
@@ -6,6 +7,8 @@ import {
   QuickAction,
   MiniAppTile,
   TransactionListItem,
+  TransactionDetailSheet,
+  type TransactionItem,
   Card,
   Button,
   Chip,
@@ -30,6 +33,7 @@ export function HubHome() {
   const loading = useSimulatedLoad(700) === 'loading'
   const balanceHidden = useShellStore((s) => s.balanceHidden)
   const toggleBalanceHidden = useShellStore((s) => s.toggleBalanceHidden)
+  const [selected, setSelected] = useState<TransactionItem | null>(null)
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -120,10 +124,12 @@ export function HubHome() {
         </div>
         <Card padded={false} className="px-4">
           {TRANSACOES.slice(0, 3).map((tx) => (
-            <TransactionListItem key={tx.id} transaction={tx} />
+            <TransactionListItem key={tx.id} transaction={tx} onClick={() => setSelected(tx)} />
           ))}
         </Card>
       </div>
+
+      <TransactionDetailSheet transaction={selected} onClose={() => setSelected(null)} hidden={balanceHidden} />
     </div>
   )
 }

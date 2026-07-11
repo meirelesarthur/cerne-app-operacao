@@ -1,9 +1,12 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Landmark, ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 import {
   BalanceCard,
   BalanceSummaryItem,
   TransactionListItem,
+  TransactionDetailSheet,
+  type TransactionItem,
   KpiStatCard,
   Card,
   Button,
@@ -27,6 +30,7 @@ export function CarteiraScreen() {
   const loading = useSimulatedLoad(700) === 'loading'
   const balanceHidden = useShellStore((s) => s.balanceHidden)
   const toggleBalanceHidden = useShellStore((s) => s.toggleBalanceHidden)
+  const [selected, setSelected] = useState<TransactionItem | null>(null)
 
   return (
     <div className="flex flex-col gap-5 p-4">
@@ -70,10 +74,12 @@ export function CarteiraScreen() {
         <SectionTitle className="mb-2">Movimentações recentes</SectionTitle>
         <Card padded={false} className="px-4">
           {TRANSACOES.map((tx) => (
-            <TransactionListItem key={tx.id} transaction={tx} />
+            <TransactionListItem key={tx.id} transaction={tx} onClick={() => setSelected(tx)} />
           ))}
         </Card>
       </div>
+
+      <TransactionDetailSheet transaction={selected} onClose={() => setSelected(null)} hidden={balanceHidden} />
 
       <div className="animate-rise" style={stagger(4)}>
         <Button fullWidth size="lg" leftIcon={<Landmark size={18} />} onClick={() => navigate('/bank')}>

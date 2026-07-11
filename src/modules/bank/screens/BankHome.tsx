@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Zap, ScanLine, ArrowLeftRight, HandCoins, ArrowDownLeft, ArrowUpRight, ArrowRight, TrendingUp } from 'lucide-react'
 import {
@@ -9,6 +10,8 @@ import {
   ProgressBar,
   SectionTitle,
   TransactionListItem,
+  TransactionDetailSheet,
+  type TransactionItem,
 } from '@/components/ui'
 import { useShellStore } from '@/shell/state/shellStore'
 import { useSimulatedLoad } from '@/lib/useSimulatedLoad'
@@ -30,6 +33,7 @@ export function BankHome() {
   const loading = useSimulatedLoad(700) === 'loading'
   const balanceHidden = useShellStore((s) => s.balanceHidden)
   const toggleBalanceHidden = useShellStore((s) => s.toggleBalanceHidden)
+  const [selected, setSelected] = useState<TransactionItem | null>(null)
 
   return (
     <div className="flex flex-col gap-6 p-4">
@@ -128,13 +132,15 @@ export function BankHome() {
         <SectionTitle className="mb-2">Últimas movimentações</SectionTitle>
         <Card padded={false} className="px-4">
           {TRANSACOES.slice(0, 3).map((tx) => (
-            <TransactionListItem key={tx.id} transaction={tx} />
+            <TransactionListItem key={tx.id} transaction={tx} onClick={() => setSelected(tx)} />
           ))}
         </Card>
         <Button variant="ghost" fullWidth className="mt-2" onClick={() => navigate('/bank/extrato')}>
           Ver extrato
         </Button>
       </div>
+
+      <TransactionDetailSheet transaction={selected} onClose={() => setSelected(null)} hidden={balanceHidden} />
     </div>
   )
 }
