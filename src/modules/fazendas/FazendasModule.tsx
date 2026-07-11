@@ -5,7 +5,7 @@ import { FazendasHome } from './screens/FazendasHome'
 import { AtividadesScreen } from './screens/AtividadesScreen'
 import { FarmListScreen } from './screens/FarmListScreen'
 import { MaisScreen } from './screens/MaisScreen'
-import { EmSection } from './screens/EmSection'
+import { SyncQueueScreen } from './screens/SyncQueueScreen'
 import { AdminDashboard } from './admin/AdminDashboard'
 import { DashFinanceiro } from './admin/DashFinanceiro'
 import { CampoFlow } from './operacional/CampoFlow'
@@ -29,7 +29,7 @@ export function FazendasModule() {
           <Route path="fazendas" element={<FarmListScreen />} />
           <Route path="financeiro" element={<DashFinanceiro />} />
           <Route path="mais" element={<MaisScreen />} />
-          <Route path="mais/sync" element={<EmSection title="Fila de sincronização" />} />
+          <Route path="mais/sync" element={<SyncQueueScreen />} />
           <Route path="dashboards/:dashId" element={<AdminDashboard />} />
           <Route path="campo/:flowId" element={<CampoFlow />} />
           <Route path="*" element={<Navigate to="/fazendas" replace />} />
