@@ -4,7 +4,6 @@ import { PropostasScreen } from './screens/PropostasScreen'
 import { PropostaDetalheScreen } from './screens/PropostaDetalheScreen'
 import { ContratosScreen } from './screens/ContratosScreen'
 import { AjudaScreen } from './screens/AjudaScreen'
-import { CreditoMaisScreen } from './screens/CreditoMaisScreen'
 
 /**
  * Módulo Crédito — oferta pré-aprovada, simulador rápido, linhas disponíveis
@@ -20,7 +19,6 @@ export function CreditoModule() {
       <Route path="simular" element={<CreditoHome scrollToSimulador />} />
       <Route path="contratos" element={<ContratosScreen />} />
       <Route path="ajuda" element={<AjudaScreen />} />
-      <Route path="mais" element={<CreditoMaisScreen />} />
       <Route path="*" element={<Navigate to="/credito" replace />} />
     </Routes>
   )

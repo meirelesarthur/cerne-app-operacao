@@ -24,6 +24,14 @@ import {
   Users,
   Search,
   RefreshCw,
+  Zap,
+  History,
+  SlidersHorizontal,
+  HelpCircle,
+  ClipboardList,
+  FileSignature,
+  Heart,
+  BarChart3,
 } from 'lucide-react'
 
 /**
@@ -144,6 +152,27 @@ export const MODULES: ModuleDef[] = [
       { id: 'cartoes', label: 'Cartões', icon: CreditCard, path: 'cartoes' },
       { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
     ],
+    menuSections: [
+      {
+        title: 'Pagamentos e transferências',
+        items: [
+          { id: 'pix', label: 'Pix', icon: Zap, route: '/bank/pix' },
+          { id: 'pagamentos', label: 'Pagamentos', icon: Receipt, route: '/bank/pagamentos' },
+          { id: 'extrato', label: 'Extrato', icon: History, route: '/bank/extrato' },
+        ],
+      },
+      {
+        title: 'Cartão',
+        items: [
+          { id: 'cartoes', label: 'Cartões', icon: CreditCard, route: '/bank/cartoes' },
+          { id: 'limites', label: 'Limites', icon: SlidersHorizontal, route: '/bank/limites' },
+        ],
+      },
+      {
+        title: 'Suporte',
+        items: [{ id: 'ajuda', label: 'Ajuda', icon: HelpCircle, route: '/bank/ajuda' }],
+      },
+    ],
   },
   {
     id: 'credito',
@@ -155,6 +184,20 @@ export const MODULES: ModuleDef[] = [
       { id: 'propostas', label: 'Minhas Propostas', icon: FileText, path: 'propostas' },
       { id: 'simular', label: 'Simular', icon: Calculator, path: 'simular' },
       { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
+    ],
+    menuSections: [
+      {
+        title: 'Crédito',
+        items: [
+          { id: 'simular', label: 'Simular', icon: Calculator, route: '/credito/simular' },
+          { id: 'propostas', label: 'Propostas', icon: ClipboardList, route: '/credito/propostas' },
+          { id: 'contratos', label: 'Contratos', icon: FileSignature, route: '/credito/contratos' },
+        ],
+      },
+      {
+        title: 'Suporte',
+        items: [{ id: 'ajuda', label: 'Ajuda', icon: HelpCircle, route: '/credito/ajuda' }],
+      },
     ],
   },
   {
@@ -168,6 +211,20 @@ export const MODULES: ModuleDef[] = [
       { id: 'pedidos', label: 'Pedidos', icon: Receipt, path: 'pedidos' },
       { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
     ],
+    menuSections: [
+      {
+        title: 'Compras',
+        items: [
+          { id: 'categorias', label: 'Categorias', icon: LayoutGrid, route: '/marketplace/categorias' },
+          { id: 'pedidos', label: 'Pedidos', icon: Package, route: '/marketplace/pedidos' },
+          { id: 'favoritos', label: 'Favoritos', icon: Heart, route: '/marketplace/favoritos' },
+        ],
+      },
+      {
+        title: 'Suporte',
+        items: [{ id: 'ajuda', label: 'Ajuda', icon: HelpCircle, route: '/marketplace/ajuda' }],
+      },
+    ],
   },
   {
     id: 'armazem',
@@ -179,6 +236,20 @@ export const MODULES: ModuleDef[] = [
       { id: 'estoque', label: 'Estoque', icon: Boxes, path: 'estoque' },
       { id: 'movimentacoes', label: 'Movimentações', icon: ArrowLeftRight, path: 'movimentacoes' },
       { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
+    ],
+    menuSections: [
+      {
+        title: 'Operação',
+        items: [
+          { id: 'estoque', label: 'Estoque', icon: Boxes, route: '/armazem/estoque' },
+          { id: 'movimentacoes', label: 'Movimentações', icon: ArrowLeftRight, route: '/armazem/movimentacoes' },
+          { id: 'unidades', label: 'Unidades', icon: Warehouse, route: '/armazem/unidades' },
+        ],
+      },
+      {
+        title: 'Gestão',
+        items: [{ id: 'relatorios', label: 'Relatórios', icon: BarChart3, route: '/armazem/relatorios' }],
+      },
     ],
   },
 ]

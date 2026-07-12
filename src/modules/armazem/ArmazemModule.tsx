@@ -4,7 +4,6 @@ import { EstoqueScreen } from './screens/EstoqueScreen'
 import { MovimentacoesScreen } from './screens/MovimentacoesScreen'
 import { UnidadesScreen } from './screens/UnidadesScreen'
 import { RelatoriosScreen } from './screens/RelatoriosScreen'
-import { ArmazemMaisScreen } from './screens/ArmazemMaisScreen'
 
 /**
  * Módulo Armazém: home operacional + abas de Estoque, Movimentações,
@@ -19,7 +18,6 @@ export function ArmazemModule() {
       <Route path="movimentacoes" element={<MovimentacoesScreen />} />
       <Route path="unidades" element={<UnidadesScreen />} />
       <Route path="relatorios" element={<RelatoriosScreen />} />
-      <Route path="mais" element={<ArmazemMaisScreen />} />
       <Route path="*" element={<Navigate to="/armazem" replace />} />
     </Routes>
   )

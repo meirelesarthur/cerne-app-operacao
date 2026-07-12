@@ -3,7 +3,6 @@ import { Construction } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
 import { BankHome } from './screens/BankHome'
 import { ExtratoScreen } from './screens/ExtratoScreen'
-import { BankMaisScreen } from './screens/BankMaisScreen'
 import { PagamentosScreen } from './screens/PagamentosScreen'
 import { CartoesScreen } from './screens/CartoesScreen'
 import { LimitesScreen } from './screens/LimitesScreen'
@@ -32,7 +31,6 @@ export function BankModule() {
           />
         }
       />
-      <Route path="mais" element={<BankMaisScreen />} />
       <Route path="*" element={<Navigate to="/bank" replace />} />
     </Routes>
   )

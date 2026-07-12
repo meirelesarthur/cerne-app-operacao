@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { Construction } from 'lucide-react'
 import { EmptyState } from '@/components/ui'
 import { MarketplaceHome } from './screens/MarketplaceHome'
-import { MarketplaceMaisScreen } from './screens/MarketplaceMaisScreen'
 import { ProdutoDetalhe } from './screens/ProdutoDetalhe'
 import { MarketplaceCategorias } from './screens/MarketplaceCategorias'
 import { MarketplacePedidos } from './screens/MarketplacePedidos'
@@ -31,7 +30,6 @@ export function MarketplaceModule() {
           />
         }
       />
-      <Route path="mais" element={<MarketplaceMaisScreen />} />
       <Route path="*" element={<Navigate to="/marketplace" replace />} />
     </Routes>
   )
