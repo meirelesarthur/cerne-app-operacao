@@ -78,3 +78,20 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Documentação inline (JSDoc) nos componentes e módulos
 - [x] `README.md` com stack, arquitetura, Leis, notas de handoff e **checklist de aceite §9**
 - ↪ Nota: Storybook/testes/Chakra fora do escopo (não exigidos pelo spec); IconButtons secundários do header a ~30px
+
+## Fase 8 — Navegabilidade total (PLANO-NAVEGABILIDADE.md)  ✅
+- [x] **A** Quick wins: fila de sync real (`9d56023`), deep-link de notificação (`2a825ea`),
+  back no Onboarding (`d572084`), telas "Mais" dos módulos-casca (`2f58d16`),
+  destinos enganosos (`772d226`), remoção do PlaceholderModule órfão (`b54878c`)
+- [x] **B** Detalhes reaproveitáveis: `ActivityDetailSheet` (`5db1c10`, 3 pontos de uso) e
+  `TransactionDetailSheet` (`291e99c`, 4 pontos de uso)
+- [x] **C** Bank: hub de Pagamentos com fluxo Pix completo + Cartões/Limites, novos
+  `SuccessPanel` e `ToggleSwitch` no catálogo (`b9ffc9d`)
+- [x] **D** Marketplace PDP/Categorias/Pedidos/Favoritos (`a3cde95`) · Armazém
+  Estoque/Movimentações/Unidades/Relatórios (`4eaa5aa`) · Crédito Proposta/Contratos/Ajuda
+  (`fe15cfd`) · detalhes de Ativo e Cotação (`69453c2`)
+- [x] **E** Varredura final: menuSections nos 4 módulos-casca destravando rotas órfãs e
+  removendo as `*MaisScreen` redundantes (`7fe3099`); verificação visual light/gbMode;
+  console limpo; `tsc -b --noEmit` sem erros
+- ↪ Placeholders honestos remanescentes (rotulados, por decisão): `/bank/ajuda`,
+  `/marketplace/ajuda`, mapa de localização em Consultas, segunda via/ajustar limite em Cartões

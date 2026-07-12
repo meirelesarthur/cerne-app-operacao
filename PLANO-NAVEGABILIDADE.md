@@ -98,24 +98,39 @@ Cada uma destrava vários becos de uma vez.
   direção acessível, `tabular-nums`, prop `hidden` p/ `balanceHidden`, ID de operação com copiar);
   `onClick` nos 4 pontos de uso (HubHome, Carteira, BankHome, Extrato). — `291e99c`
 
-### Fase C — Módulo Bank (o placeholder mais "pisado")  ⬜
+### Fase C — Módulo Bank (o placeholder mais "pisado")  ✅
 `Bank › Pagamentos` recebe o tráfego de 8 `QuickAction` (Pix/Pagar/Transferir/Cobrar).
 
-- [ ] **C1.** **Bank › Pagamentos** — hub de Pix/pagar/transferir/cobrar (mock navegável). `feat: bank pagamentos`
-- [ ] **C2.** **Bank › Cartões** — gestão do cartão; tornar o card "Meu cartão" da Home clicável para cá.
-  `feat: bank cartoes`
+- [x] **C1.** **Bank › Pagamentos** — hub com fluxo Pix completo (chave → valor → revisão → sucesso
+  via `SuccessPanel` novo em `ui/`), boleto/transferir/cobrar config-driven, deep-link `/bank/pix`. — `b9ffc9d`
+- [x] **C2.** **Bank › Cartões** — `CartoesScreen` com `BankCardVisual` (fonte única, Lei 2),
+  `ToggleSwitch` novo em `ui/`, `LimitesScreen`; card "Meu cartão" da Home clicável. — `b9ffc9d`
+  (commit único: `BankModule`/`banking.ts`/`index.ts` compartilham C1 e C2)
 
-### Fase D — Marketplace, Armazém, Crédito e detalhes secundários  ⬜
+### Fase D — Marketplace, Armazém, Crédito e detalhes secundários  ✅
 
-- [ ] **D1.** **Marketplace › PDP** (página de produto) + **Categorias** + **Pedidos**. `feat: marketplace pdp e abas`
-- [ ] **D2.** **Armazém › Estoque** + **Movimentações** + detalhe de unidade/movimentação. `feat: armazem estoque e movimentacoes`
-- [ ] **D3.** **Crédito › Detalhe de Linha** + **Detalhe de Proposta** + `Simular` real. `feat: credito detalhes`
-- [ ] **D4.** **Detalhe de Ativo** e **Detalhe de Cotação** (dashboards Fazendas). `feat: detalhes de ativo e cotacao`
+- [x] **D1.** **Marketplace › PDP** + **Categorias** (filtro via `location.state`) + **Pedidos** +
+  **Favoritos**; PDP substitui o BottomSheet paliativo da A5. — `a3cde95`
+- [x] **D2.** **Armazém › Estoque** (filtro `?unidade=`) + **Movimentações** + **Unidades** +
+  **Relatórios** + sheets de detalhe; Home sem becos. — `4eaa5aa`
+- [x] **D3.** **Crédito › Detalhe de Proposta** (timeline por status) + **Contratos** + **Ajuda**;
+  BottomSheet de linha da A5 mantido. — `fe15cfd`
+- [x] **D4.** **Detalhe de Ativo** e **Detalhe de Cotação** (dashboards Fazendas). — `69453c2`
 
-### Fase E — Fechamento  ⬜
-- [ ] **E1.** Varredura final de navegabilidade: nenhum elemento com aparência clicável sem destino.
-- [ ] **E2.** Verificação visual em tema `light` e `gbMode` das telas novas.
-- [ ] **E3.** Atualizar `ROADMAP.md` (Fase 8 — Navegabilidade) e este plano com os commits.
+### Fase E — Fechamento  ✅
+- [x] **E1.** Varredura final. **Achado não previsto:** a aba "Mais" dos 4 módulos-casca abre o
+  `RevealMenu` (`action: 'menu'`), que não conhecia as rotas novas — as 4 `*MaisScreen` da A4 e
+  4 rotas reais (`ajuda`, `favoritos`, `unidades`, `relatorios`) estavam órfãs de clique.
+  **Correção:** `menuSections` no `moduleConfig` (padrão Fazendas) + remoção das `*MaisScreen`
+  redundantes (fonte única, Lei 2). — `7fe3099`
+- [x] **E2.** Verificação visual light/gbMode (Bank Pagamentos/Pix/Cartões) — CSS vars propagando;
+  console sem erros.
+- [x] **E3.** `ROADMAP.md` Fase 8 + este plano atualizados; `CLAUDE.md` corrigido (stack, estrutura
+  e catálogo refletem o código real — antes listava componentes/pastas de outro projeto).
+
+**Placeholders honestos remanescentes (rotulados, por decisão de recorte):** `/bank/ajuda`,
+`/marketplace/ajuda`, mapa de localização em Consultas Gerenciais, segunda via/ajustar limite em
+Cartões. Nenhum elemento com aparência clicável fica sem destino.
 
 ---
 

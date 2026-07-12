@@ -39,31 +39,35 @@ Não spawne subagentes com `model: "opus"` — Opus já é você (o orquestrador
 
 - **React 18 + TypeScript** (strict mode)
 - **Vite 5** — build tool, dev server em `http://localhost:5173`
-- **Tailwind CSS 3** com tokens customizados (fonte Outfit, paleta emerald)
-- **Chakra UI 3** + Emotion (peer deps instalados)
-- **Storybook 10** em `http://localhost:6006`
-- **Vitest + Playwright** para testes
+- **Tailwind CSS 3** derivado dos tokens (fonte Outfit self-hospedada, paleta emerald)
+- **react-router-dom 6** (roteamento em 2 níveis `/:moduleId/*`) · **zustand 4** (estado)
+- **lucide-react** (ícones) · gráficos SVG próprios (sem lib de charting)
+- Fora do escopo atual: Chakra UI, Storybook e testes automatizados (não instalados)
 
 ## Comandos principais
 
 ```bash
-npm run dev        # Dev server → http://localhost:5173
-npm run storybook  # Storybook → http://localhost:6006
-npm run build      # Build de produção (TS check + Vite)
+npm run dev            # Dev server → http://localhost:5173
+npm run build          # Build de produção (TS check + Vite)
+npm run lint           # tsc -b --noEmit
+npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de src/design/tokens.ts
 ```
 
 ## Estrutura src/
 
-- `components/layout/` — AppLayout, Sidebar, Topbar, SecondaryNav
-- `components/ui/` — componentes reutilizáveis (Badge, FormField, DataTable…)
-- `components/*.stories.tsx` — stories do Storybook
+- `design/tokens.ts` — fonte única de tokens (Leis 3/5)
+- `styles/tokens.css` — CSS vars light/gbMode (`data-theme`)
+- `components/ui/` — catálogo de componentes (Lei 1)
+- `shell/` — ShellLayout, ShellHeader, ModuleSwitcher, BottomTabBar, RevealMenu, `moduleConfig.ts` (registro dos módulos + menuSections), shellStore, páginas do Shell
+- `modules/<nome>/` — feature-modules: `hub` (Início/Banking), `fazendas` (admin/ 7 dashboards + operacional/ 6 fluxos), `bank`, `credito`, `marketplace`, `armazem`
 
 ---
 
 ## Leis do Projeto
 
 Estas políticas são invioláveis e se aplicam a toda geração de código neste projeto.
-Referência visual completa: `UI_WEB_GUIDE.html` na raiz do projeto.
+Referências do projeto: `README.md` (arquitetura e checklist de aceite), `ROADMAP.md` (fases),
+`PLANO-NAVEGABILIDADE.md` (esteira de navegabilidade) e `docs/NEW_UI_SUPERAPP.md` (hub/Banking).
 
 ### Lei 1 — Component-First (Componentização Obrigatória)
 
@@ -73,7 +77,8 @@ Todo elemento visível na tela é um componente de `src/components/ui/`.
 
 - Ao criar uma nova tela, apenas **importar e chamar** componentes existentes
 - Se o componente necessário não existe no catálogo, criá-lo em `src/components/ui/` **antes** de usá-lo na tela
-- Catálogo atual: `Avatar`, `Badge`, `Breadcrumb`, `BulkActionBar`, `Button`, `Card`, `ChartCard`, `Checkbox`, `CollapsibleSection`, `ConfirmDialog`, `DataTable`, `Divider`, `DropdownMenu`, `EmptyState`, `FilterDrawer`, `FormField`, `FormPageHeader`, `FormSection`, `FormSelect`, `Heading`, `HeatmapChart`, `IconButton`, `KpiStatCard`, `ListToolbar`, `MapView`, `Modal`, `PageCard`, `PageContainer`, `PageHeader`, `Pagination`, `ProgressBar`, `SankeyFunnel`, `SearchSelect`, `SectionDividers`, `Skeleton`, `SortHeader`, `SparklineArea`, `Spinner`, `SSOButton`, `StepFooter`, `StepHeader`, `Stepper`, `TableToolbar` (exporta `TableSearchInput`, `FilterChip`, `FilterButton`), `Tabs`, `Tag`, `Toast` (`useToast`/`ToastContainer`), `ToggleSwitch`, `Tooltip`
+- Catálogo atual (fonte de verdade: `src/components/ui/index.ts`): `Avatar`, `Badge`, `BalanceCard` (+ `BalanceSummaryItem`), `Banner`, `BarChart`, `BentoTile`, `BottomSheet`, `Button`, `Card`, `ChartCard`, `Checkbox`, `Chip`, `DashboardCard`, `DonutChart`, `EmptyState`, `ErrorState`, `FileUpload`, `FormField`, `FormSelect`, `Heading` (+ `SectionTitle`), `IconButton`, `KpiStatCard`, `MenuItem`, `MiniAppTile`, `Modal`, `ProgressBar`, `QuickAction`, `SearchSelect`, `Skeleton` (+ `CardSkeleton`), `SparklineArea`, `Spinner`, `Stepper`, `SuccessPanel`, `Tag`, `TextInput`, `Textarea`, `ToggleSwitch`, `Tooltip`, `TransactionDetailSheet`, `TransactionListItem`
+- Ao citar um componente ausente dessa lista, confira o `index.ts` antes — este catálogo já esteve desatualizado (chegou a listar `DataTable`, `Tabs`, `Toast`, `CollapsibleSection` e outros que nunca existiram neste repo mobile-first)
 
 ### Lei 2 — Fonte Única de Verdade (Propagação Global)
 
