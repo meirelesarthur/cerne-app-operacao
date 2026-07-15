@@ -5,31 +5,30 @@ import { Button } from '@/components/ui/Button'
 import { Heading } from '@/components/ui/Heading'
 import { PageDots } from '@/components/ui/PageDots'
 import { IllustrationSlot } from '@/components/ui/IllustrationSlot'
+import onboard1 from '@/images/onboard1.png'
+import onboard2 from '@/images/onboard2.png'
+import onboard3 from '@/images/onboard3.png'
 
-/**
- * Slides do onboarding. Quando as ilustrações geradas ficarem prontas,
- * salve-as em `public/illustrations/` e aponte `image` para elas
- * (ex.: '/illustrations/onboarding-fazendas.png') — o layout não muda.
- */
+/** Slides do onboarding — ilustrações geradas em src/images (ícones ficam como fallback). */
 const SLIDES = [
   {
     id: 'fazendas',
     icon: Sprout,
-    image: undefined as string | undefined,
+    image: onboard1 as string | undefined,
     title: 'Sua fazenda na palma da mão',
     desc: 'Dashboards gerenciais e lançamentos de campo, mesmo sem sinal — tudo sincroniza quando a conexão volta.',
   },
   {
     id: 'bank',
     icon: Landmark,
-    image: undefined as string | undefined,
+    image: onboard2 as string | undefined,
     title: 'Banco e crédito do produtor',
     desc: 'Conta digital, Pix, pagamentos e crédito pré-aprovado para a safra, direto no app.',
   },
   {
     id: 'marketplace',
     icon: ShoppingBag,
-    image: undefined as string | undefined,
+    image: onboard3 as string | undefined,
     title: 'Compre, venda e armazene',
     desc: 'Marketplace de insumos e gestão do armazém integrados à operação, sem sair do superapp.',
   },
