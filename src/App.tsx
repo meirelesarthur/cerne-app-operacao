@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
 import { PhoneFrame } from './shell/components/PhoneFrame'
-import { DevToolbar } from './shell/components/DevToolbar'
 import { ShellLayout } from './shell/ShellLayout'
 import { Login } from './shell/pages/Login'
 import { Onboarding } from './shell/pages/Onboarding'
@@ -27,7 +26,6 @@ export function App() {
             <Route path="/" element={<Navigate to="/inicio" replace />} />
             <Route path="*" element={<Navigate to="/inicio" replace />} />
           </Routes>
-          <DevToolbar />
         </PhoneFrame>
       </BrowserRouter>
     </ThemeProvider>

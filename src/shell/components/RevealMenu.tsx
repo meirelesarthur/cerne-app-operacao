@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Bell, Settings, Moon, LogOut, ChevronRight } from 'lucide-react'
+import { Bell, Settings, Moon, LogOut, ChevronRight, Wifi, WifiOff } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { MenuItem } from '@/components/ui/MenuItem'
 import { Badge } from '@/components/ui/Badge'
@@ -30,6 +30,8 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
   const closeMenu = useShellStore((s) => s.closeMenu)
   const user = useShellStore((s) => s.user)
   const unread = useShellStore((s) => s.notifications.filter((n) => !n.read).length)
+  const isOnline = useShellStore((s) => s.isOnline)
+  const toggleOnline = useShellStore((s) => s.toggleOnline)
   const { isGbMode, toggle } = useTheme()
 
   // Esc fecha o menu enquanto aberto
@@ -152,6 +154,16 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
               description="Tema escuro para campo e baixa luz"
               trailing={<span className="text-xs font-semibold text-white/70">{isGbMode ? 'Ativo' : 'Inativo'}</span>}
               onClick={toggle}
+            />
+          </div>
+          <div className="animate-rise" style={next()}>
+            <MenuItem
+              variant="onDark"
+              icon={isOnline ? Wifi : WifiOff}
+              label="Conexão"
+              description="Simula a sincronização em campo sem sinal"
+              trailing={<span className="text-xs font-semibold text-white/70">{isOnline ? 'Online' : 'Offline'}</span>}
+              onClick={toggleOnline}
             />
           </div>
 
