@@ -47,7 +47,7 @@ const MOCK_NOTIFICATIONS: AppNotification[] = [
 ]
 
 export const useShellStore = create<ShellState>((set, get) => ({
-  user: { name: 'Arthur', initials: 'AM', role: 'ambos' },
+  user: { name: 'Silvio Ventura', initials: 'SV', role: 'ambos' },
   notifications: MOCK_NOTIFICATIONS,
   isOnline: true,
   balanceHidden: false,
