@@ -74,13 +74,16 @@ export function ShellLayout() {
           </Banner>
         )}
 
-        {/* sheet claro com topo arredondado sobre o verde do header */}
-        <div className="min-h-0 flex-1" style={{ background: t.component.header.tabsBg }}>
+        {/* Nova UI: conteúdo direto no canvas — cartões-cápsula flutuam sobre ele */}
+        <div className="min-h-0 flex-1">
           <main
-            className={cn(
-              'no-scrollbar h-full overflow-y-auto',
-              !isFazendas && 'rounded-t-3xl bg-surface', // Fazendas monta o próprio sheet (barra de visão + sync)
-            )}
+            className="no-scrollbar h-full overflow-y-auto"
+            style={
+              // folga para o conteúdo não terminar sob a tab bar flutuante
+              !isFazendas
+                ? { paddingBottom: `calc(${t.layout.tabBarClearance} + env(safe-area-inset-bottom))` }
+                : undefined
+            }
           >
             {module.id === 'inicio' ? (
               <HubModule />
@@ -100,9 +103,8 @@ export function ShellLayout() {
           </main>
         </div>
 
-        <div className="shrink-0">
-          <BottomTabBar module={module} />
-        </div>
+        {/* cápsula flutuante — posiciona-se sozinha sobre o conteúdo */}
+        <BottomTabBar module={module} />
 
         {/* com o menu aberto, tocar no app encolhido fecha o menu */}
         {menuOpen && (

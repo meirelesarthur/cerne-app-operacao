@@ -308,7 +308,14 @@ export const zIndex = {
 
 export const breakpoint = { xs: '360px', sm: '768px', md: '1024px', lg: '1280px', xl: '1920px' } as const
 
-export const layout = { headerH: '64px', moduleBarH: '48px', tabBarH: '64px', gutter: '16px' } as const
+export const layout = {
+  headerH: '64px',
+  moduleBarH: '48px',
+  tabBarH: '68px',
+  gutter: '16px',
+  /** folga inferior dos scrollers para o conteúdo não morrer sob a tab bar flutuante */
+  tabBarClearance: '104px',
+} as const
 
 // paleta categórica para gráficos SVG próprios
 export const chart = {

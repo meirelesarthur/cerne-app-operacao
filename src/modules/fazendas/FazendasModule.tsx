@@ -18,11 +18,14 @@ import { CampoFlow } from './operacional/CampoFlow'
  */
 export function FazendasModule() {
   return (
-    <div className="flex h-full flex-col" style={{ background: t.component.header.tabsBg }}>
+    <div className="flex h-full flex-col bg-canvas">
       {/* O switch Gerencial ⇄ Campo vive no menu "Mais" (RevealMenu) — interface limpa */}
       <SyncBanner />
 
-      <div className="no-scrollbar flex-1 overflow-y-auto rounded-t-3xl bg-surface">
+      <div
+        className="no-scrollbar flex-1 overflow-y-auto"
+        style={{ paddingBottom: `calc(${t.layout.tabBarClearance} + env(safe-area-inset-bottom))` }}
+      >
         <Routes>
           <Route index element={<FazendasHome />} />
           <Route path="atividades" element={<AtividadesScreen />} />
