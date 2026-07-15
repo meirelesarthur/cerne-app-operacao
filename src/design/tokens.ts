@@ -336,7 +336,7 @@ export const component = {
     appScale: 0.78,
     appShiftX: '-58%',
     menuWidth: '78%',
-    bg: '#081a12',
+    bg: '#0b2e1e', // verde floresta profundo — lê como verde, não preto (gbMode segue padrão)
     itemStagger: '30ms',
   },
   /** header global do Shell (premium clean): gradiente verde profundo + decoração de onda */
