@@ -29,7 +29,7 @@ export function ShellHeader({ onConsultMode, consultActive, children }: ShellHea
 
   return (
     <header
-      className="relative mb-[-18px] overflow-hidden px-4 pb-4 pt-4"
+      className="relative mb-[-18px] overflow-hidden px-4 pb-10 pt-4"
       style={{
         background: `linear-gradient(170deg, ${t.component.header.from} 0%, ${t.component.header.mid} 52%, ${t.component.header.to} 100%)`,
       }}
