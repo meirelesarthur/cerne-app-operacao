@@ -23,7 +23,8 @@ export function App() {
             <Route path="/notificacoes" element={<Notificacoes />} />
             <Route path="/perfil" element={<PerfilConfig />} />
             <Route path="/:moduleId/*" element={<ShellLayout />} />
-            <Route path="/" element={<Navigate to="/inicio" replace />} />
+            {/* fluxo do protótipo: raiz parte do onboarding → login → superapp */}
+            <Route path="/" element={<Navigate to="/onboarding" replace />} />
             <Route path="*" element={<Navigate to="/inicio" replace />} />
           </Routes>
         </PhoneFrame>
