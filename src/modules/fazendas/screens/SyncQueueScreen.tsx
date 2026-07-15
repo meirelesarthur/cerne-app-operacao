@@ -18,7 +18,7 @@ const KIND_ICON: Record<Activity['kind'], LucideIcon> = {
   arracoamento: Wheat,
 }
 
-/** Tela "Fila de sincronização" (spec §3.2/§6.9) — lista os lançamentos ainda não enviados ao servidor. */
+/** Tela "Fila de sincronizaÃ§Ã£o" (spec Â§3.2/Â§6.9) â€” lista os lanÃ§amentos ainda nÃ£o enviados ao servidor. */
 export function SyncQueueScreen() {
   const isOnline = useShellStore((s) => s.isOnline)
   const queue = useFazendasStore((s) => s.syncQueue)
@@ -26,11 +26,11 @@ export function SyncQueueScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <SubPageHeader title="Fila de sincronização" />
+      <SubPageHeader title="Fila de sincronizaÃ§Ã£o" />
 
       {queue.length > 0 && !isOnline && (
         <Banner tone="offline" icon={<CloudOff size={14} />}>
-          Sem conexão — os itens serão enviados automaticamente assim que a internet voltar.
+          Sem conexÃ£o â€” os itens serÃ£o enviados automaticamente assim que a internet voltar.
         </Banner>
       )}
 
@@ -38,8 +38,8 @@ export function SyncQueueScreen() {
         {queue.length === 0 ? (
           <EmptyState
             icon={Inbox}
-            title="Nenhum lançamento pendente"
-            description="Tudo o que foi registrado em campo já está sincronizado com o servidor."
+            title="Nenhum lanÃ§amento pendente"
+            description="Tudo o que foi registrado em campo jÃ¡ estÃ¡ sincronizado com o servidor."
             className="flex-1 justify-center"
           />
         ) : (
@@ -52,7 +52,7 @@ export function SyncQueueScreen() {
                     key={item.id}
                     className="flex items-center gap-3 border-b border-border-subtle py-3 last:border-b-0"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-subtle text-fg-muted">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-subtle text-fg-muted">
                       <Icon size={18} />
                     </span>
                     <div className="min-w-0 flex-1">

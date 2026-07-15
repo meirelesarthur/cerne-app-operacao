@@ -13,10 +13,10 @@ import { useShellStore } from '@/shell/state/shellStore'
 import { useFazendasStore } from '../state/fazendasStore'
 import { LOTES_OPCOES, COND_PAGAMENTO } from '../mocks/operacional'
 
-// contagem de cabeças por lote (mock) — usado para validar que a contagem bate (spec §5.5)
+// contagem de cabeÃ§as por lote (mock) â€” usado para validar que a contagem bate (spec Â§5.5)
 const LOTE_CABECAS: Record<string, number> = { l42: 128, l19: 96, l07: 150, l33: 64, l51: 110, l88: 82 }
 
-/** Venda de Animais (spec §5.5): mês congelado bloqueia edição; total > 0; contagem deve bater. */
+/** Venda de Animais (spec Â§5.5): mÃªs congelado bloqueia ediÃ§Ã£o; total > 0; contagem deve bater. */
 export function VendaFlow() {
   const isOnline = useShellStore((s) => s.isOnline)
   const enqueueSync = useFazendasStore((s) => s.enqueueSync)
@@ -41,24 +41,24 @@ export function VendaFlow() {
   }
 
   if (done) {
-    return <SuccessScreen title="Venda registrada" queued={done.queued} effects="Isso vai gerar NF-e + GTA e um título a receber." />
+    return <SuccessScreen title="Venda registrada" queued={done.queued} effects="Isso vai gerar NF-e + GTA e um tÃ­tulo a receber." />
   }
 
   return (
     <FlowShell title="Venda de animais" primaryLabel="Confirmar venda" onPrimary={confirmar} primaryDisabled={!valid}>
       <div className="flex flex-col gap-5">
-        {/* Demonstração de mês congelado — venda de mês fechado bloqueada para edição */}
+        {/* DemonstraÃ§Ã£o de mÃªs congelado â€” venda de mÃªs fechado bloqueada para ediÃ§Ã£o */}
         <div>
-          <SectionTitle className="mb-2">Mês anterior (fechado)</SectionTitle>
+          <SectionTitle className="mb-2">MÃªs anterior (fechado)</SectionTitle>
           <div className="flex items-center gap-3 rounded-xl border border-border-default bg-surface-subtle p-3 opacity-90">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-200 text-neutral-500">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-200 text-neutral-500">
               <Lock size={16} />
             </span>
             <div className="flex-1">
-              <p className="font-medium text-fg-muted">Venda #3382 · Frigorífico Central</p>
-              <p className="text-sm text-fg-subtle">Junho/2026 · R$ 420.000</p>
+              <p className="font-medium text-fg-muted">Venda #3382 Â· FrigorÃ­fico Central</p>
+              <p className="text-sm text-fg-subtle">Junho/2026 Â· R$ 420.000</p>
             </div>
-            <Tooltip content="Mês congelado — edição bloqueada">
+            <Tooltip content="MÃªs congelado â€” ediÃ§Ã£o bloqueada">
               <span className="text-fg-subtle">
                 <Lock size={16} />
               </span>
@@ -74,7 +74,7 @@ export function VendaFlow() {
         <FormField
           label="Quantidade de animais"
           required
-          error={!contagemBate ? `A contagem deve bater com o lote (${esperado} cabeças).` : undefined}
+          error={!contagemBate ? `A contagem deve bater com o lote (${esperado} cabeÃ§as).` : undefined}
         >
           <Stepper value={qtd} onChange={setQtd} min={0} max={esperado || 999} />
         </FormField>
@@ -83,7 +83,7 @@ export function VendaFlow() {
           <TextInput value={cliente} onChange={(e) => setCliente(e.target.value)} placeholder="Nome do comprador" />
         </FormField>
 
-        <FormField label="Condição de pagamento" required>
+        <FormField label="CondiÃ§Ã£o de pagamento" required>
           <FormSelect options={COND_PAGAMENTO} value={cond} onChange={(e) => setCond(e.target.value)} placeholder="Selecione" />
         </FormField>
 

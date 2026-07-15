@@ -16,7 +16,7 @@ import {
   type PropostaStatus,
 } from '../mocks/credito'
 
-/** delay escalonado de entrada por seção (motion tokenizado, ver Lei 3) */
+/** delay escalonado de entrada por seÃ§Ã£o (motion tokenizado, ver Lei 3) */
 const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
 
 const hub = t.component.hub.bankCard
@@ -29,7 +29,7 @@ const LINHA_ICONS: Record<string, LucideIcon> = {
 }
 
 const STATUS_LABEL: Record<PropostaStatus, string> = {
-  analise: 'Em análise',
+  analise: 'Em anÃ¡lise',
   aprovada: 'Aprovada',
   recusada: 'Recusada',
   contratada: 'Contratada',
@@ -43,13 +43,13 @@ const STATUS_TONE: Record<PropostaStatus, ChipTone> = {
 }
 
 export interface CreditoHomeProps {
-  /** Quando true (rota /credito/simular), rola automaticamente até o simulador ao montar. */
+  /** Quando true (rota /credito/simular), rola automaticamente atÃ© o simulador ao montar. */
   scrollToSimulador?: boolean
 }
 
 /**
- * Home do módulo Crédito: oferta pré-aprovada em destaque, simulador rápido
- * (valor × prazo → parcela estimada), linhas de crédito disponíveis e as
+ * Home do mÃ³dulo CrÃ©dito: oferta prÃ©-aprovada em destaque, simulador rÃ¡pido
+ * (valor Ã— prazo â†’ parcela estimada), linhas de crÃ©dito disponÃ­veis e as
  * propostas mais recentes do produtor.
  */
 export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }: CreditoHomeProps = {}) {
@@ -74,10 +74,10 @@ export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }
 
   return (
     <div className="flex flex-col gap-6 p-4">
-      {/* Hero — oferta pré-aprovada */}
+      {/* Hero â€” oferta prÃ©-aprovada */}
       <div className="animate-rise" style={stagger(0)}>
         <section
-          aria-label="Crédito pré-aprovado"
+          aria-label="CrÃ©dito prÃ©-aprovado"
           className="relative overflow-hidden rounded-3xl p-5 text-white shadow-card"
           style={{ background: `linear-gradient(135deg, ${hub.from} 0%, ${hub.to} 100%)` }}
         >
@@ -88,11 +88,11 @@ export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }
           />
 
           <div className="relative flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
               <HandCoins size={16} aria-hidden="true" />
             </span>
             <Chip tone="brand" className="border-white/20 bg-white/10 text-white">
-              Pré-aprovado
+              PrÃ©-aprovado
             </Chip>
           </div>
 
@@ -100,7 +100,7 @@ export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }
             {PRE_APROVADO.valor}
           </p>
           <p className="relative mt-1 text-sm" style={{ color: hub.fgMuted }}>
-            Validade {PRE_APROVADO.validade} · {PRE_APROVADO.taxa}
+            Validade {PRE_APROVADO.validade} Â· {PRE_APROVADO.taxa}
           </p>
 
           <div className="relative mt-4">
@@ -111,9 +111,9 @@ export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }
         </section>
       </div>
 
-      {/* Simulador rápido */}
+      {/* Simulador rÃ¡pido */}
       <div ref={simuladorRef} className="animate-rise scroll-mt-4" style={stagger(1)}>
-        <SectionTitle className="mb-2">Simulador rápido</SectionTitle>
+        <SectionTitle className="mb-2">Simulador rÃ¡pido</SectionTitle>
 
         <p className="mb-1.5 px-1 text-xs font-medium text-fg-muted">Valor</p>
         <div className="flex flex-wrap gap-2">
@@ -145,24 +145,24 @@ export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }
 
         <Card className="mt-3">
           <p className="text-xs font-medium text-fg-muted">Parcela estimada</p>
-          <p className="mt-1 text-2xl font-bold tabular-nums text-fg">{opcaoAtual?.parcela ?? '—'}</p>
-          <p className="mt-0.5 text-xs text-fg-subtle">Taxa {linhaAtual?.taxa} · {prazoSelecionado} parcelas</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums text-fg">{opcaoAtual?.parcela ?? 'â€”'}</p>
+          <p className="mt-0.5 text-xs text-fg-subtle">Taxa {linhaAtual?.taxa} Â· {prazoSelecionado} parcelas</p>
           <Button fullWidth className="mt-4" onClick={() => navigate('/credito/propostas')}>
             Enviar proposta
           </Button>
         </Card>
       </div>
 
-      {/* Linhas disponíveis */}
+      {/* Linhas disponÃ­veis */}
       <div className="animate-rise" style={stagger(2)}>
-        <SectionTitle className="mb-2">Linhas disponíveis</SectionTitle>
+        <SectionTitle className="mb-2">Linhas disponÃ­veis</SectionTitle>
         <div className="flex flex-col gap-3">
           {LINHAS.map((linha) => {
             const Icon = LINHA_ICONS[linha.id] ?? FileText
             return (
               <Card key={linha.id} interactive onClick={() => setLinhaSelecionada(linha)}>
                 <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white">
                     <Icon size={22} aria-hidden="true" />
                   </span>
                   <div className="min-w-0 flex-1">

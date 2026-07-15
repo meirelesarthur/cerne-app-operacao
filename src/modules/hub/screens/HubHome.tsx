@@ -20,13 +20,13 @@ import { t } from '@/design/tokens'
 import { SALDO, RESUMO_MES, TRANSACOES, CREDITO_PREAPROVADO } from '@/modules/bank/mocks/banking'
 import { HUB_APPS } from '../mocks/apps'
 
-/** delay escalonado de entrada por seção (motion tokenizado, ver Lei 3) */
+/** delay escalonado de entrada por seÃ§Ã£o (motion tokenizado, ver Lei 3) */
 const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
 
 /**
- * Home do hub agregador (New-UI): Banking no centro da experiência
- * (saldo + ações rápidas + últimas movimentações) e grid de mini-apps
- * injetável via catálogo — novos apps entram sem tocar nesta tela.
+ * Home do hub agregador (New-UI): Banking no centro da experiÃªncia
+ * (saldo + aÃ§Ãµes rÃ¡pidas + Ãºltimas movimentaÃ§Ãµes) e grid de mini-apps
+ * injetÃ¡vel via catÃ¡logo â€” novos apps entram sem tocar nesta tela.
  */
 export function HubHome() {
   const navigate = useNavigate()
@@ -37,7 +37,7 @@ export function HubHome() {
 
   return (
     <div className="flex flex-col gap-6 p-4">
-      {/* Banking central — saldo */}
+      {/* Banking central â€” saldo */}
       <div className="animate-rise" style={stagger(0)}>
         <BalanceCard
           value={SALDO.valor}
@@ -49,13 +49,13 @@ export function HubHome() {
             <div className="grid grid-cols-2 gap-3">
               <BalanceSummaryItem
                 icon={<ArrowDownLeft size={14} aria-hidden="true" />}
-                label="Entradas no mês"
+                label="Entradas no mÃªs"
                 value={RESUMO_MES.entradas}
                 hidden={balanceHidden}
               />
               <BalanceSummaryItem
                 icon={<ArrowUpRight size={14} aria-hidden="true" />}
-                label="Saídas no mês"
+                label="SaÃ­das no mÃªs"
                 value={RESUMO_MES.saidas}
                 hidden={balanceHidden}
               />
@@ -64,7 +64,7 @@ export function HubHome() {
         />
       </div>
 
-      {/* Ações rápidas do Banking */}
+      {/* AÃ§Ãµes rÃ¡pidas do Banking */}
       <div className="grid animate-rise grid-cols-4 gap-2" style={stagger(1)}>
         <QuickAction icon={Zap} label="Pix" onClick={() => navigate('/bank/pagamentos')} />
         <QuickAction icon={ScanLine} label="Pagar" onClick={() => navigate('/bank/pagamentos')} />
@@ -72,17 +72,17 @@ export function HubHome() {
         <QuickAction icon={Receipt} label="Extrato" onClick={() => navigate('/bank/extrato')} />
       </div>
 
-      {/* Destaque de crédito — deep link entre módulos */}
+      {/* Destaque de crÃ©dito â€” deep link entre mÃ³dulos */}
       <div className="animate-rise" style={stagger(2)}>
         <Card interactive onClick={() => navigate('/credito')}>
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white">
               <HandCoins size={22} aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <p className="text-sm font-medium text-fg-muted">Crédito Agro</p>
-                <Chip tone="brand">Pré-aprovado</Chip>
+                <p className="text-sm font-medium text-fg-muted">CrÃ©dito Agro</p>
+                <Chip tone="brand">PrÃ©-aprovado</Chip>
               </div>
               <p className="truncate text-lg font-bold tabular-nums text-fg">{CREDITO_PREAPROVADO.valor}</p>
               <p className="truncate text-xs text-fg-muted">{CREDITO_PREAPROVADO.condicao}</p>
@@ -92,7 +92,7 @@ export function HubHome() {
         </Card>
       </div>
 
-      {/* Grid de mini-apps — injeção contínua via catálogo */}
+      {/* Grid de mini-apps â€” injeÃ§Ã£o contÃ­nua via catÃ¡logo */}
       <div className="animate-rise" style={stagger(3)}>
         <div className="mb-2 flex items-center justify-between">
           <SectionTitle>Seus apps</SectionTitle>
@@ -114,10 +114,10 @@ export function HubHome() {
         </div>
       </div>
 
-      {/* Últimas movimentações — Banking sempre à mão */}
+      {/* Ãšltimas movimentaÃ§Ãµes â€” Banking sempre Ã  mÃ£o */}
       <div className="animate-rise" style={stagger(4)}>
         <div className="mb-2 flex items-center justify-between">
-          <SectionTitle>Últimas movimentações</SectionTitle>
+          <SectionTitle>Ãšltimas movimentaÃ§Ãµes</SectionTitle>
           <Button variant="ghost" size="sm" rightIcon={<ArrowRight size={13} />} onClick={() => navigate('/bank/extrato')}>
             Extrato
           </Button>

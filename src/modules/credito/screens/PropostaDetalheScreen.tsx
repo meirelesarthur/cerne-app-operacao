@@ -8,7 +8,7 @@ import { cn } from '@/lib/cn'
 import { PROPOSTAS, type Proposta, type PropostaStatus } from '../mocks/credito'
 
 const STATUS_LABEL: Record<PropostaStatus, string> = {
-  analise: 'Em análise',
+  analise: 'Em anÃ¡lise',
   aprovada: 'Aprovada',
   recusada: 'Recusada',
   contratada: 'Contratada',
@@ -43,12 +43,12 @@ const labelCls: Record<StepState, string> = {
   rejected: 'text-red-600',
 }
 
-/** Monta a timeline de etapas da proposta a partir do status e histórico de datas. */
+/** Monta a timeline de etapas da proposta a partir do status e histÃ³rico de datas. */
 function buildTimeline({ status, historico }: Proposta): TimelineStep[] {
   if (status === 'recusada') {
     return [
       { label: 'Proposta enviada', date: historico.enviada, state: 'done' },
-      { label: 'Em análise', date: historico.analise, state: 'done' },
+      { label: 'Em anÃ¡lise', date: historico.analise, state: 'done' },
       { label: 'Recusada', date: historico.decisao, state: 'rejected' },
     ]
   }
@@ -56,7 +56,7 @@ function buildTimeline({ status, historico }: Proposta): TimelineStep[] {
   return [
     { label: 'Proposta enviada', date: historico.enviada, state: 'done' },
     {
-      label: 'Em análise',
+      label: 'Em anÃ¡lise',
       date: historico.analise,
       state: status === 'analise' ? 'current' : 'done',
     },
@@ -110,14 +110,14 @@ function Timeline({ steps }: { steps: TimelineStep[] }) {
   )
 }
 
-/** Banner + CTA contextual conforme o status atual da proposta — sem prometer ações inexistentes. */
+/** Banner + CTA contextual conforme o status atual da proposta â€” sem prometer aÃ§Ãµes inexistentes. */
 function StatusCta({ proposta }: { proposta: Proposta }) {
   const navigate = useNavigate()
 
   const content: Record<PropostaStatus, { tone: BannerTone; text: string; action?: ReactNode }> = {
     analise: {
       tone: 'info',
-      text: 'Sua proposta está em análise. O retorno costuma levar de 2 a 5 dias úteis.',
+      text: 'Sua proposta estÃ¡ em anÃ¡lise. O retorno costuma levar de 2 a 5 dias Ãºteis.',
     },
     aprovada: {
       tone: 'success',
@@ -125,7 +125,7 @@ function StatusCta({ proposta }: { proposta: Proposta }) {
     },
     recusada: {
       tone: 'error',
-      text: 'Proposta recusada. Você pode simular novamente com outros valores ou prazo.',
+      text: 'Proposta recusada. VocÃª pode simular novamente com outros valores ou prazo.',
       action: (
         <Button size="sm" variant="secondary" onClick={() => navigate('/credito/simular')}>
           Simular novamente
@@ -152,14 +152,14 @@ function StatusCta({ proposta }: { proposta: Proposta }) {
       </Banner>
       {proposta.status === 'analise' && (
         <Button fullWidth disabled>
-          Aguardando análise
+          Aguardando anÃ¡lise
         </Button>
       )}
     </div>
   )
 }
 
-/** Detalhe de uma proposta de crédito: status, timeline de etapas, dados e documentos. */
+/** Detalhe de uma proposta de crÃ©dito: status, timeline de etapas, dados e documentos. */
 export function PropostaDetalheScreen() {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -171,8 +171,8 @@ export function PropostaDetalheScreen() {
         <SubPageHeader title="Proposta" />
         <EmptyState
           icon={Frown}
-          title="Proposta não encontrada"
-          description="Essa proposta pode ter sido removida ou o link está incorreto."
+          title="Proposta nÃ£o encontrada"
+          description="Essa proposta pode ter sido removida ou o link estÃ¡ incorreto."
           action={
             <Button onClick={() => navigate('/credito/propostas')}>Ver todas as propostas</Button>
           }
@@ -231,7 +231,7 @@ export function PropostaDetalheScreen() {
             <div className="flex flex-col gap-3">
               {proposta.documentos.map((doc) => (
                 <div key={doc.nome} className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-subtle text-fg-muted">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-subtle text-fg-muted">
                     <FileText size={18} aria-hidden="true" />
                   </span>
                   <p className="min-w-0 flex-1 truncate text-sm font-medium text-fg">{doc.nome}</p>

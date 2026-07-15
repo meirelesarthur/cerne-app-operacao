@@ -5,34 +5,34 @@ import { Chip } from '@/components/ui/Chip'
 import { KIND_ICON, STATUS_META } from './ActivityListItem'
 import type { Activity } from '../types'
 
-/** Nome legível do tipo de atividade (spec §6.7). */
+/** Nome legÃ­vel do tipo de atividade (spec Â§6.7). */
 const KIND_LABEL: Record<Activity['kind'], string> = {
   pesagem: 'Pesagem',
   evento: 'Evento de rebanho',
   nfe: 'Entrada NF-e',
   venda: 'Venda de animais',
-  insumo: 'Aplicação de insumo',
-  arracoamento: 'Arraçoamento',
+  insumo: 'AplicaÃ§Ã£o de insumo',
+  arracoamento: 'ArraÃ§oamento',
 }
 
 /**
- * Rótulos dos segmentos do `subtitle` ("A · B") por tipo — dá semântica de ficha
- * ao mock (fazenda, lote, quantidade, fornecedor…) sem inventar dado novo.
+ * RÃ³tulos dos segmentos do `subtitle` ("A Â· B") por tipo â€” dÃ¡ semÃ¢ntica de ficha
+ * ao mock (fazenda, lote, quantidade, fornecedorâ€¦) sem inventar dado novo.
  */
 const KIND_DETAIL_LABELS: Record<Activity['kind'], [string, string]> = {
   pesagem: ['Fazenda', 'Quantidade'],
-  evento: ['Referência', 'Detalhe'],
+  evento: ['ReferÃªncia', 'Detalhe'],
   nfe: ['Categoria', 'Fornecedor'],
   venda: ['Comprador', 'Quantidade'],
   insumo: ['Local', 'Insumo'],
   arracoamento: ['Dieta', 'Quantidade'],
 }
 
-/** Tipos capturados pelo app de campo — exibem a linha de origem/sincronização. */
+/** Tipos capturados pelo app de campo â€” exibem a linha de origem/sincronizaÃ§Ã£o. */
 const FIELD_KINDS: ReadonlyArray<Activity['kind']> = ['pesagem', 'arracoamento', 'insumo', 'evento']
 
 export interface ActivityDetailSheetProps {
-  /** Atividade selecionada — `null` mantém o sheet fechado. */
+  /** Atividade selecionada â€” `null` mantÃ©m o sheet fechado. */
   activity: Activity | null
   onClose: () => void
 }
@@ -40,7 +40,7 @@ export interface ActivityDetailSheetProps {
 /**
  * Detalhe de Atividade (Plano de Navegabilidade, B1): BottomSheet acionado pelo
  * `ActivityListItem` em FazendasHome, AtividadesScreen e DashPecuaria. Reaproveita
- * os mesmos ícones e tons de status da lista (fonte única, Lei 2).
+ * os mesmos Ã­cones e tons de status da lista (fonte Ãºnica, Lei 2).
  */
 export function ActivityDetailSheet({ activity, onClose }: ActivityDetailSheetProps) {
   return (
@@ -54,14 +54,14 @@ function SheetBody({ activity }: { activity: Activity }) {
   const Icon = KIND_ICON[activity.kind]
   const status = STATUS_META[activity.status]
   const detailLabels = KIND_DETAIL_LABELS[activity.kind]
-  const segments = activity.subtitle.split(' · ')
+  const segments = activity.subtitle.split(' Â· ')
   const syncedFromField = FIELD_KINDS.includes(activity.kind) && activity.status === 'concluida'
 
   return (
     <div className="flex flex-col gap-4">
       {/* Identidade da atividade */}
       <div className="flex items-center gap-3">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-surface-subtle text-fg-muted">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-subtle text-fg-muted">
           <Icon size={22} aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">
@@ -81,20 +81,20 @@ function SheetBody({ activity }: { activity: Activity }) {
         ))}
       </div>
 
-      {/* Origem do registro — só quando o shape indica captura em campo concluída */}
+      {/* Origem do registro â€” sÃ³ quando o shape indica captura em campo concluÃ­da */}
       {syncedFromField && (
         <p className="flex items-center gap-1.5 text-xs text-fg-muted">
           <Smartphone size={13} aria-hidden="true" />
           Registrado no campo
-          <span aria-hidden="true">·</span>
+          <span aria-hidden="true">Â·</span>
           <CheckCircle2 size={13} className="text-accent" aria-hidden="true" />
           sincronizado
         </p>
       )}
 
-      {/* Padrão honesto do protótipo (como no DashConfinamento) */}
+      {/* PadrÃ£o honesto do protÃ³tipo (como no DashConfinamento) */}
       <p className="text-sm text-fg-subtle">
-        Histórico completo, anexos e edição desta atividade ficam no sistema web GB CERNE.
+        HistÃ³rico completo, anexos e ediÃ§Ã£o desta atividade ficam no sistema web GB CERNE.
       </p>
     </div>
   )
