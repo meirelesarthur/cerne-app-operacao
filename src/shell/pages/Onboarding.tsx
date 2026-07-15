@@ -5,31 +5,30 @@ import { Button } from '@/components/ui/Button'
 import { Heading } from '@/components/ui/Heading'
 import { PageDots } from '@/components/ui/PageDots'
 import { IllustrationSlot } from '@/components/ui/IllustrationSlot'
+import onboard1 from '@/images/onboard1.png'
+import onboard2 from '@/images/onboard2.png'
+import onboard3 from '@/images/onboard3.png'
 
-/**
- * Slides do onboarding. Quando as ilustrações geradas ficarem prontas,
- * salve-as em `public/illustrations/` e aponte `image` para elas
- * (ex.: '/illustrations/onboarding-fazendas.png') — o layout não muda.
- */
+/** Slides do onboarding — ilustrações geradas em src/images (ícones ficam como fallback). */
 const SLIDES = [
   {
     id: 'fazendas',
     icon: Sprout,
-    image: undefined as string | undefined,
+    image: onboard1,
     title: 'Sua fazenda na palma da mão',
     desc: 'Dashboards gerenciais e lançamentos de campo, mesmo sem sinal — tudo sincroniza quando a conexão volta.',
   },
   {
     id: 'bank',
     icon: Landmark,
-    image: undefined as string | undefined,
+    image: onboard2,
     title: 'Banco e crédito do produtor',
     desc: 'Conta digital, Pix, pagamentos e crédito pré-aprovado para a safra, direto no app.',
   },
   {
     id: 'marketplace',
     icon: ShoppingBag,
-    image: undefined as string | undefined,
+    image: onboard3,
     title: 'Compre, venda e armazene',
     desc: 'Marketplace de insumos e gestão do armazém integrados à operação, sem sair do superapp.',
   },
@@ -83,21 +82,17 @@ export function Onboarding() {
         </div>
       </div>
 
-      {/* ações — no último slide vira um único CTA largo (estilo referência) */}
-      {isLast ? (
-        <Button fullWidth size="lg" className="rounded-full" onClick={finish}>
-          Começar
+      {/* ações — botões em largura total, empilhados; no último slide sobra só o CTA */}
+      <div className="flex flex-col gap-2">
+        <Button fullWidth size="lg" className="rounded-full" onClick={next}>
+          {isLast ? 'Começar' : 'Próximo'}
         </Button>
-      ) : (
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" className="uppercase tracking-wide text-fg-muted" onClick={finish}>
+        {!isLast && (
+          <Button fullWidth size="lg" variant="ghost" className="rounded-full text-fg-muted" onClick={finish}>
             Pular
           </Button>
-          <Button size="lg" className="rounded-full px-8" onClick={next}>
-            Próximo
-          </Button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }
