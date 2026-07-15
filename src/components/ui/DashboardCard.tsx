@@ -39,7 +39,7 @@ export function DashboardCard({
     return (
       <div className="relative overflow-hidden rounded-2xl border border-border-default bg-surface-subtle p-4">
         <div className="pointer-events-none opacity-40">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-200 text-neutral-500">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-200 text-neutral-500">
             <Icon size={18} />
           </span>
           <p className="mt-3 text-sm font-medium text-fg-muted">{label}</p>
@@ -68,7 +68,7 @@ export function DashboardCard({
       <div className="flex items-start justify-between">
         <span
           className={cn(
-            'flex h-9 w-9 items-center justify-center rounded-xl',
+            'flex h-10 w-10 items-center justify-center rounded-full',
             dark ? 'bg-white/15 text-white' : 'border border-border-tint bg-accent-subtle text-accent',
           )}
         >

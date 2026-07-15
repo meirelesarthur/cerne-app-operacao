@@ -26,14 +26,14 @@ export function MiniAppTile({ icon: Icon, name, description, badge, disabled = f
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'flex min-h-[96px] flex-col items-start gap-2 rounded-2xl border border-border-default bg-surface p-3 text-left',
-        'transition-all hover:border-border-strong active:scale-[0.98]',
-        disabled && 'cursor-not-allowed opacity-50 hover:border-border-default active:scale-100',
+        'flex min-h-[96px] flex-col items-start gap-2 rounded-2xl border border-border-subtle bg-surface p-3 text-left shadow-card',
+        'transition-all hover:shadow-card-hover active:scale-[0.98]',
+        disabled && 'cursor-not-allowed opacity-50 hover:shadow-card active:scale-100',
         className,
       )}
     >
       <div className="flex w-full items-start justify-between">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-border-tint bg-accent-subtle text-accent">
+        <span className="flex h-10 w-10 items-center justify-center rounded-full border border-border-tint bg-accent-subtle text-accent">
           <Icon size={20} strokeWidth={1.8} aria-hidden="true" />
         </span>
         {badge === 'novo' && <Chip tone="brand">Novo</Chip>}

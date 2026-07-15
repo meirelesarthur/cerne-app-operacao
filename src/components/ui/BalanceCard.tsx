@@ -23,9 +23,9 @@ export interface BalanceCardProps {
 const hub = t.component.hub.bankCard
 
 /**
- * Cartão de saldo do Banking (New-UI): gradiente institucional profundo com glow
- * da marca, números tabulares e toggle de visibilidade com touch target de 44px.
- * Skeleton interno preserva o layout (zero layout shift ao carregar).
+ * Cartão de saldo do Banking (Nova UI): cápsula ink escura nos dois temas —
+ * o hero da referência — com glow da marca, números tabulares e toggle de
+ * visibilidade com touch target de 44px. Skeleton interno preserva o layout.
  */
 export function BalanceCard({
   label = 'Saldo disponível',
@@ -40,8 +40,7 @@ export function BalanceCard({
   return (
     <section
       aria-label={label}
-      className={cn('relative overflow-hidden rounded-3xl p-5 text-white shadow-card', className)}
-      style={{ background: `linear-gradient(135deg, ${hub.from} 0%, ${hub.to} 100%)` }}
+      className={cn('relative overflow-hidden rounded-3xl bg-ink p-5 text-ink-fg shadow-card', className)}
     >
       {/* glow radial sutil da marca — profundidade sem ruído */}
       <div
@@ -51,19 +50,13 @@ export function BalanceCard({
       />
 
       <div className="relative flex items-start justify-between">
-        <div className="flex items-center gap-2">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
-            <Landmark size={16} aria-hidden="true" />
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-ink-bubble">
+            <Landmark size={17} aria-hidden="true" />
           </span>
           <div>
-            <p className="text-sm font-medium" style={{ color: hub.fgMuted }}>
-              {label}
-            </p>
-            {accountLabel && (
-              <p className="text-xs" style={{ color: hub.fgMuted }}>
-                {accountLabel}
-              </p>
-            )}
+            <p className="text-sm font-medium text-ink-muted">{label}</p>
+            {accountLabel && <p className="text-xs text-ink-subtle">{accountLabel}</p>}
           </div>
         </div>
 
@@ -73,16 +66,16 @@ export function BalanceCard({
             onClick={onToggleHidden}
             aria-label={hidden ? 'Mostrar saldo' : 'Ocultar saldo'}
             aria-pressed={hidden}
-            className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-white/10 active:bg-white/15"
+            className="flex h-11 w-11 items-center justify-center rounded-full transition-colors hover:bg-ink-bubble active:bg-white/15"
           >
             {hidden ? <EyeOff size={20} /> : <Eye size={20} />}
           </button>
         )}
       </div>
 
-      <div className="relative mt-3 min-h-[40px]">
+      <div className="relative mt-4 min-h-[40px]">
         {loading ? (
-          <div className="h-9 w-2/3 animate-pulse rounded-lg" style={{ background: hub.skeleton }} aria-hidden="true" />
+          <div className="h-9 w-2/3 animate-pulse rounded-full bg-ink-bubble" aria-hidden="true" />
         ) : (
           <p className="text-4xl font-bold leading-tight tabular-nums tracking-tight">
             {hidden ? '••••••' : value}
@@ -90,11 +83,7 @@ export function BalanceCard({
         )}
       </div>
 
-      {footer && (
-        <div className="relative mt-4 border-t pt-3" style={{ borderColor: hub.divider }}>
-          {footer}
-        </div>
-      )}
+      {footer && <div className="relative mt-4 border-t border-ink-line pt-3">{footer}</div>}
     </section>
   )
 }
@@ -114,12 +103,10 @@ export function BalanceSummaryItem({
   return (
     <div className="flex items-center gap-2">
       {icon && (
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10">{icon}</span>
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-ink-bubble">{icon}</span>
       )}
       <div className="min-w-0">
-        <p className="text-xs" style={{ color: hub.fgMuted }}>
-          {label}
-        </p>
+        <p className="text-xs text-ink-muted">{label}</p>
         <p className="truncate text-sm font-semibold tabular-nums">{hidden ? '••••' : value}</p>
       </div>
     </div>

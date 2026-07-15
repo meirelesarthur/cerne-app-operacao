@@ -21,13 +21,13 @@ export function QuickAction({ icon: Icon, label, onClick, className }: QuickActi
     >
       <span
         className={cn(
-          'flex h-14 w-14 items-center justify-center rounded-full border border-border-tint bg-accent-subtle text-accent',
-          'transition-all group-hover:border-border-strong group-active:scale-95',
+          'flex h-14 w-14 items-center justify-center rounded-full bg-surface text-fg shadow-card',
+          'transition-all group-hover:bg-surface-subtle group-active:scale-95',
         )}
       >
-        <Icon size={22} strokeWidth={2} aria-hidden="true" />
+        <Icon size={21} strokeWidth={1.9} aria-hidden="true" />
       </span>
-      <span className="text-center text-xs font-medium leading-tight text-fg-muted">{label}</span>
+      <span className="text-center text-xs font-semibold leading-tight text-fg-muted">{label}</span>
     </button>
   )
 }

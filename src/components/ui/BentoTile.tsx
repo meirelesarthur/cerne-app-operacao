@@ -52,7 +52,7 @@ export function BentoTile({
           className,
         )}
       >
-        <span className={cn('flex items-center justify-center rounded-2xl bg-white/15 text-white', iconBoxCls)}>
+        <span className={cn('flex items-center justify-center rounded-full bg-white/15 text-white', iconBoxCls)}>
           <Icon size={iconGlyphSize} aria-hidden="true" />
         </span>
         <div className="min-w-0 pr-8">
@@ -76,12 +76,12 @@ export function BentoTile({
       type="button"
       onClick={onClick}
       className={cn(
-        'flex h-full min-h-[104px] w-full flex-col items-start justify-between gap-3 rounded-3xl border border-border-default bg-surface p-4 text-left transition-all hover:border-border-strong active:scale-[0.97]',
+        'flex h-full min-h-[104px] w-full flex-col items-start justify-between gap-3 rounded-3xl border border-border-subtle bg-surface p-4 text-left shadow-card transition-all hover:shadow-card-hover active:scale-[0.97]',
         className,
       )}
     >
       <span
-        className={cn('flex items-center justify-center rounded-2xl', iconBoxCls, !isPurple && toneCls[tone])}
+        className={cn('flex items-center justify-center rounded-full', iconBoxCls, !isPurple && toneCls[tone])}
         style={
           isPurple
             ? {
