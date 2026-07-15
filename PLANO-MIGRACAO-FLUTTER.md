@@ -18,10 +18,10 @@ e ordem de ataque.
 | Item | Decisão |
 |---|---|
 | Papel do protótipo React | **Spec viva congelada** — referência de UX/fluxos; não recebe feature nova após o início da F2, apenas correções de spec |
-| Papel do app Flutter | Produto de produção — único destino de features novas a partir da F4 |
+| Papel do app Flutter | **Protótipo de altíssima fidelidade em Dart** — mesmo escopo do React (mocks continuam mocks); a troca de linguagem existe para facilitar o handoff ao time mobile, que evolui a partir dele |
 | Contrato entre os dois | `tokens/tokens.json` (DTCG) + catálogo `src/components/ui/` (nomes e props) + `moduleConfig.ts` (mapa de navegação) |
 | Fluxo de design | Inalterado (Lei 5): código define tokens → Figma/Supernova consomem. O Flutter passa a ser mais um consumidor do mesmo JSON |
-| Time sugerido | 2 devs Flutter + 1 dev do protótipo como "guardião da spec" (part-time) |
+| Modelo de execução | **AI-assisted (Claude Code)** — Claude escreve 100% do código; revisão humana é visual/funcional por lote. O gargalo é o loop de validação, não a digitação |
 | Stack Flutter | Flutter estável · Dart 3 · `go_router` (navegação 2 níveis) · Riverpod (estado) · `style_dictionary` (tokens → Dart) · `lucide_icons` · `fl_chart` ou `CustomPainter` · Isar/Drift (offline, F6) |
 
 **Regra de ouro da esteira:** nenhuma tela é iniciada antes de o widget de catálogo que ela usa
@@ -73,7 +73,7 @@ dos tokens — hardcode é violação, igual à Lei 3.
 Marcação `[ ]` a cada etapa concluída, com o PR correspondente. Um PR por unidade lógica.
 Cada fase tem **gate de saída (DoD)** — a fase seguinte não abre sem o gate fechado.
 
-### Fase F0 — Fundação do repositório (≈ 1 semana, paralelizável com F1)
+### Fase F0 — Fundação do repositório (≈ 0,5 dia)
 Preparar o terreno; nada visual ainda.
 
 - [ ] **F0.1** Criar repo `cerne-app-flutter` (ou monorepo `apps/mobile`), Flutter estável, lint
@@ -87,7 +87,7 @@ Preparar o terreno; nada visual ainda.
 
 **DoD F0:** app "hello" buildando em CI para Android e iOS; ADRs commitados.
 
-### Fase F1 — Tokens e tema (≈ 1 semana)
+### Fase F1 — Tokens e tema (≈ 0,5 dia)
 O contrato primeiro. É o espelho da Lei 3/5 no Flutter.
 
 - [ ] **F1.1** Configurar Style Dictionary consumindo `tokens/tokens.json` (DTCG) do repo do
@@ -102,7 +102,7 @@ O contrato primeiro. É o espelho da Lei 3/5 no Flutter.
 **DoD F1:** mudança de valor em `tokens.ts` → `npm run tokens:export` → regeneração Dart reflete
 no app sem edição manual; validado pelo design nas duas variantes de tema.
 
-### Fase F2 — Catálogo de widgets (≈ 2–3 semanas) ← maior investimento
+### Fase F2 — Catálogo de widgets (≈ 1,5–2 dias) ← maior investimento
 Reescrever os 43 componentes de `ui/` como package interno, mesmos nomes e props (§1.2).
 
 - [ ] **F2.1** Lote Ações + Superfícies (Button, IconButton, Card, tiles, KPI).
@@ -117,7 +117,7 @@ Reescrever os 43 componentes de `ui/` como package interno, mesmos nomes e props
 **DoD F2:** 43/43 no ar na galeria; goldens verdes em CI; aprovação visual do design comparando
 lado a lado com o protótipo React.
 
-### Fase F3 — Shell e navegação (≈ 1 semana)
+### Fase F3 — Shell e navegação (≈ 0,5–1 dia)
 - [ ] **F3.1** `ShellRoute` com header global (gradiente, saudação, pílula de crédito, sino) +
   module-bar (cantos arredondados sobrepostos, indicador full-width) — réplica do `ShellLayout`.
 - [ ] **F3.2** Bottom tab bar por módulo lida de um `moduleConfig` Dart (portar o `moduleConfig.ts`).
@@ -128,7 +128,7 @@ lado a lado com o protótipo React.
 **DoD F3:** trocar de módulo preserva header/estado como no protótipo; deep-link `/:module/:tab`
 funciona via `go_router`.
 
-### Fase F4 — Módulos por valor (≈ 3–4 semanas)
+### Fase F4 — Módulos por valor (≈ 2–3 dias)
 Ordem do §1.3. Cada módulo é um trilho independente da esteira — com 2 devs, rodar 2 trilhos em
 paralelo após o 1º.
 
@@ -143,7 +143,7 @@ paralelo após o 1º.
 **DoD F4 (por módulo):** paridade de telas e navegação com o protótipo (checklist por tela);
 zero hardcode de estilo (audit de lint próprio); revisão do guardião da spec.
 
-### Fase F5 — Hardening e qualidade (≈ 1 semana)
+### Fase F5 — Hardening e qualidade (**escopo do time mobile, pós-handoff**)
 - [ ] **F5.1** Acessibilidade: semantics, tamanhos de toque ≥ 48dp, contraste nas 2 variantes.
 - [ ] **F5.2** Performance: rebuilds (DevTools), imagens (`cacheWidth`), jank nos springs do menu.
 - [ ] **F5.3** Testes de fluxo (integration_test): onboarding→login→hub, lançamento de campo,
@@ -152,7 +152,7 @@ zero hardcode de estilo (audit de lint próprio); revisão do guardião da spec.
 
 **DoD F5:** paridade total navegável em aparelho físico, aprovada por design + produto.
 
-### Fase F6 — Além do protótipo (backlog pós-paridade)
+### Fase F6 — Além do protótipo (**backlog do time mobile, pós-handoff**)
 O que o protótipo apenas simula e vira implementação real no app:
 
 - [ ] **F6.1** Autenticação real (o login é mock).
@@ -175,16 +175,24 @@ O que o protótipo apenas simula e vira implementação real no app:
 
 ## 4. Resumo executivo de esforço
 
-| Fase | Duração (2 devs) | Acumulado |
-|---|---|---|
-| F0 Fundação | 1 sem (paralela à F1) | 1ª sem |
-| F1 Tokens/tema | 1 sem | 1ª–2ª sem |
-| F2 Catálogo | 2–3 sem | 4ª–5ª sem |
-| F3 Shell | 1 sem | 5ª–6ª sem |
-| F4 Módulos | 3–4 sem | 8ª–10ª sem |
-| F5 Hardening | 1 sem | **9ª–11ª sem → paridade** |
-| F6 Produção real | contínuo | pós-paridade |
+Execução **AI-assisted (Claude Code)** com paridade de protótipo — mesmo modelo que produziu o
+protótipo React em <2 semanas. F5/F6 saem do cronograma (viram backlog do time mobile após o
+handoff). Duração medida em **dias de sessão** (o calendário depende do ritmo de validação):
 
-**Riscos principais:** subestimar o catálogo (mitigação: F2 com gate visual duro antes das telas);
-divergência protótipo×app (mitigação: §3); fidelidade dos charts custom (mitigação: decidir
-CustomPainter × fl_chart na F0 com spike de 1 dia).
+| Fase | Duração (Claude + revisão visual) | Acumulado |
+|---|---|---|
+| F0 Fundação (setup Flutter, projeto, assets) | ~0,5 dia | 0,5 dia |
+| F1 Tokens/tema (DTCG → Dart gerado) | ~0,5 dia | 1 dia |
+| F2 Catálogo (43 widgets + galeria) | 1,5–2 dias | ~3 dias |
+| F3 Shell | 0,5–1 dia | ~4 dias |
+| F4 Módulos (67 telas de composição) | 2–3 dias | ~6–7 dias |
+| Polimento (animações, charts, ajustes finos) | 0,5–1 dia | **~6–8 dias → paridade** |
+| F5–F6 (produção real) | time mobile | pós-handoff |
+
+> Referência para o time mobile em planejamento próprio: os mesmos passos executados por um time
+> humano de 2 devs com DoD de produção (CI, golden tests, hardening) foram estimados em 9–11
+> semanas. A diferença é o modelo de execução e o DoD, não o escopo visual.
+
+**Riscos principais:** loop de validação visual (Flutter compila mais devagar que Vite — mitigar
+com Flutter web/hot reload e validação por lote); fidelidade dos charts custom (mitigação: spike
+CustomPainter × fl_chart no F0); divergência protótipo×app (mitigação: §3).
