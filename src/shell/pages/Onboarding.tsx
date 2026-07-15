@@ -1,49 +1,103 @@
+import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sprout, Landmark, HandCoins, ShoppingBag, ArrowLeft } from 'lucide-react'
+import { Sprout, Landmark, ShoppingBag } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { Heading } from '@/components/ui/Heading'
-import { IconButton } from '@/components/ui/IconButton'
+import { PageDots } from '@/components/ui/PageDots'
+import { IllustrationSlot } from '@/components/ui/IllustrationSlot'
 
-const HIGHLIGHTS = [
-  { icon: Sprout, title: 'Fazendas', desc: 'Dashboards gerenciais e lançamentos de campo.' },
-  { icon: Landmark, title: 'Bank', desc: 'Conta e pagamentos do produtor.' },
-  { icon: HandCoins, title: 'Crédito', desc: 'Crédito pré-aprovado e simulações.' },
-  { icon: ShoppingBag, title: 'Marketplace', desc: 'Compra e venda de insumos.' },
+/**
+ * Slides do onboarding. Quando as ilustrações geradas ficarem prontas,
+ * salve-as em `public/illustrations/` e aponte `image` para elas
+ * (ex.: '/illustrations/onboarding-fazendas.png') — o layout não muda.
+ */
+const SLIDES = [
+  {
+    id: 'fazendas',
+    icon: Sprout,
+    image: undefined as string | undefined,
+    title: 'Sua fazenda na palma da mão',
+    desc: 'Dashboards gerenciais e lançamentos de campo, mesmo sem sinal — tudo sincroniza quando a conexão volta.',
+  },
+  {
+    id: 'bank',
+    icon: Landmark,
+    image: undefined as string | undefined,
+    title: 'Banco e crédito do produtor',
+    desc: 'Conta digital, Pix, pagamentos e crédito pré-aprovado para a safra, direto no app.',
+  },
+  {
+    id: 'marketplace',
+    icon: ShoppingBag,
+    image: undefined as string | undefined,
+    title: 'Compre, venda e armazene',
+    desc: 'Marketplace de insumos e gestão do armazém integrados à operação, sem sair do superapp.',
+  },
 ]
 
-/** Onboarding mínimo do Shell — apresenta os módulos do superapp. */
+/**
+ * Onboarding do Shell — carrossel de 3 telas (ilustração + título + descrição),
+ * com dots, Pular e Próximo; o último slide convida a começar. Suporta swipe.
+ */
 export function Onboarding() {
   const navigate = useNavigate()
+  const [slide, setSlide] = useState(0)
+  const touchX = useRef<number | null>(null)
+
+  const isLast = slide === SLIDES.length - 1
+  const current = SLIDES[slide]
+
+  const finish = () => navigate('/login')
+  const next = () => (isLast ? finish() : setSlide((s) => s + 1))
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchX.current = e.touches[0].clientX
+  }
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchX.current === null) return
+    const delta = e.changedTouches[0].clientX - touchX.current
+    touchX.current = null
+    if (delta < -48 && !isLast) setSlide((s) => s + 1)
+    if (delta > 48 && slide > 0) setSlide((s) => s - 1)
+  }
 
   return (
-    <div className="flex h-full flex-col bg-canvas px-6 py-8">
-      <IconButton label="Voltar para o login" className="self-start" onClick={() => navigate('/login')}>
-        <ArrowLeft size={20} />
-      </IconButton>
+    <div className="flex h-full flex-col bg-canvas px-6 pb-8 pt-10">
+      {/* slide ativo — key força a animação de entrada a cada troca */}
+      <div
+        key={current.id}
+        className="flex flex-1 flex-col items-center justify-center gap-8 text-center"
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
+        <div className="animate-rise w-full">
+          <IllustrationSlot alt={current.title} icon={current.icon} src={current.image} />
+        </div>
 
-      <Heading level={2} className="mt-4">
-        Um app, vários módulos
-      </Heading>
-      <p className="mt-1 text-md text-fg-muted">Cada módulo é um app da empresa, agora unificado.</p>
-
-      <div className="mt-6 flex flex-1 flex-col gap-3">
-        {HIGHLIGHTS.map((h) => (
-          <Card key={h.title} className="flex items-center gap-3">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-subtle text-accent">
-              <h.icon size={22} />
-            </span>
-            <div>
-              <p className="font-semibold text-fg">{h.title}</p>
-              <p className="text-sm text-fg-muted">{h.desc}</p>
-            </div>
-          </Card>
-        ))}
+        <div className="animate-rise flex flex-col items-center gap-3">
+          <PageDots count={SLIDES.length} active={slide} onSelect={setSlide} />
+          <Heading level={1} className="max-w-[280px] leading-tight">
+            {current.title}
+          </Heading>
+          <p className="max-w-[300px] text-md leading-relaxed text-fg-muted">{current.desc}</p>
+        </div>
       </div>
 
-      <Button fullWidth size="lg" onClick={() => navigate('/fazendas')}>
-        Começar
-      </Button>
+      {/* ações — no último slide vira um único CTA largo (estilo referência) */}
+      {isLast ? (
+        <Button fullWidth size="lg" className="rounded-full" onClick={finish}>
+          Começar
+        </Button>
+      ) : (
+        <div className="flex items-center justify-between">
+          <Button variant="ghost" className="uppercase tracking-wide text-fg-muted" onClick={finish}>
+            Pular
+          </Button>
+          <Button size="lg" className="rounded-full px-8" onClick={next}>
+            Próximo
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

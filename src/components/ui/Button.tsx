@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 import { Spinner } from './Spinner'
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger'
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'link'
 type Size = 'sm' | 'md' | 'lg'
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -25,6 +25,8 @@ const variantCls: Record<Variant, string> = {
   secondary: 'bg-surface text-fg border border-border-default hover:bg-surface-subtle',
   ghost: 'bg-transparent text-fg hover:bg-surface-subtle',
   danger: 'bg-red-600 text-white hover:bg-red-700',
+  // link inline: sem caixa — altura/padding zerados abaixo
+  link: 'bg-transparent text-accent hover:text-accent-hover hover:underline underline-offset-2',
 }
 
 export function Button({
@@ -44,7 +46,7 @@ export function Button({
       className={cn(
         'inline-flex items-center justify-center rounded-lg font-semibold transition-colors',
         'focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-70',
-        sizeCls[size],
+        variant === 'link' ? 'h-auto gap-1 p-0 text-sm' : sizeCls[size],
         variantCls[variant],
         fullWidth && 'w-full',
         className,
