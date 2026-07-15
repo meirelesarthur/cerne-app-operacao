@@ -12,7 +12,7 @@ export function ModuleSwitcher({ activeId }: { activeId: string }) {
 
   return (
     <nav
-      className="no-scrollbar flex gap-1 overflow-x-auto px-2"
+      className="no-scrollbar flex gap-1 overflow-x-auto rounded-t-2xl px-2"
       style={{ background: t.component.header.tabsBg }}
       aria-label="Módulos"
     >
@@ -29,7 +29,7 @@ export function ModuleSwitcher({ activeId }: { activeId: string }) {
             aria-current={active ? 'page' : undefined}
           >
             {m.label}
-            {active && <span className="absolute inset-x-3 bottom-0 h-0.5 rounded-full bg-[var(--nav-active)]" />}
+            {active && <span className="absolute inset-x-0 bottom-0 h-[3px] rounded-t-full bg-[var(--nav-active)]" />}
           </button>
         )
       })}

@@ -13,7 +13,6 @@ import { BankModule } from '@/modules/bank/BankModule'
 import { CreditoModule } from '@/modules/credito/CreditoModule'
 import { MarketplaceModule } from '@/modules/marketplace/MarketplaceModule'
 import { ArmazemModule } from '@/modules/armazem/ArmazemModule'
-import { FarmSwitcher } from '@/modules/fazendas/components/FarmSwitcher'
 import { CreditoPill } from '@/modules/fazendas/components/CreditoPill'
 import { useFazendasStore } from '@/modules/fazendas/state/fazendasStore'
 import { t } from '@/design/tokens'
@@ -64,12 +63,7 @@ export function ShellLayout() {
             consultActive={isFazendas && view === 'gerencial'}
           >
             {/* contexto do módulo dentro do gradiente (premium clean) */}
-            {isFazendas && (
-              <>
-                <FarmSwitcher />
-                <CreditoPill />
-              </>
-            )}
+            {isFazendas && <CreditoPill />}
           </ShellHeader>
           <ModuleSwitcher activeId={module.id} />
         </div>

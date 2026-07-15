@@ -12,7 +12,7 @@ import { CampoFlow } from './operacional/CampoFlow'
 
 /**
  * Módulo Fazendas (ex-"Cerne") — módulo completo do superapp.
- * Header do módulo (FarmSwitcher + switch de visão) fica logo abaixo da barra de módulos do Shell.
+ * A troca de fazenda ativa vive na tela dedicada (tab "Fazendas" / FarmListScreen).
  * As telas administrativas (dashboards) e operacionais (campo) chegam nas Fases 3 e 4;
  * por enquanto caem em EmSection.
  */
