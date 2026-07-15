@@ -6,13 +6,15 @@ import { cn } from '@/lib/cn'
 /**
  * Barra de Módulos / module switcher (spec §6.2): linha horizontal com scroll,
  * item ativo com sublinhado verde. Trocar de módulo é navegação de nível Shell.
+ * `relative` é obrigatório: a barra sobrepõe o header (mb negativo) e precisa
+ * pintar sobre ele para os cantos superiores arredondados aparecerem.
  */
 export function ModuleSwitcher({ activeId }: { activeId: string }) {
   const navigate = useNavigate()
 
   return (
     <nav
-      className="no-scrollbar flex gap-1 overflow-x-auto rounded-t-2xl px-2"
+      className="no-scrollbar relative flex gap-1 overflow-x-auto rounded-t-2xl px-2"
       style={{ background: t.component.header.tabsBg }}
       aria-label="Módulos"
     >

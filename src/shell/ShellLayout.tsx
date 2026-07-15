@@ -13,7 +13,7 @@ import { BankModule } from '@/modules/bank/BankModule'
 import { CreditoModule } from '@/modules/credito/CreditoModule'
 import { MarketplaceModule } from '@/modules/marketplace/MarketplaceModule'
 import { ArmazemModule } from '@/modules/armazem/ArmazemModule'
-import { CreditoPill } from '@/modules/fazendas/components/CreditoPill'
+import { CreditoPill } from '@/shell/components/CreditoPill'
 import { useFazendasStore } from '@/modules/fazendas/state/fazendasStore'
 import { t } from '@/design/tokens'
 import { cn } from '@/lib/cn'
@@ -62,8 +62,8 @@ export function ShellLayout() {
             onConsultMode={isFazendas ? () => setView('gerencial') : undefined}
             consultActive={isFazendas && view === 'gerencial'}
           >
-            {/* contexto do módulo dentro do gradiente (premium clean) */}
-            {isFazendas && <CreditoPill />}
+            {/* crédito pré-aprovado é contexto global do Shell — visível em todos os módulos */}
+            <CreditoPill />
           </ShellHeader>
           <ModuleSwitcher activeId={module.id} />
         </div>
