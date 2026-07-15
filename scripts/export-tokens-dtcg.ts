@@ -123,7 +123,7 @@ const dtcg = {
   gbMode: mapThemePalette('gbMode'),
   component: {
     dashboardTile: mapColors(component.dashboardTile),
-    login: mapColors(component.login),
+    login: { heroScrim: mapColors(component.login.heroScrim) },
     hub: {
       bankCard: mapColors(component.hub.bankCard),
       glass: mapColors(component.hub.glass),

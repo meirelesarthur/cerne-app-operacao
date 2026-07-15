@@ -8,6 +8,7 @@ import { FormField } from '@/components/ui/FormField'
 import { TextInput } from '@/components/ui/TextInput'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { t } from '@/design/tokens'
+import loginBg from '@/images/login_bg.png'
 
 /**
  * Login do Shell (mock, sem autenticação real) — tema claro premium:
@@ -23,25 +24,21 @@ export function Login() {
 
   return (
     <div className="no-scrollbar flex h-full flex-col overflow-y-auto bg-canvas">
-      {/* banner da marca — gradiente + ondas (mesma linguagem do header do app) */}
-      <div
-        className="relative shrink-0 overflow-hidden px-6 pb-20 pt-14"
-        style={{
-          background: `linear-gradient(170deg, ${t.component.header.from} 0%, ${t.component.header.mid} 52%, ${t.component.header.to} 100%)`,
-        }}
-      >
-        <svg
+      {/* banner da marca — arte do hero (campo + tecnologia) com véu verde para legibilidade */}
+      <div className="relative shrink-0 overflow-hidden px-6 pb-24 pt-14">
+        <img
+          src={loginBg}
+          alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 right-0"
-          width="280"
-          height="110"
-          viewBox="0 0 280 110"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M280 110V28C227 61 160 74 107 54C67 39 33 46 0 74V110H280Z" fill={t.component.header.wave} />
-          <path d="M280 110V62C240 82 193 85 153 69C113 53 80 58 40 82C24 92 11 98 0 101V110H280Z" fill={t.component.header.wave} />
-        </svg>
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background: `linear-gradient(180deg, ${t.component.login.heroScrim.from} 0%, ${t.component.login.heroScrim.mid} 55%, ${t.component.login.heroScrim.to} 100%)`,
+          }}
+        />
 
         <div className="relative flex flex-col items-center gap-3 text-center">
           <span className="flex h-16 w-16 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-white shadow-brand">

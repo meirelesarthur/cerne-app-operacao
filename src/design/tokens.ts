@@ -308,9 +308,12 @@ export const component = {
     dark: '#1c1917', // neutro/genérico
   },
   login: {
-    leftBg: '#081a12',
-    rightBg: '#fafaf9',
-    accentGlow: 'rgba(5,150,105,0.05)',
+    /** véu em gradiente sobre a arte do hero — legibilidade do bloco branco da marca */
+    heroScrim: {
+      from: 'rgba(9,41,26,0.88)',
+      mid: 'rgba(6,78,59,0.45)',
+      to: 'rgba(6,95,70,0.18)',
+    },
   },
   // New-UI — hub agregador do superapp (módulo Início) com Banking central
   hub: {
