@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sprout } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Heading } from '@/components/ui/Heading'
@@ -9,6 +8,7 @@ import { TextInput } from '@/components/ui/TextInput'
 import { Checkbox } from '@/components/ui/Checkbox'
 import { t } from '@/design/tokens'
 import loginBg from '@/images/login_bg.png'
+import logoMinWhite from '@/images/logo-min-white.svg'
 
 /**
  * Login do Shell (mock, sem autenticação real): arte de campo em tela cheia
@@ -42,9 +42,7 @@ export function Login() {
       <div className="no-scrollbar relative flex h-full flex-col overflow-y-auto">
         {/* bloco da marca sobre a arte */}
         <div className="flex shrink-0 flex-col items-center gap-3 px-6 pb-10 pt-14 text-center">
-          <span className="flex h-16 w-16 items-center justify-center rounded-3xl border border-white/20 bg-white/10 text-white shadow-brand">
-            <Sprout size={32} />
-          </span>
+          <img src={logoMinWhite} alt="Logo GB" className="h-16 w-16 rounded-2xl shadow-brand" />
           <Heading level={1} className="text-white">
             GB CERNE
           </Heading>
