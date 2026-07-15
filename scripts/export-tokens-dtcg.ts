@@ -23,6 +23,7 @@ import {
   animation,
   component,
   themePalette,
+  layout,
 } from '../src/design/tokens'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -103,6 +104,7 @@ const dtcg = {
     },
     space: mapDimensions(space),
     size: mapDimensions(flattenSize(size)),
+    layout: mapDimensions(layout),
     radius: mapDimensions(radius),
     shadow: Object.fromEntries(Object.entries(shadow).map(([k, v]) => [k, parseShadow(v)])),
     chart: {
