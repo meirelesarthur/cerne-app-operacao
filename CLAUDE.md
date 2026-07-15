@@ -58,7 +58,7 @@ npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de src/desi
 - `design/tokens.ts` — fonte única de tokens (Leis 3/5)
 - `styles/tokens.css` — CSS vars light/gbMode (`data-theme`)
 - `components/ui/` — catálogo de componentes (Lei 1)
-- `shell/` — ShellLayout, ShellHeader, ModuleSwitcher, BottomTabBar, RevealMenu, `moduleConfig.ts` (registro dos módulos + menuSections), shellStore, páginas do Shell
+- `shell/` — ShellLayout, ShellHeader (com "Mais" no topo direito), ContextTabs (abas do módulo no topo), BottomTabBar (dock de módulos flutuante), RevealMenu, `moduleConfig.ts` (registro dos módulos + menuSections), shellStore, páginas do Shell
 - `modules/<nome>/` — feature-modules: `hub` (Início/Banking), `fazendas` (admin/ 7 dashboards + operacional/ 6 fluxos), `bank`, `credito`, `marketplace`, `armazem`
 
 ---

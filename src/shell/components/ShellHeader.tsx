@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Bell, Eye } from 'lucide-react'
+import { Bell, Eye, Menu } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { IconButton } from '@/components/ui/IconButton'
 import { useShellStore } from '@/shell/state/shellStore'
@@ -23,6 +23,8 @@ export function ShellHeader({ onConsultMode, consultActive, children }: ShellHea
   const navigate = useNavigate()
   const user = useShellStore((s) => s.user)
   const unread = useShellStore((s) => s.notifications.filter((n) => !n.read).length)
+  const menuOpen = useShellStore((s) => s.menuOpen)
+  const openMenu = useShellStore((s) => s.openMenu)
 
   const hour = 8 // determinístico no protótipo (sem Date.now)
   const greeting = hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite'
@@ -66,6 +68,19 @@ export function ShellHeader({ onConsultMode, consultActive, children }: ShellHea
               />
             )}
           </div>
+
+          {/* "Mais" do módulo — abre o RevealMenu global (antes vivia no rodapé) */}
+          <IconButton
+            label="Mais"
+            variant="solid"
+            size="lg"
+            onClick={openMenu}
+            aria-haspopup="dialog"
+            aria-expanded={menuOpen}
+            className={cn(menuOpen && 'bg-ink text-ink-fg hover:bg-ink')}
+          >
+            <Menu size={19} />
+          </IconButton>
         </div>
       </div>
 

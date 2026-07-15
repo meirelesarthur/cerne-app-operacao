@@ -1,92 +1,69 @@
-import { useLocation, useNavigate } from 'react-router-dom'
-import type { ModuleDef } from '@/shell/moduleConfig'
-import { useShellStore } from '@/shell/state/shellStore'
+import { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { MODULES } from '@/shell/moduleConfig'
 import { t } from '@/design/tokens'
 import { cn } from '@/lib/cn'
 
 const tb = t.component.tabbar
 
 /**
- * Bottom Tab Bar (Nova UI): cápsula flutuante translúcida com botões circulares,
- * como na referência — a aba ativa vira um círculo ink com ícone verde vibrante.
- * Recebe os itens do módulo ativo via `moduleConfig`; nenhum item é hardcodado.
- * Ícone-only com `title` + aria-label (usabilidade preservada).
+ * Dock de módulos (Nova UI): a cápsula flutuante do rodapé troca de MÓDULO —
+ * o ativo expande em pílula ink com ícone + rótulo verde vibrante; os demais
+ * ficam como círculos icon-only (title + aria-label preservam usabilidade).
+ * A faixa interna rola horizontalmente e centraliza o módulo ativo, então a
+ * cápsula nunca estoura viewports estreitos. A navegação interna do módulo
+ * vive no topo (ContextTabs).
  */
-export function BottomTabBar({ module }: { module: ModuleDef }) {
+export function BottomTabBar({ activeId }: { activeId: string }) {
   const navigate = useNavigate()
-  const location = useLocation()
-  const menuOpen = useShellStore((s) => s.menuOpen)
-  const openMenu = useShellStore((s) => s.openMenu)
+  const activeRef = useRef<HTMLButtonElement | null>(null)
 
-  // sub-path atual dentro do módulo (ex.: /fazendas/atividades → "atividades")
-  const rest = location.pathname.replace(new RegExp(`^/${module.id}/?`), '')
-  const activePath = rest.split('/')[0] ?? ''
-
-  const itemBase = 'flex h-12 w-12 items-center justify-center rounded-full transition-all active:scale-95'
-  const itemIdle = 'text-nav-fg hover:bg-black/5 dark:hover:bg-white/10'
-  const itemActive = 'bg-ink text-nav-active'
+  // mantém o módulo ativo visível/centralizado dentro da cápsula rolável
+  useEffect(() => {
+    activeRef.current?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' })
+  }, [activeId])
 
   return (
     <nav
       className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center"
-      style={{ zIndex: t.zIndex.tabBar, paddingBottom: `calc(${tb.inset} + env(safe-area-inset-bottom))` }}
-      aria-label={`Navegação do módulo ${module.label}`}
+      style={{
+        zIndex: t.zIndex.tabBar,
+        paddingBottom: `calc(${tb.inset} + env(safe-area-inset-bottom))`,
+        paddingLeft: tb.inset,
+        paddingRight: tb.inset,
+      }}
+      aria-label="Módulos do superapp"
     >
       <div
-        className="pointer-events-auto flex items-center gap-1.5 rounded-full border border-nav-border bg-nav-bg p-2 shadow-modal"
+        className="pointer-events-auto max-w-full rounded-full border border-nav-border bg-nav-bg p-2 shadow-modal"
         style={{ backdropFilter: `blur(${tb.blur})`, WebkitBackdropFilter: `blur(${tb.blur})` }}
       >
-        {module.bottomTabs.map((tab) => {
-          const active = tab.path === activePath && !tab.action
-          const Icon = tab.icon
-          const target = tab.path ? `/${module.id}/${tab.path}` : `/${module.id}`
+        <div className="no-scrollbar flex items-center gap-1 overflow-x-auto rounded-full">
+          {MODULES.map((m) => {
+            const active = m.id === activeId
+            const Icon = m.icon
 
-          // aba de ação: abre o RevealMenu global em vez de navegar
-          if (tab.action === 'menu') {
             return (
               <button
-                key={tab.id}
-                onClick={openMenu}
-                aria-haspopup="dialog"
-                aria-expanded={menuOpen}
-                aria-label={tab.label}
-                title={tab.label}
-                className={cn(itemBase, menuOpen ? itemActive : itemIdle)}
-              >
-                <Icon size={21} strokeWidth={menuOpen ? 2.2 : 1.9} aria-hidden="true" />
-              </button>
-            )
-          }
-
-          // botão central elevado (ex.: "Registrar" em campo): CTA vibrante
-          if (tab.elevated) {
-            return (
-              <button
-                key={tab.id}
-                onClick={() => navigate(target)}
+                key={m.id}
+                ref={active ? activeRef : undefined}
+                onClick={() => navigate(m.homeRoute)}
                 aria-current={active ? 'page' : undefined}
-                aria-label={tab.label}
-                title={tab.label}
-                className={cn(itemBase, 'bg-cta text-cta-fg shadow-brand hover:bg-cta-hover')}
+                aria-label={m.label}
+                title={m.label}
+                className={cn(
+                  'flex h-12 shrink-0 items-center justify-center rounded-full transition-all active:scale-95',
+                  active
+                    ? 'gap-2 bg-ink px-4 text-nav-active'
+                    : 'w-12 text-nav-fg hover:bg-black/5 dark:hover:bg-white/10',
+                )}
               >
-                <Icon size={22} strokeWidth={2.1} aria-hidden="true" />
+                <Icon size={20} strokeWidth={active ? 2.2 : 1.9} aria-hidden="true" />
+                {active && <span className="whitespace-nowrap text-sm font-semibold">{m.label}</span>}
               </button>
             )
-          }
-
-          return (
-            <button
-              key={tab.id}
-              onClick={() => navigate(target)}
-              aria-current={active ? 'page' : undefined}
-              aria-label={tab.label}
-              title={tab.label}
-              className={cn(itemBase, active ? itemActive : itemIdle)}
-            >
-              <Icon size={21} strokeWidth={active ? 2.2 : 1.9} aria-hidden="true" />
-            </button>
-          )
-        })}
+          })}
+        </div>
       </div>
     </nav>
   )

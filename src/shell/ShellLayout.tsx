@@ -2,7 +2,7 @@ import { useParams, Navigate } from 'react-router-dom'
 import { CloudOff } from 'lucide-react'
 import { getModule } from '@/shell/moduleConfig'
 import { ShellHeader } from '@/shell/components/ShellHeader'
-import { ModuleSwitcher } from '@/shell/components/ModuleSwitcher'
+import { ContextTabs } from '@/shell/components/ContextTabs'
 import { BottomTabBar } from '@/shell/components/BottomTabBar'
 import { RevealMenu } from '@/shell/components/RevealMenu'
 import { Banner } from '@/components/ui/Banner'
@@ -65,7 +65,7 @@ export function ShellLayout() {
             {/* crédito pré-aprovado é contexto global do Shell — visível em todos os módulos */}
             <CreditoPill />
           </ShellHeader>
-          <ModuleSwitcher activeId={module.id} />
+          <ContextTabs module={module} />
         </div>
 
         {!isOnline && (
@@ -103,8 +103,8 @@ export function ShellLayout() {
           </main>
         </div>
 
-        {/* cápsula flutuante — posiciona-se sozinha sobre o conteúdo */}
-        <BottomTabBar module={module} />
+        {/* dock de módulos flutuante — posiciona-se sozinho sobre o conteúdo */}
+        <BottomTabBar activeId={module.id} />
 
         {/* com o menu aberto, tocar no app encolhido fecha o menu */}
         {menuOpen && (
