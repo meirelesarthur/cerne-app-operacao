@@ -5,9 +5,19 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode
   interactive?: boolean
   padded?: boolean
+  /** 'ink': superfície escura de destaque (hero da referência) — permanece escura nos dois temas */
+  variant?: 'surface' | 'ink'
 }
 
-export function Card({ children, interactive = false, padded = true, className, onClick, ...rest }: CardProps) {
+export function Card({
+  children,
+  interactive = false,
+  padded = true,
+  variant = 'surface',
+  className,
+  onClick,
+  ...rest
+}: CardProps) {
   // card clicável é operável por teclado (Enter/Espaço) — WCAG 2.1
   const a11y =
     interactive && onClick
@@ -26,8 +36,11 @@ export function Card({ children, interactive = false, padded = true, className, 
   return (
     <div
       className={cn(
-        'rounded-2xl bg-surface border border-border-default shadow-card',
-        padded && 'p-4',
+        'rounded-3xl shadow-card',
+        variant === 'ink'
+          ? 'bg-ink text-ink-fg border border-ink-line'
+          : 'bg-surface border border-border-subtle',
+        padded && 'p-5',
         interactive && 'cursor-pointer transition-shadow hover:shadow-card-hover active:scale-[0.99]',
         className,
       )}

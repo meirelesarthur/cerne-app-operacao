@@ -9,7 +9,7 @@ export interface BadgeProps {
 }
 
 const toneCls = {
-  brand: 'bg-accent text-white',
+  brand: 'bg-cta text-cta-fg',
   red: 'bg-red-600 text-white',
   neutral: 'bg-neutral-200 text-neutral-700',
 } as const

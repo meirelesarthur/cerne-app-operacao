@@ -23,15 +23,15 @@ export function SearchSelect({ options, value, onChange, placeholder = 'Buscar..
   return (
     <div className="flex flex-col gap-2">
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-fg-subtle" />
+        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-fg-subtle" />
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className="h-10 w-full rounded-lg border border-border-default bg-surface pl-9 pr-3 text-md text-fg placeholder:text-fg-subtle focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+          className="h-12 w-full rounded-full border border-transparent bg-surface-subtle pl-11 pr-4 text-md text-fg placeholder:text-fg-subtle transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:bg-surface"
         />
       </div>
-      <ul className="max-h-56 overflow-y-auto rounded-lg border border-border-default bg-surface">
+      <ul className="max-h-56 overflow-y-auto rounded-2xl border border-border-subtle bg-surface shadow-card">
         {filtered.length === 0 && <li className="px-3 py-4 text-center text-sm text-fg-subtle">Nada encontrado</li>}
         {filtered.map((o) => {
           const selected = o.value === value

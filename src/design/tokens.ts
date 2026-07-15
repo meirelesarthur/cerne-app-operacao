@@ -230,11 +230,11 @@ export const space = {
 } as const
 
 export const size = {
-  control: '40px',
-  controlSm: '32px',
-  controlLg: '48px',
-  btn: { sm: '32px', md: '40px', lg: '48px' },
-  iconBtn: { sm: '24px', md: '30px', lg: '36px' },
+  control: '44px',
+  controlSm: '36px',
+  controlLg: '52px',
+  btn: { sm: '36px', md: '44px', lg: '52px' },
+  iconBtn: { sm: '32px', md: '40px', lg: '48px' },
   toggle: { track: '40px', thumb: '18px' },
   tableRow: '42px',
   drawer: '320px',
