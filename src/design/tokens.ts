@@ -308,11 +308,12 @@ export const component = {
     dark: '#1c1917', // neutro/genérico
   },
   login: {
-    /** véu em gradiente sobre a arte do hero — legibilidade do bloco branco da marca */
+    /** véu em gradiente sobre a arte de fundo integral — escurece só o topo (céu claro)
+     *  para o bloco branco da marca; a base da arte já é escura e dispensa véu */
     heroScrim: {
-      from: 'rgba(9,41,26,0.88)',
-      mid: 'rgba(6,78,59,0.45)',
-      to: 'rgba(6,95,70,0.18)',
+      from: 'rgba(9,41,26,0.72)',
+      mid: 'rgba(6,78,59,0.22)',
+      to: 'rgba(6,95,70,0)',
     },
   },
   // New-UI — hub agregador do superapp (módulo Início) com Banking central
