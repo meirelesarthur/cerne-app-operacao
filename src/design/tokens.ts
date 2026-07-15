@@ -128,25 +128,41 @@ export const color = {
 } as const
 
 // 2b. theme-aware — consumido via ThemeContext / useTheme()
+// Nova UI: canvas suave, cartões-cápsula, superfície "ink" (carvão-verde que permanece
+// escura nos dois temas — cartões-herói da referência) e CTA vibrante com texto escuro.
 export interface ThemePalette {
   fg: { default: string; muted: string; subtle: string; inverse: string }
   bg: { canvas: string; surface: string; subtle: string; raised: string; kpi: string }
   border: { default: string; strong: string; subtle: string; tint: string }
   accent: { default: string; hover: string; subtle: string; contrast: string }
+  /** superfície escura de destaque (hero cards / canvas invertido da referência) */
+  ink: { bg: string; fg: string; muted: string; subtle: string; bubble: string; line: string }
+  /** CTA de alto impacto: verde vibrante + texto quase-preto (referência) */
+  cta: { bg: string; hover: string; fg: string }
+  /** tab bar flutuante em cápsula translúcida */
   nav: { bg: string; fg: string; active: string; border: string }
   shadow: { card: string; cardHover: string; modal: string }
 }
 
 export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
   light: {
-    fg: { default: primitive.neutral[900], muted: primitive.neutral[500], subtle: primitive.neutral[400], inverse: primitive.neutral[0] },
-    bg: { canvas: '#f5f5f5', surface: primitive.neutral[0], subtle: primitive.neutral[50], raised: primitive.neutral[0], kpi: '#f8fffe' },
-    border: { default: primitive.neutral[200], strong: primitive.neutral[300], subtle: primitive.neutral[150], tint: primitive.brand[100] },
+    fg: { default: '#161b17', muted: '#66716a', subtle: '#99a39c', inverse: primitive.neutral[0] },
+    bg: { canvas: '#f0f1ea', surface: primitive.neutral[0], subtle: '#f5f6f0', raised: primitive.neutral[0], kpi: '#f8fffe' },
+    border: { default: '#e8e9e1', strong: '#d6d8ce', subtle: '#f0f1ea', tint: primitive.brand[100] },
     accent: { default: primitive.brand[600], hover: primitive.brand[700], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
-    nav: { bg: primitive.brand[900], fg: '#d1fae5', active: '#4ade80', border: 'rgba(255,255,255,0.12)' },
+    ink: {
+      bg: '#131712',
+      fg: '#f2f5ee',
+      muted: 'rgba(242,245,238,0.62)',
+      subtle: 'rgba(242,245,238,0.40)',
+      bubble: 'rgba(255,255,255,0.08)',
+      line: 'rgba(255,255,255,0.09)',
+    },
+    cta: { bg: primitive.brand[400], hover: primitive.brand[500], fg: '#04150b' },
+    nav: { bg: 'rgba(240,241,234,0.88)', fg: '#67716a', active: primitive.brand[400], border: 'rgba(22,27,23,0.08)' },
     shadow: {
-      card: 'none',
-      cardHover: '0 2px 12px rgba(0,0,0,0.06)',
+      card: '0 1px 2px rgba(16,21,16,0.03), 0 8px 24px rgba(16,21,16,0.05)',
+      cardHover: '0 10px 30px rgba(16,21,16,0.10)',
       modal: '0 20px 48px rgba(0,0,0,0.24)',
     },
   },
@@ -155,7 +171,16 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
     bg: { canvas: '#051008', surface: '#0e2a1d', subtle: '#0a2016', raised: '#123a28', kpi: '#0e2a1d' },
     border: { default: 'rgba(255,255,255,0.10)', strong: 'rgba(255,255,255,0.18)', subtle: 'rgba(255,255,255,0.06)', tint: 'rgba(255,255,255,0.10)' },
     accent: { default: '#10b981', hover: '#34d399', subtle: 'rgba(16,185,129,0.14)', contrast: '#051008' },
-    nav: { bg: '#081a12', fg: '#8fb3a2', active: '#4ade80', border: 'rgba(255,255,255,0.10)' },
+    ink: {
+      bg: '#102b1e',
+      fg: '#e9f4ed',
+      muted: 'rgba(233,244,237,0.62)',
+      subtle: 'rgba(233,244,237,0.40)',
+      bubble: 'rgba(255,255,255,0.06)',
+      line: 'rgba(255,255,255,0.08)',
+    },
+    cta: { bg: primitive.brand[400], hover: primitive.brand[500], fg: '#051008' },
+    nav: { bg: 'rgba(8,26,18,0.88)', fg: '#8fb3a2', active: primitive.brand[400], border: 'rgba(255,255,255,0.10)' },
     shadow: {
       card: '0 1px 3px rgba(0,0,0,0.4)',
       cardHover: '0 6px 16px rgba(0,0,0,0.5)',
@@ -217,16 +242,17 @@ export const size = {
   phone: '420px', // largura máxima do frame de telefone
 } as const
 
+// Nova UI: geometria cápsula — raios generosos em toda a hierarquia (referência)
 export const radius = {
-  sm: '4px',
-  md: '6px',
-  base: '8px',
-  lg: '10px',
-  xl: '12px',
-  '2xl': '16px',
-  '3xl': '20px',
-  '4xl': '24px',
-  modal: '20px',
+  sm: '6px',
+  md: '8px',
+  base: '10px',
+  lg: '14px',
+  xl: '18px',
+  '2xl': '22px',
+  '3xl': '28px',
+  '4xl': '32px',
+  modal: '28px',
   full: '9999px',
 } as const
 
@@ -359,6 +385,15 @@ export const component = {
   /** fundo levemente tintado para KPIs em cards claros */
   kpi: {
     bg: '#f8fffe',
+  },
+  /** Nova UI — tab bar flutuante em cápsula translúcida sobre o conteúdo */
+  tabbar: {
+    blur: '20px',
+    height: '68px',
+    /** respiro lateral/inferior da cápsula dentro do frame */
+    inset: '14px',
+    /** diâmetro dos botões circulares internos */
+    itemSize: '48px',
   },
 } as const
 

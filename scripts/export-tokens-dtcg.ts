@@ -138,6 +138,7 @@ const dtcg = {
     },
     header: mapColors(component.header),
     kpi: mapColors(component.kpi),
+    tabbar: mapDimensions(component.tabbar),
   },
 } as const
 
