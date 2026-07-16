@@ -48,11 +48,11 @@ function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> 
   const [selected, setSelected] = useState<Activity | null>(null)
 
   const adminShortcuts: Shortcut[] = [
-    { id: 'financeiro', label: 'Financeiro', icon: Wallet, tone: 'brand', onClick: () => navigate('/fazendas/dashboards/financeiro') },
-    { id: 'pecuaria', label: 'Pecuária', icon: Beef, tone: 'blue', onClick: () => navigate('/fazendas/dashboards/pecuaria') },
-    { id: 'confinamento', label: 'Currais', icon: Warehouse, tone: 'amber', onClick: () => navigate('/fazendas/dashboards/confinamento') },
-    { id: 'ativos', label: 'Ativos', icon: Package, tone: 'purple', onClick: () => navigate('/fazendas/dashboards/ativos') },
-    { id: 'mais', label: 'Mais', icon: MoreHorizontal, tone: 'brand', onClick: () => navigate('/fazendas/mais') },
+    { id: 'financeiro', label: 'Financeiro', icon: Wallet, onClick: () => navigate('/fazendas/dashboards/financeiro') },
+    { id: 'pecuaria', label: 'Pecuária', icon: Beef, onClick: () => navigate('/fazendas/dashboards/pecuaria') },
+    { id: 'confinamento', label: 'Currais', icon: Warehouse, onClick: () => navigate('/fazendas/dashboards/confinamento') },
+    { id: 'ativos', label: 'Ativos', icon: Package, onClick: () => navigate('/fazendas/dashboards/ativos') },
+    { id: 'mais', label: 'Mais', icon: MoreHorizontal, onClick: () => navigate('/fazendas/mais') },
   ]
 
   return (
