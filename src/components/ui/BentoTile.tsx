@@ -7,8 +7,6 @@ export interface BentoTileProps {
   icon: LucideIcon
   label: string
   caption?: string
-  /** tom do container do ícone na variante 'surface' (usa paleta de acento) */
-  tone?: 'brand' | 'blue' | 'amber' | 'purple'
   /** 'surface' (padrão, clara) ou 'accent' (escura, tile de destaque com seta) */
   variant?: 'surface' | 'accent'
   /** tamanho do container/ícone */
@@ -17,22 +15,16 @@ export interface BentoTileProps {
   className?: string
 }
 
-const toneCls: Record<NonNullable<BentoTileProps['tone']>, string> = {
-  brand: 'bg-accent-subtle text-accent border border-border-tint',
-  blue: 'bg-blue-50 text-blue-600 border border-blue-100',
-  amber: 'bg-amber-50 text-amber-600 border border-amber-100',
-  purple: '',
-}
-
 /**
  * Tile de bento grid reutilizável (home de super app): tamanhos mistos,
  * variante clara ('surface') ou escura de destaque com seta ('accent').
+ * Nova UI: bolha de ícone monotom (acento da marca) — sem cor por item; a
+ * distinção vem do ícone e do rótulo, não do fundo.
  */
 export function BentoTile({
   icon: Icon,
   label,
   caption,
-  tone = 'brand',
   variant = 'surface',
   iconSize = 'md',
   onClick,
@@ -69,8 +61,6 @@ export function BentoTile({
     )
   }
 
-  const isPurple = tone === 'purple'
-
   return (
     <button
       type="button"
@@ -81,16 +71,10 @@ export function BentoTile({
       )}
     >
       <span
-        className={cn('flex items-center justify-center rounded-full', iconBoxCls, !isPurple && toneCls[tone])}
-        style={
-          isPurple
-            ? {
-                backgroundColor: t.color.accent.purple.bg,
-                color: t.color.accent.purple.solid,
-                border: `1px solid ${t.color.accent.purple.border}`,
-              }
-            : undefined
-        }
+        className={cn(
+          'flex items-center justify-center rounded-full border border-border-tint bg-accent-subtle text-accent',
+          iconBoxCls,
+        )}
       >
         <Icon size={iconGlyphSize} aria-hidden="true" />
       </span>
