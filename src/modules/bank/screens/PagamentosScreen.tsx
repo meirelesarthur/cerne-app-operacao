@@ -15,20 +15,20 @@ interface Acao {
 
 const ACOES: Acao[] = [
   { flow: 'pix', icon: Zap, label: 'Pix', description: 'Envie na hora por chave ou contato' },
-  { flow: 'boleto', icon: ScanLine, label: 'Pagar boleto', description: 'Pague contas e boletos por cÃ³digo' },
+  { flow: 'boleto', icon: ScanLine, label: 'Pagar boleto', description: 'Pague contas e boletos por código' },
   { flow: 'transferir', icon: ArrowLeftRight, label: 'Transferir', description: 'TED/entre contas para outro banco' },
-  { flow: 'cobrar', icon: HandCoins, label: 'Cobrar', description: 'Gere uma cobranÃ§a Pix para receber' },
+  { flow: 'cobrar', icon: HandCoins, label: 'Cobrar', description: 'Gere uma cobrança Pix para receber' },
 ]
 
 export interface PagamentosScreenProps {
-  /** Abre direto em um fluxo especÃ­fico (ex.: deep-link /bank/pix). */
+  /** Abre direto em um fluxo específico (ex.: deep-link /bank/pix). */
   initialFlow?: Flow
 }
 
 /**
- * Hub de Pagamentos do GB Bank â€” destino das QuickActions (Pix/Pagar/Transferir/
- * Cobrar). Cada aÃ§Ã£o entra num fluxo mockado (revisÃ£o â†’ sucesso). O Pix Ã© o
- * fluxo de referÃªncia, completo; os demais sÃ£o formulÃ¡rios simples honestos.
+ * Hub de Pagamentos do GB Bank — destino das QuickActions (Pix/Pagar/Transferir/
+ * Cobrar). Cada ação entra num fluxo mockado (revisão → sucesso). O Pix é o
+ * fluxo de referência, completo; os demais são formulários simples honestos.
  */
 export function PagamentosScreen({ initialFlow }: PagamentosScreenProps) {
   const [flow, setFlow] = useState<Flow | null>(initialFlow ?? null)
@@ -41,7 +41,7 @@ export function PagamentosScreen({ initialFlow }: PagamentosScreenProps) {
     <div className="flex flex-col gap-5 p-4">
       <div>
         <Heading level={3}>Pagamentos</Heading>
-        <p className="mt-0.5 text-sm text-fg-muted">Pix, boletos, transferÃªncias e cobranÃ§as em um sÃ³ lugar.</p>
+        <p className="mt-0.5 text-sm text-fg-muted">Pix, boletos, transferências e cobranças em um só lugar.</p>
       </div>
 
       <div className="grid grid-cols-4 gap-2">
@@ -51,7 +51,7 @@ export function PagamentosScreen({ initialFlow }: PagamentosScreenProps) {
       </div>
 
       <div>
-        <SectionTitle className="mb-2">Todas as opÃ§Ãµes</SectionTitle>
+        <SectionTitle className="mb-2">Todas as opções</SectionTitle>
         <div className="flex flex-col gap-2">
           {ACOES.map((a) => (
             <Card key={a.flow} interactive onClick={() => setFlow(a.flow)}>

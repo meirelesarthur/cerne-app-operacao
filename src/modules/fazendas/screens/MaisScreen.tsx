@@ -25,24 +25,24 @@ const GROUPS: { title: string; items: LinkItem[] }[] = [
     title: 'Dashboards gerenciais',
     items: [
       { label: 'Financeiro', icon: Wallet, to: '/fazendas/dashboards/financeiro' },
-      { label: 'PecuÃ¡ria de Corte', icon: Beef, to: '/fazendas/dashboards/pecuaria' },
-      { label: 'LotaÃ§Ã£o de Currais', icon: Warehouse, to: '/fazendas/dashboards/confinamento' },
-      { label: 'Ativos / DepreciaÃ§Ã£o', icon: Package, to: '/fazendas/dashboards/ativos' },
+      { label: 'Pecuária de Corte', icon: Beef, to: '/fazendas/dashboards/pecuaria' },
+      { label: 'Lotação de Currais', icon: Warehouse, to: '/fazendas/dashboards/confinamento' },
+      { label: 'Ativos / Depreciação', icon: Package, to: '/fazendas/dashboards/ativos' },
       { label: 'Suprimentos', icon: Boxes, to: '/fazendas/dashboards/suprimentos' },
-      { label: 'AnÃ¡lise de Uso', icon: Users, to: '/fazendas/dashboards/uso' },
+      { label: 'Análise de Uso', icon: Users, to: '/fazendas/dashboards/uso' },
       { label: 'Consultas Gerenciais', icon: Search, to: '/fazendas/dashboards/consultas' },
     ],
   },
   {
     title: 'Operacional',
     items: [
-      { label: 'Fila de sincronizaÃ§Ã£o', icon: RefreshCw, to: '/fazendas/mais/sync' },
+      { label: 'Fila de sincronização', icon: RefreshCw, to: '/fazendas/mais/sync' },
       { label: 'Todas as atividades', icon: ActivityIcon, to: '/fazendas/atividades' },
     ],
   },
 ]
 
-/** Menu "Mais" (spec Â§3.2) â€” hub expandido com acesso a dashboards e Ã¡reas do mÃ³dulo. */
+/** Menu "Mais" (spec §3.2) — hub expandido com acesso a dashboards e áreas do módulo. */
 export function MaisScreen() {
   const navigate = useNavigate()
   return (

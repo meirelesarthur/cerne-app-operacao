@@ -10,7 +10,7 @@ import { useShellStore } from '@/shell/state/shellStore'
 import { useFazendasStore } from '../state/fazendasStore'
 import { NFE_ITENS, NFE_CABECALHO } from '../mocks/operacional'
 
-/** Recebimento / Entrada por XML (NF-e) (spec Â§5.4): upload + conferÃªncia de itens. */
+/** Recebimento / Entrada por XML (NF-e) (spec §5.4): upload + conferência de itens. */
 export function RecebimentoXmlFlow() {
   const isOnline = useShellStore((s) => s.isOnline)
   const enqueueSync = useFazendasStore((s) => s.enqueueSync)
@@ -33,7 +33,7 @@ export function RecebimentoXmlFlow() {
       <SuccessScreen
         title="Entrada processada"
         queued={done.queued}
-        effects="Movimento de compra serÃ¡ processado e um tÃ­tulo a pagar serÃ¡ gerado no financeiro."
+        effects="Movimento de compra será processado e um título a pagar será gerado no financeiro."
       />
     )
   }

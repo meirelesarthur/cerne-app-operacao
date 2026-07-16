@@ -18,7 +18,7 @@ const KIND_ICON: Record<Activity['kind'], LucideIcon> = {
   arracoamento: Wheat,
 }
 
-/** Tela "Fila de sincronizaÃ§Ã£o" (spec Â§3.2/Â§6.9) â€” lista os lanÃ§amentos ainda nÃ£o enviados ao servidor. */
+/** Tela "Fila de sincronização" (spec §3.2/§6.9) — lista os lançamentos ainda não enviados ao servidor. */
 export function SyncQueueScreen() {
   const isOnline = useShellStore((s) => s.isOnline)
   const queue = useFazendasStore((s) => s.syncQueue)
@@ -26,11 +26,11 @@ export function SyncQueueScreen() {
 
   return (
     <div className="flex h-full flex-col">
-      <SubPageHeader title="Fila de sincronizaÃ§Ã£o" />
+      <SubPageHeader title="Fila de sincronização" />
 
       {queue.length > 0 && !isOnline && (
         <Banner tone="offline" icon={<CloudOff size={14} />}>
-          Sem conexÃ£o â€” os itens serÃ£o enviados automaticamente assim que a internet voltar.
+          Sem conexão — os itens serão enviados automaticamente assim que a internet voltar.
         </Banner>
       )}
 
@@ -38,8 +38,8 @@ export function SyncQueueScreen() {
         {queue.length === 0 ? (
           <EmptyState
             icon={Inbox}
-            title="Nenhum lanÃ§amento pendente"
-            description="Tudo o que foi registrado em campo jÃ¡ estÃ¡ sincronizado com o servidor."
+            title="Nenhum lançamento pendente"
+            description="Tudo o que foi registrado em campo já está sincronizado com o servidor."
             className="flex-1 justify-center"
           />
         ) : (

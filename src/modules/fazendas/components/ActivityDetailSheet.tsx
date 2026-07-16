@@ -5,34 +5,34 @@ import { Chip } from '@/components/ui/Chip'
 import { KIND_ICON, STATUS_META } from './ActivityListItem'
 import type { Activity } from '../types'
 
-/** Nome legÃ­vel do tipo de atividade (spec Â§6.7). */
+/** Nome legível do tipo de atividade (spec §6.7). */
 const KIND_LABEL: Record<Activity['kind'], string> = {
   pesagem: 'Pesagem',
   evento: 'Evento de rebanho',
   nfe: 'Entrada NF-e',
   venda: 'Venda de animais',
-  insumo: 'AplicaÃ§Ã£o de insumo',
-  arracoamento: 'ArraÃ§oamento',
+  insumo: 'Aplicação de insumo',
+  arracoamento: 'Arraçoamento',
 }
 
 /**
- * RÃ³tulos dos segmentos do `subtitle` ("A Â· B") por tipo â€” dÃ¡ semÃ¢ntica de ficha
- * ao mock (fazenda, lote, quantidade, fornecedorâ€¦) sem inventar dado novo.
+ * Rótulos dos segmentos do `subtitle` ("A · B") por tipo — dá semântica de ficha
+ * ao mock (fazenda, lote, quantidade, fornecedor…) sem inventar dado novo.
  */
 const KIND_DETAIL_LABELS: Record<Activity['kind'], [string, string]> = {
   pesagem: ['Fazenda', 'Quantidade'],
-  evento: ['ReferÃªncia', 'Detalhe'],
+  evento: ['Referência', 'Detalhe'],
   nfe: ['Categoria', 'Fornecedor'],
   venda: ['Comprador', 'Quantidade'],
   insumo: ['Local', 'Insumo'],
   arracoamento: ['Dieta', 'Quantidade'],
 }
 
-/** Tipos capturados pelo app de campo â€” exibem a linha de origem/sincronizaÃ§Ã£o. */
+/** Tipos capturados pelo app de campo — exibem a linha de origem/sincronização. */
 const FIELD_KINDS: ReadonlyArray<Activity['kind']> = ['pesagem', 'arracoamento', 'insumo', 'evento']
 
 export interface ActivityDetailSheetProps {
-  /** Atividade selecionada â€” `null` mantÃ©m o sheet fechado. */
+  /** Atividade selecionada — `null` mantém o sheet fechado. */
   activity: Activity | null
   onClose: () => void
 }
@@ -40,7 +40,7 @@ export interface ActivityDetailSheetProps {
 /**
  * Detalhe de Atividade (Plano de Navegabilidade, B1): BottomSheet acionado pelo
  * `ActivityListItem` em FazendasHome, AtividadesScreen e DashPecuaria. Reaproveita
- * os mesmos Ã­cones e tons de status da lista (fonte Ãºnica, Lei 2).
+ * os mesmos ícones e tons de status da lista (fonte única, Lei 2).
  */
 export function ActivityDetailSheet({ activity, onClose }: ActivityDetailSheetProps) {
   return (
@@ -54,7 +54,7 @@ function SheetBody({ activity }: { activity: Activity }) {
   const Icon = KIND_ICON[activity.kind]
   const status = STATUS_META[activity.status]
   const detailLabels = KIND_DETAIL_LABELS[activity.kind]
-  const segments = activity.subtitle.split(' Â· ')
+  const segments = activity.subtitle.split(' · ')
   const syncedFromField = FIELD_KINDS.includes(activity.kind) && activity.status === 'concluida'
 
   return (
@@ -81,20 +81,20 @@ function SheetBody({ activity }: { activity: Activity }) {
         ))}
       </div>
 
-      {/* Origem do registro â€” sÃ³ quando o shape indica captura em campo concluÃ­da */}
+      {/* Origem do registro — só quando o shape indica captura em campo concluída */}
       {syncedFromField && (
         <p className="flex items-center gap-1.5 text-xs text-fg-muted">
           <Smartphone size={13} aria-hidden="true" />
           Registrado no campo
-          <span aria-hidden="true">Â·</span>
+          <span aria-hidden="true">·</span>
           <CheckCircle2 size={13} className="text-accent" aria-hidden="true" />
           sincronizado
         </p>
       )}
 
-      {/* PadrÃ£o honesto do protÃ³tipo (como no DashConfinamento) */}
+      {/* Padrão honesto do protótipo (como no DashConfinamento) */}
       <p className="text-sm text-fg-subtle">
-        HistÃ³rico completo, anexos e ediÃ§Ã£o desta atividade ficam no sistema web GB CERNE.
+        Histórico completo, anexos e edição desta atividade ficam no sistema web GB CERNE.
       </p>
     </div>
   )

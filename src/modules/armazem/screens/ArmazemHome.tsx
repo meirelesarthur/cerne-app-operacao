@@ -10,13 +10,13 @@ import { UnidadeCard } from '../components/UnidadeCard'
 import { UnidadeDetailSheet } from '../components/UnidadeDetailSheet'
 import { MovimentacaoDetailSheet } from '../components/MovimentacaoDetailSheet'
 
-/** delay escalonado de entrada por seÃ§Ã£o (motion tokenizado, ver Lei 3) */
+/** delay escalonado de entrada por seção (motion tokenizado, ver Lei 3) */
 const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
 
 /**
- * Home do mÃ³dulo ArmazÃ©m: ocupaÃ§Ã£o e alertas em destaque, unidades de
- * armazenagem (cards interativos com detalhe) e Ãºltimas movimentaÃ§Ãµes
- * fÃ­sicas (itens interativos com detalhe) â€” spec D2.
+ * Home do módulo Armazém: ocupação e alertas em destaque, unidades de
+ * armazenagem (cards interativos com detalhe) e últimas movimentações
+ * físicas (itens interativos com detalhe) — spec D2.
  */
 export function ArmazemHome() {
   const navigate = useNavigate()
@@ -36,7 +36,7 @@ export function ArmazemHome() {
           </>
         ) : (
           <>
-            <KpiStatCard label="OcupaÃ§Ã£o total" value={KPIS.ocupacao} />
+            <KpiStatCard label="Ocupação total" value={KPIS.ocupacao} />
             <KpiStatCard label="SKUs em estoque" value={KPIS.skus} />
             <KpiStatCard label="Alertas" value={KPIS.alertas} tone="warning" />
           </>
@@ -60,7 +60,7 @@ export function ArmazemHome() {
                   <p className="mt-0.5 text-xs text-fg-muted">{alerta.detalhe}</p>
                 </div>
                 <Chip tone="amber" className="shrink-0">
-                  AÃ§Ã£o sugerida
+                  Ação sugerida
                 </Chip>
               </div>
             ))}
@@ -68,7 +68,7 @@ export function ArmazemHome() {
         </Card>
       </div>
 
-      {/* Unidades de armazenagem â€” cards interativos, abrem detalhe da unidade */}
+      {/* Unidades de armazenagem — cards interativos, abrem detalhe da unidade */}
       <div className="animate-rise" style={stagger(2)}>
         <SectionTitle className="mb-2">Unidades de armazenagem</SectionTitle>
         <div className="flex flex-col gap-3">
@@ -78,9 +78,9 @@ export function ArmazemHome() {
         </div>
       </div>
 
-      {/* MovimentaÃ§Ãµes recentes â€” itens interativos, abrem detalhe da movimentaÃ§Ã£o */}
+      {/* Movimentações recentes — itens interativos, abrem detalhe da movimentação */}
       <div className="animate-rise" style={stagger(3)}>
-        <SectionTitle className="mb-2">MovimentaÃ§Ãµes recentes</SectionTitle>
+        <SectionTitle className="mb-2">Movimentações recentes</SectionTitle>
         <Card padded={false} className="px-4">
           {MOVIMENTACOES.map((mov) => (
             <TransactionListItem

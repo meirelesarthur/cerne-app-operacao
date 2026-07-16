@@ -3,7 +3,7 @@ import type { LucideIcon } from 'lucide-react'
 import { Chip, type ChipTone } from '@/components/ui/Chip'
 import type { Activity, ActivityStatus } from '../types'
 
-/** Ãcone por tipo de atividade â€” fonte Ãºnica, reutilizado no ActivityDetailSheet (Lei 2). */
+/** Ícone por tipo de atividade — fonte única, reutilizado no ActivityDetailSheet (Lei 2). */
 export const KIND_ICON: Record<Activity['kind'], LucideIcon> = {
   pesagem: Scale,
   evento: ArrowLeftRight,
@@ -13,15 +13,15 @@ export const KIND_ICON: Record<Activity['kind'], LucideIcon> = {
   arracoamento: Wheat,
 }
 
-/** RÃ³tulo + tom de status â€” fonte Ãºnica, reutilizado no ActivityDetailSheet (Lei 2). */
+/** Rótulo + tom de status — fonte única, reutilizado no ActivityDetailSheet (Lei 2). */
 export const STATUS_META: Record<ActivityStatus, { label: string; tone: ChipTone }> = {
   andamento: { label: 'Em andamento', tone: 'blue' },
-  concluida: { label: 'ConcluÃ­da', tone: 'brand' },
+  concluida: { label: 'Concluída', tone: 'brand' },
   autorizada: { label: 'Autorizada', tone: 'brand' },
   atrasada: { label: 'Atrasada', tone: 'red' },
 }
 
-/** Item da lista "Atividades recentes" (spec Â§6.7). */
+/** Item da lista "Atividades recentes" (spec §6.7). */
 export function ActivityListItem({ activity, onClick }: { activity: Activity; onClick?: () => void }) {
   const Icon = KIND_ICON[activity.kind]
   const status = STATUS_META[activity.status]

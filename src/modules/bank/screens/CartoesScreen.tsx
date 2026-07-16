@@ -21,16 +21,16 @@ type Sheet = 'segundaVia' | 'ajustarLimite'
 
 const SHEET_META: Record<Sheet, { title: string; body: string }> = {
   segundaVia: {
-    title: 'Segunda via do cartÃ£o',
-    body: 'A solicitaÃ§Ã£o de segunda via (novo plÃ¡stico ou virtual) serÃ¡ processada no GB Bank web. Este fluxo serÃ¡ detalhado em uma prÃ³xima fase.',
+    title: 'Segunda via do cartão',
+    body: 'A solicitação de segunda via (novo plástico ou virtual) será processada no GB Bank web. Este fluxo será detalhado em uma próxima fase.',
   },
   ajustarLimite: {
     title: 'Ajustar limite',
-    body: 'O pedido de aumento/reduÃ§Ã£o de limite passa por anÃ¡lise de crÃ©dito. Este fluxo serÃ¡ detalhado em uma prÃ³xima fase.',
+    body: 'O pedido de aumento/redução de limite passa por análise de crédito. Este fluxo será detalhado em uma próxima fase.',
   },
 }
 
-/** GestÃ£o do cartÃ£o corporativo GB â€” cartÃ£o visual, limite e aÃ§Ãµes (bloqueio, segunda via, limite). */
+/** Gestão do cartão corporativo GB — cartão visual, limite e ações (bloqueio, segunda via, limite). */
 export function CartoesScreen() {
   const navigate = useNavigate()
   const balanceHidden = useShellStore((s) => s.balanceHidden)
@@ -39,34 +39,34 @@ export function CartoesScreen() {
 
   return (
     <div className="flex flex-col gap-5 p-4">
-      <Heading level={3}>CartÃµes</Heading>
+      <Heading level={3}>Cartões</Heading>
 
-      {/* CartÃ£o visual + limite */}
+      {/* Cartão visual + limite */}
       <Card padded={false} className="overflow-hidden">
         <div className={blocked ? 'opacity-60 saturate-50 transition-all' : 'transition-all'}>
           <BankCardVisual />
         </div>
         <div className="p-4">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-fg-muted">Limite disponÃ­vel</span>
+            <span className="text-fg-muted">Limite disponível</span>
             <span className="font-semibold tabular-nums text-fg">
-              {balanceHidden ? 'â€¢â€¢â€¢â€¢' : CARTAO.limiteDisponivel} / {balanceHidden ? 'â€¢â€¢â€¢â€¢' : CARTAO.limiteTotal}
+              {balanceHidden ? '••••' : CARTAO.limiteDisponivel} / {balanceHidden ? '••••' : CARTAO.limiteTotal}
             </span>
           </div>
           <ProgressBar value={CARTAO.usoPct} className="mt-2" colorByOccupancy />
           <p className="mt-2 text-xs text-fg-subtle">
-            {balanceHidden ? 'â€¢â€¢â€¢â€¢' : CARTAO.limiteUsado} usados de {balanceHidden ? 'â€¢â€¢â€¢â€¢' : CARTAO.limiteTotal}
+            {balanceHidden ? '••••' : CARTAO.limiteUsado} usados de {balanceHidden ? '••••' : CARTAO.limiteTotal}
           </p>
         </div>
       </Card>
 
       {blocked && (
         <Banner tone="warning" icon={<Lock size={14} aria-hidden="true" />}>
-          CartÃ£o bloqueado temporariamente. Compras e saques estÃ£o suspensos atÃ© vocÃª reativar.
+          Cartão bloqueado temporariamente. Compras e saques estão suspensos até você reativar.
         </Banner>
       )}
 
-      {/* Bloqueio temporÃ¡rio */}
+      {/* Bloqueio temporário */}
       <Card>
         <div className="flex items-center gap-3">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
@@ -74,38 +74,38 @@ export function CartoesScreen() {
           </span>
           <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-fg">Bloquear temporariamente</p>
-            <p className="text-xs text-fg-muted">Suspende o cartÃ£o sem cancelÃ¡-lo. Reative a qualquer momento.</p>
+            <p className="text-xs text-fg-muted">Suspende o cartão sem cancelá-lo. Reative a qualquer momento.</p>
           </div>
           <ToggleSwitch
             checked={blocked}
             onChange={setBlocked}
-            label={blocked ? 'Reativar cartÃ£o' : 'Bloquear cartÃ£o temporariamente'}
+            label={blocked ? 'Reativar cartão' : 'Bloquear cartão temporariamente'}
           />
         </div>
       </Card>
 
-      {/* AÃ§Ãµes do cartÃ£o */}
+      {/* Ações do cartão */}
       <div>
-        <SectionTitle className="mb-2">AÃ§Ãµes do cartÃ£o</SectionTitle>
+        <SectionTitle className="mb-2">Ações do cartão</SectionTitle>
         <Card padded={false} className="divide-y divide-border-default overflow-hidden px-2 py-1">
           <MenuItem
             icon={RefreshCw}
             label="Segunda via"
-            description="Solicitar novo cartÃ£o fÃ­sico ou virtual"
+            description="Solicitar novo cartão físico ou virtual"
             trailing={<ChevronRight size={16} className="text-fg-subtle" aria-hidden="true" />}
             onClick={() => setSheet('segundaVia')}
           />
           <MenuItem
             icon={SlidersHorizontal}
             label="Ajustar limite"
-            description="Pedir aumento ou reduÃ§Ã£o do limite"
+            description="Pedir aumento ou redução do limite"
             trailing={<ChevronRight size={16} className="text-fg-subtle" aria-hidden="true" />}
             onClick={() => setSheet('ajustarLimite')}
           />
           <MenuItem
             icon={SlidersHorizontal}
             label="Ver limites e faixas"
-            description="CrÃ©dito, Pix e saque"
+            description="Crédito, Pix e saque"
             trailing={<ChevronRight size={16} className="text-fg-subtle" aria-hidden="true" />}
             onClick={() => navigate('/bank/limites')}
           />

@@ -18,11 +18,11 @@ type EventType = 'nascimento' | 'desmame' | 'transferencia' | 'morte'
 const EVENTS: { type: EventType; label: string; icon: LucideIcon; desc: string }[] = [
   { type: 'nascimento', label: 'Nascimento', icon: Baby, desc: 'Registrar bezerro' },
   { type: 'desmame', label: 'Desmame', icon: Milk, desc: 'Desmame de animal' },
-  { type: 'transferencia', label: 'TransferÃªncia', icon: ArrowLeftRight, desc: 'Entre lotes' },
+  { type: 'transferencia', label: 'Transferência', icon: ArrowLeftRight, desc: 'Entre lotes' },
   { type: 'morte', label: 'Morte / Perda', icon: HeartCrack, desc: 'Baixa de animal' },
 ]
 
-/** Eventos de Ciclo do Rebanho (spec Â§5.2) â€” formulÃ¡rio dinÃ¢mico por tipo de evento. */
+/** Eventos de Ciclo do Rebanho (spec §5.2) — formulário dinâmico por tipo de evento. */
 export function CicloRebanhoFlow() {
   const [type, setType] = useState<EventType | null>(null)
   const [done, setDone] = useState<null | { queued: boolean }>(null)
@@ -31,7 +31,7 @@ export function CicloRebanhoFlow() {
   const enqueueSync = useFazendasStore((s) => s.enqueueSync)
   const pesagemDoDiaFeita = useFazendasStore((s) => s.pesagemDoDiaFeita)
 
-  // form fields (dinÃ¢micos)
+  // form fields (dinâmicos)
   const [lote, setLote] = useState('')
   const [loteDestino, setLoteDestino] = useState('')
   const [data, setData] = useState('')
@@ -44,7 +44,7 @@ export function CicloRebanhoFlow() {
       <SuccessScreen
         title="Evento registrado"
         queued={done.queued}
-        effects="Isso vai atualizar a mÃ¡quina de estados do animal e a base de venda/SISBOV."
+        effects="Isso vai atualizar a máquina de estados do animal e a base de venda/SISBOV."
       />
     )
   }
@@ -75,7 +75,7 @@ export function CicloRebanhoFlow() {
   const isTransfer = type === 'transferencia'
   const transferBlocked = isTransfer && !pesagemDoDiaFeita
 
-  // validaÃ§Ã£o por tipo
+  // validação por tipo
   let valid = false
   if (type === 'nascimento') valid = !!lote && !!data
   else if (type === 'desmame') valid = !!lote && !!data
@@ -101,11 +101,11 @@ export function CicloRebanhoFlow() {
       <div className="flex flex-col gap-5">
         {transferBlocked && (
           <Banner tone="error" icon={<AlertTriangle size={14} />} className="rounded-lg border">
-            TransferÃªncia bloqueada: Ã© necessÃ¡rio registrar a <strong>pesagem do dia</strong> antes de transferir o lote (DUV-179).
+            Transferência bloqueada: é necessário registrar a <strong>pesagem do dia</strong> antes de transferir o lote (DUV-179).
           </Banner>
         )}
 
-        <FormField label={isTransfer ? 'Lote de origem' : type === 'nascimento' ? 'Animal-mÃ£e / lote' : 'Animal / lote'} required>
+        <FormField label={isTransfer ? 'Lote de origem' : type === 'nascimento' ? 'Animal-mãe / lote' : 'Animal / lote'} required>
           <SearchSelect options={LOTES_OPCOES} value={lote} onChange={setLote} placeholder="Buscar..." />
         </FormField>
 
@@ -120,7 +120,7 @@ export function CicloRebanhoFlow() {
               />
             </FormField>
             <FormField label="Quantidade" required>
-              <TextInput type="number" inputMode="numeric" value={qtd} onChange={(e) => setQtd(e.target.value)} placeholder="NÂº de animais" />
+              <TextInput type="number" inputMode="numeric" value={qtd} onChange={(e) => setQtd(e.target.value)} placeholder="Nº de animais" />
             </FormField>
           </>
         )}
@@ -142,7 +142,7 @@ export function CicloRebanhoFlow() {
             <FormField label="Causa" required>
               <FormSelect options={CAUSAS_MORTE} value={causa} onChange={(e) => setCausa(e.target.value)} placeholder="Selecione a causa" />
             </FormField>
-            <FormField label="ObservaÃ§Ã£o">
+            <FormField label="Observação">
               <Textarea value={obs} onChange={(e) => setObs(e.target.value)} placeholder="Detalhes adicionais..." />
             </FormField>
           </>

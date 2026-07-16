@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { HandCoins, ArrowRight } from 'lucide-react'
 
 /**
- * Card de deep-link de crÃ©dito prÃ©-aprovado (spec Â§6.4): o dado/rÃ©gua vive no mÃ³dulo CrÃ©dito;
- * aqui Ã© sÃ³ um ponto de entrada com deep link entre mÃ³dulos.
+ * Card de deep-link de crédito pré-aprovado (spec §6.4): o dado/régua vive no módulo Crédito;
+ * aqui é só um ponto de entrada com deep link entre módulos.
  */
 export function CreditoBanner() {
   const navigate = useNavigate()
@@ -16,9 +16,9 @@ export function CreditoBanner() {
         <HandCoins size={22} />
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-accent">CrÃ©dito prÃ©-aprovado</p>
-        <p className="truncate font-bold text-fg">R$ 480.000,00 disponÃ­veis</p>
-        <p className="text-xs text-accent">Ver no mÃ³dulo CrÃ©dito</p>
+        <p className="text-sm font-medium text-accent">Crédito pré-aprovado</p>
+        <p className="truncate font-bold text-fg">R$ 480.000,00 disponíveis</p>
+        <p className="text-xs text-accent">Ver no módulo Crédito</p>
       </div>
       <ArrowRight size={18} className="shrink-0 text-accent" />
     </button>
