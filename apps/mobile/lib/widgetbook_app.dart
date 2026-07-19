@@ -7,6 +7,8 @@ import 'design/generated/app_spacing.dart';
 import 'design/generated/app_typography.dart';
 import 'design/theme/app_theme.dart';
 import 'design/theme/app_theme_extension.dart';
+import 'ui/button.dart';
+import 'ui/spinner.dart';
 
 /// Ponto de entrada da galeria de componentes (F2.5) e da auditoria de tema (F1.4).
 /// Rodar: `flutter run -t lib/widgetbook_app.dart -d chrome`.
@@ -33,6 +35,13 @@ class CerneWidgetbook extends StatelessWidget {
             WidgetbookUseCase(name: 'Cores', builder: (context) => const _ColorAuditPage()),
             WidgetbookUseCase(name: 'Espaçamento e raio', builder: (context) => const _SpacingAuditPage()),
             WidgetbookUseCase(name: 'Tipografia', builder: (context) => const _TypographyAuditPage()),
+          ],
+        ),
+        WidgetbookFolder(
+          name: 'Catálogo',
+          children: [
+            buildButtonWidgetbookComponent(),
+            buildSpinnerWidgetbookComponent(),
           ],
         ),
       ],
