@@ -1,0 +1,46 @@
+/// Barrel do catálogo de widgets (Lei 1/2 do CLAUDE.md — fonte única, F2 do plano de migração).
+/// Telas (F3/F4) importam só este arquivo, nunca os componentes de `lib/ui/` individualmente.
+library;
+
+export 'avatar.dart';
+export 'badge.dart';
+export 'balance_card.dart';
+export 'banner.dart';
+export 'bar_chart.dart';
+export 'bento_tile.dart';
+export 'bottom_sheet.dart';
+export 'button.dart';
+export 'card.dart';
+export 'chart_card.dart';
+export 'checkbox.dart';
+export 'chip.dart';
+export 'dashboard_card.dart';
+export 'donut_chart.dart';
+export 'empty_state.dart';
+export 'error_state.dart';
+export 'file_upload.dart';
+export 'form_field.dart';
+export 'form_select.dart';
+export 'heading.dart';
+export 'icon_button.dart';
+export 'illustration_slot.dart';
+export 'kpi_stat_card.dart';
+export 'menu_item.dart';
+export 'mini_app_tile.dart';
+export 'modal.dart';
+export 'page_dots.dart';
+export 'progress_bar.dart';
+export 'quick_action.dart';
+export 'search_select.dart';
+export 'skeleton.dart';
+export 'sparkline_area.dart';
+export 'spinner.dart';
+export 'stepper.dart';
+export 'success_panel.dart';
+export 'tag.dart';
+export 'text_input.dart';
+export 'textarea.dart';
+export 'toggle_switch.dart';
+export 'tooltip.dart';
+export 'transaction_detail_sheet.dart';
+export 'transaction_list_item.dart';

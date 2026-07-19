@@ -7,8 +7,7 @@ import 'design/generated/app_spacing.dart';
 import 'design/generated/app_typography.dart';
 import 'design/theme/app_theme.dart';
 import 'design/theme/app_theme_extension.dart';
-import 'ui/button.dart';
-import 'ui/spinner.dart';
+import 'ui/ui.dart';
 
 /// Ponto de entrada da galeria de componentes (F2.5) e da auditoria de tema (F1.4).
 /// Rodar: `flutter run -t lib/widgetbook_app.dart -d chrome`.
@@ -40,8 +39,83 @@ class CerneWidgetbook extends StatelessWidget {
         WidgetbookFolder(
           name: 'Catálogo',
           children: [
-            buildButtonWidgetbookComponent(),
-            buildSpinnerWidgetbookComponent(),
+            WidgetbookFolder(
+              name: 'Ações',
+              children: [
+                buildButtonWidgetbookComponent(),
+                buildIconButtonWidgetbookComponent(),
+                buildQuickActionWidgetbookComponent(),
+              ],
+            ),
+            WidgetbookFolder(
+              name: 'Superfícies',
+              children: [
+                buildCardWidgetbookComponent(),
+                buildDashboardCardWidgetbookComponent(),
+                buildBentoTileWidgetbookComponent(),
+                buildMiniAppTileWidgetbookComponent(),
+                buildChartCardWidgetbookComponent(),
+                buildKpiStatCardWidgetbookComponent(),
+                buildBalanceCardWidgetbookComponent(),
+              ],
+            ),
+            WidgetbookFolder(
+              name: 'Formulário',
+              children: [
+                buildTextInputWidgetbookComponent(),
+                buildTextareaWidgetbookComponent(),
+                buildFormFieldWidgetbookComponent(),
+                buildFormSelectWidgetbookComponent(),
+                buildSearchSelectWidgetbookComponent(),
+                buildCheckboxWidgetbookComponent(),
+                buildToggleSwitchWidgetbookComponent(),
+                buildFileUploadWidgetbookComponent(),
+                buildStepperWidgetbookComponent(),
+              ],
+            ),
+            WidgetbookFolder(
+              name: 'Feedback',
+              children: [
+                buildBannerWidgetbookComponent(),
+                buildEmptyStateWidgetbookComponent(),
+                buildErrorStateWidgetbookComponent(),
+                buildSuccessPanelWidgetbookComponent(),
+                buildSkeletonWidgetbookComponent(),
+                buildSpinnerWidgetbookComponent(),
+                buildTooltipWidgetbookComponent(),
+                buildProgressBarWidgetbookComponent(),
+              ],
+            ),
+            WidgetbookFolder(
+              name: 'Overlay',
+              children: [
+                buildModalWidgetbookComponent(),
+                buildBottomSheetWidgetbookComponent(),
+                buildTransactionDetailSheetWidgetbookComponent(),
+              ],
+            ),
+            WidgetbookFolder(
+              name: 'Dados',
+              children: [
+                buildTransactionListItemWidgetbookComponent(),
+                buildMenuItemWidgetbookComponent(),
+                buildBadgeWidgetbookComponent(),
+                buildChipWidgetbookComponent(),
+                buildTagWidgetbookComponent(),
+                buildAvatarWidgetbookComponent(),
+                buildHeadingWidgetbookComponent(),
+                buildPageDotsWidgetbookComponent(),
+                buildIllustrationSlotWidgetbookComponent(),
+              ],
+            ),
+            WidgetbookFolder(
+              name: 'Gráficos',
+              children: [
+                buildBarChartWidgetbookComponent(),
+                buildDonutChartWidgetbookComponent(),
+                buildSparklineAreaWidgetbookComponent(),
+              ],
+            ),
           ],
         ),
       ],
