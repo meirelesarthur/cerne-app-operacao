@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,15 +5,12 @@ import 'package:cerne_app/design/theme/theme_provider.dart';
 import 'package:cerne_app/main.dart';
 
 void main() {
-  testWidgets('CerneApp abre com o tema light e alterna para gbMode', (WidgetTester tester) async {
+  testWidgets('CerneApp abre no módulo Início (rota /inicio) sem exceções', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: CerneApp()));
+    await tester.pumpAndSettle();
 
-    expect(find.text('Variante atual: light'), findsOneWidget);
-
-    await tester.tap(find.byType(FilledButton));
-    await tester.pump();
-
-    expect(find.text('Variante atual: gbMode'), findsOneWidget);
+    expect(find.text('Início'), findsWidgets);
+    expect(tester.takeException(), isNull);
   });
 
   test('ThemeVariantNotifier alterna entre light e gbMode', () {

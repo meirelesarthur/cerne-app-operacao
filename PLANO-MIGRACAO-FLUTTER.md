@@ -121,15 +121,17 @@ design comparando lado a lado com o protótipo React ainda pendente** — trabal
 falta o ritual de revisão humana (§3 do plano).
 
 ### Fase F3 — Shell e navegação (≈ 0,5–1 dia)
-- [ ] **F3.1** `ShellRoute` com header global (gradiente, saudação, pílula de crédito, sino) +
+- [x] **F3.1** `ShellRoute` com header global (gradiente, saudação, pílula de crédito, sino) +
   module-bar (cantos arredondados sobrepostos, indicador full-width) — réplica do `ShellLayout`.
-- [ ] **F3.2** Bottom tab bar por módulo lida de um `moduleConfig` Dart (portar o `moduleConfig.ts`).
-- [ ] **F3.3** Reveal menu (app encolhe como cartão, menu verde desliza) com as mesmas curvas/spring
+- [x] **F3.2** Bottom tab bar por módulo lida de um `moduleConfig` Dart (portar o `moduleConfig.ts`).
+- [x] **F3.3** Reveal menu (app encolhe como cartão, menu verde desliza) com as mesmas curvas/spring
   tokenizadas; respeitar `MediaQuery.disableAnimations`.
-- [ ] **F3.4** Stores do shell (usuário, notificações, online/offline, menu) em Riverpod.
+- [x] **F3.4** Stores do shell (usuário, notificações, online/offline, menu) em Riverpod.
 
-**DoD F3:** trocar de módulo preserva header/estado como no protótipo; deep-link `/:module/:tab`
-funciona via `go_router`.
+**DoD F3:** trocar de módulo preserva header/estado como no protótipo (validado por teste de
+integração e verificação visual manual); deep-link `/:module/:tab` funciona via `go_router`
+(validado). Conteúdo real dos módulos é `ModulePlaceholderScreen` — chega na F4. Aprovação visual do
+design ainda pendente (mesma ressalva do F2).
 
 ### Fase F4 — Módulos por valor (≈ 2–3 dias)
 Ordem do §1.3. Cada módulo é um trilho independente da esteira — com 2 devs, rodar 2 trilhos em
