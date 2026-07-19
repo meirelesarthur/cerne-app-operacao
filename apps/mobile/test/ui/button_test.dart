@@ -19,15 +19,12 @@ void main() {
     });
 
     testWidgets('sem onPressed fica desabilitado (ignora toque)', (tester) async {
-      var tapped = false;
-      await tester.pumpWidget(
-        _wrap(AppButton(onPressed: tapped ? () {} : null, child: const Text('Disabled'))),
-      );
+      await tester.pumpWidget(_wrap(const AppButton(child: Text('Disabled'))));
 
       await tester.tap(find.text('Disabled'), warnIfMissed: false);
       await tester.pump();
 
-      expect(tapped, isFalse);
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('loading=true ignora toque e mostra o spinner', (tester) async {

@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/icon_button.dart';
+
+Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+
+void main() {
+  group('AppIconButton', () {
+    testWidgets('dispara onPressed ao tocar', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(
+        _wrap(AppIconButton(icon: const Icon(Icons.add), label: 'Adicionar', onPressed: () => tapped = true)),
+      );
+
+      await tester.tap(find.byType(AppIconButton));
+      await tester.pump();
+
+      expect(tapped, isTrue);
+    });
+
+    testWidgets('sem onPressed fica desabilitado (ignora toque)', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(
+        _wrap(const AppIconButton(icon: Icon(Icons.add), label: 'Adicionar')),
+      );
+
+      await tester.tap(find.byType(AppIconButton), warnIfMissed: false);
+      await tester.pump();
+
+      expect(tapped, isFalse);
+    });
+
+    testWidgets('renderiza todas as variantes e tamanhos sem exceções', (tester) async {
+      for (final variant in AppIconButtonVariant.values) {
+        for (final size in AppIconButtonSize.values) {
+          await tester.pumpWidget(
+            _wrap(
+              AppIconButton(
+                icon: const Icon(Icons.star),
+                label: 'X',
+                variant: variant,
+                size: size,
+                onPressed: () {},
+              ),
+            ),
+          );
+          expect(tester.takeException(), isNull);
+        }
+      }
+    });
+  });
+}

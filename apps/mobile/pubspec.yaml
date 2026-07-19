@@ -38,8 +38,10 @@ dependencies:
   # Navegação 2 níveis (equivalente ao react-router-dom)
   go_router: ^14.6.2
 
-  # Ícones (equivalente ao lucide-react)
-  lucide_icons: ^0.257.0
+  # Ícones (equivalente ao lucide-react).
+  # `lucide_icons` (0.257.0) estende `IconData`, que virou `final class` em versões recentes do
+  # Flutter — quebra a compilação de testes (ver ADR 0003). `lucide_icons_flutter` é o fork mantido.
+  lucide_icons_flutter: ^3.1.15
 
   # Ícones e assets
   cupertino_icons: ^1.0.8
