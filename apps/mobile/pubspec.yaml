@@ -46,9 +46,8 @@ dependencies:
   # Ícones e assets
   cupertino_icons: ^1.0.8
 
-  # Fonte Outfit — via Google Fonts (fetch+cache automático).
-  # Trocar para asset self-hosted é possível depois: baixar os .ttf e declarar em `flutter.fonts` abaixo.
-  google_fonts: ^6.2.1
+  # Fonte Outfit self-hosted em assets/fonts/ (ver ADR 0004) — .ttf baixados de fonts.google.com,
+  # declarados em `flutter.fonts` abaixo. google_fonts (fetch via rede) foi removido.
 
   # Galeria de componentes (F2.5) e auditoria de tema (F1.4) — lib/widgetbook_app.dart
   # importa este pacote diretamente, por isso vive em `dependencies`, não `dev_dependencies`.
@@ -64,7 +63,7 @@ dev_dependencies:
   widgetbook_generator: ^3.11.0
 
   # golden tests (F2.6)
-  alchemist: ^0.11.0
+  alchemist: ^0.14.0
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -89,6 +88,20 @@ flutter:
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
+
+  fonts:
+    - family: Outfit
+      fonts:
+        - asset: assets/fonts/Outfit-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Outfit-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Outfit-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Outfit-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Outfit-ExtraBold.ttf
+          weight: 800
 
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/to/asset-from-package

@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Goldens de plataforma (Alchemist) variam por SO/versão de Skia — não são reprodutíveis entre
+# máquinas/CI. Só os goldens "ci" (Ahem, platform-agnostic) são versionados.
+test/**/goldens/windows/
+test/**/goldens/macos/
+test/**/goldens/linux/

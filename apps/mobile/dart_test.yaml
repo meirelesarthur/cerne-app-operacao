@@ -1,0 +1,3 @@
+tags:
+  golden:
+    description: Golden tests (Alchemist) — comparam contra imagens em test/golden/goldens/.

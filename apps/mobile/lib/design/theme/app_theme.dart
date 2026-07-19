@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../generated/app_colors.dart';
 import '../generated/app_radius.dart';
@@ -16,23 +15,28 @@ ThemeData buildAppTheme(AppThemeVariant variant) {
   final semantic = variant == AppThemeVariant.light ? AppSemanticColors.light : AppSemanticColors.gbMode;
   final brightness = variant == AppThemeVariant.light ? Brightness.light : Brightness.dark;
 
-  final textTheme = GoogleFonts.outfitTextTheme().copyWith(
-    displayLarge: GoogleFonts.outfit(fontSize: AppTypography.xl4, fontWeight: AppTypography.weightBold, color: semantic.fgDefault),
-    headlineMedium: GoogleFonts.outfit(fontSize: AppTypography.xl3, fontWeight: AppTypography.weightBold, color: semantic.fgDefault),
-    titleLarge: GoogleFonts.outfit(fontSize: AppTypography.xl2, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
-    titleMedium: GoogleFonts.outfit(fontSize: AppTypography.xl, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
-    bodyLarge: GoogleFonts.outfit(fontSize: AppTypography.lg, fontWeight: AppTypography.weightNormal, color: semantic.fgDefault),
-    bodyMedium: GoogleFonts.outfit(fontSize: AppTypography.md, fontWeight: AppTypography.weightNormal, color: semantic.fgMuted),
-    bodySmall: GoogleFonts.outfit(fontSize: AppTypography.sm, fontWeight: AppTypography.weightNormal, color: semantic.fgSubtle),
-    labelLarge: GoogleFonts.outfit(fontSize: AppTypography.md, fontWeight: AppTypography.weightMedium, color: semantic.fgDefault),
-  );
+  TextStyle outfit({required double fontSize, required FontWeight fontWeight, required Color color}) {
+    return TextStyle(fontFamily: AppTypography.fontFamily, fontSize: fontSize, fontWeight: fontWeight, color: color);
+  }
+
+  final textTheme = (brightness == Brightness.light ? Typography.material2021().black : Typography.material2021().white)
+      .copyWith(
+        displayLarge: outfit(fontSize: AppTypography.xl4, fontWeight: AppTypography.weightBold, color: semantic.fgDefault),
+        headlineMedium: outfit(fontSize: AppTypography.xl3, fontWeight: AppTypography.weightBold, color: semantic.fgDefault),
+        titleLarge: outfit(fontSize: AppTypography.xl2, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+        titleMedium: outfit(fontSize: AppTypography.xl, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+        bodyLarge: outfit(fontSize: AppTypography.lg, fontWeight: AppTypography.weightNormal, color: semantic.fgDefault),
+        bodyMedium: outfit(fontSize: AppTypography.md, fontWeight: AppTypography.weightNormal, color: semantic.fgMuted),
+        bodySmall: outfit(fontSize: AppTypography.sm, fontWeight: AppTypography.weightNormal, color: semantic.fgSubtle),
+        labelLarge: outfit(fontSize: AppTypography.md, fontWeight: AppTypography.weightMedium, color: semantic.fgDefault),
+      );
 
   return ThemeData(
     useMaterial3: true,
     brightness: brightness,
     scaffoldBackgroundColor: semantic.bgCanvas,
     canvasColor: semantic.bgCanvas,
-    fontFamily: textTheme.bodyMedium?.fontFamily,
+    fontFamily: AppTypography.fontFamily,
     textTheme: textTheme,
     colorScheme: ColorScheme(
       brightness: brightness,
