@@ -88,7 +88,7 @@ export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }
           />
 
           <div className="relative flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10">
               <HandCoins size={16} aria-hidden="true" />
             </span>
             <Chip tone="brand" className="border-white/20 bg-white/10 text-white">
@@ -162,7 +162,7 @@ export function CreditoHome({ scrollToSimulador: autoScrollToSimulador = false }
             return (
               <Card key={linha.id} interactive onClick={() => setLinhaSelecionada(linha)}>
                 <div className="flex items-center gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white">
                     <Icon size={22} aria-hidden="true" />
                   </span>
                   <div className="min-w-0 flex-1">

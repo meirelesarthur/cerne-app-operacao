@@ -32,7 +32,7 @@ export function BottomSheet({ open, onClose, title, children, maxHeight = '85vh'
       <div
         className={cn(
           'relative w-full max-w-phone bg-surface shadow-modal',
-          'rounded-t-[20px] pb-[env(safe-area-inset-bottom)]',
+          'rounded-t-modal pb-[env(safe-area-inset-bottom)]',
           'animate-[slideUp_250ms_cubic-bezier(0.34,1.56,0.64,1)]',
         )}
         style={{ maxHeight }}

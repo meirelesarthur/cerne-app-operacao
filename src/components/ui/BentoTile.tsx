@@ -7,8 +7,6 @@ export interface BentoTileProps {
   icon: LucideIcon
   label: string
   caption?: string
-  /** tom do container do ícone na variante 'surface' (usa paleta de acento) */
-  tone?: 'brand' | 'blue' | 'amber' | 'purple'
   /** 'surface' (padrão, clara) ou 'accent' (escura, tile de destaque com seta) */
   variant?: 'surface' | 'accent'
   /** tamanho do container/ícone */
@@ -17,22 +15,16 @@ export interface BentoTileProps {
   className?: string
 }
 
-const toneCls: Record<NonNullable<BentoTileProps['tone']>, string> = {
-  brand: 'bg-accent-subtle text-accent border border-border-tint',
-  blue: 'bg-blue-50 text-blue-600 border border-blue-100',
-  amber: 'bg-amber-50 text-amber-600 border border-amber-100',
-  purple: '',
-}
-
 /**
  * Tile de bento grid reutilizável (home de super app): tamanhos mistos,
  * variante clara ('surface') ou escura de destaque com seta ('accent').
+ * Nova UI: bolha de ícone monotom (acento da marca) — sem cor por item; a
+ * distinção vem do ícone e do rótulo, não do fundo.
  */
 export function BentoTile({
   icon: Icon,
   label,
   caption,
-  tone = 'brand',
   variant = 'surface',
   iconSize = 'md',
   onClick,
@@ -52,7 +44,7 @@ export function BentoTile({
           className,
         )}
       >
-        <span className={cn('flex items-center justify-center rounded-2xl bg-white/15 text-white', iconBoxCls)}>
+        <span className={cn('flex items-center justify-center rounded-full bg-white/15 text-white', iconBoxCls)}>
           <Icon size={iconGlyphSize} aria-hidden="true" />
         </span>
         <div className="min-w-0 pr-8">
@@ -69,28 +61,20 @@ export function BentoTile({
     )
   }
 
-  const isPurple = tone === 'purple'
-
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'flex h-full min-h-[104px] w-full flex-col items-start justify-between gap-3 rounded-3xl border border-border-default bg-surface p-4 text-left transition-all hover:border-border-strong active:scale-[0.97]',
+        'flex h-full min-h-[104px] w-full flex-col items-start justify-between gap-3 rounded-3xl border border-border-subtle bg-surface p-4 text-left shadow-card transition-all hover:shadow-card-hover active:scale-[0.97]',
         className,
       )}
     >
       <span
-        className={cn('flex items-center justify-center rounded-2xl', iconBoxCls, !isPurple && toneCls[tone])}
-        style={
-          isPurple
-            ? {
-                backgroundColor: t.color.accent.purple.bg,
-                color: t.color.accent.purple.solid,
-                border: `1px solid ${t.color.accent.purple.border}`,
-              }
-            : undefined
-        }
+        className={cn(
+          'flex items-center justify-center rounded-full border border-border-tint bg-accent-subtle text-accent',
+          iconBoxCls,
+        )}
       >
         <Icon size={iconGlyphSize} aria-hidden="true" />
       </span>

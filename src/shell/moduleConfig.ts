@@ -36,8 +36,9 @@ import {
 
 /**
  * Registro central de módulos do superapp (spec §3.4/§7.3).
- * O Shell itera este registro para montar a Barra de Módulos e injeta os `bottomTabs`
- * do módulo ativo no BottomTabBar genérico. Nenhuma navegação de módulo é hardcodada fora daqui.
+ * O Shell itera este registro para montar o dock de módulos (BottomTabBar, rodapé flutuante)
+ * e injeta os `bottomTabs` do módulo ativo nas ContextTabs do topo; a ação 'menu' ("Mais")
+ * vira bolha no topo direito do header. Nenhuma navegação de módulo é hardcodada fora daqui.
  */
 
 export interface BottomTab {

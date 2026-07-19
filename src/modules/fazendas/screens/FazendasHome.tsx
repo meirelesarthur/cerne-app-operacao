@@ -48,11 +48,11 @@ function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> 
   const [selected, setSelected] = useState<Activity | null>(null)
 
   const adminShortcuts: Shortcut[] = [
-    { id: 'financeiro', label: 'Financeiro', icon: Wallet, tone: 'brand', onClick: () => navigate('/fazendas/dashboards/financeiro') },
-    { id: 'pecuaria', label: 'Pecuária', icon: Beef, tone: 'blue', onClick: () => navigate('/fazendas/dashboards/pecuaria') },
-    { id: 'confinamento', label: 'Currais', icon: Warehouse, tone: 'amber', onClick: () => navigate('/fazendas/dashboards/confinamento') },
-    { id: 'ativos', label: 'Ativos', icon: Package, tone: 'purple', onClick: () => navigate('/fazendas/dashboards/ativos') },
-    { id: 'mais', label: 'Mais', icon: MoreHorizontal, tone: 'brand', onClick: () => navigate('/fazendas/mais') },
+    { id: 'financeiro', label: 'Financeiro', icon: Wallet, onClick: () => navigate('/fazendas/dashboards/financeiro') },
+    { id: 'pecuaria', label: 'Pecuária', icon: Beef, onClick: () => navigate('/fazendas/dashboards/pecuaria') },
+    { id: 'confinamento', label: 'Currais', icon: Warehouse, onClick: () => navigate('/fazendas/dashboards/confinamento') },
+    { id: 'ativos', label: 'Ativos', icon: Package, onClick: () => navigate('/fazendas/dashboards/ativos') },
+    { id: 'mais', label: 'Mais', icon: MoreHorizontal, onClick: () => navigate('/fazendas/mais') },
   ]
 
   return (
@@ -112,7 +112,6 @@ function HomeCampo({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
               icon={Scale}
               label="Pesagem"
               caption="Balança conectada"
-              tone="brand"
               onClick={() => navigate('/fazendas/campo/pesagem')}
             />
           </div>
@@ -121,7 +120,6 @@ function HomeCampo({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
               icon={ArrowLeftRight}
               label="Ciclo rebanho"
               caption="Entradas e saídas"
-              tone="blue"
               onClick={() => navigate('/fazendas/campo/ciclo')}
             />
           </div>
@@ -130,7 +128,6 @@ function HomeCampo({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
               icon={Wheat}
               label="Arraçoamento"
               caption="Trato do dia"
-              tone="amber"
               onClick={() => navigate('/fazendas/campo/arracoamento')}
             />
           </div>
@@ -141,7 +138,6 @@ function HomeCampo({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
               icon={Truck}
               label="Venda"
               caption="GTA, romaneio e frete"
-              tone="purple"
               iconSize="lg"
               onClick={() => navigate('/fazendas/campo/venda')}
             />
@@ -162,7 +158,6 @@ function HomeCampo({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {
               icon={Sprout}
               label="Insumos"
               caption="Aplicações e retiradas"
-              tone="brand"
               onClick={() => navigate('/fazendas/campo/insumos')}
             />
           </div>

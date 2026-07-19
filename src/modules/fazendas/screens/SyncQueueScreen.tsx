@@ -52,7 +52,7 @@ export function SyncQueueScreen() {
                     key={item.id}
                     className="flex items-center gap-3 border-b border-border-subtle py-3 last:border-b-0"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-subtle text-fg-muted">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-subtle text-fg-muted">
                       <Icon size={18} />
                     </span>
                     <div className="min-w-0 flex-1">

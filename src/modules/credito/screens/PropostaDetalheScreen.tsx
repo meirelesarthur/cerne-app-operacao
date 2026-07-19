@@ -231,7 +231,7 @@ export function PropostaDetalheScreen() {
             <div className="flex flex-col gap-3">
               {proposta.documentos.map((doc) => (
                 <div key={doc.nome} className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface-subtle text-fg-muted">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-surface-subtle text-fg-muted">
                     <FileText size={18} aria-hidden="true" />
                   </span>
                   <p className="min-w-0 flex-1 truncate text-sm font-medium text-fg">{doc.nome}</p>

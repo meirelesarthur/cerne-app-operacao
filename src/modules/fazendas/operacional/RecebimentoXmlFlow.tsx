@@ -55,7 +55,7 @@ export function RecebimentoXmlFlow() {
           <>
             <Card>
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent-subtle text-accent">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-subtle text-accent">
                   <FileText size={20} />
                 </span>
                 <div className="flex-1">

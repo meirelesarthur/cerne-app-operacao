@@ -56,7 +56,7 @@ export function PagamentosScreen({ initialFlow }: PagamentosScreenProps) {
           {ACOES.map((a) => (
             <Card key={a.flow} interactive onClick={() => setFlow(a.flow)}>
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-subtle text-accent">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
                   <a.icon size={22} aria-hidden="true" />
                 </span>
                 <div className="min-w-0 flex-1">

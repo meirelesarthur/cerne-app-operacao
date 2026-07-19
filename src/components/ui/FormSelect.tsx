@@ -17,8 +17,8 @@ export function FormSelect({ options, placeholder, className, ...rest }: FormSel
     <div className="relative">
       <select
         className={cn(
-          'h-10 w-full appearance-none rounded-lg border border-border-default bg-surface px-3 pr-9 text-md text-fg',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40',
+          'h-12 w-full appearance-none rounded-full border border-transparent bg-surface-subtle px-5 pr-10 text-md text-fg',
+          'transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:bg-surface',
           className,
         )}
         {...rest}
@@ -30,7 +30,7 @@ export function FormSelect({ options, placeholder, className, ...rest }: FormSel
           </option>
         ))}
       </select>
-      <ChevronDown size={16} className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-fg-subtle" />
+      <ChevronDown size={16} className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-fg-subtle" />
     </div>
   )
 }

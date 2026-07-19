@@ -27,9 +27,7 @@ export function Heading({ level = 2, children, className, id }: HeadingProps) {
   )
 }
 
-/** Rótulo de seção pequeno em maiúsculas (agrupadores de listas/cards). */
+/** Título de seção (Nova UI): bold generoso como na referência ("Announcements", "Quick Actions"). */
 export function SectionTitle({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <p className={cn('px-1 text-xs font-semibold uppercase tracking-wide text-fg-subtle', className)}>{children}</p>
-  )
+  return <p className={cn('px-1 text-xl font-bold tracking-tight text-fg', className)}>{children}</p>
 }

@@ -51,7 +51,7 @@ export function VendaFlow() {
         <div>
           <SectionTitle className="mb-2">Mês anterior (fechado)</SectionTitle>
           <div className="flex items-center gap-3 rounded-xl border border-border-default bg-surface-subtle p-3 opacity-90">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-200 text-neutral-500">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-200 text-neutral-500">
               <Lock size={16} />
             </span>
             <div className="flex-1">

@@ -96,7 +96,7 @@ export function ArmazemHome() {
       <div className="animate-rise" style={stagger(4)}>
         <Card interactive onClick={() => navigate('/marketplace')}>
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white">
               <ShoppingBag size={22} aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">

@@ -58,7 +58,7 @@ export function MaisScreen() {
                 onClick={() => navigate(it.to)}
                 className="flex w-full items-center gap-3 border-b border-border-subtle px-4 py-3 text-left last:border-b-0"
               >
-                <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-subtle text-accent">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-subtle text-accent">
                   <it.icon size={18} />
                 </span>
                 <span className="flex-1 font-medium text-fg">{it.label}</span>

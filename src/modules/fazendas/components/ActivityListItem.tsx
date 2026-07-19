@@ -31,7 +31,7 @@ export function ActivityListItem({ activity, onClick }: { activity: Activity; on
       onClick={onClick}
       className="flex w-full items-center gap-3 border-b border-border-subtle px-1 py-3 text-left last:border-b-0"
     >
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-surface-subtle text-fg-muted">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-subtle text-fg-muted">
         <Icon size={18} />
       </span>
       <div className="min-w-0 flex-1">

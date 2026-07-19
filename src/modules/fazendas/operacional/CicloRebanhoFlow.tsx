@@ -60,7 +60,7 @@ export function CicloRebanhoFlow() {
               onClick={() => setType(e.type)}
               className="flex flex-col items-start gap-2 rounded-2xl border border-border-default bg-surface p-4 text-left shadow-card active:scale-[0.99]"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-subtle text-accent">
+              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accent-subtle text-accent">
                 <e.icon size={22} />
               </span>
               <span className="font-semibold text-fg">{e.label}</span>

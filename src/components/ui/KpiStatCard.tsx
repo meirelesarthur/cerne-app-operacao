@@ -20,7 +20,7 @@ const valueToneCls: Record<Tone, string> = {
 /** Card-resumo compacto para as linhas de KPIs do topo dos dashboards. */
 export function KpiStatCard({ label, value, caption, tone = 'default', className }: KpiStatCardProps) {
   return (
-    <div className={cn('rounded-xl border border-border-default bg-surface p-3', className)}>
+    <div className={cn('rounded-2xl border border-border-subtle bg-surface p-4 shadow-card', className)}>
       <p className="text-xs font-medium text-fg-muted">{label}</p>
       <p className={cn('mt-1 text-xl font-bold leading-tight', valueToneCls[tone])}>{value}</p>
       {caption && <p className="mt-0.5 text-xs text-fg-subtle">{caption}</p>}

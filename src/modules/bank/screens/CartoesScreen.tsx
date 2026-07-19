@@ -69,7 +69,7 @@ export function CartoesScreen() {
       {/* Bloqueio temporário */}
       <Card>
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent-subtle text-accent">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
             {blocked ? <Lock size={20} aria-hidden="true" /> : <ShieldCheck size={20} aria-hidden="true" />}
           </span>
           <div className="min-w-0 flex-1">

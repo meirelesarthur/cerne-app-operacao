@@ -10,22 +10,19 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
   variant?: 'ghost' | 'solid' | 'onDark'
 }
 
+// Nova UI: bolhas circulares (referência) — touch targets generosos
 const sizeCls: Record<Size, string> = {
-  sm: 'h-6 w-6',
-  md: 'h-[30px] w-[30px]',
-  lg: 'h-9 w-9',
-}
-
-const onDarkSizeCls: Record<Size, string> = {
-  sm: 'h-6 w-6',
+  sm: 'h-8 w-8',
   md: 'h-10 w-10',
-  lg: 'h-10 w-10',
+  lg: 'h-12 w-12',
 }
 
 const variantCls = {
   ghost: 'text-fg hover:bg-surface-subtle',
-  solid: 'bg-surface border border-border-default text-fg hover:bg-surface-subtle',
-  onDark: 'border border-white/20 bg-white/5 text-white/90 hover:bg-white/15',
+  // bolha branca/surface com sombra suave — botões circulares do header da referência
+  solid: 'bg-surface text-fg shadow-card hover:bg-surface-subtle',
+  // bolha translúcida sobre superfícies ink/escuras
+  onDark: 'bg-ink-bubble text-ink-fg hover:bg-white/15',
 } as const
 
 export function IconButton({ size = 'md', label, children, variant = 'ghost', className, ...rest }: IconButtonProps) {
@@ -35,9 +32,8 @@ export function IconButton({ size = 'md', label, children, variant = 'ghost', cl
       aria-label={label}
       title={label}
       className={cn(
-        'inline-flex items-center justify-center transition-colors focus-visible:outline-none',
-        variant === 'onDark' ? 'rounded-full' : 'rounded-lg',
-        variant === 'onDark' ? onDarkSizeCls[size] : sizeCls[size],
+        'inline-flex shrink-0 items-center justify-center rounded-full transition-all active:scale-95 focus-visible:outline-none',
+        sizeCls[size],
         variantCls[variant],
         className,
       )}

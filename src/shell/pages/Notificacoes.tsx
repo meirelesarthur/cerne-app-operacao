@@ -47,12 +47,9 @@ export function Notificacoes() {
                   interactive
                   padded={false}
                   onClick={() => navigate(destination)}
-                  className={cn(
-                    'flex items-start gap-3 border-l-4 p-3',
-                    n.read ? 'border-l-transparent' : 'border-l-accent',
-                  )}
+                  className={cn('flex items-start gap-3 p-3', !n.read && 'ring-1 ring-cta/60')}
                 >
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent-subtle text-accent">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-subtle text-accent">
                     <Icon size={18} />
                   </span>
                   <div className="flex-1">

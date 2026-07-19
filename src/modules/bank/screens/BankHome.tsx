@@ -92,7 +92,7 @@ export function BankHome() {
       <div className="animate-rise" style={stagger(3)}>
         <Card interactive onClick={() => navigate('/credito')}>
           <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-accent text-white">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-white">
               <TrendingUp size={22} aria-hidden="true" />
             </span>
             <div className="min-w-0 flex-1">

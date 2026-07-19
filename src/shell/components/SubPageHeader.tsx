@@ -4,18 +4,21 @@ import { IconButton } from '@/components/ui/IconButton'
 import { Heading } from '@/components/ui/Heading'
 import type { ReactNode } from 'react'
 
-/** Cabeçalho de página secundária (Notificações, Perfil, telas internas) com voltar. */
+/**
+ * Cabeçalho de página secundária (Nova UI): bolha circular de voltar + título
+ * centralizado sobre o canvas, como na referência ("Profile", "Payments").
+ */
 export function SubPageHeader({ title, onBack, action }: { title: string; onBack?: () => void; action?: ReactNode }) {
   const navigate = useNavigate()
   return (
-    <header className="flex items-center gap-2 border-b border-border-default bg-surface px-2 py-2">
-      <IconButton label="Voltar" onClick={onBack ?? (() => navigate(-1))}>
+    <header className="flex items-center gap-3 bg-canvas px-4 py-3">
+      <IconButton label="Voltar" variant="solid" size="lg" onClick={onBack ?? (() => navigate(-1))}>
         <ArrowLeft size={20} />
       </IconButton>
-      <Heading level={3} className="flex-1">
+      <Heading level={3} className="min-w-0 flex-1 truncate text-center">
         {title}
       </Heading>
-      {action}
+      {action ?? <span className="h-12 w-12 shrink-0" aria-hidden="true" />}
     </header>
   )
 }

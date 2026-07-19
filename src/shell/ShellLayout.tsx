@@ -2,7 +2,7 @@ import { useParams, Navigate } from 'react-router-dom'
 import { CloudOff } from 'lucide-react'
 import { getModule } from '@/shell/moduleConfig'
 import { ShellHeader } from '@/shell/components/ShellHeader'
-import { ModuleSwitcher } from '@/shell/components/ModuleSwitcher'
+import { ContextTabs } from '@/shell/components/ContextTabs'
 import { BottomTabBar } from '@/shell/components/BottomTabBar'
 import { RevealMenu } from '@/shell/components/RevealMenu'
 import { Banner } from '@/components/ui/Banner'
@@ -65,7 +65,7 @@ export function ShellLayout() {
             {/* crédito pré-aprovado é contexto global do Shell — visível em todos os módulos */}
             <CreditoPill />
           </ShellHeader>
-          <ModuleSwitcher activeId={module.id} />
+          <ContextTabs module={module} />
         </div>
 
         {!isOnline && (
@@ -74,13 +74,16 @@ export function ShellLayout() {
           </Banner>
         )}
 
-        {/* sheet claro com topo arredondado sobre o verde do header */}
-        <div className="min-h-0 flex-1" style={{ background: t.component.header.tabsBg }}>
+        {/* Nova UI: conteúdo direto no canvas — cartões-cápsula flutuam sobre ele */}
+        <div className="min-h-0 flex-1">
           <main
-            className={cn(
-              'no-scrollbar h-full overflow-y-auto',
-              !isFazendas && 'rounded-t-3xl bg-surface', // Fazendas monta o próprio sheet (barra de visão + sync)
-            )}
+            className="no-scrollbar h-full overflow-y-auto"
+            style={
+              // folga para o conteúdo não terminar sob a tab bar flutuante
+              !isFazendas
+                ? { paddingBottom: `calc(${t.layout.tabBarClearance} + env(safe-area-inset-bottom))` }
+                : undefined
+            }
           >
             {module.id === 'inicio' ? (
               <HubModule />
@@ -100,9 +103,8 @@ export function ShellLayout() {
           </main>
         </div>
 
-        <div className="shrink-0">
-          <BottomTabBar module={module} />
-        </div>
+        {/* dock de módulos flutuante — posiciona-se sozinho sobre o conteúdo */}
+        <BottomTabBar activeId={module.id} />
 
         {/* com o menu aberto, tocar no app encolhido fecha o menu */}
         {menuOpen && (

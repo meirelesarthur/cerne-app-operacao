@@ -25,19 +25,19 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
     <div className="fixed inset-0 z-[1100] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/45" onClick={onClose} aria-hidden="true" />
       <div
-        className="relative w-full max-w-[380px] rounded-[20px] bg-surface shadow-modal"
+        className="relative w-full max-w-[380px] rounded-modal bg-surface shadow-modal"
         role="dialog"
         aria-modal="true"
         aria-label={title}
       >
-        <div className="flex items-center justify-between border-b border-border-default px-5 py-3">
+        <div className="flex items-center justify-between px-5 pb-1 pt-4">
           <h2 className="text-lg font-semibold text-fg">{title}</h2>
           <IconButton label="Fechar" onClick={onClose}>
             <X size={18} />
           </IconButton>
         </div>
         <div className="px-5 py-4 text-md text-fg">{children}</div>
-        {footer && <div className="flex justify-end gap-2 border-t border-border-default px-5 py-3">{footer}</div>}
+        {footer && <div className="flex justify-end gap-2 px-5 pb-5 pt-1">{footer}</div>}
       </div>
     </div>,
     document.body,

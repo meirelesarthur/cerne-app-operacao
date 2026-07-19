@@ -61,7 +61,7 @@ function SheetBody({ activity }: { activity: Activity }) {
     <div className="flex flex-col gap-4">
       {/* Identidade da atividade */}
       <div className="flex items-center gap-3">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-surface-subtle text-fg-muted">
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-surface-subtle text-fg-muted">
           <Icon size={22} aria-hidden="true" />
         </span>
         <div className="min-w-0 flex-1">

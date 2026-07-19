@@ -12,10 +12,11 @@ export interface IllustrationSlotProps {
 }
 
 /**
- * Área de ilustração (onboarding/empty states premium). Com `src`, exibe a arte
- * final como composição autocontida (as ilustrações geradas já trazem o próprio
- * fundo). Sem `src`, renderiza o fallback tokenizado: arco em tons da marca com
- * o ícone do tema — trocar para a arte pronta não exige mexer no layout.
+ * Área de ilustração (onboarding/empty states premium). Com `src`, a arte final
+ * é autocontida (as ilustrações geradas já trazem o próprio fundo) — sem arco
+ * decorativo por trás. Sem `src`, renderiza o fallback tokenizado: bolha ink
+ * com o ícone do tema, no idioma da Nova UI — trocar para a arte pronta não
+ * exige mexer no layout.
  */
 export function IllustrationSlot({ src, alt, icon: Icon, className }: IllustrationSlotProps) {
   if (src) {
@@ -23,15 +24,10 @@ export function IllustrationSlot({ src, alt, icon: Icon, className }: Illustrati
   }
 
   return (
-    <div className={cn('relative mx-auto flex aspect-square w-full max-w-[280px] items-end justify-center', className)}>
-      {/* arco de fundo (estilo referência: meia-lua atrás da arte) */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-[82%] rounded-t-full bg-accent-subtle"
-      />
+    <div className={cn('relative mx-auto flex aspect-square w-full max-w-[280px] items-center justify-center', className)}>
       <div role="img" aria-label={alt} className="relative z-10 flex h-full w-full items-center justify-center">
         {Icon && (
-          <span className="flex h-24 w-24 items-center justify-center rounded-[32px] bg-accent text-white shadow-brand">
+          <span className="flex h-24 w-24 items-center justify-center rounded-[32px] bg-ink text-cta shadow-card">
             <Icon size={44} strokeWidth={1.6} />
           </span>
         )}

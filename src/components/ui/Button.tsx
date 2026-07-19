@@ -15,14 +15,15 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const sizeCls: Record<Size, string> = {
-  sm: 'h-8 px-3 text-sm gap-1.5',
-  md: 'h-10 px-4 text-md gap-2',
-  lg: 'h-12 px-5 text-lg gap-2',
+  sm: 'h-9 px-4 text-sm gap-1.5',
+  md: 'h-11 px-5 text-md gap-2',
+  lg: 'h-[52px] px-6 text-lg gap-2',
 }
 
+// Nova UI: pílulas cheias; primary é o CTA vibrante (verde + texto quase-preto) da referência
 const variantCls: Record<Variant, string> = {
-  primary: 'bg-accent text-white hover:bg-accent-hover shadow-brand disabled:bg-neutral-300 disabled:shadow-none',
-  secondary: 'bg-surface text-fg border border-border-default hover:bg-surface-subtle',
+  primary: 'bg-cta text-cta-fg hover:bg-cta-hover disabled:bg-neutral-300 disabled:text-neutral-500',
+  secondary: 'bg-surface text-fg border border-border-default shadow-card hover:bg-surface-subtle',
   ghost: 'bg-transparent text-fg hover:bg-surface-subtle',
   danger: 'bg-red-600 text-white hover:bg-red-700',
   // link inline: sem caixa — altura/padding zerados abaixo
@@ -44,7 +45,7 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center rounded-lg font-semibold transition-colors',
+        'inline-flex items-center justify-center rounded-full font-semibold transition-all active:scale-[0.98]',
         'focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-70',
         variant === 'link' ? 'h-auto gap-1 p-0 text-sm' : sizeCls[size],
         variantCls[variant],
