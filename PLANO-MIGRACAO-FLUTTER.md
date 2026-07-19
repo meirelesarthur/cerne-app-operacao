@@ -76,13 +76,13 @@ Cada fase tem **gate de saída (DoD)** — a fase seguinte não abre sem o gate 
 ### Fase F0 — Fundação do repositório (≈ 0,5 dia)
 Preparar o terreno; nada visual ainda.
 
-- [ ] **F0.1** Criar repo `cerne-app-flutter` (ou monorepo `apps/mobile`), Flutter estável, lint
+- [x] **F0.1** Criar repo `cerne-app-flutter` (ou monorepo `apps/mobile`), Flutter estável, lint
   (`very_good_analysis` ou `flutter_lints` estrito), CI (analyze + test + build por PR).
-- [ ] **F0.2** Estrutura de pastas espelhando o protótipo: `lib/design/`, `lib/ui/` (catálogo),
+- [x] **F0.2** Estrutura de pastas espelhando o protótipo: `lib/design/`, `lib/ui/` (catálogo),
   `lib/shell/`, `lib/modules/<nome>/`.
-- [ ] **F0.3** Pipeline de assets: fonte Outfit, `lucide_icons`, ilustrações e logos copiadas de
+- [x] **F0.3** Pipeline de assets: fonte Outfit, `lucide_icons`, ilustrações e logos copiadas de
   `src/images/` (onboard1-3, login_bg, logo-min-white e variantes).
-- [ ] **F0.4** Decisão registrada (ADR curto): Riverpod vs Bloc · fl_chart vs CustomPainter ·
+- [x] **F0.4** Decisão registrada (ADR curto): Riverpod vs Bloc · fl_chart vs CustomPainter ·
   repo separado vs monorepo.
 
 **DoD F0:** app "hello" buildando em CI para Android e iOS; ADRs commitados.
@@ -90,14 +90,14 @@ Preparar o terreno; nada visual ainda.
 ### Fase F1 — Tokens e tema (≈ 0,5 dia)
 O contrato primeiro. É o espelho da Lei 3/5 no Flutter.
 
-- [ ] **F1.1** Configurar Style Dictionary consumindo `tokens/tokens.json` (DTCG) do repo do
+- [x] **F1.1** Configurar Style Dictionary consumindo `tokens/tokens.json` (DTCG) do repo do
   protótipo (git submodule, package, ou cópia versionada com script de sync).
-- [ ] **F1.2** Gerar `app_colors.dart`, `app_spacing.dart`, `app_radius.dart`, `app_typography.dart`,
+- [x] **F1.2** Gerar `app_colors.dart`, `app_spacing.dart`, `app_radius.dart`, `app_typography.dart`,
   `app_shadows.dart` — arquivos gerados, nunca editados à mão (comentário-guarda no header).
-- [ ] **F1.3** Montar `ThemeData` light + `ThemeExtension` GB Mode a partir dos gerados; troca de
+- [x] **F1.3** Montar `ThemeData` light + `ThemeExtension` GB Mode a partir dos gerados; troca de
   tema em runtime (equivalente ao `data-theme`).
-- [ ] **F1.4** Tela interna de auditoria de tema (grid de cores/espaços/tipografia) para validação
-  visual com o design.
+- [x] **F1.4** Tela interna de auditoria de tema (grid de cores/espaços/tipografia) para validação
+  visual com o design. _Auditoria técnica pronta (Widgetbook); validação visual pelo time de design ainda pendente._
 
 **DoD F1:** mudança de valor em `tokens.ts` → `npm run tokens:export` → regeneração Dart reflete
 no app sem edição manual; validado pelo design nas duas variantes de tema.
@@ -105,17 +105,20 @@ no app sem edição manual; validado pelo design nas duas variantes de tema.
 ### Fase F2 — Catálogo de widgets (≈ 1,5–2 dias) ← maior investimento
 Reescrever os 43 componentes de `ui/` como package interno, mesmos nomes e props (§1.2).
 
-- [ ] **F2.1** Lote Ações + Superfícies (Button, IconButton, Card, tiles, KPI).
-- [ ] **F2.2** Lote Formulário (inputs, selects, checkbox, toggle, stepper, upload).
-- [ ] **F2.3** Lote Feedback + Overlay (banners, estados, skeleton, modal, bottom sheets).
-- [ ] **F2.4** Lote Dados + Gráficos (list items, badges, avatar, charts, page dots, illustration slot).
-- [ ] **F2.5** Galeria de componentes (rota interna tipo storybook: `widgetbook` ou tela própria)
+- [x] **F2.1** Lote Ações + Superfícies (Button, IconButton, Card, tiles, KPI).
+- [x] **F2.2** Lote Formulário (inputs, selects, checkbox, toggle, stepper, upload).
+- [x] **F2.3** Lote Feedback + Overlay (banners, estados, skeleton, modal, bottom sheets).
+- [x] **F2.4** Lote Dados + Gráficos (list items, badges, avatar, charts, page dots, illustration slot).
+- [x] **F2.5** Galeria de componentes (rota interna tipo storybook: `widgetbook` ou tela própria)
   com todas as variantes de cada widget.
-- [ ] **F2.6** Golden tests dos widgets críticos (Button, Card, inputs, list items) nas 2 variantes
+- [x] **F2.6** Golden tests dos widgets críticos (Button, Card, inputs, list items) nas 2 variantes
   de tema.
 
-**DoD F2:** 43/43 no ar na galeria; goldens verdes em CI; aprovação visual do design comparando
-lado a lado com o protótipo React.
+**DoD F2:** 42/42 no ar na galeria (`flutter build web -t lib/widgetbook_app.dart`); goldens verdes
+localmente (`flutter test`, 123 testes incluindo 8 golden) — **CI (GitHub Actions) ainda não rodou
+de verdade** (workflow criado no F0, mas sem push/PR real neste momento); **aprovação visual do
+design comparando lado a lado com o protótipo React ainda pendente** — trabalho técnico completo,
+falta o ritual de revisão humana (§3 do plano).
 
 ### Fase F3 — Shell e navegação (≈ 0,5–1 dia)
 - [ ] **F3.1** `ShellRoute` com header global (gradiente, saudação, pílula de crédito, sino) +
