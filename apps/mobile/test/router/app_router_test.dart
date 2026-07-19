@@ -13,6 +13,13 @@ Widget _wrap([ProviderContainer? container]) {
   return UncontrolledProviderScope(container: container, child: child);
 }
 
+/// `pumpAndSettle` só continua pumpando enquanto frames são agendados — um
+/// `Future.delayed` isolado (SimulatedLoad/RiseIn da HubHomeScreen, renderizada
+/// por padrão em `/inicio`) não agenda frame algum até disparar, então pode
+/// ficar pendente se não avançarmos o relógio explicitamente antes. Chamar
+/// sempre que o teste passar por `/inicio`.
+Future<void> _settleHubTimers(WidgetTester tester) => tester.pump(const Duration(seconds: 1));
+
 void main() {
   // appRouter é uma instância global (top-level) — cada teste navega a partir
   // de onde o anterior parou. Reseta explicitamente para o ponto de partida.
@@ -22,6 +29,7 @@ void main() {
     testWidgets('"/" redireciona para "/inicio" e mostra o módulo Início', (tester) async {
       appRouter.go('/');
       await tester.pumpWidget(_wrap());
+      await _settleHubTimers(tester);
       await tester.pumpAndSettle();
 
       expect(find.text('Início'), findsWidgets);
@@ -36,8 +44,26 @@ void main() {
       expect(find.text('Extrato — módulo chega na F4'), findsOneWidget);
     });
 
+    testWidgets('deep-link "/fazendas" mostra as ContextTabs do módulo correto (não as do Início)', (tester) async {
+      // Regressão: o moduleId ativo do ShellLayout era derivado de
+      // `state.pathParameters['moduleId']`, que nunca existe (nenhuma rota usa
+      // ':moduleId' — todas são segmentos literais) — sempre caía no fallback
+      // 'inicio', então header/tabs/dock nunca refletiam o módulo real.
+      appRouter.go('/fazendas');
+      await tester.pumpWidget(_wrap());
+      await tester.pumpAndSettle();
+
+      // Abas de Fazendas (moduleConfig) — não existem no módulo Início.
+      expect(find.text('Dashboard'), findsOneWidget);
+      expect(find.text('Financeiro'), findsOneWidget);
+      // Abas do Início não devem aparecer.
+      expect(find.text('Apps'), findsNothing);
+      expect(find.text('Carteira'), findsNothing);
+    });
+
     testWidgets('trocar de módulo pelo dock preserva o header (Silvio Ventura continua visível)', (tester) async {
       await tester.pumpWidget(_wrap());
+      await _settleHubTimers(tester);
       await tester.pumpAndSettle();
 
       expect(find.text('Silvio Ventura'), findsOneWidget);
@@ -51,6 +77,7 @@ void main() {
 
     testWidgets('tocar em "Mais" abre o RevealMenu do módulo ativo', (tester) async {
       await tester.pumpWidget(_wrap());
+      await _settleHubTimers(tester);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byTooltip('Mais'));
@@ -66,6 +93,7 @@ void main() {
       addTearDown(container.dispose);
 
       await tester.pumpWidget(_wrap(container));
+      await _settleHubTimers(tester);
       await tester.pumpAndSettle();
 
       await tester.tap(find.byTooltip('Mais'));
