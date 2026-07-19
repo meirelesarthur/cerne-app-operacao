@@ -48,13 +48,14 @@ dependencies:
   # Trocar para asset self-hosted é possível depois: baixar os .ttf e declarar em `flutter.fonts` abaixo.
   google_fonts: ^6.2.1
 
+  # Galeria de componentes (F2.5) e auditoria de tema (F1.4) — lib/widgetbook_app.dart
+  # importa este pacote diretamente, por isso vive em `dependencies`, não `dev_dependencies`.
+  widgetbook: ^3.14.2
+  widgetbook_annotation: ^3.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  # Galeria de componentes (F2.5) — substitui a tela própria tipo storybook
-  widgetbook: ^3.14.2
-  widgetbook_annotation: ^3.3.0
 
   build_runner: ^2.4.13
   riverpod_generator: ^2.6.3
