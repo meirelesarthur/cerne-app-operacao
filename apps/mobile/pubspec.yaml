@@ -54,6 +54,12 @@ dependencies:
   widgetbook: ^3.14.2
   widgetbook_annotation: ^3.3.0
 
+  # URL sem "#" na web (lib/shared/url_strategy_web.dart) — hospedagem no Cloudflare
+  # Pages (F4 infra). Já vem embutido no SDK do Flutter; declarado explicitamente
+  # porque é referenciado direto por um import (depend_on_referenced_packages).
+  flutter_web_plugins:
+    sdk: flutter
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

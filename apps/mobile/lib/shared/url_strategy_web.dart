@@ -1,4 +1,5 @@
-import 'package:flutter_web_plugins/flutter_web_plugins.dart' show usePathUrlStrategy;
+import 'package:flutter_web_plugins/flutter_web_plugins.dart'
+    show usePathUrlStrategy;
 
 /// Implementação web: URLs sem `#` (`/fazendas` em vez de `/#/fazendas`).
 /// Necessário para o roteamento por path funcionar atrás do Cloudflare Pages
