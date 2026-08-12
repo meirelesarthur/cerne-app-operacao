@@ -147,10 +147,10 @@ paralelo após o 1º.
 
 **DoD F4 (por módulo):** paridade de telas e navegação com o protótipo (checklist por tela);
 zero hardcode de estilo (audit de lint próprio); revisão do guardião da spec.
-**Estado real:** 289 testes verdes, `flutter analyze` sem apontamentos, todos os 6 módulos
-roteados (`app_router.dart`). **Gap conhecido:** módulo Armazém (F4.6) sem testes dedicados —
-único módulo sem cobertura própria; entra no backlog antes do handoff. Revisão visual lado a
-lado com o protótipo React (checklist por tela, mesma ressalva do F2/F3) ainda pendente.
+**Estado real:** 313 testes verdes, `flutter analyze` sem apontamentos, `dart format` limpo,
+todos os 6 módulos roteados (`app_router.dart`) e com cobertura própria (Armazém fechou o gap
+que faltava). Revisão visual lado a lado com o protótipo React (checklist por tela, mesma
+ressalva do F2/F3) ainda pendente — único item aberto da fase.
 
 ### Fase F5 — Hardening e qualidade (**escopo do time mobile, pós-handoff**)
 - [ ] **F5.1** Acessibilidade: semantics, tamanhos de toque ≥ 48dp, contraste nas 2 variantes.
