@@ -24,7 +24,13 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          # Versão fixa (não `channel: stable` flutuante) — os golden tests
+          # (F2.6, `test/flutter_test_config.dart`) comparam pixels contra o
+          # motor Skia desta versão exata; um bump silencioso de "stable"
+          # entre execuções do CI voltaria a divergir dos PNGs commitados
+          # sem nenhuma mudança de código. Subir junto com os goldens quando
+          # atualizar de propósito.
+          flutter-version: '3.44.6'
           cache: true
 
       - name: Install dependencies
