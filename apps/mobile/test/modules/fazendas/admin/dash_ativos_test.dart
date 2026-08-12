@@ -1,0 +1,42 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/modules/fazendas/admin/dash_ativos.dart';
+
+import '../../../support/test_viewport.dart';
+
+Widget _wrap(Widget child) => ProviderScope(
+      child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child)),
+    );
+
+void main() {
+  group('DashAtivos', () {
+    testWidgets('renderiza sem exceção', (tester) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(_wrap(const DashAtivos()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ativos / Depreciação'), findsWidgets);
+      // "Equipamentos" é tanto o título da seção quanto a categoria do mock
+      // `Balança de Curral` — aparece 2x.
+      expect(find.text('Equipamentos'), findsWidgets);
+      expect(find.text('Trator John Deere 6110'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('abre o detalhe de um ativo ao tocar', (tester) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(_wrap(const DashAtivos()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Trator John Deere 6110'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Detalhe do ativo'), findsOneWidget);
+      expect(find.text('Valor de aquisição'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+  });
+}

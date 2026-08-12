@@ -11,6 +11,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../design/theme/theme_provider.dart';
+import '../../modules/fazendas/components/view_switch.dart';
 import '../../ui/ui.dart';
 import '../module_config.dart';
 import '../state/shell_store.dart';
@@ -229,8 +230,15 @@ class _MenuContent extends StatelessWidget {
       ),
       const SizedBox(height: AppSpacing.space2),
 
-      // TODO F4: ViewSwitch do módulo Fazendas (visão Gerencial ⇄ Campo) —
-      // módulo Fazendas ainda não implementado no Flutter (é da F4).
+      // Switch de visão do módulo Fazendas (Gerencial ⇄ Campo) — só nesse módulo.
+      if (module.id == 'fazendas')
+        _stagger(
+          next(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3),
+            child: Align(alignment: Alignment.centerLeft, child: ViewSwitch(onChanged: (_) => onNavigate(module.homeRoute))),
+          ),
+        ),
 
       // funcionalidades do módulo atual
       for (final section in sections) ...[
