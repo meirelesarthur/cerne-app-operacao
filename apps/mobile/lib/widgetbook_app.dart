@@ -7,11 +7,16 @@ import 'design/generated/app_spacing.dart';
 import 'design/generated/app_typography.dart';
 import 'design/theme/app_theme.dart';
 import 'design/theme/app_theme_extension.dart';
+import 'shared/url_strategy.dart';
 import 'ui/ui.dart';
 
 /// Ponto de entrada da galeria de componentes (F2.5) e da auditoria de tema (F1.4).
 /// Rodar: `flutter run -t lib/widgetbook_app.dart -d chrome`.
-void main() => runApp(const CerneWidgetbook());
+/// Hospedado no Cloudflare Pages em `/storybook` (ver `tool/cf_pages_build.sh`).
+void main() {
+  configureUrlStrategy();
+  runApp(const CerneWidgetbook());
+}
 
 class CerneWidgetbook extends StatelessWidget {
   const CerneWidgetbook({super.key});

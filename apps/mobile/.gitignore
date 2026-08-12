@@ -33,6 +33,9 @@ migrate_working_dir/
 /build/
 /coverage/
 
+# SDK Flutter baixado em tempo de build pelo Cloudflare Pages (tool/cf_pages_build.sh)
+/.flutter-sdk/
+
 # Symbolication related
 app.*.symbols
 

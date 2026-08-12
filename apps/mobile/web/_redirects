@@ -1,0 +1,6 @@
+# Cloudflare Pages — SPA fallback para o roteamento por path do go_router
+# (ver `usePathUrlStrategy()` em lib/main.dart e lib/widgetbook_app.dart).
+# A galeria Widgetbook é publicada em /storybook pelo tool/cf_pages_build.sh;
+# este arquivo é copiado por `flutter build web` para a raiz de build/site.
+/storybook/*  /storybook/index.html  200
+/*            /index.html            200
