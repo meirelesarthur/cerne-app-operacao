@@ -137,16 +137,20 @@ design ainda pendente (mesma ressalva do F2).
 Ordem do §1.3. Cada módulo é um trilho independente da esteira — com 2 devs, rodar 2 trilhos em
 paralelo após o 1º.
 
-- [ ] **F4.1** Início/hub (Banking central, bento de mini-apps).
-- [ ] **F4.2** Fazendas — gerencial: 7 dashboards (charts prontos na F2).
-- [ ] **F4.3** Fazendas — operacional: 6 fluxos de campo + fila de sync (ainda mock, como no protótipo).
-- [ ] **F4.4** Bank (extrato, pagamentos, cartões).
-- [ ] **F4.5** Crédito (oferta, simulador, propostas).
-- [ ] **F4.6** Marketplace + Armazém.
-- [ ] **F4.7** Login + Onboarding (artes e logo já em assets; carrossel com `PageView` + dots).
+- [x] **F4.1** Início/hub (Banking central, bento de mini-apps).
+- [x] **F4.2** Fazendas — gerencial: 7 dashboards (charts prontos na F2).
+- [x] **F4.3** Fazendas — operacional: 6 fluxos de campo + fila de sync (ainda mock, como no protótipo).
+- [x] **F4.4** Bank (extrato, pagamentos, cartões).
+- [x] **F4.5** Crédito (oferta, simulador, propostas).
+- [x] **F4.6** Marketplace + Armazém.
+- [x] **F4.7** Login + Onboarding (artes e logo já em assets; carrossel com `PageView` + dots).
 
 **DoD F4 (por módulo):** paridade de telas e navegação com o protótipo (checklist por tela);
 zero hardcode de estilo (audit de lint próprio); revisão do guardião da spec.
+**Estado real:** 289 testes verdes, `flutter analyze` sem apontamentos, todos os 6 módulos
+roteados (`app_router.dart`). **Gap conhecido:** módulo Armazém (F4.6) sem testes dedicados —
+único módulo sem cobertura própria; entra no backlog antes do handoff. Revisão visual lado a
+lado com o protótipo React (checklist por tela, mesma ressalva do F2/F3) ainda pendente.
 
 ### Fase F5 — Hardening e qualidade (**escopo do time mobile, pós-handoff**)
 - [ ] **F5.1** Acessibilidade: semantics, tamanhos de toque ≥ 48dp, contraste nas 2 variantes.
