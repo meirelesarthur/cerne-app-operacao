@@ -1,9 +1,17 @@
 import 'package:go_router/go_router.dart';
 
+import '../modules/armazem/armazem_module.dart';
+import '../modules/bank/bank_module.dart';
+import '../modules/credito/credito_module.dart';
+import '../modules/fazendas/fazendas_module.dart';
 import '../modules/hub/hub_module.dart';
+import '../modules/marketplace/marketplace_module.dart';
 import '../shell/module_config.dart';
+import '../shell/pages/login_page.dart';
 import '../shell/pages/module_placeholder_screen.dart';
-import '../shell/pages/placeholder_page.dart';
+import '../shell/pages/notificacoes_page.dart';
+import '../shell/pages/onboarding_page.dart';
+import '../shell/pages/perfil_config_page.dart';
 import '../shell/shell_layout.dart';
 
 /// Router do app — `ShellRoute` (F3.1) com rotas `/:moduleId` e `/:moduleId/:tab`
@@ -27,7 +35,12 @@ final GoRouter appRouter = GoRouter(
       },
       routes: [
         buildHubModuleRoute(),
-        for (final module in modules.where((m) => m.id != 'inicio'))
+        buildFazendasModuleRoute(),
+        buildBankModuleRoute(),
+        buildCreditoModuleRoute(),
+        buildMarketplaceModuleRoute(),
+        buildArmazemModuleRoute(),
+        for (final module in modules.where((m) => !_wiredModules.contains(m.id)))
           GoRoute(
             path: '/${module.id}',
             builder: (context, state) => ModulePlaceholderScreen(
@@ -46,11 +59,17 @@ final GoRouter appRouter = GoRouter(
           ),
       ],
     ),
-    GoRoute(path: '/perfil', builder: (context, state) => const PlaceholderPage(title: 'Perfil')),
-    GoRoute(path: '/notificacoes', builder: (context, state) => const PlaceholderPage(title: 'Notificações')),
-    GoRoute(path: '/login', builder: (context, state) => const PlaceholderPage(title: 'Login')),
+    GoRoute(path: '/perfil', builder: (context, state) => const PerfilConfigPage()),
+    GoRoute(path: '/notificacoes', builder: (context, state) => const NotificacoesPage()),
+    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+    GoRoute(path: '/onboarding', builder: (context, state) => const OnboardingPage()),
   ],
 );
+
+/// Módulos com rota real registrada (todos, após a F4) — o loop genérico de
+/// `ModulePlaceholderScreen` abaixo só existe como rede de segurança para um
+/// módulo futuro sem tela própria ainda.
+const _wiredModules = {'inicio', 'fazendas', 'bank', 'credito', 'marketplace', 'armazem'};
 
 String _tabLabel(ModuleDef module, String tabPath) {
   for (final tab in module.bottomTabs) {
