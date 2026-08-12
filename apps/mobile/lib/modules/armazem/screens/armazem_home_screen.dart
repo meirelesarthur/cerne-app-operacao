@@ -34,22 +34,51 @@ class ArmazemHomeScreen extends StatelessWidget {
               if (loading) {
                 return const Row(
                   children: [
-                    Expanded(child: AppSkeleton(height: 74, rounded: AppSkeletonRadius.xl)),
+                    Expanded(
+                      child: AppSkeleton(
+                        height: 74,
+                        rounded: AppSkeletonRadius.xl,
+                      ),
+                    ),
                     SizedBox(width: AppSpacing.space3),
-                    Expanded(child: AppSkeleton(height: 74, rounded: AppSkeletonRadius.xl)),
+                    Expanded(
+                      child: AppSkeleton(
+                        height: 74,
+                        rounded: AppSkeletonRadius.xl,
+                      ),
+                    ),
                     SizedBox(width: AppSpacing.space3),
-                    Expanded(child: AppSkeleton(height: 74, rounded: AppSkeletonRadius.xl)),
+                    Expanded(
+                      child: AppSkeleton(
+                        height: 74,
+                        rounded: AppSkeletonRadius.xl,
+                      ),
+                    ),
                   ],
                 );
               }
               return const Row(
                 children: [
-                  Expanded(child: AppKpiStatCard(label: 'Ocupação total', value: Kpis.ocupacao)),
-                  SizedBox(width: AppSpacing.space3),
-                  Expanded(child: AppKpiStatCard(label: 'SKUs em estoque', value: Kpis.skus)),
+                  Expanded(
+                    child: AppKpiStatCard(
+                      label: 'Ocupação total',
+                      value: Kpis.ocupacao,
+                    ),
+                  ),
                   SizedBox(width: AppSpacing.space3),
                   Expanded(
-                    child: AppKpiStatCard(label: 'Alertas', value: Kpis.alertas, tone: AppKpiStatTone.warning),
+                    child: AppKpiStatCard(
+                      label: 'SKUs em estoque',
+                      value: Kpis.skus,
+                    ),
+                  ),
+                  SizedBox(width: AppSpacing.space3),
+                  Expanded(
+                    child: AppKpiStatCard(
+                      label: 'Alertas',
+                      value: Kpis.alertas,
+                      tone: AppKpiStatTone.warning,
+                    ),
                   ),
                 ],
               );
@@ -71,11 +100,21 @@ class ArmazemHomeScreen extends StatelessWidget {
                       height: AppSpacing.space8,
                       width: AppSpacing.space8,
                       alignment: Alignment.center,
-                      decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.amber50),
-                      child: const Icon(LucideIcons.triangleAlert, size: 16, color: AppColors.amber600),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.amber50,
+                      ),
+                      child: const Icon(
+                        LucideIcons.triangleAlert,
+                        size: 16,
+                        color: AppColors.amber600,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.space2),
-                    const AppHeading(level: AppHeadingLevel.h4, child: Text('Alertas')),
+                    const AppHeading(
+                      level: AppHeadingLevel.h4,
+                      child: Text('Alertas'),
+                    ),
                   ],
                 ),
                 const SizedBox(height: AppSpacing.space3),
@@ -92,16 +131,25 @@ class ArmazemHomeScreen extends StatelessWidget {
                             children: [
                               Text(
                                 alerta.titulo,
-                                style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: semantic.fgDefault,
+                                ),
                               ),
                               Text(
                                 alerta.detalhe,
-                                style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: semantic.fgMuted,
+                                ),
                               ),
                             ],
                           ),
                         ),
-                        const AppChip(tone: AppChipTone.amber, child: Text('Ação sugerida')),
+                        const AppChip(
+                          tone: AppChipTone.amber,
+                          child: Text('Ação sugerida'),
+                        ),
                       ],
                     ),
                   ),
@@ -123,7 +171,8 @@ class ArmazemHomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: AppSpacing.space3),
                   child: UnidadeCard(
                     unidade: unidade,
-                    onTap: () => showUnidadeDetailSheet(context, unidade: unidade),
+                    onTap: () =>
+                        showUnidadeDetailSheet(context, unidade: unidade),
                   ),
                 ),
             ],
@@ -141,13 +190,18 @@ class ArmazemHomeScreen extends StatelessWidget {
               AppCard(
                 padded: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space4,
+                  ),
                   child: Column(
                     children: [
                       for (final mov in movimentacoes)
                         AppTransactionListItem(
                           transaction: toTransactionItem(mov),
-                          onTap: () => showMovimentacaoDetailSheet(context, movimentacao: mov),
+                          onTap: () => showMovimentacaoDetailSheet(
+                            context,
+                            movimentacao: mov,
+                          ),
                           showDivider: mov != movimentacoes.last,
                         ),
                     ],
@@ -170,8 +224,15 @@ class ArmazemHomeScreen extends StatelessWidget {
                   height: AppSpacing.space10 + AppSpacing.space1,
                   width: AppSpacing.space10 + AppSpacing.space1,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentDefault),
-                  child: const Icon(LucideIcons.shoppingBag, size: 22, color: Colors.white),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: semantic.accentDefault,
+                  ),
+                  child: const Icon(
+                    LucideIcons.shoppingBag,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.space3),
                 Expanded(
@@ -181,7 +242,10 @@ class ArmazemHomeScreen extends StatelessWidget {
                     children: [
                       Text(
                         'Reponha insumos no Marketplace',
-                        style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: semantic.fgDefault,
+                        ),
                       ),
                       Text(
                         'Compre direto dos fornecedores parceiros',
@@ -192,7 +256,11 @@ class ArmazemHomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(LucideIcons.arrowRight, size: 18, color: semantic.accentDefault),
+                Icon(
+                  LucideIcons.arrowRight,
+                  size: 18,
+                  color: semantic.accentDefault,
+                ),
               ],
             ),
           ),

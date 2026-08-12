@@ -67,7 +67,12 @@ class DashboardScreen extends ConsumerWidget {
                     mainAxisSpacing: AppSpacing.space3,
                     crossAxisSpacing: AppSpacing.space3,
                     childAspectRatio: 1.3,
-                    children: const [AppCardSkeleton(), AppCardSkeleton(), AppCardSkeleton(), AppCardSkeleton()],
+                    children: const [
+                      AppCardSkeleton(),
+                      AppCardSkeleton(),
+                      AppCardSkeleton(),
+                      AppCardSkeleton(),
+                    ],
                   )
                 : SingleChildScrollView(
                     padding: const EdgeInsets.all(AppSpacing.space4),

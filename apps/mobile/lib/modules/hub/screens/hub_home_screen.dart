@@ -37,7 +37,8 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
               value: Saldo.valor,
               accountLabel: Saldo.conta,
               hidden: balanceHidden,
-              onToggleHidden: () => ref.read(shellStoreProvider.notifier).toggleBalanceHidden(),
+              onToggleHidden: () =>
+                  ref.read(shellStoreProvider.notifier).toggleBalanceHidden(),
               loading: loading,
               footer: Row(
                 children: [
@@ -70,10 +71,34 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
           index: 1,
           child: Row(
             children: [
-              Expanded(child: AppQuickAction(icon: LucideIcons.zap, label: 'Pix', onPressed: () => context.go('/bank/pagamentos'))),
-              Expanded(child: AppQuickAction(icon: LucideIcons.scanLine, label: 'Pagar', onPressed: () => context.go('/bank/pagamentos'))),
-              Expanded(child: AppQuickAction(icon: LucideIcons.arrowLeftRight, label: 'Transferir', onPressed: () => context.go('/bank/pagamentos'))),
-              Expanded(child: AppQuickAction(icon: LucideIcons.receipt, label: 'Extrato', onPressed: () => context.go('/bank/extrato'))),
+              Expanded(
+                child: AppQuickAction(
+                  icon: LucideIcons.zap,
+                  label: 'Pix',
+                  onPressed: () => context.go('/bank/pagamentos'),
+                ),
+              ),
+              Expanded(
+                child: AppQuickAction(
+                  icon: LucideIcons.scanLine,
+                  label: 'Pagar',
+                  onPressed: () => context.go('/bank/pagamentos'),
+                ),
+              ),
+              Expanded(
+                child: AppQuickAction(
+                  icon: LucideIcons.arrowLeftRight,
+                  label: 'Transferir',
+                  onPressed: () => context.go('/bank/pagamentos'),
+                ),
+              ),
+              Expanded(
+                child: AppQuickAction(
+                  icon: LucideIcons.receipt,
+                  label: 'Extrato',
+                  onPressed: () => context.go('/bank/extrato'),
+                ),
+              ),
             ],
           ),
         ),
@@ -91,8 +116,15 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                   width: 44,
                   height: 44,
                   alignment: Alignment.center,
-                  decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.brand600),
-                  child: const Icon(LucideIcons.handCoins, size: 22, color: Colors.white),
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppColors.brand600,
+                  ),
+                  child: const Icon(
+                    LucideIcons.handCoins,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.space3),
                 const Expanded(
@@ -105,11 +137,22 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                         children: [
                           Text('Crédito Agro'),
                           SizedBox(width: AppSpacing.space2),
-                          AppChip(tone: AppChipTone.brand, child: Text('Pré-aprovado')),
+                          AppChip(
+                            tone: AppChipTone.brand,
+                            child: Text('Pré-aprovado'),
+                          ),
                         ],
                       ),
-                      Text(CreditoPreaprovado.valor, maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text(CreditoPreaprovado.condicao, maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(
+                        CreditoPreaprovado.valor,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        CreditoPreaprovado.condicao,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
                 ),
@@ -154,7 +197,9 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                       name: app.name,
                       description: app.description,
                       badge: app.badge,
-                      onTap: app.route != null ? () => context.go(app.route!) : null,
+                      onTap: app.route != null
+                          ? () => context.go(app.route!)
+                          : null,
                     ),
                 ],
               ),
@@ -186,13 +231,19 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
               AppCard(
                 padded: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space4,
+                  ),
                   child: Column(
                     children: [
                       for (final tx in transacoes.take(3))
                         AppTransactionListItem(
                           transaction: tx,
-                          onTap: () => showAppTransactionDetailSheet(context, transaction: tx, hidden: balanceHidden),
+                          onTap: () => showAppTransactionDetailSheet(
+                            context,
+                            transaction: tx,
+                            hidden: balanceHidden,
+                          ),
                           showDivider: tx != transacoes.take(3).last,
                         ),
                     ],

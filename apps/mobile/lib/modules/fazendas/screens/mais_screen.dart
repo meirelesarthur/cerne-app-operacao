@@ -25,20 +25,56 @@ const _groups = [
   _Group(
     title: 'Dashboards gerenciais',
     items: [
-      _LinkItem(label: 'Financeiro', icon: LucideIcons.wallet, to: '/fazendas/dashboards/financeiro'),
-      _LinkItem(label: 'Pecuária de Corte', icon: LucideIcons.beef, to: '/fazendas/dashboards/pecuaria'),
-      _LinkItem(label: 'Lotação de Currais', icon: LucideIcons.warehouse, to: '/fazendas/dashboards/confinamento'),
-      _LinkItem(label: 'Ativos / Depreciação', icon: LucideIcons.package, to: '/fazendas/dashboards/ativos'),
-      _LinkItem(label: 'Suprimentos', icon: LucideIcons.boxes, to: '/fazendas/dashboards/suprimentos'),
-      _LinkItem(label: 'Análise de Uso', icon: LucideIcons.users, to: '/fazendas/dashboards/uso'),
-      _LinkItem(label: 'Consultas Gerenciais', icon: LucideIcons.search, to: '/fazendas/dashboards/consultas'),
+      _LinkItem(
+        label: 'Financeiro',
+        icon: LucideIcons.wallet,
+        to: '/fazendas/dashboards/financeiro',
+      ),
+      _LinkItem(
+        label: 'Pecuária de Corte',
+        icon: LucideIcons.beef,
+        to: '/fazendas/dashboards/pecuaria',
+      ),
+      _LinkItem(
+        label: 'Lotação de Currais',
+        icon: LucideIcons.warehouse,
+        to: '/fazendas/dashboards/confinamento',
+      ),
+      _LinkItem(
+        label: 'Ativos / Depreciação',
+        icon: LucideIcons.package,
+        to: '/fazendas/dashboards/ativos',
+      ),
+      _LinkItem(
+        label: 'Suprimentos',
+        icon: LucideIcons.boxes,
+        to: '/fazendas/dashboards/suprimentos',
+      ),
+      _LinkItem(
+        label: 'Análise de Uso',
+        icon: LucideIcons.users,
+        to: '/fazendas/dashboards/uso',
+      ),
+      _LinkItem(
+        label: 'Consultas Gerenciais',
+        icon: LucideIcons.search,
+        to: '/fazendas/dashboards/consultas',
+      ),
     ],
   ),
   _Group(
     title: 'Operacional',
     items: [
-      _LinkItem(label: 'Fila de sincronização', icon: LucideIcons.refreshCw, to: '/fazendas/mais/sync'),
-      _LinkItem(label: 'Todas as atividades', icon: LucideIcons.activity, to: '/fazendas/atividades'),
+      _LinkItem(
+        label: 'Fila de sincronização',
+        icon: LucideIcons.refreshCw,
+        to: '/fazendas/mais/sync',
+      ),
+      _LinkItem(
+        label: 'Todas as atividades',
+        icon: LucideIcons.activity,
+        to: '/fazendas/atividades',
+      ),
     ],
   ),
 ];
@@ -96,7 +132,12 @@ class MaisScreen extends StatelessWidget {
 }
 
 class _MaisRow extends StatelessWidget {
-  const _MaisRow({required this.item, required this.showDivider, required this.onTap, required this.semantic});
+  const _MaisRow({
+    required this.item,
+    required this.showDivider,
+    required this.onTap,
+    required this.semantic,
+  });
 
   final _LinkItem item;
   final bool showDivider;
@@ -110,22 +151,44 @@ class _MaisRow extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space3),
-          decoration: showDivider ? BoxDecoration(border: Border(bottom: BorderSide(color: semantic.borderSubtle))) : null,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space4,
+            vertical: AppSpacing.space3,
+          ),
+          decoration: showDivider
+              ? BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: semantic.borderSubtle),
+                  ),
+                )
+              : null,
           child: Row(
             children: [
               Container(
                 width: AppSpacing.space9,
                 height: AppSpacing.space9,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentSubtle),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: semantic.accentSubtle,
+                ),
                 child: Icon(item.icon, size: 18, color: semantic.accentDefault),
               ),
               const SizedBox(width: AppSpacing.space3),
               Expanded(
-                child: Text(item.label, style: TextStyle(fontWeight: FontWeight.w500, color: semantic.fgDefault)),
+                child: Text(
+                  item.label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: semantic.fgDefault,
+                  ),
+                ),
               ),
-              Icon(LucideIcons.chevronRight, size: 16, color: semantic.fgSubtle),
+              Icon(
+                LucideIcons.chevronRight,
+                size: 16,
+                color: semantic.fgSubtle,
+              ),
             ],
           ),
         ),

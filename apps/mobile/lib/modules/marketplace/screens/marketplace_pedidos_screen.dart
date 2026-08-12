@@ -54,10 +54,13 @@ class MarketplacePedidosScreen extends StatelessWidget {
               : ListView.separated(
                   padding: const EdgeInsets.all(AppSpacing.space4),
                   itemCount: pedidos.length,
-                  separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.space3),
+                  separatorBuilder: (context, _) =>
+                      const SizedBox(height: AppSpacing.space3),
                   itemBuilder: (context, index) {
                     final pedido = pedidos[index];
-                    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+                    final semantic = Theme.of(
+                      context,
+                    ).extension<AppSemanticColors>()!;
                     return AppCard(
                       interactive: true,
                       onTap: () => _abrirDetalhe(context, pedido),
@@ -75,15 +78,27 @@ class MarketplacePedidosScreen extends StatelessWidget {
                                   children: [
                                     Text(
                                       'Pedido ${pedido.numero}',
-                                      style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: semantic.fgDefault,
+                                      ),
                                     ),
-                                    Text(pedido.data, style: TextStyle(fontSize: 12, color: semantic.fgMuted)),
+                                    Text(
+                                      pedido.data,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: semantic.fgMuted,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
                               AppChip(
                                 tone: _statusTone[pedido.status]!,
-                                icon: Icon(_statusIcon[pedido.status], size: 12),
+                                icon: Icon(
+                                  _statusIcon[pedido.status],
+                                  size: 12,
+                                ),
                                 child: Text(_statusLabel[pedido.status]!),
                               ),
                             ],
@@ -93,12 +108,19 @@ class MarketplacePedidosScreen extends StatelessWidget {
                             pedido.itens.map((item) => item.nome).join(', '),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: semantic.fgMuted,
+                            ),
                           ),
                           const SizedBox(height: AppSpacing.space2),
                           Text(
                             pedido.valor,
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: semantic.fgDefault),
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: semantic.fgDefault,
+                            ),
                           ),
                         ],
                       ),
@@ -128,7 +150,13 @@ class _PedidoDetalheBody extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Data', style: TextStyle(color: semantic.fgMuted)),
-            Text(pedido.data, style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault)),
+            Text(
+              pedido.data,
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: semantic.fgDefault,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: AppSpacing.space3),
@@ -167,7 +195,10 @@ class _PedidoDetalheBody extends StatelessWidget {
                           style: TextStyle(color: semantic.fgDefault),
                         ),
                       ),
-                      Text('x${item.quantidade}', style: TextStyle(color: semantic.fgMuted)),
+                      Text(
+                        'x${item.quantidade}',
+                        style: TextStyle(color: semantic.fgMuted),
+                      ),
                     ],
                   ),
                 ),
@@ -177,14 +208,26 @@ class _PedidoDetalheBody extends StatelessWidget {
         const SizedBox(height: AppSpacing.space3),
         Container(
           padding: const EdgeInsets.only(top: AppSpacing.space3),
-          decoration: BoxDecoration(border: Border(top: BorderSide(color: semantic.borderDefault))),
+          decoration: BoxDecoration(
+            border: Border(top: BorderSide(color: semantic.borderDefault)),
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('Total', style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault)),
+              Text(
+                'Total',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: semantic.fgDefault,
+                ),
+              ),
               Text(
                 pedido.valor,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: semantic.fgDefault),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: semantic.fgDefault,
+                ),
               ),
             ],
           ),

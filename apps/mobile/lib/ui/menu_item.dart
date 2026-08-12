@@ -49,19 +49,27 @@ class AppMenuItem extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     final containerColor = active
-        ? (_isOnDark ? Colors.white.withValues(alpha: 0.15) : semantic.accentSubtle)
+        ? (_isOnDark
+              ? Colors.white.withValues(alpha: 0.15)
+              : semantic.accentSubtle)
         : (_isOnDark ? semantic.inkBubble : semantic.bgSurface);
 
     final labelColor = _isDanger
         ? (_isOnDark ? AppColors.red400 : AppColors.red600)
         : active
-            ? (_isOnDark ? semantic.inkFg : semantic.accentDefault)
-            : (_isOnDark ? semantic.inkFg : semantic.fgDefault);
+        ? (_isOnDark ? semantic.inkFg : semantic.accentDefault)
+        : (_isOnDark ? semantic.inkFg : semantic.fgDefault);
 
     final descriptionColor = _isOnDark ? semantic.inkMuted : semantic.fgMuted;
-    final iconBubbleColor = _isDanger ? AppColors.red500.withValues(alpha: 0.1) : (_isOnDark ? semantic.inkBubble : semantic.bgSubtle);
-    final iconColor = _isDanger ? AppColors.red500 : (_isOnDark ? semantic.inkFg : semantic.fgMuted);
-    final chevronBubbleColor = _isOnDark ? semantic.inkBubble : semantic.bgSubtle;
+    final iconBubbleColor = _isDanger
+        ? AppColors.red500.withValues(alpha: 0.1)
+        : (_isOnDark ? semantic.inkBubble : semantic.bgSubtle);
+    final iconColor = _isDanger
+        ? AppColors.red500
+        : (_isOnDark ? semantic.inkFg : semantic.fgMuted);
+    final chevronBubbleColor = _isOnDark
+        ? semantic.inkBubble
+        : semantic.bgSubtle;
     final chevronColor = _isOnDark ? semantic.inkMuted : semantic.fgMuted;
 
     return Material(
@@ -72,9 +80,15 @@ class AppMenuItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppRadius.xl2),
         child: Container(
           constraints: const BoxConstraints(minHeight: AppSpacing.space14),
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3, vertical: AppSpacing.space2),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space3,
+            vertical: AppSpacing.space2,
+          ),
           decoration: !active && !_isOnDark
-              ? BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.xl2), boxShadow: semantic.shadowCard)
+              ? BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppRadius.xl2),
+                  boxShadow: semantic.shadowCard,
+                )
               : null,
           child: Row(
             children: [
@@ -82,7 +96,10 @@ class AppMenuItem extends StatelessWidget {
                 Container(
                   height: AppSpacing.space10,
                   width: AppSpacing.space10,
-                  decoration: BoxDecoration(color: iconBubbleColor, shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: iconBubbleColor,
+                    shape: BoxShape.circle,
+                  ),
                   alignment: Alignment.center,
                   child: Icon(icon, size: 19, color: iconColor),
                 ),
@@ -97,28 +114,45 @@ class AppMenuItem extends StatelessWidget {
                       label,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontSize: AppTypography.md, fontWeight: AppTypography.weightSemibold, color: labelColor),
+                      style: TextStyle(
+                        fontSize: AppTypography.md,
+                        fontWeight: AppTypography.weightSemibold,
+                        color: labelColor,
+                      ),
                     ),
                     if (description != null)
                       Text(
                         description!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: AppTypography.xs, color: descriptionColor),
+                        style: TextStyle(
+                          fontSize: AppTypography.xs,
+                          color: descriptionColor,
+                        ),
                       ),
                   ],
                 ),
               ),
               if (trailing != null)
-                Padding(padding: const EdgeInsets.only(left: AppSpacing.space2), child: trailing)
+                Padding(
+                  padding: const EdgeInsets.only(left: AppSpacing.space2),
+                  child: trailing,
+                )
               else if (onTap != null)
                 Container(
                   height: AppSpacing.space8,
                   width: AppSpacing.space8,
                   margin: const EdgeInsets.only(left: AppSpacing.space2),
-                  decoration: BoxDecoration(color: chevronBubbleColor, shape: BoxShape.circle),
+                  decoration: BoxDecoration(
+                    color: chevronBubbleColor,
+                    shape: BoxShape.circle,
+                  ),
                   alignment: Alignment.center,
-                  child: Icon(LucideIcons.chevronRight, size: 15, color: chevronColor),
+                  child: Icon(
+                    LucideIcons.chevronRight,
+                    size: 15,
+                    color: chevronColor,
+                  ),
                 ),
             ],
           ),
@@ -139,11 +173,26 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AppMenuItem(icon: LucideIcons.user, label: 'Perfil', description: 'Dados pessoais e documentos', onTap: () {}),
+              AppMenuItem(
+                icon: LucideIcons.user,
+                label: 'Perfil',
+                description: 'Dados pessoais e documentos',
+                onTap: () {},
+              ),
               const SizedBox(height: 8),
-              AppMenuItem(icon: LucideIcons.bell, label: 'Notificações', active: true, onTap: () {}),
+              AppMenuItem(
+                icon: LucideIcons.bell,
+                label: 'Notificações',
+                active: true,
+                onTap: () {},
+              ),
               const SizedBox(height: 8),
-              AppMenuItem(icon: LucideIcons.logOut, label: 'Sair', tone: AppMenuItemTone.danger, onTap: () {}),
+              AppMenuItem(
+                icon: LucideIcons.logOut,
+                label: 'Sair',
+                tone: AppMenuItemTone.danger,
+                onTap: () {},
+              ),
             ],
           ),
         ),

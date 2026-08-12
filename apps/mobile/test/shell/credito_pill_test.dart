@@ -4,7 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/shell/components/credito_pill.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppCreditoPill', () {
@@ -18,7 +21,9 @@ void main() {
 
     testWidgets('dispara onTap ao tocar', (tester) async {
       var tapped = false;
-      await tester.pumpWidget(_wrap(AppCreditoPill(onTap: () => tapped = true)));
+      await tester.pumpWidget(
+        _wrap(AppCreditoPill(onTap: () => tapped = true)),
+      );
 
       await tester.tap(find.byType(AppCreditoPill));
       await tester.pump();

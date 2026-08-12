@@ -39,8 +39,10 @@ class AppFormSelect extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final radius = BorderRadius.circular(AppRadius.full);
 
-    OutlineInputBorder border(Color color) =>
-        OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: color));
+    OutlineInputBorder border(Color color) => OutlineInputBorder(
+      borderRadius: radius,
+      borderSide: BorderSide(color: color),
+    );
 
     final textStyle = TextStyle(
       fontFamily: AppTypography.fontFamily,
@@ -65,7 +67,9 @@ class AppFormSelect extends StatelessWidget {
         filled: true,
         fillColor: semantic.bgSubtle,
         constraints: const BoxConstraints(minHeight: AppSpacing.space12),
-        contentPadding: const EdgeInsets.symmetric(horizontal: AppSpacing.space5),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space5,
+        ),
         border: border(Colors.transparent),
         enabledBorder: border(Colors.transparent),
         disabledBorder: border(Colors.transparent),
@@ -74,10 +78,19 @@ class AppFormSelect extends StatelessWidget {
       items: [
         if (placeholder != null)
           DropdownMenuItem<String>(
-            child: Text(placeholder!, style: TextStyle(fontFamily: AppTypography.fontFamily, color: semantic.fgSubtle)),
+            child: Text(
+              placeholder!,
+              style: TextStyle(
+                fontFamily: AppTypography.fontFamily,
+                color: semantic.fgSubtle,
+              ),
+            ),
           ),
         ...options.map(
-          (o) => DropdownMenuItem<String>(value: o.value, child: Text(o.label, style: textStyle)),
+          (o) => DropdownMenuItem<String>(
+            value: o.value,
+            child: Text(o.label, style: textStyle),
+          ),
         ),
       ],
     );
@@ -127,7 +140,11 @@ class _FormSelectUseCaseState extends State<_FormSelectUseCase> {
               onChanged: (v) => setState(() => _value = v),
             ),
             const SizedBox(height: AppSpacing.space4),
-            const AppFormSelect(options: _options, enabled: false, placeholder: 'Desabilitado'),
+            const AppFormSelect(
+              options: _options,
+              enabled: false,
+              placeholder: 'Desabilitado',
+            ),
           ],
         ),
       ),

@@ -19,16 +19,21 @@ class SyncBanner extends ConsumerWidget {
 
     if (queue.isEmpty) return const SizedBox.shrink();
 
-    final label = '${queue.length} lançamento${queue.length > 1 ? 's' : ''} aguardando sincronização';
+    final label =
+        '${queue.length} lançamento${queue.length > 1 ? 's' : ''} aguardando sincronização';
 
     return AppBanner(
       tone: AppBannerTone.warning,
-      icon: Icon(isOnline ? LucideIcons.refreshCw : LucideIcons.cloudOff, size: 14),
+      icon: Icon(
+        isOnline ? LucideIcons.refreshCw : LucideIcons.cloudOff,
+        size: 14,
+      ),
       action: isOnline
           ? AppButton(
               variant: AppButtonVariant.ghost,
               size: AppButtonSize.sm,
-              onPressed: () => ref.read(fazendasStoreProvider.notifier).clearSync(),
+              onPressed: () =>
+                  ref.read(fazendasStoreProvider.notifier).clearSync(),
               child: const Text('Sincronizar'),
             )
           : null,

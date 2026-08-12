@@ -9,13 +9,18 @@ import 'package:cerne_app/shell/state/shell_store.dart';
 
 Widget _wrap(Widget child) {
   return ProviderScope(
-    child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child)),
+    child: MaterialApp(
+      theme: buildAppTheme(AppThemeVariant.light),
+      home: Scaffold(body: child),
+    ),
   );
 }
 
 void main() {
   group('AppShellHeader', () {
-    testWidgets('mostra saudação determinística e nome do usuário', (tester) async {
+    testWidgets('mostra saudação determinística e nome do usuário', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const AppShellHeader()));
 
       expect(find.text('Bom dia,'), findsOneWidget);
@@ -23,15 +28,21 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('sem onConsultMode não mostra o botão de modo consulta', (tester) async {
+    testWidgets('sem onConsultMode não mostra o botão de modo consulta', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const AppShellHeader()));
 
       expect(find.byIcon(LucideIcons.eye), findsNothing);
     });
 
-    testWidgets('com onConsultMode mostra e dispara o callback ao tocar', (tester) async {
+    testWidgets('com onConsultMode mostra e dispara o callback ao tocar', (
+      tester,
+    ) async {
       var tapped = false;
-      await tester.pumpWidget(_wrap(AppShellHeader(onConsultMode: () => tapped = true)));
+      await tester.pumpWidget(
+        _wrap(AppShellHeader(onConsultMode: () => tapped = true)),
+      );
 
       expect(find.byIcon(LucideIcons.eye), findsOneWidget);
       await tester.tap(find.byIcon(LucideIcons.eye));
@@ -40,9 +51,13 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('dispara onOpenProfile ao tocar no bloco de avatar/nome', (tester) async {
+    testWidgets('dispara onOpenProfile ao tocar no bloco de avatar/nome', (
+      tester,
+    ) async {
       var tapped = false;
-      await tester.pumpWidget(_wrap(AppShellHeader(onOpenProfile: () => tapped = true)));
+      await tester.pumpWidget(
+        _wrap(AppShellHeader(onOpenProfile: () => tapped = true)),
+      );
 
       await tester.tap(find.text('Silvio Ventura'));
       await tester.pump();
@@ -52,7 +67,9 @@ void main() {
 
     testWidgets('dispara onOpenNotifications ao tocar no sino', (tester) async {
       var tapped = false;
-      await tester.pumpWidget(_wrap(AppShellHeader(onOpenNotifications: () => tapped = true)));
+      await tester.pumpWidget(
+        _wrap(AppShellHeader(onOpenNotifications: () => tapped = true)),
+      );
 
       await tester.tap(find.byIcon(LucideIcons.bell));
       await tester.pump();
@@ -60,14 +77,19 @@ void main() {
       expect(tapped, isTrue);
     });
 
-    testWidgets('toca "Mais" e abre o menu global via shellStoreProvider', (tester) async {
+    testWidgets('toca "Mais" e abre o menu global via shellStoreProvider', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: AppShellHeader())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: AppShellHeader()),
+          ),
         ),
       );
 
@@ -79,8 +101,12 @@ void main() {
       expect(container.read(shellStoreProvider).menuOpen, isTrue);
     });
 
-    testWidgets('renderiza o slot de contexto (child) quando informado', (tester) async {
-      await tester.pumpWidget(_wrap(const AppShellHeader(child: Text('slot-de-contexto'))));
+    testWidgets('renderiza o slot de contexto (child) quando informado', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(const AppShellHeader(child: Text('slot-de-contexto'))),
+      );
 
       expect(find.text('slot-de-contexto'), findsOneWidget);
     });

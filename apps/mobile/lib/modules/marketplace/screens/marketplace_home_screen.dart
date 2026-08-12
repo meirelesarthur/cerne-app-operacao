@@ -56,8 +56,10 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
   List<Produto> get _produtosFiltrados {
     final termo = _busca.trim().toLowerCase();
     return produtos.where((produto) {
-      final combinaCategoria = _categoriaAtiva == null || produto.categoriaId == _categoriaAtiva;
-      final combinaBusca = termo.isEmpty || produto.nome.toLowerCase().contains(termo);
+      final combinaCategoria =
+          _categoriaAtiva == null || produto.categoriaId == _categoriaAtiva;
+      final combinaBusca =
+          termo.isEmpty || produto.nome.toLowerCase().contains(termo);
       return combinaCategoria && combinaBusca;
     }).toList();
   }
@@ -86,15 +88,20 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: categorias.length,
-              separatorBuilder: (context, _) => const SizedBox(width: AppSpacing.space2),
+              separatorBuilder: (context, _) =>
+                  const SizedBox(width: AppSpacing.space2),
               itemBuilder: (context, index) {
                 final categoria = categorias[index];
                 final ativa = _categoriaAtiva == categoria.id;
                 return AppButton(
                   size: AppButtonSize.sm,
-                  variant: ativa ? AppButtonVariant.primary : AppButtonVariant.secondary,
+                  variant: ativa
+                      ? AppButtonVariant.primary
+                      : AppButtonVariant.secondary,
                   leftIcon: Icon(categoria.icon, size: 14),
-                  onPressed: () => setState(() => _categoriaAtiva = ativa ? null : categoria.id),
+                  onPressed: () => setState(
+                    () => _categoriaAtiva = ativa ? null : categoria.id,
+                  ),
                   child: Text(categoria.label),
                 );
               },
@@ -112,7 +119,10 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
               gradient: const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [AppComponentColors.hubBankCardFrom, AppComponentColors.hubBankCardTo],
+                colors: [
+                  AppComponentColors.hubBankCardFrom,
+                  AppComponentColors.hubBankCardTo,
+                ],
               ),
             ),
             child: Column(
@@ -123,14 +133,21 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
                 const SizedBox(height: AppSpacing.space3),
                 const Text(
                   OfertaDestaque.titulo,
-                  style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.space1),
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 240),
                   child: Text(
                     OfertaDestaque.subtitulo,
-                    style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 14),
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.8),
+                      fontSize: 14,
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.space4),
@@ -166,7 +183,8 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
                 return AppEmptyState(
                   icon: LucideIcons.searchX,
                   title: 'Nada encontrado',
-                  description: 'Tente outro termo de busca ou limpe os filtros de categoria selecionados.',
+                  description:
+                      'Tente outro termo de busca ou limpe os filtros de categoria selecionados.',
                   action: AppButton(
                     variant: AppButtonVariant.secondary,
                     size: AppButtonSize.sm,
@@ -188,7 +206,8 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
                 crossAxisSpacing: AppSpacing.space3,
                 childAspectRatio: 0.78,
                 children: [
-                  for (final produto in filtrados) _ProdutoCard(produto: produto),
+                  for (final produto in filtrados)
+                    _ProdutoCard(produto: produto),
                 ],
               );
             },
@@ -231,7 +250,9 @@ class _ProdutoCard extends StatelessWidget {
               color: semantic.accentSubtle,
               borderRadius: BorderRadius.circular(AppRadius.xl),
             ),
-            child: categoria != null ? Icon(categoria.icon, size: 28, color: semantic.accentDefault) : null,
+            child: categoria != null
+                ? Icon(categoria.icon, size: 28, color: semantic.accentDefault)
+                : null,
           ),
           const SizedBox(height: AppSpacing.space3),
           Text(
@@ -250,12 +271,17 @@ class _ProdutoCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.space2),
           RichText(
             text: TextSpan(
-              style: DefaultTextStyle.of(context).style.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+              style: DefaultTextStyle.of(
+                context,
+              ).style.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
               children: [
                 TextSpan(text: produto.preco),
                 TextSpan(
                   text: ' /${produto.unidade}',
-                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
               ],
             ),
@@ -278,7 +304,11 @@ class _ProdutoCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                  if (produto.desconto != null) AppChip(tone: AppChipTone.brand, child: Text(produto.desconto!)),
+                  if (produto.desconto != null)
+                    AppChip(
+                      tone: AppChipTone.brand,
+                      child: Text(produto.desconto!),
+                    ),
                 ],
               ),
             ),

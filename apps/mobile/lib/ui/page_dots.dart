@@ -47,7 +47,9 @@ class AppPageDots extends StatelessWidget {
         selected: isActive,
         button: onSelect != null,
         label: 'Página ${i + 1} de $count',
-        child: onSelect != null ? GestureDetector(onTap: () => onSelect!(i), child: dot) : dot,
+        child: onSelect != null
+            ? GestureDetector(onTap: () => onSelect!(i), child: dot)
+            : dot,
       );
     });
 
@@ -77,7 +79,8 @@ WidgetbookComponent buildPageDotsWidgetbookComponent() {
       ),
       WidgetbookUseCase(
         name: 'Apenas indicativo',
-        builder: (context) => const Center(child: AppPageDots(count: 4, active: 1)),
+        builder: (context) =>
+            const Center(child: AppPageDots(count: 4, active: 1)),
       ),
     ],
   );
@@ -95,6 +98,10 @@ class _PageDotsDemoState extends State<_PageDotsDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return AppPageDots(count: 5, active: _active, onSelect: (i) => setState(() => _active = i));
+    return AppPageDots(
+      count: 5,
+      active: _active,
+      onSelect: (i) => setState(() => _active = i),
+    );
   }
 }

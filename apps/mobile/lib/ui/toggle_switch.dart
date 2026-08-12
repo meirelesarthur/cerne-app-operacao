@@ -100,9 +100,23 @@ class _ToggleSwitchUseCaseState extends State<_ToggleSwitchUseCase> {
         spacing: AppSpacing.space6,
         crossAxisAlignment: WrapCrossAlignment.center,
         children: [
-          AppToggleSwitch(checked: _on, onChanged: (v) => setState(() => _on = v), label: 'Notificações'),
-          const AppToggleSwitch(checked: true, onChanged: _noop, label: 'Desabilitado (ligado)', disabled: true),
-          const AppToggleSwitch(checked: false, onChanged: _noop, label: 'Desabilitado (desligado)', disabled: true),
+          AppToggleSwitch(
+            checked: _on,
+            onChanged: (v) => setState(() => _on = v),
+            label: 'Notificações',
+          ),
+          const AppToggleSwitch(
+            checked: true,
+            onChanged: _noop,
+            label: 'Desabilitado (ligado)',
+            disabled: true,
+          ),
+          const AppToggleSwitch(
+            checked: false,
+            onChanged: _noop,
+            label: 'Desabilitado (desligado)',
+            disabled: true,
+          ),
         ],
       ),
     );

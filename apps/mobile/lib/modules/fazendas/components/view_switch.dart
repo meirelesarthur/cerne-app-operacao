@@ -21,7 +21,11 @@ class ViewSwitch extends ConsumerWidget {
   final ValueChanged<FarmView>? onChanged;
 
   static const _options = [
-    (value: FarmView.gerencial, label: 'Gerencial', icon: LucideIcons.layoutDashboard),
+    (
+      value: FarmView.gerencial,
+      label: 'Gerencial',
+      icon: LucideIcons.layoutDashboard,
+    ),
     (value: FarmView.campo, label: 'Campo', icon: LucideIcons.clipboardList),
   ];
 
@@ -32,7 +36,10 @@ class ViewSwitch extends ConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.all(2),
-      decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(AppRadius.full)),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.15),
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -53,7 +60,12 @@ class ViewSwitch extends ConsumerWidget {
 }
 
 class _Segment extends StatelessWidget {
-  const _Segment({required this.label, required this.icon, required this.active, required this.onTap});
+  const _Segment({
+    required this.label,
+    required this.icon,
+    required this.active,
+    required this.onTap,
+  });
 
   final String label;
   final IconData icon;
@@ -71,18 +83,29 @@ class _Segment extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.full),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3, vertical: AppSpacing.space1),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space3,
+            vertical: AppSpacing.space1,
+          ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 15, color: active ? semantic.accentDefault : Colors.white.withValues(alpha: 0.8)),
+              Icon(
+                icon,
+                size: 15,
+                color: active
+                    ? semantic.accentDefault
+                    : Colors.white.withValues(alpha: 0.8),
+              ),
               const SizedBox(width: AppSpacing.space1),
               Text(
                 label,
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: active ? semantic.accentDefault : Colors.white.withValues(alpha: 0.8),
+                  color: active
+                      ? semantic.accentDefault
+                      : Colors.white.withValues(alpha: 0.8),
                 ),
               ),
             ],

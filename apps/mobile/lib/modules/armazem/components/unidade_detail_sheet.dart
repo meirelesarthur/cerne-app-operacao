@@ -13,7 +13,10 @@ import 'unidade_card.dart';
 /// na Home e na aba Unidades — capacidade, ocupação, produtos armazenados,
 /// endereço mock e CTA para o estoque já filtrado pela unidade. Espelha
 /// `UnidadeDetailSheet.tsx`.
-Future<void> showUnidadeDetailSheet(BuildContext context, {required Unidade unidade}) {
+Future<void> showUnidadeDetailSheet(
+  BuildContext context, {
+  required Unidade unidade,
+}) {
   return showAppBottomSheet<void>(
     context,
     title: 'Detalhe da unidade',
@@ -30,7 +33,9 @@ class _SheetBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final chip = statusChip[unidade.status]!;
-    final itens = itensEstoque.where((it) => it.unidadeId == unidade.id).toList();
+    final itens = itensEstoque
+        .where((it) => it.unidadeId == unidade.id)
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,7 +44,14 @@ class _SheetBody extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(unidade.nome, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: semantic.fgDefault)),
+            Text(
+              unidade.nome,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: semantic.fgDefault,
+              ),
+            ),
             AppChip(tone: chip.tone, child: Text(chip.label)),
           ],
         ),
@@ -59,15 +71,25 @@ class _SheetBody extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Ocupação', style: TextStyle(fontSize: 14, color: semantic.fgMuted)),
+                  Text(
+                    'Ocupação',
+                    style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+                  ),
                   Text(
                     '${unidade.ocupacaoPct}% de ${unidade.capacidade}',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: semantic.fgDefault,
+                    ),
                   ),
                 ],
               ),
               const SizedBox(height: AppSpacing.space2),
-              AppProgressBar(value: unidade.ocupacaoPct.toDouble(), colorByOccupancy: true),
+              AppProgressBar(
+                value: unidade.ocupacaoPct.toDouble(),
+                colorByOccupancy: true,
+              ),
             ],
           ),
         ),
@@ -76,7 +98,12 @@ class _SheetBody extends StatelessWidget {
           const SizedBox(height: AppSpacing.space4),
           Text(
             'PRODUTOS ARMAZENADOS',
-            style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: semantic.fgSubtle, letterSpacing: 0.4),
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: semantic.fgSubtle,
+              letterSpacing: 0.4,
+            ),
           ),
           const SizedBox(height: AppSpacing.space2),
           for (final it in itens)
@@ -95,10 +122,16 @@ class _SheetBody extends StatelessWidget {
                       it.produto,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontWeight: FontWeight.w500, color: semantic.fgDefault),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: semantic.fgDefault,
+                      ),
                     ),
                   ),
-                  Text(it.quantidadeLabel, style: TextStyle(fontSize: 14, color: semantic.fgMuted)),
+                  Text(
+                    it.quantidadeLabel,
+                    style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+                  ),
                 ],
               ),
             ),
@@ -110,7 +143,10 @@ class _SheetBody extends StatelessWidget {
             Icon(LucideIcons.mapPin, size: 14, color: semantic.fgMuted),
             const SizedBox(width: 6),
             Expanded(
-              child: Text(unidade.endereco, style: TextStyle(fontSize: 14, color: semantic.fgMuted)),
+              child: Text(
+                unidade.endereco,
+                style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+              ),
             ),
           ],
         ),

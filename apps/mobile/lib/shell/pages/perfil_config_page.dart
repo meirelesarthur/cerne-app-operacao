@@ -37,9 +37,16 @@ class PerfilConfigPage extends ConsumerWidget {
                     variant: AppCardVariant.ink,
                     child: Column(
                       children: [
-                        AppAvatar(name: user.name, initials: user.initials, size: AppAvatarSize.lg),
+                        AppAvatar(
+                          name: user.name,
+                          initials: user.initials,
+                          size: AppAvatarSize.lg,
+                        ),
                         const SizedBox(height: AppSpacing.space3),
-                        AppHeading(level: AppHeadingLevel.h1, child: Text(user.name, textAlign: TextAlign.center)),
+                        AppHeading(
+                          level: AppHeadingLevel.h1,
+                          child: Text(user.name, textAlign: TextAlign.center),
+                        ),
                         const SizedBox(height: AppSpacing.space1),
                         Text(
                           '$roleLabel · GB CERNE',
@@ -66,8 +73,11 @@ class PerfilConfigPage extends ConsumerWidget {
                   AppMenuItem(
                     icon: isGbMode ? LucideIcons.moon : LucideIcons.sun,
                     label: 'Tema',
-                    description: isGbMode ? 'GB Mode (escuro)' : 'Light (claro)',
-                    onTap: () => ref.read(themeVariantProvider.notifier).toggle(),
+                    description: isGbMode
+                        ? 'GB Mode (escuro)'
+                        : 'Light (claro)',
+                    onTap: () =>
+                        ref.read(themeVariantProvider.notifier).toggle(),
                   ),
                   const SizedBox(height: AppSpacing.space6),
                   AppMenuItem(

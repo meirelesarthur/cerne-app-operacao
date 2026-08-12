@@ -42,17 +42,27 @@ class RelatoriosScreen extends StatelessWidget {
                             rel.nome,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: semantic.fgDefault,
+                            ),
                           ),
                         ),
                         AppChip(
-                          tone: rel.disponivel ? AppChipTone.brand : AppChipTone.neutral,
-                          child: Text(rel.disponivel ? 'Disponível' : 'Indisponível'),
+                          tone: rel.disponivel
+                              ? AppChipTone.brand
+                              : AppChipTone.neutral,
+                          child: Text(
+                            rel.disponivel ? 'Disponível' : 'Indisponível',
+                          ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 2),
-                    Text(rel.periodo, style: TextStyle(fontSize: 12, color: semantic.fgMuted)),
+                    Text(
+                      rel.periodo,
+                      style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+                    ),
                   ],
                 ),
               ),

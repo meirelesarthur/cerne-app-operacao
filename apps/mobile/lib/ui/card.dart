@@ -37,12 +37,17 @@ class AppCard extends StatelessWidget {
     final fg = isInk ? semantic.inkFg : null;
 
     Widget content = Padding(
-      padding: padded ? const EdgeInsets.all(AppSpacing.space5) : EdgeInsets.zero,
+      padding: padded
+          ? const EdgeInsets.all(AppSpacing.space5)
+          : EdgeInsets.zero,
       child: child,
     );
 
     if (fg != null) {
-      content = DefaultTextStyle.merge(style: TextStyle(color: fg), child: content);
+      content = DefaultTextStyle.merge(
+        style: TextStyle(color: fg),
+        child: content,
+      );
     }
 
     final radius = BorderRadius.circular(AppRadius.xl3);
@@ -84,12 +89,19 @@ WidgetbookComponent buildCardWidgetbookComponent() {
               const SizedBox(height: 16),
               const SizedBox(
                 width: 280,
-                child: AppCard(variant: AppCardVariant.ink, child: Text('Card ink (hero)')),
+                child: AppCard(
+                  variant: AppCardVariant.ink,
+                  child: Text('Card ink (hero)'),
+                ),
               ),
               const SizedBox(height: 16),
               SizedBox(
                 width: 280,
-                child: AppCard(interactive: true, onTap: () {}, child: const Text('Card interativo (toque)')),
+                child: AppCard(
+                  interactive: true,
+                  onTap: () {},
+                  child: const Text('Card interativo (toque)'),
+                ),
               ),
             ],
           ),

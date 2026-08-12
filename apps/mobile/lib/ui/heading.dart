@@ -11,7 +11,12 @@ import '../design/theme/app_theme_extension.dart';
 enum AppHeadingLevel { h1, h2, h3, h4 }
 
 class AppHeading extends StatelessWidget {
-  const AppHeading({super.key, this.level = AppHeadingLevel.h2, required this.child, this.style});
+  const AppHeading({
+    super.key,
+    this.level = AppHeadingLevel.h2,
+    required this.child,
+    this.style,
+  });
 
   final AppHeadingLevel level;
   final Widget child;
@@ -84,22 +89,30 @@ WidgetbookComponent buildHeadingWidgetbookComponent() {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppHeading(level: AppHeadingLevel.h1, child: Text('Título nível 1')),
+              AppHeading(
+                level: AppHeadingLevel.h1,
+                child: Text('Título nível 1'),
+              ),
               SizedBox(height: 12),
               AppHeading(child: Text('Título nível 2')),
               SizedBox(height: 12),
-              AppHeading(level: AppHeadingLevel.h3, child: Text('Título nível 3')),
+              AppHeading(
+                level: AppHeadingLevel.h3,
+                child: Text('Título nível 3'),
+              ),
               SizedBox(height: 12),
-              AppHeading(level: AppHeadingLevel.h4, child: Text('Título nível 4')),
+              AppHeading(
+                level: AppHeadingLevel.h4,
+                child: Text('Título nível 4'),
+              ),
             ],
           ),
         ),
       ),
       WidgetbookUseCase(
         name: 'SectionTitle',
-        builder: (context) => const Center(
-          child: AppSectionTitle(child: Text('Quick Actions')),
-        ),
+        builder: (context) =>
+            const Center(child: AppSectionTitle(child: Text('Quick Actions'))),
       ),
     ],
   );

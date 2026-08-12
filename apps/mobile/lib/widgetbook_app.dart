@@ -27,8 +27,14 @@ class CerneWidgetbook extends StatelessWidget {
       addons: [
         MaterialThemeAddon(
           themes: [
-            WidgetbookTheme(name: 'Light', data: buildAppTheme(AppThemeVariant.light)),
-            WidgetbookTheme(name: 'GB Mode', data: buildAppTheme(AppThemeVariant.gbMode)),
+            WidgetbookTheme(
+              name: 'Light',
+              data: buildAppTheme(AppThemeVariant.light),
+            ),
+            WidgetbookTheme(
+              name: 'GB Mode',
+              data: buildAppTheme(AppThemeVariant.gbMode),
+            ),
           ],
         ),
       ],
@@ -36,9 +42,18 @@ class CerneWidgetbook extends StatelessWidget {
         WidgetbookComponent(
           name: 'Tema',
           useCases: [
-            WidgetbookUseCase(name: 'Cores', builder: (context) => const _ColorAuditPage()),
-            WidgetbookUseCase(name: 'Espaçamento e raio', builder: (context) => const _SpacingAuditPage()),
-            WidgetbookUseCase(name: 'Tipografia', builder: (context) => const _TypographyAuditPage()),
+            WidgetbookUseCase(
+              name: 'Cores',
+              builder: (context) => const _ColorAuditPage(),
+            ),
+            WidgetbookUseCase(
+              name: 'Espaçamento e raio',
+              builder: (context) => const _SpacingAuditPage(),
+            ),
+            WidgetbookUseCase(
+              name: 'Tipografia',
+              builder: (context) => const _TypographyAuditPage(),
+            ),
           ],
         ),
         WidgetbookFolder(
@@ -174,7 +189,10 @@ class _Swatch extends StatelessWidget {
         children: [
           Container(
             height: 48,
-            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(AppRadius.sm)),
+            decoration: BoxDecoration(
+              color: color,
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+            ),
           ),
           const SizedBox(height: AppSpacing.space1),
           Text(label, style: Theme.of(context).textTheme.bodySmall),
@@ -191,8 +209,18 @@ class _ColorAuditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    final brandScale = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900]
-        .map((s) => _Swatch(label: 'brand$s', color: _brandShade(s)));
+    final brandScale = [
+      50,
+      100,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800,
+      900,
+    ].map((s) => _Swatch(label: 'brand$s', color: _brandShade(s)));
 
     final semanticColors = <String, Color>{
       'fgDefault': semantic.fgDefault,
@@ -210,16 +238,28 @@ class _ColorAuditPage extends StatelessWidget {
     return _AuditScaffold(
       title: 'Cores',
       children: [
-        Text('Escala brand (core, fixa nas 2 variantes)', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: AppSpacing.space2),
-        Wrap(spacing: AppSpacing.space2, runSpacing: AppSpacing.space2, children: brandScale.toList()),
-        const SizedBox(height: AppSpacing.space6),
-        Text('Semânticas (variam por tema — troque no addon "Theme")', style: Theme.of(context).textTheme.titleMedium),
+        Text(
+          'Escala brand (core, fixa nas 2 variantes)',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
         const SizedBox(height: AppSpacing.space2),
         Wrap(
           spacing: AppSpacing.space2,
           runSpacing: AppSpacing.space2,
-          children: semanticColors.entries.map((e) => _Swatch(label: e.key, color: e.value)).toList(),
+          children: brandScale.toList(),
+        ),
+        const SizedBox(height: AppSpacing.space6),
+        Text(
+          'Semânticas (variam por tema — troque no addon "Theme")',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+        const SizedBox(height: AppSpacing.space2),
+        Wrap(
+          spacing: AppSpacing.space2,
+          runSpacing: AppSpacing.space2,
+          children: semanticColors.entries
+              .map((e) => _Swatch(label: e.key, color: e.value))
+              .toList(),
         ),
       ],
     );
@@ -279,7 +319,11 @@ class _SpacingAuditPage extends StatelessWidget {
             child: Row(
               children: [
                 SizedBox(width: 80, child: Text(e.key)),
-                Container(width: e.value, height: 16, color: semantic.accentDefault),
+                Container(
+                  width: e.value,
+                  height: 16,
+                  color: semantic.accentDefault,
+                ),
               ],
             ),
           ),
@@ -301,7 +345,10 @@ class _SpacingAuditPage extends StatelessWidget {
                     border: Border.all(color: semantic.borderDefault),
                     borderRadius: BorderRadius.circular(e.value),
                   ),
-                  child: Text(e.key, style: Theme.of(context).textTheme.bodySmall),
+                  child: Text(
+                    e.key,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ),
               )
               .toList(),
@@ -343,7 +390,10 @@ class _TypographyAuditPage extends StatelessWidget {
         ...sizes.entries.map(
           (e) => Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.space2),
-            child: Text('${e.key} (${e.value}px) — GB CERNE', style: TextStyle(fontSize: e.value)),
+            child: Text(
+              '${e.key} (${e.value}px) — GB CERNE',
+              style: TextStyle(fontSize: e.value),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.space6),
@@ -352,7 +402,10 @@ class _TypographyAuditPage extends StatelessWidget {
         ...weights.entries.map(
           (e) => Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.space2),
-            child: Text('${e.key} — GB CERNE', style: TextStyle(fontSize: AppTypography.xl, fontWeight: e.value)),
+            child: Text(
+              '${e.key} — GB CERNE',
+              style: TextStyle(fontSize: AppTypography.xl, fontWeight: e.value),
+            ),
           ),
         ),
       ],

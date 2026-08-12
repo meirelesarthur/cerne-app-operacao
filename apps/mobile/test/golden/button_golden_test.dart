@@ -19,7 +19,11 @@ void main() {
               name: '${variant.name}_${buttonVariant.name}',
               child: themedGolden(
                 variant,
-                AppButton(variant: buttonVariant, onPressed: () {}, child: const Text('Botão')),
+                AppButton(
+                  variant: buttonVariant,
+                  onPressed: () {},
+                  child: const Text('Botão'),
+                ),
               ),
             ),
       ],

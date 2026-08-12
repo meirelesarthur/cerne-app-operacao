@@ -7,7 +7,10 @@ import 'package:cerne_app/modules/marketplace/marketplace_module.dart';
 
 import '../../support/test_viewport.dart';
 
-GoRouter _buildRouter() => GoRouter(initialLocation: '/marketplace', routes: [buildMarketplaceModuleRoute()]);
+GoRouter _buildRouter() => GoRouter(
+  initialLocation: '/marketplace',
+  routes: [buildMarketplaceModuleRoute()],
+);
 
 // Em produção, `buildMarketplaceModuleRoute()` sempre roda dentro do
 // `Scaffold` do `ShellLayout` — sem ele, o `TextField` da busca não acha um
@@ -20,7 +23,9 @@ Widget _wrap(GoRouter router) => MaterialApp.router(
 
 void main() {
   group('MarketplaceHomeScreen', () {
-    testWidgets('renderiza busca, categorias e grid de produtos sem exceção', (tester) async {
+    testWidgets('renderiza busca, categorias e grid de produtos sem exceção', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap(_buildRouter()));
       await tester.pump(const Duration(seconds: 1));
@@ -45,13 +50,18 @@ void main() {
       expect(find.text('Semente de soja Intacta'), findsNothing);
     });
 
-    testWidgets('mostra estado vazio quando nada combina com a busca', (tester) async {
+    testWidgets('mostra estado vazio quando nada combina com a busca', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap(_buildRouter()));
       await tester.pump(const Duration(seconds: 1));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextFormField), 'produto inexistente xyz');
+      await tester.enterText(
+        find.byType(TextFormField),
+        'produto inexistente xyz',
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Nada encontrado'), findsOneWidget);

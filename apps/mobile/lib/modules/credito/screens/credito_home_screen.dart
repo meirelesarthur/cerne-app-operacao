@@ -52,14 +52,21 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
   void _scrollToSimulador() {
     final ctx = _simuladorKey.currentContext;
     if (ctx == null) return;
-    Scrollable.ensureVisible(ctx, duration: AppMotion.slow, curve: AppMotion.easingOut);
+    Scrollable.ensureVisible(
+      ctx,
+      duration: AppMotion.slow,
+      curve: AppMotion.easingOut,
+    );
   }
 
-  SimulacaoOpcao? get _opcaoAtual => simulacao
-      .cast<SimulacaoOpcao?>()
-      .firstWhere((s) => s!.valor == _valorSelecionado && s.prazo == _prazoSelecionado, orElse: () => null);
+  SimulacaoOpcao? get _opcaoAtual =>
+      simulacao.cast<SimulacaoOpcao?>().firstWhere(
+        (s) => s!.valor == _valorSelecionado && s.prazo == _prazoSelecionado,
+        orElse: () => null,
+      );
 
-  LinhaCredito get _linhaAtual => linhas.firstWhere((l) => l.id == 'custeio-safra');
+  LinhaCredito get _linhaAtual =>
+      linhas.firstWhere((l) => l.id == 'custeio-safra');
 
   void _abrirLinha(LinhaCredito linha) {
     showAppBottomSheet<void>(
@@ -84,9 +91,7 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
       padding: const EdgeInsets.all(AppSpacing.space4),
       children: [
         // Hero — oferta pré-aprovada.
-        RiseIn(
-          child: _CreditoHero(onSimular: _scrollToSimulador),
-        ),
+        RiseIn(child: _CreditoHero(onSimular: _scrollToSimulador)),
         const SizedBox(height: AppSpacing.space6),
 
         // Simulador rápido.
@@ -99,8 +104,17 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
               const AppSectionTitle(child: Text('Simulador rápido')),
               const SizedBox(height: AppSpacing.space2),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space1),
-                child: Text('Valor', style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightMedium, color: semantic.fgMuted)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.space1,
+                ),
+                child: Text(
+                  'Valor',
+                  style: TextStyle(
+                    fontSize: AppTypography.xs,
+                    fontWeight: AppTypography.weightMedium,
+                    color: semantic.fgMuted,
+                  ),
+                ),
               ),
               const SizedBox(height: AppSpacing.space1),
               Wrap(
@@ -110,16 +124,28 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                   for (final valor in valoresSimulacao)
                     AppButton(
                       size: AppButtonSize.sm,
-                      variant: valor == _valorSelecionado ? AppButtonVariant.primary : AppButtonVariant.secondary,
-                      onPressed: () => setState(() => _valorSelecionado = valor),
+                      variant: valor == _valorSelecionado
+                          ? AppButtonVariant.primary
+                          : AppButtonVariant.secondary,
+                      onPressed: () =>
+                          setState(() => _valorSelecionado = valor),
                       child: Text(valor),
                     ),
                 ],
               ),
               const SizedBox(height: AppSpacing.space3),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space1),
-                child: Text('Prazo', style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightMedium, color: semantic.fgMuted)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.space1,
+                ),
+                child: Text(
+                  'Prazo',
+                  style: TextStyle(
+                    fontSize: AppTypography.xs,
+                    fontWeight: AppTypography.weightMedium,
+                    color: semantic.fgMuted,
+                  ),
+                ),
               ),
               const SizedBox(height: AppSpacing.space1),
               Wrap(
@@ -129,8 +155,11 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                   for (final prazo in prazosSimulacao)
                     AppButton(
                       size: AppButtonSize.sm,
-                      variant: prazo == _prazoSelecionado ? AppButtonVariant.primary : AppButtonVariant.secondary,
-                      onPressed: () => setState(() => _prazoSelecionado = prazo),
+                      variant: prazo == _prazoSelecionado
+                          ? AppButtonVariant.primary
+                          : AppButtonVariant.secondary,
+                      onPressed: () =>
+                          setState(() => _prazoSelecionado = prazo),
                       child: Text('$prazo meses'),
                     ),
                 ],
@@ -141,7 +170,14 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Parcela estimada', style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightMedium, color: semantic.fgMuted)),
+                    Text(
+                      'Parcela estimada',
+                      style: TextStyle(
+                        fontSize: AppTypography.xs,
+                        fontWeight: AppTypography.weightMedium,
+                        color: semantic.fgMuted,
+                      ),
+                    ),
                     const SizedBox(height: AppSpacing.space1),
                     Text(
                       opcaoAtual?.parcela ?? '—',
@@ -155,7 +191,10 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                     const SizedBox(height: 2),
                     Text(
                       'Taxa ${_linhaAtual.taxa} · $_prazoSelecionado parcelas',
-                      style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgSubtle),
+                      style: TextStyle(
+                        fontSize: AppTypography.xs,
+                        color: semantic.fgSubtle,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.space4),
                     AppButton(
@@ -193,8 +232,15 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                               width: AppSpacing.space10 + AppSpacing.space1,
                               height: AppSpacing.space10 + AppSpacing.space1,
                               alignment: Alignment.center,
-                              decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentDefault),
-                              child: Icon(_linhaIcons[linha.id] ?? LucideIcons.fileText, size: 22, color: Colors.white),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: semantic.accentDefault,
+                              ),
+                              child: Icon(
+                                _linhaIcons[linha.id] ?? LucideIcons.fileText,
+                                size: 22,
+                                color: Colors.white,
+                              ),
                             ),
                             const SizedBox(width: AppSpacing.space3),
                             Expanded(
@@ -210,11 +256,19 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                                           linha.nome,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontSize: AppTypography.sm, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                                          style: TextStyle(
+                                            fontSize: AppTypography.sm,
+                                            fontWeight:
+                                                AppTypography.weightSemibold,
+                                            color: semantic.fgDefault,
+                                          ),
                                         ),
                                       ),
                                       const SizedBox(width: AppSpacing.space2),
-                                      AppChip(tone: AppChipTone.brand, child: Text(linha.taxa)),
+                                      AppChip(
+                                        tone: AppChipTone.brand,
+                                        child: Text(linha.taxa),
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(height: 2),
@@ -222,12 +276,19 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                                     linha.descricao,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                                    style: TextStyle(
+                                      fontSize: AppTypography.xs,
+                                      color: semantic.fgMuted,
+                                    ),
                                   ),
                                 ],
                               ),
                             ),
-                            Icon(LucideIcons.arrowRight, size: 18, color: semantic.accentDefault),
+                            Icon(
+                              LucideIcons.arrowRight,
+                              size: 18,
+                              color: semantic.accentDefault,
+                            ),
                           ],
                         ),
                       ),
@@ -262,15 +323,25 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
               AppCard(
                 padded: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space4,
+                  ),
                   child: Column(
                     children: [
                       for (final proposta in propostas.take(2))
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: AppSpacing.space3),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.space3,
+                          ),
                           decoration: proposta == propostas.take(2).last
                               ? null
-                              : BoxDecoration(border: Border(bottom: BorderSide(color: semantic.borderDefault))),
+                              : BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: semantic.borderDefault,
+                                    ),
+                                  ),
+                                ),
                           child: Row(
                             children: [
                               Expanded(
@@ -282,10 +353,20 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                                       proposta.linha,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(fontSize: AppTypography.sm, fontWeight: AppTypography.weightMedium, color: semantic.fgDefault),
+                                      style: TextStyle(
+                                        fontSize: AppTypography.sm,
+                                        fontWeight: AppTypography.weightMedium,
+                                        color: semantic.fgDefault,
+                                      ),
                                     ),
                                     const SizedBox(height: 2),
-                                    Text(proposta.data, style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted)),
+                                    Text(
+                                      proposta.data,
+                                      style: TextStyle(
+                                        fontSize: AppTypography.xs,
+                                        color: semantic.fgMuted,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -299,11 +380,18 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                                       fontSize: AppTypography.sm,
                                       fontWeight: AppTypography.weightSemibold,
                                       color: semantic.fgDefault,
-                                      fontFeatures: const [FontFeature.tabularFigures()],
+                                      fontFeatures: const [
+                                        FontFeature.tabularFigures(),
+                                      ],
                                     ),
                                   ),
                                   const SizedBox(height: AppSpacing.space1),
-                                  AppChip(tone: propostaStatusTone(proposta.status), child: Text(propostaStatusLabel(proposta.status))),
+                                  AppChip(
+                                    tone: propostaStatusTone(proposta.status),
+                                    child: Text(
+                                      propostaStatusLabel(proposta.status),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -336,7 +424,10 @@ class _CreditoHero extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppComponentColors.hubBankCardFrom, AppComponentColors.hubBankCardTo],
+          colors: [
+            AppComponentColors.hubBankCardFrom,
+            AppComponentColors.hubBankCardTo,
+          ],
         ),
         boxShadow: Theme.of(context).extension<AppSemanticColors>()!.shadowCard,
       ),
@@ -354,7 +445,10 @@ class _CreditoHero extends StatelessWidget {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [AppComponentColors.hubBankCardGlow, Colors.transparent],
+                    colors: [
+                      AppComponentColors.hubBankCardGlow,
+                      Colors.transparent,
+                    ],
                     stops: [0.0, 0.7],
                   ),
                 ),
@@ -371,12 +465,22 @@ class _CreditoHero extends StatelessWidget {
                   Container(
                     width: AppSpacing.space8,
                     height: AppSpacing.space8,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withValues(alpha: 0.1)),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.1),
+                    ),
                     alignment: Alignment.center,
-                    child: const Icon(LucideIcons.handCoins, size: 16, color: Colors.white),
+                    child: const Icon(
+                      LucideIcons.handCoins,
+                      size: 16,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.space2),
-                  const AppChip(tone: AppChipTone.brand, child: Text('Pré-aprovado')),
+                  const AppChip(
+                    tone: AppChipTone.brand,
+                    child: Text('Pré-aprovado'),
+                  ),
                 ],
               ),
               const SizedBox(height: AppSpacing.space3),
@@ -393,10 +497,17 @@ class _CreditoHero extends StatelessWidget {
               const SizedBox(height: AppSpacing.space1),
               const Text(
                 'Validade ${PreAprovado.validade} · ${PreAprovado.taxa}',
-                style: TextStyle(fontSize: AppTypography.sm, color: AppComponentColors.hubBankCardFgMuted),
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  color: AppComponentColors.hubBankCardFgMuted,
+                ),
               ),
               const SizedBox(height: AppSpacing.space4),
-              AppButton(variant: AppButtonVariant.secondary, onPressed: onSimular, child: const Text('Simular agora')),
+              AppButton(
+                variant: AppButtonVariant.secondary,
+                onPressed: onSimular,
+                child: const Text('Simular agora'),
+              ),
             ],
           ),
         ],
@@ -406,7 +517,10 @@ class _CreditoHero extends StatelessWidget {
 }
 
 class _LinhaBottomSheetContent extends StatelessWidget {
-  const _LinhaBottomSheetContent({required this.linha, required this.onSimular});
+  const _LinhaBottomSheetContent({
+    required this.linha,
+    required this.onSimular,
+  });
 
   final LinhaCredito linha;
   final VoidCallback onSimular;
@@ -423,13 +537,29 @@ class _LinhaBottomSheetContent extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('Taxa', style: TextStyle(color: semantic.fgMuted)),
-            Text(linha.taxa, style: TextStyle(fontWeight: AppTypography.weightBold, color: semantic.fgDefault)),
+            Text(
+              linha.taxa,
+              style: TextStyle(
+                fontWeight: AppTypography.weightBold,
+                color: semantic.fgDefault,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: AppSpacing.space3),
-        Text(linha.descricao, style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgSubtle)),
+        Text(
+          linha.descricao,
+          style: TextStyle(
+            fontSize: AppTypography.sm,
+            color: semantic.fgSubtle,
+          ),
+        ),
         const SizedBox(height: AppSpacing.space2),
-        AppButton(fullWidth: true, onPressed: onSimular, child: const Text('Simular esta linha')),
+        AppButton(
+          fullWidth: true,
+          onPressed: onSimular,
+          child: const Text('Simular esta linha'),
+        ),
       ],
     );
   }

@@ -5,7 +5,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/components/shortcut_grid.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('ShortcutGrid', () {
@@ -15,8 +18,18 @@ void main() {
         _wrap(
           ShortcutGrid(
             items: [
-              Shortcut(id: 'a', label: 'Financeiro', icon: LucideIcons.wallet, onTap: () => tapped = 'a'),
-              Shortcut(id: 'b', label: 'Pecuária', icon: LucideIcons.beef, onTap: () => tapped = 'b'),
+              Shortcut(
+                id: 'a',
+                label: 'Financeiro',
+                icon: LucideIcons.wallet,
+                onTap: () => tapped = 'a',
+              ),
+              Shortcut(
+                id: 'b',
+                label: 'Pecuária',
+                icon: LucideIcons.beef,
+                onTap: () => tapped = 'b',
+              ),
             ],
           ),
         ),

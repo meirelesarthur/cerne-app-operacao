@@ -36,11 +36,24 @@ class AppIconButton extends StatelessWidget {
     AppIconButtonSize.lg => AppSize.iconBtnLg,
   };
 
-  ({Color bg, Color fg, List<BoxShadow> shadow}) _colors(AppSemanticColors s) => switch (variant) {
-    AppIconButtonVariant.ghost => (bg: Colors.transparent, fg: s.fgDefault, shadow: const <BoxShadow>[]),
-    AppIconButtonVariant.solid => (bg: s.bgSurface, fg: s.fgDefault, shadow: s.shadowCard),
-    AppIconButtonVariant.onDark => (bg: s.inkBubble, fg: s.inkFg, shadow: const <BoxShadow>[]),
-  };
+  ({Color bg, Color fg, List<BoxShadow> shadow}) _colors(AppSemanticColors s) =>
+      switch (variant) {
+        AppIconButtonVariant.ghost => (
+          bg: Colors.transparent,
+          fg: s.fgDefault,
+          shadow: const <BoxShadow>[],
+        ),
+        AppIconButtonVariant.solid => (
+          bg: s.bgSurface,
+          fg: s.fgDefault,
+          shadow: s.shadowCard,
+        ),
+        AppIconButtonVariant.onDark => (
+          bg: s.inkBubble,
+          fg: s.inkFg,
+          shadow: const <BoxShadow>[],
+        ),
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +67,10 @@ class AppIconButton extends StatelessWidget {
         button: true,
         enabled: onPressed != null,
         child: Container(
-          decoration: BoxDecoration(shape: BoxShape.circle, boxShadow: colors.shadow),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            boxShadow: colors.shadow,
+          ),
           child: Material(
             color: colors.bg,
             shape: const CircleBorder(),
@@ -87,7 +103,11 @@ WidgetbookComponent buildIconButtonWidgetbookComponent() {
           child: Wrap(
             spacing: 12,
             children: [
-              AppIconButton(icon: const Icon(LucideIcons.menu), label: 'Menu', onPressed: () {}),
+              AppIconButton(
+                icon: const Icon(LucideIcons.menu),
+                label: 'Menu',
+                onPressed: () {},
+              ),
               AppIconButton(
                 icon: const Icon(LucideIcons.bell),
                 label: 'Notificações',
@@ -115,9 +135,23 @@ WidgetbookComponent buildIconButtonWidgetbookComponent() {
             spacing: 12,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              AppIconButton(icon: const Icon(LucideIcons.plus), label: 'Pequeno', size: AppIconButtonSize.sm, onPressed: () {}),
-              AppIconButton(icon: const Icon(LucideIcons.plus), label: 'Médio', onPressed: () {}),
-              AppIconButton(icon: const Icon(LucideIcons.plus), label: 'Grande', size: AppIconButtonSize.lg, onPressed: () {}),
+              AppIconButton(
+                icon: const Icon(LucideIcons.plus),
+                label: 'Pequeno',
+                size: AppIconButtonSize.sm,
+                onPressed: () {},
+              ),
+              AppIconButton(
+                icon: const Icon(LucideIcons.plus),
+                label: 'Médio',
+                onPressed: () {},
+              ),
+              AppIconButton(
+                icon: const Icon(LucideIcons.plus),
+                label: 'Grande',
+                size: AppIconButtonSize.lg,
+                onPressed: () {},
+              ),
             ],
           ),
         ),

@@ -32,7 +32,9 @@ class SyncQueueScreen extends ConsumerWidget {
             child: AppBanner(
               tone: AppBannerTone.offline,
               icon: Icon(LucideIcons.cloudOff, size: 14),
-              child: Text('Sem conexão — os itens serão enviados automaticamente assim que a internet voltar.'),
+              child: Text(
+                'Sem conexão — os itens serão enviados automaticamente assim que a internet voltar.',
+              ),
             ),
           ),
         Expanded(
@@ -41,14 +43,17 @@ class SyncQueueScreen extends ConsumerWidget {
                   child: AppEmptyState(
                     icon: LucideIcons.inbox,
                     title: 'Nenhum lançamento pendente',
-                    description: 'Tudo o que foi registrado em campo já está sincronizado com o servidor.',
+                    description:
+                        'Tudo o que foi registrado em campo já está sincronizado com o servidor.',
                   ),
                 )
               : ListView(
                   padding: const EdgeInsets.all(AppSpacing.space4),
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.space3,
+                      ),
                       decoration: BoxDecoration(
                         color: semantic.bgSurface,
                         borderRadius: BorderRadius.circular(AppRadius.xl3),
@@ -58,9 +63,17 @@ class SyncQueueScreen extends ConsumerWidget {
                         children: [
                           for (final item in queue)
                             Container(
-                              padding: const EdgeInsets.symmetric(vertical: AppSpacing.space3),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: AppSpacing.space3,
+                              ),
                               decoration: item != queue.last
-                                  ? BoxDecoration(border: Border(bottom: BorderSide(color: semantic.borderSubtle)))
+                                  ? BoxDecoration(
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: semantic.borderSubtle,
+                                        ),
+                                      ),
+                                    )
                                   : null,
                               child: Row(
                                 children: [
@@ -68,31 +81,47 @@ class SyncQueueScreen extends ConsumerWidget {
                                     width: AppSpacing.space10,
                                     height: AppSpacing.space10,
                                     alignment: Alignment.center,
-                                    decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.bgSubtle),
-                                    child: Icon(kindIcon[item.kind], size: 18, color: semantic.fgMuted),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: semantic.bgSubtle,
+                                    ),
+                                    child: Icon(
+                                      kindIcon[item.kind],
+                                      size: 18,
+                                      color: semantic.fgMuted,
+                                    ),
                                   ),
                                   const SizedBox(width: AppSpacing.space3),
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
                                           item.label,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: semantic.fgDefault,
+                                          ),
                                         ),
                                         Text(
                                           item.detail,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(color: semantic.fgMuted),
+                                          style: TextStyle(
+                                            color: semantic.fgMuted,
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  const AppChip(tone: AppChipTone.amber, child: Text('Pendente')),
+                                  const AppChip(
+                                    tone: AppChipTone.amber,
+                                    child: Text('Pendente'),
+                                  ),
                                 ],
                               ),
                             ),

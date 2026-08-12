@@ -25,7 +25,12 @@ import 'state/shell_store.dart';
 /// `AppRevealMenu` à direita — únicas responsabilidades deste widget que os
 /// componentes filhos documentaram como "de quem monta o shell".
 class ShellLayout extends ConsumerWidget {
-  const ShellLayout({super.key, required this.moduleId, required this.activeTab, required this.child});
+  const ShellLayout({
+    super.key,
+    required this.moduleId,
+    required this.activeTab,
+    required this.child,
+  });
 
   final String moduleId;
   final String activeTab;
@@ -48,7 +53,11 @@ class ShellLayout extends ConsumerWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: ColoredBox(color: menuOpen ? AppComponentColors.revealMenuBg : semantic.bgCanvas),
+            child: ColoredBox(
+              color: menuOpen
+                  ? AppComponentColors.revealMenuBg
+                  : semantic.bgCanvas,
+            ),
           ),
           // menu revelado — fica atrás do app encolhido, à direita.
           Positioned.fill(
@@ -61,7 +70,9 @@ class ShellLayout extends ConsumerWidget {
           // o app inteiro — encolhe como cartão quando o menu abre.
           LayoutBuilder(
             builder: (context, constraints) {
-              final shiftX = constraints.maxWidth * (AppComponentMetrics.revealMenuAppShiftX / 100);
+              final shiftX =
+                  constraints.maxWidth *
+                  (AppComponentMetrics.revealMenuAppShiftX / 100);
               final scale = AppComponentMetrics.revealMenuAppScale;
 
               return AnimatedContainer(
@@ -75,11 +86,15 @@ class ShellLayout extends ConsumerWidget {
                 transformAlignment: Alignment.centerLeft,
                 clipBehavior: menuOpen ? Clip.antiAlias : Clip.none,
                 decoration: menuOpen
-                    ? BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.xl3), boxShadow: semantic.shadowModal)
+                    ? BoxDecoration(
+                        borderRadius: BorderRadius.circular(AppRadius.xl3),
+                        boxShadow: semantic.shadowModal,
+                      )
                     : null,
                 child: _ShrunkAppTapToClose(
                   menuOpen: menuOpen,
-                  onClose: () => ref.read(shellStoreProvider.notifier).closeMenu(),
+                  onClose: () =>
+                      ref.read(shellStoreProvider.notifier).closeMenu(),
                   child: ColoredBox(
                     color: semantic.bgCanvas,
                     child: SafeArea(
@@ -88,26 +103,39 @@ class ShellLayout extends ConsumerWidget {
                         children: [
                           AppShellHeader(
                             onOpenProfile: () => _go(context, ref, '/perfil'),
-                            onOpenNotifications: () => _go(context, ref, '/notificacoes'),
-                            child: AppCreditoPill(onTap: () => _go(context, ref, '/credito')),
+                            onOpenNotifications: () =>
+                                _go(context, ref, '/notificacoes'),
+                            child: AppCreditoPill(
+                              onTap: () => _go(context, ref, '/credito'),
+                            ),
                           ),
                           AppContextTabs(
                             module: module,
                             activePath: activeTab,
-                            onTabSelected: (path) => _go(context, ref, path.isEmpty ? '/${module.id}' : '/${module.id}/$path'),
+                            onTabSelected: (path) => _go(
+                              context,
+                              ref,
+                              path.isEmpty
+                                  ? '/${module.id}'
+                                  : '/${module.id}/$path',
+                            ),
                           ),
                           if (!state.isOnline)
                             const AppBanner(
                               tone: AppBannerTone.offline,
                               icon: Icon(LucideIcons.cloudOff, size: 14),
-                              child: Text('Você está offline — os lançamentos serão sincronizados quando a conexão voltar.'),
+                              child: Text(
+                                'Você está offline — os lançamentos serão sincronizados quando a conexão voltar.',
+                              ),
                             ),
                           Expanded(
                             child: Stack(
                               children: [
                                 Positioned.fill(
                                   child: Padding(
-                                    padding: const EdgeInsets.only(bottom: AppLayout.tabBarClearance),
+                                    padding: const EdgeInsets.only(
+                                      bottom: AppLayout.tabBarClearance,
+                                    ),
                                     child: child,
                                   ),
                                 ),
@@ -118,7 +146,11 @@ class ShellLayout extends ConsumerWidget {
                                   child: Center(
                                     child: AppBottomTabBar(
                                       activeId: module.id,
-                                      onModuleSelected: (id) => _go(context, ref, getModule(id)!.homeRoute),
+                                      onModuleSelected: (id) => _go(
+                                        context,
+                                        ref,
+                                        getModule(id)!.homeRoute,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -148,7 +180,11 @@ class ShellLayout extends ConsumerWidget {
 /// continuam recebendo seus próprios toques normalmente — a arena de gestos
 /// do Flutter prioriza o `GestureDetector`/`InkWell` mais interno.
 class _ShrunkAppTapToClose extends StatelessWidget {
-  const _ShrunkAppTapToClose({required this.menuOpen, required this.onClose, required this.child});
+  const _ShrunkAppTapToClose({
+    required this.menuOpen,
+    required this.onClose,
+    required this.child,
+  });
 
   final bool menuOpen;
   final VoidCallback onClose;
@@ -157,6 +193,10 @@ class _ShrunkAppTapToClose extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!menuOpen) return child;
-    return GestureDetector(behavior: HitTestBehavior.opaque, onTap: onClose, child: child);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onClose,
+      child: child,
+    );
   }
 }

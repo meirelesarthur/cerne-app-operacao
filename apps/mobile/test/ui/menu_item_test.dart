@@ -5,14 +5,23 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/menu_item.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppMenuItem', () {
     testWidgets('dispara onTap ao tocar', (tester) async {
       var tapped = false;
       await tester.pumpWidget(
-        _wrap(AppMenuItem(icon: LucideIcons.user, label: 'Perfil', onTap: () => tapped = true)),
+        _wrap(
+          AppMenuItem(
+            icon: LucideIcons.user,
+            label: 'Perfil',
+            onTap: () => tapped = true,
+          ),
+        ),
       );
 
       await tester.tap(find.text('Perfil'));
@@ -28,19 +37,23 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('renderiza todas as combinações de tone/variant sem exceções', (tester) async {
+    testWidgets('renderiza todas as combinações de tone/variant sem exceções', (
+      tester,
+    ) async {
       for (final tone in AppMenuItemTone.values) {
         for (final variant in AppMenuItemVariant.values) {
           await tester.pumpWidget(
-            _wrap(AppMenuItem(
-              icon: LucideIcons.bell,
-              label: 'Item',
-              description: 'Descrição',
-              tone: tone,
-              variant: variant,
-              active: true,
-              onTap: () {},
-            )),
+            _wrap(
+              AppMenuItem(
+                icon: LucideIcons.bell,
+                label: 'Item',
+                description: 'Descrição',
+                tone: tone,
+                variant: variant,
+                active: true,
+                onTap: () {},
+              ),
+            ),
           );
           expect(tester.takeException(), isNull);
         }

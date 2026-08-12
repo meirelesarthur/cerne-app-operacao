@@ -60,9 +60,21 @@ class Produto {
 
 const List<Categoria> categorias = [
   Categoria(id: 'sementes', label: 'Sementes', icon: LucideIcons.sprout),
-  Categoria(id: 'fertilizantes', label: 'Fertilizantes', icon: LucideIcons.flaskConical),
-  Categoria(id: 'defensivos', label: 'Defensivos', icon: LucideIcons.shieldCheck),
-  Categoria(id: 'nutricao-animal', label: 'Nutrição animal', icon: LucideIcons.beef),
+  Categoria(
+    id: 'fertilizantes',
+    label: 'Fertilizantes',
+    icon: LucideIcons.flaskConical,
+  ),
+  Categoria(
+    id: 'defensivos',
+    label: 'Defensivos',
+    icon: LucideIcons.shieldCheck,
+  ),
+  Categoria(
+    id: 'nutricao-animal',
+    label: 'Nutrição animal',
+    icon: LucideIcons.beef,
+  ),
   Categoria(id: 'maquinas', label: 'Máquinas', icon: LucideIcons.tractor),
   Categoria(id: 'pecas', label: 'Peças', icon: LucideIcons.wrench),
 ];
@@ -113,7 +125,10 @@ const List<Produto> produtos = [
     descricao:
         'Herbicida sistêmico de ação pós-emergente, com absorção rápida via folhas indicado para controle de plantas daninhas de folha larga e estreita.',
     especificacoes: [
-      Especificacao(label: 'Classe toxicológica', valor: 'III - medianamente tóxico'),
+      Especificacao(
+        label: 'Classe toxicológica',
+        valor: 'III - medianamente tóxico',
+      ),
       Especificacao(label: 'Modo de ação', valor: 'Sistêmico foliar'),
       Especificacao(label: 'Formulação', valor: 'Concentrado solúvel'),
       Especificacao(label: 'Carência', valor: '30 dias'),
@@ -132,7 +147,10 @@ const List<Produto> produtos = [
     especificacoes: [
       Especificacao(label: 'Proteína bruta', valor: 'mín. 18%'),
       Especificacao(label: 'Fase indicada', valor: 'Terminação'),
-      Especificacao(label: 'Composição', valor: 'Milho, farelo de soja, minerais'),
+      Especificacao(
+        label: 'Composição',
+        valor: 'Milho, farelo de soja, minerais',
+      ),
       Especificacao(label: 'Validade', valor: '6 meses'),
     ],
   ),
@@ -160,7 +178,8 @@ const List<Produto> produtos = [
     unidade: 'un',
     categoriaId: 'pecas',
     freteGratis: true,
-    descricao: 'Arame liso galvanizado de alta resistência, indicado para cercas de divisa e contenção de pastagens.',
+    descricao:
+        'Arame liso galvanizado de alta resistência, indicado para cercas de divisa e contenção de pastagens.',
     especificacoes: [
       Especificacao(label: 'Comprimento', valor: '500 m'),
       Especificacao(label: 'Revestimento', valor: 'Galvanizado a fogo'),

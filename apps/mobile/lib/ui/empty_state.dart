@@ -29,7 +29,10 @@ class AppEmptyState extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space6, vertical: AppSpacing.space12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.space6,
+        vertical: AppSpacing.space12,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -47,7 +50,10 @@ class AppEmptyState extends StatelessWidget {
                 child: Icon(icon, size: 26, color: semantic.fgSubtle),
               ),
             ),
-          AppHeading(level: AppHeadingLevel.h3, child: Text(title, textAlign: TextAlign.center)),
+          AppHeading(
+            level: AppHeadingLevel.h3,
+            child: Text(title, textAlign: TextAlign.center),
+          ),
           if (description != null)
             Padding(
               padding: const EdgeInsets.only(top: AppSpacing.space1),
@@ -56,12 +62,18 @@ class AppEmptyState extends StatelessWidget {
                 child: Text(
                   description!,
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
+                  style: TextStyle(
+                    fontSize: AppTypography.md,
+                    color: semantic.fgMuted,
+                  ),
                 ),
               ),
             ),
           if (action != null)
-            Padding(padding: const EdgeInsets.only(top: AppSpacing.space4), child: action),
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.space4),
+              child: action,
+            ),
         ],
       ),
     );
@@ -84,9 +96,8 @@ WidgetbookComponent buildEmptyStateWidgetbookComponent() {
       ),
       WidgetbookUseCase(
         name: 'Sem ícone',
-        builder: (context) => const Center(
-          child: AppEmptyState(title: 'Sem dados no período'),
-        ),
+        builder: (context) =>
+            const Center(child: AppEmptyState(title: 'Sem dados no período')),
       ),
     ],
   );

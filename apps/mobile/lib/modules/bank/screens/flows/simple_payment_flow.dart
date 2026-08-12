@@ -15,7 +15,12 @@ import 'package:cerne_app/modules/bank/lib/currency.dart';
 enum PaymentKind { boleto, transferir, cobrar }
 
 class _Meta {
-  const _Meta({required this.title, required this.icon, required this.confirm, required this.successTitle});
+  const _Meta({
+    required this.title,
+    required this.icon,
+    required this.confirm,
+    required this.successTitle,
+  });
 
   final String title;
   final IconData icon;
@@ -24,14 +29,24 @@ class _Meta {
 }
 
 const Map<PaymentKind, _Meta> _meta = {
-  PaymentKind.boleto: _Meta(title: 'Pagar boleto', icon: LucideIcons.scanLine, confirm: 'Confirmar pagamento', successTitle: 'Pagamento agendado'),
+  PaymentKind.boleto: _Meta(
+    title: 'Pagar boleto',
+    icon: LucideIcons.scanLine,
+    confirm: 'Confirmar pagamento',
+    successTitle: 'Pagamento agendado',
+  ),
   PaymentKind.transferir: _Meta(
     title: 'Transferir',
     icon: LucideIcons.arrowLeftRight,
     confirm: 'Confirmar transferência',
     successTitle: 'Transferência enviada',
   ),
-  PaymentKind.cobrar: _Meta(title: 'Cobrar via Pix', icon: LucideIcons.handCoins, confirm: 'Gerar cobrança', successTitle: 'Cobrança criada'),
+  PaymentKind.cobrar: _Meta(
+    title: 'Cobrar via Pix',
+    icon: LucideIcons.handCoins,
+    confirm: 'Gerar cobrança',
+    successTitle: 'Cobrança criada',
+  ),
 };
 
 enum _Step { form, revisao, done }
@@ -39,7 +54,11 @@ enum _Step { form, revisao, done }
 /// Fluxos de boleto/transferência/cobrança: formulário → revisão → sucesso.
 /// Espelha `SimplePaymentFlow.tsx`.
 class SimplePaymentFlow extends ConsumerStatefulWidget {
-  const SimplePaymentFlow({super.key, required this.kind, required this.onExit});
+  const SimplePaymentFlow({
+    super.key,
+    required this.kind,
+    required this.onExit,
+  });
 
   final PaymentKind kind;
 
@@ -83,7 +102,11 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
 
   bool get _valid => switch (widget.kind) {
     PaymentKind.boleto => _linha.trim().length >= 6 && _valorValido,
-    PaymentKind.transferir => (_banco != null) && _agencia.trim().isNotEmpty && _conta.trim().isNotEmpty && _valorValido,
+    PaymentKind.transferir =>
+      (_banco != null) &&
+          _agencia.trim().isNotEmpty &&
+          _conta.trim().isNotEmpty &&
+          _valorValido,
     PaymentKind.cobrar => _valorValido,
   };
 
@@ -134,23 +157,50 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
           style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
           children: [
             const TextSpan(text: 'Pagamento de '),
-            TextSpan(text: formatBRL(_valorNum), style: TextStyle(fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault)),
-            const TextSpan(text: ' agendado. O débito ocorre na conta na data de vencimento.'),
+            TextSpan(
+              text: formatBRL(_valorNum),
+              style: TextStyle(
+                fontWeight: AppTypography.weightSemibold,
+                color: semantic.fgDefault,
+              ),
+            ),
+            const TextSpan(
+              text:
+                  ' agendado. O débito ocorre na conta na data de vencimento.',
+            ),
           ],
         ),
         PaymentKind.transferir => TextSpan(
           style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
           children: [
-            TextSpan(text: formatBRL(_valorNum), style: TextStyle(fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault)),
-            TextSpan(text: ' enviado para $_bancoLabel · Ag $_agencia · Conta $_conta.'),
+            TextSpan(
+              text: formatBRL(_valorNum),
+              style: TextStyle(
+                fontWeight: AppTypography.weightSemibold,
+                color: semantic.fgDefault,
+              ),
+            ),
+            TextSpan(
+              text:
+                  ' enviado para $_bancoLabel · Ag $_agencia · Conta $_conta.',
+            ),
           ],
         ),
         PaymentKind.cobrar => TextSpan(
           style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
           children: [
             const TextSpan(text: 'Cobrança de '),
-            TextSpan(text: formatBRL(_valorNum), style: TextStyle(fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault)),
-            const TextSpan(text: ' criada. O código Pix copia-e-cola fica disponível no GB Bank web para envio ao pagador.'),
+            TextSpan(
+              text: formatBRL(_valorNum),
+              style: TextStyle(
+                fontWeight: AppTypography.weightSemibold,
+                color: semantic.fgDefault,
+              ),
+            ),
+            const TextSpan(
+              text:
+                  ' criada. O código Pix copia-e-cola fica disponível no GB Bank web para envio ao pagador.',
+            ),
           ],
         ),
       };
@@ -161,9 +211,18 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
         actions: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AppButton(fullWidth: true, onPressed: () => context.go('/bank'), child: const Text('Voltar ao Bank')),
+            AppButton(
+              fullWidth: true,
+              onPressed: () => context.go('/bank'),
+              child: const Text('Voltar ao Bank'),
+            ),
             const SizedBox(height: AppSpacing.space2),
-            AppButton(variant: AppButtonVariant.ghost, fullWidth: true, onPressed: _reset, child: const Text('Nova operação')),
+            AppButton(
+              variant: AppButtonVariant.ghost,
+              fullWidth: true,
+              onPressed: _reset,
+              child: const Text('Nova operação'),
+            ),
           ],
         ),
       );
@@ -185,8 +244,15 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
                   width: 48,
                   height: 48,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentSubtle),
-                  child: Icon(meta.icon, size: 22, color: semantic.accentDefault),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: semantic.accentSubtle,
+                  ),
+                  child: Icon(
+                    meta.icon,
+                    size: 22,
+                    color: semantic.accentDefault,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.space2),
                 Text(
@@ -211,7 +277,8 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
               ),
               child: Column(
                 children: [
-                  if (widget.kind == PaymentKind.boleto) _ResumoRow(label: 'Linha digitável', value: _linha.trim()),
+                  if (widget.kind == PaymentKind.boleto)
+                    _ResumoRow(label: 'Linha digitável', value: _linha.trim()),
                   if (widget.kind == PaymentKind.transferir) ...[
                     const _ResumoRow(label: 'De', value: ContaOrigem.label),
                     const SizedBox(height: AppSpacing.space3),
@@ -222,7 +289,12 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
                     _ResumoRow(label: 'Conta', value: _conta.trim()),
                   ],
                   if (widget.kind == PaymentKind.cobrar)
-                    _ResumoRow(label: 'Pagador', value: _nome.trim().isEmpty ? 'Não informado' : _nome.trim()),
+                    _ResumoRow(
+                      label: 'Pagador',
+                      value: _nome.trim().isEmpty
+                          ? 'Não informado'
+                          : _nome.trim(),
+                    ),
                   if (_descricao.trim().isNotEmpty) ...[
                     const SizedBox(height: AppSpacing.space3),
                     _ResumoRow(label: 'Descrição', value: _descricao.trim()),
@@ -233,7 +305,9 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
             const SizedBox(height: AppSpacing.space5),
             const AppBanner(
               icon: Icon(LucideIcons.info, size: 14),
-              child: Text('Confira os dados antes de confirmar. Esta é uma operação simulada do protótipo.'),
+              child: Text(
+                'Confira os dados antes de confirmar. Esta é uma operação simulada do protótipo.',
+              ),
             ),
           ],
         ),
@@ -259,7 +333,8 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
               child: AppTextInput(
                 controller: _linhaController,
                 keyboardType: TextInputType.number,
-                placeholder: '00000.00000 00000.000000 00000.000000 0 00000000000000',
+                placeholder:
+                    '00000.00000 00000.000000 00000.000000 0 00000000000000',
                 onChanged: (v) => setState(() => _linha = v),
               ),
             ),
@@ -269,7 +344,10 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
             AppFormField(
               label: 'Banco de destino',
               child: AppFormSelect(
-                options: [for (final b in bancos) AppFormSelectOption(value: b.value, label: b.label)],
+                options: [
+                  for (final b in bancos)
+                    AppFormSelectOption(value: b.value, label: b.label),
+                ],
                 value: _banco,
                 placeholder: 'Selecione o banco',
                 onChanged: (v) => setState(() => _banco = v),
@@ -317,8 +395,12 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
             const SizedBox(height: AppSpacing.space4),
           ],
           AppFormField(
-            label: widget.kind == PaymentKind.cobrar ? 'Valor a cobrar' : 'Valor',
-            error: _valor.isNotEmpty && !_valorValido ? 'Informe um valor maior que zero.' : null,
+            label: widget.kind == PaymentKind.cobrar
+                ? 'Valor a cobrar'
+                : 'Valor',
+            error: _valor.isNotEmpty && !_valorValido
+                ? 'Informe um valor maior que zero.'
+                : null,
             child: AppTextInput(
               controller: _valorController,
               keyboardType: TextInputType.number,
@@ -356,7 +438,10 @@ class _ResumoRow extends StatelessWidget {
       textBaseline: TextBaseline.alphabetic,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+        Text(
+          label,
+          style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+        ),
         const SizedBox(width: AppSpacing.space3),
         Flexible(
           child: Text(
@@ -364,7 +449,11 @@ class _ResumoRow extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: AppTypography.sm, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+            style: TextStyle(
+              fontSize: AppTypography.sm,
+              fontWeight: AppTypography.weightSemibold,
+              color: semantic.fgDefault,
+            ),
           ),
         ),
       ],

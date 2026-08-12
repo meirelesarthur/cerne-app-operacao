@@ -12,25 +12,43 @@ GoRouter _router() => GoRouter(
   initialLocation: '/bank',
   routes: [
     GoRoute(path: '/bank', builder: (context, state) => const BankHomeScreen()),
-    GoRoute(path: '/bank/pagamentos', builder: (context, state) => const Text('Pagamentos destino')),
-    GoRoute(path: '/bank/extrato', builder: (context, state) => const Text('Extrato destino')),
-    GoRoute(path: '/bank/cartoes', builder: (context, state) => const Text('Cartoes destino')),
-    GoRoute(path: '/credito', builder: (context, state) => const Text('Credito destino')),
+    GoRoute(
+      path: '/bank/pagamentos',
+      builder: (context, state) => const Text('Pagamentos destino'),
+    ),
+    GoRoute(
+      path: '/bank/extrato',
+      builder: (context, state) => const Text('Extrato destino'),
+    ),
+    GoRoute(
+      path: '/bank/cartoes',
+      builder: (context, state) => const Text('Cartoes destino'),
+    ),
+    GoRoute(
+      path: '/credito',
+      builder: (context, state) => const Text('Credito destino'),
+    ),
   ],
 );
 
 Widget _wrap() => ProviderScope(
-  child: MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: _router()),
+  child: MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: _router(),
+  ),
 );
 
 /// `SimulatedLoad`/`RiseIn` usam `Future.delayed` isolado — não agenda frame
 /// algum até disparar; avança o relógio antes de `pumpAndSettle` (mesmo padrão
 /// de `app_router_test.dart`).
-Future<void> _settleTimers(WidgetTester tester) => tester.pump(const Duration(seconds: 1));
+Future<void> _settleTimers(WidgetTester tester) =>
+    tester.pump(const Duration(seconds: 1));
 
 void main() {
   group('BankHomeScreen', () {
-    testWidgets('renderiza saldo, cartão e movimentações sem exceção', (tester) async {
+    testWidgets('renderiza saldo, cartão e movimentações sem exceção', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap());
       await _settleTimers(tester);
@@ -66,7 +84,9 @@ void main() {
       expect(find.text('Cartoes destino'), findsOneWidget);
     });
 
-    testWidgets('deep-link de Crédito navega para o módulo Crédito', (tester) async {
+    testWidgets('deep-link de Crédito navega para o módulo Crédito', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap());
       await _settleTimers(tester);

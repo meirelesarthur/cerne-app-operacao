@@ -8,12 +8,17 @@ import 'package:cerne_app/modules/bank/screens/limites_screen.dart';
 import '../../support/test_viewport.dart';
 
 Widget _wrap() => ProviderScope(
-  child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: LimitesScreen())),
+  child: MaterialApp(
+    theme: buildAppTheme(AppThemeVariant.light),
+    home: const Scaffold(body: LimitesScreen()),
+  ),
 );
 
 void main() {
   group('LimitesScreen', () {
-    testWidgets('renderiza todas as faixas de limite sem exceção', (tester) async {
+    testWidgets('renderiza todas as faixas de limite sem exceção', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();

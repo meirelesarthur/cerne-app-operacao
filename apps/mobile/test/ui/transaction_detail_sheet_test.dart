@@ -6,7 +6,10 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/transaction_detail_sheet.dart';
 import 'package:cerne_app/ui/transaction_list_item.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   const sample = AppTransactionItem(
@@ -24,7 +27,8 @@ void main() {
         _wrap(
           Builder(
             builder: (context) => ElevatedButton(
-              onPressed: () => showAppTransactionDetailSheet(context, transaction: sample),
+              onPressed: () =>
+                  showAppTransactionDetailSheet(context, transaction: sample),
               child: const Text('Abrir'),
             ),
           ),
@@ -46,7 +50,11 @@ void main() {
         _wrap(
           Builder(
             builder: (context) => ElevatedButton(
-              onPressed: () => showAppTransactionDetailSheet(context, transaction: sample, hidden: true),
+              onPressed: () => showAppTransactionDetailSheet(
+                context,
+                transaction: sample,
+                hidden: true,
+              ),
               child: const Text('Abrir'),
             ),
           ),
@@ -61,19 +69,23 @@ void main() {
     });
 
     testWidgets('copia o ID da operação ao tocar no botão', (tester) async {
-      final messenger = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+      final messenger =
+          TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
       final calls = <MethodCall>[];
       messenger.setMockMethodCallHandler(SystemChannels.platform, (call) async {
         calls.add(call);
         return null;
       });
-      addTearDown(() => messenger.setMockMethodCallHandler(SystemChannels.platform, null));
+      addTearDown(
+        () => messenger.setMockMethodCallHandler(SystemChannels.platform, null),
+      );
 
       await tester.pumpWidget(
         _wrap(
           Builder(
             builder: (context) => ElevatedButton(
-              onPressed: () => showAppTransactionDetailSheet(context, transaction: sample),
+              onPressed: () =>
+                  showAppTransactionDetailSheet(context, transaction: sample),
               child: const Text('Abrir'),
             ),
           ),

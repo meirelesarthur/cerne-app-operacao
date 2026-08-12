@@ -27,7 +27,8 @@ class MovimentacoesScreen extends StatelessWidget {
                 for (final mov in movimentacoes)
                   AppTransactionListItem(
                     transaction: toTransactionItem(mov),
-                    onTap: () => showMovimentacaoDetailSheet(context, movimentacao: mov),
+                    onTap: () =>
+                        showMovimentacaoDetailSheet(context, movimentacao: mov),
                     showDivider: mov != movimentacoes.last,
                   ),
               ],

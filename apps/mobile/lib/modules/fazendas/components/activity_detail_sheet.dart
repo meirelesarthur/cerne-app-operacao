@@ -46,7 +46,10 @@ const List<ActivityKind> _fieldKinds = [
 /// Espelha o padrão já usado por `showAppTransactionDetailSheet`: função que
 /// dispara `showAppBottomSheet`, chamada a partir do `onTap` do
 /// `ActivityListItem`.
-Future<void> showActivityDetailSheet(BuildContext context, {required Activity activity}) {
+Future<void> showActivityDetailSheet(
+  BuildContext context, {
+  required Activity activity,
+}) {
   return showAppBottomSheet<void>(
     context,
     title: 'Detalhe da atividade',
@@ -66,7 +69,9 @@ class _ActivityDetailBody extends StatelessWidget {
     final status = statusMeta[activity.status]!;
     final detailLabels = _kindDetailLabels[activity.kind]!;
     final segments = activity.subtitle.split(' · ');
-    final syncedFromField = _fieldKinds.contains(activity.kind) && activity.status == ActivityStatus.concluida;
+    final syncedFromField =
+        _fieldKinds.contains(activity.kind) &&
+        activity.status == ActivityStatus.concluida;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +84,10 @@ class _ActivityDetailBody extends StatelessWidget {
               width: AppSpacing.space12,
               height: AppSpacing.space12,
               alignment: Alignment.center,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.bgSubtle),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: semantic.bgSubtle,
+              ),
               child: Icon(icon, size: 22, color: semantic.fgMuted),
             ),
             const SizedBox(width: AppSpacing.space3),
@@ -90,13 +98,22 @@ class _ActivityDetailBody extends StatelessWidget {
                 children: [
                   Text(
                     _kindLabel[activity.kind]!.toUpperCase(),
-                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, color: semantic.fgSubtle, letterSpacing: 0.4),
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: semantic.fgSubtle,
+                      letterSpacing: 0.4,
+                    ),
                   ),
                   Text(
                     activity.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: semantic.fgDefault,
+                    ),
                   ),
                 ],
               ),
@@ -119,7 +136,10 @@ class _ActivityDetailBody extends StatelessWidget {
             children: [
               _DetailRow(label: 'Quando', value: activity.time),
               for (var i = 0; i < segments.length; i++)
-                _DetailRow(label: i < detailLabels.length ? detailLabels[i] : 'Detalhe', value: segments[i]),
+                _DetailRow(
+                  label: i < detailLabels.length ? detailLabels[i] : 'Detalhe',
+                  value: segments[i],
+                ),
             ],
           ),
         ),
@@ -131,13 +151,23 @@ class _ActivityDetailBody extends StatelessWidget {
             children: [
               Icon(LucideIcons.smartphone, size: 13, color: semantic.fgMuted),
               const SizedBox(width: AppSpacing.space1),
-              Text('Registrado no campo', style: TextStyle(fontSize: 12, color: semantic.fgMuted)),
+              Text(
+                'Registrado no campo',
+                style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+              ),
               const SizedBox(width: AppSpacing.space1),
               Text('·', style: TextStyle(color: semantic.fgMuted)),
               const SizedBox(width: AppSpacing.space1),
-              Icon(LucideIcons.checkCircle2, size: 13, color: semantic.accentDefault),
+              Icon(
+                LucideIcons.checkCircle2,
+                size: 13,
+                color: semantic.accentDefault,
+              ),
               const SizedBox(width: AppSpacing.space1),
-              Text('sincronizado', style: TextStyle(fontSize: 12, color: semantic.fgMuted)),
+              Text(
+                'sincronizado',
+                style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+              ),
             ],
           ),
         ],
@@ -176,7 +206,10 @@ class _DetailRow extends StatelessWidget {
               textAlign: TextAlign.right,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: semantic.fgDefault,
+              ),
             ),
           ),
         ],

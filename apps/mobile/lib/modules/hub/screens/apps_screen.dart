@@ -24,11 +24,17 @@ class AppsScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AppHeading(level: AppHeadingLevel.h3, child: Text('Todos os apps')),
+              const AppHeading(
+                level: AppHeadingLevel.h3,
+                child: Text('Todos os apps'),
+              ),
               const SizedBox(height: AppSpacing.space1),
               Text(
                 'Um só lugar para toda a operação — do campo ao banco.',
-                style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  color: semantic.fgMuted,
+                ),
               ),
             ],
           ),
@@ -55,7 +61,9 @@ class AppsScreen extends StatelessWidget {
                       name: app.name,
                       description: app.description,
                       badge: app.badge,
-                      onTap: app.route != null ? () => context.go(app.route!) : null,
+                      onTap: app.route != null
+                          ? () => context.go(app.route!)
+                          : null,
                     ),
                 ],
               ),
@@ -79,7 +87,13 @@ class AppsScreen extends StatelessWidget {
                 childAspectRatio: 1.6,
                 children: [
                   for (final app in appsEmBreve)
-                    AppMiniAppTile(icon: app.icon, name: app.name, description: app.description, badge: app.badge, disabled: true),
+                    AppMiniAppTile(
+                      icon: app.icon,
+                      name: app.name,
+                      description: app.description,
+                      badge: app.badge,
+                      disabled: true,
+                    ),
                 ],
               ),
             ],

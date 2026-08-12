@@ -16,10 +16,15 @@ class ContextBadge extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final activeFarm = ref.watch(fazendasStoreProvider.select((s) => s.activeFarm));
+    final activeFarm = ref.watch(
+      fazendasStoreProvider.select((s) => s.activeFarm),
+    );
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space2),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.space4,
+        vertical: AppSpacing.space2,
+      ),
       decoration: const BoxDecoration(
         color: AppColors.brand50,
         border: Border(bottom: BorderSide(color: AppColors.brand200)),
@@ -32,7 +37,11 @@ class ContextBadge extends ConsumerWidget {
           Flexible(
             child: Text(
               'Lançando em: ${activeFarm.name}',
-              style: const TextStyle(fontSize: AppTypography.sm, fontWeight: AppTypography.weightSemibold, color: AppColors.brand700),
+              style: const TextStyle(
+                fontSize: AppTypography.sm,
+                fontWeight: AppTypography.weightSemibold,
+                color: AppColors.brand700,
+              ),
               overflow: TextOverflow.ellipsis,
             ),
           ),

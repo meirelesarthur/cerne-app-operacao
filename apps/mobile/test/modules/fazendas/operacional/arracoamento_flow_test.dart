@@ -8,8 +8,11 @@ import 'package:cerne_app/modules/fazendas/operacional/arracoamento_flow.dart';
 import '../../../support/test_viewport.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
-      child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child)),
-    );
+  child: MaterialApp(
+    theme: buildAppTheme(AppThemeVariant.light),
+    home: Scaffold(body: child),
+  ),
+);
 
 void main() {
   group('ArracoamentoFlow', () {
@@ -23,7 +26,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('avança um passo: aumentar a quantidade via stepper', (tester) async {
+    testWidgets('avança um passo: aumentar a quantidade via stepper', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap(const ArracoamentoFlow()));
       await tester.pumpAndSettle();

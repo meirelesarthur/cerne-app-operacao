@@ -1,4 +1,5 @@
-import '../ui/transaction_list_item.dart' show AppTransactionItem, AppTransactionDirection;
+import '../ui/transaction_list_item.dart'
+    show AppTransactionItem, AppTransactionDirection;
 
 /// Mocks do Banking — espelha `src/modules/bank/mocks/banking.ts`. Determinísticos
 /// (sem `Date.now`). Consumidos pelo hub (widget de conta) e pelo módulo Bank.
@@ -32,7 +33,13 @@ class Cartao {
 }
 
 class FaixaLimite {
-  const FaixaLimite({required this.id, required this.label, required this.usadoPct, required this.usado, required this.total});
+  const FaixaLimite({
+    required this.id,
+    required this.label,
+    required this.usadoPct,
+    required this.usado,
+    required this.total,
+  });
 
   final String id;
   final String label;
@@ -43,10 +50,34 @@ class FaixaLimite {
 
 /// Faixas de limite exibidas em Bank › Limites (mock determinístico).
 const List<FaixaLimite> faixasLimite = [
-  FaixaLimite(id: 'credito', label: 'Limite de crédito', usadoPct: 36, usado: 'R\$ 53.500,00', total: 'R\$ 150.000,00'),
-  FaixaLimite(id: 'pixDia', label: 'Pix por transação (diurno)', usadoPct: 25, usado: 'R\$ 12.380,00', total: 'R\$ 50.000,00'),
-  FaixaLimite(id: 'pixNoite', label: 'Pix por transação (noturno)', usadoPct: 0, usado: 'R\$ 0,00', total: 'R\$ 1.000,00'),
-  FaixaLimite(id: 'saque', label: 'Saque diário', usadoPct: 12, usado: 'R\$ 240,00', total: 'R\$ 2.000,00'),
+  FaixaLimite(
+    id: 'credito',
+    label: 'Limite de crédito',
+    usadoPct: 36,
+    usado: 'R\$ 53.500,00',
+    total: 'R\$ 150.000,00',
+  ),
+  FaixaLimite(
+    id: 'pixDia',
+    label: 'Pix por transação (diurno)',
+    usadoPct: 25,
+    usado: 'R\$ 12.380,00',
+    total: 'R\$ 50.000,00',
+  ),
+  FaixaLimite(
+    id: 'pixNoite',
+    label: 'Pix por transação (noturno)',
+    usadoPct: 0,
+    usado: 'R\$ 0,00',
+    total: 'R\$ 1.000,00',
+  ),
+  FaixaLimite(
+    id: 'saque',
+    label: 'Saque diário',
+    usadoPct: 12,
+    usado: 'R\$ 240,00',
+    total: 'R\$ 2.000,00',
+  ),
 ];
 
 /// Conta de origem para os fluxos de pagamento (Pix, transferência).
@@ -56,7 +87,13 @@ class ContaOrigem {
 }
 
 class PixContato {
-  const PixContato({required this.id, required this.nome, required this.chave, required this.tipoChave, required this.inicial});
+  const PixContato({
+    required this.id,
+    required this.nome,
+    required this.chave,
+    required this.tipoChave,
+    required this.inicial,
+  });
 
   final String id;
   final String nome;
@@ -67,10 +104,34 @@ class PixContato {
 
 /// Contatos Pix frequentes (mock) — atalhos na entrada do fluxo Pix.
 const List<PixContato> pixContatos = [
-  PixContato(id: 'p1', nome: 'Agropecuária Vale Verde', chave: 'contato@valeverde.com.br', tipoChave: 'E-mail', inicial: 'AV'),
-  PixContato(id: 'p2', nome: 'Cooperativa Cerrado', chave: '12.345.678/0001-90', tipoChave: 'CNPJ', inicial: 'CC'),
-  PixContato(id: 'p3', nome: 'João Batista · arrendamento', chave: '(62) 98411-2033', tipoChave: 'Telefone', inicial: 'JB'),
-  PixContato(id: 'p4', nome: 'Frigorífico Boi Forte', chave: '047.882.910-55', tipoChave: 'CPF', inicial: 'BF'),
+  PixContato(
+    id: 'p1',
+    nome: 'Agropecuária Vale Verde',
+    chave: 'contato@valeverde.com.br',
+    tipoChave: 'E-mail',
+    inicial: 'AV',
+  ),
+  PixContato(
+    id: 'p2',
+    nome: 'Cooperativa Cerrado',
+    chave: '12.345.678/0001-90',
+    tipoChave: 'CNPJ',
+    inicial: 'CC',
+  ),
+  PixContato(
+    id: 'p3',
+    nome: 'João Batista · arrendamento',
+    chave: '(62) 98411-2033',
+    tipoChave: 'Telefone',
+    inicial: 'JB',
+  ),
+  PixContato(
+    id: 'p4',
+    nome: 'Frigorífico Boi Forte',
+    chave: '047.882.910-55',
+    tipoChave: 'CPF',
+    inicial: 'BF',
+  ),
 ];
 
 class BancoOption {
@@ -90,11 +151,60 @@ const List<BancoOption> bancos = [
 ];
 
 const List<AppTransactionItem> transacoes = [
-  AppTransactionItem(id: 'tx1', title: 'Venda de gado · Frigorífico Boi Forte', subtitle: 'TED recebida', time: 'hoje, 09:12', value: 'R\$ 86.400,00', direction: AppTransactionDirection.income),
-  AppTransactionItem(id: 'tx2', title: 'Agropecuária Vale Verde', subtitle: 'Pix · insumos', time: 'hoje, 08:05', value: 'R\$ 12.380,00', direction: AppTransactionDirection.expense),
-  AppTransactionItem(id: 'tx3', title: 'Folha de pagamento', subtitle: 'Lote agendado', time: 'ontem', value: 'R\$ 38.120,50', direction: AppTransactionDirection.expense),
-  AppTransactionItem(id: 'tx4', title: 'Cooperativa Cerrado', subtitle: 'Liquidação de soja', time: 'ontem', value: 'R\$ 154.900,00', direction: AppTransactionDirection.income),
-  AppTransactionItem(id: 'tx5', title: 'Energia rural · CEMIG', subtitle: 'Débito automático', time: 'seg', value: 'R\$ 4.812,90', direction: AppTransactionDirection.expense),
-  AppTransactionItem(id: 'tx6', title: 'Combustível · Posto Trevo', subtitle: 'Cartão corporativo', time: 'seg', value: 'R\$ 2.640,00', direction: AppTransactionDirection.expense),
-  AppTransactionItem(id: 'tx7', title: 'Arrendamento pasto leste', subtitle: 'Pix recebido', time: 'dom', value: 'R\$ 18.500,00', direction: AppTransactionDirection.income),
+  AppTransactionItem(
+    id: 'tx1',
+    title: 'Venda de gado · Frigorífico Boi Forte',
+    subtitle: 'TED recebida',
+    time: 'hoje, 09:12',
+    value: 'R\$ 86.400,00',
+    direction: AppTransactionDirection.income,
+  ),
+  AppTransactionItem(
+    id: 'tx2',
+    title: 'Agropecuária Vale Verde',
+    subtitle: 'Pix · insumos',
+    time: 'hoje, 08:05',
+    value: 'R\$ 12.380,00',
+    direction: AppTransactionDirection.expense,
+  ),
+  AppTransactionItem(
+    id: 'tx3',
+    title: 'Folha de pagamento',
+    subtitle: 'Lote agendado',
+    time: 'ontem',
+    value: 'R\$ 38.120,50',
+    direction: AppTransactionDirection.expense,
+  ),
+  AppTransactionItem(
+    id: 'tx4',
+    title: 'Cooperativa Cerrado',
+    subtitle: 'Liquidação de soja',
+    time: 'ontem',
+    value: 'R\$ 154.900,00',
+    direction: AppTransactionDirection.income,
+  ),
+  AppTransactionItem(
+    id: 'tx5',
+    title: 'Energia rural · CEMIG',
+    subtitle: 'Débito automático',
+    time: 'seg',
+    value: 'R\$ 4.812,90',
+    direction: AppTransactionDirection.expense,
+  ),
+  AppTransactionItem(
+    id: 'tx6',
+    title: 'Combustível · Posto Trevo',
+    subtitle: 'Cartão corporativo',
+    time: 'seg',
+    value: 'R\$ 2.640,00',
+    direction: AppTransactionDirection.expense,
+  ),
+  AppTransactionItem(
+    id: 'tx7',
+    title: 'Arrendamento pasto leste',
+    subtitle: 'Pix recebido',
+    time: 'dom',
+    value: 'R\$ 18.500,00',
+    direction: AppTransactionDirection.income,
+  ),
 ];

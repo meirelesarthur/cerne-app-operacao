@@ -5,13 +5,22 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/quick_action.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppQuickAction', () {
     testWidgets('renderiza ícone e rótulo sem exceção', (tester) async {
       await tester.pumpWidget(
-        _wrap(AppQuickAction(icon: LucideIcons.wallet, label: 'Carteira', onPressed: () {})),
+        _wrap(
+          AppQuickAction(
+            icon: LucideIcons.wallet,
+            label: 'Carteira',
+            onPressed: () {},
+          ),
+        ),
       );
 
       expect(find.text('Carteira'), findsOneWidget);
@@ -21,7 +30,13 @@ void main() {
     testWidgets('dispara onPressed ao tocar', (tester) async {
       var tapped = false;
       await tester.pumpWidget(
-        _wrap(AppQuickAction(icon: LucideIcons.wallet, label: 'Carteira', onPressed: () => tapped = true)),
+        _wrap(
+          AppQuickAction(
+            icon: LucideIcons.wallet,
+            label: 'Carteira',
+            onPressed: () => tapped = true,
+          ),
+        ),
       );
 
       await tester.tap(find.byType(AppQuickAction));

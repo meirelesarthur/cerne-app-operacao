@@ -29,17 +29,19 @@ class AppProgressBar extends StatelessWidget {
 
   final double value;
   final double max;
+
   /// Cor por ocupação (spec §4.2): verde <80%, amber 80–99%, vermelho ≥100%.
   final bool colorByOccupancy;
   final AppProgressBarTone tone;
   final bool showLabel;
 
-  Color _toneColor(AppProgressBarTone t, AppSemanticColors semantic) => switch (t) {
-    AppProgressBarTone.brand => semantic.accentDefault,
-    AppProgressBarTone.blue => AppColors.blue500,
-    AppProgressBarTone.amber => AppColors.amber500,
-    AppProgressBarTone.red => AppColors.red500,
-  };
+  Color _toneColor(AppProgressBarTone t, AppSemanticColors semantic) =>
+      switch (t) {
+        AppProgressBarTone.brand => semantic.accentDefault,
+        AppProgressBarTone.blue => AppColors.blue500,
+        AppProgressBarTone.amber => AppColors.amber500,
+        AppProgressBarTone.red => AppColors.red500,
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -114,11 +116,13 @@ class _AnimatedFractionallySizedBoxState
 
   @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
-    _widthFactor = visitor(
-      _widthFactor,
-      widget.widthFactor,
-      (value) => Tween<double>(begin: value as double),
-    ) as Tween<double>?;
+    _widthFactor =
+        visitor(
+              _widthFactor,
+              widget.widthFactor,
+              (value) => Tween<double>(begin: value as double),
+            )
+            as Tween<double>?;
   }
 
   @override
@@ -144,11 +148,23 @@ WidgetbookComponent buildProgressBarWidgetbookComponent() {
               children: [
                 AppProgressBar(value: 40, showLabel: true),
                 SizedBox(height: AppSpacing.space4),
-                AppProgressBar(value: 55, tone: AppProgressBarTone.blue, showLabel: true),
+                AppProgressBar(
+                  value: 55,
+                  tone: AppProgressBarTone.blue,
+                  showLabel: true,
+                ),
                 SizedBox(height: AppSpacing.space4),
-                AppProgressBar(value: 85, colorByOccupancy: true, showLabel: true),
+                AppProgressBar(
+                  value: 85,
+                  colorByOccupancy: true,
+                  showLabel: true,
+                ),
                 SizedBox(height: AppSpacing.space4),
-                AppProgressBar(value: 110, colorByOccupancy: true, showLabel: true),
+                AppProgressBar(
+                  value: 110,
+                  colorByOccupancy: true,
+                  showLabel: true,
+                ),
               ],
             ),
           ),

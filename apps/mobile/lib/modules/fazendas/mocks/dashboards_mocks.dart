@@ -36,7 +36,12 @@ const List<CentroCusto> centrosCusto = [
 
 /// Bloco financeiro do dashboard de Pecuária — consumido por `AppDashboardCard`.
 class PecuariaFinanceiroItem {
-  const PecuariaFinanceiroItem({required this.label, required this.value, required this.delta, required this.spark});
+  const PecuariaFinanceiroItem({
+    required this.label,
+    required this.value,
+    required this.delta,
+    required this.spark,
+  });
 
   final String label;
   final String value;
@@ -45,15 +50,36 @@ class PecuariaFinanceiroItem {
 }
 
 const List<PecuariaFinanceiroItem> pecuariaFinanceiro = [
-  PecuariaFinanceiroItem(label: 'Receita', value: 'R\$ 2,4 mi', delta: 12, spark: [8, 10, 9, 12, 14, 13, 16]),
-  PecuariaFinanceiroItem(label: 'Custo', value: 'R\$ 1,1 mi', delta: -4, spark: [9, 8, 8, 7, 6, 7, 6]),
-  PecuariaFinanceiroItem(label: 'Margem', value: 'R\$ 1,3 mi', delta: 9, spark: [4, 6, 5, 7, 8, 9, 11]),
+  PecuariaFinanceiroItem(
+    label: 'Receita',
+    value: 'R\$ 2,4 mi',
+    delta: 12,
+    spark: [8, 10, 9, 12, 14, 13, 16],
+  ),
+  PecuariaFinanceiroItem(
+    label: 'Custo',
+    value: 'R\$ 1,1 mi',
+    delta: -4,
+    spark: [9, 8, 8, 7, 6, 7, 6],
+  ),
+  PecuariaFinanceiroItem(
+    label: 'Margem',
+    value: 'R\$ 1,3 mi',
+    delta: 9,
+    spark: [4, 6, 5, 7, 8, 9, 11],
+  ),
 ];
 
 /* ---- Lotação de Currais / Confinamento (§4.2) ---- */
 
 class Curral {
-  const Curral({required this.id, required this.nome, required this.setor, required this.atual, required this.max});
+  const Curral({
+    required this.id,
+    required this.nome,
+    required this.setor,
+    required this.atual,
+    required this.max,
+  });
 
   final String id;
   final String nome;
@@ -106,12 +132,72 @@ class Ativo {
 }
 
 const List<Ativo> ativos = [
-  Ativo(id: 'at1', nome: 'Trator John Deere 6110', categoria: 'Máquinas', ano: 2021, aquisicao: 'R\$ 380 mil', depreciado: 45, valorResidual: 'R\$ 209 mil', proximaManutencao: '15/07', estado: AtivoEstado.ativo),
-  Ativo(id: 'at2', nome: 'Colheitadeira CR7', categoria: 'Máquinas', ano: 2022, aquisicao: 'R\$ 620 mil', depreciado: 30, valorResidual: 'R\$ 434 mil', proximaManutencao: '02/08', estado: AtivoEstado.ativo),
-  Ativo(id: 'at3', nome: 'Caminhão Boiadeiro', categoria: 'Veículos', ano: 2020, aquisicao: 'R\$ 240 mil', depreciado: 68, valorResidual: 'R\$ 77 mil', proximaManutencao: '20/07', estado: AtivoEstado.manutencao),
-  Ativo(id: 'at4', nome: 'Balança de Curral', categoria: 'Equipamentos', ano: 2023, aquisicao: 'R\$ 45 mil', depreciado: 20, valorResidual: 'R\$ 36 mil', proximaManutencao: '10/09', estado: AtivoEstado.ativo),
-  Ativo(id: 'at5', nome: 'Pivô de Irrigação', categoria: 'Infraestrutura', ano: 2019, aquisicao: 'R\$ 310 mil', depreciado: 55, valorResidual: 'R\$ 140 mil', proximaManutencao: '28/08', estado: AtivoEstado.manutencao),
-  Ativo(id: 'at6', nome: 'Pulverizador Autopropelido', categoria: 'Máquinas', ano: 2022, aquisicao: 'R\$ 290 mil', depreciado: 38, valorResidual: 'R\$ 180 mil', proximaManutencao: '05/08', estado: AtivoEstado.ativo),
+  Ativo(
+    id: 'at1',
+    nome: 'Trator John Deere 6110',
+    categoria: 'Máquinas',
+    ano: 2021,
+    aquisicao: 'R\$ 380 mil',
+    depreciado: 45,
+    valorResidual: 'R\$ 209 mil',
+    proximaManutencao: '15/07',
+    estado: AtivoEstado.ativo,
+  ),
+  Ativo(
+    id: 'at2',
+    nome: 'Colheitadeira CR7',
+    categoria: 'Máquinas',
+    ano: 2022,
+    aquisicao: 'R\$ 620 mil',
+    depreciado: 30,
+    valorResidual: 'R\$ 434 mil',
+    proximaManutencao: '02/08',
+    estado: AtivoEstado.ativo,
+  ),
+  Ativo(
+    id: 'at3',
+    nome: 'Caminhão Boiadeiro',
+    categoria: 'Veículos',
+    ano: 2020,
+    aquisicao: 'R\$ 240 mil',
+    depreciado: 68,
+    valorResidual: 'R\$ 77 mil',
+    proximaManutencao: '20/07',
+    estado: AtivoEstado.manutencao,
+  ),
+  Ativo(
+    id: 'at4',
+    nome: 'Balança de Curral',
+    categoria: 'Equipamentos',
+    ano: 2023,
+    aquisicao: 'R\$ 45 mil',
+    depreciado: 20,
+    valorResidual: 'R\$ 36 mil',
+    proximaManutencao: '10/09',
+    estado: AtivoEstado.ativo,
+  ),
+  Ativo(
+    id: 'at5',
+    nome: 'Pivô de Irrigação',
+    categoria: 'Infraestrutura',
+    ano: 2019,
+    aquisicao: 'R\$ 310 mil',
+    depreciado: 55,
+    valorResidual: 'R\$ 140 mil',
+    proximaManutencao: '28/08',
+    estado: AtivoEstado.manutencao,
+  ),
+  Ativo(
+    id: 'at6',
+    nome: 'Pulverizador Autopropelido',
+    categoria: 'Máquinas',
+    ano: 2022,
+    aquisicao: 'R\$ 290 mil',
+    depreciado: 38,
+    valorResidual: 'R\$ 180 mil',
+    proximaManutencao: '05/08',
+    estado: AtivoEstado.ativo,
+  ),
 ];
 
 class AtivosResumo {
@@ -169,18 +255,100 @@ class Cotacao {
 }
 
 const List<Cotacao> cotacoes = [
-  Cotacao(id: 'q1', fornecedor: 'Agropecuária Vale', produto: 'Ração Confinamento', tipo: CotacaoTipo.produto, total: 'R\$ 48.900', itens: 12, status: CotacaoStatus.aprovada, unidade: 'saca 40kg', precoAtual: 'R\$ 118,50', variacao: -2.4, validade: '18/07', historico: [124, 121, 118.5]),
-  Cotacao(id: 'q2', fornecedor: 'Nutrição Total', produto: 'Sal Mineral', tipo: CotacaoTipo.produto, total: 'R\$ 132.400', itens: 8, status: CotacaoStatus.cotacao, unidade: 'saca 25kg', precoAtual: 'R\$ 62,90', variacao: 1.8, validade: '22/07', historico: [60.4, 61.8, 62.9]),
-  Cotacao(id: 'q3', fornecedor: 'TransBoi Logística', produto: 'Frete Rodoviário', tipo: CotacaoTipo.frete, total: 'R\$ 22.100', itens: 3, status: CotacaoStatus.cotacao, unidade: 'km rodado', precoAtual: 'R\$ 4,35', variacao: 3.1, validade: '15/07', historico: [4.05, 4.2, 4.35]),
-  Cotacao(id: 'q4', fornecedor: 'MecAgro Serviços', produto: 'Revisão Hidráulica', tipo: CotacaoTipo.manutencao, total: 'R\$ 15.700', itens: 5, status: CotacaoStatus.recusada, unidade: 'hora técnica', precoAtual: 'R\$ 185,00', variacao: -5.6, validade: '10/07', historico: [205, 196, 185]),
-  Cotacao(id: 'q5', fornecedor: 'Veterinária Campo', produto: 'Vacina Aftosa (aplicação)', tipo: CotacaoTipo.servico, total: 'R\$ 9.300', itens: 4, status: CotacaoStatus.aprovada, unidade: 'dose', precoAtual: 'R\$ 7,80', variacao: 0.9, validade: '30/07', historico: [7.6, 7.7, 7.8]),
-  Cotacao(id: 'q6', fornecedor: 'Sementes Sul', produto: 'Semente Braquiária', tipo: CotacaoTipo.produto, total: 'R\$ 61.200', itens: 15, status: CotacaoStatus.cotacao, unidade: 'kg', precoAtual: 'R\$ 24,60', variacao: -3.5, validade: '25/07', historico: [26.1, 25.2, 24.6]),
+  Cotacao(
+    id: 'q1',
+    fornecedor: 'Agropecuária Vale',
+    produto: 'Ração Confinamento',
+    tipo: CotacaoTipo.produto,
+    total: 'R\$ 48.900',
+    itens: 12,
+    status: CotacaoStatus.aprovada,
+    unidade: 'saca 40kg',
+    precoAtual: 'R\$ 118,50',
+    variacao: -2.4,
+    validade: '18/07',
+    historico: [124, 121, 118.5],
+  ),
+  Cotacao(
+    id: 'q2',
+    fornecedor: 'Nutrição Total',
+    produto: 'Sal Mineral',
+    tipo: CotacaoTipo.produto,
+    total: 'R\$ 132.400',
+    itens: 8,
+    status: CotacaoStatus.cotacao,
+    unidade: 'saca 25kg',
+    precoAtual: 'R\$ 62,90',
+    variacao: 1.8,
+    validade: '22/07',
+    historico: [60.4, 61.8, 62.9],
+  ),
+  Cotacao(
+    id: 'q3',
+    fornecedor: 'TransBoi Logística',
+    produto: 'Frete Rodoviário',
+    tipo: CotacaoTipo.frete,
+    total: 'R\$ 22.100',
+    itens: 3,
+    status: CotacaoStatus.cotacao,
+    unidade: 'km rodado',
+    precoAtual: 'R\$ 4,35',
+    variacao: 3.1,
+    validade: '15/07',
+    historico: [4.05, 4.2, 4.35],
+  ),
+  Cotacao(
+    id: 'q4',
+    fornecedor: 'MecAgro Serviços',
+    produto: 'Revisão Hidráulica',
+    tipo: CotacaoTipo.manutencao,
+    total: 'R\$ 15.700',
+    itens: 5,
+    status: CotacaoStatus.recusada,
+    unidade: 'hora técnica',
+    precoAtual: 'R\$ 185,00',
+    variacao: -5.6,
+    validade: '10/07',
+    historico: [205, 196, 185],
+  ),
+  Cotacao(
+    id: 'q5',
+    fornecedor: 'Veterinária Campo',
+    produto: 'Vacina Aftosa (aplicação)',
+    tipo: CotacaoTipo.servico,
+    total: 'R\$ 9.300',
+    itens: 4,
+    status: CotacaoStatus.aprovada,
+    unidade: 'dose',
+    precoAtual: 'R\$ 7,80',
+    variacao: 0.9,
+    validade: '30/07',
+    historico: [7.6, 7.7, 7.8],
+  ),
+  Cotacao(
+    id: 'q6',
+    fornecedor: 'Sementes Sul',
+    produto: 'Semente Braquiária',
+    tipo: CotacaoTipo.produto,
+    total: 'R\$ 61.200',
+    itens: 15,
+    status: CotacaoStatus.cotacao,
+    unidade: 'kg',
+    precoAtual: 'R\$ 24,60',
+    variacao: -3.5,
+    validade: '25/07',
+    historico: [26.1, 25.2, 24.6],
+  ),
 ];
 
 /* ---- Análise de Uso (§4.6) ---- */
 
 class UsuarioAtivo {
-  const UsuarioAtivo({required this.nome, required this.ultimoAcesso, required this.ativo});
+  const UsuarioAtivo({
+    required this.nome,
+    required this.ultimoAcesso,
+    required this.ativo,
+  });
 
   final String nome;
   final String ultimoAcesso;
@@ -188,7 +356,12 @@ class UsuarioAtivo {
 }
 
 class FazendaAtividade {
-  const FazendaAtividade({required this.id, required this.nome, required this.online, required this.usuarios});
+  const FazendaAtividade({
+    required this.id,
+    required this.nome,
+    required this.online,
+    required this.usuarios,
+  });
 
   final String id;
   final String nome;
@@ -221,14 +394,21 @@ const List<FazendaAtividade> usoFazendas = [
     id: 'f3',
     nome: 'Fazenda Boa Vista',
     online: 0,
-    usuarios: [UsuarioAtivo(nome: 'Luís Prado', ultimoAcesso: 'há 2 dias', ativo: false)],
+    usuarios: [
+      UsuarioAtivo(nome: 'Luís Prado', ultimoAcesso: 'há 2 dias', ativo: false),
+    ],
   ),
 ];
 
 /* ---- Consultas Gerenciais (§4.7) — read-only ---- */
 
 class LinhaConsulta {
-  const LinhaConsulta({required this.id, required this.titulo, required this.subtitulo, required this.meta});
+  const LinhaConsulta({
+    required this.id,
+    required this.titulo,
+    required this.subtitulo,
+    required this.meta,
+  });
 
   final String id;
   final String titulo;
@@ -237,21 +417,76 @@ class LinhaConsulta {
 }
 
 const List<LinhaConsulta> lotes = [
-  LinhaConsulta(id: 'l1', titulo: 'Lote 42', subtitulo: '128 cabeças · 18.240 kg', meta: 'Curral 02'),
-  LinhaConsulta(id: 'l2', titulo: 'Lote 19', subtitulo: '96 cabeças · 13.100 kg', meta: 'Curral 05'),
-  LinhaConsulta(id: 'l3', titulo: 'Lote 07', subtitulo: '150 cabeças · 22.500 kg', meta: 'Piquete 3'),
-  LinhaConsulta(id: 'l4', titulo: 'Lote 33', subtitulo: '64 cabeças · 9.800 kg', meta: 'Curral 01'),
+  LinhaConsulta(
+    id: 'l1',
+    titulo: 'Lote 42',
+    subtitulo: '128 cabeças · 18.240 kg',
+    meta: 'Curral 02',
+  ),
+  LinhaConsulta(
+    id: 'l2',
+    titulo: 'Lote 19',
+    subtitulo: '96 cabeças · 13.100 kg',
+    meta: 'Curral 05',
+  ),
+  LinhaConsulta(
+    id: 'l3',
+    titulo: 'Lote 07',
+    subtitulo: '150 cabeças · 22.500 kg',
+    meta: 'Piquete 3',
+  ),
+  LinhaConsulta(
+    id: 'l4',
+    titulo: 'Lote 33',
+    subtitulo: '64 cabeças · 9.800 kg',
+    meta: 'Curral 01',
+  ),
 ];
 
 const List<LinhaConsulta> estoque = [
-  LinhaConsulta(id: 'e1', titulo: 'Ração Engorda', subtitulo: 'Armazém A', meta: '12.400 kg'),
-  LinhaConsulta(id: 'e2', titulo: 'Sal Mineral', subtitulo: 'Armazém A', meta: '3.200 kg'),
-  LinhaConsulta(id: 'e3', titulo: 'Vacina Aftosa', subtitulo: 'Farmácia', meta: '540 doses'),
-  LinhaConsulta(id: 'e4', titulo: 'Herbicida', subtitulo: 'Depósito B', meta: '180 L'),
+  LinhaConsulta(
+    id: 'e1',
+    titulo: 'Ração Engorda',
+    subtitulo: 'Armazém A',
+    meta: '12.400 kg',
+  ),
+  LinhaConsulta(
+    id: 'e2',
+    titulo: 'Sal Mineral',
+    subtitulo: 'Armazém A',
+    meta: '3.200 kg',
+  ),
+  LinhaConsulta(
+    id: 'e3',
+    titulo: 'Vacina Aftosa',
+    subtitulo: 'Farmácia',
+    meta: '540 doses',
+  ),
+  LinhaConsulta(
+    id: 'e4',
+    titulo: 'Herbicida',
+    subtitulo: 'Depósito B',
+    meta: '180 L',
+  ),
 ];
 
 const List<LinhaConsulta> pesagensDia = [
-  LinhaConsulta(id: 'p1', titulo: 'Lote 42', subtitulo: '128 cabeças · 142 kg/cab', meta: '07:12'),
-  LinhaConsulta(id: 'p2', titulo: 'Lote 19', subtitulo: '96 cabeças · 136 kg/cab', meta: '08:03'),
-  LinhaConsulta(id: 'p3', titulo: 'Lote 07', subtitulo: '150 cabeças · 150 kg/cab', meta: '09:20'),
+  LinhaConsulta(
+    id: 'p1',
+    titulo: 'Lote 42',
+    subtitulo: '128 cabeças · 142 kg/cab',
+    meta: '07:12',
+  ),
+  LinhaConsulta(
+    id: 'p2',
+    titulo: 'Lote 19',
+    subtitulo: '96 cabeças · 136 kg/cab',
+    meta: '08:03',
+  ),
+  LinhaConsulta(
+    id: 'p3',
+    titulo: 'Lote 07',
+    subtitulo: '150 cabeças · 150 kg/cab',
+    meta: '09:20',
+  ),
 ];

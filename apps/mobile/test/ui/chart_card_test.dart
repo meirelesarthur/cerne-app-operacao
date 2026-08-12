@@ -4,13 +4,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/chart_card.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppChartCard', () {
     testWidgets('renderiza título e conteúdo', (tester) async {
       await tester.pumpWidget(
-        _wrap(const AppChartCard(title: 'Receitas x Despesas', child: Text('conteúdo do gráfico'))),
+        _wrap(
+          const AppChartCard(
+            title: 'Receitas x Despesas',
+            child: Text('conteúdo do gráfico'),
+          ),
+        ),
       );
 
       expect(find.text('Receitas x Despesas'), findsOneWidget);

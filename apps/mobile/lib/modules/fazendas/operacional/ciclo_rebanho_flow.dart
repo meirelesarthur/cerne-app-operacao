@@ -17,7 +17,12 @@ import 'success_screen.dart';
 enum _EventType { nascimento, desmame, transferencia, morte }
 
 class _EventDef {
-  const _EventDef({required this.type, required this.label, required this.icon, required this.desc});
+  const _EventDef({
+    required this.type,
+    required this.label,
+    required this.icon,
+    required this.desc,
+  });
 
   final _EventType type;
   final String label;
@@ -26,10 +31,30 @@ class _EventDef {
 }
 
 const _events = <_EventDef>[
-  _EventDef(type: _EventType.nascimento, label: 'Nascimento', icon: LucideIcons.baby, desc: 'Registrar bezerro'),
-  _EventDef(type: _EventType.desmame, label: 'Desmame', icon: LucideIcons.milk, desc: 'Desmame de animal'),
-  _EventDef(type: _EventType.transferencia, label: 'Transferência', icon: LucideIcons.arrowLeftRight, desc: 'Entre lotes'),
-  _EventDef(type: _EventType.morte, label: 'Morte / Perda', icon: LucideIcons.heartCrack, desc: 'Baixa de animal'),
+  _EventDef(
+    type: _EventType.nascimento,
+    label: 'Nascimento',
+    icon: LucideIcons.baby,
+    desc: 'Registrar bezerro',
+  ),
+  _EventDef(
+    type: _EventType.desmame,
+    label: 'Desmame',
+    icon: LucideIcons.milk,
+    desc: 'Desmame de animal',
+  ),
+  _EventDef(
+    type: _EventType.transferencia,
+    label: 'Transferência',
+    icon: LucideIcons.arrowLeftRight,
+    desc: 'Entre lotes',
+  ),
+  _EventDef(
+    type: _EventType.morte,
+    label: 'Morte / Perda',
+    icon: LucideIcons.heartCrack,
+    desc: 'Baixa de animal',
+  ),
 ];
 
 /// Eventos de Ciclo do Rebanho (spec §5.2) — formulário dinâmico por tipo de
@@ -62,7 +87,9 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
         if (_loteDestino != null) 'destino $_loteDestino',
         if (_obs.isNotEmpty) _obs,
       ].join(' · ');
-      ref.read(fazendasStoreProvider.notifier).enqueueSync(
+      ref
+          .read(fazendasStoreProvider.notifier)
+          .enqueueSync(
             SyncItem(
               id: 'evt-${_type!.name}',
               label: 'Evento: ${_type!.name}',
@@ -80,7 +107,8 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
       return SuccessScreen(
         title: 'Evento registrado',
         queued: _queued!,
-        effects: 'Isso vai atualizar a máquina de estados do animal e a base de venda/SISBOV.',
+        effects:
+            'Isso vai atualizar a máquina de estados do animal e a base de venda/SISBOV.',
       );
     }
 
@@ -102,7 +130,10 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               mainAxisSpacing: AppSpacing.space3,
               crossAxisSpacing: AppSpacing.space3,
               childAspectRatio: 1.1,
-              children: [for (final e in _events) _EventTile(e: e, onTap: () => setState(() => _type = e.type))],
+              children: [
+                for (final e in _events)
+                  _EventTile(e: e, onTap: () => setState(() => _type = e.type)),
+              ],
             ),
           ],
         ),
@@ -110,13 +141,19 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
     }
 
     final isTransfer = _type == _EventType.transferencia;
-    final pesagemDoDiaFeita = ref.watch(fazendasStoreProvider).pesagemDoDiaFeita;
+    final pesagemDoDiaFeita = ref
+        .watch(fazendasStoreProvider)
+        .pesagemDoDiaFeita;
     final transferBlocked = isTransfer && !pesagemDoDiaFeita;
 
     final valid = switch (_type!) {
       _EventType.nascimento => _lote != null && _data.isNotEmpty,
       _EventType.desmame => _lote != null && _data.isNotEmpty,
-      _EventType.transferencia => _lote != null && _loteDestino != null && _qtd.isNotEmpty && !transferBlocked,
+      _EventType.transferencia =>
+        _lote != null &&
+            _loteDestino != null &&
+            _qtd.isNotEmpty &&
+            !transferBlocked,
       _EventType.morte => _lote != null && _data.isNotEmpty && _causa != null,
     };
 
@@ -144,7 +181,11 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               ),
             ),
           AppFormField(
-            label: isTransfer ? 'Lote de origem' : (_type == _EventType.nascimento ? 'Animal-mãe / lote' : 'Animal / lote'),
+            label: isTransfer
+                ? 'Lote de origem'
+                : (_type == _EventType.nascimento
+                      ? 'Animal-mãe / lote'
+                      : 'Animal / lote'),
             required: true,
             child: AppSearchSelect(
               options: lotesOpcoes,
@@ -180,7 +221,10 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             AppFormField(
               label: 'Data',
               required: true,
-              child: AppTextInput(onChanged: (v) => setState(() => _data = v), placeholder: 'dd/mm/aaaa'),
+              child: AppTextInput(
+                onChanged: (v) => setState(() => _data = v),
+                placeholder: 'dd/mm/aaaa',
+              ),
             ),
           ],
           if (_type == _EventType.nascimento) ...[
@@ -189,7 +233,9 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               label: 'Peso ao nascer',
               hint: 'Opcional',
               child: AppTextInput(
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 onChanged: (v) => setState(() => _qtd = v),
                 placeholder: 'kg',
               ),
@@ -210,7 +256,10 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             const SizedBox(height: AppSpacing.space5),
             AppFormField(
               label: 'Observação',
-              child: AppTextarea(onChanged: (v) => setState(() => _obs = v), placeholder: 'Detalhes adicionais...'),
+              child: AppTextarea(
+                onChanged: (v) => setState(() => _obs = v),
+                placeholder: 'Detalhes adicionais...',
+              ),
             ),
           ],
         ],
@@ -248,7 +297,10 @@ class _EventTile extends StatelessWidget {
               width: 44,
               height: 44,
               alignment: Alignment.center,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentSubtle),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: semantic.accentSubtle,
+              ),
               child: Icon(e.icon, size: 22, color: semantic.accentDefault),
             ),
             const SizedBox(height: AppSpacing.space2),
@@ -263,7 +315,11 @@ class _EventTile extends StatelessWidget {
             ),
             Text(
               e.desc,
-              style: TextStyle(fontFamily: AppTypography.fontFamily, fontSize: AppTypography.sm, color: semantic.fgMuted),
+              style: TextStyle(
+                fontFamily: AppTypography.fontFamily,
+                fontSize: AppTypography.sm,
+                color: semantic.fgMuted,
+              ),
             ),
           ],
         ),

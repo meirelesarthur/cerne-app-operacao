@@ -41,7 +41,8 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
             child: AppEmptyState(
               icon: LucideIcons.packageSearch,
               title: 'Produto não encontrado',
-              description: 'Este produto pode ter sido removido do catálogo. Volte e tente outro item.',
+              description:
+                  'Este produto pode ter sido removido do catálogo. Volte e tente outro item.',
             ),
           ),
         ],
@@ -73,7 +74,13 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                   color: semantic.accentSubtle,
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                 ),
-                child: categoria != null ? Icon(categoria.icon, size: 48, color: semantic.accentDefault) : null,
+                child: categoria != null
+                    ? Icon(
+                        categoria.icon,
+                        size: 48,
+                        color: semantic.accentDefault,
+                      )
+                    : null,
               ),
               const SizedBox(height: AppSpacing.space5),
 
@@ -83,12 +90,20 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
               const SizedBox(height: AppSpacing.space1),
               RichText(
                 text: TextSpan(
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: semantic.fgDefault),
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: semantic.fgDefault,
+                  ),
                   children: [
                     TextSpan(text: produto.preco),
                     TextSpan(
                       text: ' /${produto.unidade}',
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.normal, color: semantic.fgMuted),
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal,
+                        color: semantic.fgMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -112,7 +127,10 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                           ),
                         ),
                       if (produto.desconto != null)
-                        AppChip(tone: AppChipTone.brand, child: Text(produto.desconto!)),
+                        AppChip(
+                          tone: AppChipTone.brand,
+                          child: Text(produto.desconto!),
+                        ),
                     ],
                   ),
                 ),
@@ -138,7 +156,10 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                             produto.vendedor,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: semantic.fgDefault,
+                            ),
                           ),
                           const AppChip(child: Text('Vendedor do catálogo')),
                         ],
@@ -151,7 +172,10 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
 
               const AppSectionTitle(child: Text('Descrição')),
               const SizedBox(height: AppSpacing.space2),
-              Text(produto.descricao, style: TextStyle(fontSize: 14, color: semantic.fgMuted)),
+              Text(
+                produto.descricao,
+                style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+              ),
               const SizedBox(height: AppSpacing.space5),
 
               Container(
@@ -169,12 +193,20 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                     const SizedBox(height: AppSpacing.space3),
                     for (final spec in produto.especificacoes)
                       Padding(
-                        padding: const EdgeInsets.only(bottom: AppSpacing.space3),
+                        padding: const EdgeInsets.only(
+                          bottom: AppSpacing.space3,
+                        ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(spec.label, style: TextStyle(fontSize: 14, color: semantic.fgMuted)),
+                            Text(
+                              spec.label,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: semantic.fgMuted,
+                              ),
+                            ),
                             const SizedBox(width: AppSpacing.space3),
                             Flexible(
                               child: Text(
@@ -182,7 +214,11 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                                 textAlign: TextAlign.right,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: semantic.fgDefault,
+                                ),
                               ),
                             ),
                           ],
@@ -205,9 +241,16 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
               AppButton(
                 fullWidth: true,
                 size: AppButtonSize.lg,
-                onPressed: _adicionado ? null : () => setState(() => _adicionado = true),
-                leftIcon: Icon(_adicionado ? LucideIcons.check : LucideIcons.shoppingCart, size: 18),
-                child: Text(_adicionado ? 'Adicionado ao pedido' : 'Adicionar ao pedido'),
+                onPressed: _adicionado
+                    ? null
+                    : () => setState(() => _adicionado = true),
+                leftIcon: Icon(
+                  _adicionado ? LucideIcons.check : LucideIcons.shoppingCart,
+                  size: 18,
+                ),
+                child: Text(
+                  _adicionado ? 'Adicionado ao pedido' : 'Adicionar ao pedido',
+                ),
               ),
               const SizedBox(height: AppSpacing.space2),
               Text(

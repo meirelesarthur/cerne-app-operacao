@@ -75,7 +75,10 @@ class _TooltipBubble extends StatelessWidget {
         // 200px é um valor arbitrário já hardcoded no React (`max-w-[200px]`),
         // não um token de `tokens.ts` — preservado igual à origem.
         constraints: const BoxConstraints(maxWidth: 200),
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space2, vertical: AppSpacing.space1),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space2,
+          vertical: AppSpacing.space1,
+        ),
         decoration: BoxDecoration(
           color: AppColors.neutral900,
           borderRadius: BorderRadius.circular(AppRadius.lg),

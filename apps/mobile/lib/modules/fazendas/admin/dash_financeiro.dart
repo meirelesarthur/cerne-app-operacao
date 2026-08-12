@@ -25,7 +25,11 @@ class DashFinanceiro extends StatelessWidget {
             crossAxisSpacing: AppSpacing.space3,
             childAspectRatio: 1.6,
             children: const [
-              AppKpiStatCard(label: 'A Receber', value: FinanceiroKpis.aReceber, tone: AppKpiStatTone.positive),
+              AppKpiStatCard(
+                label: 'A Receber',
+                value: FinanceiroKpis.aReceber,
+                tone: AppKpiStatTone.positive,
+              ),
               AppKpiStatCard(label: 'A Pagar', value: FinanceiroKpis.aPagar),
               AppKpiStatCard(
                 label: 'Atrasados',
@@ -33,7 +37,10 @@ class DashFinanceiro extends StatelessWidget {
                 tone: AppKpiStatTone.negative,
                 caption: 'Vencidos > 0',
               ),
-              AppKpiStatCard(label: 'Investimentos', value: FinanceiroKpis.investimentos),
+              AppKpiStatCard(
+                label: 'Investimentos',
+                value: FinanceiroKpis.investimentos,
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.space4),
@@ -41,7 +48,10 @@ class DashFinanceiro extends StatelessWidget {
             title: 'Despesas por centro de custo',
             subtitle: 'Valores em milhares (R\$)',
             child: AppBarChart(
-              data: [for (final c in centrosCusto) AppBarDatum(label: c.label, value: c.value)],
+              data: [
+                for (final c in centrosCusto)
+                  AppBarDatum(label: c.label, value: c.value),
+              ],
               formatValue: (v) => '${v.toStringAsFixed(0)}k',
             ),
           ),

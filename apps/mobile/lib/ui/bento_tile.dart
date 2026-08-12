@@ -39,7 +39,9 @@ class AppBentoTile extends StatelessWidget {
 
   // h-11 w-11 (44px) e h-12 w-12 (48px) do React — reaproveitando tokens já
   // existentes com o mesmo valor numérico (AppSize.control e AppSpacing.space12).
-  double get _iconBox => iconSize == AppBentoTileIconSize.lg ? AppSpacing.space12 : AppSize.control;
+  double get _iconBox => iconSize == AppBentoTileIconSize.lg
+      ? AppSpacing.space12
+      : AppSize.control;
   double get _iconGlyph => iconSize == AppBentoTileIconSize.lg ? 26 : 22;
 
   bool get _isAccent => variant == AppBentoTileVariant.accent;
@@ -49,7 +51,9 @@ class AppBentoTile extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     final content = Container(
-      constraints: const BoxConstraints(minHeight: 104), // min-h-[104px] — arbitrário também no React
+      constraints: const BoxConstraints(
+        minHeight: 104,
+      ), // min-h-[104px] — arbitrário também no React
       padding: const EdgeInsets.all(AppSpacing.space4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.xl3),
@@ -57,7 +61,10 @@ class AppBentoTile extends StatelessWidget {
             ? const LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [AppComponentColors.hubBankCardFrom, AppComponentColors.hubBankCardTo],
+                colors: [
+                  AppComponentColors.hubBankCardFrom,
+                  AppComponentColors.hubBankCardTo,
+                ],
               )
             : null,
         color: _isAccent ? null : semantic.bgSurface,
@@ -74,15 +81,25 @@ class AppBentoTile extends StatelessWidget {
                 height: _iconBox,
                 width: _iconBox,
                 decoration: BoxDecoration(
-                  color: _isAccent ? Colors.white.withValues(alpha: 0.15) : semantic.accentSubtle,
+                  color: _isAccent
+                      ? Colors.white.withValues(alpha: 0.15)
+                      : semantic.accentSubtle,
                   shape: BoxShape.circle,
-                  border: _isAccent ? null : Border.all(color: semantic.borderTint),
+                  border: _isAccent
+                      ? null
+                      : Border.all(color: semantic.borderTint),
                 ),
                 alignment: Alignment.center,
-                child: Icon(icon, size: _iconGlyph, color: _isAccent ? Colors.white : semantic.accentDefault),
+                child: Icon(
+                  icon,
+                  size: _iconGlyph,
+                  color: _isAccent ? Colors.white : semantic.accentDefault,
+                ),
               ),
               Padding(
-                padding: EdgeInsets.only(right: _isAccent ? AppSpacing.space8 : 0),
+                padding: EdgeInsets.only(
+                  right: _isAccent ? AppSpacing.space8 : 0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -103,7 +120,9 @@ class AppBentoTile extends StatelessWidget {
                           style: TextStyle(
                             fontSize: AppTypography.xs,
                             height: AppTypography.lineHeightSnug,
-                            color: _isAccent ? Colors.white.withValues(alpha: 0.7) : semantic.fgMuted,
+                            color: _isAccent
+                                ? Colors.white.withValues(alpha: 0.7)
+                                : semantic.fgMuted,
                           ),
                         ),
                       ),
@@ -119,9 +138,16 @@ class AppBentoTile extends StatelessWidget {
               child: Container(
                 height: AppSpacing.space8,
                 width: AppSpacing.space8,
-                decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.15), shape: BoxShape.circle),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
                 alignment: Alignment.center,
-                child: const Icon(LucideIcons.arrowRight, size: 16, color: Colors.white),
+                child: const Icon(
+                  LucideIcons.arrowRight,
+                  size: 16,
+                  color: Colors.white,
+                ),
               ),
             ),
         ],

@@ -7,8 +7,10 @@ import 'package:cerne_app/modules/marketplace/marketplace_module.dart';
 
 import '../../support/test_viewport.dart';
 
-GoRouter _buildRouter() =>
-    GoRouter(initialLocation: '/marketplace/categorias', routes: [buildMarketplaceModuleRoute()]);
+GoRouter _buildRouter() => GoRouter(
+  initialLocation: '/marketplace/categorias',
+  routes: [buildMarketplaceModuleRoute()],
+);
 
 // A navegação de volta cai em MarketplaceHomeScreen, cujo campo de busca
 // precisa de um ancestral `Material` (em produção, o `Scaffold` do ShellLayout).
@@ -20,7 +22,9 @@ Widget _wrap(GoRouter router) => MaterialApp.router(
 
 void main() {
   group('MarketplaceCategoriasScreen', () {
-    testWidgets('lista categorias com contagem de produtos sem exceção', (tester) async {
+    testWidgets('lista categorias com contagem de produtos sem exceção', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap(_buildRouter()));
       await tester.pumpAndSettle();
@@ -31,7 +35,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tocar numa categoria navega de volta à Home filtrada', (tester) async {
+    testWidgets('tocar numa categoria navega de volta à Home filtrada', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap(_buildRouter()));
       await tester.pumpAndSettle();

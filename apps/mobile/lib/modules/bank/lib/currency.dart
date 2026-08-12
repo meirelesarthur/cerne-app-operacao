@@ -22,7 +22,10 @@ String formatBRL(double reais) {
 
 /// Converte o texto digitado (aceita vírgula ou ponto) em número de reais.
 double parseReais(String input) {
-  final normalized = input.replaceAll('.', '').replaceAll(',', '.').replaceAll(RegExp(r'[^0-9.]'), '');
+  final normalized = input
+      .replaceAll('.', '')
+      .replaceAll(',', '.')
+      .replaceAll(RegExp(r'[^0-9.]'), '');
   final n = double.tryParse(normalized);
   return n != null && n.isFinite ? n : 0;
 }

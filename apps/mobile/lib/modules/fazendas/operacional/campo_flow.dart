@@ -18,6 +18,8 @@ Widget buildCampoFlow(String flowId) {
     'venda' => const VendaFlow(),
     'recebimento' => const RecebimentoXmlFlow(),
     'insumos' => const InsumosFlow(),
-    _ => const Scaffold(body: Center(child: AppEmptyState(title: 'Lançamento'))),
+    _ => const Scaffold(
+      body: Center(child: AppEmptyState(title: 'Lançamento')),
+    ),
   };
 }

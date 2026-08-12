@@ -5,7 +5,9 @@ import 'package:cerne_app/design/theme/theme_provider.dart';
 import 'package:cerne_app/main.dart';
 
 void main() {
-  testWidgets('CerneApp abre no módulo Início (rota /inicio) sem exceções', (tester) async {
+  testWidgets('CerneApp abre no módulo Início (rota /inicio) sem exceções', (
+    tester,
+  ) async {
     await tester.pumpWidget(const ProviderScope(child: CerneApp()));
     // `pumpAndSettle` só continua pumpando enquanto frames são agendados — um
     // `Future.delayed` isolado (SimulatedLoad/RiseIn da HubHomeScreen) não

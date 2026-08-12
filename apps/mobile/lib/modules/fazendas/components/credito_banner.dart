@@ -35,8 +35,15 @@ class CreditoBanner extends StatelessWidget {
                 width: AppSize.control,
                 height: AppSize.control,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentDefault),
-                child: const Icon(LucideIcons.handCoins, size: 22, color: Colors.white),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: semantic.accentDefault,
+                ),
+                child: const Icon(
+                  LucideIcons.handCoins,
+                  size: 22,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: AppSpacing.space3),
               Expanded(
@@ -44,18 +51,37 @@ class CreditoBanner extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('Crédito pré-aprovado', style: TextStyle(fontSize: 13, color: semantic.accentDefault)),
+                    Text(
+                      'Crédito pré-aprovado',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: semantic.accentDefault,
+                      ),
+                    ),
                     Text(
                       'R\$ 480.000,00 disponíveis',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(fontWeight: FontWeight.w700, color: semantic.fgDefault),
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: semantic.fgDefault,
+                      ),
                     ),
-                    Text('Ver no módulo Crédito', style: TextStyle(fontSize: 12, color: semantic.accentDefault)),
+                    Text(
+                      'Ver no módulo Crédito',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: semantic.accentDefault,
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Icon(LucideIcons.arrowRight, size: 18, color: semantic.accentDefault),
+              Icon(
+                LucideIcons.arrowRight,
+                size: 18,
+                color: semantic.accentDefault,
+              ),
             ],
           ),
         ),

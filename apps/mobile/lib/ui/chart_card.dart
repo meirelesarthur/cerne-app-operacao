@@ -48,10 +48,15 @@ class AppChartCard extends StatelessWidget {
                       AppHeading(level: AppHeadingLevel.h4, child: Text(title)),
                       if (subtitle != null)
                         Padding(
-                          padding: const EdgeInsets.only(top: AppSpacing.space1),
+                          padding: const EdgeInsets.only(
+                            top: AppSpacing.space1,
+                          ),
                           child: Text(
                             subtitle!,
-                            style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+                            style: TextStyle(
+                              fontSize: AppTypography.sm,
+                              color: semantic.fgMuted,
+                            ),
                           ),
                         ),
                     ],

@@ -75,10 +75,17 @@ class AppMiniAppTile extends StatelessWidget {
                         ),
                         // strokeWidth: 1.8 do React não tem equivalente direto
                         // em `Icon` (glifo já vetorizado); size preservado.
-                        child: Icon(icon, size: 20, color: semantic.accentDefault),
+                        child: Icon(
+                          icon,
+                          size: 20,
+                          color: semantic.accentDefault,
+                        ),
                       ),
                       if (badge == AppMiniAppTileBadge.novo)
-                        const AppChip(tone: AppChipTone.brand, child: Text('Novo')),
+                        const AppChip(
+                          tone: AppChipTone.brand,
+                          child: Text('Novo'),
+                        ),
                       if (badge == AppMiniAppTileBadge.breve)
                         const AppChip(child: Text('Em breve')),
                     ],

@@ -30,7 +30,10 @@ class AppErrorState extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space6, vertical: AppSpacing.space12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.space6,
+        vertical: AppSpacing.space12,
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -44,10 +47,17 @@ class AppErrorState extends StatelessWidget {
                 color: AppColors.red50,
                 borderRadius: BorderRadius.circular(AppRadius.xl2),
               ),
-              child: const Icon(LucideIcons.triangleAlert, size: 26, color: AppColors.red600),
+              child: const Icon(
+                LucideIcons.triangleAlert,
+                size: 26,
+                color: AppColors.red600,
+              ),
             ),
           ),
-          AppHeading(level: AppHeadingLevel.h3, child: Text(title, textAlign: TextAlign.center)),
+          AppHeading(
+            level: AppHeadingLevel.h3,
+            child: Text(title, textAlign: TextAlign.center),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: AppSpacing.space1),
             child: ConstrainedBox(
@@ -55,7 +65,10 @@ class AppErrorState extends StatelessWidget {
               child: Text(
                 description,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: AppTypography.md,
+                  color: semantic.fgMuted,
+                ),
               ),
             ),
           ),

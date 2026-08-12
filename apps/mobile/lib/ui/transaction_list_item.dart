@@ -95,7 +95,10 @@ class AppTransactionListItem extends StatelessWidget {
                   transaction.subtitle!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+                  style: TextStyle(
+                    fontSize: AppTypography.sm,
+                    color: semantic.fgMuted,
+                  ),
                 ),
             ],
           ),
@@ -116,7 +119,10 @@ class AppTransactionListItem extends StatelessWidget {
             ),
             Text(
               transaction.time,
-              style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgSubtle),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgSubtle,
+              ),
             ),
           ],
         ),
@@ -126,7 +132,9 @@ class AppTransactionListItem extends StatelessWidget {
     final row = Container(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.space3),
       decoration: showDivider
-          ? BoxDecoration(border: Border(bottom: BorderSide(color: semantic.borderDefault)))
+          ? BoxDecoration(
+              border: Border(bottom: BorderSide(color: semantic.borderDefault)),
+            )
           : null,
       child: content,
     );
@@ -174,7 +182,10 @@ WidgetbookComponent buildTransactionListItemWidgetbookComponent() {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppTransactionListItem(transaction: sample, onTap: () {}),
-                AppTransactionListItem(transaction: sampleOut, showDivider: false),
+                AppTransactionListItem(
+                  transaction: sampleOut,
+                  showDivider: false,
+                ),
               ],
             ),
           ),

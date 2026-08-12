@@ -19,7 +19,10 @@ class AppSpinner extends StatelessWidget {
       child: CircularProgressIndicator(
         strokeWidth: 3,
         valueColor: AlwaysStoppedAnimation<Color>(
-          color ?? IconTheme.of(context).color ?? DefaultTextStyle.of(context).style.color ?? Colors.black,
+          color ??
+              IconTheme.of(context).color ??
+              DefaultTextStyle.of(context).style.color ??
+              Colors.black,
         ),
       ),
     );

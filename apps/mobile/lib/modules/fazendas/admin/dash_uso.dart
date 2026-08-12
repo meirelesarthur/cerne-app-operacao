@@ -42,7 +42,8 @@ class _DashUsoState extends ConsumerState<DashUso> {
         hideOfflineBanner: true,
         child: AppErrorState(
           title: 'Indisponível offline',
-          description: 'A atividade de usuários em tempo real exige conexão. Reconecte para visualizar.',
+          description:
+              'A atividade de usuários em tempo real exige conexão. Reconecte para visualizar.',
           onRetry: () => setState(() => _tentativa++),
         ),
       );
@@ -60,7 +61,11 @@ class _DashUsoState extends ConsumerState<DashUso> {
               scrollDirection: Axis.horizontal,
               children: [
                 for (final p in _periodos) ...[
-                  _FiltroPill(label: p, selected: _periodo == p, onTap: () => setState(() => _periodo = p)),
+                  _FiltroPill(
+                    label: p,
+                    selected: _periodo == p,
+                    onTap: () => setState(() => _periodo = p),
+                  ),
                   const SizedBox(width: AppSpacing.space2),
                 ],
               ],
@@ -73,9 +78,12 @@ class _DashUsoState extends ConsumerState<DashUso> {
                 _FazendaTile(
                   fazenda: f,
                   open: _expandido == f.id,
-                  onTap: () => setState(() => _expandido = _expandido == f.id ? null : f.id),
+                  onTap: () => setState(
+                    () => _expandido = _expandido == f.id ? null : f.id,
+                  ),
                 ),
-                if (f != usoFazendas.last) const SizedBox(height: AppSpacing.space2),
+                if (f != usoFazendas.last)
+                  const SizedBox(height: AppSpacing.space2),
               ],
             ],
           ),
@@ -86,7 +94,11 @@ class _DashUsoState extends ConsumerState<DashUso> {
 }
 
 class _FiltroPill extends StatelessWidget {
-  const _FiltroPill({required this.label, required this.selected, required this.onTap});
+  const _FiltroPill({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
   final bool selected;
@@ -102,16 +114,25 @@ class _FiltroPill extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.full),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3, vertical: AppSpacing.space1),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space3,
+            vertical: AppSpacing.space1,
+          ),
           decoration: BoxDecoration(
             color: selected ? semantic.accentDefault : semantic.bgSurface,
-            border: Border.all(color: selected ? semantic.accentDefault : semantic.borderDefault),
+            border: Border.all(
+              color: selected ? semantic.accentDefault : semantic.borderDefault,
+            ),
             borderRadius: BorderRadius.circular(AppRadius.full),
           ),
           alignment: Alignment.center,
           child: Text(
             label,
-            style: TextStyle(fontSize: AppTypography.base, fontWeight: AppTypography.weightSemibold, color: selected ? Colors.white : semantic.fgMuted),
+            style: TextStyle(
+              fontSize: AppTypography.base,
+              fontWeight: AppTypography.weightSemibold,
+              color: selected ? Colors.white : semantic.fgMuted,
+            ),
           ),
         ),
       ),
@@ -120,7 +141,11 @@ class _FiltroPill extends StatelessWidget {
 }
 
 class _FazendaTile extends StatelessWidget {
-  const _FazendaTile({required this.fazenda, required this.open, required this.onTap});
+  const _FazendaTile({
+    required this.fazenda,
+    required this.open,
+    required this.onTap,
+  });
 
   final FazendaAtividade fazenda;
   final bool open;
@@ -129,7 +154,9 @@ class _FazendaTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final onlineColor = fazenda.online > 0 ? semantic.accentDefault : semantic.borderStrong;
+    final onlineColor = fazenda.online > 0
+        ? semantic.accentDefault
+        : semantic.borderStrong;
 
     return Container(
       clipBehavior: Clip.antiAlias,
@@ -153,15 +180,31 @@ class _FazendaTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(fazenda.nome, style: TextStyle(fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault)),
-                        Text('${fazenda.online} usuário(s) online', style: TextStyle(fontSize: AppTypography.base, color: semantic.fgMuted)),
+                        Text(
+                          fazenda.nome,
+                          style: TextStyle(
+                            fontWeight: AppTypography.weightSemibold,
+                            color: semantic.fgDefault,
+                          ),
+                        ),
+                        Text(
+                          '${fazenda.online} usuário(s) online',
+                          style: TextStyle(
+                            fontSize: AppTypography.base,
+                            color: semantic.fgMuted,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   AnimatedRotation(
                     turns: open ? 0.5 : 0,
                     duration: const Duration(milliseconds: 150),
-                    child: Icon(LucideIcons.chevronDown, size: 18, color: semantic.fgSubtle),
+                    child: Icon(
+                      LucideIcons.chevronDown,
+                      size: 18,
+                      color: semantic.fgSubtle,
+                    ),
                   ),
                 ],
               ),
@@ -173,13 +216,36 @@ class _FazendaTile extends StatelessWidget {
                 Divider(height: 1, color: semantic.borderSubtle),
                 for (final u in fazenda.usuarios)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.space4,
+                      vertical: AppSpacing.space2,
+                    ),
                     child: Row(
                       children: [
-                        Icon(LucideIcons.circle, size: 8, color: u.ativo ? semantic.accentDefault : semantic.borderStrong),
+                        Icon(
+                          LucideIcons.circle,
+                          size: 8,
+                          color: u.ativo
+                              ? semantic.accentDefault
+                              : semantic.borderStrong,
+                        ),
                         const SizedBox(width: AppSpacing.space3),
-                        Expanded(child: Text(u.nome, style: TextStyle(fontSize: AppTypography.base, color: semantic.fgDefault))),
-                        Text(u.ultimoAcesso, style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgSubtle)),
+                        Expanded(
+                          child: Text(
+                            u.nome,
+                            style: TextStyle(
+                              fontSize: AppTypography.base,
+                              color: semantic.fgDefault,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          u.ultimoAcesso,
+                          style: TextStyle(
+                            fontSize: AppTypography.xs,
+                            color: semantic.fgSubtle,
+                          ),
+                        ),
                       ],
                     ),
                   ),

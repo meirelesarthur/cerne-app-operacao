@@ -73,7 +73,10 @@ class AppKpiStatCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               caption!,
-              style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgSubtle),
+              style: TextStyle(
+                fontSize: AppTypography.xs,
+                color: semantic.fgSubtle,
+              ),
             ),
           ],
         ],
@@ -95,7 +98,11 @@ WidgetbookComponent buildKpiStatCardWidgetbookComponent() {
             children: [
               SizedBox(
                 width: 160,
-                child: AppKpiStatCard(label: 'Receita do mês', value: 'R\$ 42.300', caption: '+8% vs. mês anterior'),
+                child: AppKpiStatCard(
+                  label: 'Receita do mês',
+                  value: 'R\$ 42.300',
+                  caption: '+8% vs. mês anterior',
+                ),
               ),
               SizedBox(
                 width: 160,
@@ -108,11 +115,20 @@ WidgetbookComponent buildKpiStatCardWidgetbookComponent() {
               ),
               SizedBox(
                 width: 160,
-                child: AppKpiStatCard(label: 'Despesas', value: 'R\$ 9.870', tone: AppKpiStatTone.negative),
+                child: AppKpiStatCard(
+                  label: 'Despesas',
+                  value: 'R\$ 9.870',
+                  tone: AppKpiStatTone.negative,
+                ),
               ),
               SizedBox(
                 width: 160,
-                child: AppKpiStatCard(label: 'Vencimentos', value: '3', tone: AppKpiStatTone.warning, caption: 'Próximos 7 dias'),
+                child: AppKpiStatCard(
+                  label: 'Vencimentos',
+                  value: '3',
+                  tone: AppKpiStatTone.warning,
+                  caption: 'Próximos 7 dias',
+                ),
               ),
             ],
           ),

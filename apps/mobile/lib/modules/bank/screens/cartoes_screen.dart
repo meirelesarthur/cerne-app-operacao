@@ -21,7 +21,8 @@ const Map<_Sheet, ({String title, String body})> _sheetMeta = {
   ),
   _Sheet.ajustarLimite: (
     title: 'Ajustar limite',
-    body: 'O pedido de aumento/redução de limite passa por análise de crédito. Este fluxo será detalhado em uma próxima fase.',
+    body:
+        'O pedido de aumento/redução de limite passa por análise de crédito. Este fluxo será detalhado em uma próxima fase.',
   ),
 };
 
@@ -52,7 +53,13 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
             child: Text('Em desenvolvimento'),
           ),
           const SizedBox(height: AppSpacing.space4),
-          Text(meta.body, style: TextStyle(fontSize: AppTypography.sm, color: Theme.of(context).extension<AppSemanticColors>()!.fgMuted)),
+          Text(
+            meta.body,
+            style: TextStyle(
+              fontSize: AppTypography.sm,
+              color: Theme.of(context).extension<AppSemanticColors>()!.fgMuted,
+            ),
+          ),
           const SizedBox(height: AppSpacing.space4),
           AppButton(
             fullWidth: true,
@@ -92,7 +99,13 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Limite disponível', style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+                        Text(
+                          'Limite disponível',
+                          style: TextStyle(
+                            fontSize: AppTypography.sm,
+                            color: semantic.fgMuted,
+                          ),
+                        ),
                         Text(
                           '${balanceHidden ? '••••' : Cartao.limiteDisponivel} / ${balanceHidden ? '••••' : Cartao.limiteTotal}',
                           style: TextStyle(
@@ -105,11 +118,17 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
                       ],
                     ),
                     const SizedBox(height: AppSpacing.space2),
-                    AppProgressBar(value: Cartao.usoPct.toDouble(), colorByOccupancy: true),
+                    AppProgressBar(
+                      value: Cartao.usoPct.toDouble(),
+                      colorByOccupancy: true,
+                    ),
                     const SizedBox(height: AppSpacing.space2),
                     Text(
                       '${balanceHidden ? '••••' : Cartao.limiteUsado} usados de ${balanceHidden ? '••••' : Cartao.limiteTotal}',
-                      style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgSubtle),
+                      style: TextStyle(
+                        fontSize: AppTypography.xs,
+                        color: semantic.fgSubtle,
+                      ),
                     ),
                   ],
                 ),
@@ -123,7 +142,9 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
           const AppBanner(
             tone: AppBannerTone.warning,
             icon: Icon(LucideIcons.lock, size: 14),
-            child: Text('Cartão bloqueado temporariamente. Compras e saques estão suspensos até você reativar.'),
+            child: Text(
+              'Cartão bloqueado temporariamente. Compras e saques estão suspensos até você reativar.',
+            ),
           ),
         ],
         const SizedBox(height: AppSpacing.space5),
@@ -136,8 +157,15 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
                 width: 44,
                 height: 44,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentSubtle),
-                child: Icon(_blocked ? LucideIcons.lock : LucideIcons.shieldCheck, size: 20, color: semantic.accentDefault),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: semantic.accentSubtle,
+                ),
+                child: Icon(
+                  _blocked ? LucideIcons.lock : LucideIcons.shieldCheck,
+                  size: 20,
+                  color: semantic.accentDefault,
+                ),
               ),
               const SizedBox(width: AppSpacing.space3),
               Expanded(
@@ -147,11 +175,18 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
                   children: [
                     Text(
                       'Bloquear temporariamente',
-                      style: TextStyle(fontSize: AppTypography.md, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                      style: TextStyle(
+                        fontSize: AppTypography.md,
+                        fontWeight: AppTypography.weightSemibold,
+                        color: semantic.fgDefault,
+                      ),
                     ),
                     Text(
                       'Suspende o cartão sem cancelá-lo. Reative a qualquer momento.',
-                      style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                      style: TextStyle(
+                        fontSize: AppTypography.xs,
+                        color: semantic.fgMuted,
+                      ),
                     ),
                   ],
                 ),
@@ -159,7 +194,9 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
               AppToggleSwitch(
                 checked: _blocked,
                 onChanged: (v) => setState(() => _blocked = v),
-                label: _blocked ? 'Reativar cartão' : 'Bloquear cartão temporariamente',
+                label: _blocked
+                    ? 'Reativar cartão'
+                    : 'Bloquear cartão temporariamente',
               ),
             ],
           ),

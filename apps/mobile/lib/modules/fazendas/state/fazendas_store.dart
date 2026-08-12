@@ -31,7 +31,8 @@ class FazendasState {
   /// (spec §5.1/§5.2/DUV-179).
   final bool pesagemDoDiaFeita;
 
-  Farm get activeFarm => farms.firstWhere((f) => f.id == activeFarmId, orElse: () => farms.first);
+  Farm get activeFarm =>
+      farms.firstWhere((f) => f.id == activeFarmId, orElse: () => farms.first);
 
   FazendasState copyWith({
     List<Farm>? farms,
@@ -50,7 +51,10 @@ class FazendasState {
   }
 }
 
-final fazendasStoreProvider = NotifierProvider<FazendasStoreNotifier, FazendasState>(FazendasStoreNotifier.new);
+final fazendasStoreProvider =
+    NotifierProvider<FazendasStoreNotifier, FazendasState>(
+      FazendasStoreNotifier.new,
+    );
 
 class FazendasStoreNotifier extends Notifier<FazendasState> {
   @override
@@ -68,9 +72,11 @@ class FazendasStoreNotifier extends Notifier<FazendasState> {
 
   void setView(FarmView view) => state = state.copyWith(view: view);
 
-  void enqueueSync(SyncItem item) => state = state.copyWith(syncQueue: [...state.syncQueue, item]);
+  void enqueueSync(SyncItem item) =>
+      state = state.copyWith(syncQueue: [...state.syncQueue, item]);
 
   void clearSync() => state = state.copyWith(syncQueue: const []);
 
-  void registrarPesagemDoDia() => state = state.copyWith(pesagemDoDiaFeita: true);
+  void registrarPesagemDoDia() =>
+      state = state.copyWith(pesagemDoDiaFeita: true);
 }

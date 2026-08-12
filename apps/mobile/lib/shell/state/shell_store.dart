@@ -4,7 +4,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// tudo em memória (sem persistência local, restrição do protótipo).
 
 class UserProfile {
-  const UserProfile({required this.name, required this.initials, required this.role});
+  const UserProfile({
+    required this.name,
+    required this.initials,
+    required this.role,
+  });
 
   final String name;
   final String initials;
@@ -41,10 +45,38 @@ class AppNotification {
 }
 
 const _mockNotifications = [
-  AppNotification(id: 'n1', moduleId: 'fazendas', title: 'Pesagem registrada', detail: 'Lote 42 · Fazenda São Pedro', time: 'há 5 min', read: false),
-  AppNotification(id: 'n2', moduleId: 'credito', title: 'Crédito pré-aprovado', detail: 'R\$ 480.000,00 disponíveis', time: 'há 1 h', read: false),
-  AppNotification(id: 'n3', moduleId: 'fazendas', title: 'NF-e processada', detail: 'Entrada de insumos conferida', time: 'há 3 h', read: false),
-  AppNotification(id: 'n4', moduleId: 'bank', title: 'Pagamento agendado', detail: 'Fornecedor Agropecuária Vale', time: 'ontem', read: true),
+  AppNotification(
+    id: 'n1',
+    moduleId: 'fazendas',
+    title: 'Pesagem registrada',
+    detail: 'Lote 42 · Fazenda São Pedro',
+    time: 'há 5 min',
+    read: false,
+  ),
+  AppNotification(
+    id: 'n2',
+    moduleId: 'credito',
+    title: 'Crédito pré-aprovado',
+    detail: 'R\$ 480.000,00 disponíveis',
+    time: 'há 1 h',
+    read: false,
+  ),
+  AppNotification(
+    id: 'n3',
+    moduleId: 'fazendas',
+    title: 'NF-e processada',
+    detail: 'Entrada de insumos conferida',
+    time: 'há 3 h',
+    read: false,
+  ),
+  AppNotification(
+    id: 'n4',
+    moduleId: 'bank',
+    title: 'Pagamento agendado',
+    detail: 'Fornecedor Agropecuária Vale',
+    time: 'ontem',
+    read: true,
+  ),
 ];
 
 class ShellState {
@@ -87,7 +119,9 @@ class ShellState {
   }
 }
 
-final shellStoreProvider = NotifierProvider<ShellStoreNotifier, ShellState>(ShellStoreNotifier.new);
+final shellStoreProvider = NotifierProvider<ShellStoreNotifier, ShellState>(
+  ShellStoreNotifier.new,
+);
 
 class ShellStoreNotifier extends Notifier<ShellState> {
   @override
@@ -105,10 +139,15 @@ class ShellStoreNotifier extends Notifier<ShellState> {
 
   void toggleOnline() => state = state.copyWith(isOnline: !state.isOnline);
 
-  void toggleBalanceHidden() => state = state.copyWith(balanceHidden: !state.balanceHidden);
+  void toggleBalanceHidden() =>
+      state = state.copyWith(balanceHidden: !state.balanceHidden);
 
   void markAllRead() {
-    state = state.copyWith(notifications: [for (final n in state.notifications) n.copyWith(read: true)]);
+    state = state.copyWith(
+      notifications: [
+        for (final n in state.notifications) n.copyWith(read: true),
+      ],
+    );
   }
 
   void openMenu() => state = state.copyWith(menuOpen: true);

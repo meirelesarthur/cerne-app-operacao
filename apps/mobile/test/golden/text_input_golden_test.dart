@@ -18,21 +18,36 @@ void main() {
             name: '${variant.name}_placeholder',
             child: SizedBox(
               width: 240,
-              child: themedGolden(variant, const AppTextInput(placeholder: 'Digite aqui')),
+              child: themedGolden(
+                variant,
+                const AppTextInput(placeholder: 'Digite aqui'),
+              ),
             ),
           ),
           GoldenTestScenario(
             name: '${variant.name}_invalid',
             child: SizedBox(
               width: 240,
-              child: themedGolden(variant, const AppTextInput(initialValue: 'valor inválido', invalid: true)),
+              child: themedGolden(
+                variant,
+                const AppTextInput(
+                  initialValue: 'valor inválido',
+                  invalid: true,
+                ),
+              ),
             ),
           ),
           GoldenTestScenario(
             name: '${variant.name}_disabled',
             child: SizedBox(
               width: 240,
-              child: themedGolden(variant, const AppTextInput(initialValue: 'desabilitado', enabled: false)),
+              child: themedGolden(
+                variant,
+                const AppTextInput(
+                  initialValue: 'desabilitado',
+                  enabled: false,
+                ),
+              ),
             ),
           ),
         ],

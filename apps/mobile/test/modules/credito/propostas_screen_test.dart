@@ -8,13 +8,21 @@ import 'package:cerne_app/modules/credito/credito_module.dart';
 import '../../support/test_viewport.dart';
 
 Widget _wrap() {
-  final router = GoRouter(initialLocation: '/credito/propostas', routes: [buildCreditoModuleRoute()]);
-  return MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: router);
+  final router = GoRouter(
+    initialLocation: '/credito/propostas',
+    routes: [buildCreditoModuleRoute()],
+  );
+  return MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: router,
+  );
 }
 
 void main() {
   group('PropostasScreen', () {
-    testWidgets('renderiza KPIs e todas as propostas sem exceção', (tester) async {
+    testWidgets('renderiza KPIs e todas as propostas sem exceção', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
@@ -31,7 +39,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tocar em uma proposta navega para o detalhe correspondente', (tester) async {
+    testWidgets('tocar em uma proposta navega para o detalhe correspondente', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();

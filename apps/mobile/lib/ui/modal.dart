@@ -99,7 +99,10 @@ class AppModal extends StatelessWidget {
                     AppSpacing.space4,
                   ),
                   child: DefaultTextStyle.merge(
-                    style: TextStyle(fontSize: AppTypography.md, color: semantic.fgDefault),
+                    style: TextStyle(
+                      fontSize: AppTypography.md,
+                      color: semantic.fgDefault,
+                    ),
                     child: child,
                   ),
                 ),
@@ -114,7 +117,10 @@ class AppModal extends StatelessWidget {
                     // Alinhado à direita (`justify-end` no React) — se o
                     // rodapé tiver mais de um botão, o chamador compõe a
                     // própria `Row`/`Wrap` com `gap` equivalente.
-                    child: Align(alignment: Alignment.centerRight, child: footer!),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: footer!,
+                    ),
                   ),
               ],
             ),
@@ -138,7 +144,10 @@ WidgetbookComponent buildModalWidgetbookComponent() {
                 context,
                 title: 'Confirmar ação',
                 child: const Text('Tem certeza de que deseja continuar?'),
-                footer: TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Confirmar')),
+                footer: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Confirmar'),
+                ),
               ),
               child: const Text('Abrir modal'),
             ),

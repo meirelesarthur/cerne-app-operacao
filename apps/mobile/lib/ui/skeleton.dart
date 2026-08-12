@@ -14,7 +14,12 @@ import '../design/theme/app_theme_extension.dart';
 enum AppSkeletonRadius { md, lg, xl, xl2, full }
 
 class AppSkeleton extends StatefulWidget {
-  const AppSkeleton({super.key, this.width, this.height, this.rounded = AppSkeletonRadius.lg});
+  const AppSkeleton({
+    super.key,
+    this.width,
+    this.height,
+    this.rounded = AppSkeletonRadius.lg,
+  });
 
   final double? width;
   final double? height;
@@ -32,17 +37,22 @@ class AppSkeleton extends StatefulWidget {
   State<AppSkeleton> createState() => _AppSkeletonState();
 }
 
-class _AppSkeletonState extends State<AppSkeleton> with SingleTickerProviderStateMixin {
+class _AppSkeletonState extends State<AppSkeleton>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _opacity;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: AppMotion.slower * 3)..repeat(reverse: true);
-    _opacity = Tween<double>(begin: 1, end: 0.55).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _controller = AnimationController(
+      vsync: this,
+      duration: AppMotion.slower * 3,
+    )..repeat(reverse: true);
+    _opacity = Tween<double>(
+      begin: 1,
+      end: 0.55,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -92,9 +102,15 @@ class AppCardSkeleton extends StatelessWidget {
         children: [
           AppSkeleton(width: AppSpacing.space8, height: AppSpacing.space8),
           SizedBox(height: AppSpacing.space3),
-          FractionallySizedBox(widthFactor: 2 / 3, child: AppSkeleton(height: AppSpacing.space3)),
+          FractionallySizedBox(
+            widthFactor: 2 / 3,
+            child: AppSkeleton(height: AppSpacing.space3),
+          ),
           SizedBox(height: AppSpacing.space2),
-          FractionallySizedBox(widthFactor: 1 / 2, child: AppSkeleton(height: AppSpacing.space6)),
+          FractionallySizedBox(
+            widthFactor: 1 / 2,
+            child: AppSkeleton(height: AppSpacing.space6),
+          ),
           SizedBox(height: AppSpacing.space3),
           AppSkeleton(height: AppSpacing.space8),
         ],
@@ -116,16 +132,25 @@ WidgetbookComponent buildSkeletonWidgetbookComponent() {
             children: [
               AppSkeleton(width: 200, height: 16),
               SizedBox(height: AppSpacing.space2),
-              AppSkeleton(width: 120, height: 16, rounded: AppSkeletonRadius.full),
+              AppSkeleton(
+                width: 120,
+                height: 16,
+                rounded: AppSkeletonRadius.full,
+              ),
               SizedBox(height: AppSpacing.space2),
-              AppSkeleton(width: 48, height: 48, rounded: AppSkeletonRadius.xl2),
+              AppSkeleton(
+                width: 48,
+                height: 48,
+                rounded: AppSkeletonRadius.xl2,
+              ),
             ],
           ),
         ),
       ),
       WidgetbookUseCase(
         name: 'CardSkeleton',
-        builder: (context) => const Center(child: SizedBox(width: 260, child: AppCardSkeleton())),
+        builder: (context) =>
+            const Center(child: SizedBox(width: 260, child: AppCardSkeleton())),
       ),
     ],
   );

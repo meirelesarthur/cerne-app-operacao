@@ -12,7 +12,10 @@ void main() {
     testWidgets('mostra estado vazio quando não há fila', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: SyncQueueScreen())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: SyncQueueScreen()),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -21,17 +24,29 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('lista os itens pendentes e sincroniza ao tocar no botão', (tester) async {
+    testWidgets('lista os itens pendentes e sincroniza ao tocar no botão', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      container.read(fazendasStoreProvider.notifier).enqueueSync(
-            const SyncItem(id: 's1', label: 'Pesagem do Lote 42', detail: '120 kg', kind: ActivityKind.pesagem),
+      container
+          .read(fazendasStoreProvider.notifier)
+          .enqueueSync(
+            const SyncItem(
+              id: 's1',
+              label: 'Pesagem do Lote 42',
+              detail: '120 kg',
+              kind: ActivityKind.pesagem,
+            ),
           );
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: SyncQueueScreen())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: SyncQueueScreen()),
+          ),
         ),
       );
       await tester.pumpAndSettle();

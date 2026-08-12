@@ -6,8 +6,11 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/admin/dash_suprimentos.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
-      child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child)),
-    );
+  child: MaterialApp(
+    theme: buildAppTheme(AppThemeVariant.light),
+    home: Scaffold(body: child),
+  ),
+);
 
 void main() {
   group('DashSuprimentos', () {

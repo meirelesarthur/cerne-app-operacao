@@ -33,11 +33,23 @@ void main() {
         for (final variant in AppThemeVariant.values) ...[
           GoldenTestScenario(
             name: '${variant.name}_income',
-            child: SizedBox(width: 320, child: themedGolden(variant, const AppTransactionListItem(transaction: _income))),
+            child: SizedBox(
+              width: 320,
+              child: themedGolden(
+                variant,
+                const AppTransactionListItem(transaction: _income),
+              ),
+            ),
           ),
           GoldenTestScenario(
             name: '${variant.name}_expense',
-            child: SizedBox(width: 320, child: themedGolden(variant, const AppTransactionListItem(transaction: _expense))),
+            child: SizedBox(
+              width: 320,
+              child: themedGolden(
+                variant,
+                const AppTransactionListItem(transaction: _expense),
+              ),
+            ),
           ),
         ],
       ],

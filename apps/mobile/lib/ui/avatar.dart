@@ -9,7 +9,12 @@ import '../design/theme/app_theme_extension.dart';
 enum AppAvatarSize { sm, md, lg }
 
 class AppAvatar extends StatelessWidget {
-  const AppAvatar({super.key, required this.name, this.initials, this.size = AppAvatarSize.md});
+  const AppAvatar({
+    super.key,
+    required this.name,
+    this.initials,
+    this.size = AppAvatarSize.md,
+  });
 
   final String name;
   final String? initials;
@@ -29,7 +34,11 @@ class AppAvatar extends StatelessWidget {
 
   /// Deriva iniciais a partir dos 2 primeiros nomes de [name], em maiúsculas.
   static String deriveInitials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
     if (parts.isEmpty) return '';
     return parts.take(2).map((part) => part[0].toUpperCase()).join();
   }

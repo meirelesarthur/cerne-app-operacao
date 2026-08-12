@@ -12,13 +12,22 @@ import '../../support/test_viewport.dart';
 GoRouter _router() => GoRouter(
   initialLocation: '/bank/cartoes',
   routes: [
-    GoRoute(path: '/bank/cartoes', builder: (context, state) => const CartoesScreen()),
-    GoRoute(path: '/bank/limites', builder: (context, state) => const Text('Limites destino')),
+    GoRoute(
+      path: '/bank/cartoes',
+      builder: (context, state) => const CartoesScreen(),
+    ),
+    GoRoute(
+      path: '/bank/limites',
+      builder: (context, state) => const Text('Limites destino'),
+    ),
   ],
 );
 
 Widget _wrap() => ProviderScope(
-  child: MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: _router()),
+  child: MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: _router(),
+  ),
 );
 
 void main() {
@@ -40,15 +49,23 @@ void main() {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('Cartão bloqueado temporariamente'), findsNothing);
+      expect(
+        find.textContaining('Cartão bloqueado temporariamente'),
+        findsNothing,
+      );
 
       await tester.tap(find.byType(AppToggleSwitch));
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('Cartão bloqueado temporariamente'), findsOneWidget);
+      expect(
+        find.textContaining('Cartão bloqueado temporariamente'),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('"Segunda via" abre o bottom sheet "Em desenvolvimento"', (tester) async {
+    testWidgets('"Segunda via" abre o bottom sheet "Em desenvolvimento"', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();

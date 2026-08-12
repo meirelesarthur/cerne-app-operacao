@@ -43,7 +43,13 @@ class _ExtratoScreenState extends ConsumerState<ExtratoScreen> {
         const SizedBox(height: AppSpacing.space1),
         Row(
           children: [
-            Text('Saldo disponível: ', style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+            Text(
+              'Saldo disponível: ',
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgMuted,
+              ),
+            ),
             Text(
               balanceHidden ? '••••••' : Saldo.valor,
               style: TextStyle(
@@ -59,21 +65,27 @@ class _ExtratoScreenState extends ConsumerState<ExtratoScreen> {
         Row(
           children: [
             AppButton(
-              variant: _filtro == _Filtro.tudo ? AppButtonVariant.primary : AppButtonVariant.secondary,
+              variant: _filtro == _Filtro.tudo
+                  ? AppButtonVariant.primary
+                  : AppButtonVariant.secondary,
               size: AppButtonSize.sm,
               onPressed: () => setState(() => _filtro = _Filtro.tudo),
               child: const Text('Tudo'),
             ),
             const SizedBox(width: AppSpacing.space2),
             AppButton(
-              variant: _filtro == _Filtro.income ? AppButtonVariant.primary : AppButtonVariant.secondary,
+              variant: _filtro == _Filtro.income
+                  ? AppButtonVariant.primary
+                  : AppButtonVariant.secondary,
               size: AppButtonSize.sm,
               onPressed: () => setState(() => _filtro = _Filtro.income),
               child: const Text('Entradas'),
             ),
             const SizedBox(width: AppSpacing.space2),
             AppButton(
-              variant: _filtro == _Filtro.expense ? AppButtonVariant.primary : AppButtonVariant.secondary,
+              variant: _filtro == _Filtro.expense
+                  ? AppButtonVariant.primary
+                  : AppButtonVariant.secondary,
               size: AppButtonSize.sm,
               onPressed: () => setState(() => _filtro = _Filtro.expense),
               child: const Text('Saídas'),
@@ -91,13 +103,19 @@ class _ExtratoScreenState extends ConsumerState<ExtratoScreen> {
           AppCard(
             padded: false,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.space4,
+              ),
               child: Column(
                 children: [
                   for (final tx in transacoesFiltradas)
                     AppTransactionListItem(
                       transaction: tx,
-                      onTap: () => showAppTransactionDetailSheet(context, transaction: tx, hidden: balanceHidden),
+                      onTap: () => showAppTransactionDetailSheet(
+                        context,
+                        transaction: tx,
+                        hidden: balanceHidden,
+                      ),
                       showDivider: tx != transacoesFiltradas.last,
                     ),
                 ],

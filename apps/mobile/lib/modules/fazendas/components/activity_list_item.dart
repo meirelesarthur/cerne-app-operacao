@@ -26,15 +26,29 @@ class StatusMeta {
 }
 
 const Map<ActivityStatus, StatusMeta> statusMeta = {
-  ActivityStatus.andamento: StatusMeta(label: 'Em andamento', tone: AppChipTone.blue),
-  ActivityStatus.concluida: StatusMeta(label: 'Concluída', tone: AppChipTone.brand),
-  ActivityStatus.autorizada: StatusMeta(label: 'Autorizada', tone: AppChipTone.brand),
+  ActivityStatus.andamento: StatusMeta(
+    label: 'Em andamento',
+    tone: AppChipTone.blue,
+  ),
+  ActivityStatus.concluida: StatusMeta(
+    label: 'Concluída',
+    tone: AppChipTone.brand,
+  ),
+  ActivityStatus.autorizada: StatusMeta(
+    label: 'Autorizada',
+    tone: AppChipTone.brand,
+  ),
   ActivityStatus.atrasada: StatusMeta(label: 'Atrasada', tone: AppChipTone.red),
 };
 
 /// Item da lista "Atividades recentes" (spec §6.7) — espelha `ActivityListItem.tsx`.
 class ActivityListItem extends StatelessWidget {
-  const ActivityListItem({super.key, required this.activity, this.onTap, this.showDivider = true});
+  const ActivityListItem({
+    super.key,
+    required this.activity,
+    this.onTap,
+    this.showDivider = true,
+  });
 
   final Activity activity;
   final VoidCallback? onTap;
@@ -48,14 +62,21 @@ class ActivityListItem extends StatelessWidget {
 
     final row = Container(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.space3),
-      decoration: showDivider ? BoxDecoration(border: Border(bottom: BorderSide(color: semantic.borderSubtle))) : null,
+      decoration: showDivider
+          ? BoxDecoration(
+              border: Border(bottom: BorderSide(color: semantic.borderSubtle)),
+            )
+          : null,
       child: Row(
         children: [
           Container(
             width: AppSpacing.space10,
             height: AppSpacing.space10,
             alignment: Alignment.center,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.bgSubtle),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: semantic.bgSubtle,
+            ),
             child: Icon(icon, size: 18, color: semantic.fgMuted),
           ),
           const SizedBox(width: AppSpacing.space3),
@@ -68,7 +89,10 @@ class ActivityListItem extends StatelessWidget {
                   activity.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: semantic.fgDefault,
+                  ),
                 ),
                 Text(
                   activity.subtitle,
@@ -86,7 +110,10 @@ class ActivityListItem extends StatelessWidget {
             children: [
               AppChip(tone: status.tone, child: Text(status.label)),
               const SizedBox(height: AppSpacing.space1),
-              Text(activity.time, style: TextStyle(color: semantic.fgSubtle, fontSize: 12)),
+              Text(
+                activity.time,
+                style: TextStyle(color: semantic.fgSubtle, fontSize: 12),
+              ),
             ],
           ),
           const SizedBox(width: AppSpacing.space1),
@@ -96,6 +123,9 @@ class ActivityListItem extends StatelessWidget {
     );
 
     if (onTap == null) return row;
-    return Material(color: Colors.transparent, child: InkWell(onTap: onTap, child: row));
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(onTap: onTap, child: row),
+    );
   }
 }

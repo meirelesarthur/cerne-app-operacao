@@ -8,7 +8,11 @@ import '../../design/theme/app_theme_extension.dart';
 /// Crédito, Marketplace, Armazém) ganha sua tela real nessa fase seguinte.
 /// Prova que o roteamento por módulo/aba (F3 DoD) funciona de ponta a ponta.
 class ModulePlaceholderScreen extends StatelessWidget {
-  const ModulePlaceholderScreen({super.key, required this.moduleLabel, required this.tabLabel});
+  const ModulePlaceholderScreen({
+    super.key,
+    required this.moduleLabel,
+    required this.tabLabel,
+  });
 
   final String moduleLabel;
   final String tabLabel;
@@ -24,12 +28,19 @@ class ModulePlaceholderScreen extends StatelessWidget {
           children: [
             Text(
               moduleLabel,
-              style: TextStyle(fontSize: AppTypography.xl2, fontWeight: AppTypography.weightBold, color: semantic.fgDefault),
+              style: TextStyle(
+                fontSize: AppTypography.xl2,
+                fontWeight: AppTypography.weightBold,
+                color: semantic.fgDefault,
+              ),
             ),
             const SizedBox(height: AppSpacing.space1),
             Text(
               '$tabLabel — módulo chega na F4',
-              style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
+              style: TextStyle(
+                fontSize: AppTypography.md,
+                color: semantic.fgMuted,
+              ),
             ),
           ],
         ),

@@ -1,4 +1,5 @@
-import '../../../ui/transaction_list_item.dart' show AppTransactionItem, AppTransactionDirection;
+import '../../../ui/transaction_list_item.dart'
+    show AppTransactionItem, AppTransactionDirection;
 import '../mocks/estoque_mocks.dart';
 
 /// Adapta uma [Movimentacao] do Armazém para o shape de [AppTransactionItem],
@@ -13,6 +14,8 @@ AppTransactionItem toTransactionItem(Movimentacao mov) {
     subtitle: isEntrada ? mov.origem : mov.destino,
     time: mov.tempo,
     value: mov.quantidade,
-    direction: isEntrada ? AppTransactionDirection.income : AppTransactionDirection.expense,
+    direction: isEntrada
+        ? AppTransactionDirection.income
+        : AppTransactionDirection.expense,
   );
 }

@@ -18,7 +18,9 @@ class FarmListScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final farms = ref.watch(fazendasStoreProvider.select((s) => s.farms));
-    final activeFarmId = ref.watch(fazendasStoreProvider.select((s) => s.activeFarmId));
+    final activeFarmId = ref.watch(
+      fazendasStoreProvider.select((s) => s.activeFarmId),
+    );
     final notifier = ref.read(fazendasStoreProvider.notifier);
 
     return ListView(
@@ -75,7 +77,9 @@ class _FarmRow extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.space3),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppRadius.xl3),
-            border: Border.all(color: active ? semantic.accentDefault : semantic.borderDefault),
+            border: Border.all(
+              color: active ? semantic.accentDefault : semantic.borderDefault,
+            ),
           ),
           child: Row(
             children: [
@@ -83,8 +87,15 @@ class _FarmRow extends StatelessWidget {
                 width: AppSpacing.space10 + AppSpacing.space1,
                 height: AppSpacing.space10 + AppSpacing.space1,
                 alignment: Alignment.center,
-                decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentDefault),
-                child: const Icon(LucideIcons.leaf, size: 20, color: Colors.white),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: semantic.accentDefault,
+                ),
+                child: const Icon(
+                  LucideIcons.leaf,
+                  size: 20,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(width: AppSpacing.space3),
               Expanded(
@@ -92,12 +103,26 @@ class _FarmRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(name, style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault)),
-                    Text('$city/$uf', style: TextStyle(fontSize: 13, color: semantic.fgMuted)),
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: semantic.fgDefault,
+                      ),
+                    ),
+                    Text(
+                      '$city/$uf',
+                      style: TextStyle(fontSize: 13, color: semantic.fgMuted),
+                    ),
                   ],
                 ),
               ),
-              if (active) const AppChip(tone: AppChipTone.brand, icon: Icon(LucideIcons.check), child: Text('Ativa')),
+              if (active)
+                const AppChip(
+                  tone: AppChipTone.brand,
+                  icon: Icon(LucideIcons.check),
+                  child: Text('Ativa'),
+                ),
             ],
           ),
         ),

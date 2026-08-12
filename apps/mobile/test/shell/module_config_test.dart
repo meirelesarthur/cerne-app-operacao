@@ -20,17 +20,26 @@ void main() {
     test('getMenuSections usa menuSections quando definido', () {
       final bank = getModule('bank')!;
       final sections = getMenuSections(bank);
-      expect(sections.map((s) => s.title), contains('Pagamentos e transferências'));
+      expect(
+        sections.map((s) => s.title),
+        contains('Pagamentos e transferências'),
+      );
     });
 
-    test('getMenuSections cai no fallback derivado das bottomTabs quando ausente', () {
-      final inicio = getModule('inicio')!;
-      final sections = getMenuSections(inicio);
-      expect(sections, hasLength(1));
-      expect(sections.first.title, 'Funcionalidades');
-      // 'menu' tem action e é excluído; '' (home) também é excluído por path vazio.
-      expect(sections.first.items.map((i) => i.id), containsAll(['apps', 'carteira']));
-      expect(sections.first.items.map((i) => i.id), isNot(contains('menu')));
-    });
+    test(
+      'getMenuSections cai no fallback derivado das bottomTabs quando ausente',
+      () {
+        final inicio = getModule('inicio')!;
+        final sections = getMenuSections(inicio);
+        expect(sections, hasLength(1));
+        expect(sections.first.title, 'Funcionalidades');
+        // 'menu' tem action e é excluído; '' (home) também é excluído por path vazio.
+        expect(
+          sections.first.items.map((i) => i.id),
+          containsAll(['apps', 'carteira']),
+        );
+        expect(sections.first.items.map((i) => i.id), isNot(contains('menu')));
+      },
+    );
   });
 }

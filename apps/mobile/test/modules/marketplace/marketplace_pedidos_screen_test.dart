@@ -5,9 +5,15 @@ import 'package:go_router/go_router.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/marketplace/marketplace_module.dart';
 
-GoRouter _buildRouter() => GoRouter(initialLocation: '/marketplace/pedidos', routes: [buildMarketplaceModuleRoute()]);
+GoRouter _buildRouter() => GoRouter(
+  initialLocation: '/marketplace/pedidos',
+  routes: [buildMarketplaceModuleRoute()],
+);
 
-Widget _wrap(GoRouter router) => MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: router);
+Widget _wrap(GoRouter router) => MaterialApp.router(
+  theme: buildAppTheme(AppThemeVariant.light),
+  routerConfig: router,
+);
 
 void main() {
   group('MarketplacePedidosScreen', () {
@@ -20,7 +26,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tocar num pedido abre o detalhe em BottomSheet', (tester) async {
+    testWidgets('tocar num pedido abre o detalhe em BottomSheet', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(_buildRouter()));
       await tester.pumpAndSettle();
 

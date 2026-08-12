@@ -13,7 +13,12 @@ import '../../components/bank_flow_shell.dart';
 import 'package:cerne_app/modules/bank/lib/currency.dart';
 
 class _Destino {
-  const _Destino({required this.nome, required this.chave, required this.tipoChave, this.inicial});
+  const _Destino({
+    required this.nome,
+    required this.chave,
+    required this.tipoChave,
+    this.inicial,
+  });
 
   final String nome;
   final String chave;
@@ -57,14 +62,23 @@ class _PixFlowState extends ConsumerState<PixFlow> {
 
   void _selecionarContato(PixContato c) {
     setState(() {
-      _destino = _Destino(nome: c.nome, chave: c.chave, tipoChave: c.tipoChave, inicial: c.inicial);
+      _destino = _Destino(
+        nome: c.nome,
+        chave: c.chave,
+        tipoChave: c.tipoChave,
+        inicial: c.inicial,
+      );
       _step = _Step.valor;
     });
   }
 
   void _continuarManual() {
     setState(() {
-      _destino = _Destino(nome: 'Nova chave Pix', chave: _chaveManualController.text.trim(), tipoChave: 'Chave Pix');
+      _destino = _Destino(
+        nome: 'Nova chave Pix',
+        chave: _chaveManualController.text.trim(),
+        tipoChave: 'Chave Pix',
+      );
       _step = _Step.valor;
     });
   }
@@ -110,25 +124,40 @@ class _PixFlowState extends ConsumerState<PixFlow> {
         title: 'Pix enviado',
         description: RichText(
           text: TextSpan(
-            style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
+            style: TextStyle(
+              fontSize: AppTypography.md,
+              color: semantic.fgMuted,
+            ),
             children: [
               TextSpan(
                 text: formatBRL(_valorNum),
-                style: TextStyle(fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                style: TextStyle(
+                  fontWeight: AppTypography.weightSemibold,
+                  color: semantic.fgDefault,
+                ),
               ),
               const TextSpan(text: ' para '),
               TextSpan(
                 text: destino.nome,
-                style: TextStyle(fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                style: TextStyle(
+                  fontWeight: AppTypography.weightSemibold,
+                  color: semantic.fgDefault,
+                ),
               ),
-              const TextSpan(text: '. O comprovante fica disponível no extrato.'),
+              const TextSpan(
+                text: '. O comprovante fica disponível no extrato.',
+              ),
             ],
           ),
         ),
         actions: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AppButton(fullWidth: true, onPressed: () => context.go('/bank'), child: const Text('Voltar ao Bank')),
+            AppButton(
+              fullWidth: true,
+              onPressed: () => context.go('/bank'),
+              child: const Text('Voltar ao Bank'),
+            ),
             const SizedBox(height: AppSpacing.space2),
             AppButton(
               variant: AppButtonVariant.ghost,
@@ -137,7 +166,12 @@ class _PixFlowState extends ConsumerState<PixFlow> {
               child: const Text('Ver extrato'),
             ),
             const SizedBox(height: AppSpacing.space2),
-            AppButton(variant: AppButtonVariant.ghost, fullWidth: true, onPressed: _reset, child: const Text('Fazer novo Pix')),
+            AppButton(
+              variant: AppButtonVariant.ghost,
+              fullWidth: true,
+              onPressed: _reset,
+              child: const Text('Fazer novo Pix'),
+            ),
           ],
         ),
       );
@@ -148,7 +182,14 @@ class _PixFlowState extends ConsumerState<PixFlow> {
       return BankFlowShell(
         title: 'Pix',
         onBack: _back,
-        headerAction: Text(_stepLabel, style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightSemibold, color: semantic.fgSubtle)),
+        headerAction: Text(
+          _stepLabel,
+          style: TextStyle(
+            fontSize: AppTypography.xs,
+            fontWeight: AppTypography.weightSemibold,
+            color: semantic.fgSubtle,
+          ),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -157,14 +198,20 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             AppFormField(
               label: 'Chave Pix',
               hint: 'CPF/CNPJ, e-mail, telefone ou chave aleatória',
-              child: AppTextInput(controller: _chaveManualController, placeholder: 'Digite ou cole a chave', onChanged: (_) => setState(() {})),
+              child: AppTextInput(
+                controller: _chaveManualController,
+                placeholder: 'Digite ou cole a chave',
+                onChanged: (_) => setState(() {}),
+              ),
             ),
             const SizedBox(height: AppSpacing.space3),
             AppButton(
               variant: AppButtonVariant.secondary,
               fullWidth: true,
               rightIcon: const Icon(LucideIcons.arrowRight, size: 16),
-              onPressed: _chaveManualController.text.trim().isEmpty ? null : _continuarManual,
+              onPressed: _chaveManualController.text.trim().isEmpty
+                  ? null
+                  : _continuarManual,
               child: const Text('Continuar'),
             ),
             const SizedBox(height: AppSpacing.space6),
@@ -187,18 +234,29 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                             c.nome,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: AppTypography.md, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                            style: TextStyle(
+                              fontSize: AppTypography.md,
+                              fontWeight: AppTypography.weightSemibold,
+                              color: semantic.fgDefault,
+                            ),
                           ),
                           Text(
                             '${c.tipoChave} · ${c.chave}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                            style: TextStyle(
+                              fontSize: AppTypography.xs,
+                              color: semantic.fgMuted,
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    Icon(LucideIcons.arrowRight, size: 18, color: semantic.accentDefault),
+                    Icon(
+                      LucideIcons.arrowRight,
+                      size: 18,
+                      color: semantic.accentDefault,
+                    ),
                   ],
                 ),
               ),
@@ -215,7 +273,14 @@ class _PixFlowState extends ConsumerState<PixFlow> {
       return BankFlowShell(
         title: 'Pix',
         onBack: _back,
-        headerAction: Text(_stepLabel, style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightSemibold, color: semantic.fgSubtle)),
+        headerAction: Text(
+          _stepLabel,
+          style: TextStyle(
+            fontSize: AppTypography.xs,
+            fontWeight: AppTypography.weightSemibold,
+            color: semantic.fgSubtle,
+          ),
+        ),
         primaryLabel: 'Revisar',
         onPrimary: () => setState(() => _step = _Step.revisao),
         primaryDisabled: !_valorValido,
@@ -236,13 +301,20 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                           destino.nome,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: AppTypography.md, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                          style: TextStyle(
+                            fontSize: AppTypography.md,
+                            fontWeight: AppTypography.weightSemibold,
+                            color: semantic.fgDefault,
+                          ),
                         ),
                         Text(
                           '${destino.tipoChave} · ${destino.chave}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                          style: TextStyle(
+                            fontSize: AppTypography.xs,
+                            color: semantic.fgMuted,
+                          ),
                         ),
                       ],
                     ),
@@ -253,7 +325,9 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             const SizedBox(height: AppSpacing.space6),
             AppFormField(
               label: 'Valor do Pix',
-              error: _valor.isNotEmpty && !_valorValido ? 'Informe um valor maior que zero.' : null,
+              error: _valor.isNotEmpty && !_valorValido
+                  ? 'Informe um valor maior que zero.'
+                  : null,
               child: AppTextInput(
                 controller: _valorController,
                 keyboardType: TextInputType.number,
@@ -264,7 +338,10 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             ),
             const SizedBox(height: AppSpacing.space4),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3, vertical: AppSpacing.space2),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.space3,
+                vertical: AppSpacing.space2,
+              ),
               decoration: BoxDecoration(
                 border: Border.all(color: semantic.borderDefault),
                 borderRadius: BorderRadius.circular(12),
@@ -273,7 +350,13 @@ class _PixFlowState extends ConsumerState<PixFlow> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Saldo disponível', style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+                  Text(
+                    'Saldo disponível',
+                    style: TextStyle(
+                      fontSize: AppTypography.sm,
+                      color: semantic.fgMuted,
+                    ),
+                  ),
                   Text(
                     balanceHidden ? '••••••' : ContaOrigem.saldo,
                     style: TextStyle(
@@ -306,7 +389,14 @@ class _PixFlowState extends ConsumerState<PixFlow> {
       return BankFlowShell(
         title: 'Revisar Pix',
         onBack: _back,
-        headerAction: Text(_stepLabel, style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightSemibold, color: semantic.fgSubtle)),
+        headerAction: Text(
+          _stepLabel,
+          style: TextStyle(
+            fontSize: AppTypography.xs,
+            fontWeight: AppTypography.weightSemibold,
+            color: semantic.fgSubtle,
+          ),
+        ),
         primaryLabel: 'Confirmar Pix',
         onPrimary: () => setState(() => _step = _Step.done),
         child: Column(
@@ -318,8 +408,15 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                   width: 48,
                   height: 48,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentSubtle),
-                  child: Icon(LucideIcons.zap, size: 22, color: semantic.accentDefault),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: semantic.accentSubtle,
+                  ),
+                  child: Icon(
+                    LucideIcons.zap,
+                    size: 22,
+                    color: semantic.accentDefault,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.space2),
                 Text(
@@ -332,7 +429,13 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                     fontFeatures: const [FontFeature.tabularFigures()],
                   ),
                 ),
-                Text('Pix para ${destino.nome}', style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+                Text(
+                  'Pix para ${destino.nome}',
+                  style: TextStyle(
+                    fontSize: AppTypography.sm,
+                    color: semantic.fgMuted,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.space5),
@@ -362,7 +465,9 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             const SizedBox(height: AppSpacing.space5),
             const AppBanner(
               icon: Icon(LucideIcons.info, size: 14),
-              child: Text('O Pix é processado na hora, 24/7. Confira os dados antes de confirmar.'),
+              child: Text(
+                'O Pix é processado na hora, 24/7. Confira os dados antes de confirmar.',
+              ),
             ),
           ],
         ),
@@ -387,7 +492,10 @@ class _ResumoRow extends StatelessWidget {
       textBaseline: TextBaseline.alphabetic,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+        Text(
+          label,
+          style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+        ),
         const SizedBox(width: AppSpacing.space3),
         Flexible(
           child: Text(
@@ -395,7 +503,11 @@ class _ResumoRow extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: AppTypography.sm, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+            style: TextStyle(
+              fontSize: AppTypography.sm,
+              fontWeight: AppTypography.weightSemibold,
+              color: semantic.fgDefault,
+            ),
           ),
         ),
       ],

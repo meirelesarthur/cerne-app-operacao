@@ -22,7 +22,10 @@ class AppTag extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: _paddingH, vertical: _paddingV),
+      padding: const EdgeInsets.symmetric(
+        horizontal: _paddingH,
+        vertical: _paddingV,
+      ),
       decoration: BoxDecoration(
         color: semantic.bgSubtle,
         border: Border.all(color: semantic.borderDefault),

@@ -28,15 +28,19 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
   final Map<String, bool> _conferidos = {};
   bool? _queued;
 
-  int get _totalConferidos => nfeItens.where((i) => _conferidos[i.id] == true).length;
+  int get _totalConferidos =>
+      nfeItens.where((i) => _conferidos[i.id] == true).length;
 
-  void _toggle(String id) => setState(() => _conferidos[id] = !(_conferidos[id] ?? false));
+  void _toggle(String id) =>
+      setState(() => _conferidos[id] = !(_conferidos[id] ?? false));
 
   void _confirmar() {
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
     if (queued) {
-      ref.read(fazendasStoreProvider.notifier).enqueueSync(
+      ref
+          .read(fazendasStoreProvider.notifier)
+          .enqueueSync(
             SyncItem(
               id: 'nfe-${nfeCabecalho.numero}',
               label: 'NF-e #${nfeCabecalho.numero}',
@@ -54,7 +58,8 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
       return SuccessScreen(
         title: 'Entrada processada',
         queued: _queued!,
-        effects: 'Movimento de compra será processado e um título a pagar será gerado no financeiro.',
+        effects:
+            'Movimento de compra será processado e um título a pagar será gerado no financeiro.',
       );
     }
 
@@ -71,7 +76,10 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
         children: [
           const AppSectionTitle(child: Text('Arquivo da nota')),
           const SizedBox(height: AppSpacing.space2),
-          AppFileUpload(value: _file, onChanged: (v) => setState(() => _file = v)),
+          AppFileUpload(
+            value: _file,
+            onChanged: (v) => setState(() => _file = v),
+          ),
           if (_file != null) ...[
             const SizedBox(height: AppSpacing.space5),
             AppCard(
@@ -81,8 +89,15 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                     width: 40,
                     height: 40,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentSubtle),
-                    child: Icon(LucideIcons.fileText, size: 20, color: semantic.accentDefault),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: semantic.accentSubtle,
+                    ),
+                    child: Icon(
+                      LucideIcons.fileText,
+                      size: 20,
+                      color: semantic.accentDefault,
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
@@ -92,11 +107,19 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                       children: [
                         Text(
                           nfeCabecalho.fornecedor,
-                          style: TextStyle(fontFamily: AppTypography.fontFamily, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                          style: TextStyle(
+                            fontFamily: AppTypography.fontFamily,
+                            fontWeight: AppTypography.weightSemibold,
+                            color: semantic.fgDefault,
+                          ),
                         ),
                         Text(
                           'NF-e #${nfeCabecalho.numero}',
-                          style: TextStyle(fontFamily: AppTypography.fontFamily, fontSize: AppTypography.sm, color: semantic.fgMuted),
+                          style: TextStyle(
+                            fontFamily: AppTypography.fontFamily,
+                            fontSize: AppTypography.sm,
+                            color: semantic.fgMuted,
+                          ),
                         ),
                       ],
                     ),
@@ -120,7 +143,11 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                 const AppSectionTitle(child: Text('Itens da nota')),
                 Text(
                   '$_totalConferidos/${nfeItens.length} conferidos',
-                  style: TextStyle(fontFamily: AppTypography.fontFamily, fontSize: AppTypography.xs, color: semantic.fgMuted),
+                  style: TextStyle(
+                    fontFamily: AppTypography.fontFamily,
+                    fontSize: AppTypography.xs,
+                    color: semantic.fgMuted,
+                  ),
                 ),
               ],
             ),
@@ -137,13 +164,25 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                 children: [
                   for (final item in nfeItens)
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.space4,
+                        vertical: AppSpacing.space3,
+                      ),
                       decoration: item == nfeItens.last
                           ? null
-                          : BoxDecoration(border: Border(bottom: BorderSide(color: semantic.borderDefault))),
+                          : BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: semantic.borderDefault,
+                                ),
+                              ),
+                            ),
                       child: Row(
                         children: [
-                          AppCheckbox(checked: _conferidos[item.id] ?? false, onChanged: (_) => _toggle(item.id)),
+                          AppCheckbox(
+                            checked: _conferidos[item.id] ?? false,
+                            onChanged: (_) => _toggle(item.id),
+                          ),
                           const SizedBox(width: AppSpacing.space3),
                           Expanded(
                             child: Column(
@@ -153,11 +192,19 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                                 Text(
                                   item.descricao,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontFamily: AppTypography.fontFamily, fontWeight: AppTypography.weightMedium, color: semantic.fgDefault),
+                                  style: TextStyle(
+                                    fontFamily: AppTypography.fontFamily,
+                                    fontWeight: AppTypography.weightMedium,
+                                    color: semantic.fgDefault,
+                                  ),
                                 ),
                                 Text(
                                   item.qtd,
-                                  style: TextStyle(fontFamily: AppTypography.fontFamily, fontSize: AppTypography.sm, color: semantic.fgMuted),
+                                  style: TextStyle(
+                                    fontFamily: AppTypography.fontFamily,
+                                    fontSize: AppTypography.sm,
+                                    color: semantic.fgMuted,
+                                  ),
                                 ),
                               ],
                             ),

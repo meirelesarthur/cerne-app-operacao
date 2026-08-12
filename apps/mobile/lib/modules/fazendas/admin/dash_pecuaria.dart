@@ -21,7 +21,16 @@ class DashPecuaria extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final recentes = atividades.where((a) => [ActivityKind.pesagem, ActivityKind.evento, ActivityKind.venda].contains(a.kind)).take(4).toList();
+    final recentes = atividades
+        .where(
+          (a) => [
+            ActivityKind.pesagem,
+            ActivityKind.evento,
+            ActivityKind.venda,
+          ].contains(a.kind),
+        )
+        .take(4)
+        .toList();
 
     return DashboardScreen(
       title: 'Pecuária de Corte',
@@ -59,14 +68,26 @@ class DashPecuaria extends StatelessWidget {
             crossAxisSpacing: AppSpacing.space3,
             childAspectRatio: 1.3,
             children: const [
-              AppDashboardCard(icon: LucideIcons.heartPulse, label: 'Taxa de prenhez', value: '—', disabled: true),
-              AppDashboardCard(icon: LucideIcons.baby, label: 'Desmame', value: '—', disabled: true),
+              AppDashboardCard(
+                icon: LucideIcons.heartPulse,
+                label: 'Taxa de prenhez',
+                value: '—',
+                disabled: true,
+              ),
+              AppDashboardCard(
+                icon: LucideIcons.baby,
+                label: 'Desmame',
+                value: '—',
+                disabled: true,
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.space2),
           Builder(
             builder: (context) {
-              final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+              final semantic = Theme.of(
+                context,
+              ).extension<AppSemanticColors>()!;
               return Text(
                 'Indicadores produtivos/reprodutivos em definição no legado — não exibidos para evitar dado incorreto.',
                 style: TextStyle(fontSize: 11, color: semantic.fgSubtle),
@@ -79,14 +100,17 @@ class DashPecuaria extends StatelessWidget {
           AppCard(
             padded: false,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.space3,
+              ),
               child: Column(
                 children: [
                   for (final a in recentes)
                     ActivityListItem(
                       activity: a,
                       showDivider: a != recentes.last,
-                      onTap: () => showActivityDetailSheet(context, activity: a),
+                      onTap: () =>
+                          showActivityDetailSheet(context, activity: a),
                     ),
                 ],
               ),

@@ -7,9 +7,12 @@ import 'package:cerne_app/design/theme/theme_provider.dart';
 import 'package:cerne_app/router/app_router.dart';
 
 Widget _wrap(ProviderContainer container) => UncontrolledProviderScope(
-      container: container,
-      child: MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: appRouter),
-    );
+  container: container,
+  child: MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: appRouter,
+  ),
+);
 
 void main() {
   setUp(() => appRouter.go('/perfil'));
@@ -29,7 +32,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tocar em "Tema" alterna o themeVariantProvider', (tester) async {
+    testWidgets('tocar em "Tema" alterna o themeVariantProvider', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
@@ -57,7 +62,9 @@ void main() {
       expect(find.text('Bem-vindo!'), findsOneWidget);
     });
 
-    testWidgets('tocar em "Notificações" navega para a tela de notificações', (tester) async {
+    testWidgets('tocar em "Notificações" navega para a tela de notificações', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 

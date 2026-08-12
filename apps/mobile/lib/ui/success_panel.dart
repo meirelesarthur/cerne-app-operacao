@@ -44,7 +44,10 @@ class AppSuccessPanel extends StatelessWidget {
               width: AppSpacing.space16,
               height: AppSpacing.space16,
               alignment: Alignment.center,
-              decoration: const BoxDecoration(shape: BoxShape.circle, color: AppColors.brand50),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.brand50,
+              ),
               child: Icon(icon, size: 32, color: semantic.accentDefault),
             ),
             const SizedBox(height: AppSpacing.space4),
@@ -54,7 +57,10 @@ class AppSuccessPanel extends StatelessWidget {
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 300),
                 child: DefaultTextStyle.merge(
-                  style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
+                  style: TextStyle(
+                    fontSize: AppTypography.md,
+                    color: semantic.fgMuted,
+                  ),
                   textAlign: TextAlign.center,
                   child: description!,
                 ),
@@ -84,11 +90,17 @@ WidgetbookComponent buildSuccessPanelWidgetbookComponent() {
           height: 480,
           child: AppSuccessPanel(
             title: 'Transferência concluída',
-            description: const Text('O valor de R\$ 1.200,00 foi enviado com sucesso.'),
+            description: const Text(
+              'O valor de R\$ 1.200,00 foi enviado com sucesso.',
+            ),
             actions: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AppButton(fullWidth: true, onPressed: () {}, child: const Text('Ver comprovante')),
+                AppButton(
+                  fullWidth: true,
+                  onPressed: () {},
+                  child: const Text('Ver comprovante'),
+                ),
                 const SizedBox(height: AppSpacing.space2),
                 AppButton(
                   variant: AppButtonVariant.secondary,

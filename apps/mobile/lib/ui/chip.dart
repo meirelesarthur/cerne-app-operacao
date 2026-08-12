@@ -17,18 +17,43 @@ import '../design/generated/app_typography.dart';
 enum AppChipTone { brand, blue, amber, red, neutral }
 
 class AppChip extends StatelessWidget {
-  const AppChip({super.key, this.tone = AppChipTone.neutral, required this.child, this.icon});
+  const AppChip({
+    super.key,
+    this.tone = AppChipTone.neutral,
+    required this.child,
+    this.icon,
+  });
 
   final AppChipTone tone;
   final Widget child;
   final Widget? icon;
 
   ({Color bg, Color fg, Color border}) get _colors => switch (tone) {
-    AppChipTone.brand => (bg: AppColors.brand50, fg: AppColors.brand700, border: AppColors.brand200),
-    AppChipTone.blue => (bg: AppColors.blue50, fg: AppColors.blue600, border: AppColors.blue200),
-    AppChipTone.amber => (bg: AppColors.amber50, fg: AppColors.amber600, border: AppColors.amber200),
-    AppChipTone.red => (bg: AppColors.red50, fg: AppColors.red600, border: AppColors.red200),
-    AppChipTone.neutral => (bg: AppColors.neutral100, fg: AppColors.neutral600, border: AppColors.neutral200),
+    AppChipTone.brand => (
+      bg: AppColors.brand50,
+      fg: AppColors.brand700,
+      border: AppColors.brand200,
+    ),
+    AppChipTone.blue => (
+      bg: AppColors.blue50,
+      fg: AppColors.blue600,
+      border: AppColors.blue200,
+    ),
+    AppChipTone.amber => (
+      bg: AppColors.amber50,
+      fg: AppColors.amber600,
+      border: AppColors.amber200,
+    ),
+    AppChipTone.red => (
+      bg: AppColors.red50,
+      fg: AppColors.red600,
+      border: AppColors.red200,
+    ),
+    AppChipTone.neutral => (
+      bg: AppColors.neutral100,
+      fg: AppColors.neutral600,
+      border: AppColors.neutral200,
+    ),
   };
 
   @override
@@ -46,7 +71,10 @@ class AppChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            IconTheme.merge(data: IconThemeData(color: colors.fg, size: 14), child: icon!),
+            IconTheme.merge(
+              data: IconThemeData(color: colors.fg, size: 14),
+              child: icon!,
+            ),
             const SizedBox(width: AppSpacing.space1),
           ],
           DefaultTextStyle.merge(

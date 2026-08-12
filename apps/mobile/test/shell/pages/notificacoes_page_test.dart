@@ -7,15 +7,20 @@ import 'package:cerne_app/router/app_router.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
 
 Widget _wrap(ProviderContainer container) => UncontrolledProviderScope(
-      container: container,
-      child: MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: appRouter),
-    );
+  container: container,
+  child: MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: appRouter,
+  ),
+);
 
 void main() {
   setUp(() => appRouter.go('/notificacoes'));
 
   group('NotificacoesPage', () {
-    testWidgets('lista as notificações mock e mostra "Marcar lidas"', (tester) async {
+    testWidgets('lista as notificações mock e mostra "Marcar lidas"', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
@@ -28,7 +33,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('"Marcar lidas" zera as não lidas e some da tela', (tester) async {
+    testWidgets('"Marcar lidas" zera as não lidas e some da tela', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
@@ -44,7 +51,9 @@ void main() {
       expect(find.text('Marcar lidas'), findsNothing);
     });
 
-    testWidgets('tocar numa notificação navega para o módulo correspondente', (tester) async {
+    testWidgets('tocar numa notificação navega para o módulo correspondente', (
+      tester,
+    ) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 

@@ -5,7 +5,10 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/icon_button.dart';
 import 'package:cerne_app/ui/modal.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('showAppModal', () {

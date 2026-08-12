@@ -24,7 +24,10 @@ class BankCardVisual extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppComponentColors.hubBankCardFrom, AppComponentColors.hubBankCardTo],
+          colors: [
+            AppComponentColors.hubBankCardFrom,
+            AppComponentColors.hubBankCardTo,
+          ],
         ),
       ),
       padding: const EdgeInsets.all(AppSpacing.space5),
@@ -41,7 +44,10 @@ class BankCardVisual extends StatelessWidget {
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [AppComponentColors.hubBankCardGlow, Colors.transparent],
+                    colors: [
+                      AppComponentColors.hubBankCardGlow,
+                      Colors.transparent,
+                    ],
                     stops: [0.0, 0.7],
                   ),
                 ),

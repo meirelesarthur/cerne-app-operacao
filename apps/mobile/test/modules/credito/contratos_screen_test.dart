@@ -4,11 +4,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/credito/screens/contratos_screen.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('ContratosScreen', () {
-    testWidgets('renderiza os contratos ativos com progresso de parcelas', (tester) async {
+    testWidgets('renderiza os contratos ativos com progresso de parcelas', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const ContratosScreen()));
 
       expect(find.text('Contratos'), findsOneWidget);
@@ -19,18 +24,21 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tocar em um contrato abre o bottom sheet com próxima parcela, vencimento e saldo', (tester) async {
-      await tester.pumpWidget(_wrap(const ContratosScreen()));
+    testWidgets(
+      'tocar em um contrato abre o bottom sheet com próxima parcela, vencimento e saldo',
+      (tester) async {
+        await tester.pumpWidget(_wrap(const ContratosScreen()));
 
-      await tester.tap(find.text('CPR Financeira'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('CPR Financeira'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Próxima parcela'), findsOneWidget);
-      expect(find.text('R\$ 4.520,33'), findsOneWidget);
-      expect(find.text('Vencimento'), findsOneWidget);
-      expect(find.text('05/08'), findsOneWidget);
-      expect(find.text('Saldo devedor'), findsOneWidget);
-      expect(find.text('R\$ 68.220,17'), findsOneWidget);
-    });
+        expect(find.text('Próxima parcela'), findsOneWidget);
+        expect(find.text('R\$ 4.520,33'), findsOneWidget);
+        expect(find.text('Vencimento'), findsOneWidget);
+        expect(find.text('05/08'), findsOneWidget);
+        expect(find.text('Saldo devedor'), findsOneWidget);
+        expect(find.text('R\$ 68.220,17'), findsOneWidget);
+      },
+    );
   });
 }

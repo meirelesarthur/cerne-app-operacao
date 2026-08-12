@@ -17,12 +17,22 @@ GoRoute buildArmazemModuleRoute() {
     routes: [
       GoRoute(
         path: 'estoque',
-        builder: (context, state) =>
-            EstoqueScreen(initialUnidadeId: state.uri.queryParameters['unidade']),
+        builder: (context, state) => EstoqueScreen(
+          initialUnidadeId: state.uri.queryParameters['unidade'],
+        ),
       ),
-      GoRoute(path: 'movimentacoes', builder: (context, state) => const MovimentacoesScreen()),
-      GoRoute(path: 'unidades', builder: (context, state) => const UnidadesScreen()),
-      GoRoute(path: 'relatorios', builder: (context, state) => const RelatoriosScreen()),
+      GoRoute(
+        path: 'movimentacoes',
+        builder: (context, state) => const MovimentacoesScreen(),
+      ),
+      GoRoute(
+        path: 'unidades',
+        builder: (context, state) => const UnidadesScreen(),
+      ),
+      GoRoute(
+        path: 'relatorios',
+        builder: (context, state) => const RelatoriosScreen(),
+      ),
     ],
   );
 }

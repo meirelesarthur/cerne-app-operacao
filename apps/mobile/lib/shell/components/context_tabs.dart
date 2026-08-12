@@ -39,16 +39,23 @@ class AppContextTabs extends StatelessWidget {
           height: AppSpacing.space10 + AppSpacing.space6,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space3),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.space4,
+              vertical: AppSpacing.space3,
+            ),
             itemCount: tabs.length,
-            separatorBuilder: (context, i) => const SizedBox(width: AppSpacing.space2),
+            separatorBuilder: (context, i) =>
+                const SizedBox(width: AppSpacing.space2),
             itemBuilder: (context, i) {
               final tab = tabs[i];
               final active = tab.path == activePath;
 
               return Container(
                 decoration: !active
-                    ? BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.full), boxShadow: semantic.shadowCard)
+                    ? BoxDecoration(
+                        borderRadius: BorderRadius.circular(AppRadius.full),
+                        boxShadow: semantic.shadowCard,
+                      )
                     : null,
                 child: Material(
                   color: active ? semantic.inkBg : semantic.bgSurface,
@@ -60,7 +67,10 @@ class AppContextTabs extends StatelessWidget {
                       button: true,
                       selected: active,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.space4,
+                          vertical: AppSpacing.space2,
+                        ),
                         child: Center(
                           child: Text(
                             tab.label,

@@ -15,17 +15,34 @@ GoRoute buildBankModuleRoute() {
     path: '/bank',
     builder: (context, state) => const BankHomeScreen(),
     routes: [
-      GoRoute(path: 'extrato', builder: (context, state) => const ExtratoScreen()),
-      GoRoute(path: 'pagamentos', builder: (context, state) => const PagamentosScreen()),
-      GoRoute(path: 'cartoes', builder: (context, state) => const CartoesScreen()),
-      GoRoute(path: 'pix', builder: (context, state) => const PagamentosScreen(initialFlow: PagamentosFlow.pix)),
-      GoRoute(path: 'limites', builder: (context, state) => const LimitesScreen()),
+      GoRoute(
+        path: 'extrato',
+        builder: (context, state) => const ExtratoScreen(),
+      ),
+      GoRoute(
+        path: 'pagamentos',
+        builder: (context, state) => const PagamentosScreen(),
+      ),
+      GoRoute(
+        path: 'cartoes',
+        builder: (context, state) => const CartoesScreen(),
+      ),
+      GoRoute(
+        path: 'pix',
+        builder: (context, state) =>
+            const PagamentosScreen(initialFlow: PagamentosFlow.pix),
+      ),
+      GoRoute(
+        path: 'limites',
+        builder: (context, state) => const LimitesScreen(),
+      ),
       GoRoute(
         path: 'ajuda',
         builder: (context, state) => const AppEmptyState(
           icon: LucideIcons.construction,
           title: 'Bank · Ajuda',
-          description: 'Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase.',
+          description:
+              'Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase.',
         ),
       ),
     ],

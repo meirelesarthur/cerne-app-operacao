@@ -69,7 +69,11 @@ class AppFormField extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(LucideIcons.alertCircle, size: 12, color: AppColors.red600),
+              const Icon(
+                LucideIcons.alertCircle,
+                size: 12,
+                color: AppColors.red600,
+              ),
               const SizedBox(width: AppSpacing.space1),
               Flexible(
                 child: Text(
@@ -123,7 +127,10 @@ WidgetbookComponent buildFormFieldWidgetbookComponent() {
                   label: 'CNPJ',
                   required: true,
                   error: 'CNPJ inválido',
-                  child: AppTextInput(placeholder: '00.000.000/0000-00', invalid: true),
+                  child: AppTextInput(
+                    placeholder: '00.000.000/0000-00',
+                    invalid: true,
+                  ),
                 ),
               ],
             ),

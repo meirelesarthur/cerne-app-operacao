@@ -6,7 +6,12 @@ import '../../../design/theme/app_theme_extension.dart';
 
 /// Item de atalho ícone + rótulo — espelha `Shortcut` (interface) de `ShortcutGrid.tsx`.
 class Shortcut {
-  const Shortcut({required this.id, required this.label, required this.icon, this.onTap});
+  const Shortcut({
+    required this.id,
+    required this.label,
+    required this.icon,
+    this.onTap,
+  });
 
   final String id;
   final String label;
@@ -61,7 +66,12 @@ class ShortcutGrid extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, height: 1.1, color: semantic.fgMuted),
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    height: 1.1,
+                    color: semantic.fgMuted,
+                  ),
                 ),
               ],
             ),

@@ -41,7 +41,11 @@ class LimitesScreen extends ConsumerWidget {
                   children: [
                     Text(
                       f.label,
-                      style: TextStyle(fontSize: AppTypography.md, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                      style: TextStyle(
+                        fontSize: AppTypography.md,
+                        fontWeight: AppTypography.weightSemibold,
+                        color: semantic.fgDefault,
+                      ),
                     ),
                     Text(
                       '${balanceHidden ? '••••' : f.usado} / ${balanceHidden ? '••••' : f.total}',
@@ -55,9 +59,18 @@ class LimitesScreen extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(height: AppSpacing.space2),
-                AppProgressBar(value: f.usadoPct.toDouble(), colorByOccupancy: true),
+                AppProgressBar(
+                  value: f.usadoPct.toDouble(),
+                  colorByOccupancy: true,
+                ),
                 const SizedBox(height: AppSpacing.space1),
-                Text('${f.usadoPct}% utilizado neste ciclo', style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgSubtle)),
+                Text(
+                  '${f.usadoPct}% utilizado neste ciclo',
+                  style: TextStyle(
+                    fontSize: AppTypography.xs,
+                    color: semantic.fgSubtle,
+                  ),
+                ),
               ],
             ),
           ),
@@ -65,7 +78,9 @@ class LimitesScreen extends ConsumerWidget {
         ],
         const AppBanner(
           icon: Icon(LucideIcons.info, size: 14),
-          child: Text('Ajustes de limite passam por análise de crédito e são solicitados na tela de Cartões.'),
+          child: Text(
+            'Ajustes de limite passam por análise de crédito e são solicitados na tela de Cartões.',
+          ),
         ),
       ],
     );

@@ -71,7 +71,9 @@ class AppDonutChart extends StatelessWidget {
             children: [
               for (var i = 0; i < data.length; i++)
                 Padding(
-                  padding: EdgeInsets.only(bottom: i == data.length - 1 ? 0 : AppSpacing.space1),
+                  padding: EdgeInsets.only(
+                    bottom: i == data.length - 1 ? 0 : AppSpacing.space1,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -79,14 +81,20 @@ class AppDonutChart extends StatelessWidget {
                         width: _dotSize,
                         height: _dotSize,
                         decoration: BoxDecoration(
-                          color: data[i].color ?? AppColors.chartSeries[i % AppColors.chartSeries.length],
+                          color:
+                              data[i].color ??
+                              AppColors.chartSeries[i %
+                                  AppColors.chartSeries.length],
                           shape: BoxShape.circle,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.space2),
                       Text(
                         data[i].label,
-                        style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
+                        style: TextStyle(
+                          fontSize: AppTypography.md,
+                          color: semantic.fgMuted,
+                        ),
                       ),
                     ],
                   ),
@@ -131,7 +139,8 @@ class _DonutChartPainter extends CustomPainter {
       final d = data[i];
       final sweep = (d.value / safeTotal) * 2 * math.pi;
       final paint = Paint()
-        ..color = d.color ?? AppColors.chartSeries[i % AppColors.chartSeries.length]
+        ..color =
+            d.color ?? AppColors.chartSeries[i % AppColors.chartSeries.length]
         ..style = PaintingStyle.stroke
         ..strokeWidth = thickness;
       canvas.drawArc(rect, startAngle, sweep, false, paint);
@@ -143,11 +152,21 @@ class _DonutChartPainter extends CustomPainter {
         text: TextSpan(
           text: centerValue,
           // 16px no React (fontSize="16") == token AppTypography.xl.
-          style: TextStyle(fontSize: AppTypography.xl, fontWeight: AppTypography.weightBold, color: valueColor),
+          style: TextStyle(
+            fontSize: AppTypography.xl,
+            fontWeight: AppTypography.weightBold,
+            color: valueColor,
+          ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      valuePainter.paint(canvas, Offset(center.dx - valuePainter.width / 2, center.dy - valuePainter.height));
+      valuePainter.paint(
+        canvas,
+        Offset(
+          center.dx - valuePainter.width / 2,
+          center.dy - valuePainter.height,
+        ),
+      );
     }
     if (centerLabel != null) {
       final labelPainter = TextPainter(
@@ -158,7 +177,10 @@ class _DonutChartPainter extends CustomPainter {
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      labelPainter.paint(canvas, Offset(center.dx - labelPainter.width / 2, center.dy + 2));
+      labelPainter.paint(
+        canvas,
+        Offset(center.dx - labelPainter.width / 2, center.dy + 2),
+      );
     }
   }
 
@@ -191,7 +213,11 @@ WidgetbookComponent buildDonutChartWidgetbookComponent() {
       WidgetbookUseCase(
         name: 'Com valor central',
         builder: (context) => const Center(
-          child: AppDonutChart(data: sample, centerValue: '450 ha', centerLabel: 'total'),
+          child: AppDonutChart(
+            data: sample,
+            centerValue: '450 ha',
+            centerLabel: 'total',
+          ),
         ),
       ),
     ],

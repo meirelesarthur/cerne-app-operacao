@@ -38,7 +38,8 @@ class NotificacoesPage extends ConsumerWidget {
                   ? AppButton(
                       variant: AppButtonVariant.ghost,
                       size: AppButtonSize.sm,
-                      onPressed: () => ref.read(shellStoreProvider.notifier).markAllRead(),
+                      onPressed: () =>
+                          ref.read(shellStoreProvider.notifier).markAllRead(),
                       child: const Text('Marcar lidas'),
                     )
                   : null,
@@ -55,11 +56,14 @@ class NotificacoesPage extends ConsumerWidget {
                   : ListView.separated(
                       padding: const EdgeInsets.all(AppSpacing.space3),
                       itemCount: notifications.length,
-                      separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.space2),
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: AppSpacing.space2),
                       itemBuilder: (context, index) {
                         final n = notifications[index];
-                        final icon = _moduleIcon[n.moduleId] ?? LucideIcons.sprout;
-                        final destination = getModule(n.moduleId)?.homeRoute ?? '/inicio';
+                        final icon =
+                            _moduleIcon[n.moduleId] ?? LucideIcons.sprout;
+                        final destination =
+                            getModule(n.moduleId)?.homeRoute ?? '/inicio';
 
                         return AppCard(
                           interactive: true,
@@ -69,8 +73,14 @@ class NotificacoesPage extends ConsumerWidget {
                             padding: const EdgeInsets.all(AppSpacing.space3),
                             decoration: !n.read
                                 ? BoxDecoration(
-                                    borderRadius: BorderRadius.circular(AppRadius.xl3),
-                                    border: Border.all(color: semantic.accentDefault.withValues(alpha: 0.6)),
+                                    borderRadius: BorderRadius.circular(
+                                      AppRadius.xl3,
+                                    ),
+                                    border: Border.all(
+                                      color: semantic.accentDefault.withValues(
+                                        alpha: 0.6,
+                                      ),
+                                    ),
                                   )
                                 : null,
                             child: Row(
@@ -80,30 +90,55 @@ class NotificacoesPage extends ConsumerWidget {
                                   width: AppSpacing.space10,
                                   height: AppSpacing.space10,
                                   alignment: Alignment.center,
-                                  decoration: BoxDecoration(color: semantic.accentSubtle, shape: BoxShape.circle),
-                                  child: Icon(icon, size: 18, color: semantic.accentDefault),
+                                  decoration: BoxDecoration(
+                                    color: semantic.accentSubtle,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    icon,
+                                    size: 18,
+                                    color: semantic.accentDefault,
+                                  ),
                                 ),
                                 const SizedBox(width: AppSpacing.space3),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
                                             child: Text(
                                               n.title,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: semantic.fgDefault,
+                                              ),
                                             ),
                                           ),
-                                          const SizedBox(width: AppSpacing.space2),
-                                          Text(n.time, style: TextStyle(fontSize: 11, color: semantic.fgSubtle)),
+                                          const SizedBox(
+                                            width: AppSpacing.space2,
+                                          ),
+                                          Text(
+                                            n.time,
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: semantic.fgSubtle,
+                                            ),
+                                          ),
                                         ],
                                       ),
-                                      Text(n.detail, style: TextStyle(color: semantic.fgMuted)),
+                                      Text(
+                                        n.detail,
+                                        style: TextStyle(
+                                          color: semantic.fgMuted,
+                                        ),
+                                      ),
                                       const SizedBox(height: AppSpacing.space1),
                                       AppChip(child: Text(n.moduleId)),
                                     ],

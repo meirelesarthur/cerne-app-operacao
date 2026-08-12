@@ -6,8 +6,11 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/router/app_router.dart';
 
 Widget _wrap() => ProviderScope(
-      child: MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: appRouter),
-    );
+  child: MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: appRouter,
+  ),
+);
 
 void main() {
   setUp(() => appRouter.go('/onboarding'));
@@ -23,7 +26,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('"Próximo" avança os slides até "Começar" no último', (tester) async {
+    testWidgets('"Próximo" avança os slides até "Começar" no último', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 
@@ -48,7 +53,9 @@ void main() {
       expect(find.text('Bem-vindo!'), findsOneWidget);
     });
 
-    testWidgets('"Começar" no último slide também leva ao login', (tester) async {
+    testWidgets('"Começar" no último slide também leva ao login', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
 

@@ -10,7 +10,12 @@ import '../design/theme/app_theme_extension.dart';
 /// com rótulo abaixo — usado nas ações rápidas do hub. Ícone fixo em 21px,
 /// espelhando `<Icon size={21} strokeWidth={1.9} />` do React.
 class AppQuickAction extends StatelessWidget {
-  const AppQuickAction({super.key, required this.icon, required this.label, this.onPressed});
+  const AppQuickAction({
+    super.key,
+    required this.icon,
+    required this.label,
+    this.onPressed,
+  });
 
   /// Ícone fixo — equivalente ao `icon: LucideIcon` do React (ex.: `LucideIcons.wallet`).
   final IconData icon;
@@ -71,9 +76,21 @@ WidgetbookComponent buildQuickActionWidgetbookComponent() {
           child: Wrap(
             spacing: 20,
             children: [
-              AppQuickAction(icon: LucideIcons.wallet, label: 'Carteira', onPressed: () {}),
-              AppQuickAction(icon: LucideIcons.send, label: 'Transferir', onPressed: () {}),
-              AppQuickAction(icon: LucideIcons.qrCode, label: 'Pagar com QR Code', onPressed: () {}),
+              AppQuickAction(
+                icon: LucideIcons.wallet,
+                label: 'Carteira',
+                onPressed: () {},
+              ),
+              AppQuickAction(
+                icon: LucideIcons.send,
+                label: 'Transferir',
+                onPressed: () {},
+              ),
+              AppQuickAction(
+                icon: LucideIcons.qrCode,
+                label: 'Pagar com QR Code',
+                onPressed: () {},
+              ),
             ],
           ),
         ),

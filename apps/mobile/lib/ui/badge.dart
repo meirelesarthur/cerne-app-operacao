@@ -13,7 +13,11 @@ import '../design/theme/app_theme_extension.dart';
 enum AppBadgeTone { brand, red, neutral }
 
 class AppBadge extends StatelessWidget {
-  const AppBadge({super.key, required this.child, this.tone = AppBadgeTone.red});
+  const AppBadge({
+    super.key,
+    required this.child,
+    this.tone = AppBadgeTone.red,
+  });
 
   final Widget child;
   final AppBadgeTone tone;
@@ -21,7 +25,10 @@ class AppBadge extends StatelessWidget {
   ({Color bg, Color fg}) _colors(AppSemanticColors s) => switch (tone) {
     AppBadgeTone.brand => (bg: s.ctaBg, fg: s.ctaFg),
     AppBadgeTone.red => (bg: AppColors.red600, fg: Colors.white),
-    AppBadgeTone.neutral => (bg: AppColors.neutral200, fg: AppColors.neutral700),
+    AppBadgeTone.neutral => (
+      bg: AppColors.neutral200,
+      fg: AppColors.neutral700,
+    ),
   };
 
   @override
@@ -32,7 +39,10 @@ class AppBadge extends StatelessWidget {
     return Container(
       constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space1),
-      decoration: BoxDecoration(color: colors.bg, borderRadius: BorderRadius.circular(AppRadius.full)),
+      decoration: BoxDecoration(
+        color: colors.bg,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+      ),
       alignment: Alignment.center,
       child: DefaultTextStyle.merge(
         style: TextStyle(

@@ -46,7 +46,11 @@ class _DashConsultasState extends State<DashConsultas> {
               const SizedBox(width: 6),
               Text(
                 'Somente leitura — dados espelhados do web.',
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: semantic.fgSubtle),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: semantic.fgSubtle,
+                ),
               ),
             ],
           ),
@@ -84,7 +88,8 @@ class _DashConsultasState extends State<DashConsultas> {
               child: const AppEmptyState(
                 icon: LucideIcons.mapPinned,
                 title: 'Mapa de localização',
-                description: 'Carregamento otimizado em desenvolvimento. O mapa de localização de animais será habilitado em uma próxima fase.',
+                description:
+                    'Carregamento otimizado em desenvolvimento. O mapa de localização de animais será habilitado em uma próxima fase.',
               ),
             ),
         ],
@@ -94,7 +99,12 @@ class _DashConsultasState extends State<DashConsultas> {
 }
 
 class _HubTile extends StatelessWidget {
-  const _HubTile({required this.label, required this.icon, required this.selected, required this.onTap});
+  const _HubTile({
+    required this.label,
+    required this.icon,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
   final IconData icon;
@@ -114,20 +124,30 @@ class _HubTile extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.space3),
           decoration: BoxDecoration(
             color: selected ? semantic.accentSubtle : semantic.bgSurface,
-            border: Border.all(color: selected ? semantic.accentDefault : semantic.borderDefault),
+            border: Border.all(
+              color: selected ? semantic.accentDefault : semantic.borderDefault,
+            ),
             borderRadius: BorderRadius.circular(AppRadius.xl2),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 20, color: selected ? semantic.accentDefault : semantic.fgMuted),
+              Icon(
+                icon,
+                size: 20,
+                color: selected ? semantic.accentDefault : semantic.fgMuted,
+              ),
               const SizedBox(height: 6),
               Text(
                 label,
                 textAlign: TextAlign.center,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 11, fontWeight: FontWeight.w500, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: semantic.fgMuted,
+                ),
               ),
             ],
           ),
@@ -157,7 +177,10 @@ class _ReadOnlyList extends StatelessWidget {
         children: [
           for (final r in rows) ...[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space3),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.space4,
+                vertical: AppSpacing.space3,
+              ),
               child: Row(
                 children: [
                   Expanded(
@@ -165,8 +188,24 @@ class _ReadOnlyList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(r.titulo, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault)),
-                        Text(r.subtitulo, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 13, color: semantic.fgMuted)),
+                        Text(
+                          r.titulo,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: semantic.fgDefault,
+                          ),
+                        ),
+                        Text(
+                          r.subtitulo,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: semantic.fgMuted,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -174,7 +213,8 @@ class _ReadOnlyList extends StatelessWidget {
                 ],
               ),
             ),
-            if (r != rows.last) Divider(height: 1, color: semantic.borderSubtle),
+            if (r != rows.last)
+              Divider(height: 1, color: semantic.borderSubtle),
           ],
         ],
       ),

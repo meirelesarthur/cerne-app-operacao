@@ -40,7 +40,10 @@ class MarketplaceCategoriasScreen extends StatelessWidget {
               for (final entry in categoriasComContagem)
                 AppCard(
                   interactive: true,
-                  onTap: () => context.go('/marketplace', extra: {'categoriaId': entry.categoria.id}),
+                  onTap: () => context.go(
+                    '/marketplace',
+                    extra: {'categoriaId': entry.categoria.id},
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -53,16 +56,28 @@ class MarketplaceCategoriasScreen extends StatelessWidget {
                           color: semantic.accentSubtle,
                           borderRadius: BorderRadius.circular(AppRadius.xl),
                         ),
-                        child: Icon(entry.categoria.icon, size: 26, color: semantic.accentDefault),
+                        child: Icon(
+                          entry.categoria.icon,
+                          size: 26,
+                          color: semantic.accentDefault,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.space3),
                       Text(
                         entry.categoria.label,
-                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: semantic.fgDefault,
+                        ),
                       ),
                       const SizedBox(height: 6),
                       AppTag(
-                        child: Text(entry.total == 1 ? '1 produto' : '${entry.total} produtos'),
+                        child: Text(
+                          entry.total == 1
+                              ? '1 produto'
+                              : '${entry.total} produtos',
+                        ),
                       ),
                     ],
                   ),

@@ -81,14 +81,16 @@ WidgetbookComponent buildIllustrationSlotWidgetbookComponent() {
       WidgetbookUseCase(
         name: 'Fallback com ícone',
         builder: (context) => const Center(
-          child: AppIllustrationSlot(alt: 'Onboarding — boas-vindas', icon: LucideIcons.sprout),
+          child: AppIllustrationSlot(
+            alt: 'Onboarding — boas-vindas',
+            icon: LucideIcons.sprout,
+          ),
         ),
       ),
       WidgetbookUseCase(
         name: 'Sem ícone (vazio)',
-        builder: (context) => const Center(
-          child: AppIllustrationSlot(alt: 'Estado vazio'),
-        ),
+        builder: (context) =>
+            const Center(child: AppIllustrationSlot(alt: 'Estado vazio')),
       ),
     ],
   );

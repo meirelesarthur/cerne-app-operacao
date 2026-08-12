@@ -35,9 +35,12 @@ class AppStepper extends StatefulWidget {
 }
 
 class _AppStepperState extends State<AppStepper> {
-  late final TextEditingController _controller = TextEditingController(text: _format(widget.value));
+  late final TextEditingController _controller = TextEditingController(
+    text: _format(widget.value),
+  );
 
-  String _format(num v) => v == v.roundToDouble() ? v.toInt().toString() : v.toString();
+  String _format(num v) =>
+      v == v.roundToDouble() ? v.toInt().toString() : v.toString();
 
   @override
   void didUpdateWidget(covariant AppStepper oldWidget) {
@@ -64,7 +67,11 @@ class _AppStepperState extends State<AppStepper> {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     const height = AppSize.iconBtnMd;
 
-    Widget stepButton({required IconData icon, required String label, required VoidCallback? onTap}) {
+    Widget stepButton({
+      required IconData icon,
+      required String label,
+      required VoidCallback? onTap,
+    }) {
       return Semantics(
         button: true,
         label: label,
@@ -73,7 +80,11 @@ class _AppStepperState extends State<AppStepper> {
           child: SizedBox(
             width: AppSize.iconBtnMd,
             height: height,
-            child: Icon(icon, size: 16, color: onTap == null ? semantic.fgSubtle : semantic.fgMuted),
+            child: Icon(
+              icon,
+              size: 16,
+              color: onTap == null ? semantic.fgSubtle : semantic.fgMuted,
+            ),
           ),
         ),
       );
@@ -93,7 +104,9 @@ class _AppStepperState extends State<AppStepper> {
           stepButton(
             icon: LucideIcons.minus,
             label: 'Diminuir',
-            onTap: widget.value <= widget.min ? null : () => widget.onChanged(_clamp(widget.value - widget.step)),
+            onTap: widget.value <= widget.min
+                ? null
+                : () => widget.onChanged(_clamp(widget.value - widget.step)),
           ),
           Expanded(
             child: Container(
@@ -111,14 +124,19 @@ class _AppStepperState extends State<AppStepper> {
                     child: TextField(
                       controller: _controller,
                       textAlign: TextAlign.center,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       style: TextStyle(
                         fontFamily: AppTypography.fontFamily,
                         fontSize: AppTypography.md,
                         fontWeight: AppTypography.weightSemibold,
                         color: semantic.fgDefault,
                       ),
-                      decoration: const InputDecoration(border: InputBorder.none, isDense: true),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        isDense: true,
+                      ),
                       onChanged: (text) {
                         final parsed = num.tryParse(text.replaceAll(',', '.'));
                         widget.onChanged(_clamp(parsed ?? widget.min));
@@ -144,7 +162,9 @@ class _AppStepperState extends State<AppStepper> {
           stepButton(
             icon: LucideIcons.plus,
             label: 'Aumentar',
-            onTap: widget.value >= widget.max ? null : () => widget.onChanged(_clamp(widget.value + widget.step)),
+            onTap: widget.value >= widget.max
+                ? null
+                : () => widget.onChanged(_clamp(widget.value + widget.step)),
           ),
         ],
       ),
@@ -179,7 +199,12 @@ class _StepperUseCaseState extends State<_StepperUseCase> {
     return Center(
       child: SizedBox(
         width: 160,
-        child: AppStepper(value: _qty, onChanged: (v) => setState(() => _qty = v), max: 10, suffix: 'sc'),
+        child: AppStepper(
+          value: _qty,
+          onChanged: (v) => setState(() => _qty = v),
+          max: 10,
+          suffix: 'sc',
+        ),
       ),
     );
   }

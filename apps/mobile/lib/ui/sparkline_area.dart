@@ -36,7 +36,9 @@ class AppSparklineArea extends StatelessWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: CustomPaint(painter: _SparklineAreaPainter(data: data, color: lineColor)),
+      child: CustomPaint(
+        painter: _SparklineAreaPainter(data: data, color: lineColor),
+      ),
     );
   }
 }
@@ -58,7 +60,10 @@ class _SparklineAreaPainter extends CustomPainter {
 
     final points = <Offset>[
       for (var i = 0; i < data.length; i++)
-        Offset(i * stepX, size.height - ((data[i] - min) / range) * (size.height - 4) - 2),
+        Offset(
+          i * stepX,
+          size.height - ((data[i] - min) / range) * (size.height - 4) - 2,
+        ),
     ];
 
     final linePath = Path()..moveTo(points.first.dx, points.first.dy);
@@ -102,12 +107,18 @@ WidgetbookComponent buildSparklineAreaWidgetbookComponent() {
     useCases: [
       WidgetbookUseCase(
         name: 'Padrão',
-        builder: (context) => const Center(child: AppSparklineArea(data: sample)),
+        builder: (context) =>
+            const Center(child: AppSparklineArea(data: sample)),
       ),
       WidgetbookUseCase(
         name: 'Cor customizada',
         builder: (context) => Center(
-          child: AppSparklineArea(data: sample, color: Theme.of(context).colorScheme.error, width: 160, height: 48),
+          child: AppSparklineArea(
+            data: sample,
+            color: Theme.of(context).colorScheme.error,
+            width: 160,
+            height: 48,
+          ),
         ),
       ),
     ],

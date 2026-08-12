@@ -12,7 +12,10 @@ GoRoute buildHubModuleRoute() {
     builder: (context, state) => const HubHomeScreen(),
     routes: [
       GoRoute(path: 'apps', builder: (context, state) => const AppsScreen()),
-      GoRoute(path: 'carteira', builder: (context, state) => const CarteiraScreen()),
+      GoRoute(
+        path: 'carteira',
+        builder: (context, state) => const CarteiraScreen(),
+      ),
     ],
   );
 }

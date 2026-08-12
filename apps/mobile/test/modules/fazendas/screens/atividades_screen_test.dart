@@ -7,10 +7,15 @@ import 'package:cerne_app/modules/fazendas/screens/atividades_screen.dart';
 
 void main() {
   group('AtividadesScreen', () {
-    testWidgets('lista as atividades e abre o detalhe ao tocar', (tester) async {
+    testWidgets('lista as atividades e abre o detalhe ao tocar', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: AtividadesScreen())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: AtividadesScreen()),
+          ),
         ),
       );
       await tester.pumpAndSettle();

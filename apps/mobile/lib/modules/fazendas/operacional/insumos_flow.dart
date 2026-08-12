@@ -47,7 +47,9 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
         if (_qtd.isNotEmpty) _qtd,
         if (_descricao.isNotEmpty) _descricao,
       ].join(' · ');
-      ref.read(fazendasStoreProvider.notifier).enqueueSync(
+      ref
+          .read(fazendasStoreProvider.notifier)
+          .enqueueSync(
             SyncItem(
               id: 'ins-$_talhao',
               label: 'Insumo (${_tipo.name})',
@@ -65,7 +67,8 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
       return SuccessScreen(
         title: 'Lançamento registrado',
         queued: _queued!,
-        effects: 'A ocorrência/aplicação será vinculada ao talhão e ciclo de produção.',
+        effects:
+            'A ocorrência/aplicação será vinculada ao talhão e ciclo de produção.',
       );
     }
 
@@ -107,9 +110,15 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
                 for (final op in _Lancamento.values)
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(right: op == _Lancamento.aplicacao ? AppSpacing.space2 : 0),
+                      padding: EdgeInsets.only(
+                        right: op == _Lancamento.aplicacao
+                            ? AppSpacing.space2
+                            : 0,
+                      ),
                       child: _TipoButton(
-                        label: op == _Lancamento.aplicacao ? 'Aplicação' : 'Ocorrência',
+                        label: op == _Lancamento.aplicacao
+                            ? 'Aplicação'
+                            : 'Ocorrência',
                         selected: _tipo == op,
                         onTap: () => setState(() => _tipo = op),
                       ),
@@ -122,7 +131,10 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
           AppFormField(
             label: 'Data',
             required: true,
-            child: AppTextInput(onChanged: (v) => setState(() => _data = v), placeholder: 'dd/mm/aaaa'),
+            child: AppTextInput(
+              onChanged: (v) => setState(() => _data = v),
+              placeholder: 'dd/mm/aaaa',
+            ),
           ),
           const SizedBox(height: AppSpacing.space5),
           if (_tipo == _Lancamento.aplicacao) ...[
@@ -139,7 +151,9 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
             AppFormField(
               label: 'Quantidade',
               child: AppTextInput(
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 onChanged: (v) => setState(() => _qtd = v),
                 placeholder: 'Quantidade aplicada',
               ),
@@ -147,7 +161,10 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
           ] else
             AppFormField(
               label: 'Descrição da ocorrência',
-              child: AppTextarea(onChanged: (v) => setState(() => _descricao = v), placeholder: 'Descreva a ocorrência...'),
+              child: AppTextarea(
+                onChanged: (v) => setState(() => _descricao = v),
+                placeholder: 'Descreva a ocorrência...',
+              ),
             ),
         ],
       ),
@@ -156,7 +173,11 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
 }
 
 class _TipoButton extends StatelessWidget {
-  const _TipoButton({required this.label, required this.selected, required this.onTap});
+  const _TipoButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
   final bool selected;
@@ -170,12 +191,17 @@ class _TipoButton extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3, vertical: AppSpacing.space2),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space3,
+          vertical: AppSpacing.space2,
+        ),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: selected ? semantic.ctaBg : semantic.bgSurface,
           borderRadius: BorderRadius.circular(AppRadius.lg),
-          border: Border.all(color: selected ? semantic.ctaBg : semantic.borderDefault),
+          border: Border.all(
+            color: selected ? semantic.ctaBg : semantic.borderDefault,
+          ),
         ),
         child: Text(
           label,

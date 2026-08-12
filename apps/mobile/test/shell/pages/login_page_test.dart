@@ -8,8 +8,11 @@ import 'package:cerne_app/router/app_router.dart';
 import '../../support/test_viewport.dart';
 
 Widget _wrap() => ProviderScope(
-      child: MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: appRouter),
-    );
+  child: MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: appRouter,
+  ),
+);
 
 void main() {
   // appRouter é uma instância global — reseta o ponto de partida a cada teste.

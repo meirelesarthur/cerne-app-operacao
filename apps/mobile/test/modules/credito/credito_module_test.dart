@@ -6,8 +6,14 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/credito/credito_module.dart';
 
 Widget _wrap(String initialLocation) {
-  final router = GoRouter(initialLocation: initialLocation, routes: [buildCreditoModuleRoute()]);
-  return MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: router);
+  final router = GoRouter(
+    initialLocation: initialLocation,
+    routes: [buildCreditoModuleRoute()],
+  );
+  return MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: router,
+  );
 }
 
 void main() {
@@ -18,26 +24,34 @@ void main() {
       expect(find.text('Simulador rápido'), findsOneWidget);
     });
 
-    testWidgets('"/credito/propostas" abre a listagem de propostas', (tester) async {
+    testWidgets('"/credito/propostas" abre a listagem de propostas', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap('/credito/propostas'));
       await tester.pumpAndSettle();
       expect(find.text('Total solicitado'), findsOneWidget);
     });
 
-    testWidgets('"/credito/proposta/:id" abre o detalhe com o id da rota', (tester) async {
+    testWidgets('"/credito/proposta/:id" abre o detalhe com o id da rota', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap('/credito/proposta/prop2'));
       await tester.pumpAndSettle();
       expect(find.text('Investimento — Máquinas'), findsWidgets);
       expect(find.text('Aprovada'), findsWidgets);
     });
 
-    testWidgets('"/credito/simular" abre a Home com scrollToSimulador', (tester) async {
+    testWidgets('"/credito/simular" abre a Home com scrollToSimulador', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap('/credito/simular'));
       await tester.pumpAndSettle();
       expect(find.text('Simulador rápido'), findsOneWidget);
     });
 
-    testWidgets('"/credito/contratos" abre a tela de contratos', (tester) async {
+    testWidgets('"/credito/contratos" abre a tela de contratos', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap('/credito/contratos'));
       await tester.pumpAndSettle();
       expect(find.text('Contratos'), findsOneWidget);

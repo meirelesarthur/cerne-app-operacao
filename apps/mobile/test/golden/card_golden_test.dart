@@ -21,7 +21,10 @@ void main() {
                 width: 220,
                 child: themedGolden(
                   variant,
-                  AppCard(variant: cardVariant, child: const Text('Conteúdo do card')),
+                  AppCard(
+                    variant: cardVariant,
+                    child: const Text('Conteúdo do card'),
+                  ),
                 ),
               ),
             ),

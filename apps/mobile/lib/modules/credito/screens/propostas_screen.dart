@@ -33,9 +33,20 @@ class PropostasScreen extends StatelessWidget {
         const SizedBox(height: AppSpacing.space6),
         const Row(
           children: [
-            Expanded(child: AppKpiStatCard(label: 'Total solicitado', value: _totalSolicitado)),
+            Expanded(
+              child: AppKpiStatCard(
+                label: 'Total solicitado',
+                value: _totalSolicitado,
+              ),
+            ),
             SizedBox(width: AppSpacing.space3),
-            Expanded(child: AppKpiStatCard(label: 'Aprovado', value: _totalAprovado, tone: AppKpiStatTone.positive)),
+            Expanded(
+              child: AppKpiStatCard(
+                label: 'Aprovado',
+                value: _totalAprovado,
+                tone: AppKpiStatTone.positive,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: AppSpacing.space6),
@@ -56,10 +67,20 @@ class PropostasScreen extends StatelessWidget {
                           proposta.linha,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: AppTypography.sm, fontWeight: AppTypography.weightMedium, color: semantic.fgDefault),
+                          style: TextStyle(
+                            fontSize: AppTypography.sm,
+                            fontWeight: AppTypography.weightMedium,
+                            color: semantic.fgDefault,
+                          ),
                         ),
                         const SizedBox(height: 2),
-                        Text(proposta.data, style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted)),
+                        Text(
+                          proposta.data,
+                          style: TextStyle(
+                            fontSize: AppTypography.xs,
+                            color: semantic.fgMuted,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -77,11 +98,18 @@ class PropostasScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.space1),
-                      AppChip(tone: propostaStatusTone(proposta.status), child: Text(propostaStatusLabel(proposta.status))),
+                      AppChip(
+                        tone: propostaStatusTone(proposta.status),
+                        child: Text(propostaStatusLabel(proposta.status)),
+                      ),
                     ],
                   ),
                   const SizedBox(width: AppSpacing.space2),
-                  Icon(LucideIcons.arrowRight, size: 16, color: semantic.fgSubtle),
+                  Icon(
+                    LucideIcons.arrowRight,
+                    size: 16,
+                    color: semantic.fgSubtle,
+                  ),
                 ],
               ),
             ),

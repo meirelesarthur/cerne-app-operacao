@@ -47,10 +47,17 @@ class ContratosScreen extends StatelessWidget {
                           contrato.linha,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: AppTypography.sm, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                          style: TextStyle(
+                            fontSize: AppTypography.sm,
+                            fontWeight: AppTypography.weightSemibold,
+                            color: semantic.fgDefault,
+                          ),
                         ),
                       ),
-                      const AppChip(tone: AppChipTone.brand, child: Text('Em dia')),
+                      const AppChip(
+                        tone: AppChipTone.brand,
+                        child: Text('Em dia'),
+                      ),
                     ],
                   ),
                   const SizedBox(height: AppSpacing.space1),
@@ -64,11 +71,17 @@ class ContratosScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.space3),
-                  AppProgressBar(value: contrato.parcelasPagas.toDouble(), max: contrato.parcelasTotal.toDouble()),
+                  AppProgressBar(
+                    value: contrato.parcelasPagas.toDouble(),
+                    max: contrato.parcelasTotal.toDouble(),
+                  ),
                   const SizedBox(height: AppSpacing.space1),
                   Text(
                     '${contrato.parcelasPagas} de ${contrato.parcelasTotal} parcelas pagas',
-                    style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                    style: TextStyle(
+                      fontSize: AppTypography.xs,
+                      color: semantic.fgMuted,
+                    ),
                   ),
                 ],
               ),
@@ -92,7 +105,13 @@ class _ContratoBottomSheetContent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(label, style: TextStyle(color: semantic.fgMuted)),
-        Text(value, style: TextStyle(fontWeight: AppTypography.weightBold, color: semantic.fgDefault)),
+        Text(
+          value,
+          style: TextStyle(
+            fontWeight: AppTypography.weightBold,
+            color: semantic.fgDefault,
+          ),
+        ),
       ],
     );
 

@@ -60,13 +60,30 @@ class AppButton extends StatelessWidget {
 
   double get _spinnerSize => size == AppButtonSize.lg ? 20 : 16;
 
-  ({Color bg, Color fg, Color? border}) _colors(AppSemanticColors s) => switch (variant) {
-    AppButtonVariant.primary => (bg: s.ctaBg, fg: s.ctaFg, border: null),
-    AppButtonVariant.secondary => (bg: s.bgSurface, fg: s.fgDefault, border: s.borderDefault),
-    AppButtonVariant.ghost => (bg: Colors.transparent, fg: s.fgDefault, border: null),
-    AppButtonVariant.danger => (bg: AppColors.red600, fg: Colors.white, border: null),
-    AppButtonVariant.link => (bg: Colors.transparent, fg: s.accentDefault, border: null),
-  };
+  ({Color bg, Color fg, Color? border}) _colors(AppSemanticColors s) =>
+      switch (variant) {
+        AppButtonVariant.primary => (bg: s.ctaBg, fg: s.ctaFg, border: null),
+        AppButtonVariant.secondary => (
+          bg: s.bgSurface,
+          fg: s.fgDefault,
+          border: s.borderDefault,
+        ),
+        AppButtonVariant.ghost => (
+          bg: Colors.transparent,
+          fg: s.fgDefault,
+          border: null,
+        ),
+        AppButtonVariant.danger => (
+          bg: AppColors.red600,
+          fg: Colors.white,
+          border: null,
+        ),
+        AppButtonVariant.link => (
+          bg: Colors.transparent,
+          fg: s.accentDefault,
+          border: null,
+        ),
+      };
 
   @override
   Widget build(BuildContext context) {
@@ -83,25 +100,38 @@ class AppButton extends StatelessWidget {
             child: AppSpinner(size: _spinnerSize, color: colors.fg),
           )
         else if (leftIcon != null)
-          Padding(padding: const EdgeInsets.only(right: AppSpacing.space2), child: leftIcon),
+          Padding(
+            padding: const EdgeInsets.only(right: AppSpacing.space2),
+            child: leftIcon,
+          ),
         DefaultTextStyle(
           style: TextStyle(
-            fontSize: variant == AppButtonVariant.link ? AppTypography.sm : _fontSize,
+            fontSize: variant == AppButtonVariant.link
+                ? AppTypography.sm
+                : _fontSize,
             fontWeight: AppTypography.weightSemibold,
             color: colors.fg,
-            decoration: variant == AppButtonVariant.link ? TextDecoration.underline : null,
+            decoration: variant == AppButtonVariant.link
+                ? TextDecoration.underline
+                : null,
           ),
           child: child,
         ),
         if (!loading && rightIcon != null)
-          Padding(padding: const EdgeInsets.only(left: AppSpacing.space2), child: rightIcon),
+          Padding(
+            padding: const EdgeInsets.only(left: AppSpacing.space2),
+            child: rightIcon,
+          ),
       ],
     );
 
     if (variant == AppButtonVariant.link) {
       return Opacity(
         opacity: _disabled && !loading ? 0.7 : 1,
-        child: GestureDetector(onTap: _disabled ? null : onPressed, child: content),
+        child: GestureDetector(
+          onTap: _disabled ? null : onPressed,
+          child: content,
+        ),
       );
     }
 
@@ -111,7 +141,9 @@ class AppButton extends StatelessWidget {
         color: colors.bg,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadius.full),
-          side: colors.border != null ? BorderSide(color: colors.border!) : BorderSide.none,
+          side: colors.border != null
+              ? BorderSide(color: colors.border!)
+              : BorderSide.none,
         ),
         child: InkWell(
           onTap: _disabled ? null : onPressed,
@@ -143,10 +175,26 @@ WidgetbookComponent buildButtonWidgetbookComponent() {
             runSpacing: 12,
             children: [
               AppButton(onPressed: () {}, child: const Text('Primary')),
-              AppButton(variant: AppButtonVariant.secondary, onPressed: () {}, child: const Text('Secondary')),
-              AppButton(variant: AppButtonVariant.ghost, onPressed: () {}, child: const Text('Ghost')),
-              AppButton(variant: AppButtonVariant.danger, onPressed: () {}, child: const Text('Danger')),
-              AppButton(variant: AppButtonVariant.link, onPressed: () {}, child: const Text('Link')),
+              AppButton(
+                variant: AppButtonVariant.secondary,
+                onPressed: () {},
+                child: const Text('Secondary'),
+              ),
+              AppButton(
+                variant: AppButtonVariant.ghost,
+                onPressed: () {},
+                child: const Text('Ghost'),
+              ),
+              AppButton(
+                variant: AppButtonVariant.danger,
+                onPressed: () {},
+                child: const Text('Danger'),
+              ),
+              AppButton(
+                variant: AppButtonVariant.link,
+                onPressed: () {},
+                child: const Text('Link'),
+              ),
             ],
           ),
         ),
@@ -159,9 +207,17 @@ WidgetbookComponent buildButtonWidgetbookComponent() {
             runSpacing: 12,
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              AppButton(size: AppButtonSize.sm, onPressed: () {}, child: const Text('Small')),
+              AppButton(
+                size: AppButtonSize.sm,
+                onPressed: () {},
+                child: const Text('Small'),
+              ),
               AppButton(onPressed: () {}, child: const Text('Medium')),
-              AppButton(size: AppButtonSize.lg, onPressed: () {}, child: const Text('Large')),
+              AppButton(
+                size: AppButtonSize.lg,
+                onPressed: () {},
+                child: const Text('Large'),
+              ),
             ],
           ),
         ),
@@ -177,13 +233,21 @@ WidgetbookComponent buildButtonWidgetbookComponent() {
                 runSpacing: 12,
                 children: [
                   const AppButton(child: Text('Disabled')),
-                  AppButton(loading: true, onPressed: () {}, child: const Text('Loading')),
+                  AppButton(
+                    loading: true,
+                    onPressed: () {},
+                    child: const Text('Loading'),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
               SizedBox(
                 width: 280,
-                child: AppButton(fullWidth: true, onPressed: () {}, child: const Text('Full width')),
+                child: AppButton(
+                  fullWidth: true,
+                  onPressed: () {},
+                  child: const Text('Full width'),
+                ),
               ),
             ],
           ),

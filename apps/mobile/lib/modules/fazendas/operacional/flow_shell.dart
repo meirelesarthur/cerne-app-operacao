@@ -60,7 +60,9 @@ class FlowShell extends ConsumerWidget {
                 ),
                 decoration: BoxDecoration(
                   color: semantic.bgSurface,
-                  border: Border(top: BorderSide(color: semantic.borderDefault)),
+                  border: Border(
+                    top: BorderSide(color: semantic.borderDefault),
+                  ),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -73,7 +75,9 @@ class FlowShell extends ConsumerWidget {
                           alignment: Alignment.centerLeft,
                           child: AppChip(
                             tone: AppChipTone.amber,
-                            child: Text('Sem conexão — será enfileirado para sincronização'),
+                            child: Text(
+                              'Sem conexão — será enfileirado para sincronização',
+                            ),
                           ),
                         ),
                       ),

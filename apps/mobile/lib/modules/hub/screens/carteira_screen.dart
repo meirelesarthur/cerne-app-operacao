@@ -30,9 +30,18 @@ class CarteiraScreen extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const AppHeading(level: AppHeadingLevel.h3, child: Text('Carteira')),
+              const AppHeading(
+                level: AppHeadingLevel.h3,
+                child: Text('Carteira'),
+              ),
               const SizedBox(height: AppSpacing.space1),
-              Text('Resumo da sua conta GB Bank.', style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+              Text(
+                'Resumo da sua conta GB Bank.',
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  color: semantic.fgMuted,
+                ),
+              ),
             ],
           ),
         ),
@@ -44,7 +53,8 @@ class CarteiraScreen extends ConsumerWidget {
               value: Saldo.valor,
               accountLabel: Saldo.conta,
               hidden: balanceHidden,
-              onToggleHidden: () => ref.read(shellStoreProvider.notifier).toggleBalanceHidden(),
+              onToggleHidden: () =>
+                  ref.read(shellStoreProvider.notifier).toggleBalanceHidden(),
               loading: loading,
               footer: Row(
                 children: [
@@ -105,13 +115,19 @@ class CarteiraScreen extends ConsumerWidget {
               AppCard(
                 padded: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space4,
+                  ),
                   child: Column(
                     children: [
                       for (final tx in transacoes)
                         AppTransactionListItem(
                           transaction: tx,
-                          onTap: () => showAppTransactionDetailSheet(context, transaction: tx, hidden: balanceHidden),
+                          onTap: () => showAppTransactionDetailSheet(
+                            context,
+                            transaction: tx,
+                            hidden: balanceHidden,
+                          ),
                           showDivider: tx != transacoes.last,
                         ),
                     ],

@@ -26,7 +26,9 @@ class FazendasHome extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final view = ref.watch(fazendasStoreProvider.select((s) => s.view));
-    return view == FarmView.gerencial ? const _HomeGerencial() : const _HomeCampo();
+    return view == FarmView.gerencial
+        ? const _HomeGerencial()
+        : const _HomeCampo();
   }
 }
 
@@ -36,11 +38,36 @@ class _HomeGerencial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final adminShortcuts = [
-      Shortcut(id: 'financeiro', label: 'Financeiro', icon: LucideIcons.wallet, onTap: () => context.go('/fazendas/dashboards/financeiro')),
-      Shortcut(id: 'pecuaria', label: 'Pecuária', icon: LucideIcons.beef, onTap: () => context.go('/fazendas/dashboards/pecuaria')),
-      Shortcut(id: 'confinamento', label: 'Currais', icon: LucideIcons.warehouse, onTap: () => context.go('/fazendas/dashboards/confinamento')),
-      Shortcut(id: 'ativos', label: 'Ativos', icon: LucideIcons.package, onTap: () => context.go('/fazendas/dashboards/ativos')),
-      Shortcut(id: 'mais', label: 'Mais', icon: LucideIcons.moreHorizontal, onTap: () => context.go('/fazendas/mais')),
+      Shortcut(
+        id: 'financeiro',
+        label: 'Financeiro',
+        icon: LucideIcons.wallet,
+        onTap: () => context.go('/fazendas/dashboards/financeiro'),
+      ),
+      Shortcut(
+        id: 'pecuaria',
+        label: 'Pecuária',
+        icon: LucideIcons.beef,
+        onTap: () => context.go('/fazendas/dashboards/pecuaria'),
+      ),
+      Shortcut(
+        id: 'confinamento',
+        label: 'Currais',
+        icon: LucideIcons.warehouse,
+        onTap: () => context.go('/fazendas/dashboards/confinamento'),
+      ),
+      Shortcut(
+        id: 'ativos',
+        label: 'Ativos',
+        icon: LucideIcons.package,
+        onTap: () => context.go('/fazendas/dashboards/ativos'),
+      ),
+      Shortcut(
+        id: 'mais',
+        label: 'Mais',
+        icon: LucideIcons.moreHorizontal,
+        onTap: () => context.go('/fazendas/mais'),
+      ),
     ];
 
     return _ActivityAwareList(
@@ -51,13 +78,19 @@ class _HomeGerencial extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppHeading(level: AppHeadingLevel.h3, child: Text('Resumo da safra')),
+                AppHeading(
+                  level: AppHeadingLevel.h3,
+                  child: Text('Resumo da safra'),
+                ),
                 _SafraPill(),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.space4),
-          RiseIn(index: 1, child: ShortcutGrid(items: adminShortcuts, columns: 5)),
+          RiseIn(
+            index: 1,
+            child: ShortcutGrid(items: adminShortcuts, columns: 5),
+          ),
           const SizedBox(height: AppSpacing.space4),
           const RiseIn(index: 2, child: CreditoBanner()),
           const SizedBox(height: AppSpacing.space4),
@@ -121,10 +154,14 @@ class _HomeGerencial extends StatelessWidget {
                 const SizedBox(height: AppSpacing.space2),
                 Builder(
                   builder: (context) {
-                    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+                    final semantic = Theme.of(
+                      context,
+                    ).extension<AppSemanticColors>()!;
                     final recentes = atividades.take(4).toList();
                     return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppSpacing.space3,
+                      ),
                       decoration: BoxDecoration(
                         color: semantic.bgSurface,
                         borderRadius: BorderRadius.circular(AppRadius.xl3),
@@ -158,11 +195,18 @@ class _HomeGerencial extends StatelessWidget {
 class _ActivityAwareList extends StatelessWidget {
   const _ActivityAwareList({required this.builder});
 
-  final Widget Function(BuildContext context, void Function(Activity activity) onActivityTap) builder;
+  final Widget Function(
+    BuildContext context,
+    void Function(Activity activity) onActivityTap,
+  )
+  builder;
 
   @override
   Widget build(BuildContext context) {
-    return builder(context, (activity) => showActivityDetailSheet(context, activity: activity));
+    return builder(
+      context,
+      (activity) => showActivityDetailSheet(context, activity: activity),
+    );
   }
 }
 
@@ -173,7 +217,10 @@ class _SafraPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3, vertical: AppSpacing.space1),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.space3,
+        vertical: AppSpacing.space1,
+      ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(AppRadius.full),
         border: Border.all(color: semantic.borderDefault),
@@ -182,7 +229,14 @@ class _SafraPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Safra 24/25', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13, color: semantic.fgDefault)),
+          Text(
+            'Safra 24/25',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 13,
+              color: semantic.fgDefault,
+            ),
+          ),
           const SizedBox(width: AppSpacing.space1),
           Icon(LucideIcons.chevronDown, size: 14, color: semantic.fgDefault),
         ],
@@ -196,7 +250,9 @@ class _HomeCampo extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final syncQueue = ref.watch(fazendasStoreProvider.select((s) => s.syncQueue));
+    final syncQueue = ref.watch(
+      fazendasStoreProvider.select((s) => s.syncQueue),
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -210,12 +266,19 @@ class _HomeCampo extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const AppHeading(level: AppHeadingLevel.h3, child: Text('Lançamentos de campo')),
+                    const AppHeading(
+                      level: AppHeadingLevel.h3,
+                      child: Text('Lançamentos de campo'),
+                    ),
                     const SizedBox(height: AppSpacing.space1),
                     Builder(
                       builder: (context) => Text(
                         'Escolha o tipo de registro para começar.',
-                        style: TextStyle(color: Theme.of(context).extension<AppSemanticColors>()!.fgMuted),
+                        style: TextStyle(
+                          color: Theme.of(
+                            context,
+                          ).extension<AppSemanticColors>()!.fgMuted,
+                        ),
                       ),
                     ),
                   ],
@@ -322,12 +385,22 @@ class _HomeCampo extends ConsumerWidget {
                               children: [
                                 const Expanded(
                                   child: AppSectionTitle(
-                                    child: Text('Fila de sincronização', maxLines: 1, overflow: TextOverflow.ellipsis),
+                                    child: Text(
+                                      'Fila de sincronização',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                                 AppChip(
-                                  tone: syncQueue.isEmpty ? AppChipTone.brand : AppChipTone.amber,
-                                  child: Text(syncQueue.isEmpty ? 'Tudo sincronizado' : '${syncQueue.length} pendente(s)'),
+                                  tone: syncQueue.isEmpty
+                                      ? AppChipTone.brand
+                                      : AppChipTone.amber,
+                                  child: Text(
+                                    syncQueue.isEmpty
+                                        ? 'Tudo sincronizado'
+                                        : '${syncQueue.length} pendente(s)',
+                                  ),
                                 ),
                               ],
                             ),
@@ -337,7 +410,11 @@ class _HomeCampo extends ConsumerWidget {
                                 syncQueue.isEmpty
                                     ? 'Nenhum lançamento aguardando envio.'
                                     : 'Lançamentos feitos offline serão enviados quando a conexão voltar.',
-                                style: TextStyle(color: Theme.of(context).extension<AppSemanticColors>()!.fgMuted),
+                                style: TextStyle(
+                                  color: Theme.of(
+                                    context,
+                                  ).extension<AppSemanticColors>()!.fgMuted,
+                                ),
                               ),
                             ),
                           ],

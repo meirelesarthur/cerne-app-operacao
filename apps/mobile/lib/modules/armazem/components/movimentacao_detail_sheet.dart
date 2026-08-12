@@ -11,7 +11,10 @@ import '../mocks/estoque_mocks.dart';
 /// lista (`AppTransactionListItem`) tanto na Home quanto em Movimentações — o
 /// mesmo componente é reutilizado nos dois pontos de entrada (Lei 2). Espelha
 /// `MovimentacaoDetailSheet.tsx`.
-Future<void> showMovimentacaoDetailSheet(BuildContext context, {required Movimentacao movimentacao}) {
+Future<void> showMovimentacaoDetailSheet(
+  BuildContext context, {
+  required Movimentacao movimentacao,
+}) {
   return showAppBottomSheet<void>(
     context,
     title: 'Detalhe da movimentação',
@@ -44,7 +47,9 @@ class _SheetBody extends StatelessWidget {
                 color: isEntrada ? semantic.accentSubtle : semantic.bgSubtle,
               ),
               child: Icon(
-                isEntrada ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight,
+                isEntrada
+                    ? LucideIcons.arrowDownLeft
+                    : LucideIcons.arrowUpRight,
                 size: 22,
                 color: isEntrada ? semantic.accentDefault : semantic.fgMuted,
               ),
@@ -52,7 +57,12 @@ class _SheetBody extends StatelessWidget {
             const SizedBox(height: AppSpacing.space2),
             AppChip(
               tone: isEntrada ? AppChipTone.brand : AppChipTone.neutral,
-              icon: Icon(isEntrada ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight, size: 12),
+              icon: Icon(
+                isEntrada
+                    ? LucideIcons.arrowDownLeft
+                    : LucideIcons.arrowUpRight,
+                size: 12,
+              ),
               child: Text(isEntrada ? 'Entrada' : 'Saída'),
             ),
             const SizedBox(height: AppSpacing.space2),
@@ -65,8 +75,18 @@ class _SheetBody extends StatelessWidget {
                 color: isEntrada ? semantic.accentDefault : semantic.fgDefault,
               ),
             ),
-            Text(mov.item, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: semantic.fgDefault)),
-            Text(mov.tempo, style: TextStyle(fontSize: 14, color: semantic.fgMuted)),
+            Text(
+              mov.item,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: semantic.fgDefault,
+              ),
+            ),
+            Text(
+              mov.tempo,
+              style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+            ),
           ],
         ),
         const SizedBox(height: AppSpacing.space4),
@@ -105,11 +125,18 @@ class _SheetBody extends StatelessWidget {
             children: [
               Text(
                 'NOTA',
-                style:
-                    TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: semantic.fgSubtle, letterSpacing: 0.4),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: semantic.fgSubtle,
+                  letterSpacing: 0.4,
+                ),
               ),
               const SizedBox(height: 4),
-              Text(mov.nota, style: TextStyle(fontSize: 14, color: semantic.fgDefault)),
+              Text(
+                mov.nota,
+                style: TextStyle(fontSize: 14, color: semantic.fgDefault),
+              ),
             ],
           ),
         ),
@@ -145,7 +172,11 @@ class _DetailRow extends StatelessWidget {
             textAlign: TextAlign.right,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: semantic.fgDefault),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: semantic.fgDefault,
+            ),
           ),
         ),
       ],

@@ -8,8 +8,11 @@ import 'package:cerne_app/modules/fazendas/admin/dash_ativos.dart';
 import '../../../support/test_viewport.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
-      child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child)),
-    );
+  child: MaterialApp(
+    theme: buildAppTheme(AppThemeVariant.light),
+    home: Scaffold(body: child),
+  ),
+);
 
 void main() {
   group('DashAtivos', () {

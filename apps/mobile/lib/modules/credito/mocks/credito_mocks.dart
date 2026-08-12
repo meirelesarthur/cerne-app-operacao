@@ -12,7 +12,11 @@ class PreAprovado {
 }
 
 class SimulacaoOpcao {
-  const SimulacaoOpcao({required this.valor, required this.prazo, required this.parcela});
+  const SimulacaoOpcao({
+    required this.valor,
+    required this.prazo,
+    required this.parcela,
+  });
 
   final String valor;
   final int prazo;
@@ -33,13 +37,22 @@ const List<SimulacaoOpcao> simulacao = [
 ];
 
 /// Valores disponíveis no simulador (colunas da matriz [simulacao]).
-const List<String> valoresSimulacao = ['R\$ 100.000', 'R\$ 250.000', 'R\$ 480.000'];
+const List<String> valoresSimulacao = [
+  'R\$ 100.000',
+  'R\$ 250.000',
+  'R\$ 480.000',
+];
 
 /// Prazos disponíveis no simulador, em meses (linhas da matriz [simulacao]).
 const List<int> prazosSimulacao = [12, 24, 36];
 
 class LinhaCredito {
-  const LinhaCredito({required this.id, required this.nome, required this.taxa, required this.descricao});
+  const LinhaCredito({
+    required this.id,
+    required this.nome,
+    required this.taxa,
+    required this.descricao,
+  });
 
   final String id;
   final String nome;
@@ -53,7 +66,8 @@ const List<LinhaCredito> linhas = [
     id: 'custeio-safra',
     nome: 'Custeio Safra 25/26',
     taxa: '1,29% a.m.',
-    descricao: 'Capital de giro para insumos, sementes e defensivos do ciclo atual.',
+    descricao:
+        'Capital de giro para insumos, sementes e defensivos do ciclo atual.',
   ),
   LinhaCredito(
     id: 'investimento-maquinas',
@@ -65,13 +79,15 @@ const List<LinhaCredito> linhas = [
     id: 'cpr-financeira',
     nome: 'CPR Financeira',
     taxa: '1,19% a.m.',
-    descricao: 'Antecipação de recebíveis com lastro em Cédula de Produto Rural.',
+    descricao:
+        'Antecipação de recebíveis com lastro em Cédula de Produto Rural.',
   ),
   LinhaCredito(
     id: 'consorcio-agro',
     nome: 'Consórcio Agro',
     taxa: 'taxa adm 0,12% a.m.',
-    descricao: 'Planejamento de longo prazo para máquinas e equipamentos sem juros.',
+    descricao:
+        'Planejamento de longo prazo para máquinas e equipamentos sem juros.',
   ),
 ];
 
@@ -88,7 +104,12 @@ class DocumentoProposta {
 
 /// Datas das etapas percorridas pela proposta — alimenta a timeline do detalhe.
 class HistoricoProposta {
-  const HistoricoProposta({required this.enviada, this.analise, this.decisao, this.contratada});
+  const HistoricoProposta({
+    required this.enviada,
+    this.analise,
+    this.decisao,
+    this.contratada,
+  });
 
   final String enviada;
   final String? analise;
@@ -145,7 +166,11 @@ const List<Proposta> propostas = [
     status: PropostaStatus.aprovada,
     prazo: 24,
     taxa: '1,45% a.m.',
-    historico: HistoricoProposta(enviada: '15/06', analise: '17/06', decisao: '20/06'),
+    historico: HistoricoProposta(
+      enviada: '15/06',
+      analise: '17/06',
+      decisao: '20/06',
+    ),
     documentos: [
       DocumentoProposta(nome: 'CPF/CNPJ', enviado: true),
       DocumentoProposta(nome: 'Comprovante de renda', enviado: true),
@@ -160,7 +185,12 @@ const List<Proposta> propostas = [
     status: PropostaStatus.contratada,
     prazo: 24,
     taxa: '1,19% a.m.',
-    historico: HistoricoProposta(enviada: '02/05', analise: '04/05', decisao: '08/05', contratada: '12/05'),
+    historico: HistoricoProposta(
+      enviada: '02/05',
+      analise: '04/05',
+      decisao: '08/05',
+      contratada: '12/05',
+    ),
     documentos: [
       DocumentoProposta(nome: 'CPF/CNPJ', enviado: true),
       DocumentoProposta(nome: 'CPR assinada', enviado: true),
@@ -175,7 +205,11 @@ const List<Proposta> propostas = [
     status: PropostaStatus.recusada,
     prazo: 36,
     taxa: 'taxa adm 0,12% a.m.',
-    historico: HistoricoProposta(enviada: '10/04', analise: '12/04', decisao: '18/04'),
+    historico: HistoricoProposta(
+      enviada: '10/04',
+      analise: '12/04',
+      decisao: '18/04',
+    ),
     documentos: [
       DocumentoProposta(nome: 'CPF/CNPJ', enviado: true),
       DocumentoProposta(nome: 'Comprovante de renda', enviado: false),

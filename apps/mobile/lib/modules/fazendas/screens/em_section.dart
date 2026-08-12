@@ -27,7 +27,8 @@ class EmSection extends StatelessWidget {
               child: AppEmptyState(
                 icon: LucideIcons.construction,
                 title: 'Em desenvolvimento',
-                description: 'Esta tela será construída na próxima fase da esteira.',
+                description:
+                    'Esta tela será construída na próxima fase da esteira.',
               ),
             ),
           ),

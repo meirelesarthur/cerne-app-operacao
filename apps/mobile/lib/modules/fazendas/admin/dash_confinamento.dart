@@ -15,7 +15,9 @@ class DashConfinamento extends StatelessWidget {
   Widget build(BuildContext context) {
     final totalCap = currais.fold<int>(0, (s, c) => s + c.max);
     final totalAtual = currais.fold<int>(0, (s, c) => s + c.atual);
-    final ocupacao = totalCap == 0 ? 0 : ((totalAtual / totalCap) * 100).round();
+    final ocupacao = totalCap == 0
+        ? 0
+        : ((totalAtual / totalCap) * 100).round();
     final disponiveis = currais.where((c) => c.atual < c.max).length;
 
     return DashboardScreen(
@@ -34,7 +36,9 @@ class DashConfinamento extends StatelessWidget {
               AppKpiStatCard(
                 label: 'Ocupação',
                 value: '$ocupacao%',
-                tone: ocupacao >= 80 ? AppKpiStatTone.warning : AppKpiStatTone.positive,
+                tone: ocupacao >= 80
+                    ? AppKpiStatTone.warning
+                    : AppKpiStatTone.positive,
               ),
               AppKpiStatCard(label: 'Disponíveis', value: '$disponiveis'),
               AppKpiStatCard(label: 'Cabeças', value: '$totalAtual'),
@@ -66,8 +70,12 @@ class _CurralTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final pct = curral.max == 0 ? 0 : ((curral.atual / curral.max) * 100).round();
-    final chipTone = pct >= 100 ? AppChipTone.red : (pct >= 80 ? AppChipTone.amber : AppChipTone.brand);
+    final pct = curral.max == 0
+        ? 0
+        : ((curral.atual / curral.max) * 100).round();
+    final chipTone = pct >= 100
+        ? AppChipTone.red
+        : (pct >= 80 ? AppChipTone.amber : AppChipTone.brand);
 
     return AppCard(
       interactive: true,
@@ -85,25 +93,38 @@ class _CurralTile extends StatelessWidget {
                 Expanded(
                   child: Text(
                     curral.nome,
-                    style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: semantic.fgDefault,
+                    ),
                   ),
                 ),
                 AppChip(tone: chipTone, child: Text('$pct%')),
               ],
             ),
-            Text(curral.setor, style: TextStyle(fontSize: 12, color: semantic.fgMuted)),
+            Text(
+              curral.setor,
+              style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+            ),
             const SizedBox(height: AppSpacing.space2),
             RichText(
               text: TextSpan(
                 style: TextStyle(fontSize: 14, color: semantic.fgDefault),
                 children: [
                   TextSpan(text: '${curral.atual}'),
-                  TextSpan(text: '/${curral.max}', style: TextStyle(color: semantic.fgSubtle)),
+                  TextSpan(
+                    text: '/${curral.max}',
+                    style: TextStyle(color: semantic.fgSubtle),
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: AppSpacing.space1),
-            AppProgressBar(value: curral.atual.toDouble(), max: curral.max.toDouble(), colorByOccupancy: true),
+            AppProgressBar(
+              value: curral.atual.toDouble(),
+              max: curral.max.toDouble(),
+              colorByOccupancy: true,
+            ),
           ],
         ),
       ),
@@ -126,7 +147,13 @@ void _showCurralDetail(BuildContext context, Curral curral) {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('Setor', style: TextStyle(color: semantic.fgMuted)),
-                Text(curral.setor, style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault)),
+                Text(
+                  curral.setor,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: semantic.fgDefault,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.space3),
@@ -136,7 +163,10 @@ void _showCurralDetail(BuildContext context, Curral curral) {
                 Text('Ocupação', style: TextStyle(color: semantic.fgMuted)),
                 Text(
                   '${curral.atual}/${curral.max} cabeças',
-                  style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: semantic.fgDefault,
+                  ),
                 ),
               ],
             ),

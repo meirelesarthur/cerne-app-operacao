@@ -5,12 +5,16 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/form_field.dart';
 import 'package:cerne_app/ui/text_input.dart';
 
-Widget _wrap(Widget child) =>
-    MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppFormField', () {
-    testWidgets('renderiza label, hint e o controle filho sem exceções', (tester) async {
+    testWidgets('renderiza label, hint e o controle filho sem exceções', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(
           const AppFormField(
@@ -27,7 +31,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('mostra erro no lugar do hint quando error é informado', (tester) async {
+    testWidgets('mostra erro no lugar do hint quando error é informado', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(
           const AppFormField(
@@ -45,7 +51,13 @@ void main() {
 
     testWidgets('required=true mostra asterisco', (tester) async {
       await tester.pumpWidget(
-        _wrap(const AppFormField(label: 'Nome', required: true, child: AppTextInput())),
+        _wrap(
+          const AppFormField(
+            label: 'Nome',
+            required: true,
+            child: AppTextInput(),
+          ),
+        ),
       );
 
       expect(find.text(' *'), findsOneWidget);

@@ -11,20 +11,26 @@ import '../../../support/test_viewport.dart';
 
 void main() {
   group('FazendasHome', () {
-    testWidgets('visão gerencial mostra resumo da safra e atividades recentes', (tester) async {
-      await setTallSurface(tester);
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: FazendasHome())),
-        ),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'visão gerencial mostra resumo da safra e atividades recentes',
+      (tester) async {
+        await setTallSurface(tester);
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp(
+              theme: buildAppTheme(AppThemeVariant.light),
+              home: const Scaffold(body: FazendasHome()),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('Resumo da safra'), findsOneWidget);
-      expect(find.text('Atividades recentes'), findsOneWidget);
-      expect(find.text('Crédito pré-aprovado'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        expect(find.text('Resumo da safra'), findsOneWidget);
+        expect(find.text('Atividades recentes'), findsOneWidget);
+        expect(find.text('Crédito pré-aprovado'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('visão campo mostra os lançamentos de campo', (tester) async {
       await setTallSurface(tester);
@@ -35,7 +41,10 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: FazendasHome())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: FazendasHome()),
+          ),
         ),
       );
       await tester.pump(const Duration(seconds: 1));

@@ -13,7 +13,12 @@ import 'flows/simple_payment_flow.dart';
 enum PagamentosFlow { pix, boleto, transferir, cobrar }
 
 class _Acao {
-  const _Acao({required this.flow, required this.icon, required this.label, required this.description});
+  const _Acao({
+    required this.flow,
+    required this.icon,
+    required this.label,
+    required this.description,
+  });
 
   final PagamentosFlow flow;
   final IconData icon;
@@ -22,10 +27,30 @@ class _Acao {
 }
 
 const _acoes = [
-  _Acao(flow: PagamentosFlow.pix, icon: LucideIcons.zap, label: 'Pix', description: 'Envie na hora por chave ou contato'),
-  _Acao(flow: PagamentosFlow.boleto, icon: LucideIcons.scanLine, label: 'Pagar boleto', description: 'Pague contas e boletos por código'),
-  _Acao(flow: PagamentosFlow.transferir, icon: LucideIcons.arrowLeftRight, label: 'Transferir', description: 'TED/entre contas para outro banco'),
-  _Acao(flow: PagamentosFlow.cobrar, icon: LucideIcons.handCoins, label: 'Cobrar', description: 'Gere uma cobrança Pix para receber'),
+  _Acao(
+    flow: PagamentosFlow.pix,
+    icon: LucideIcons.zap,
+    label: 'Pix',
+    description: 'Envie na hora por chave ou contato',
+  ),
+  _Acao(
+    flow: PagamentosFlow.boleto,
+    icon: LucideIcons.scanLine,
+    label: 'Pagar boleto',
+    description: 'Pague contas e boletos por código',
+  ),
+  _Acao(
+    flow: PagamentosFlow.transferir,
+    icon: LucideIcons.arrowLeftRight,
+    label: 'Transferir',
+    description: 'TED/entre contas para outro banco',
+  ),
+  _Acao(
+    flow: PagamentosFlow.cobrar,
+    icon: LucideIcons.handCoins,
+    label: 'Cobrar',
+    description: 'Gere uma cobrança Pix para receber',
+  ),
 ];
 
 /// Hub de Pagamentos do GB Bank — destino das QuickActions (Pix/Pagar/
@@ -82,7 +107,11 @@ class _PagamentosScreenState extends ConsumerState<PagamentosScreen> {
           children: [
             for (final a in _acoes)
               Expanded(
-                child: AppQuickAction(icon: a.icon, label: a.label, onPressed: () => setState(() => _flow = a.flow)),
+                child: AppQuickAction(
+                  icon: a.icon,
+                  label: a.label,
+                  onPressed: () => setState(() => _flow = a.flow),
+                ),
               ),
           ],
         ),
@@ -99,7 +128,10 @@ class _PagamentosScreenState extends ConsumerState<PagamentosScreen> {
                   width: 44,
                   height: 44,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentSubtle),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: semantic.accentSubtle,
+                  ),
                   child: Icon(a.icon, size: 22, color: semantic.accentDefault),
                 ),
                 const SizedBox(width: AppSpacing.space3),
@@ -112,18 +144,29 @@ class _PagamentosScreenState extends ConsumerState<PagamentosScreen> {
                         a.label,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: AppTypography.md, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+                        style: TextStyle(
+                          fontSize: AppTypography.md,
+                          fontWeight: AppTypography.weightSemibold,
+                          color: semantic.fgDefault,
+                        ),
                       ),
                       Text(
                         a.description,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                        style: TextStyle(
+                          fontSize: AppTypography.xs,
+                          color: semantic.fgMuted,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Icon(LucideIcons.chevronRight, size: 18, color: semantic.fgSubtle),
+                Icon(
+                  LucideIcons.chevronRight,
+                  size: 18,
+                  color: semantic.fgSubtle,
+                ),
               ],
             ),
           ),

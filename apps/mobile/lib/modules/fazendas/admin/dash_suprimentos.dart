@@ -10,7 +10,13 @@ import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
 
-const List<CotacaoTipo?> _filtros = [null, CotacaoTipo.produto, CotacaoTipo.servico, CotacaoTipo.frete, CotacaoTipo.manutencao];
+const List<CotacaoTipo?> _filtros = [
+  null,
+  CotacaoTipo.produto,
+  CotacaoTipo.servico,
+  CotacaoTipo.frete,
+  CotacaoTipo.manutencao,
+];
 
 const Map<CotacaoTipo, String> _tipoLabel = {
   CotacaoTipo.produto: 'Produto',
@@ -27,7 +33,8 @@ const Map<CotacaoStatus, ({String label, AppChipTone tone})> _statusMeta = {
 
 /// Formata número cru do mock como preço em reais (aproximação manual — o
 /// projeto não tem `intl` instalado — mesmo padrão de `precoAtual`).
-String _formatPreco(double v) => 'R\$ ${v.toStringAsFixed(2).replaceAll('.', ',')}';
+String _formatPreco(double v) =>
+    'R\$ ${v.toStringAsFixed(2).replaceAll('.', ',')}';
 
 /// Dashboard de Suprimentos (spec §4.4) — status PARCIAL: UI completa com
 /// mock, mas com selo "Dados de exemplo" sinalizando fonte a confirmar.
@@ -45,7 +52,9 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final lista = cotacoes.where((c) => _filtro == null || c.tipo == _filtro).toList();
+    final lista = cotacoes
+        .where((c) => _filtro == null || c.tipo == _filtro)
+        .toList();
 
     return DashboardScreen(
       title: 'Suprimentos',
@@ -81,7 +90,10 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppSpacing.space6),
               child: Center(
-                child: Text('Nenhuma cotação encontrada', style: TextStyle(color: semantic.fgSubtle)),
+                child: Text(
+                  'Nenhuma cotação encontrada',
+                  style: TextStyle(color: semantic.fgSubtle),
+                ),
               ),
             ),
         ],
@@ -91,7 +103,11 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
 }
 
 class _FiltroPill extends StatelessWidget {
-  const _FiltroPill({required this.label, required this.selected, required this.onTap});
+  const _FiltroPill({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
 
   final String label;
   final bool selected;
@@ -107,10 +123,15 @@ class _FiltroPill extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.full),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3, vertical: AppSpacing.space1),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space3,
+            vertical: AppSpacing.space1,
+          ),
           decoration: BoxDecoration(
             color: selected ? semantic.accentDefault : semantic.bgSurface,
-            border: Border.all(color: selected ? semantic.accentDefault : semantic.borderDefault),
+            border: Border.all(
+              color: selected ? semantic.accentDefault : semantic.borderDefault,
+            ),
             borderRadius: BorderRadius.circular(AppRadius.full),
           ),
           alignment: Alignment.center,
@@ -156,10 +177,19 @@ class _CotacaoCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(cotacao.fornecedor, style: TextStyle(fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault)),
+                      Text(
+                        cotacao.fornecedor,
+                        style: TextStyle(
+                          fontWeight: AppTypography.weightSemibold,
+                          color: semantic.fgDefault,
+                        ),
+                      ),
                       Text(
                         '${_tipoLabel[cotacao.tipo]} · ${cotacao.itens} itens',
-                        style: TextStyle(fontSize: AppTypography.base, color: semantic.fgMuted),
+                        style: TextStyle(
+                          fontSize: AppTypography.base,
+                          color: semantic.fgMuted,
+                        ),
                       ),
                     ],
                   ),
@@ -171,8 +201,22 @@ class _CotacaoCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(cotacao.total, style: TextStyle(fontSize: AppTypography.xl, fontWeight: AppTypography.weightBold, color: semantic.fgDefault)),
-                Text('Dados de exemplo', style: TextStyle(fontSize: AppTypography.xs, fontStyle: FontStyle.italic, color: semantic.fgSubtle)),
+                Text(
+                  cotacao.total,
+                  style: TextStyle(
+                    fontSize: AppTypography.xl,
+                    fontWeight: AppTypography.weightBold,
+                    color: semantic.fgDefault,
+                  ),
+                ),
+                Text(
+                  'Dados de exemplo',
+                  style: TextStyle(
+                    fontSize: AppTypography.xs,
+                    fontStyle: FontStyle.italic,
+                    color: semantic.fgSubtle,
+                  ),
+                ),
               ],
             ),
           ],
@@ -209,10 +253,31 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
                     children: [
                       Text(
                         _tipoLabel[c.tipo]!.toUpperCase(),
-                        style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightSemibold, color: semantic.fgSubtle),
+                        style: TextStyle(
+                          fontSize: AppTypography.xs,
+                          fontWeight: AppTypography.weightSemibold,
+                          color: semantic.fgSubtle,
+                        ),
                       ),
-                      Text(c.produto, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppTypography.lg, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault)),
-                      Text(c.fornecedor, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: AppTypography.base, color: semantic.fgMuted)),
+                      Text(
+                        c.produto,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: AppTypography.lg,
+                          fontWeight: AppTypography.weightSemibold,
+                          color: semantic.fgDefault,
+                        ),
+                      ),
+                      Text(
+                        c.fornecedor,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: AppTypography.base,
+                          color: semantic.fgMuted,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -223,20 +288,46 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(AppSpacing.space4),
-              decoration: BoxDecoration(color: semantic.bgSubtle, borderRadius: BorderRadius.circular(AppRadius.xl2)),
+              decoration: BoxDecoration(
+                color: semantic.bgSubtle,
+                borderRadius: BorderRadius.circular(AppRadius.xl2),
+              ),
               child: Column(
                 children: [
-                  Text(c.precoAtual, style: TextStyle(fontSize: AppTypography.xl3, fontWeight: AppTypography.weightBold, color: semantic.fgDefault)),
-                  Text('por ${c.unidade}', style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgSubtle)),
+                  Text(
+                    c.precoAtual,
+                    style: TextStyle(
+                      fontSize: AppTypography.xl3,
+                      fontWeight: AppTypography.weightBold,
+                      color: semantic.fgDefault,
+                    ),
+                  ),
+                  Text(
+                    'por ${c.unidade}',
+                    style: TextStyle(
+                      fontSize: AppTypography.xs,
+                      color: semantic.fgSubtle,
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.space1),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(alta ? LucideIcons.trendingUp : LucideIcons.trendingDown, size: 14, color: variacaoColor),
+                      Icon(
+                        alta
+                            ? LucideIcons.trendingUp
+                            : LucideIcons.trendingDown,
+                        size: 14,
+                        color: variacaoColor,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         '${alta ? '+' : ''}${c.variacao.toStringAsFixed(1)}% frente à cotação anterior',
-                        style: TextStyle(fontSize: AppTypography.base, fontWeight: AppTypography.weightSemibold, color: variacaoColor),
+                        style: TextStyle(
+                          fontSize: AppTypography.base,
+                          fontWeight: AppTypography.weightSemibold,
+                          color: variacaoColor,
+                        ),
                       ),
                     ],
                   ),
@@ -246,7 +337,10 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
             const SizedBox(height: AppSpacing.space4),
             Container(
               padding: const EdgeInsets.all(AppSpacing.space4),
-              decoration: BoxDecoration(color: semantic.bgSubtle, borderRadius: BorderRadius.circular(AppRadius.xl2)),
+              decoration: BoxDecoration(
+                color: semantic.bgSubtle,
+                borderRadius: BorderRadius.circular(AppRadius.xl2),
+              ),
               child: Column(
                 children: [
                   _DetailRow(label: 'Unidade', value: c.unidade),
@@ -257,9 +351,20 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
               ),
             ),
             const SizedBox(height: AppSpacing.space4),
-            Text('Histórico de preço', style: TextStyle(fontSize: AppTypography.base, color: semantic.fgMuted)),
+            Text(
+              'Histórico de preço',
+              style: TextStyle(
+                fontSize: AppTypography.base,
+                color: semantic.fgMuted,
+              ),
+            ),
             const SizedBox(height: AppSpacing.space2),
-            AppSparklineArea(data: c.historico, color: variacaoColor, width: 240, height: 40),
+            AppSparklineArea(
+              data: c.historico,
+              color: variacaoColor,
+              width: 240,
+              height: 40,
+            ),
             const SizedBox(height: AppSpacing.space2),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -267,8 +372,21 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
                 for (var i = 0; i < c.historico.length; i++)
                   Column(
                     children: [
-                      Text(historicoLabels[i], style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgSubtle)),
-                      Text(_formatPreco(c.historico[i]), style: TextStyle(fontSize: AppTypography.base, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault)),
+                      Text(
+                        historicoLabels[i],
+                        style: TextStyle(
+                          fontSize: AppTypography.xs,
+                          color: semantic.fgSubtle,
+                        ),
+                      ),
+                      Text(
+                        _formatPreco(c.historico[i]),
+                        style: TextStyle(
+                          fontSize: AppTypography.base,
+                          fontWeight: AppTypography.weightSemibold,
+                          color: semantic.fgDefault,
+                        ),
+                      ),
                     ],
                   ),
               ],
@@ -276,7 +394,10 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
             const SizedBox(height: AppSpacing.space4),
             Text(
               'Dados de exemplo — ficha completa da cotação, anexos e histórico de negociação ficam no sistema web GB CERNE.',
-              style: TextStyle(fontSize: AppTypography.base, color: semantic.fgSubtle),
+              style: TextStyle(
+                fontSize: AppTypography.base,
+                color: semantic.fgSubtle,
+              ),
             ),
           ],
         );
@@ -299,14 +420,24 @@ class _DetailRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: AppTypography.base, color: semantic.fgMuted)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: AppTypography.base,
+              color: semantic.fgMuted,
+            ),
+          ),
           Flexible(
             child: Text(
               value,
               textAlign: TextAlign.right,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: AppTypography.base, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault),
+              style: TextStyle(
+                fontSize: AppTypography.base,
+                fontWeight: AppTypography.weightSemibold,
+                color: semantic.fgDefault,
+              ),
             ),
           ),
         ],

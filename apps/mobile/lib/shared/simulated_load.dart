@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 /// assíncrono para demonstrar skeletons nas telas de dado. Sem rede real; só um atraso
 /// curto ao montar. Determinístico (sem `Date.now`), como o protótipo.
 class SimulatedLoad extends StatefulWidget {
-  const SimulatedLoad({super.key, this.duration = const Duration(milliseconds: 600), required this.builder});
+  const SimulatedLoad({
+    super.key,
+    this.duration = const Duration(milliseconds: 600),
+    required this.builder,
+  });
 
   final Duration duration;
 

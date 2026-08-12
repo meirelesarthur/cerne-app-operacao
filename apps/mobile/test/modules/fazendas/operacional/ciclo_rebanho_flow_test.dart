@@ -6,8 +6,11 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/operacional/ciclo_rebanho_flow.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
-      child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child)),
-    );
+  child: MaterialApp(
+    theme: buildAppTheme(AppThemeVariant.light),
+    home: Scaffold(body: child),
+  ),
+);
 
 void main() {
   group('CicloRebanhoFlow', () {
@@ -22,7 +25,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('avança um passo: escolher Nascimento mostra o formulário', (tester) async {
+    testWidgets('avança um passo: escolher Nascimento mostra o formulário', (
+      tester,
+    ) async {
       await tester.pumpWidget(_wrap(const CicloRebanhoFlow()));
       await tester.pumpAndSettle();
 

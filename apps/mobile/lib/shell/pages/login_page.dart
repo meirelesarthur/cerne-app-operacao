@@ -84,7 +84,11 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(AppRadius.xl2),
                             boxShadow: semantic.shadowModal,
                           ),
-                          child: Icon(LucideIcons.sprout, size: 32, color: semantic.ctaBg),
+                          child: Icon(
+                            LucideIcons.sprout,
+                            size: 32,
+                            color: semantic.ctaBg,
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.space3),
                         AppHeading(
@@ -98,7 +102,9 @@ class _LoginPageState extends State<LoginPage> {
                           child: Text(
                             'Fazendas, banco, crédito e mercado — o agro inteiro em um só app.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: semantic.fgInverse.withValues(alpha: 0.7)),
+                            style: TextStyle(
+                              color: semantic.fgInverse.withValues(alpha: 0.7),
+                            ),
                           ),
                         ),
                       ],
@@ -157,11 +163,16 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               AppCheckbox(
                                 checked: _manterConectado,
-                                onChanged: (v) => setState(() => _manterConectado = v),
+                                onChanged: (v) =>
+                                    setState(() => _manterConectado = v),
                                 label: 'Manter conectado',
                               ),
                               // Mock — recuperação de senha fora do escopo do protótipo.
-                              AppButton(variant: AppButtonVariant.link, onPressed: () {}, child: const Text('Esqueceu a senha?')),
+                              AppButton(
+                                variant: AppButtonVariant.link,
+                                onPressed: () {},
+                                child: const Text('Esqueceu a senha?'),
+                              ),
                             ],
                           ),
                           const SizedBox(height: AppSpacing.space3),
@@ -180,7 +191,10 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text(
                       'GB CERNE · Superapp corporativo do agronegócio',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 11, color: semantic.fgInverse.withValues(alpha: 0.7)),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: semantic.fgInverse.withValues(alpha: 0.7),
+                      ),
                     ),
                   ),
                 ],

@@ -30,7 +30,9 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tocar em "Transferir" abre o SimplePaymentFlow', (tester) async {
+    testWidgets('tocar em "Transferir" abre o SimplePaymentFlow', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap());
       await tester.pumpAndSettle();
@@ -41,15 +43,20 @@ void main() {
       expect(find.text('Banco de destino'), findsOneWidget);
     });
 
-    testWidgets('initialFlow=pix abre direto no PixFlow (deep-link /bank/pix)', (tester) async {
-      await setTallSurface(tester);
-      await tester.pumpWidget(_wrap(initialFlow: PagamentosFlow.pix));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'initialFlow=pix abre direto no PixFlow (deep-link /bank/pix)',
+      (tester) async {
+        await setTallSurface(tester);
+        await tester.pumpWidget(_wrap(initialFlow: PagamentosFlow.pix));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Enviar para uma chave'), findsOneWidget);
-    });
+        expect(find.text('Enviar para uma chave'), findsOneWidget);
+      },
+    );
 
-    testWidgets('sair do fluxo via botão voltar retorna ao hub', (tester) async {
+    testWidgets('sair do fluxo via botão voltar retorna ao hub', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap(initialFlow: PagamentosFlow.pix));
       await tester.pumpAndSettle();

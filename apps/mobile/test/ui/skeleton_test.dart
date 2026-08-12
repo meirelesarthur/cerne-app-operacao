@@ -4,7 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/skeleton.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppSkeleton', () {
@@ -26,7 +29,9 @@ void main() {
 
   group('AppCardSkeleton', () {
     testWidgets('renderiza sem exceções', (tester) async {
-      await tester.pumpWidget(_wrap(const SizedBox(width: 260, child: AppCardSkeleton())));
+      await tester.pumpWidget(
+        _wrap(const SizedBox(width: 260, child: AppCardSkeleton())),
+      );
       expect(tester.takeException(), isNull);
     });
   });

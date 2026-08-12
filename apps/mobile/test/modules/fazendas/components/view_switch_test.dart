@@ -16,7 +16,10 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: ViewSwitch())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: ViewSwitch()),
+          ),
         ),
       );
 

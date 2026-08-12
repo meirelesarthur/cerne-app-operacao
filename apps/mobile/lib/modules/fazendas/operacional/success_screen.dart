@@ -8,7 +8,12 @@ import '../../../ui/ui.dart';
 /// Tela de sucesso pós-lançamento, com resumo dos efeitos no sistema web.
 /// Espelha `SuccessScreen.tsx` — usa `AppSuccessPanel` do catálogo (Lei 1).
 class SuccessScreen extends StatelessWidget {
-  const SuccessScreen({super.key, required this.title, required this.effects, this.queued = false});
+  const SuccessScreen({
+    super.key,
+    required this.title,
+    required this.effects,
+    this.queued = false,
+  });
 
   final String title;
 
@@ -29,7 +34,9 @@ class SuccessScreen extends StatelessWidget {
           title: queued ? 'Enviado para sincronização' : title,
           icon: queued ? LucideIcons.refreshCw : LucideIcons.checkCircle2,
           description: Text(
-            queued ? 'O lançamento será processado assim que a conexão voltar. $effects' : effects,
+            queued
+                ? 'O lançamento será processado assim que a conexão voltar. $effects'
+                : effects,
           ),
           actions: AppButton(
             fullWidth: true,

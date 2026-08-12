@@ -15,13 +15,24 @@ GoRoute buildCreditoModuleRoute() {
     path: '/credito',
     builder: (context, state) => const CreditoHomeScreen(),
     routes: [
-      GoRoute(path: 'propostas', builder: (context, state) => const PropostasScreen()),
+      GoRoute(
+        path: 'propostas',
+        builder: (context, state) => const PropostasScreen(),
+      ),
       GoRoute(
         path: 'proposta/:id',
-        builder: (context, state) => PropostaDetalheScreen(id: state.pathParameters['id']!),
+        builder: (context, state) =>
+            PropostaDetalheScreen(id: state.pathParameters['id']!),
       ),
-      GoRoute(path: 'simular', builder: (context, state) => const CreditoHomeScreen(scrollToSimulador: true)),
-      GoRoute(path: 'contratos', builder: (context, state) => const ContratosScreen()),
+      GoRoute(
+        path: 'simular',
+        builder: (context, state) =>
+            const CreditoHomeScreen(scrollToSimulador: true),
+      ),
+      GoRoute(
+        path: 'contratos',
+        builder: (context, state) => const ContratosScreen(),
+      ),
       GoRoute(path: 'ajuda', builder: (context, state) => const AjudaScreen()),
     ],
   );

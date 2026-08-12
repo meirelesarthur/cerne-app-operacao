@@ -5,7 +5,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/empty_state.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppEmptyState', () {
@@ -16,7 +19,10 @@ void main() {
             icon: LucideIcons.inbox,
             title: 'Nenhum lançamento encontrado',
             description: 'Ajuste os filtros.',
-            action: ElevatedButton(onPressed: () {}, child: const Text('Recarregar')),
+            action: ElevatedButton(
+              onPressed: () {},
+              child: const Text('Recarregar'),
+            ),
           ),
         ),
       );

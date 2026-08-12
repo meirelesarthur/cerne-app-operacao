@@ -64,7 +64,9 @@ class AppBottomSheet extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             color: semantic.bgSurface,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.modal)),
+            borderRadius: const BorderRadius.vertical(
+              top: Radius.circular(AppRadius.modal),
+            ),
             boxShadow: semantic.shadowModal,
           ),
           child: SafeArea(
@@ -73,7 +75,10 @@ class AppBottomSheet extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.space3, bottom: AppSpacing.space1),
+                  padding: const EdgeInsets.only(
+                    top: AppSpacing.space3,
+                    bottom: AppSpacing.space1,
+                  ),
                   child: Container(
                     height: AppSpacing.space1,
                     width: AppSpacing.space10,

@@ -12,19 +12,29 @@ GoRouter _router(Widget flow) => GoRouter(
   initialLocation: '/bank/pagamentos',
   routes: [
     GoRoute(path: '/bank/pagamentos', builder: (context, state) => flow),
-    GoRoute(path: '/bank', builder: (context, state) => const Text('Bank home destino')),
+    GoRoute(
+      path: '/bank',
+      builder: (context, state) => const Text('Bank home destino'),
+    ),
   ],
 );
 
 Widget _wrap(Widget flow) => ProviderScope(
-  child: MaterialApp.router(theme: buildAppTheme(AppThemeVariant.light), routerConfig: _router(flow)),
+  child: MaterialApp.router(
+    theme: buildAppTheme(AppThemeVariant.light),
+    routerConfig: _router(flow),
+  ),
 );
 
 void main() {
   group('SimplePaymentFlow · transferir', () {
-    testWidgets('formulário exige banco, agência, conta e valor', (tester) async {
+    testWidgets('formulário exige banco, agência, conta e valor', (
+      tester,
+    ) async {
       await setTallSurface(tester);
-      await tester.pumpWidget(_wrap(SimplePaymentFlow(kind: PaymentKind.transferir, onExit: () {})));
+      await tester.pumpWidget(
+        _wrap(SimplePaymentFlow(kind: PaymentKind.transferir, onExit: () {})),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Transferir'), findsOneWidget);
@@ -34,9 +44,13 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('fluxo completo: preencher → revisar → confirmar → sucesso', (tester) async {
+    testWidgets('fluxo completo: preencher → revisar → confirmar → sucesso', (
+      tester,
+    ) async {
       await setTallSurface(tester);
-      await tester.pumpWidget(_wrap(SimplePaymentFlow(kind: PaymentKind.transferir, onExit: () {})));
+      await tester.pumpWidget(
+        _wrap(SimplePaymentFlow(kind: PaymentKind.transferir, onExit: () {})),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byType(DropdownButtonFormField<String>));
@@ -70,7 +84,9 @@ void main() {
   group('SimplePaymentFlow · cobrar', () {
     testWidgets('apenas valor é obrigatório', (tester) async {
       await setTallSurface(tester);
-      await tester.pumpWidget(_wrap(SimplePaymentFlow(kind: PaymentKind.cobrar, onExit: () {})));
+      await tester.pumpWidget(
+        _wrap(SimplePaymentFlow(kind: PaymentKind.cobrar, onExit: () {})),
+      );
       await tester.pumpAndSettle();
 
       expect(find.text('Cobrar via Pix'), findsOneWidget);
@@ -93,7 +109,14 @@ void main() {
     testWidgets('voltar no formulário dispara onExit', (tester) async {
       await setTallSurface(tester);
       var exited = false;
-      await tester.pumpWidget(_wrap(SimplePaymentFlow(kind: PaymentKind.boleto, onExit: () => exited = true)));
+      await tester.pumpWidget(
+        _wrap(
+          SimplePaymentFlow(
+            kind: PaymentKind.boleto,
+            onExit: () => exited = true,
+          ),
+        ),
+      );
       await tester.pumpAndSettle();
 
       await tester.tap(find.byTooltip('Voltar'));

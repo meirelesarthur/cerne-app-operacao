@@ -21,17 +21,28 @@ GoRoute buildMarketplaceModuleRoute() {
     routes: [
       GoRoute(
         path: 'produto/:id',
-        builder: (context, state) => ProdutoDetalheScreen(produtoId: state.pathParameters['id']!),
+        builder: (context, state) =>
+            ProdutoDetalheScreen(produtoId: state.pathParameters['id']!),
       ),
-      GoRoute(path: 'categorias', builder: (context, state) => const MarketplaceCategoriasScreen()),
-      GoRoute(path: 'pedidos', builder: (context, state) => const MarketplacePedidosScreen()),
-      GoRoute(path: 'favoritos', builder: (context, state) => const MarketplaceFavoritosScreen()),
+      GoRoute(
+        path: 'categorias',
+        builder: (context, state) => const MarketplaceCategoriasScreen(),
+      ),
+      GoRoute(
+        path: 'pedidos',
+        builder: (context, state) => const MarketplacePedidosScreen(),
+      ),
+      GoRoute(
+        path: 'favoritos',
+        builder: (context, state) => const MarketplaceFavoritosScreen(),
+      ),
       GoRoute(
         path: 'ajuda',
         builder: (context, state) => const AppEmptyState(
           icon: LucideIcons.construction,
           title: 'Marketplace · Ajuda',
-          description: 'Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase.',
+          description:
+              'Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase.',
         ),
       ),
     ],

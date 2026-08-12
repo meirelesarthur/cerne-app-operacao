@@ -40,7 +40,9 @@ final GoRouter appRouter = GoRouter(
         buildCreditoModuleRoute(),
         buildMarketplaceModuleRoute(),
         buildArmazemModuleRoute(),
-        for (final module in modules.where((m) => !_wiredModules.contains(m.id)))
+        for (final module in modules.where(
+          (m) => !_wiredModules.contains(m.id),
+        ))
           GoRoute(
             path: '/${module.id}',
             builder: (context, state) => ModulePlaceholderScreen(
@@ -52,24 +54,43 @@ final GoRouter appRouter = GoRouter(
                 path: ':tab',
                 builder: (context, state) {
                   final tab = state.pathParameters['tab']!;
-                  return ModulePlaceholderScreen(moduleLabel: module.label, tabLabel: _tabLabel(module, tab));
+                  return ModulePlaceholderScreen(
+                    moduleLabel: module.label,
+                    tabLabel: _tabLabel(module, tab),
+                  );
                 },
               ),
             ],
           ),
       ],
     ),
-    GoRoute(path: '/perfil', builder: (context, state) => const PerfilConfigPage()),
-    GoRoute(path: '/notificacoes', builder: (context, state) => const NotificacoesPage()),
+    GoRoute(
+      path: '/perfil',
+      builder: (context, state) => const PerfilConfigPage(),
+    ),
+    GoRoute(
+      path: '/notificacoes',
+      builder: (context, state) => const NotificacoesPage(),
+    ),
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
-    GoRoute(path: '/onboarding', builder: (context, state) => const OnboardingPage()),
+    GoRoute(
+      path: '/onboarding',
+      builder: (context, state) => const OnboardingPage(),
+    ),
   ],
 );
 
 /// Módulos com rota real registrada (todos, após a F4) — o loop genérico de
 /// `ModulePlaceholderScreen` abaixo só existe como rede de segurança para um
 /// módulo futuro sem tela própria ainda.
-const _wiredModules = {'inicio', 'fazendas', 'bank', 'credito', 'marketplace', 'armazem'};
+const _wiredModules = {
+  'inicio',
+  'fazendas',
+  'bank',
+  'credito',
+  'marketplace',
+  'armazem',
+};
 
 String _tabLabel(ModuleDef module, String tabPath) {
   for (final tab in module.bottomTabs) {

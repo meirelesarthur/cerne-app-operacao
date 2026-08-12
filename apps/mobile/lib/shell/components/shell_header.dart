@@ -56,7 +56,9 @@ class AppShellHeader extends ConsumerWidget {
     // Determinístico no protótipo (sem Date.now/relógio real) — replica
     // exatamente `ShellHeader.tsx`, que fixa a hora em 8 (resulta em "Bom dia").
     const hour = 8;
-    const greeting = hour < 12 ? 'Bom dia' : (hour < 18 ? 'Boa tarde' : 'Boa noite');
+    const greeting = hour < 12
+        ? 'Bom dia'
+        : (hour < 18 ? 'Boa tarde' : 'Boa noite');
 
     return ColoredBox(
       color: semantic.bgCanvas,
@@ -80,7 +82,11 @@ class AppShellHeader extends ConsumerWidget {
                       onTap: onOpenProfile,
                       child: Row(
                         children: [
-                          AppAvatar(name: user.name, initials: user.initials, size: AppAvatarSize.lg),
+                          AppAvatar(
+                            name: user.name,
+                            initials: user.initials,
+                            size: AppAvatarSize.lg,
+                          ),
                           const SizedBox(width: AppSpacing.space3),
                           Expanded(
                             child: Column(
@@ -121,7 +127,9 @@ class AppShellHeader extends ConsumerWidget {
                     if (onConsultMode != null) ...[
                       _headerBubble(
                         icon: const Icon(LucideIcons.eye, size: 19),
-                        label: consultActive ? 'Sair do modo consulta' : 'Modo consulta',
+                        label: consultActive
+                            ? 'Sair do modo consulta'
+                            : 'Modo consulta',
                         active: consultActive,
                         onPressed: onConsultMode,
                       ),
@@ -148,7 +156,10 @@ class AppShellHeader extends ConsumerWidget {
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: AppColors.red500,
-                                  border: Border.all(color: semantic.bgSurface, width: 2),
+                                  border: Border.all(
+                                    color: semantic.bgSurface,
+                                    width: 2,
+                                  ),
                                 ),
                               ),
                             ),
@@ -160,7 +171,8 @@ class AppShellHeader extends ConsumerWidget {
                       icon: const Icon(LucideIcons.menu, size: 19),
                       label: 'Mais',
                       active: menuOpen,
-                      onPressed: () => ref.read(shellStoreProvider.notifier).openMenu(),
+                      onPressed: () =>
+                          ref.read(shellStoreProvider.notifier).openMenu(),
                     ),
                   ],
                 ),
@@ -193,7 +205,9 @@ class AppShellHeader extends ConsumerWidget {
       icon: icon,
       label: label,
       size: AppIconButtonSize.lg,
-      variant: active ? AppIconButtonVariant.onDark : AppIconButtonVariant.solid,
+      variant: active
+          ? AppIconButtonVariant.onDark
+          : AppIconButtonVariant.solid,
       onPressed: onPressed,
     );
   }

@@ -35,7 +35,8 @@ class BankHomeScreen extends ConsumerWidget {
               value: Saldo.valor,
               accountLabel: Saldo.conta,
               hidden: balanceHidden,
-              onToggleHidden: () => ref.read(shellStoreProvider.notifier).toggleBalanceHidden(),
+              onToggleHidden: () =>
+                  ref.read(shellStoreProvider.notifier).toggleBalanceHidden(),
               loading: loading,
               footer: Row(
                 children: [
@@ -68,10 +69,34 @@ class BankHomeScreen extends ConsumerWidget {
           index: 1,
           child: Row(
             children: [
-              Expanded(child: AppQuickAction(icon: LucideIcons.zap, label: 'Pix', onPressed: () => context.go('/bank/pagamentos'))),
-              Expanded(child: AppQuickAction(icon: LucideIcons.scanLine, label: 'Pagar', onPressed: () => context.go('/bank/pagamentos'))),
-              Expanded(child: AppQuickAction(icon: LucideIcons.arrowLeftRight, label: 'Transferir', onPressed: () => context.go('/bank/pagamentos'))),
-              Expanded(child: AppQuickAction(icon: LucideIcons.handCoins, label: 'Cobrar', onPressed: () => context.go('/bank/pagamentos'))),
+              Expanded(
+                child: AppQuickAction(
+                  icon: LucideIcons.zap,
+                  label: 'Pix',
+                  onPressed: () => context.go('/bank/pagamentos'),
+                ),
+              ),
+              Expanded(
+                child: AppQuickAction(
+                  icon: LucideIcons.scanLine,
+                  label: 'Pagar',
+                  onPressed: () => context.go('/bank/pagamentos'),
+                ),
+              ),
+              Expanded(
+                child: AppQuickAction(
+                  icon: LucideIcons.arrowLeftRight,
+                  label: 'Transferir',
+                  onPressed: () => context.go('/bank/pagamentos'),
+                ),
+              ),
+              Expanded(
+                child: AppQuickAction(
+                  icon: LucideIcons.handCoins,
+                  label: 'Cobrar',
+                  onPressed: () => context.go('/bank/pagamentos'),
+                ),
+              ),
             ],
           ),
         ),
@@ -107,7 +132,10 @@ class BankHomeScreen extends ConsumerWidget {
                             ],
                           ),
                           const SizedBox(height: AppSpacing.space2),
-                          AppProgressBar(value: Cartao.usoPct.toDouble(), colorByOccupancy: true),
+                          AppProgressBar(
+                            value: Cartao.usoPct.toDouble(),
+                            colorByOccupancy: true,
+                          ),
                         ],
                       ),
                     ),
@@ -131,8 +159,15 @@ class BankHomeScreen extends ConsumerWidget {
                   width: 44,
                   height: 44,
                   alignment: Alignment.center,
-                  decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.accentDefault),
-                  child: const Icon(LucideIcons.trendingUp, size: 22, color: Colors.white),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: semantic.accentDefault,
+                  ),
+                  child: const Icon(
+                    LucideIcons.trendingUp,
+                    size: 22,
+                    color: Colors.white,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.space3),
                 const Expanded(
@@ -140,12 +175,24 @@ class BankHomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Antecipe recebíveis da safra', maxLines: 1, overflow: TextOverflow.ellipsis),
-                      Text('Simule no módulo Crédito', maxLines: 1, overflow: TextOverflow.ellipsis),
+                      Text(
+                        'Antecipe recebíveis da safra',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        'Simule no módulo Crédito',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
                 ),
-                Icon(LucideIcons.arrowRight, size: 18, color: semantic.accentDefault),
+                Icon(
+                  LucideIcons.arrowRight,
+                  size: 18,
+                  color: semantic.accentDefault,
+                ),
               ],
             ),
           ),
@@ -163,13 +210,19 @@ class BankHomeScreen extends ConsumerWidget {
               AppCard(
                 padded: false,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space4,
+                  ),
                   child: Column(
                     children: [
                       for (final tx in transacoes.take(3))
                         AppTransactionListItem(
                           transaction: tx,
-                          onTap: () => showAppTransactionDetailSheet(context, transaction: tx, hidden: balanceHidden),
+                          onTap: () => showAppTransactionDetailSheet(
+                            context,
+                            transaction: tx,
+                            hidden: balanceHidden,
+                          ),
                           showDivider: tx != transacoes.take(3).last,
                         ),
                     ],

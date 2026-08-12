@@ -62,7 +62,10 @@ class AppBalanceCard extends StatelessWidget {
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
-                      colors: [AppComponentColors.hubBankCardGlow, Colors.transparent],
+                      colors: [
+                        AppComponentColors.hubBankCardGlow,
+                        Colors.transparent,
+                      ],
                       stops: [0.0, 0.7],
                     ),
                   ),
@@ -79,9 +82,16 @@ class AppBalanceCard extends StatelessWidget {
                     Container(
                       width: AppSize.iconBtnMd,
                       height: AppSize.iconBtnMd,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.inkBubble),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: semantic.inkBubble,
+                      ),
                       alignment: Alignment.center,
-                      child: Icon(LucideIcons.landmark, size: 17, color: semantic.inkFg),
+                      child: Icon(
+                        LucideIcons.landmark,
+                        size: 17,
+                        color: semantic.inkFg,
+                      ),
                     ),
                     const SizedBox(width: AppSpacing.space2),
                     Flexible(
@@ -100,7 +110,10 @@ class AppBalanceCard extends StatelessWidget {
                           if (accountLabel != null)
                             Text(
                               accountLabel!,
-                              style: TextStyle(fontSize: AppTypography.xs, color: semantic.inkSubtle),
+                              style: TextStyle(
+                                fontSize: AppTypography.xs,
+                                color: semantic.inkSubtle,
+                              ),
                             ),
                         ],
                       ),
@@ -143,7 +156,9 @@ class AppBalanceCard extends StatelessWidget {
                               height: 36,
                               decoration: BoxDecoration(
                                 color: semantic.inkBubble,
-                                borderRadius: BorderRadius.circular(AppRadius.full),
+                                borderRadius: BorderRadius.circular(
+                                  AppRadius.full,
+                                ),
                               ),
                             ),
                           )
@@ -154,7 +169,9 @@ class AppBalanceCard extends StatelessWidget {
                               fontWeight: AppTypography.weightBold,
                               height: AppTypography.lineHeightTight,
                               color: semantic.inkFg,
-                              fontFeatures: const [FontFeature.tabularFigures()],
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
                             ),
                           ),
                   ),
@@ -203,9 +220,15 @@ class AppBalanceSummaryItem extends StatelessWidget {
           Container(
             width: AppSize.iconBtnSm,
             height: AppSize.iconBtnSm,
-            decoration: BoxDecoration(shape: BoxShape.circle, color: semantic.inkBubble),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: semantic.inkBubble,
+            ),
             alignment: Alignment.center,
-            child: IconTheme.merge(data: IconThemeData(color: semantic.inkFg, size: 16), child: icon!),
+            child: IconTheme.merge(
+              data: IconThemeData(color: semantic.inkFg, size: 16),
+              child: icon!,
+            ),
           ),
           const SizedBox(width: AppSpacing.space2),
         ],
@@ -214,7 +237,13 @@ class AppBalanceSummaryItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(label, style: TextStyle(fontSize: AppTypography.xs, color: semantic.inkMuted)),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: AppTypography.xs,
+                  color: semantic.inkMuted,
+                ),
+              ),
               Text(
                 hidden ? '••••' : value,
                 overflow: TextOverflow.ellipsis,
@@ -281,7 +310,11 @@ WidgetbookComponent buildBalanceCardWidgetbookComponent() {
               const SizedBox(height: 16),
               SizedBox(
                 width: 340,
-                child: AppBalanceCard(value: 'R\$ 128.450,32', hidden: true, onToggleHidden: () {}),
+                child: AppBalanceCard(
+                  value: 'R\$ 128.450,32',
+                  hidden: true,
+                  onToggleHidden: () {},
+                ),
               ),
             ],
           ),

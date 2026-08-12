@@ -287,7 +287,12 @@ const List<Alerta> alertas = [
 ];
 
 class Relatorio {
-  const Relatorio({required this.id, required this.nome, required this.periodo, required this.disponivel});
+  const Relatorio({
+    required this.id,
+    required this.nome,
+    required this.periodo,
+    required this.disponivel,
+  });
 
   final String id;
   final String nome;
@@ -297,7 +302,22 @@ class Relatorio {
 
 /// Relatórios mockados da aba "Relatórios" (spec D2.5).
 const List<Relatorio> relatorios = [
-  Relatorio(id: 'rel-1', nome: 'Ocupação por unidade', periodo: 'Julho/2026', disponivel: true),
-  Relatorio(id: 'rel-2', nome: 'Movimentações consolidadas', periodo: '2º trimestre 2026', disponivel: true),
-  Relatorio(id: 'rel-3', nome: 'Perdas e quebras de estoque', periodo: 'Junho/2026', disponivel: false),
+  Relatorio(
+    id: 'rel-1',
+    nome: 'Ocupação por unidade',
+    periodo: 'Julho/2026',
+    disponivel: true,
+  ),
+  Relatorio(
+    id: 'rel-2',
+    nome: 'Movimentações consolidadas',
+    periodo: '2º trimestre 2026',
+    disponivel: true,
+  ),
+  Relatorio(
+    id: 'rel-3',
+    nome: 'Perdas e quebras de estoque',
+    periodo: 'Junho/2026',
+    disponivel: false,
+  ),
 ];

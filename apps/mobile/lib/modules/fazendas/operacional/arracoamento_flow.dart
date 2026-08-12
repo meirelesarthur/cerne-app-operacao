@@ -27,14 +27,22 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
   String? _deposito;
   bool? _queued;
 
-  bool get _valid => _lote != null && _dieta != null && _deposito != null && _qtd > 0;
+  bool get _valid =>
+      _lote != null && _dieta != null && _deposito != null && _qtd > 0;
 
   void _confirmar() {
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
     if (queued) {
-      ref.read(fazendasStoreProvider.notifier).enqueueSync(
-            SyncItem(id: 'arr-$_lote', label: 'Arraçoamento', detail: '$_qtd kg', kind: ActivityKind.arracoamento),
+      ref
+          .read(fazendasStoreProvider.notifier)
+          .enqueueSync(
+            SyncItem(
+              id: 'arr-$_lote',
+              label: 'Arraçoamento',
+              detail: '$_qtd kg',
+              kind: ActivityKind.arracoamento,
+            ),
           );
     }
     setState(() => _queued = queued);
@@ -46,7 +54,8 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
       return SuccessScreen(
         title: 'Arraçoamento registrado',
         queued: _queued!,
-        effects: 'A quantidade fornecida será baixada do estoque do depósito de origem.',
+        effects:
+            'A quantidade fornecida será baixada do estoque do depósito de origem.',
       );
     }
 
@@ -85,7 +94,12 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
             label: 'Quantidade fornecida',
             required: true,
             hint: 'Sem cálculo de rateio de custo nesta fase.',
-            child: AppStepper(value: _qtd, onChanged: (v) => setState(() => _qtd = v), step: 50, suffix: 'kg'),
+            child: AppStepper(
+              value: _qtd,
+              onChanged: (v) => setState(() => _qtd = v),
+              step: 50,
+              suffix: 'kg',
+            ),
           ),
           const SizedBox(height: AppSpacing.space5),
           AppFormField(

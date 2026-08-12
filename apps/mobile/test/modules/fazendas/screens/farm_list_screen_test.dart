@@ -11,7 +11,10 @@ void main() {
     testWidgets('lista as fazendas e marca a ativa', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: FarmListScreen())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: FarmListScreen()),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -29,7 +32,10 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: FarmListScreen())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: FarmListScreen()),
+          ),
         ),
       );
       await tester.pumpAndSettle();
@@ -37,7 +43,10 @@ void main() {
       await tester.tap(find.text('Fazenda Santa Rita'));
       await tester.pump();
 
-      expect(container.read(fazendasStoreProvider).activeFarm.name, 'Fazenda Santa Rita');
+      expect(
+        container.read(fazendasStoreProvider).activeFarm.name,
+        'Fazenda Santa Rita',
+      );
     });
   });
 }

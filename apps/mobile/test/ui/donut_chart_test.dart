@@ -4,7 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/donut_chart.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppDonutChart', () {
@@ -24,7 +27,13 @@ void main() {
 
     testWidgets('renderiza rótulo/valor central sem exceções', (tester) async {
       await tester.pumpWidget(
-        _wrap(const AppDonutChart(data: sample, centerValue: '90 ha', centerLabel: 'total')),
+        _wrap(
+          const AppDonutChart(
+            data: sample,
+            centerValue: '90 ha',
+            centerLabel: 'total',
+          ),
+        ),
       );
 
       expect(tester.takeException(), isNull);

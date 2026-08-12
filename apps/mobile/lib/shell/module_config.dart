@@ -31,7 +31,12 @@ class BottomTab {
 }
 
 class ModuleMenuItem {
-  const ModuleMenuItem({required this.id, required this.label, required this.icon, required this.route});
+  const ModuleMenuItem({
+    required this.id,
+    required this.label,
+    required this.icon,
+    required this.route,
+  });
 
   final String id;
   final String label;
@@ -79,7 +84,14 @@ List<ModuleMenuSection> getMenuSections(ModuleDef module) {
       title: 'Funcionalidades',
       items: module.bottomTabs
           .where((tab) => tab.path.isNotEmpty && tab.action == null)
-          .map((tab) => ModuleMenuItem(id: tab.id, label: tab.label, icon: tab.icon, route: '/${module.id}/${tab.path}'))
+          .map(
+            (tab) => ModuleMenuItem(
+              id: tab.id,
+              label: tab.label,
+              icon: tab.icon,
+              route: '/${module.id}/${tab.path}',
+            ),
+          )
           .toList(),
     ),
   ];
@@ -94,9 +106,25 @@ const List<ModuleDef> modules = [
     homeRoute: '/inicio',
     bottomTabs: [
       BottomTab(id: 'home', label: 'Início', icon: LucideIcons.home, path: ''),
-      BottomTab(id: 'apps', label: 'Apps', icon: LucideIcons.layoutGrid, path: 'apps'),
-      BottomTab(id: 'carteira', label: 'Carteira', icon: LucideIcons.wallet, path: 'carteira'),
-      BottomTab(id: 'menu', label: 'Menu', icon: LucideIcons.menu, path: 'menu', action: 'menu'),
+      BottomTab(
+        id: 'apps',
+        label: 'Apps',
+        icon: LucideIcons.layoutGrid,
+        path: 'apps',
+      ),
+      BottomTab(
+        id: 'carteira',
+        label: 'Carteira',
+        icon: LucideIcons.wallet,
+        path: 'carteira',
+      ),
+      BottomTab(
+        id: 'menu',
+        label: 'Menu',
+        icon: LucideIcons.menu,
+        path: 'menu',
+        action: 'menu',
+      ),
     ],
   ),
   ModuleDef(
@@ -105,30 +133,101 @@ const List<ModuleDef> modules = [
     icon: LucideIcons.sprout,
     homeRoute: '/fazendas',
     bottomTabs: [
-      BottomTab(id: 'dashboard', label: 'Dashboard', icon: LucideIcons.layoutDashboard, path: ''),
-      BottomTab(id: 'fazendas', label: 'Fazendas', icon: LucideIcons.sprout, path: 'fazendas'),
-      BottomTab(id: 'atividades', label: 'Atividades', icon: LucideIcons.activity, path: 'atividades'),
-      BottomTab(id: 'financeiro', label: 'Financeiro', icon: LucideIcons.wallet, path: 'financeiro'),
-      BottomTab(id: 'mais', label: 'Mais', icon: LucideIcons.moreHorizontal, path: 'mais', action: 'menu'),
+      BottomTab(
+        id: 'dashboard',
+        label: 'Dashboard',
+        icon: LucideIcons.layoutDashboard,
+        path: '',
+      ),
+      BottomTab(
+        id: 'fazendas',
+        label: 'Fazendas',
+        icon: LucideIcons.sprout,
+        path: 'fazendas',
+      ),
+      BottomTab(
+        id: 'atividades',
+        label: 'Atividades',
+        icon: LucideIcons.activity,
+        path: 'atividades',
+      ),
+      BottomTab(
+        id: 'financeiro',
+        label: 'Financeiro',
+        icon: LucideIcons.wallet,
+        path: 'financeiro',
+      ),
+      BottomTab(
+        id: 'mais',
+        label: 'Mais',
+        icon: LucideIcons.moreHorizontal,
+        path: 'mais',
+        action: 'menu',
+      ),
     ],
     menuSections: [
       ModuleMenuSection(
         title: 'Dashboards gerenciais',
         items: [
-          ModuleMenuItem(id: 'financeiro', label: 'Financeiro', icon: LucideIcons.wallet, route: '/fazendas/dashboards/financeiro'),
-          ModuleMenuItem(id: 'pecuaria', label: 'Pecuária de Corte', icon: LucideIcons.beef, route: '/fazendas/dashboards/pecuaria'),
-          ModuleMenuItem(id: 'confinamento', label: 'Lotação de Currais', icon: LucideIcons.warehouse, route: '/fazendas/dashboards/confinamento'),
-          ModuleMenuItem(id: 'ativos', label: 'Ativos / Depreciação', icon: LucideIcons.package, route: '/fazendas/dashboards/ativos'),
-          ModuleMenuItem(id: 'suprimentos', label: 'Suprimentos', icon: LucideIcons.boxes, route: '/fazendas/dashboards/suprimentos'),
-          ModuleMenuItem(id: 'uso', label: 'Análise de Uso', icon: LucideIcons.users, route: '/fazendas/dashboards/uso'),
-          ModuleMenuItem(id: 'consultas', label: 'Consultas Gerenciais', icon: LucideIcons.search, route: '/fazendas/dashboards/consultas'),
+          ModuleMenuItem(
+            id: 'financeiro',
+            label: 'Financeiro',
+            icon: LucideIcons.wallet,
+            route: '/fazendas/dashboards/financeiro',
+          ),
+          ModuleMenuItem(
+            id: 'pecuaria',
+            label: 'Pecuária de Corte',
+            icon: LucideIcons.beef,
+            route: '/fazendas/dashboards/pecuaria',
+          ),
+          ModuleMenuItem(
+            id: 'confinamento',
+            label: 'Lotação de Currais',
+            icon: LucideIcons.warehouse,
+            route: '/fazendas/dashboards/confinamento',
+          ),
+          ModuleMenuItem(
+            id: 'ativos',
+            label: 'Ativos / Depreciação',
+            icon: LucideIcons.package,
+            route: '/fazendas/dashboards/ativos',
+          ),
+          ModuleMenuItem(
+            id: 'suprimentos',
+            label: 'Suprimentos',
+            icon: LucideIcons.boxes,
+            route: '/fazendas/dashboards/suprimentos',
+          ),
+          ModuleMenuItem(
+            id: 'uso',
+            label: 'Análise de Uso',
+            icon: LucideIcons.users,
+            route: '/fazendas/dashboards/uso',
+          ),
+          ModuleMenuItem(
+            id: 'consultas',
+            label: 'Consultas Gerenciais',
+            icon: LucideIcons.search,
+            route: '/fazendas/dashboards/consultas',
+          ),
         ],
       ),
       ModuleMenuSection(
         title: 'Operacional',
         items: [
-          ModuleMenuItem(id: 'sync', label: 'Fila de sincronização', icon: LucideIcons.refreshCw, route: '/fazendas/mais/sync'),
-          ModuleMenuItem(id: 'atividades', label: 'Todas as atividades', icon: LucideIcons.activity, route: '/fazendas/atividades'),
+          ModuleMenuItem(
+            id: 'sync',
+            label: 'Fila de sincronização',
+            icon: LucideIcons.refreshCw,
+            route: '/fazendas/mais/sync',
+          ),
+          ModuleMenuItem(
+            id: 'atividades',
+            label: 'Todas as atividades',
+            icon: LucideIcons.activity,
+            route: '/fazendas/atividades',
+          ),
         ],
       ),
     ],
@@ -139,31 +238,89 @@ const List<ModuleDef> modules = [
     icon: LucideIcons.landmark,
     homeRoute: '/bank',
     bottomTabs: [
-      BottomTab(id: 'inicio', label: 'Início', icon: LucideIcons.home, path: ''),
-      BottomTab(id: 'extrato', label: 'Extrato', icon: LucideIcons.receipt, path: 'extrato'),
-      BottomTab(id: 'pagamentos', label: 'Pagamentos', icon: LucideIcons.arrowLeftRight, path: 'pagamentos'),
-      BottomTab(id: 'cartoes', label: 'Cartões', icon: LucideIcons.creditCard, path: 'cartoes'),
-      BottomTab(id: 'mais', label: 'Mais', icon: LucideIcons.moreHorizontal, path: 'mais', action: 'menu'),
+      BottomTab(
+        id: 'inicio',
+        label: 'Início',
+        icon: LucideIcons.home,
+        path: '',
+      ),
+      BottomTab(
+        id: 'extrato',
+        label: 'Extrato',
+        icon: LucideIcons.receipt,
+        path: 'extrato',
+      ),
+      BottomTab(
+        id: 'pagamentos',
+        label: 'Pagamentos',
+        icon: LucideIcons.arrowLeftRight,
+        path: 'pagamentos',
+      ),
+      BottomTab(
+        id: 'cartoes',
+        label: 'Cartões',
+        icon: LucideIcons.creditCard,
+        path: 'cartoes',
+      ),
+      BottomTab(
+        id: 'mais',
+        label: 'Mais',
+        icon: LucideIcons.moreHorizontal,
+        path: 'mais',
+        action: 'menu',
+      ),
     ],
     menuSections: [
       ModuleMenuSection(
         title: 'Pagamentos e transferências',
         items: [
-          ModuleMenuItem(id: 'pix', label: 'Pix', icon: LucideIcons.zap, route: '/bank/pix'),
-          ModuleMenuItem(id: 'pagamentos', label: 'Pagamentos', icon: LucideIcons.receipt, route: '/bank/pagamentos'),
-          ModuleMenuItem(id: 'extrato', label: 'Extrato', icon: LucideIcons.history, route: '/bank/extrato'),
+          ModuleMenuItem(
+            id: 'pix',
+            label: 'Pix',
+            icon: LucideIcons.zap,
+            route: '/bank/pix',
+          ),
+          ModuleMenuItem(
+            id: 'pagamentos',
+            label: 'Pagamentos',
+            icon: LucideIcons.receipt,
+            route: '/bank/pagamentos',
+          ),
+          ModuleMenuItem(
+            id: 'extrato',
+            label: 'Extrato',
+            icon: LucideIcons.history,
+            route: '/bank/extrato',
+          ),
         ],
       ),
       ModuleMenuSection(
         title: 'Cartão',
         items: [
-          ModuleMenuItem(id: 'cartoes', label: 'Cartões', icon: LucideIcons.creditCard, route: '/bank/cartoes'),
-          ModuleMenuItem(id: 'limites', label: 'Limites', icon: LucideIcons.slidersHorizontal, route: '/bank/limites'),
+          ModuleMenuItem(
+            id: 'cartoes',
+            label: 'Cartões',
+            icon: LucideIcons.creditCard,
+            route: '/bank/cartoes',
+          ),
+          ModuleMenuItem(
+            id: 'limites',
+            label: 'Limites',
+            icon: LucideIcons.slidersHorizontal,
+            route: '/bank/limites',
+          ),
         ],
       ),
       ModuleMenuSection(
         title: 'Suporte',
-        items: [ModuleMenuItem(id: 'ajuda', label: 'Ajuda', icon: LucideIcons.helpCircle, route: '/bank/ajuda')],
+        items: [
+          ModuleMenuItem(
+            id: 'ajuda',
+            label: 'Ajuda',
+            icon: LucideIcons.helpCircle,
+            route: '/bank/ajuda',
+          ),
+        ],
       ),
     ],
   ),
@@ -173,23 +330,66 @@ const List<ModuleDef> modules = [
     icon: LucideIcons.handCoins,
     homeRoute: '/credito',
     bottomTabs: [
-      BottomTab(id: 'inicio', label: 'Início', icon: LucideIcons.home, path: ''),
-      BottomTab(id: 'propostas', label: 'Minhas Propostas', icon: LucideIcons.fileText, path: 'propostas'),
-      BottomTab(id: 'simular', label: 'Simular', icon: LucideIcons.calculator, path: 'simular'),
-      BottomTab(id: 'mais', label: 'Mais', icon: LucideIcons.moreHorizontal, path: 'mais', action: 'menu'),
+      BottomTab(
+        id: 'inicio',
+        label: 'Início',
+        icon: LucideIcons.home,
+        path: '',
+      ),
+      BottomTab(
+        id: 'propostas',
+        label: 'Minhas Propostas',
+        icon: LucideIcons.fileText,
+        path: 'propostas',
+      ),
+      BottomTab(
+        id: 'simular',
+        label: 'Simular',
+        icon: LucideIcons.calculator,
+        path: 'simular',
+      ),
+      BottomTab(
+        id: 'mais',
+        label: 'Mais',
+        icon: LucideIcons.moreHorizontal,
+        path: 'mais',
+        action: 'menu',
+      ),
     ],
     menuSections: [
       ModuleMenuSection(
         title: 'Crédito',
         items: [
-          ModuleMenuItem(id: 'simular', label: 'Simular', icon: LucideIcons.calculator, route: '/credito/simular'),
-          ModuleMenuItem(id: 'propostas', label: 'Propostas', icon: LucideIcons.clipboardList, route: '/credito/propostas'),
-          ModuleMenuItem(id: 'contratos', label: 'Contratos', icon: LucideIcons.fileSignature, route: '/credito/contratos'),
+          ModuleMenuItem(
+            id: 'simular',
+            label: 'Simular',
+            icon: LucideIcons.calculator,
+            route: '/credito/simular',
+          ),
+          ModuleMenuItem(
+            id: 'propostas',
+            label: 'Propostas',
+            icon: LucideIcons.clipboardList,
+            route: '/credito/propostas',
+          ),
+          ModuleMenuItem(
+            id: 'contratos',
+            label: 'Contratos',
+            icon: LucideIcons.fileSignature,
+            route: '/credito/contratos',
+          ),
         ],
       ),
       ModuleMenuSection(
         title: 'Suporte',
-        items: [ModuleMenuItem(id: 'ajuda', label: 'Ajuda', icon: LucideIcons.helpCircle, route: '/credito/ajuda')],
+        items: [
+          ModuleMenuItem(
+            id: 'ajuda',
+            label: 'Ajuda',
+            icon: LucideIcons.helpCircle,
+            route: '/credito/ajuda',
+          ),
+        ],
       ),
     ],
   ),
@@ -199,23 +399,66 @@ const List<ModuleDef> modules = [
     icon: LucideIcons.shoppingBag,
     homeRoute: '/marketplace',
     bottomTabs: [
-      BottomTab(id: 'inicio', label: 'Início', icon: LucideIcons.home, path: ''),
-      BottomTab(id: 'categorias', label: 'Categorias', icon: LucideIcons.listOrdered, path: 'categorias'),
-      BottomTab(id: 'pedidos', label: 'Pedidos', icon: LucideIcons.receipt, path: 'pedidos'),
-      BottomTab(id: 'mais', label: 'Mais', icon: LucideIcons.moreHorizontal, path: 'mais', action: 'menu'),
+      BottomTab(
+        id: 'inicio',
+        label: 'Início',
+        icon: LucideIcons.home,
+        path: '',
+      ),
+      BottomTab(
+        id: 'categorias',
+        label: 'Categorias',
+        icon: LucideIcons.listOrdered,
+        path: 'categorias',
+      ),
+      BottomTab(
+        id: 'pedidos',
+        label: 'Pedidos',
+        icon: LucideIcons.receipt,
+        path: 'pedidos',
+      ),
+      BottomTab(
+        id: 'mais',
+        label: 'Mais',
+        icon: LucideIcons.moreHorizontal,
+        path: 'mais',
+        action: 'menu',
+      ),
     ],
     menuSections: [
       ModuleMenuSection(
         title: 'Compras',
         items: [
-          ModuleMenuItem(id: 'categorias', label: 'Categorias', icon: LucideIcons.layoutGrid, route: '/marketplace/categorias'),
-          ModuleMenuItem(id: 'pedidos', label: 'Pedidos', icon: LucideIcons.package, route: '/marketplace/pedidos'),
-          ModuleMenuItem(id: 'favoritos', label: 'Favoritos', icon: LucideIcons.heart, route: '/marketplace/favoritos'),
+          ModuleMenuItem(
+            id: 'categorias',
+            label: 'Categorias',
+            icon: LucideIcons.layoutGrid,
+            route: '/marketplace/categorias',
+          ),
+          ModuleMenuItem(
+            id: 'pedidos',
+            label: 'Pedidos',
+            icon: LucideIcons.package,
+            route: '/marketplace/pedidos',
+          ),
+          ModuleMenuItem(
+            id: 'favoritos',
+            label: 'Favoritos',
+            icon: LucideIcons.heart,
+            route: '/marketplace/favoritos',
+          ),
         ],
       ),
       ModuleMenuSection(
         title: 'Suporte',
-        items: [ModuleMenuItem(id: 'ajuda', label: 'Ajuda', icon: LucideIcons.helpCircle, route: '/marketplace/ajuda')],
+        items: [
+          ModuleMenuItem(
+            id: 'ajuda',
+            label: 'Ajuda',
+            icon: LucideIcons.helpCircle,
+            route: '/marketplace/ajuda',
+          ),
+        ],
       ),
     ],
   ),
@@ -225,23 +468,66 @@ const List<ModuleDef> modules = [
     icon: LucideIcons.warehouse,
     homeRoute: '/armazem',
     bottomTabs: [
-      BottomTab(id: 'inicio', label: 'Início', icon: LucideIcons.home, path: ''),
-      BottomTab(id: 'estoque', label: 'Estoque', icon: LucideIcons.boxes, path: 'estoque'),
-      BottomTab(id: 'movimentacoes', label: 'Movimentações', icon: LucideIcons.arrowLeftRight, path: 'movimentacoes'),
-      BottomTab(id: 'mais', label: 'Mais', icon: LucideIcons.moreHorizontal, path: 'mais', action: 'menu'),
+      BottomTab(
+        id: 'inicio',
+        label: 'Início',
+        icon: LucideIcons.home,
+        path: '',
+      ),
+      BottomTab(
+        id: 'estoque',
+        label: 'Estoque',
+        icon: LucideIcons.boxes,
+        path: 'estoque',
+      ),
+      BottomTab(
+        id: 'movimentacoes',
+        label: 'Movimentações',
+        icon: LucideIcons.arrowLeftRight,
+        path: 'movimentacoes',
+      ),
+      BottomTab(
+        id: 'mais',
+        label: 'Mais',
+        icon: LucideIcons.moreHorizontal,
+        path: 'mais',
+        action: 'menu',
+      ),
     ],
     menuSections: [
       ModuleMenuSection(
         title: 'Operação',
         items: [
-          ModuleMenuItem(id: 'estoque', label: 'Estoque', icon: LucideIcons.boxes, route: '/armazem/estoque'),
-          ModuleMenuItem(id: 'movimentacoes', label: 'Movimentações', icon: LucideIcons.arrowLeftRight, route: '/armazem/movimentacoes'),
-          ModuleMenuItem(id: 'unidades', label: 'Unidades', icon: LucideIcons.warehouse, route: '/armazem/unidades'),
+          ModuleMenuItem(
+            id: 'estoque',
+            label: 'Estoque',
+            icon: LucideIcons.boxes,
+            route: '/armazem/estoque',
+          ),
+          ModuleMenuItem(
+            id: 'movimentacoes',
+            label: 'Movimentações',
+            icon: LucideIcons.arrowLeftRight,
+            route: '/armazem/movimentacoes',
+          ),
+          ModuleMenuItem(
+            id: 'unidades',
+            label: 'Unidades',
+            icon: LucideIcons.warehouse,
+            route: '/armazem/unidades',
+          ),
         ],
       ),
       ModuleMenuSection(
         title: 'Gestão',
-        items: [ModuleMenuItem(id: 'relatorios', label: 'Relatórios', icon: LucideIcons.barChart3, route: '/armazem/relatorios')],
+        items: [
+          ModuleMenuItem(
+            id: 'relatorios',
+            label: 'Relatórios',
+            icon: LucideIcons.barChart3,
+            route: '/armazem/relatorios',
+          ),
+        ],
       ),
     ],
   ),

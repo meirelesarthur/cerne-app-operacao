@@ -8,9 +8,18 @@ import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
 
-const Map<AtivoEstado, ({String label, AppChipTone tone, IconData icon})> _estadoMeta = {
-  AtivoEstado.ativo: (label: 'Ativo', tone: AppChipTone.brand, icon: LucideIcons.checkCircle2),
-  AtivoEstado.manutencao: (label: 'Em manutenção', tone: AppChipTone.amber, icon: LucideIcons.wrench),
+const Map<AtivoEstado, ({String label, AppChipTone tone, IconData icon})>
+_estadoMeta = {
+  AtivoEstado.ativo: (
+    label: 'Ativo',
+    tone: AppChipTone.brand,
+    icon: LucideIcons.checkCircle2,
+  ),
+  AtivoEstado.manutencao: (
+    label: 'Em manutenção',
+    tone: AppChipTone.amber,
+    icon: LucideIcons.wrench,
+  ),
 };
 
 /// Dashboard de Ativos / Depreciação (spec §4.5). Espelha `DashAtivos.tsx`.
@@ -33,8 +42,16 @@ class DashAtivos extends StatelessWidget {
             childAspectRatio: 1.1,
             children: const [
               AppKpiStatCard(label: 'Total', value: AtivosResumo.total),
-              AppKpiStatCard(label: 'Depreciação', value: AtivosResumo.depreciacao, tone: AppKpiStatTone.negative),
-              AppKpiStatCard(label: 'Líquido', value: AtivosResumo.liquido, tone: AppKpiStatTone.positive),
+              AppKpiStatCard(
+                label: 'Depreciação',
+                value: AtivosResumo.depreciacao,
+                tone: AppKpiStatTone.negative,
+              ),
+              AppKpiStatCard(
+                label: 'Líquido',
+                value: AtivosResumo.liquido,
+                tone: AppKpiStatTone.positive,
+              ),
             ],
           ),
           const SizedBox(height: AppSpacing.space5),
@@ -85,7 +102,10 @@ class _AtivoCard extends StatelessWidget {
                         ativo.nome,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: semantic.fgDefault,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.space1),
                       AppTag(child: Text(ativo.categoria)),
@@ -96,13 +116,29 @@ class _AtivoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(ativo.aquisicao, style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault)),
+                    Text(
+                      ativo.aquisicao,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: semantic.fgDefault,
+                      ),
+                    ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(LucideIcons.wrench, size: 11, color: semantic.fgSubtle),
+                        Icon(
+                          LucideIcons.wrench,
+                          size: 11,
+                          color: semantic.fgSubtle,
+                        ),
                         const SizedBox(width: 4),
-                        Text(ativo.proximaManutencao, style: TextStyle(fontSize: 11, color: semantic.fgSubtle)),
+                        Text(
+                          ativo.proximaManutencao,
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: semantic.fgSubtle,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -112,9 +148,21 @@ class _AtivoCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.space2),
             Row(
               children: [
-                Expanded(child: AppProgressBar(value: ativo.depreciado.toDouble(), tone: AppProgressBarTone.amber)),
+                Expanded(
+                  child: AppProgressBar(
+                    value: ativo.depreciado.toDouble(),
+                    tone: AppProgressBarTone.amber,
+                  ),
+                ),
                 const SizedBox(width: AppSpacing.space2),
-                Text('${ativo.depreciado}%', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: semantic.fgMuted)),
+                Text(
+                  '${ativo.depreciado}%',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    color: semantic.fgMuted,
+                  ),
+                ),
               ],
             ),
           ],
@@ -151,24 +199,44 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
                         ativo.nome,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                          color: semantic.fgDefault,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                AppChip(tone: estado.tone, icon: Icon(estado.icon, size: 12), child: Text(estado.label)),
+                AppChip(
+                  tone: estado.tone,
+                  icon: Icon(estado.icon, size: 12),
+                  child: Text(estado.label),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.space4),
             Container(
               padding: const EdgeInsets.all(AppSpacing.space4),
-              decoration: BoxDecoration(color: semantic.bgSubtle, borderRadius: BorderRadius.circular(AppRadius.xl2)),
+              decoration: BoxDecoration(
+                color: semantic.bgSubtle,
+                borderRadius: BorderRadius.circular(AppRadius.xl2),
+              ),
               child: Column(
                 children: [
                   _DetailRow(label: 'Ano de aquisição', value: '${ativo.ano}'),
-                  _DetailRow(label: 'Valor de aquisição', value: ativo.aquisicao),
-                  _DetailRow(label: 'Valor residual', value: ativo.valorResidual),
-                  _DetailRow(label: 'Próxima manutenção', value: ativo.proximaManutencao),
+                  _DetailRow(
+                    label: 'Valor de aquisição',
+                    value: ativo.aquisicao,
+                  ),
+                  _DetailRow(
+                    label: 'Valor residual',
+                    value: ativo.valorResidual,
+                  ),
+                  _DetailRow(
+                    label: 'Próxima manutenção',
+                    value: ativo.proximaManutencao,
+                  ),
                 ],
               ),
             ),
@@ -176,12 +244,24 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Depreciação acumulada', style: TextStyle(color: semantic.fgMuted)),
-                Text('${ativo.depreciado}%', style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault)),
+                Text(
+                  'Depreciação acumulada',
+                  style: TextStyle(color: semantic.fgMuted),
+                ),
+                Text(
+                  '${ativo.depreciado}%',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: semantic.fgDefault,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.space1),
-            AppProgressBar(value: ativo.depreciado.toDouble(), tone: AppProgressBarTone.amber),
+            AppProgressBar(
+              value: ativo.depreciado.toDouble(),
+              tone: AppProgressBarTone.amber,
+            ),
             const SizedBox(height: AppSpacing.space4),
             Text(
               'Ficha completa do ativo, histórico de manutenções e anexos ficam no sistema web GB CERNE.',
@@ -215,7 +295,11 @@ class _DetailRow extends StatelessWidget {
               textAlign: TextAlign.right,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: semantic.fgDefault),
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w600,
+                color: semantic.fgDefault,
+              ),
             ),
           ),
         ],

@@ -7,8 +7,11 @@ import 'package:cerne_app/modules/fazendas/components/context_badge.dart';
 import 'package:cerne_app/modules/fazendas/state/fazendas_store.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
-      child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child)),
-    );
+  child: MaterialApp(
+    theme: buildAppTheme(AppThemeVariant.light),
+    home: Scaffold(body: child),
+  ),
+);
 
 void main() {
   group('ContextBadge', () {
@@ -27,11 +30,16 @@ void main() {
       await tester.pumpWidget(
         UncontrolledProviderScope(
           container: container,
-          child: MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: const Scaffold(body: ContextBadge())),
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: ContextBadge()),
+          ),
         ),
       );
 
-      container.read(fazendasStoreProvider.notifier).setActiveFarm(secondFarm.id);
+      container
+          .read(fazendasStoreProvider.notifier)
+          .setActiveFarm(secondFarm.id);
       await tester.pump();
 
       expect(find.textContaining(secondFarm.name), findsOneWidget);

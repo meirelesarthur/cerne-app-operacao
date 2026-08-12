@@ -18,7 +18,11 @@ import '../module_config.dart';
 /// deve envolver este widget em `Stack` + `Positioned`/`Align` na base,
 /// somando `MediaQuery.of(context).padding.bottom` (safe area) ao respiro.
 class AppBottomTabBar extends StatelessWidget {
-  const AppBottomTabBar({super.key, required this.activeId, required this.onModuleSelected});
+  const AppBottomTabBar({
+    super.key,
+    required this.activeId,
+    required this.onModuleSelected,
+  });
 
   final String activeId;
 
@@ -67,7 +71,12 @@ class AppBottomTabBar extends StatelessWidget {
 }
 
 class _ModuleButton extends StatelessWidget {
-  const _ModuleButton({required this.label, required this.icon, required this.active, required this.onTap});
+  const _ModuleButton({
+    required this.label,
+    required this.icon,
+    required this.active,
+    required this.onTap,
+  });
 
   final String label;
   final IconData icon;

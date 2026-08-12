@@ -25,34 +25,43 @@ GoRoute buildFazendasModuleRoute() {
     routes: [
       GoRoute(
         path: 'atividades',
-        builder: (context, state) => const _FazendasScaffold(child: AtividadesScreen()),
+        builder: (context, state) =>
+            const _FazendasScaffold(child: AtividadesScreen()),
       ),
       GoRoute(
         path: 'fazendas',
-        builder: (context, state) => const _FazendasScaffold(child: FarmListScreen()),
+        builder: (context, state) =>
+            const _FazendasScaffold(child: FarmListScreen()),
       ),
       GoRoute(
         path: 'financeiro',
         // `DashFinanceiro` real vem do processo dos dashboards administrativos
         // (F3); por ora, delega ao dispatcher `AdminDashboard`, igual ao dashId
         // homônimo em `/fazendas/dashboards/financeiro`.
-        builder: (context, state) => _FazendasScaffold(child: buildAdminDashboard('financeiro')),
+        builder: (context, state) =>
+            _FazendasScaffold(child: buildAdminDashboard('financeiro')),
       ),
       GoRoute(
         path: 'mais',
-        builder: (context, state) => const _FazendasScaffold(child: MaisScreen()),
+        builder: (context, state) =>
+            const _FazendasScaffold(child: MaisScreen()),
       ),
       GoRoute(
         path: 'mais/sync',
-        builder: (context, state) => const _FazendasScaffold(child: SyncQueueScreen()),
+        builder: (context, state) =>
+            const _FazendasScaffold(child: SyncQueueScreen()),
       ),
       GoRoute(
         path: 'dashboards/:dashId',
-        builder: (context, state) => _FazendasScaffold(child: buildAdminDashboard(state.pathParameters['dashId']!)),
+        builder: (context, state) => _FazendasScaffold(
+          child: buildAdminDashboard(state.pathParameters['dashId']!),
+        ),
       ),
       GoRoute(
         path: 'campo/:flowId',
-        builder: (context, state) => _FazendasScaffold(child: buildCampoFlow(state.pathParameters['flowId']!)),
+        builder: (context, state) => _FazendasScaffold(
+          child: buildCampoFlow(state.pathParameters['flowId']!),
+        ),
       ),
     ],
   );

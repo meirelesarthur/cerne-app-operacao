@@ -6,12 +6,36 @@ import '../../../ui/search_select.dart' show AppSearchSelectOption;
 /// campo (`operacional/campo_flow.dart`), construídos em processo separado.
 
 const List<AppSearchSelectOption> lotesOpcoes = [
-  AppSearchSelectOption(value: 'l42', label: 'Lote 42', detail: '128 cabeças · Curral 02'),
-  AppSearchSelectOption(value: 'l19', label: 'Lote 19', detail: '96 cabeças · Curral 05'),
-  AppSearchSelectOption(value: 'l07', label: 'Lote 07', detail: '150 cabeças · Piquete 3'),
-  AppSearchSelectOption(value: 'l33', label: 'Lote 33', detail: '64 cabeças · Curral 01'),
-  AppSearchSelectOption(value: 'l51', label: 'Lote 51', detail: '110 cabeças · Piquete 1'),
-  AppSearchSelectOption(value: 'l88', label: 'Lote 88', detail: '82 cabeças · Curral 04'),
+  AppSearchSelectOption(
+    value: 'l42',
+    label: 'Lote 42',
+    detail: '128 cabeças · Curral 02',
+  ),
+  AppSearchSelectOption(
+    value: 'l19',
+    label: 'Lote 19',
+    detail: '96 cabeças · Curral 05',
+  ),
+  AppSearchSelectOption(
+    value: 'l07',
+    label: 'Lote 07',
+    detail: '150 cabeças · Piquete 3',
+  ),
+  AppSearchSelectOption(
+    value: 'l33',
+    label: 'Lote 33',
+    detail: '64 cabeças · Curral 01',
+  ),
+  AppSearchSelectOption(
+    value: 'l51',
+    label: 'Lote 51',
+    detail: '110 cabeças · Piquete 1',
+  ),
+  AppSearchSelectOption(
+    value: 'l88',
+    label: 'Lote 88',
+    detail: '82 cabeças · Curral 04',
+  ),
 ];
 
 const List<AppFormSelectOption> dietas = [
@@ -62,7 +86,12 @@ const List<AppFormSelectOption> condPagamento = [
 
 /// Item de uma NF-e mockada para conferência (spec §5.4).
 class NfeItem {
-  const NfeItem({required this.id, required this.descricao, required this.qtd, required this.valor});
+  const NfeItem({
+    required this.id,
+    required this.descricao,
+    required this.qtd,
+    required this.valor,
+  });
 
   final String id;
   final String descricao;
@@ -71,18 +100,41 @@ class NfeItem {
 }
 
 const List<NfeItem> nfeItens = [
-  NfeItem(id: 'i1', descricao: 'Ração Engorda 40kg', qtd: '120 sc', valor: 'R\$ 18.000'),
-  NfeItem(id: 'i2', descricao: 'Sal Mineral 25kg', qtd: '80 sc', valor: 'R\$ 6.400'),
-  NfeItem(id: 'i3', descricao: 'Vacina Aftosa', qtd: '540 doses', valor: 'R\$ 4.860'),
+  NfeItem(
+    id: 'i1',
+    descricao: 'Ração Engorda 40kg',
+    qtd: '120 sc',
+    valor: 'R\$ 18.000',
+  ),
+  NfeItem(
+    id: 'i2',
+    descricao: 'Sal Mineral 25kg',
+    qtd: '80 sc',
+    valor: 'R\$ 6.400',
+  ),
+  NfeItem(
+    id: 'i3',
+    descricao: 'Vacina Aftosa',
+    qtd: '540 doses',
+    valor: 'R\$ 4.860',
+  ),
   NfeItem(id: 'i4', descricao: 'Vermífugo', qtd: '30 fr', valor: 'R\$ 2.100'),
 ];
 
 class NfeCabecalho {
-  const NfeCabecalho({required this.fornecedor, required this.numero, required this.total});
+  const NfeCabecalho({
+    required this.fornecedor,
+    required this.numero,
+    required this.total,
+  });
 
   final String fornecedor;
   final String numero;
   final String total;
 }
 
-const nfeCabecalho = NfeCabecalho(fornecedor: 'Agropecuária Vale Ltda', numero: '4471', total: 'R\$ 31.360');
+const nfeCabecalho = NfeCabecalho(
+  fornecedor: 'Agropecuária Vale Ltda',
+  numero: '4471',
+  total: 'R\$ 31.360',
+);

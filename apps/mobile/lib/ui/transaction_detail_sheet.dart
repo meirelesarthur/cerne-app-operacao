@@ -16,7 +16,8 @@ import 'transaction_list_item.dart';
 
 /// ID de operação mockado e determinístico (sem `DateTime.now()`) — protótipo,
 /// espelha `operationId` de `TransactionDetailSheet.tsx`.
-String _operationId(String id) => 'E9040088-2607-${id.toUpperCase().padLeft(6, '0')}-GBNK';
+String _operationId(String id) =>
+    'E9040088-2607-${id.toUpperCase().padLeft(6, '0')}-GBNK';
 
 /// Espelha `TransactionDetailSheet.tsx` (Plano de Navegabilidade, B2):
 /// BottomSheet com anatomia de comprovante bancário, acionado pelo
@@ -40,7 +41,10 @@ Future<void> showAppTransactionDetailSheet(
 /// Corpo do comprovante — extraído para `StatefulWidget` apenas pelo estado
 /// local "copiado" (equivalente ao `useState`/`useEffect` do React).
 class _TransactionDetailBody extends StatefulWidget {
-  const _TransactionDetailBody({required this.transaction, required this.hidden});
+  const _TransactionDetailBody({
+    required this.transaction,
+    required this.hidden,
+  });
 
   final AppTransactionItem transaction;
   final bool hidden;
@@ -102,7 +106,10 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
               const SizedBox(height: AppSpacing.space2),
               AppChip(
                 tone: isIn ? AppChipTone.brand : AppChipTone.neutral,
-                icon: Icon(isIn ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight, size: 12),
+                icon: Icon(
+                  isIn ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight,
+                  size: 12,
+                ),
                 child: Text(isIn ? 'Entrada' : 'Saída'),
               ),
               const SizedBox(height: AppSpacing.space2),
@@ -119,7 +126,10 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
               ),
               Text(
                 tx.time,
-                style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  color: semantic.fgMuted,
+                ),
               ),
             ],
           ),
@@ -145,7 +155,13 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
               const SizedBox(height: AppSpacing.space3),
               _ReceiptRow(label: 'Data', value: Text(tx.time)),
               const SizedBox(height: AppSpacing.space3),
-              const _ReceiptRow(label: 'Situação', value: AppChip(tone: AppChipTone.brand, child: Text('Efetivada'))),
+              const _ReceiptRow(
+                label: 'Situação',
+                value: AppChip(
+                  tone: AppChipTone.brand,
+                  child: Text('Efetivada'),
+                ),
+              ),
             ],
           ),
         ),
@@ -214,7 +230,10 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
         // Padrão honesto do protótipo.
         Text(
           'O comprovante oficial em PDF fica disponível no GB Bank web.',
-          style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgSubtle),
+          style: TextStyle(
+            fontSize: AppTypography.sm,
+            color: semantic.fgSubtle,
+          ),
         ),
       ],
     );
@@ -233,7 +252,10 @@ class _ReceiptRow extends StatelessWidget {
 
     return Row(
       children: [
-        Text(label, style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+        Text(
+          label,
+          style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+        ),
         const SizedBox(width: AppSpacing.space3),
         Expanded(
           child: DefaultTextStyle.merge(
@@ -269,7 +291,8 @@ WidgetbookComponent buildTransactionDetailSheetWidgetbookComponent() {
         builder: (context) => Center(
           child: Builder(
             builder: (context) => ElevatedButton(
-              onPressed: () => showAppTransactionDetailSheet(context, transaction: sample),
+              onPressed: () =>
+                  showAppTransactionDetailSheet(context, transaction: sample),
               child: const Text('Abrir detalhe da transação'),
             ),
           ),

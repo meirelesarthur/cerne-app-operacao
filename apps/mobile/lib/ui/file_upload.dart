@@ -46,7 +46,11 @@ class AppFileUpload extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(LucideIcons.fileCheck2, size: 20, color: semantic.accentDefault),
+            Icon(
+              LucideIcons.fileCheck2,
+              size: 20,
+              color: semantic.accentDefault,
+            ),
             const SizedBox(width: AppSpacing.space3),
             Expanded(
               child: Text(
@@ -78,7 +82,10 @@ class AppFileUpload extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadius.xl),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space4,
+          vertical: AppSpacing.space8,
+        ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppRadius.xl),
           border: Border.all(color: semantic.borderStrong, width: 2),
@@ -141,7 +148,10 @@ class _FileUploadUseCaseState extends State<_FileUploadUseCase> {
     return Center(
       child: SizedBox(
         width: 320,
-        child: AppFileUpload(value: _fileName, onChanged: (v) => setState(() => _fileName = v)),
+        child: AppFileUpload(
+          value: _fileName,
+          onChanged: (v) => setState(() => _fileName = v),
+        ),
       ),
     );
   }

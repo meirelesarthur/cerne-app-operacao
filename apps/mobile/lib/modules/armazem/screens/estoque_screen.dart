@@ -73,7 +73,10 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
           for (final it in itens)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.space3),
-              child: _ItemEstoqueCard(item: it, unidadeNome: _unidadeNome(it.unidadeId)),
+              child: _ItemEstoqueCard(
+                item: it,
+                unidadeNome: _unidadeNome(it.unidadeId),
+              ),
             ),
       ],
     );
@@ -103,24 +106,37 @@ class _ItemEstoqueCard extends StatelessWidget {
                   item.produto,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: semantic.fgDefault,
+                  ),
                 ),
               ),
               AppChip(tone: chip.tone, child: Text(chip.label)),
             ],
           ),
           const SizedBox(height: 2),
-          Text(unidadeNome, style: TextStyle(fontSize: 12, color: semantic.fgMuted)),
+          Text(
+            unidadeNome,
+            style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+          ),
           const SizedBox(height: AppSpacing.space3),
           Row(
             children: [
               Expanded(
-                child: AppProgressBar(value: item.ocupacaoPct.toDouble(), tone: _progressTone[item.status]!),
+                child: AppProgressBar(
+                  value: item.ocupacaoPct.toDouble(),
+                  tone: _progressTone[item.status]!,
+                ),
               ),
               const SizedBox(width: AppSpacing.space3),
               Text(
                 '${item.quantidadeLabel} / ${item.capacidadeLabel}',
-                style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: semantic.fgMuted,
+                ),
               ),
             ],
           ),

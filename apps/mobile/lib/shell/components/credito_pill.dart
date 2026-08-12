@@ -23,7 +23,10 @@ class AppCreditoPill extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(AppRadius.full), boxShadow: semantic.shadowCard),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppRadius.full),
+        boxShadow: semantic.shadowCard,
+      ),
       child: Material(
         color: semantic.bgSurface,
         shape: RoundedRectangleBorder(
@@ -34,11 +37,18 @@ class AppCreditoPill extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadius.full),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3, vertical: AppSpacing.space2),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.space3,
+              vertical: AppSpacing.space2,
+            ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(LucideIcons.creditCard, size: 14, color: semantic.accentDefault),
+                Icon(
+                  LucideIcons.creditCard,
+                  size: 14,
+                  color: semantic.accentDefault,
+                ),
                 const SizedBox(width: AppSpacing.space2),
                 Text(
                   _valor,

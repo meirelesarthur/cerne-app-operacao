@@ -10,7 +10,12 @@ import '../design/theme/app_theme_extension.dart';
 /// Espelha `Checkbox.tsx` — controle `role="checkbox"` acessível, componente
 /// controlado (`checked`/`onChanged`), encapsulando o toque para cumprir a Lei 1.
 class AppCheckbox extends StatelessWidget {
-  const AppCheckbox({super.key, required this.checked, required this.onChanged, this.label});
+  const AppCheckbox({
+    super.key,
+    required this.checked,
+    required this.onChanged,
+    this.label,
+  });
 
   final bool checked;
   final ValueChanged<bool> onChanged;
@@ -39,9 +44,19 @@ class AppCheckbox extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(AppRadius.md),
                   color: checked ? semantic.accentDefault : semantic.bgSurface,
-                  border: Border.all(color: checked ? semantic.accentDefault : semantic.borderStrong),
+                  border: Border.all(
+                    color: checked
+                        ? semantic.accentDefault
+                        : semantic.borderStrong,
+                  ),
                 ),
-                child: checked ? const Icon(LucideIcons.check, size: 13, color: Colors.white) : null,
+                child: checked
+                    ? const Icon(
+                        LucideIcons.check,
+                        size: 13,
+                        color: Colors.white,
+                      )
+                    : null,
               ),
               if (label != null) ...[
                 const SizedBox(width: AppSpacing.space2),
@@ -92,9 +107,17 @@ class _CheckboxUseCaseState extends State<_CheckboxUseCase> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          AppCheckbox(checked: _a, onChanged: (v) => setState(() => _a = v), label: 'Aceito os termos'),
+          AppCheckbox(
+            checked: _a,
+            onChanged: (v) => setState(() => _a = v),
+            label: 'Aceito os termos',
+          ),
           const SizedBox(height: AppSpacing.space3),
-          AppCheckbox(checked: _b, onChanged: (v) => setState(() => _b = v), label: 'Receber notificações'),
+          AppCheckbox(
+            checked: _b,
+            onChanged: (v) => setState(() => _b = v),
+            label: 'Receber notificações',
+          ),
         ],
       ),
     );

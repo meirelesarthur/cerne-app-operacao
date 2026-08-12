@@ -28,16 +28,28 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
   String? _deposito;
   bool? _queued;
 
-  bool get _valid => _lote != null && (double.tryParse(_peso.replaceAll(',', '.')) ?? 0) > 0 && _deposito != null;
+  bool get _valid =>
+      _lote != null &&
+      (double.tryParse(_peso.replaceAll(',', '.')) ?? 0) > 0 &&
+      _deposito != null;
 
   void _confirmar() {
     ref.read(fazendasStoreProvider.notifier).registrarPesagemDoDia();
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
     if (queued) {
-      final loteLabel = lotesOpcoes.firstWhere((l) => l.value == _lote, orElse: () => lotesOpcoes.first).label;
-      ref.read(fazendasStoreProvider.notifier).enqueueSync(
-            SyncItem(id: 'pes-$_lote', label: 'Pesagem $loteLabel', detail: '$_peso kg', kind: ActivityKind.pesagem),
+      final loteLabel = lotesOpcoes
+          .firstWhere((l) => l.value == _lote, orElse: () => lotesOpcoes.first)
+          .label;
+      ref
+          .read(fazendasStoreProvider.notifier)
+          .enqueueSync(
+            SyncItem(
+              id: 'pes-$_lote',
+              label: 'Pesagem $loteLabel',
+              detail: '$_peso kg',
+              kind: ActivityKind.pesagem,
+            ),
           );
     }
     setState(() => _queued = queued);
@@ -49,7 +61,8 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
       return SuccessScreen(
         title: 'Pesagem registrada',
         queued: _queued!,
-        effects: 'Isso vai atualizar o estoque e pode gerar NF-e/transferência.',
+        effects:
+            'Isso vai atualizar o estoque e pode gerar NF-e/transferência.',
       );
     }
 
@@ -91,14 +104,19 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
                 child: SizedBox(
                   height: AppSpacing.space16,
                   child: AppTextInput(
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     onChanged: (v) => setState(() => _peso = v),
                     placeholder: '0',
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.space4, left: AppSpacing.space2),
+                padding: const EdgeInsets.only(
+                  bottom: AppSpacing.space4,
+                  left: AppSpacing.space2,
+                ),
                 child: Text(
                   'kg',
                   style: TextStyle(

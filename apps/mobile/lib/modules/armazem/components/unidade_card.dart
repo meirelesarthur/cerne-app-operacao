@@ -40,7 +40,10 @@ class UnidadeCard extends StatelessWidget {
                   unidade.nome,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: semantic.fgDefault,
+                  ),
                 ),
               ),
               AppChip(tone: chip.tone, child: Text(chip.label)),
@@ -55,12 +58,18 @@ class UnidadeCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: AppProgressBar(value: unidade.ocupacaoPct.toDouble(), colorByOccupancy: true),
+                child: AppProgressBar(
+                  value: unidade.ocupacaoPct.toDouble(),
+                  colorByOccupancy: true,
+                ),
               ),
               const SizedBox(width: AppSpacing.space3),
               Text(
                 '${unidade.ocupacaoPct}%',
-                style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: semantic.fgDefault,
+                ),
               ),
             ],
           ),

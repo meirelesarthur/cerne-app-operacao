@@ -36,7 +36,8 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
               : ListView.separated(
                   padding: const EdgeInsets.all(AppSpacing.space4),
                   itemCount: favoritos.length,
-                  separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.space3),
+                  separatorBuilder: (context, _) =>
+                      const SizedBox(height: AppSpacing.space3),
                   itemBuilder: (context, index) {
                     final produto = favoritos[index];
                     Categoria? categoria;
@@ -46,11 +47,14 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                         break;
                       }
                     }
-                    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+                    final semantic = Theme.of(
+                      context,
+                    ).extension<AppSemanticColors>()!;
 
                     return AppCard(
                       interactive: true,
-                      onTap: () => context.go('/marketplace/produto/${produto.id}'),
+                      onTap: () =>
+                          context.go('/marketplace/produto/${produto.id}'),
                       child: Row(
                         children: [
                           Container(
@@ -62,7 +66,11 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(AppRadius.xl),
                             ),
                             child: categoria != null
-                                ? Icon(categoria.icon, size: 24, color: semantic.accentDefault)
+                                ? Icon(
+                                    categoria.icon,
+                                    size: 24,
+                                    color: semantic.accentDefault,
+                                  )
                                 : null,
                           ),
                           const SizedBox(width: AppSpacing.space3),
@@ -75,22 +83,35 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                                   produto.nome,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontWeight: FontWeight.w600, color: semantic.fgDefault),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: semantic.fgDefault,
+                                  ),
                                 ),
                                 Text(
                                   produto.vendedor,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: semantic.fgMuted,
+                                  ),
                                 ),
                                 Text(
                                   produto.preco,
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: semantic.fgDefault),
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: semantic.fgDefault,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
-                          Icon(LucideIcons.heart, size: 18, color: semantic.accentDefault),
+                          Icon(
+                            LucideIcons.heart,
+                            size: 18,
+                            color: semantic.accentDefault,
+                          ),
                         ],
                       ),
                     );

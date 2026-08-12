@@ -20,7 +20,10 @@ class AppTextarea extends StatelessWidget {
     this.enabled = true,
     this.minLines = 4,
     this.maxLines = 8,
-  }) : assert(controller == null || initialValue == null, 'Use controller OU initialValue, não os dois.');
+  }) : assert(
+         controller == null || initialValue == null,
+         'Use controller OU initialValue, não os dois.',
+       );
 
   final TextEditingController? controller;
   final String? initialValue;
@@ -36,7 +39,10 @@ class AppTextarea extends StatelessWidget {
     final radius = BorderRadius.circular(AppRadius.xl2);
 
     OutlineInputBorder border(Color color, {double width = 1}) =>
-        OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: color, width: width));
+        OutlineInputBorder(
+          borderRadius: radius,
+          borderSide: BorderSide(color: color, width: width),
+        );
 
     return TextFormField(
       controller: controller,

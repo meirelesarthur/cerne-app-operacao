@@ -13,7 +13,14 @@ import 'sparkline_area.dart';
 /// `variant` cobre o claro padrão (`light`) e as superfícies escuras
 /// categorizadas de `t.component.dashboardTile` (spec §6.6), representadas em
 /// Dart por `AppComponentColors` (`app_colors.dart`).
-enum AppDashboardCardVariant { light, revenue, expense, finance, production, dark }
+enum AppDashboardCardVariant {
+  light,
+  revenue,
+  expense,
+  finance,
+  production,
+  dark,
+}
 
 class AppDashboardCard extends StatelessWidget {
   const AppDashboardCard({
@@ -52,7 +59,8 @@ class AppDashboardCard extends StatelessWidget {
     AppDashboardCardVariant.revenue => AppComponentColors.dashboardTileRevenue,
     AppDashboardCardVariant.expense => AppComponentColors.dashboardTileExpense,
     AppDashboardCardVariant.finance => AppComponentColors.dashboardTileFinance,
-    AppDashboardCardVariant.production => AppComponentColors.dashboardTileProduction,
+    AppDashboardCardVariant.production =>
+      AppComponentColors.dashboardTileProduction,
     AppDashboardCardVariant.dark => AppComponentColors.dashboardTileDark,
   };
 
@@ -80,7 +88,10 @@ class AppDashboardCard extends StatelessWidget {
                     width: AppSpacing.space10,
                     height: AppSpacing.space10,
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(color: AppColors.neutral200, shape: BoxShape.circle),
+                    decoration: const BoxDecoration(
+                      color: AppColors.neutral200,
+                      shape: BoxShape.circle,
+                    ),
                     child: Icon(icon, size: 18, color: AppColors.neutral500),
                   ),
                   Padding(
@@ -153,21 +164,31 @@ class AppDashboardCard extends StatelessWidget {
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: _dark ? Colors.white.withValues(alpha: 0.15) : semantic.accentSubtle,
+                  color: _dark
+                      ? Colors.white.withValues(alpha: 0.15)
+                      : semantic.accentSubtle,
                   border: _dark ? null : Border.all(color: semantic.borderTint),
                 ),
-                child: Icon(icon, size: 18, color: _dark ? Colors.white : semantic.accentDefault),
+                child: Icon(
+                  icon,
+                  size: 18,
+                  color: _dark ? Colors.white : semantic.accentDefault,
+                ),
               ),
               if (delta != null)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      delta! >= 0 ? LucideIcons.trendingUp : LucideIcons.trendingDown,
+                      delta! >= 0
+                          ? LucideIcons.trendingUp
+                          : LucideIcons.trendingDown,
                       size: 13,
                       color: _dark
                           ? Colors.white.withValues(alpha: 0.9)
-                          : (delta! >= 0 ? semantic.accentDefault : AppColors.red600),
+                          : (delta! >= 0
+                                ? semantic.accentDefault
+                                : AppColors.red600),
                     ),
                     const SizedBox(width: 2),
                     Text(
@@ -177,7 +198,9 @@ class AppDashboardCard extends StatelessWidget {
                         fontWeight: AppTypography.weightSemibold,
                         color: _dark
                             ? Colors.white.withValues(alpha: 0.9)
-                            : (delta! >= 0 ? semantic.accentDefault : AppColors.red600),
+                            : (delta! >= 0
+                                  ? semantic.accentDefault
+                                  : AppColors.red600),
                       ),
                     ),
                   ],
@@ -191,7 +214,9 @@ class AppDashboardCard extends StatelessWidget {
               style: TextStyle(
                 fontSize: AppTypography.md,
                 fontWeight: AppTypography.weightMedium,
-                color: _dark ? Colors.white.withValues(alpha: 0.75) : semantic.fgMuted,
+                color: _dark
+                    ? Colors.white.withValues(alpha: 0.75)
+                    : semantic.fgMuted,
               ),
             ),
           ),
@@ -213,7 +238,9 @@ class AppDashboardCard extends StatelessWidget {
               child: LayoutBuilder(
                 builder: (context, constraints) => AppSparklineArea(
                   data: spark!,
-                  color: _dark ? Colors.white.withValues(alpha: 0.9) : semantic.accentDefault,
+                  color: _dark
+                      ? Colors.white.withValues(alpha: 0.9)
+                      : semantic.accentDefault,
                   width: constraints.maxWidth,
                   height: 34,
                 ),

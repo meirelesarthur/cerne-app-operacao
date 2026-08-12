@@ -14,13 +14,25 @@ void main() {
       final route = buildBankModuleRoute();
 
       expect(route.path, '/bank');
-      final subPaths = route.routes.whereType<GoRoute>().map((r) => r.path).toSet();
-      expect(subPaths, {'extrato', 'pagamentos', 'cartoes', 'pix', 'limites', 'ajuda'});
+      final subPaths = route.routes
+          .whereType<GoRoute>()
+          .map((r) => r.path)
+          .toSet();
+      expect(subPaths, {
+        'extrato',
+        'pagamentos',
+        'cartoes',
+        'pix',
+        'limites',
+        'ajuda',
+      });
     });
 
     test('cada rota constrói o widget esperado', () {
       final route = buildBankModuleRoute();
-      final byPath = {for (final r in route.routes.whereType<GoRoute>()) r.path: r};
+      final byPath = {
+        for (final r in route.routes.whereType<GoRoute>()) r.path: r,
+      };
 
       expect(route.builder, isNotNull);
       expect(byPath['extrato']!.builder, isNotNull);

@@ -37,7 +37,12 @@ import '../state/shell_store.dart';
 ///   nenhum item destacado) em vez do `location.pathname === item.route` do
 ///   React.
 class AppRevealMenu extends ConsumerStatefulWidget {
-  const AppRevealMenu({super.key, required this.module, required this.onNavigate, this.activeRoute});
+  const AppRevealMenu({
+    super.key,
+    required this.module,
+    required this.onNavigate,
+    this.activeRoute,
+  });
 
   final ModuleDef module;
 
@@ -62,7 +67,9 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
 
   KeyEventResult _onKeyEvent(FocusNode node, KeyEvent event) {
     final menuOpen = ref.read(shellStoreProvider).menuOpen;
-    if (menuOpen && event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.escape) {
+    if (menuOpen &&
+        event is KeyDownEvent &&
+        event.logicalKey == LogicalKeyboardKey.escape) {
       ref.read(shellStoreProvider.notifier).closeMenu();
       return KeyEventResult.handled;
     }
@@ -113,8 +120,12 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
                             activeRoute: widget.activeRoute,
                             semantic: semantic,
                             onNavigate: widget.onNavigate,
-                            onToggleTheme: () => ref.read(themeVariantProvider.notifier).toggle(),
-                            onToggleOnline: () => ref.read(shellStoreProvider.notifier).toggleOnline(),
+                            onToggleTheme: () => ref
+                                .read(themeVariantProvider.notifier)
+                                .toggle(),
+                            onToggleOnline: () => ref
+                                .read(shellStoreProvider.notifier)
+                                .toggleOnline(),
                           )
                         : const SizedBox.shrink(),
                   ),
@@ -175,7 +186,11 @@ class _MenuContent extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacing.space2),
               child: Row(
                 children: [
-                  AppAvatar(name: user.name, initials: user.initials, size: AppAvatarSize.lg),
+                  AppAvatar(
+                    name: user.name,
+                    initials: user.initials,
+                    size: AppAvatarSize.lg,
+                  ),
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: Column(
@@ -194,12 +209,19 @@ class _MenuContent extends StatelessWidget {
                         ),
                         Text(
                           '$roleLabel · GB CERNE',
-                          style: TextStyle(fontSize: AppTypography.xs, color: semantic.inkMuted),
+                          style: TextStyle(
+                            fontSize: AppTypography.xs,
+                            color: semantic.inkMuted,
+                          ),
                         ),
                       ],
                     ),
                   ),
-                  Icon(LucideIcons.chevronRight, size: 18, color: semantic.inkMuted),
+                  Icon(
+                    LucideIcons.chevronRight,
+                    size: 18,
+                    color: semantic.inkMuted,
+                  ),
                 ],
               ),
             ),
@@ -218,12 +240,22 @@ class _MenuContent extends StatelessWidget {
               Container(
                 height: AppSpacing.space7,
                 width: AppSpacing.space7,
-                decoration: BoxDecoration(color: semantic.inkBubble, borderRadius: BorderRadius.circular(AppRadius.md)),
+                decoration: BoxDecoration(
+                  color: semantic.inkBubble,
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                ),
                 alignment: Alignment.center,
                 child: Icon(module.icon, size: 15, color: semantic.inkFg),
               ),
               const SizedBox(width: AppSpacing.space2),
-              Text(module.label, style: TextStyle(fontSize: AppTypography.md, fontWeight: AppTypography.weightSemibold, color: semantic.inkFg)),
+              Text(
+                module.label,
+                style: TextStyle(
+                  fontSize: AppTypography.md,
+                  fontWeight: AppTypography.weightSemibold,
+                  color: semantic.inkFg,
+                ),
+              ),
             ],
           ),
         ),
@@ -236,7 +268,10 @@ class _MenuContent extends StatelessWidget {
           next(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3),
-            child: Align(alignment: Alignment.centerLeft, child: ViewSwitch(onChanged: (_) => onNavigate(module.homeRoute))),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: ViewSwitch(onChanged: (_) => onNavigate(module.homeRoute)),
+            ),
           ),
         ),
 
@@ -245,7 +280,12 @@ class _MenuContent extends StatelessWidget {
         _stagger(
           next(),
           Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpacing.space3, AppSpacing.space2, AppSpacing.space3, AppSpacing.space1),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.space3,
+              AppSpacing.space2,
+              AppSpacing.space3,
+              AppSpacing.space1,
+            ),
             child: Text(
               section.title.toUpperCase(),
               style: TextStyle(
@@ -272,13 +312,25 @@ class _MenuContent extends StatelessWidget {
         ],
       ],
 
-      _stagger(next(), Container(margin: const EdgeInsets.symmetric(vertical: AppSpacing.space3), height: 1, color: semantic.inkLine)),
+      _stagger(
+        next(),
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: AppSpacing.space3),
+          height: 1,
+          color: semantic.inkLine,
+        ),
+      ),
 
       // conta e preferências
       _stagger(
         next(),
         Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.space3, 0, AppSpacing.space3, AppSpacing.space1),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.space3,
+            0,
+            AppSpacing.space3,
+            AppSpacing.space1,
+          ),
           child: Text(
             'CONTA',
             style: TextStyle(
@@ -320,7 +372,11 @@ class _MenuContent extends StatelessWidget {
           description: 'Tema escuro para campo e baixa luz',
           trailing: Text(
             isGbMode ? 'Ativo' : 'Inativo',
-            style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightSemibold, color: semantic.inkMuted),
+            style: TextStyle(
+              fontSize: AppTypography.xs,
+              fontWeight: AppTypography.weightSemibold,
+              color: semantic.inkMuted,
+            ),
           ),
           onTap: onToggleTheme,
         ),
@@ -335,7 +391,11 @@ class _MenuContent extends StatelessWidget {
           description: 'Simula a sincronização em campo sem sinal',
           trailing: Text(
             isOnline ? 'Online' : 'Offline',
-            style: TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightSemibold, color: semantic.inkMuted),
+            style: TextStyle(
+              fontSize: AppTypography.xs,
+              fontWeight: AppTypography.weightSemibold,
+              color: semantic.inkMuted,
+            ),
           ),
           onTap: onToggleOnline,
         ),
@@ -346,12 +406,20 @@ class _MenuContent extends StatelessWidget {
       children: [
         Expanded(
           child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4, vertical: AppSpacing.space6),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.space4,
+              vertical: AppSpacing.space6,
+            ),
             children: children,
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(AppSpacing.space4, 0, AppSpacing.space4, AppSpacing.space6),
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.space4,
+            0,
+            AppSpacing.space4,
+            AppSpacing.space6,
+          ),
           child: _stagger(
             next(),
             AppMenuItem(
@@ -367,7 +435,8 @@ class _MenuContent extends StatelessWidget {
     );
   }
 
-  Widget _stagger(int index, Widget child) => _StaggerItem(index: index, child: child);
+  Widget _stagger(int index, Widget child) =>
+      _StaggerItem(index: index, child: child);
 }
 
 /// Entrada escalonada dos itens do menu (motion tokenizado): fade + slide sutil
@@ -383,7 +452,8 @@ class _StaggerItem extends StatefulWidget {
   State<_StaggerItem> createState() => _StaggerItemState();
 }
 
-class _StaggerItemState extends State<_StaggerItem> with SingleTickerProviderStateMixin {
+class _StaggerItemState extends State<_StaggerItem>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   bool _scheduled = false;
 
@@ -418,11 +488,17 @@ class _StaggerItemState extends State<_StaggerItem> with SingleTickerProviderSta
 
   @override
   Widget build(BuildContext context) {
-    final curved = CurvedAnimation(parent: _controller, curve: AppMotion.easingOut);
+    final curved = CurvedAnimation(
+      parent: _controller,
+      curve: AppMotion.easingOut,
+    );
     return FadeTransition(
       opacity: curved,
       child: SlideTransition(
-        position: Tween<Offset>(begin: const Offset(0, 0.08), end: Offset.zero).animate(curved),
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.08),
+          end: Offset.zero,
+        ).animate(curved),
         child: widget.child,
       ),
     );

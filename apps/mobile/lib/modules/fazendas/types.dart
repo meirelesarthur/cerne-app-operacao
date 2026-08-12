@@ -3,7 +3,12 @@
 library;
 
 class Farm {
-  const Farm({required this.id, required this.name, required this.city, required this.uf});
+  const Farm({
+    required this.id,
+    required this.name,
+    required this.city,
+    required this.uf,
+  });
 
   final String id;
   final String name;
@@ -40,7 +45,12 @@ class Activity {
 
 /// Item da fila de sincronização offline (spec §3.2/§6.9).
 class SyncItem {
-  const SyncItem({required this.id, required this.label, required this.detail, required this.kind});
+  const SyncItem({
+    required this.id,
+    required this.label,
+    required this.detail,
+    required this.kind,
+  });
 
   final String id;
   final String label;

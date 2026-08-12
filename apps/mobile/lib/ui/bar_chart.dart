@@ -22,7 +22,12 @@ class AppBarDatum {
 /// Pintado via [CustomPainter] (ADR do projeto: os 3 gráficos usam Canvas em vez
 /// de lib de charting), reproduzindo a mesma matemática de proporção do SVG/DOM original.
 class AppBarChart extends StatelessWidget {
-  const AppBarChart({super.key, required this.data, this.height = 160, this.formatValue});
+  const AppBarChart({
+    super.key,
+    required this.data,
+    this.height = 160,
+    this.formatValue,
+  });
 
   final List<AppBarDatum> data;
   final double height;
@@ -40,7 +45,9 @@ class AppBarChart extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final fmt = formatValue ?? (v) => v.toStringAsFixed(0);
     final rowTotal = _rowHeight + _rowGap;
-    final minHeight = data.isEmpty ? height : (data.length * rowTotal - _rowGap);
+    final minHeight = data.isEmpty
+        ? height
+        : (data.length * rowTotal - _rowGap);
 
     return SizedBox(
       height: minHeight > height ? minHeight : height,
@@ -87,42 +94,63 @@ class _BarChartPainter extends CustomPainter {
       final top = i * rowTotal;
 
       final labelPainter = TextPainter(
-        text: TextSpan(text: d.label, style: TextStyle(fontSize: AppTypography.md, color: labelColor)),
+        text: TextSpan(
+          text: d.label,
+          style: TextStyle(fontSize: AppTypography.md, color: labelColor),
+        ),
         maxLines: 1,
         ellipsis: '…',
         textDirection: TextDirection.ltr,
       )..layout(maxWidth: labelWidth);
-      labelPainter.paint(canvas, Offset(0, top + (rowHeight - labelPainter.height) / 2));
+      labelPainter.paint(
+        canvas,
+        Offset(0, top + (rowHeight - labelPainter.height) / 2),
+      );
 
       final trackLeft = labelWidth + trackGap;
       final trackWidth = size.width - trackLeft;
       if (trackWidth <= 0) continue;
 
       canvas.drawRRect(
-        RRect.fromRectAndRadius(Rect.fromLTWH(trackLeft, top, trackWidth, rowHeight), const Radius.circular(AppRadius.md)),
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(trackLeft, top, trackWidth, rowHeight),
+          const Radius.circular(AppRadius.md),
+        ),
         Paint()..color = trackColor,
       );
 
       final pct = (d.value / maxVal) * 100;
       final barWidthPct = pct < 14 ? 14 : pct;
       final barWidth = trackWidth * (barWidthPct / 100);
-      final barColor = d.color ?? AppColors.chartSeries[i % AppColors.chartSeries.length];
+      final barColor =
+          d.color ?? AppColors.chartSeries[i % AppColors.chartSeries.length];
 
       canvas.drawRRect(
-        RRect.fromRectAndRadius(Rect.fromLTWH(trackLeft, top, barWidth, rowHeight), const Radius.circular(AppRadius.md)),
+        RRect.fromRectAndRadius(
+          Rect.fromLTWH(trackLeft, top, barWidth, rowHeight),
+          const Radius.circular(AppRadius.md),
+        ),
         Paint()..color = barColor,
       );
 
       final valuePainter = TextPainter(
         text: TextSpan(
           text: formatValue(d.value),
-          style: const TextStyle(fontSize: AppTypography.xs, fontWeight: AppTypography.weightSemibold, color: Colors.white),
+          style: const TextStyle(
+            fontSize: AppTypography.xs,
+            fontWeight: AppTypography.weightSemibold,
+            color: Colors.white,
+          ),
         ),
         textDirection: TextDirection.ltr,
       )..layout();
-      final rawValueX = trackLeft + barWidth - valuePainter.width - AppSpacing.space2;
+      final rawValueX =
+          trackLeft + barWidth - valuePainter.width - AppSpacing.space2;
       final valueX = rawValueX < trackLeft ? trackLeft : rawValueX;
-      valuePainter.paint(canvas, Offset(valueX, top + (rowHeight - valuePainter.height) / 2));
+      valuePainter.paint(
+        canvas,
+        Offset(valueX, top + (rowHeight - valuePainter.height) / 2),
+      );
     }
   }
 
@@ -158,7 +186,10 @@ WidgetbookComponent buildBarChartWidgetbookComponent() {
         name: 'Formatação de valor',
         builder: (context) => Padding(
           padding: const EdgeInsets.all(16),
-          child: AppBarChart(data: sample, formatValue: (v) => 'R\$ ${v.toStringAsFixed(0)}k'),
+          child: AppBarChart(
+            data: sample,
+            formatValue: (v) => 'R\$ ${v.toStringAsFixed(0)}k',
+          ),
         ),
       ),
     ],

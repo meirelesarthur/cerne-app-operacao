@@ -16,19 +16,23 @@ class _FaqItem {
 const List<_FaqItem> _faq = [
   _FaqItem(
     pergunta: 'Quanto tempo leva a análise de uma proposta?',
-    resposta: 'Em média, de 2 a 5 dias úteis após o envio de todos os documentos solicitados.',
+    resposta:
+        'Em média, de 2 a 5 dias úteis após o envio de todos os documentos solicitados.',
   ),
   _FaqItem(
     pergunta: 'Posso simular mais de uma linha de crédito?',
-    resposta: 'Sim. Use o simulador na Home do módulo Crédito para comparar valores e prazos entre as linhas disponíveis.',
+    resposta:
+        'Sim. Use o simulador na Home do módulo Crédito para comparar valores e prazos entre as linhas disponíveis.',
   ),
   _FaqItem(
     pergunta: 'O que acontece se um documento estiver pendente?',
-    resposta: 'A proposta permanece em análise até o envio. Verifique a lista de documentos na tela de detalhe da proposta.',
+    resposta:
+        'A proposta permanece em análise até o envio. Verifique a lista de documentos na tela de detalhe da proposta.',
   ),
   _FaqItem(
     pergunta: 'Como acompanho as parcelas de um contrato ativo?',
-    resposta: 'Acesse Crédito → Contratos para ver o progresso de pagamento, a próxima parcela e o saldo devedor.',
+    resposta:
+        'Acesse Crédito → Contratos para ver o progresso de pagamento, a próxima parcela e o saldo devedor.',
   ),
 ];
 
@@ -54,16 +58,31 @@ class AjudaScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(item.pergunta, style: TextStyle(fontSize: AppTypography.sm, fontWeight: AppTypography.weightSemibold, color: semantic.fgDefault)),
+                  Text(
+                    item.pergunta,
+                    style: TextStyle(
+                      fontSize: AppTypography.sm,
+                      fontWeight: AppTypography.weightSemibold,
+                      color: semantic.fgDefault,
+                    ),
+                  ),
                   const SizedBox(height: AppSpacing.space1),
-                  Text(item.resposta, style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted)),
+                  Text(
+                    item.resposta,
+                    style: TextStyle(
+                      fontSize: AppTypography.sm,
+                      color: semantic.fgMuted,
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
         const AppBanner(
           icon: Icon(LucideIcons.messageCircle, size: 14),
-          child: Text('Não encontrou o que precisava? Fale com seu gerente de relacionamento.'),
+          child: Text(
+            'Não encontrou o que precisava? Fale com seu gerente de relacionamento.',
+          ),
         ),
       ],
     );

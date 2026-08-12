@@ -4,7 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/bottom_sheet.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('showAppBottomSheet', () {
@@ -36,7 +39,10 @@ void main() {
         _wrap(
           Builder(
             builder: (context) => ElevatedButton(
-              onPressed: () => showAppBottomSheet<void>(context, child: const Text('Conteúdo')),
+              onPressed: () => showAppBottomSheet<void>(
+                context,
+                child: const Text('Conteúdo'),
+              ),
               child: const Text('Abrir'),
             ),
           ),

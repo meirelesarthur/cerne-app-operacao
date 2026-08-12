@@ -5,7 +5,10 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/dashboard_card.dart';
 
-Widget _wrap(Widget child) => MaterialApp(theme: buildAppTheme(AppThemeVariant.light), home: Scaffold(body: child));
+Widget _wrap(Widget child) => MaterialApp(
+  theme: buildAppTheme(AppThemeVariant.light),
+  home: Scaffold(body: child),
+);
 
 void main() {
   group('AppDashboardCard', () {
@@ -57,7 +60,9 @@ void main() {
       expect(find.text('-3.1%'), findsOneWidget);
     });
 
-    testWidgets('estado disabled ignora toque e mostra cadeado', (tester) async {
+    testWidgets('estado disabled ignora toque e mostra cadeado', (
+      tester,
+    ) async {
       var tapped = false;
       await tester.pumpWidget(
         _wrap(
