@@ -113,3 +113,11 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Formulações, Batidas e Apontamento agrícola com listas e lançamentos funcionais
 - [x] Abastecimentos e Manutenção de frota com listas e lançamentos funcionais
 - [x] Validação mobile dos fluxos, proteção de perfil e roteamento administrativo
+
+## Fase 11 — Onda B da esteira funcional  ✅
+- [x] Rebanho Inicial, Lotes e Animais com histórico e criação frontend
+- [x] Transferência Lote/Área, Sanitário, Desmama e Pastagens com jornadas completas
+- [x] Seis rotinas de Reprodução transformadas de acesso mapeado em protótipos funcionais
+- [x] Premissas de campos não observados sinalizadas para validação posterior de domínio
+- [x] Validação explícita de obrigatoriedade, números positivos e período da estação de monta
+- [x] Verificação mobile de erro, criação, confirmação e atualização de lista

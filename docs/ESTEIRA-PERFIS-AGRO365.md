@@ -27,7 +27,7 @@ A fazenda ativa, os estados offline e os componentes do design system continuam 
 - Central administrativa com 12 acessos de decisão, consulta e auditoria.
 - Central operacional com 41 acessos cobrindo Estoque, Misturador, Agricultura, Pecuária,
   Reprodução, Frota, OS e Sincronização.
-- Formulários dirigidos por catálogo para os campos que a gravação efetivamente mostrou.
+- Formulários dirigidos por catálogo para campos observados e premissas frontend explicitamente sinalizadas.
 - Estados honestos para itens cujo acesso foi mostrado sem campos internos.
 - Identificação explícita das dependências nativas: Bluetooth, localização, balança, RFID e câmera.
 - Dashboard financeiro/operacional ampliado com filtros, posição financeira, COE, COT,
@@ -49,8 +49,21 @@ A fazenda ativa, os estados offline e os componentes do design system continuam 
 - **Motor reutilizável:** todas as rotinas acima percorrem lista → formulário → validação → sucesso
   → consulta, com estado frontend compartilhado durante a sessão e sem dependência de backend.
 
-Com esta onda, o catálogo possui **27 funcionalidades prontas**, **19 mapeadas** e
-**7 dependentes de hardware**. As Ondas B a E permanecem na fila priorizada abaixo.
+### Onda B — concluída no protótipo
+
+- **Base pecuária:** Rebanho Inicial, Lotes e Animais agora possuem lista, criação, validação,
+  confirmação e detalhe em memória.
+- **Movimentação e manejo:** Transferência Lote/Área, Sanitário, Desmama e Pastagens passaram
+  a registrar e consultar o histórico da sessão.
+- **Reprodução:** Estação de Monta, Lotes/Reprodução, Material Reprodutivo, Protocolos,
+  Monta Natural e Diagnóstico de Gestação ganharam jornadas frontend completas.
+- **Premissas transparentes:** quando a gravação mostrou apenas o menu, os campos mínimos
+  adotados para apresentação ficam informados na própria tela e aguardam validação de domínio.
+- **Validação aprimorada:** campos obrigatórios e números inválidos apresentam mensagens junto
+  ao controle após a tentativa de salvamento, sem depender apenas de botão desabilitado.
+
+Com as Ondas A e B, o catálogo possui **34 funcionalidades prontas**, **12 mapeadas** e
+**7 dependentes de hardware**. As Ondas C a E permanecem na fila priorizada abaixo.
 
 ## Convenção de maturidade no protótipo
 
@@ -74,7 +87,7 @@ na evidência fornecida.
 | Misturador | Operacional | Conexão, Carga, Descarga, Balança, Nota de Cocho e Configurações |
 | Agricultura | Operacional | Apontamento, Marcação e Colheita de Frutas |
 | Pecuária | Administração / Operacional | Dashboard na gestão; todas as rotinas e dependências na operação |
-| Reprodução | Operacional | Seis entradas funcionais mapeadas |
+| Reprodução | Operacional | Seis jornadas frontend completas, com premissas sinalizadas para validação de domínio |
 | Gestão de Frota | Operacional | Abastecimento e Manutenção |
 | Ordem de Serviço | Operacional | Minhas OS |
 | Sincronização | Operacional | Fila offline já navegável |
@@ -119,8 +132,8 @@ Uma funcionalidade só muda de `Mapeado` para `Pronto` quando possui:
 
 1. **Onda A — alto uso, baixo risco (concluída no frontend):** Áreas, Formulações, Batidas,
    Apontamento e Frota.
-2. **Onda B — pecuária sem hardware:** Lotes, Animal, Transferência de Lote/Área, Sanitário,
-   Desmama, Pastagens e Reprodução.
+2. **Onda B — pecuária sem hardware (concluída no frontend):** Lotes, Animal, Transferência
+   de Lote/Área, Sanitário, Desmama, Pastagens e Reprodução.
 3. **Onda C — hardware:** Conexão, Balança, RFID, Scanner SISBOV, Localizar Animal e Perdas.
 4. **Onda D — supervisão e auditoria:** consultas reais, processamentos e exportação de logs.
 5. **Onda E — endurecimento:** RBAC real, telemetria, testes automatizados e paridade Flutter.

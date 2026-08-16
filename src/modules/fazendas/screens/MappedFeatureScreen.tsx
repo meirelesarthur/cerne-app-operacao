@@ -33,6 +33,16 @@ import {
 type WorkspaceRole = 'administrativo' | 'operacional'
 type ScreenMode = 'list' | 'form' | 'success'
 
+const ACTIVE_RECORD_FEATURES = new Set([
+  'cadastrar-area',
+  'formulacoes',
+  'rebanho-inicial',
+  'lote-animais',
+  'registrar-animal',
+  'material-reprodutivo',
+])
+const PROGRAMMED_RECORD_FEATURES = new Set(['manutencao-frota', 'estacao-monta', 'lotes-reproducao', 'protocolos-estacao'])
+
 function workspaceRoute(role: WorkspaceRole) {
   return `/fazendas/${role === 'administrativo' ? 'administracao' : 'operacional'}`
 }
@@ -99,6 +109,16 @@ function FieldControl({
   )
 }
 
+function fieldError(feature: FeatureDefinition, field: FeatureField, values: Record<string, string>) {
+  const value = values[field.id]?.trim() ?? ''
+  if (field.required && !value) return 'Campo obrigatório.'
+  if (field.type === 'number' && value && Number(value) <= 0) return 'Informe um valor maior que zero.'
+  if (feature.id === 'estacao-monta' && field.id === 'fim' && value && values.inicio && value < values.inicio) {
+    return 'A data final deve ser posterior à data inicial.'
+  }
+  return undefined
+}
+
 function FeatureForm({
   feature,
   onCancel,
@@ -110,7 +130,8 @@ function FeatureForm({
 }) {
   const [values, setValues] = useState<Record<string, string>>({})
   const [groupCounts, setGroupCounts] = useState<Record<string, number>>({})
-  const valid = (feature.fields ?? []).every((field) => !field.required || Boolean(values[field.id]?.trim()))
+  const [attempted, setAttempted] = useState(false)
+  const valid = (feature.fields ?? []).every((field) => !fieldError(feature, field, values))
 
   return (
     <div className="flex flex-col gap-5">
@@ -122,6 +143,7 @@ function FeatureForm({
             label={field.label}
             htmlFor={`feature-${field.id}`}
             required={field.required}
+            error={attempted || values[field.id] ? fieldError(feature, field, values) : undefined}
           >
             <FieldControl
               field={field}
@@ -144,7 +166,14 @@ function FeatureForm({
       ) : null}
 
       <div className="flex flex-col gap-2">
-        <Button fullWidth size="lg" disabled={!valid} onClick={() => onComplete(values, groupCounts)}>
+        <Button
+          fullWidth
+          size="lg"
+          onClick={() => {
+            setAttempted(true)
+            if (valid) onComplete(values, groupCounts)
+          }}
+        >
           {feature.primaryAction ?? 'Salvar registro'}
         </Button>
         {onCancel && (
@@ -185,13 +214,24 @@ function makeRecord(
     apontamento: [values.operacao, values.data].filter(Boolean).join(' · '),
     abastecimentos: [values.quantidade ? `${values.quantidade} L` : '', values.combustivel].filter(Boolean).join(' · '),
     'manutencao-frota': [values.tipo, values.data].filter(Boolean).join(' · '),
+    'rebanho-inicial': [values.quantidade && values.especie ? `${values.quantidade} animais · ${values.especie}` : '', values.area].filter(Boolean).join(' · '),
+    'registrar-animal': [values.raca, values.peso ? `${values.peso} kg` : '', values.nascimento].filter(Boolean).join(' · '),
+    'lotes-reproducao': [values.finalidade, values.estacao, values.quantidade ? `${values.quantidade} animais` : ''].filter(Boolean).join(' · '),
+    'material-reprodutivo': [values.tipo, values.raca, values.quantidade ? `${values.quantidade} unidade(s)` : ''].filter(Boolean).join(' · '),
+    'monta-natural': [values.touro, values.quantidade ? `${values.quantidade} fêmeas` : '', values.data].filter(Boolean).join(' · '),
+    'diagnostico-gestacao': [values.resultado, values.quantidade ? `${values.quantidade} animais` : '', values.data].filter(Boolean).join(' · '),
   }
   const description = descriptionByFeature[feature.id] || fallbackDescription
+  const status = PROGRAMMED_RECORD_FEATURES.has(feature.id)
+    ? 'programado'
+    : ACTIVE_RECORD_FEATURES.has(feature.id)
+      ? 'ativo'
+      : 'concluido'
 
   return {
     title,
     description: description || 'Registro criado agora',
-    status: feature.id === 'manutencao-frota' ? 'programado' : feature.id === 'cadastrar-area' || feature.id === 'formulacoes' ? 'ativo' : 'concluido',
+    status,
     details,
   }
 }

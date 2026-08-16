@@ -69,6 +69,123 @@ const INITIAL_RECORDS: RecordsByFeature = {
       details: { Responsável: 'Carlos Dias', Área: 'Talhão 02', Operação: 'Preparo de solo', Atividade: 'Gradagem' },
     },
   ],
+  'rebanho-inicial': [
+    {
+      id: 'rebanho-1',
+      title: 'Vacas',
+      description: '186 bovinos · Pasto Norte',
+      status: 'ativo',
+      details: { Responsável: 'João Oliveira', 'Data de referência': '01/08/2026', Espécie: 'Bovino', Categoria: 'Vaca', Quantidade: '186', 'Área inicial': 'Pasto Norte' },
+    },
+  ],
+  'lote-animais': [
+    {
+      id: 'lote-1',
+      title: 'Lote 42 · Engorda',
+      description: 'Bovino · Boi',
+      status: 'ativo',
+      details: { Responsável: 'João Oliveira', Espécie: 'Bovino', Categoria: 'Boi', Descrição: 'Lote 42 · Engorda' },
+    },
+  ],
+  'registrar-animal': [
+    {
+      id: 'animal-1',
+      title: 'Novilha',
+      description: 'Nelore · 318 kg',
+      status: 'ativo',
+      details: { Categoria: 'Novilha', Raça: 'Nelore', Nascimento: '14/09/2024', Peso: '318 kg' },
+    },
+  ],
+  'transferencia-lote-area': [
+    {
+      id: 'transf-area-1',
+      title: 'Lote 42 · Engorda',
+      description: 'Talhão 01 · Módulo B',
+      status: 'concluido',
+      details: { Responsável: 'Carlos Dias', 'Local anterior': 'Pasto Norte · Módulo A', 'Nova área': 'Talhão 01', 'Novo módulo': 'Módulo B' },
+    },
+  ],
+  sanitario: [
+    {
+      id: 'sanitario-1',
+      title: 'Lote 42 · Engorda',
+      description: 'Vacinação · 16/08/2026',
+      status: 'concluido',
+      details: { Responsável: 'Maria Souza', Tipo: 'Vacinação', Produto: 'Vacina clostridial', Data: '16/08/2026' },
+    },
+  ],
+  desmama: [
+    {
+      id: 'desmama-1',
+      title: 'Lote Bezerros 08',
+      description: 'Desmama convencional · 24 matrizes',
+      status: 'concluido',
+      details: { Responsável: 'João Oliveira', Tipo: 'Desmama convencional', Identificações: '24 vacas paridas' },
+    },
+  ],
+  pastagens: [
+    {
+      id: 'pastagem-1',
+      title: 'Armazém de Produção A',
+      description: 'Armazém de Insumos A · Carlos Dias',
+      status: 'concluido',
+      details: { Responsável: 'Carlos Dias', 'Armazém de insumos': 'Armazém de Insumos A', 'Armazém de produção': 'Armazém de Produção A', Insumos: '2 itens', Máquinas: '1 item' },
+    },
+  ],
+  'estacao-monta': [
+    {
+      id: 'estacao-1',
+      title: 'Estação 2026/2027',
+      description: 'IATF · 01/10/2026 a 31/01/2027',
+      status: 'programado',
+      details: { Responsável: 'Maria Souza', Método: 'IATF', Início: '01/10/2026', Término: '31/01/2027' },
+    },
+  ],
+  'lotes-reproducao': [
+    {
+      id: 'lote-repro-1',
+      title: 'Lote Matrizes 01',
+      description: 'Matrizes · Estação 2026/2027 · 120 animais',
+      status: 'programado',
+      details: { Responsável: 'Maria Souza', Estação: 'Estação 2026/2027', Finalidade: 'Matrizes', Quantidade: '120' },
+    },
+  ],
+  'material-reprodutivo': [
+    {
+      id: 'material-1',
+      title: 'Touro NE-4821',
+      description: 'Touro · Nelore · 1 disponível',
+      status: 'ativo',
+      details: { Responsável: 'João Oliveira', Tipo: 'Touro', Raça: 'Nelore', Origem: 'Central Genética Vale', Quantidade: '1' },
+    },
+  ],
+  'protocolos-estacao': [
+    {
+      id: 'protocolo-1',
+      title: 'IATF Matrizes 01',
+      description: 'IATF · Estação 2026/2027',
+      status: 'programado',
+      details: { Responsável: 'Maria Souza', Estação: 'Estação 2026/2027', Tipo: 'IATF', Etapas: '4 itens' },
+    },
+  ],
+  'monta-natural': [
+    {
+      id: 'monta-1',
+      title: 'Lote Matrizes 02',
+      description: 'Touro NE-4821 · 35 fêmeas',
+      status: 'concluido',
+      details: { Responsável: 'João Oliveira', Data: '12/08/2026', Reprodutor: 'Touro NE-4821', Quantidade: '35' },
+    },
+  ],
+  'diagnostico-gestacao': [
+    {
+      id: 'diagnostico-1',
+      title: 'Lote Matrizes 01',
+      description: 'Prenhe · 94 animais',
+      status: 'concluido',
+      details: { Responsável: 'Maria Souza', Data: '15/08/2026', Resultado: 'Prenhe', Quantidade: '94', Veterinário: 'Dr. Paulo Mendes' },
+    },
+  ],
   abastecimentos: [
     {
       id: 'abast-1',
