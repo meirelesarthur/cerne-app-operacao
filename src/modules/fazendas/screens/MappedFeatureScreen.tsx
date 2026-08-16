@@ -11,6 +11,7 @@ import { EmptyState } from '@/components/ui/EmptyState'
 import { FormField } from '@/components/ui/FormField'
 import { FormSelect } from '@/components/ui/FormSelect'
 import { Heading, SectionTitle } from '@/components/ui/Heading'
+import { HardwareSimulator } from '@/components/ui/HardwareSimulator'
 import { MenuItem } from '@/components/ui/MenuItem'
 import { SuccessPanel } from '@/components/ui/SuccessPanel'
 import { Tag } from '@/components/ui/Tag'
@@ -131,28 +132,42 @@ function FeatureForm({
   const [values, setValues] = useState<Record<string, string>>({})
   const [groupCounts, setGroupCounts] = useState<Record<string, number>>({})
   const [attempted, setAttempted] = useState(false)
+  const simulationTarget = feature.simulationTargetField ?? '_hardware'
+  const simulationValue = values[simulationTarget] ?? ''
   const valid = (feature.fields ?? []).every((field) => !fieldError(feature, field, values))
+    && (!feature.simulation || Boolean(simulationValue.trim()))
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="flex flex-col gap-4">
-        <SectionTitle>Dados do registro</SectionTitle>
-        {feature.fields?.map((field) => (
-          <FormField
-            key={field.id}
-            label={field.label}
-            htmlFor={`feature-${field.id}`}
-            required={field.required}
-            error={attempted || values[field.id] ? fieldError(feature, field, values) : undefined}
-          >
-            <FieldControl
-              field={field}
-              value={values[field.id] ?? ''}
-              onChange={(value) => setValues((current) => ({ ...current, [field.id]: value }))}
-            />
-          </FormField>
-        ))}
-      </Card>
+      {feature.simulation && (
+        <HardwareSimulator
+          kind={feature.simulation}
+          value={simulationValue}
+          error={attempted && !feature.simulationTargetField && !simulationValue ? 'Conclua a simulação antes de continuar.' : undefined}
+          onCapture={(value) => setValues((current) => ({ ...current, [simulationTarget]: value }))}
+        />
+      )}
+
+      {feature.fields?.length ? (
+        <Card className="flex flex-col gap-4">
+          <SectionTitle>Dados do registro</SectionTitle>
+          {feature.fields.map((field) => (
+            <FormField
+              key={field.id}
+              label={field.label}
+              htmlFor={`feature-${field.id}`}
+              required={field.required}
+              error={attempted || values[field.id] ? fieldError(feature, field, values) : undefined}
+            >
+              <FieldControl
+                field={field}
+                value={values[field.id] ?? ''}
+                onChange={(value) => setValues((current) => ({ ...current, [field.id]: value }))}
+              />
+            </FormField>
+          ))}
+        </Card>
+      ) : null}
 
       {feature.sections?.length ? (
         <Card>
@@ -358,8 +373,8 @@ export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
   if (mode === 'success') {
     return (
       <SuccessPanel
-        title={`${lastCreated?.title ?? feature.title} salvo`}
-        description="O registro foi incluído no protótipo e já está disponível na lista desta sessão."
+        title={feature.successTitle ?? `${lastCreated?.title ?? feature.title} salvo`}
+        description={feature.successDescription ?? 'O registro foi incluído no protótipo e já está disponível na lista desta sessão.'}
       >
         {feature.listMode && (
           <Button fullWidth onClick={() => setMode('list')}>
@@ -427,7 +442,7 @@ export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
             onCreate={() => setMode('form')}
             onSelect={setSelectedRecord}
           />
-        ) : feature.fields?.length ? (
+        ) : feature.fields?.length || feature.simulation ? (
           <FeatureForm
             feature={feature}
             onComplete={completeForm}

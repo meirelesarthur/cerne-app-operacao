@@ -63,7 +63,22 @@ A fazenda ativa, os estados offline e os componentes do design system continuam 
   ao controle após a tentativa de salvamento, sem depender apenas de botão desabilitado.
 
 Com as Ondas A e B, o catálogo possui **34 funcionalidades prontas**, **12 mapeadas** e
-**7 dependentes de hardware**. As Ondas C a E permanecem na fila priorizada abaixo.
+**7 dependentes de hardware**.
+
+### Onda C — simulações frontend concluídas
+
+- **Conexão Bluetooth:** busca, descoberta, conexão e reinício simulados para balança e RFID.
+- **Balança:** captura demonstrativa de peso estável com confirmação antes de prosseguir.
+- **RFID:** leitura simulada preenche automaticamente a identificação em Transferência,
+  Localização e Perdas, mantendo também a entrada manual.
+- **Scanner SISBOV:** área de enquadramento, captura, reinício e confirmação do código.
+- **Transferência de animal:** lista, leitura RFID, formulário, validação, sucesso e histórico.
+- **Perdas:** lista e registro completo após identificação, com premissas posteriores sinalizadas.
+- **Transparência:** os sete itens continuam com o selo `Hardware`, pois a Onda C valida a
+  experiência frontend; Bluetooth, câmera, balança e RFID reais dependem do aplicativo mobile.
+
+As Ondas D e E permanecem na fila priorizada abaixo. A cobertura continua em **34 prontas**,
+**12 mapeadas** e **7 com simulação funcional de hardware**.
 
 ## Convenção de maturidade no protótipo
 
@@ -71,7 +86,7 @@ Com as Ondas A e B, o catálogo possui **34 funcionalidades prontas**, **12 mape
 |---|---|---|
 | Pronto | Há tela dedicada ou formulário navegável com os campos conhecidos | Contrato de API, regras finais e testes |
 | Mapeado | A função está navegável, mas a fonte não mostrou todos os campos | Validar fluxo com especialista antes de detalhar |
-| Hardware | A função está posicionada e descreve dependências nativas | Spike no app mobile e teste em dispositivo real |
+| Hardware | Há simulação frontend funcional, mas a captura nativa ainda depende do dispositivo | Spike no app mobile e teste em dispositivo real |
 
 `Mapeado` não significa esquecido. É uma trava contra a invenção de requisitos que não aparecem
 na evidência fornecida.
@@ -134,6 +149,7 @@ Uma funcionalidade só muda de `Mapeado` para `Pronto` quando possui:
    Apontamento e Frota.
 2. **Onda B — pecuária sem hardware (concluída no frontend):** Lotes, Animal, Transferência
    de Lote/Área, Sanitário, Desmama, Pastagens e Reprodução.
-3. **Onda C — hardware:** Conexão, Balança, RFID, Scanner SISBOV, Localizar Animal e Perdas.
+3. **Onda C — hardware (simulação frontend concluída):** Conexão, Balança, RFID,
+   Scanner SISBOV, Localizar Animal e Perdas.
 4. **Onda D — supervisão e auditoria:** consultas reais, processamentos e exportação de logs.
 5. **Onda E — endurecimento:** RBAC real, telemetria, testes automatizados e paridade Flutter.

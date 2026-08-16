@@ -9,6 +9,7 @@
  */
 export type FeatureStatus = 'ready' | 'mapped' | 'hardware'
 export type FeatureFieldType = 'text' | 'number' | 'date' | 'select' | 'textarea'
+export type HardwareSimulationKind = 'devices' | 'scale' | 'rfid' | 'scanner'
 
 export interface FeatureField {
   id: string
@@ -39,6 +40,10 @@ export interface FeatureDefinition {
   createAction?: string
   recordTitleField?: string
   recordDescriptionFields?: string[]
+  simulation?: HardwareSimulationKind
+  simulationTargetField?: string
+  successTitle?: string
+  successDescription?: string
 }
 
 const responsavel: FeatureField = {
@@ -228,7 +233,10 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     objective: 'Conectar balança e equipamentos externos por Bluetooth.',
     status: 'hardware',
     capabilities: ['Bluetooth', 'Localização', 'Busca de dispositivos', 'Permissão durante o uso'],
-    primaryAction: 'Buscar dispositivos',
+    simulation: 'devices',
+    primaryAction: 'Concluir configuração',
+    successTitle: 'Aparelhos conectados no protótipo',
+    successDescription: 'A balança e o equipamento externo estão disponíveis para os fluxos simulados desta sessão.',
   },
   {
     id: 'carga',
@@ -255,7 +263,10 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     objective: 'Obter dados de pesagem do equipamento conectado.',
     status: 'hardware',
     capabilities: ['Bluetooth', 'Balança'],
-    primaryAction: 'Conectar balança',
+    simulation: 'scale',
+    primaryAction: 'Confirmar leitura',
+    successTitle: 'Leitura de balança confirmada',
+    successDescription: 'O peso simulado foi capturado e pode ser usado na apresentação do fluxo.',
   },
   {
     id: 'nota-cocho',
@@ -350,7 +361,10 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     objective: 'Preparar balança e leitor RFID para as rotinas pecuárias.',
     status: 'hardware',
     capabilities: ['Bluetooth', 'Localização', 'Balança', 'RFID'],
-    primaryAction: 'Buscar dispositivos',
+    simulation: 'devices',
+    primaryAction: 'Concluir configuração',
+    successTitle: 'Aparelhos pecuários conectados',
+    successDescription: 'A balança e o leitor RFID estão conectados na simulação desta sessão.',
   },
   {
     id: 'lote-animais',
@@ -403,6 +417,9 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     title: 'Transferência animal / lote',
     objective: 'Mover um animal para outro lote com identificação por brinco, RFID ou câmera.',
     status: 'hardware',
+    listMode: true,
+    simulation: 'rfid',
+    simulationTargetField: 'identificacao',
     fields: [
       { id: 'identificacao', label: 'Identificação animal', required: true, placeholder: 'Brinco ou ID' },
       responsavel,
@@ -410,7 +427,10 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
       { id: 'novo-lote', label: 'Novo lote', required: true },
     ],
     capabilities: ['Balança', 'RFID', 'Scanner SISBOV'],
+    createAction: 'Nova transferência de animal',
     primaryAction: 'Salvar transferência',
+    recordTitleField: 'identificacao',
+    recordDescriptionFields: ['lote-atual', 'novo-lote'],
   },
   {
     id: 'scanner-sisbov',
@@ -419,7 +439,10 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     objective: 'Capturar a identificação do animal usando a câmera.',
     status: 'hardware',
     capabilities: ['Câmera', 'Área de enquadramento', 'Reiniciar leitura'],
-    primaryAction: 'Abrir câmera',
+    simulation: 'scanner',
+    primaryAction: 'Usar identificação capturada',
+    successTitle: 'Identificação SISBOV capturada',
+    successDescription: 'O código simulado está disponível para identificação do animal nesta sessão.',
   },
   {
     id: 'transferencia-lote-area',
@@ -462,9 +485,23 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     title: 'Perdas',
     objective: 'Registrar perdas após identificar o animal.',
     status: 'hardware',
-    fields: [{ id: 'identificacao', label: 'Identificação animal', required: true, placeholder: 'Brinco ou ID' }],
+    listMode: true,
+    simulation: 'rfid',
+    simulationTargetField: 'identificacao',
+    fields: [
+      { id: 'identificacao', label: 'Identificação animal', required: true, placeholder: 'Brinco ou ID' },
+      responsavel,
+      { id: 'data', label: 'Data da ocorrência', type: 'date', required: true },
+      { id: 'lote', label: 'Lote atual', required: true },
+      { id: 'causa', label: 'Motivo da perda', required: true },
+      { id: 'observacao', label: 'Observação', type: 'textarea' },
+    ],
     capabilities: ['Balança', 'RFID', 'Scanner SISBOV'],
-    primaryAction: 'Buscar animal',
+    createAction: 'Nova perda',
+    primaryAction: 'Registrar perda',
+    recordTitleField: 'identificacao',
+    recordDescriptionFields: ['causa', 'lote', 'data'],
+    sourceDetail: 'A fonte mostrou apenas a identificação; os campos posteriores são premissas funcionais do protótipo frontend.',
   },
   {
     id: 'compras-animais',
@@ -549,7 +586,11 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     status: 'hardware',
     fields: [{ id: 'identificacao', label: 'Identificação animal', required: true, placeholder: 'Brinco ou ID' }],
     capabilities: ['RFID', 'Scanner SISBOV'],
+    simulation: 'rfid',
+    simulationTargetField: 'identificacao',
     primaryAction: 'Buscar animal',
+    successTitle: 'Animal localizado',
+    successDescription: 'Animal ativo no Lote 42 · Engorda, atualmente no Pasto Norte · Módulo A.',
   },
   {
     id: 'pastagens',

@@ -105,6 +105,24 @@ const INITIAL_RECORDS: RecordsByFeature = {
       details: { Responsável: 'Carlos Dias', 'Local anterior': 'Pasto Norte · Módulo A', 'Nova área': 'Talhão 01', 'Novo módulo': 'Módulo B' },
     },
   ],
+  'transferencia-animal': [
+    {
+      id: 'transf-animal-1',
+      title: 'RFID 982 000123456120',
+      description: 'Lote Recria 02 · Lote 42 · Engorda',
+      status: 'concluido',
+      details: { Responsável: 'João Oliveira', 'Lote anterior': 'Lote Recria 02', 'Novo lote': 'Lote 42 · Engorda', Identificação: 'RFID 982 000123456120' },
+    },
+  ],
+  perdas: [
+    {
+      id: 'perda-1',
+      title: 'RFID 982 000123450082',
+      description: 'Acidente · Lote Recria 02',
+      status: 'concluido',
+      details: { Responsável: 'Maria Souza', Data: '14/08/2026', Lote: 'Lote Recria 02', Motivo: 'Acidente' },
+    },
+  ],
   sanitario: [
     {
       id: 'sanitario-1',

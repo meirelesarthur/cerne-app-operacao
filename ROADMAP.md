@@ -121,3 +121,12 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Premissas de campos não observados sinalizadas para validação posterior de domínio
 - [x] Validação explícita de obrigatoriedade, números positivos e período da estação de monta
 - [x] Verificação mobile de erro, criação, confirmação e atualização de lista
+
+## Fase 12 — Onda C · Simulações de hardware  ✅
+- [x] Componente reutilizável para descoberta Bluetooth, balança, RFID e scanner
+- [x] Conexão simulada em duas etapas com dispositivos encontrados e estado conectado
+- [x] Leitura RFID integrada aos campos de identificação e alternativa manual preservada
+- [x] Scanner SISBOV com enquadramento, captura, reinício e confirmação
+- [x] Transferência de animal e Perdas com listas, formulários e histórico frontend
+- [x] Localização de animal e leitura de balança demonstráveis sem hardware real
+- [x] Selo `Hardware` mantido para não confundir simulação com integração nativa
