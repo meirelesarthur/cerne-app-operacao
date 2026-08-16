@@ -58,31 +58,31 @@ Checkpoint M3: os 12 itens administrativos aparecem na Central de gestão e os 4
 | `apontamento` | Agricultura | Apontamento agrícola | Pronto | Portado: lista e formulário | `/fazendas/operacional/apontamento` | M4/A |
 | `marcacao` | Agricultura | Marcação | Pronto | Ausente | `/fazendas/operacional/marcacao` | M7/D |
 | `colheita-frutas` | Agricultura | Colheita de frutas | Pronto | Ausente | `/fazendas/operacional/colheita-frutas` | M7/D |
-| `rebanho-inicial` | Pecuária | Rebanho inicial | Pronto | Ausente | `/fazendas/operacional/rebanho-inicial` | M5/B |
+| `rebanho-inicial` | Pecuária | Rebanho inicial | Pronto | Portado: lista e formulário | `/fazendas/operacional/rebanho-inicial` | M5/B |
 | `conexao-aparelhos-pecuaria` | Pecuária | Conexão de aparelhos | Hardware | Ausente | `/fazendas/operacional/conexao-aparelhos-pecuaria` | M6/C |
-| `lote-animais` | Pecuária | Lote de animais | Pronto | Ausente | `/fazendas/operacional/lote-animais` | M5/B |
-| `registrar-animal` | Pecuária | Registrar animal | Pronto | Ausente | `/fazendas/operacional/registrar-animal` | M5/B |
+| `lote-animais` | Pecuária | Lote de animais | Pronto | Portado: lista e formulário | `/fazendas/operacional/lote-animais` | M5/B |
+| `registrar-animal` | Pecuária | Registrar animal | Pronto | Portado: lista e formulário | `/fazendas/operacional/registrar-animal` | M5/B |
 | `pesagem` | Pecuária | Pesagens | Pronto | Legado: fluxo dedicado | `/fazendas/campo/pesagem` sob perfil operacional | M3/M7 |
 | `transferencia-animal` | Pecuária | Transferência animal/lote | Hardware | Ausente | `/fazendas/operacional/transferencia-animal` | M6/C |
 | `scanner-sisbov` | Pecuária | Scanner SISBOV | Hardware | Ausente | `/fazendas/operacional/scanner-sisbov` | M6/C |
-| `transferencia-lote-area` | Pecuária | Transferência lote/área | Pronto | Ausente | `/fazendas/operacional/transferencia-lote-area` | M5/B |
+| `transferencia-lote-area` | Pecuária | Transferência lote/área | Pronto | Portado: lista e formulário | `/fazendas/operacional/transferencia-lote-area` | M5/B |
 | `nascimentos` | Pecuária | Nascimentos | Pronto | Legado: fluxo compartilhado de ciclo | `/fazendas/campo/ciclo` sob perfil operacional | M3/M7 |
 | `mortes` | Pecuária | Mortes | Pronto | Legado: fluxo compartilhado de ciclo | `/fazendas/campo/ciclo` sob perfil operacional | M3/M7 |
 | `perdas` | Pecuária | Perdas | Hardware | Ausente | `/fazendas/operacional/perdas` | M6/C |
 | `compras-animais` | Pecuária | Compra de animais | Pronto | Ausente | `/fazendas/operacional/compras-animais` | M7/D |
 | `vendas` | Pecuária | Vendas | Pronto | Legado: fluxo dedicado | `/fazendas/campo/venda` sob perfil operacional | M3/M7 |
 | `nutricoes` | Pecuária | Nutrições | Pronto | Legado: arraçoamento | `/fazendas/campo/arracoamento` sob perfil operacional | M3/M7 |
-| `sanitario` | Pecuária | Sanitário | Pronto | Ausente | `/fazendas/operacional/sanitario` | M5/B |
-| `desmama` | Pecuária | Desmama | Pronto | Ausente | `/fazendas/operacional/desmama` | M5/B |
+| `sanitario` | Pecuária | Sanitário | Pronto | Portado: lista e formulário | `/fazendas/operacional/sanitario` | M5/B |
+| `desmama` | Pecuária | Desmama | Pronto | Portado: lista e formulário | `/fazendas/operacional/desmama` | M5/B |
 | `apartacao` | Pecuária | Apartação | Pronto | Ausente | `/fazendas/operacional/apartacao` | M7/D |
 | `localizar-animal` | Pecuária | Localizar animal | Hardware | Ausente | `/fazendas/operacional/localizar-animal` | M6/C |
-| `pastagens` | Pecuária | Pastagens | Pronto | Ausente | `/fazendas/operacional/pastagens` | M5/B |
-| `estacao-monta` | Reprodução | Estação de monta | Pronto | Ausente | `/fazendas/operacional/estacao-monta` | M5/B |
-| `lotes-reproducao` | Reprodução | Lotes/reprodução | Pronto | Ausente | `/fazendas/operacional/lotes-reproducao` | M5/B |
-| `material-reprodutivo` | Reprodução | Touros/sêmen/embrião | Pronto | Ausente | `/fazendas/operacional/material-reprodutivo` | M5/B |
-| `protocolos-estacao` | Reprodução | Protocolos/estação | Pronto | Ausente | `/fazendas/operacional/protocolos-estacao` | M5/B |
-| `monta-natural` | Reprodução | Monta natural | Pronto | Ausente | `/fazendas/operacional/monta-natural` | M5/B |
-| `diagnostico-gestacao` | Reprodução | Diagnóstico de gestação | Pronto | Ausente | `/fazendas/operacional/diagnostico-gestacao` | M5/B |
+| `pastagens` | Pecuária | Pastagens | Pronto | Portado: formulário e grupos | `/fazendas/operacional/pastagens` | M5/B |
+| `estacao-monta` | Reprodução | Estação de monta | Pronto | Portado: período validado | `/fazendas/operacional/estacao-monta` | M5/B |
+| `lotes-reproducao` | Reprodução | Lotes/reprodução | Pronto | Portado: lista e formulário | `/fazendas/operacional/lotes-reproducao` | M5/B |
+| `material-reprodutivo` | Reprodução | Touros/sêmen/embrião | Pronto | Portado: lista e formulário | `/fazendas/operacional/material-reprodutivo` | M5/B |
+| `protocolos-estacao` | Reprodução | Protocolos/estação | Pronto | Portado: formulário e grupos | `/fazendas/operacional/protocolos-estacao` | M5/B |
+| `monta-natural` | Reprodução | Monta natural | Pronto | Portado: lista e formulário | `/fazendas/operacional/monta-natural` | M5/B |
+| `diagnostico-gestacao` | Reprodução | Diagnóstico de gestação | Pronto | Portado: lista e formulário | `/fazendas/operacional/diagnostico-gestacao` | M5/B |
 | `abastecimentos` | Frota | Abastecimentos | Pronto | Portado: lista e formulário | `/fazendas/operacional/abastecimentos` | M4/A |
 | `manutencao-frota` | Frota | Manutenção | Pronto | Portado: lista e formulário | `/fazendas/operacional/manutencao-frota` | M4/A |
 | `minhas-os` | Ordem de serviço | Minhas OS | Pronto | Ausente | `/fazendas/operacional/minhas-os` | M7/D |
