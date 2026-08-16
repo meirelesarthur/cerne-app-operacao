@@ -160,3 +160,10 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Navegação, atalhos, filtros, cards e seletores migrados para o primitivo
 - [x] Zero `<button>` direto fora de `src/components/ui/`
 - [x] Gate funcional ampliado para bloquear elementos HTML proibidos fora do catálogo
+
+## Fase 17 — Onda H · Integridade de tokens  ✅
+- [x] Cores residuais dos sparklines movidas para `t.chart`
+- [x] Token `chart.onDark` mapeado como `color` no exportador W3C DTCG
+- [x] `tokens/tokens.json` regenerado junto com a fonte TypeScript
+- [x] Gate ampliado para rejeitar cores literais e fontes não autorizadas em TSX
+- [x] Outfit verificada como família tipográfica global obrigatória

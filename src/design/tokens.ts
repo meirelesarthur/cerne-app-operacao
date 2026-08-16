@@ -322,6 +322,7 @@ export const chart = {
   revenue: '#059669',
   expense: '#dc2626',
   finance: '#2563eb',
+  onDark: 'rgba(255,255,255,0.90)',
   grid: primitive.neutral[200],
   axis: primitive.neutral[400],
   series: ['#059669', '#2563eb', '#f59e0b', '#7c3aed', '#0891b2', '#dc2626', '#14532d', '#9ca3af'],

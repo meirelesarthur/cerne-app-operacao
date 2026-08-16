@@ -123,6 +123,16 @@ também foi concluída; integrações reais de produção permanecem como próxi
 - **Prevenção de regressão:** `npm run quality:functional` também rejeita elementos proibidos pelas
   Leis do projeto quando aparecem diretamente em telas ou componentes de módulo.
 
+### Onda H — integridade de tokens concluída
+
+- **Cores centralizadas:** a linha padrão e a variação sobre fundo escuro dos sparklines agora
+  consomem `t.chart`, sem valores literais dentro dos componentes.
+- **Interoperabilidade:** o novo token `chart.onDark` foi mapeado como `color` no exportador e
+  propagado para `tokens/tokens.json` no padrão W3C DTCG.
+- **Fonte única:** o gate confirma Outfit como tipografia global e rejeita famílias alternativas.
+- **Prevenção de regressão:** cores hex/RGB literais e fontes não autorizadas em TSX passam a
+  interromper `npm run quality:functional`.
+
 ## Convenção de maturidade no protótipo
 
 | Selo | Significado | Próxima ação |
@@ -202,6 +212,8 @@ Uma funcionalidade só muda de `Mapeado` para `Pronto` quando possui:
    seguida de nova validação mobile dos ambientes e fluxos principais.
 7. **Onda G — conformidade Component-First (concluída):** superfícies interativas migradas para
    o catálogo UI e regra incorporada ao gate automatizado.
+8. **Onda H — integridade de tokens (concluída):** cores residuais migradas, exportação DTCG
+   sincronizada e guardrails de cor e tipografia adicionados ao gate.
 
 ## Próximo ciclo de produção
 

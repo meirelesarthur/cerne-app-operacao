@@ -111,6 +111,7 @@ const dtcg = {
       revenue: color(chart.revenue),
       expense: color(chart.expense),
       finance: color(chart.finance),
+      onDark: color(chart.onDark),
       grid: color(chart.grid),
       axis: color(chart.axis),
       series: { $value: chart.series, $type: 'color' },

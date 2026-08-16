@@ -75,7 +75,22 @@ assert(
   `Elementos HTML proibidos fora do catálogo UI: ${componentFirstViolations.join(', ')}`,
 )
 
+const hardcodedColor = /#[0-9a-f]{6}(?:[0-9a-f]{2})?\b|rgba?\(/i
+const foreignFont = /fontFamily\s*:|font-(?:serif|mono|montserrat)\b|\b(?:Arial|Roboto|Inter|Montserrat)\b/
+const tokenViolations = listTsxFiles(srcDir).flatMap((file) => (
+  readFileSync(file, 'utf8').split(/\r?\n/).flatMap((line, index) => (
+    hardcodedColor.test(line) || foreignFont.test(line)
+      ? [`${relative(srcDir, file)}:${index + 1}`]
+      : []
+  ))
+))
+
+assert(tokenViolations.length === 0, `Valores visuais fora dos tokens: ${tokenViolations.join(', ')}`)
+
+const globalCss = readFileSync(join(srcDir, 'index.css'), 'utf8')
+assert(/font-family:\s*'Outfit'/.test(globalCss), 'A fonte global obrigatória Outfit não está configurada.')
+
 const ready = allFeatures.filter((feature) => feature.status === 'ready').length
 const hardware = allFeatures.filter((feature) => feature.status === 'hardware').length
 
-console.log(`Catálogo validado: ${allFeatures.length} funções (${ready} prontas + ${hardware} com hardware simulado); Component-First íntegro.`)
+console.log(`Catálogo validado: ${allFeatures.length} funções (${ready} prontas + ${hardware} com hardware simulado); Component-First e tokens íntegros.`)

@@ -85,6 +85,8 @@ src/
   foco visível, rótulos acessíveis e ausência de rolagem horizontal em 390 px.
 - [x] Nenhuma tela ou componente de módulo usa elementos interativos proibidos diretamente;
   superfícies customizadas passam pelo primitivo `Pressable` do catálogo UI.
+- [x] Cores dos componentes TSX vêm dos tokens, Outfit permanece como fonte única e o gate
+  rejeita novas cores literais ou famílias tipográficas não autorizadas.
 
 ## Notas de handoff (mobile)
 
