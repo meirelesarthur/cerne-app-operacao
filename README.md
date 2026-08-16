@@ -81,6 +81,8 @@ src/
 - [x] Sessão demonstrativa obrigatória, logout efetivo e redirecionamento de rotas internas para o login.
 - [x] Gate automatizado garantindo 12 funções administrativas, 41 operacionais, IDs únicos,
   zero itens apenas `Mapeado` e simulação presente em toda dependência de hardware.
+- [x] Controles primários e secundários do design system com alvo mínimo de toque de 44 px,
+  foco visível, rótulos acessíveis e ausência de rolagem horizontal em 390 px.
 
 ## Notas de handoff (mobile)
 

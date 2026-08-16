@@ -33,7 +33,7 @@ export function ContextTabs({ module }: { module: ModuleDef }) {
             key={tab.id}
             onClick={() => navigate(target)}
             className={cn(
-              'whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-all active:scale-[0.97]',
+              'min-h-11 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold transition-all active:scale-[0.97]',
               active ? 'bg-ink text-cta' : 'bg-surface text-fg-muted shadow-card hover:text-fg',
             )}
             aria-current={active ? 'page' : undefined}

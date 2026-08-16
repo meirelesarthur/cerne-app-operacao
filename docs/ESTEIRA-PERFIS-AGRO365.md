@@ -105,6 +105,15 @@ também foi concluída; integrações reais de produção permanecem como próxi
 - **Limite honesto:** RBAC de backend, telemetria de produção, integrações nativas e paridade Flutter
   são requisitos da implementação mobile, não promessas do protótipo frontend.
 
+### Onda F — prontidão para apresentação concluída
+
+- **Toque acessível:** botões pequenos, links, abas, seletores, checkbox, switch, stepper e paginação
+  passaram a respeitar alvo mínimo de 44 px sem ampliar desnecessariamente seus elementos visuais.
+- **Foco visível:** controles do catálogo deixaram de suprimir o foco global tokenizado.
+- **Rótulos:** a conferência de itens no recebimento XML ganhou nome acessível contextual.
+- **Validação real:** login, Administração, Operacional, formulário e onboarding foram auditados em
+  viewport mobile de 390 × 844 px, sem overflow horizontal ou alvos abaixo do mínimo nas telas testadas.
+
 ## Convenção de maturidade no protótipo
 
 | Selo | Significado | Próxima ação |
@@ -180,6 +189,8 @@ Uma funcionalidade só muda de `Mapeado` para `Pronto` quando possui:
    processamentos, exportações e as oito rotinas operacionais restantes.
 5. **Onda E — endurecimento frontend (concluída):** sessão demonstrativa protegida, logout efetivo,
    gate automatizado do catálogo e documentação das fronteiras de produção.
+6. **Onda F — prontidão para apresentação (concluída):** acessibilidade de toque, foco e rótulos,
+   seguida de nova validação mobile dos ambientes e fluxos principais.
 
 ## Próximo ciclo de produção
 

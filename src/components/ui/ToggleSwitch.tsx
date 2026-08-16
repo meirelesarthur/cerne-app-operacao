@@ -23,19 +23,25 @@ export function ToggleSwitch({ checked, onChange, label, disabled = false, class
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={cn(
-        'relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40',
-        checked ? 'bg-accent' : 'bg-neutral-300',
+        'inline-flex h-11 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full',
         disabled && 'cursor-not-allowed opacity-50',
         className,
       )}
     >
       <span
         className={cn(
-          'inline-block h-5 w-5 transform rounded-full bg-surface shadow-card transition-transform',
-          checked ? 'translate-x-5' : 'translate-x-0.5',
+          'relative inline-flex h-6 w-11 items-center rounded-full transition-colors',
+          checked ? 'bg-accent' : 'bg-neutral-300',
         )}
-      />
+        aria-hidden="true"
+      >
+        <span
+          className={cn(
+            'inline-block h-5 w-5 transform rounded-full bg-surface shadow-card transition-transform',
+            checked ? 'translate-x-5' : 'translate-x-0.5',
+          )}
+        />
+      </span>
     </button>
   )
 }

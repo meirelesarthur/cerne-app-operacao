@@ -76,7 +76,11 @@ export function RecebimentoXmlFlow() {
               <ul className="overflow-hidden rounded-2xl border border-border-default bg-surface">
                 {NFE_ITENS.map((item) => (
                   <li key={item.id} className="flex items-center gap-3 border-b border-border-subtle px-4 py-3 last:border-b-0">
-                    <Checkbox checked={!!conferidos[item.id]} onChange={() => toggle(item.id)} />
+                    <Checkbox
+                      checked={!!conferidos[item.id]}
+                      onChange={() => toggle(item.id)}
+                      ariaLabel={`Conferir ${item.descricao}`}
+                    />
                     <div className="min-w-0 flex-1">
                       <p className="truncate font-medium text-fg">{item.descricao}</p>
                       <p className="text-sm text-fg-muted">{item.qtd}</p>

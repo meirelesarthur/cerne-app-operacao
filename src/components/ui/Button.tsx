@@ -15,7 +15,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const sizeCls: Record<Size, string> = {
-  sm: 'h-9 px-4 text-sm gap-1.5',
+  sm: 'h-11 px-4 text-sm gap-1.5',
   md: 'h-11 px-5 text-md gap-2',
   lg: 'h-[52px] px-6 text-lg gap-2',
 }
@@ -46,8 +46,8 @@ export function Button({
     <button
       className={cn(
         'inline-flex items-center justify-center rounded-full font-semibold transition-all active:scale-[0.98]',
-        'focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-70',
-        variant === 'link' ? 'h-auto gap-1 p-0 text-sm' : sizeCls[size],
+        'disabled:cursor-not-allowed disabled:opacity-70',
+        variant === 'link' ? 'min-h-11 gap-1 px-1 py-0 text-sm' : sizeCls[size],
         variantCls[variant],
         fullWidth && 'w-full',
         className,

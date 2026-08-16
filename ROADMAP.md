@@ -147,3 +147,10 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Gate `quality:functional` valida 12 funções administrativas e 41 operacionais
 - [x] Gate rejeita IDs duplicados, itens `Mapeado`, jornadas sem mecanismo demonstrável e hardware sem simulação
 - [x] Fronteiras de produção documentadas sem apresentar RBAC, telemetria ou integração nativa como prontas
+
+## Fase 15 — Onda F · Prontidão para apresentação  ✅
+- [x] Alvos de toque mínimos de 44 px nos controles reutilizáveis e na navegação contextual
+- [x] Foco global preservado em Button e IconButton
+- [x] Checkbox de conferência XML com nome acessível contextual
+- [x] Login, ambientes Administração/Operacional, formulário e onboarding verificados em 390 × 844 px
+- [x] Zero overflow horizontal e zero alvos abaixo de 44 px nas telas auditadas

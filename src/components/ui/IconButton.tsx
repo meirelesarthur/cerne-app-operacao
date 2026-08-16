@@ -12,8 +12,8 @@ export interface IconButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>
 
 // Nova UI: bolhas circulares (referência) — touch targets generosos
 const sizeCls: Record<Size, string> = {
-  sm: 'h-8 w-8',
-  md: 'h-10 w-10',
+  sm: 'h-11 w-11',
+  md: 'h-11 w-11',
   lg: 'h-12 w-12',
 }
 
@@ -32,7 +32,7 @@ export function IconButton({ size = 'md', label, children, variant = 'ghost', cl
       aria-label={label}
       title={label}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full transition-all active:scale-95 focus-visible:outline-none',
+        'inline-flex shrink-0 items-center justify-center rounded-full transition-all active:scale-95',
         sizeCls[size],
         variantCls[variant],
         className,

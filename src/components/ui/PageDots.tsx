@@ -29,11 +29,18 @@ export function PageDots({ count, active, onSelect, className }: PageDotsProps) 
             disabled={!onSelect}
             onClick={() => onSelect?.(i)}
             className={cn(
-              'h-2 rounded-full transition-all duration-slow ease-out',
-              isActive ? 'w-6 bg-accent' : 'w-2 bg-border-default',
+              'inline-flex h-11 min-w-11 items-center justify-center rounded-full',
               !onSelect && 'cursor-default',
             )}
-          />
+          >
+            <span
+              aria-hidden="true"
+              className={cn(
+                'h-2 rounded-full transition-all duration-slow ease-out',
+                isActive ? 'w-6 bg-accent' : 'w-2 bg-border-default',
+              )}
+            />
+          </button>
         )
       })}
     </div>
