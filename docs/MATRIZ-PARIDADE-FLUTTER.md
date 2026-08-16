@@ -2,6 +2,8 @@
 
 Data-base: 16/08/2026. Fonte funcional: `mapeamento_funcional_agro365_v2.md`, normalizado em `src/modules/fazendas/functionalCatalog.ts`.
 
+Desde M1, o contrato equivalente está portado para `apps/mobile/lib/modules/fazendas/functional_catalog.dart` e passa a ser a fonte funcional do Flutter. As linhas abaixo continuam como **Legado** ou **Ausente** até que suas jornadas visuais sejam efetivamente integradas nas ondas M2–M11.
+
 ## Regra de leitura
 
 - **React:** referência funcional congelada até o corte; não recebe funcionalidades novas.

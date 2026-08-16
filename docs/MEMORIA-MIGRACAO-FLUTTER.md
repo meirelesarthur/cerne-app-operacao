@@ -14,7 +14,8 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- Nenhuma onda da nova portabilidade React → Flutter descrita abaixo foi iniciada.
+- M0 e M1 da nova portabilidade foram concluídas localmente; nenhuma tela ou rota de perfil foi alterada ainda.
+- A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
 - `RTK.md`, embora referenciado nas instruções do projeto, não foi encontrado no repositório neste checkpoint.
 
@@ -89,10 +90,10 @@ Commit planejado: `docs(mobile): formaliza matriz de paridade para extincao do R
 
 ### M1 — Catálogo funcional em Dart
 
-- [ ] Criar o contrato Dart equivalente ao `functionalCatalog.ts`.
-- [ ] Portar as 12 funcionalidades administrativas e 41 operacionais.
-- [ ] Representar campos, grupos, opções, obrigatoriedade, tipo de entrada, status e dependências.
-- [ ] Criar gate/teste que valide 53 itens, divisão 12/41, IDs únicos, zero `Mapped` e sete itens de hardware simulável.
+- [x] Criar o contrato Dart equivalente ao `functionalCatalog.ts`.
+- [x] Portar as 12 funcionalidades administrativas e 41 operacionais.
+- [x] Representar campos, grupos, opções, obrigatoriedade, tipo de entrada, status e dependências.
+- [x] Criar gate/teste que valide 53 itens, divisão 12/41, IDs únicos, zero `Mapped` e sete itens de hardware simulável.
 
 Gate: o catálogo Dart passa a ser a fonte funcional do app Flutter.
 
@@ -270,8 +271,8 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | Etapa | Estado | Commit Flutter | Verificações | Observações |
 |---|---|---|---|---|
 | Memória inicial | Concluída | preencher pelo histórico Git | Arquivo criado; nenhuma implementação iniciada | React permanece oficial por ora |
-| M0 | Concluída | preencher pelo histórico Git | Matriz 53/53; contagem 12/41 conferida | React congelado como referência; nenhuma tela alterada |
-| M1 | Pendente | — | — | — |
+| M0 | Concluída | `8e03fad` | Matriz 53/53; contagem 12/41 conferida | React congelado como referência; nenhuma tela alterada |
+| M1 | Concluída | este commit (`feat(mobile): porta catalogo funcional AGRO365 para Dart`) | Analyze limpo; 7 testes de contrato; 58 testes de Fazendas verdes | 168 campos, 156 obrigatórios, 46 Ready e 7 Hardware; suíte global excedeu 10 min sem falha reportada |
 | M2 | Pendente | — | — | — |
 | M3 | Pendente | — | — | — |
 | M4 / A | Pendente | — | — | — |
