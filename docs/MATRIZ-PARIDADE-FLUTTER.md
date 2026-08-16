@@ -36,7 +36,7 @@ Checkpoint M3: os 12 itens administrativos aparecem na Central de gestão e os 4
 | `suprimentos` | Painéis | Suprimentos | Pronto | Legado: dashboard | `/fazendas/dashboards/suprimentos` protegido | M3 |
 | `analise-uso` | Painéis | Análise de uso | Pronto | Legado: dashboard | `/fazendas/dashboards/uso` protegido | M3 |
 | `consultas-gerenciais` | Consultas | Consultas gerenciais | Pronto | Legado: dashboard | `/fazendas/dashboards/consultas` protegido | M3 |
-| `areas` | Consultas | Áreas cadastradas | Pronto | Ausente | `/fazendas/administracao/areas` lendo `cadastrar-area` | M4/A |
+| `areas` | Consultas | Áreas cadastradas | Pronto | Portado: consulta compartilhada | `/fazendas/administracao/areas` lendo `cadastrar-area` | M4/A |
 | `saldo-estoque` | Consultas | Saldo de estoque | Pronto | Ausente | `/fazendas/administracao/saldo-estoque` | M7/D |
 | `processamentos` | Consultas | Processamentos pecuários | Pronto | Ausente | `/fazendas/administracao/processamentos` | M7/D |
 | `exportar-log-estoque` | Auditoria | Exportar log de estoque | Pronto | Ausente | `/fazendas/administracao/exportar-log-estoque` | M7/D |
@@ -46,16 +46,16 @@ Checkpoint M3: os 12 itens administrativos aparecem na Central de gestão e os 4
 
 | ID | Grupo | Funcionalidade | Maturidade React | Flutter no baseline | Destino Flutter | Onda |
 |---|---|---|---|---|---|---|
-| `cadastrar-area` | Cadastros | Áreas | Pronto | Ausente | `/fazendas/operacional/cadastrar-area` | M4/A |
-| `formulacoes` | Estoque | Formulações | Pronto | Ausente | `/fazendas/operacional/formulacoes` | M4/A |
-| `batidas` | Estoque | Batida | Pronto | Ausente | `/fazendas/operacional/batidas` | M4/A |
+| `cadastrar-area` | Cadastros | Áreas | Pronto | Portado: lista e formulário | `/fazendas/operacional/cadastrar-area` | M4/A |
+| `formulacoes` | Estoque | Formulações | Pronto | Portado: lista e formulário | `/fazendas/operacional/formulacoes` | M4/A |
+| `batidas` | Estoque | Batida | Pronto | Portado: lista e formulário | `/fazendas/operacional/batidas` | M4/A |
 | `conexao-aparelhos` | Misturador | Conexão de aparelhos | Hardware | Ausente | `/fazendas/operacional/conexao-aparelhos` | M6/C |
 | `carga` | Misturador | Carga | Pronto | Ausente | `/fazendas/operacional/carga` | M7/D |
 | `descarga` | Misturador | Descarga | Pronto | Ausente | `/fazendas/operacional/descarga` | M7/D |
 | `balanca` | Misturador | Balança | Hardware | Ausente | `/fazendas/operacional/balanca` | M6/C |
 | `nota-cocho` | Misturador | Nota de cocho | Pronto | Ausente | `/fazendas/operacional/nota-cocho` | M7/D |
 | `configuracoes-misturador` | Misturador | Configurações | Pronto | Ausente | `/fazendas/operacional/configuracoes-misturador` | M7/D |
-| `apontamento` | Agricultura | Apontamento agrícola | Pronto | Ausente; fluxo antigo de insumos não é equivalente | `/fazendas/operacional/apontamento` | M4/A |
+| `apontamento` | Agricultura | Apontamento agrícola | Pronto | Portado: lista e formulário | `/fazendas/operacional/apontamento` | M4/A |
 | `marcacao` | Agricultura | Marcação | Pronto | Ausente | `/fazendas/operacional/marcacao` | M7/D |
 | `colheita-frutas` | Agricultura | Colheita de frutas | Pronto | Ausente | `/fazendas/operacional/colheita-frutas` | M7/D |
 | `rebanho-inicial` | Pecuária | Rebanho inicial | Pronto | Ausente | `/fazendas/operacional/rebanho-inicial` | M5/B |
@@ -83,8 +83,8 @@ Checkpoint M3: os 12 itens administrativos aparecem na Central de gestão e os 4
 | `protocolos-estacao` | Reprodução | Protocolos/estação | Pronto | Ausente | `/fazendas/operacional/protocolos-estacao` | M5/B |
 | `monta-natural` | Reprodução | Monta natural | Pronto | Ausente | `/fazendas/operacional/monta-natural` | M5/B |
 | `diagnostico-gestacao` | Reprodução | Diagnóstico de gestação | Pronto | Ausente | `/fazendas/operacional/diagnostico-gestacao` | M5/B |
-| `abastecimentos` | Frota | Abastecimentos | Pronto | Ausente | `/fazendas/operacional/abastecimentos` | M4/A |
-| `manutencao-frota` | Frota | Manutenção | Pronto | Ausente | `/fazendas/operacional/manutencao-frota` | M4/A |
+| `abastecimentos` | Frota | Abastecimentos | Pronto | Portado: lista e formulário | `/fazendas/operacional/abastecimentos` | M4/A |
+| `manutencao-frota` | Frota | Manutenção | Pronto | Portado: lista e formulário | `/fazendas/operacional/manutencao-frota` | M4/A |
 | `minhas-os` | Ordem de serviço | Minhas OS | Pronto | Ausente | `/fazendas/operacional/minhas-os` | M7/D |
 | `sincronizacao` | Sincronização | Sincronização de dados | Pronto | Legado: fila de sync | `/fazendas/mais/sync` sob perfil operacional | M3/M8 |
 

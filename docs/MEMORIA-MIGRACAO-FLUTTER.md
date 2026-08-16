@@ -14,7 +14,7 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 foi concluída localmente e aguarda push sob demanda.
+- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 e M4 foram concluídas localmente e aguardam push sob demanda.
 - O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
@@ -126,11 +126,11 @@ Commit planejado: `feat(mobile): separa ambientes administrativo e operacional`.
 
 ### M4 — Onda A Flutter
 
-- [ ] Áreas.
-- [ ] Formulações.
-- [ ] Batidas.
-- [ ] Apontamento agrícola.
-- [ ] Abastecimento e Manutenção de Frota.
+- [x] Áreas.
+- [x] Formulações.
+- [x] Batidas.
+- [x] Apontamento agrícola.
+- [x] Abastecimento e Manutenção de Frota.
 
 Gate: lista, criação, validação, sucesso e consulta compartilham os mesmos registros em memória.
 
@@ -275,8 +275,8 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | M0 | Concluída | `8e03fad` | Matriz 53/53; contagem 12/41 conferida | React congelado como referência; nenhuma tela alterada |
 | M1 | Concluída | `da3c8dd` | Analyze limpo; 7 testes de contrato; 58 testes de Fazendas verdes | 168 campos, 156 obrigatórios, 46 Ready e 7 Hardware; suíte global excedeu 10 min sem falha reportada |
 | M2 | Concluída | `3021f9c` | Analyze limpo; 10 testes novos; Widgetbook Web compilado | Catálogo ampliado de 42 para 46 componentes; download físico do arquivo de auditoria será conectado em M7 |
-| M3 | Concluída | este commit (`feat(mobile): separa ambientes administrativo e operacional`) | Analyze limpo; 45 testes focados verdes; Flutter Web compilado | Duas centrais derivadas do catálogo 12/41; rotas cruzadas redirecionam; logout invalida sessão; jornadas sem tela própria permanecem para M4–M7 |
-| M4 / A | Pendente | — | — | — |
+| M3 | Concluída | `f786870` | Analyze limpo; 45 testes focados verdes; Flutter Web compilado | Duas centrais derivadas do catálogo 12/41; rotas cruzadas redirecionam; logout invalida sessão; jornadas sem tela própria permanecem para M4–M7 |
+| M4 / A | Concluída | este commit (`feat(mobile): conclui onda A funcional AGRO365`) | Analyze limpo; 25 testes focados verdes; teste ponta a ponta lista → validação → sucesso → consulta | Tela dirigida pelo catálogo reutiliza o motor M2; seis contratos da onda usam os mesmos registros Riverpod e Administração lê Áreas criadas no Operacional |
 | M5 / B | Pendente | — | — | — |
 | M6 / C | Pendente | — | — | — |
 | M7 / D | Pendente | — | — | — |

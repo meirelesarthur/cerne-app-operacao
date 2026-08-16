@@ -10,6 +10,7 @@ import 'screens/atividades_screen.dart';
 import 'screens/farm_list_screen.dart';
 import 'screens/fazendas_home.dart';
 import 'screens/mais_screen.dart';
+import 'screens/mapped_feature_screen.dart';
 import 'screens/responsibility_workspace.dart';
 import 'screens/sync_queue_screen.dart';
 
@@ -35,7 +36,7 @@ GoRoute buildFazendasModuleRoute() {
           GoRoute(
             path: ':featureId',
             builder: (context, state) => _FazendasScaffold(
-              child: FunctionalContractScreen(
+              child: MappedFeatureScreen(
                 featureId: state.pathParameters['featureId']!,
                 profile: FeatureProfile.administration,
               ),
@@ -52,7 +53,7 @@ GoRoute buildFazendasModuleRoute() {
           GoRoute(
             path: ':featureId',
             builder: (context, state) => _FazendasScaffold(
-              child: FunctionalContractScreen(
+              child: MappedFeatureScreen(
                 featureId: state.pathParameters['featureId']!,
                 profile: FeatureProfile.operational,
               ),
