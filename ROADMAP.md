@@ -130,3 +130,12 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Transferência de animal e Perdas com listas, formulários e histórico frontend
 - [x] Localização de animal e leitura de balança demonstráveis sem hardware real
 - [x] Selo `Hardware` mantido para não confundir simulação com integração nativa
+
+## Fase 13 — Onda D · Cobertura funcional total  ✅
+- [x] Saldo de Estoque e Processamentos Pecuários com consultas e detalhes
+- [x] Exportação local dos logs de Estoque e Pecuária em CSV e JSON
+- [x] Carga, Descarga, Nota de Cocho e Configurações do Misturador funcionais
+- [x] Marcação agrícola com lista, cadastro e referência de localização
+- [x] Compra de Animais e Apartação com jornadas completas
+- [x] Minhas OS com consulta por funcionário e fazenda
+- [x] Catálogo com 46 itens `Pronto`, 7 `Hardware` simulados e nenhum `Mapeado`

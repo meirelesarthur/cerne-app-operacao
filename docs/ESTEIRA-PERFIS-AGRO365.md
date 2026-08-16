@@ -77,8 +77,21 @@ Com as Ondas A e B, o catálogo possui **34 funcionalidades prontas**, **12 mape
 - **Transparência:** os sete itens continuam com o selo `Hardware`, pois a Onda C valida a
   experiência frontend; Bluetooth, câmera, balança e RFID reais dependem do aplicativo mobile.
 
-As Ondas D e E permanecem na fila priorizada abaixo. A cobertura continua em **34 prontas**,
-**12 mapeadas** e **7 com simulação funcional de hardware**.
+### Onda D — supervisão, auditoria e lacunas concluídas
+
+- **Administração:** Saldo de Estoque e Processamentos Pecuários possuem consultas com
+  registros, estados e detalhes demonstráveis.
+- **Auditoria:** logs de Estoque e Pecuária podem ser filtrados por período e exportados
+  localmente em CSV ou JSON, com confirmação de nome e quantidade de registros.
+- **Misturador:** Carga, Descarga, Nota de Cocho e Configurações ganharam lista, formulário,
+  validação, sucesso e histórico em memória.
+- **Agricultura:** Marcação passou a registrar área, tipo, descrição e referência de localização.
+- **Pecuária e operação:** Compra de Animais, Apartação e Minhas OS agora têm jornadas
+  navegáveis e dados demonstrativos.
+- **Cobertura:** não existem mais funcionalidades com selo `Mapeado`.
+
+A Onda E permanece na fila. A cobertura funcional é de **46 funcionalidades prontas** e
+**7 com simulação funcional de hardware**, totalizando as **53 entradas do catálogo**.
 
 ## Convenção de maturidade no protótipo
 
@@ -151,5 +164,6 @@ Uma funcionalidade só muda de `Mapeado` para `Pronto` quando possui:
    de Lote/Área, Sanitário, Desmama, Pastagens e Reprodução.
 3. **Onda C — hardware (simulação frontend concluída):** Conexão, Balança, RFID,
    Scanner SISBOV, Localizar Animal e Perdas.
-4. **Onda D — supervisão e auditoria:** consultas reais, processamentos e exportação de logs.
+4. **Onda D — supervisão, auditoria e lacunas (concluída no frontend):** consultas,
+   processamentos, exportações e as oito rotinas operacionais restantes.
 5. **Onda E — endurecimento:** RBAC real, telemetria, testes automatizados e paridade Flutter.

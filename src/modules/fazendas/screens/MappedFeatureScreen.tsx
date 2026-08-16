@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Bluetooth, ClipboardCheck, Info, Plus, ShieldCheck } from 'lucide-react'
 import { AddableGroupList } from '@/components/ui/AddableGroupList'
+import { AuditExportPanel } from '@/components/ui/AuditExportPanel'
 import { Banner } from '@/components/ui/Banner'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { Button } from '@/components/ui/Button'
@@ -41,6 +42,8 @@ const ACTIVE_RECORD_FEATURES = new Set([
   'lote-animais',
   'registrar-animal',
   'material-reprodutivo',
+  'configuracoes-misturador',
+  'marcacao',
 ])
 const PROGRAMMED_RECORD_FEATURES = new Set(['manutencao-frota', 'estacao-monta', 'lotes-reproducao', 'protocolos-estacao'])
 
@@ -64,6 +67,19 @@ const STATUS_LABEL: Record<PrototypeRecord['status'], string> = {
   ativo: 'Ativo',
   concluido: 'Concluído',
   programado: 'Programado',
+}
+
+const AUDIT_EXPORT_ROWS: Record<'estoque' | 'pecuaria', Record<string, string>[]> = {
+  estoque: [
+    { data: '2026-08-16 08:42', usuario: 'João Oliveira', acao: 'Batida registrada', entidade: 'Ração engorda', quantidade: '1.000 kg' },
+    { data: '2026-08-15 17:18', usuario: 'Maria Souza', acao: 'Estoque ajustado', entidade: 'Sal mineral', quantidade: '120 kg' },
+    { data: '2026-08-14 14:05', usuario: 'Carlos Dias', acao: 'Entrada confirmada', entidade: 'Milho moído', quantidade: '4.500 kg' },
+  ],
+  pecuaria: [
+    { data: '2026-08-16 09:15', usuario: 'Maria Souza', acao: 'Diagnóstico registrado', entidade: 'Lote Matrizes 01', resultado: '94 prenhes' },
+    { data: '2026-08-15 16:20', usuario: 'João Oliveira', acao: 'Transferência concluída', entidade: 'RFID 982000123456120', resultado: 'Lote 42' },
+    { data: '2026-08-14 11:30', usuario: 'Carlos Dias', acao: 'Pesagem registrada', entidade: 'Lote Recria 02', resultado: '318 kg médio' },
+  ],
 }
 
 function FieldControl({
@@ -235,6 +251,11 @@ function makeRecord(
     'material-reprodutivo': [values.tipo, values.raca, values.quantidade ? `${values.quantidade} unidade(s)` : ''].filter(Boolean).join(' · '),
     'monta-natural': [values.touro, values.quantidade ? `${values.quantidade} fêmeas` : '', values.data].filter(Boolean).join(' · '),
     'diagnostico-gestacao': [values.resultado, values.quantidade ? `${values.quantidade} animais` : '', values.data].filter(Boolean).join(' · '),
+    carga: [values.quantidade && values.unidade ? `${values.quantidade} ${values.unidade}` : '', values.equipamento].filter(Boolean).join(' · '),
+    descarga: [values.produto, values.quantidade && values.unidade ? `${values.quantidade} ${values.unidade}` : ''].filter(Boolean).join(' · '),
+    'configuracoes-misturador': [values.unidade, values.tolerancia ? `tolerância ${values.tolerancia}%` : '', values.alerta].filter(Boolean).join(' · '),
+    'compras-animais': [values.quantidade ? `${values.quantidade} animais` : '', values.categoria, values.data].filter(Boolean).join(' · '),
+    apartacao: [values.criterio, values['lote-destino'], values.quantidade ? `${values.quantidade} animais` : ''].filter(Boolean).join(' · '),
   }
   const description = descriptionByFeature[feature.id] || fallbackDescription
   const status = PROGRAMMED_RECORD_FEATURES.has(feature.id)
@@ -434,7 +455,12 @@ export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
           </Card>
         )}
 
-        {feature.listMode && mode === 'list' ? (
+        {feature.auditExport ? (
+          <AuditExportPanel
+            filename={`auditoria-${feature.auditExport}`}
+            rows={AUDIT_EXPORT_ROWS[feature.auditExport]}
+          />
+        ) : feature.listMode && mode === 'list' ? (
           <RecordsList
             feature={feature}
             records={records}
