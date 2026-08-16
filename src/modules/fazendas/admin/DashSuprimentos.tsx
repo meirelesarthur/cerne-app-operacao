@@ -4,6 +4,7 @@ import { Chip, type ChipTone } from '@/components/ui/Chip'
 import { Card } from '@/components/ui/Card'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { SparklineArea } from '@/components/ui/SparklineArea'
+import { Pressable } from '@/components/ui/Pressable'
 import { DashboardScreen } from './DashboardScreen'
 import { COTACOES, type Cotacao, type CotacaoStatus } from '../mocks/dashboards'
 import { cn } from '@/lib/cn'
@@ -33,7 +34,7 @@ export function DashSuprimentos() {
     <DashboardScreen title="Suprimentos">
       <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
         {TIPOS.map((tipo) => (
-          <button
+          <Pressable
             key={tipo}
             onClick={() => setFiltro(tipo)}
             className={cn(
@@ -42,7 +43,7 @@ export function DashSuprimentos() {
             )}
           >
             {tipo}
-          </button>
+          </Pressable>
         ))}
       </div>
 

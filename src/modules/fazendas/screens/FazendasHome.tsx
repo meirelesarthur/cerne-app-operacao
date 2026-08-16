@@ -20,6 +20,7 @@ import { Heading, SectionTitle } from '@/components/ui/Heading'
 import { Chip } from '@/components/ui/Chip'
 import { Card } from '@/components/ui/Card'
 import { BentoTile } from '@/components/ui/BentoTile'
+import { Pressable } from '@/components/ui/Pressable'
 import { ShortcutGrid, type Shortcut } from '../components/ShortcutGrid'
 import { ContextBadge } from '../components/ContextBadge'
 import { ActivityListItem } from '../components/ActivityListItem'
@@ -60,9 +61,9 @@ function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> 
     <div className="flex flex-col gap-5 p-4">
       <div className="flex items-center justify-between">
         <Heading level={3}>Resumo da safra</Heading>
-        <button className="inline-flex items-center gap-1 rounded-full border border-border-default bg-surface px-3 py-1 text-sm font-semibold text-fg">
+        <Pressable className="inline-flex items-center gap-1 rounded-full border border-border-default bg-surface px-3 py-1 text-sm font-semibold text-fg">
           Safra 24/25 <ChevronDown size={14} />
-        </button>
+        </Pressable>
       </div>
 
       <ShortcutGrid items={adminShortcuts} columns={5} />
@@ -78,9 +79,9 @@ function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> 
       <div>
         <div className="mb-1 flex items-center justify-between">
           <SectionTitle>Atividades recentes</SectionTitle>
-          <button className="inline-flex items-center gap-0.5 text-sm font-semibold text-accent" onClick={() => navigate('/fazendas/atividades')}>
+          <Pressable className="inline-flex items-center gap-0.5 text-sm font-semibold text-accent" onClick={() => navigate('/fazendas/atividades')}>
             Ver todas <ArrowRight size={13} />
-          </button>
+          </Pressable>
         </div>
         <div className="rounded-2xl border border-border-default bg-surface px-3">
           {ATIVIDADES.slice(0, 4).map((a) => (

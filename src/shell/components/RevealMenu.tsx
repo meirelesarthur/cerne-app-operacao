@@ -4,6 +4,7 @@ import { Bell, Settings, Moon, LogOut, ChevronRight, Wifi, WifiOff } from 'lucid
 import { Avatar } from '@/components/ui/Avatar'
 import { MenuItem } from '@/components/ui/MenuItem'
 import { Badge } from '@/components/ui/Badge'
+import { Pressable } from '@/components/ui/Pressable'
 import { getMenuSections, type ModuleDef } from '@/shell/moduleConfig'
 import { useShellStore } from '@/shell/state/shellStore'
 import { useTheme } from '@/context/ThemeContext'
@@ -78,8 +79,7 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
       {menuOpen && (
         <>
           {/* identidade do usuário */}
-          <button
-            type="button"
+          <Pressable
             onClick={() => go('/perfil')}
             className="animate-rise mb-3 flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/10"
             style={next()}
@@ -90,7 +90,7 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
               <span className="block text-xs text-white/55">{roleLabel} · GB CERNE</span>
             </span>
             <ChevronRight size={18} className="shrink-0 text-white/40" aria-hidden="true" />
-          </button>
+          </Pressable>
 
           {/* contexto do módulo ativo */}
           <div className="animate-rise mb-2 flex items-center gap-2 px-3" style={next()}>

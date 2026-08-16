@@ -1,9 +1,12 @@
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
+import { join, relative } from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const EXPECTED_ADMIN = 12
 const EXPECTED_OPERATIONAL = 41
 const catalogUrl = new URL('../src/modules/fazendas/functionalCatalog.ts', import.meta.url)
 const source = readFileSync(catalogUrl, 'utf8')
+const srcDir = fileURLToPath(new URL('../src/', import.meta.url))
 
 function assert(condition, message) {
   if (!condition) throw new Error(message)
@@ -26,6 +29,14 @@ function parseFeatures(section) {
       demonstrable: /^    (existingRoute|listMode|fields|sections|capabilities|auditExport|simulation):/m.test(body),
       simulated: /^    simulation:/m.test(body),
     }
+  })
+}
+
+function listTsxFiles(dir) {
+  return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+    const path = join(dir, entry.name)
+    if (entry.isDirectory()) return listTsxFiles(path)
+    return entry.isFile() && entry.name.endsWith('.tsx') ? [path] : []
   })
 }
 
@@ -52,7 +63,19 @@ const hardwareWithoutSimulation = allFeatures.filter(
 )
 assert(hardwareWithoutSimulation.length === 0, `Hardware sem simulação: ${hardwareWithoutSimulation.map((feature) => feature.id).join(', ')}`)
 
+const forbiddenElements = /<(button|input|select|textarea|table|thead|tr|td|h[1-6])\b/
+const componentFirstViolations = listTsxFiles(srcDir)
+  .filter((file) => !file.includes(`${join('components', 'ui')}\\`) && !file.includes(`${join('components', 'ui')}/`))
+  .flatMap((file) => readFileSync(file, 'utf8').split(/\r?\n/).flatMap((line, index) => (
+    forbiddenElements.test(line) ? [`${relative(srcDir, file)}:${index + 1}`] : []
+  )))
+
+assert(
+  componentFirstViolations.length === 0,
+  `Elementos HTML proibidos fora do catálogo UI: ${componentFirstViolations.join(', ')}`,
+)
+
 const ready = allFeatures.filter((feature) => feature.status === 'ready').length
 const hardware = allFeatures.filter((feature) => feature.status === 'hardware').length
 
-console.log(`Catálogo validado: ${allFeatures.length} funções (${ready} prontas + ${hardware} com hardware simulado).`)
+console.log(`Catálogo validado: ${allFeatures.length} funções (${ready} prontas + ${hardware} com hardware simulado); Component-First íntegro.`)

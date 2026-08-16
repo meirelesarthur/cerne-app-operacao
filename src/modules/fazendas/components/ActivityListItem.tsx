@@ -1,6 +1,7 @@
 import { ChevronRight, Scale, FileText, Truck, Wheat, ArrowLeftRight, Sprout } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Chip, type ChipTone } from '@/components/ui/Chip'
+import { Pressable } from '@/components/ui/Pressable'
 import type { Activity, ActivityStatus } from '../types'
 
 /** Ícone por tipo de atividade — fonte única, reutilizado no ActivityDetailSheet (Lei 2). */
@@ -27,7 +28,7 @@ export function ActivityListItem({ activity, onClick }: { activity: Activity; on
   const status = STATUS_META[activity.status]
 
   return (
-    <button
+    <Pressable
       onClick={onClick}
       className="flex w-full items-center gap-3 border-b border-border-subtle px-1 py-3 text-left last:border-b-0"
     >
@@ -43,6 +44,6 @@ export function ActivityListItem({ activity, onClick }: { activity: Activity; on
         <span className="text-xs text-fg-subtle">{activity.time}</span>
       </div>
       <ChevronRight size={16} className="shrink-0 text-fg-subtle" />
-    </button>
+    </Pressable>
   )
 }

@@ -9,6 +9,7 @@ import { SearchSelect } from '@/components/ui/SearchSelect'
 import { TextInput } from '@/components/ui/TextInput'
 import { Textarea } from '@/components/ui/Textarea'
 import { Banner } from '@/components/ui/Banner'
+import { Pressable } from '@/components/ui/Pressable'
 import { useShellStore } from '@/shell/state/shellStore'
 import { useFazendasStore } from '../state/fazendasStore'
 import { LOTES_OPCOES, CAUSAS_MORTE } from '../mocks/operacional'
@@ -55,7 +56,7 @@ export function CicloRebanhoFlow() {
         <p className="mb-3 text-md text-fg-muted">Escolha o tipo de evento a registrar.</p>
         <div className="grid grid-cols-2 gap-3">
           {EVENTS.map((e) => (
-            <button
+            <Pressable
               key={e.type}
               onClick={() => setType(e.type)}
               className="flex flex-col items-start gap-2 rounded-2xl border border-border-default bg-surface p-4 text-left shadow-card active:scale-[0.99]"
@@ -65,7 +66,7 @@ export function CicloRebanhoFlow() {
               </span>
               <span className="font-semibold text-fg">{e.label}</span>
               <span className="text-sm text-fg-muted">{e.desc}</span>
-            </button>
+            </Pressable>
           ))}
         </div>
       </FlowShell>

@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { MODULES } from '@/shell/moduleConfig'
 import { t } from '@/design/tokens'
 import { cn } from '@/lib/cn'
+import { Pressable } from '@/components/ui/Pressable'
 
 const tb = t.component.tabbar
 
@@ -35,7 +36,7 @@ export function BottomTabBar({ activeId }: { activeId: string }) {
           const Icon = m.icon
 
           return (
-            <button
+            <Pressable
               key={m.id}
               onClick={() => navigate(m.homeRoute)}
               aria-current={active ? 'page' : undefined}
@@ -47,7 +48,7 @@ export function BottomTabBar({ activeId }: { activeId: string }) {
               )}
             >
               <Icon size={20} strokeWidth={active ? 2.2 : 1.9} aria-hidden="true" />
-            </button>
+            </Pressable>
           )
         })}
       </div>

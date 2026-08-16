@@ -83,6 +83,8 @@ src/
   zero itens apenas `Mapeado` e simulação presente em toda dependência de hardware.
 - [x] Controles primários e secundários do design system com alvo mínimo de toque de 44 px,
   foco visível, rótulos acessíveis e ausência de rolagem horizontal em 390 px.
+- [x] Nenhuma tela ou componente de módulo usa elementos interativos proibidos diretamente;
+  superfícies customizadas passam pelo primitivo `Pressable` do catálogo UI.
 
 ## Notas de handoff (mobile)
 

@@ -114,6 +114,15 @@ também foi concluída; integrações reais de produção permanecem como próxi
 - **Validação real:** login, Administração, Operacional, formulário e onboarding foram auditados em
   viewport mobile de 390 × 844 px, sem overflow horizontal ou alvos abaixo do mínimo nas telas testadas.
 
+### Onda G — conformidade Component-First concluída
+
+- **Primitivo reutilizável:** `Pressable` concentra semântica, cursor, foco e alvo mínimo para
+  superfícies interativas que não possuem aparência de botão convencional.
+- **Migração integral:** navegação, atalhos, filtros, cards e seletores antigos deixaram de usar
+  `<button>` diretamente fora de `src/components/ui/`.
+- **Prevenção de regressão:** `npm run quality:functional` também rejeita elementos proibidos pelas
+  Leis do projeto quando aparecem diretamente em telas ou componentes de módulo.
+
 ## Convenção de maturidade no protótipo
 
 | Selo | Significado | Próxima ação |
@@ -191,6 +200,8 @@ Uma funcionalidade só muda de `Mapeado` para `Pronto` quando possui:
    gate automatizado do catálogo e documentação das fronteiras de produção.
 6. **Onda F — prontidão para apresentação (concluída):** acessibilidade de toque, foco e rótulos,
    seguida de nova validação mobile dos ambientes e fluxos principais.
+7. **Onda G — conformidade Component-First (concluída):** superfícies interativas migradas para
+   o catálogo UI e regra incorporada ao gate automatizado.
 
 ## Próximo ciclo de produção
 

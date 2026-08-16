@@ -154,3 +154,9 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Checkbox de conferência XML com nome acessível contextual
 - [x] Login, ambientes Administração/Operacional, formulário e onboarding verificados em 390 × 844 px
 - [x] Zero overflow horizontal e zero alvos abaixo de 44 px nas telas auditadas
+
+## Fase 16 — Onda G · Conformidade Component-First  ✅
+- [x] Primitivo `Pressable` criado e exportado pelo catálogo UI
+- [x] Navegação, atalhos, filtros, cards e seletores migrados para o primitivo
+- [x] Zero `<button>` direto fora de `src/components/ui/`
+- [x] Gate funcional ampliado para bloquear elementos HTML proibidos fora do catálogo

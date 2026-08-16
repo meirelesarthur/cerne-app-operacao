@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ChevronDown, Circle } from 'lucide-react'
 import { ErrorState } from '@/components/ui/ErrorState'
+import { Pressable } from '@/components/ui/Pressable'
 import { DashboardScreen } from './DashboardScreen'
 import { USO_FAZENDAS } from '../mocks/dashboards'
 import { useShellStore } from '@/shell/state/shellStore'
@@ -36,7 +37,7 @@ export function DashUso() {
     <DashboardScreen title="Análise de Uso" restricted>
       <div className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
         {PERIODOS.map((p) => (
-          <button
+          <Pressable
             key={p}
             onClick={() => setPeriodo(p)}
             className={cn(
@@ -45,7 +46,7 @@ export function DashUso() {
             )}
           >
             {p}
-          </button>
+          </Pressable>
         ))}
       </div>
 
@@ -54,7 +55,7 @@ export function DashUso() {
           const open = expandido === f.id
           return (
             <li key={f.id} className="overflow-hidden rounded-2xl border border-border-default bg-surface">
-              <button
+              <Pressable
                 onClick={() => setExpandido(open ? null : f.id)}
                 className="flex w-full items-center gap-3 p-3 text-left"
               >
@@ -64,7 +65,7 @@ export function DashUso() {
                   <p className="text-sm text-fg-muted">{f.online} usuário(s) online</p>
                 </div>
                 <ChevronDown size={18} className={cn('text-fg-subtle transition-transform', open && 'rotate-180')} />
-              </button>
+              </Pressable>
               {open && (
                 <ul className="border-t border-border-subtle">
                   {f.usuarios.map((u) => (

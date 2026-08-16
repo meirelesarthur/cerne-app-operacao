@@ -4,6 +4,7 @@ import { ProgressBar } from '@/components/ui/ProgressBar'
 import { BottomSheet } from '@/components/ui/BottomSheet'
 import { Chip } from '@/components/ui/Chip'
 import { SectionTitle } from '@/components/ui/Heading'
+import { Pressable } from '@/components/ui/Pressable'
 import { DashboardScreen } from './DashboardScreen'
 import { CURRAIS, type Curral } from '../mocks/dashboards'
 
@@ -29,7 +30,7 @@ export function DashConfinamento() {
         {CURRAIS.map((c) => {
           const pct = Math.round((c.atual / c.max) * 100)
           return (
-            <button
+            <Pressable
               key={c.id}
               onClick={() => setSelected(c)}
               className="rounded-2xl border border-border-default bg-surface p-3 text-left shadow-card active:scale-[0.99]"
@@ -44,7 +45,7 @@ export function DashConfinamento() {
                 <span className="text-fg-subtle">/{c.max}</span>
               </p>
               <ProgressBar className="mt-1" value={c.atual} max={c.max} colorByOccupancy />
-            </button>
+            </Pressable>
           )
         })}
       </div>

@@ -6,6 +6,7 @@ import { ContextTabs } from '@/shell/components/ContextTabs'
 import { BottomTabBar } from '@/shell/components/BottomTabBar'
 import { RevealMenu } from '@/shell/components/RevealMenu'
 import { Banner } from '@/components/ui/Banner'
+import { Pressable } from '@/components/ui/Pressable'
 import { useShellStore } from '@/shell/state/shellStore'
 import { HubModule } from '@/modules/hub/HubModule'
 import { FazendasModule } from '@/modules/fazendas/FazendasModule'
@@ -113,8 +114,7 @@ export function ShellLayout() {
 
         {/* com o menu aberto, tocar no app encolhido fecha o menu */}
         {menuOpen && (
-          <button
-            type="button"
+          <Pressable
             aria-label="Fechar menu"
             onClick={closeMenu}
             className="absolute inset-0 cursor-pointer"

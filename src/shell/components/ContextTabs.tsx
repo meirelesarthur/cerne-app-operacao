@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import type { ModuleDef } from '@/shell/moduleConfig'
 import { cn } from '@/lib/cn'
 import { useShellStore } from '@/shell/state/shellStore'
+import { Pressable } from '@/components/ui/Pressable'
 
 /**
  * Abas de contexto do módulo ativo (Nova UI): chips-pílula roláveis no topo —
@@ -29,7 +30,7 @@ export function ContextTabs({ module }: { module: ModuleDef }) {
         const active = tab.path === activePath
         const target = tab.path ? `/${module.id}/${tab.path}` : `/${module.id}`
         return (
-          <button
+          <Pressable
             key={tab.id}
             onClick={() => navigate(target)}
             className={cn(
@@ -39,7 +40,7 @@ export function ContextTabs({ module }: { module: ModuleDef }) {
             aria-current={active ? 'page' : undefined}
           >
             {tab.label}
-          </button>
+          </Pressable>
         )
       })}
     </nav>

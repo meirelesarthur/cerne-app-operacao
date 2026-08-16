@@ -5,6 +5,7 @@ import { FormField } from '@/components/ui/FormField'
 import { FormSelect } from '@/components/ui/FormSelect'
 import { TextInput } from '@/components/ui/TextInput'
 import { Textarea } from '@/components/ui/Textarea'
+import { Pressable } from '@/components/ui/Pressable'
 import { useShellStore } from '@/shell/state/shellStore'
 import { useFazendasStore } from '../state/fazendasStore'
 import { TALHOES, CICLOS, INSUMOS } from '../mocks/operacional'
@@ -55,7 +56,7 @@ export function InsumosFlow() {
         <FormField label="Tipo de lançamento" required>
           <div className="flex gap-2">
             {(['aplicacao', 'ocorrencia'] as Lancamento[]).map((op) => (
-              <button
+              <Pressable
                 key={op}
                 type="button"
                 onClick={() => setTipo(op)}
@@ -65,7 +66,7 @@ export function InsumosFlow() {
                 )}
               >
                 {op === 'aplicacao' ? 'Aplicação' : 'Ocorrência'}
-              </button>
+              </Pressable>
             ))}
           </div>
         </FormField>
