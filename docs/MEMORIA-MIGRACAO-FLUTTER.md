@@ -78,10 +78,10 @@ Esses commits são especificação de comportamento, não código a ser reutiliz
 
 ### M0 — Congelamento e contrato de paridade
 
-- [ ] Marcar o React como referência congelada na documentação.
-- [ ] Criar matriz verificável das 53 funcionalidades React → Flutter.
-- [ ] Registrar rota, perfil, maturidade, campos, validações e dependências de cada item.
-- [ ] Capturar as jornadas críticas que serão usadas no aceite visual.
+- [x] Marcar o React como referência congelada na documentação.
+- [x] Criar matriz verificável das 53 funcionalidades React → Flutter.
+- [x] Registrar rota, perfil, maturidade e destino de cada item; campos, validações e dependências permanecem vinculados por ID ao catálogo React congelado até a porta Dart de M1.
+- [x] Registrar as jornadas críticas que serão usadas no aceite visual.
 
 Gate: não existe item do Markdown sem uma linha de rastreabilidade.
 
@@ -270,7 +270,7 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | Etapa | Estado | Commit Flutter | Verificações | Observações |
 |---|---|---|---|---|
 | Memória inicial | Concluída | preencher pelo histórico Git | Arquivo criado; nenhuma implementação iniciada | React permanece oficial por ora |
-| M0 | Pendente | — | — | — |
+| M0 | Concluída | preencher pelo histórico Git | Matriz 53/53; contagem 12/41 conferida | React congelado como referência; nenhuma tela alterada |
 | M1 | Pendente | — | — | — |
 | M2 | Pendente | — | — | — |
 | M3 | Pendente | — | — | — |
