@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
+
+import '../../../design/generated/app_radius.dart';
+import '../../../design/generated/app_spacing.dart';
+import '../../../design/theme/app_theme_extension.dart';
+import '../../../shell/components/sub_page_header.dart';
+import '../../../ui/ui.dart';
+import '../mocks/produtos.dart';
+
+/// Favoritos do Marketplace — lista mockada de produtos marcados como
+/// favoritos. Espelha `MarketplaceFavoritos.tsx`.
+class MarketplaceFavoritosScreen extends StatelessWidget {
+  const MarketplaceFavoritosScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final favoritos = [
+      for (final id in favoritosIds)
+        for (final p in produtos)
+          if (p.id == id) p,
+    ];
+
+    return Column(
+      children: [
+        const SubPageHeader(title: 'Favoritos'),
+        Expanded(
+          child: favoritos.isEmpty
+              ? const AppEmptyState(
+                  icon: LucideIcons.heart,
+                  title: 'Nenhum favorito ainda',
+                  description:
+                      'Toque no coração de um produto para guardá-lo aqui e encontrar mais rápido na próxima vez.',
+                )
+              : ListView.separated(
+                  padding: const EdgeInsets.all(AppSpacing.space4),
+                  itemCount: favoritos.length,
+                  separatorBuilder: (context, _) =>
+                      const SizedBox(height: AppSpacing.space3),
+                  itemBuilder: (context, index) {
+                    final produto = favoritos[index];
+                    Categoria? categoria;
+                    for (final c in categorias) {
+                      if (c.id == produto.categoriaId) {
+                        categoria = c;
+                        break;
+                      }
+                    }
+                    final semantic = Theme.of(
+                      context,
+                    ).extension<AppSemanticColors>()!;
+
+                    return AppCard(
+                      interactive: true,
+                      onTap: () =>
+                          context.go('/marketplace/produto/${produto.id}'),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: AppSpacing.space14,
+                            width: AppSpacing.space14,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: semantic.accentSubtle,
+                              borderRadius: BorderRadius.circular(AppRadius.xl),
+                            ),
+                            child: categoria != null
+                                ? Icon(
+                                    categoria.icon,
+                                    size: 24,
+                                    color: semantic.accentDefault,
+                                  )
+                                : null,
+                          ),
+                          const SizedBox(width: AppSpacing.space3),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  produto.nome,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: semantic.fgDefault,
+                                  ),
+                                ),
+                                Text(
+                                  produto.vendedor,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: semantic.fgMuted,
+                                  ),
+                                ),
+                                Text(
+                                  produto.preco,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: semantic.fgDefault,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Icon(
+                            LucideIcons.heart,
+                            size: 18,
+                            color: semantic.accentDefault,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+}

@@ -1,11 +1,12 @@
 import { useParams, Navigate } from 'react-router-dom'
-import { CloudOff } from 'lucide-react'
+import { ClipboardCheck, CloudOff, ShieldCheck } from 'lucide-react'
 import { getModule } from '@/shell/moduleConfig'
 import { ShellHeader } from '@/shell/components/ShellHeader'
 import { ContextTabs } from '@/shell/components/ContextTabs'
 import { BottomTabBar } from '@/shell/components/BottomTabBar'
 import { RevealMenu } from '@/shell/components/RevealMenu'
 import { Banner } from '@/components/ui/Banner'
+import { Pressable } from '@/components/ui/Pressable'
 import { useShellStore } from '@/shell/state/shellStore'
 import { HubModule } from '@/modules/hub/HubModule'
 import { FazendasModule } from '@/modules/fazendas/FazendasModule'
@@ -14,7 +15,7 @@ import { CreditoModule } from '@/modules/credito/CreditoModule'
 import { MarketplaceModule } from '@/modules/marketplace/MarketplaceModule'
 import { ArmazemModule } from '@/modules/armazem/ArmazemModule'
 import { CreditoPill } from '@/shell/components/CreditoPill'
-import { useFazendasStore } from '@/modules/fazendas/state/fazendasStore'
+import { Chip } from '@/components/ui/Chip'
 import { t } from '@/design/tokens'
 import { cn } from '@/lib/cn'
 
@@ -34,8 +35,7 @@ export function ShellLayout() {
   const isOnline = useShellStore((s) => s.isOnline)
   const menuOpen = useShellStore((s) => s.menuOpen)
   const closeMenu = useShellStore((s) => s.closeMenu)
-  const view = useFazendasStore((s) => s.view)
-  const setView = useFazendasStore((s) => s.setView)
+  const role = useShellStore((s) => s.user.role)
 
   if (!module) return <Navigate to="/inicio" replace />
 
@@ -59,11 +59,17 @@ export function ShellLayout() {
       >
         <div className="shrink-0">
           <ShellHeader
-            onConsultMode={isFazendas ? () => setView('gerencial') : undefined}
-            consultActive={isFazendas && view === 'gerencial'}
           >
             {/* crédito pré-aprovado é contexto global do Shell — visível em todos os módulos */}
             <CreditoPill />
+            {isFazendas && (
+              <Chip
+                tone={role === 'admin' ? 'blue' : 'brand'}
+                icon={role === 'admin' ? <ShieldCheck size={12} /> : <ClipboardCheck size={12} />}
+              >
+                {role === 'admin' ? 'Ambiente Administração' : 'Ambiente Operacional'}
+              </Chip>
+            )}
           </ShellHeader>
           <ContextTabs module={module} />
         </div>
@@ -108,8 +114,7 @@ export function ShellLayout() {
 
         {/* com o menu aberto, tocar no app encolhido fecha o menu */}
         {menuOpen && (
-          <button
-            type="button"
+          <Pressable
             aria-label="Fechar menu"
             onClick={closeMenu}
             className="absolute inset-0 cursor-pointer"

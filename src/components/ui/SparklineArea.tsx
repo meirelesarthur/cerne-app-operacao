@@ -1,4 +1,5 @@
 import { useId } from 'react'
+import { t } from '@/design/tokens'
 
 export interface SparklineAreaProps {
   data: number[]
@@ -13,7 +14,7 @@ export interface SparklineAreaProps {
  * Sparkline SVG própria (tokenizada) — usada nos cards de dashboard.
  * Sem dependência de biblioteca de gráficos.
  */
-export function SparklineArea({ data, color = '#059669', width = 120, height = 36, className }: SparklineAreaProps) {
+export function SparklineArea({ data, color = t.chart.revenue, width = 120, height = 36, className }: SparklineAreaProps) {
   const gradientId = useId()
   if (data.length < 2) return null
 

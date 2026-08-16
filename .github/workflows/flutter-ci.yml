@@ -1,0 +1,49 @@
+name: Flutter CI (apps/mobile)
+
+on:
+  pull_request:
+    paths:
+      - 'apps/mobile/**'
+      - 'tokens/**'
+      - '.github/workflows/flutter-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'apps/mobile/**'
+      - 'tokens/**'
+
+defaults:
+  run:
+    working-directory: apps/mobile
+
+jobs:
+  analyze-test-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          # Versão fixa (não `channel: stable` flutuante) — os golden tests
+          # (F2.6, `test/flutter_test_config.dart`) comparam pixels contra o
+          # motor Skia desta versão exata; um bump silencioso de "stable"
+          # entre execuções do CI voltaria a divergir dos PNGs commitados
+          # sem nenhuma mudança de código. Subir junto com os goldens quando
+          # atualizar de propósito.
+          flutter-version: '3.44.6'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build web (Widgetbook + app compile check)
+        run: flutter build web --release

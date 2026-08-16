@@ -91,7 +91,7 @@ export function DashboardCard({
       <p className="mt-0.5 text-2xl font-bold leading-tight">{value}</p>
       {spark && (
         <div className="mt-2">
-          <SparklineArea data={spark} color={dark ? 'rgba(255,255,255,0.9)' : t.color.brand[600]} width={220} height={34} className="w-full" />
+          <SparklineArea data={spark} color={dark ? t.chart.onDark : t.chart.revenue} width={220} height={34} className="w-full" />
         </div>
       )}
     </button>

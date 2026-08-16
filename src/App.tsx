@@ -6,6 +6,7 @@ import { Login } from './shell/pages/Login'
 import { Onboarding } from './shell/pages/Onboarding'
 import { Notificacoes } from './shell/pages/Notificacoes'
 import { PerfilConfig } from './shell/pages/PerfilConfig'
+import { ProtectedRoute } from './shell/components/ProtectedRoute'
 
 /**
  * Raiz do app. Roteamento em dois níveis (spec §7.3):
@@ -15,14 +16,14 @@ import { PerfilConfig } from './shell/pages/PerfilConfig'
 export function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <PhoneFrame>
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/onboarding" element={<Onboarding />} />
-            <Route path="/notificacoes" element={<Notificacoes />} />
-            <Route path="/perfil" element={<PerfilConfig />} />
-            <Route path="/:moduleId/*" element={<ShellLayout />} />
+            <Route path="/notificacoes" element={<ProtectedRoute><Notificacoes /></ProtectedRoute>} />
+            <Route path="/perfil" element={<ProtectedRoute><PerfilConfig /></ProtectedRoute>} />
+            <Route path="/:moduleId/*" element={<ProtectedRoute><ShellLayout /></ProtectedRoute>} />
             {/* fluxo do protótipo: raiz parte do onboarding → login → superapp */}
             <Route path="/" element={<Navigate to="/onboarding" replace />} />
             <Route path="*" element={<Navigate to="/inicio" replace />} />

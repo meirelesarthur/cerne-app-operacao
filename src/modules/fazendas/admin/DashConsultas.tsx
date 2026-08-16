@@ -4,6 +4,7 @@ import type { LucideIcon } from 'lucide-react'
 import { Chip } from '@/components/ui/Chip'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { SectionTitle } from '@/components/ui/Heading'
+import { Pressable } from '@/components/ui/Pressable'
 import { DashboardScreen } from './DashboardScreen'
 import { LOTES, ESTOQUE, PESAGENS_DIA } from '../mocks/dashboards'
 import { cn } from '@/lib/cn'
@@ -32,7 +33,7 @@ export function DashConsultas() {
 
       <div className="grid grid-cols-4 gap-2">
         {HUB.map((h) => (
-          <button
+          <Pressable
             key={h.id}
             onClick={() => setSection(h.id)}
             className={cn(
@@ -42,7 +43,7 @@ export function DashConsultas() {
           >
             <h.icon size={20} className={section === h.id ? 'text-accent' : 'text-fg-muted'} />
             <span className="text-center text-xs font-medium leading-tight text-fg-muted">{h.label}</span>
-          </button>
+          </Pressable>
         ))}
       </div>
 

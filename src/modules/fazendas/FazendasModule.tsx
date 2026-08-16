@@ -4,22 +4,26 @@ import { SyncBanner } from './components/SyncBanner'
 import { FazendasHome } from './screens/FazendasHome'
 import { AtividadesScreen } from './screens/AtividadesScreen'
 import { FarmListScreen } from './screens/FarmListScreen'
-import { MaisScreen } from './screens/MaisScreen'
 import { SyncQueueScreen } from './screens/SyncQueueScreen'
 import { AdminDashboard } from './admin/AdminDashboard'
 import { DashFinanceiro } from './admin/DashFinanceiro'
 import { CampoFlow } from './operacional/CampoFlow'
+import { ResponsibilityWorkspace } from './screens/ResponsibilityWorkspace'
+import { MappedFeatureScreen } from './screens/MappedFeatureScreen'
+import { useShellStore } from '@/shell/state/shellStore'
 
 /**
  * Módulo Fazendas (ex-"Cerne") — módulo completo do superapp.
  * A troca de fazenda ativa vive na tela dedicada (tab "Fazendas" / FarmListScreen).
- * As telas administrativas (dashboards) e operacionais (campo) chegam nas Fases 3 e 4;
- * por enquanto caem em EmSection.
+ * Administração e Operação têm rotas independentes e bloqueio cruzado por perfil.
  */
 export function FazendasModule() {
+  const role = useShellStore((s) => s.user.role)
+  const isAdmin = role === 'admin'
+
   return (
     <div className="flex h-full flex-col bg-canvas">
-      {/* O switch Gerencial ⇄ Campo vive no menu "Mais" (RevealMenu) — interface limpa */}
+      {/* O contexto offline continua compartilhado; as responsabilidades são separadas por rota. */}
       <SyncBanner />
 
       <div
@@ -30,11 +34,15 @@ export function FazendasModule() {
           <Route index element={<FazendasHome />} />
           <Route path="atividades" element={<AtividadesScreen />} />
           <Route path="fazendas" element={<FarmListScreen />} />
-          <Route path="financeiro" element={<DashFinanceiro />} />
-          <Route path="mais" element={<MaisScreen />} />
-          <Route path="mais/sync" element={<SyncQueueScreen />} />
-          <Route path="dashboards/:dashId" element={<AdminDashboard />} />
-          <Route path="campo/:flowId" element={<CampoFlow />} />
+          <Route path="financeiro" element={isAdmin ? <DashFinanceiro /> : <Navigate to="/fazendas/operacional" replace />} />
+          <Route path="mais" element={<Navigate to={isAdmin ? '/fazendas/administracao' : '/fazendas/operacional'} replace />} />
+          <Route path="mais/sync" element={!isAdmin ? <SyncQueueScreen /> : <Navigate to="/fazendas/administracao" replace />} />
+          <Route path="administracao" element={isAdmin ? <ResponsibilityWorkspace role="administrativo" /> : <Navigate to="/fazendas/operacional" replace />} />
+          <Route path="administracao/:featureId" element={isAdmin ? <MappedFeatureScreen role="administrativo" /> : <Navigate to="/fazendas/operacional" replace />} />
+          <Route path="operacional" element={!isAdmin ? <ResponsibilityWorkspace role="operacional" /> : <Navigate to="/fazendas/administracao" replace />} />
+          <Route path="operacional/:featureId" element={!isAdmin ? <MappedFeatureScreen role="operacional" /> : <Navigate to="/fazendas/administracao" replace />} />
+          <Route path="dashboards/:dashId" element={isAdmin ? <AdminDashboard /> : <Navigate to="/fazendas/operacional" replace />} />
+          <Route path="campo/:flowId" element={!isAdmin ? <CampoFlow /> : <Navigate to="/fazendas/administracao" replace />} />
           <Route path="*" element={<Navigate to="/fazendas" replace />} />
         </Routes>
       </div>

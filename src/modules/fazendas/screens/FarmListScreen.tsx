@@ -1,6 +1,7 @@
 import { Leaf, Check } from 'lucide-react'
 import { Heading } from '@/components/ui/Heading'
 import { Chip } from '@/components/ui/Chip'
+import { Pressable } from '@/components/ui/Pressable'
 import { useFazendasStore } from '../state/fazendasStore'
 import { cn } from '@/lib/cn'
 
@@ -18,7 +19,7 @@ export function FarmListScreen() {
           const active = f.id === activeFarmId
           return (
             <li key={f.id}>
-              <button
+              <Pressable
                 onClick={() => setActiveFarm(f.id)}
                 className={cn(
                   'flex w-full items-center gap-3 rounded-2xl border p-3 text-left',
@@ -35,7 +36,7 @@ export function FarmListScreen() {
                   </p>
                 </div>
                 {active ? <Chip tone="brand" icon={<Check size={12} />}>Ativa</Chip> : null}
-              </button>
+              </Pressable>
             </li>
           )
         })}

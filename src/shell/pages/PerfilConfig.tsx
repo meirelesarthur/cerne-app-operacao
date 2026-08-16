@@ -15,6 +15,7 @@ import { useTheme } from '@/context/ThemeContext'
 export function PerfilConfig() {
   const navigate = useNavigate()
   const user = useShellStore((s) => s.user)
+  const logout = useShellStore((s) => s.logout)
   const { isGbMode, toggle } = useTheme()
   const roleLabel = user.role === 'operador' ? 'Operador' : 'Administrador'
 
@@ -53,7 +54,15 @@ export function PerfilConfig() {
         />
 
         <div className="mt-4">
-          <MenuItem icon={LogOut} tone="danger" label="Sair" onClick={() => navigate('/login')} />
+          <MenuItem
+            icon={LogOut}
+            tone="danger"
+            label="Sair"
+            onClick={() => {
+              logout()
+              navigate('/login', { replace: true })
+            }}
+          />
         </div>
       </div>
     </div>

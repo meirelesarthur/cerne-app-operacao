@@ -95,3 +95,75 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
   console limpo; `tsc -b --noEmit` sem erros
 - ↪ Placeholders honestos remanescentes (rotulados, por decisão): `/bank/ajuda`,
   `/marketplace/ajuda`, mapa de localização em Consultas, segunda via/ajustar limite em Cartões
+
+## Fase 9 — Perfis e cobertura AGRO365  ✅
+- [x] Login demonstrativo separado: Administração e Operacional
+- [x] Rotas, navegação e identidade do ambiente protegidas por perfil
+- [x] Catálogo funcional normalizado a partir de `mapeamento_funcional_agro365_v2.md`
+- [x] Central administrativa com dashboards, consultas e auditoria
+- [x] Central operacional com todas as entradas do sitemap mapeado
+- [x] Estados `Pronto`, `Mapeado` e `Hardware` para comunicar maturidade sem inventar requisitos
+- [x] Dashboards financeiro/operacional e pecuário aperfeiçoados com os indicadores observados
+- [x] Esteira de evolução e definição de pronto em `docs/ESTEIRA-PERFIS-AGRO365.md`
+
+## Fase 10 — Onda A da esteira funcional  ✅
+- [x] Motor frontend reutilizável de lista, formulário, validação, sucesso e detalhe
+- [x] Estado em memória compartilhado entre entrada operacional e consulta administrativa
+- [x] Áreas: cadastro operacional e consulta administrativa conectados
+- [x] Formulações, Batidas e Apontamento agrícola com listas e lançamentos funcionais
+- [x] Abastecimentos e Manutenção de frota com listas e lançamentos funcionais
+- [x] Validação mobile dos fluxos, proteção de perfil e roteamento administrativo
+
+## Fase 11 — Onda B da esteira funcional  ✅
+- [x] Rebanho Inicial, Lotes e Animais com histórico e criação frontend
+- [x] Transferência Lote/Área, Sanitário, Desmama e Pastagens com jornadas completas
+- [x] Seis rotinas de Reprodução transformadas de acesso mapeado em protótipos funcionais
+- [x] Premissas de campos não observados sinalizadas para validação posterior de domínio
+- [x] Validação explícita de obrigatoriedade, números positivos e período da estação de monta
+- [x] Verificação mobile de erro, criação, confirmação e atualização de lista
+
+## Fase 12 — Onda C · Simulações de hardware  ✅
+- [x] Componente reutilizável para descoberta Bluetooth, balança, RFID e scanner
+- [x] Conexão simulada em duas etapas com dispositivos encontrados e estado conectado
+- [x] Leitura RFID integrada aos campos de identificação e alternativa manual preservada
+- [x] Scanner SISBOV com enquadramento, captura, reinício e confirmação
+- [x] Transferência de animal e Perdas com listas, formulários e histórico frontend
+- [x] Localização de animal e leitura de balança demonstráveis sem hardware real
+- [x] Selo `Hardware` mantido para não confundir simulação com integração nativa
+
+## Fase 13 — Onda D · Cobertura funcional total  ✅
+- [x] Saldo de Estoque e Processamentos Pecuários com consultas e detalhes
+- [x] Exportação local dos logs de Estoque e Pecuária em CSV e JSON
+- [x] Carga, Descarga, Nota de Cocho e Configurações do Misturador funcionais
+- [x] Marcação agrícola com lista, cadastro e referência de localização
+- [x] Compra de Animais e Apartação com jornadas completas
+- [x] Minhas OS com consulta por funcionário e fazenda
+- [x] Catálogo com 46 itens `Pronto`, 7 `Hardware` simulados e nenhum `Mapeado`
+
+## Fase 14 — Onda E · Endurecimento frontend  ✅
+- [x] Sessão demonstrativa obrigatória antes do acesso às rotas internas
+- [x] Logout encerra a sessão em memória e redireciona para a escolha de perfil
+- [x] Proteção de rota no Shell combinada aos desvios Admin/Operacional do módulo Fazendas
+- [x] Gate `quality:functional` valida 12 funções administrativas e 41 operacionais
+- [x] Gate rejeita IDs duplicados, itens `Mapeado`, jornadas sem mecanismo demonstrável e hardware sem simulação
+- [x] Fronteiras de produção documentadas sem apresentar RBAC, telemetria ou integração nativa como prontas
+
+## Fase 15 — Onda F · Prontidão para apresentação  ✅
+- [x] Alvos de toque mínimos de 44 px nos controles reutilizáveis e na navegação contextual
+- [x] Foco global preservado em Button e IconButton
+- [x] Checkbox de conferência XML com nome acessível contextual
+- [x] Login, ambientes Administração/Operacional, formulário e onboarding verificados em 390 × 844 px
+- [x] Zero overflow horizontal e zero alvos abaixo de 44 px nas telas auditadas
+
+## Fase 16 — Onda G · Conformidade Component-First  ✅
+- [x] Primitivo `Pressable` criado e exportado pelo catálogo UI
+- [x] Navegação, atalhos, filtros, cards e seletores migrados para o primitivo
+- [x] Zero `<button>` direto fora de `src/components/ui/`
+- [x] Gate funcional ampliado para bloquear elementos HTML proibidos fora do catálogo
+
+## Fase 17 — Onda H · Integridade de tokens  ✅
+- [x] Cores residuais dos sparklines movidas para `t.chart`
+- [x] Token `chart.onDark` mapeado como `color` no exportador W3C DTCG
+- [x] `tokens/tokens.json` regenerado junto com a fonte TypeScript
+- [x] Gate ampliado para rejeitar cores literais e fontes não autorizadas em TSX
+- [x] Outfit verificada como família tipográfica global obrigatória

@@ -4,8 +4,8 @@ import { Bell, Settings, Moon, LogOut, ChevronRight, Wifi, WifiOff } from 'lucid
 import { Avatar } from '@/components/ui/Avatar'
 import { MenuItem } from '@/components/ui/MenuItem'
 import { Badge } from '@/components/ui/Badge'
+import { Pressable } from '@/components/ui/Pressable'
 import { getMenuSections, type ModuleDef } from '@/shell/moduleConfig'
-import { ViewSwitch } from '@/modules/fazendas/components/ViewSwitch'
 import { useShellStore } from '@/shell/state/shellStore'
 import { useTheme } from '@/context/ThemeContext'
 import { t } from '@/design/tokens'
@@ -32,6 +32,7 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
   const unread = useShellStore((s) => s.notifications.filter((n) => !n.read).length)
   const isOnline = useShellStore((s) => s.isOnline)
   const toggleOnline = useShellStore((s) => s.toggleOnline)
+  const logout = useShellStore((s) => s.logout)
   const { isGbMode, toggle } = useTheme()
 
   // Esc fecha o menu enquanto aberto
@@ -55,7 +56,7 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
   }
 
   const roleLabel = user.role === 'operador' ? 'Operador' : 'Administrador'
-  const sections = getMenuSections(module)
+  const sections = getMenuSections(module, user.role)
   const ModuleIcon = module.icon
 
   // índice corrido para o stagger atravessar seções de tamanhos variados
@@ -78,8 +79,7 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
       {menuOpen && (
         <>
           {/* identidade do usuário */}
-          <button
-            type="button"
+          <Pressable
             onClick={() => go('/perfil')}
             className="animate-rise mb-3 flex w-full items-center gap-3 rounded-2xl p-2 text-left transition-colors hover:bg-white/10"
             style={next()}
@@ -90,7 +90,7 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
               <span className="block text-xs text-white/55">{roleLabel} · GB CERNE</span>
             </span>
             <ChevronRight size={18} className="shrink-0 text-white/40" aria-hidden="true" />
-          </button>
+          </Pressable>
 
           {/* contexto do módulo ativo */}
           <div className="animate-rise mb-2 flex items-center gap-2 px-3" style={next()}>
@@ -99,14 +99,6 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
             </span>
             <span className="text-sm font-semibold text-white/80">{module.label}</span>
           </div>
-
-          {/* switch de visão do Fazendas (Gerencial ⇄ Campo) — saiu da tela para o menu */}
-          {module.id === 'fazendas' && (
-            <div className="animate-rise mb-2 px-3" style={next()}>
-              <p className="pb-1.5 text-xs font-semibold uppercase tracking-wide text-white/40">Visão</p>
-              <ViewSwitch onChange={closeMenu} />
-            </div>
-          )}
 
           {/* funcionalidades do módulo atual */}
           {sections.map((section) => (
@@ -169,7 +161,16 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
 
           <div className="mt-auto pt-4">
             <div className="animate-rise" style={next()}>
-              <MenuItem variant="onDark" tone="danger" icon={LogOut} label="Sair" onClick={() => go('/login')} />
+              <MenuItem
+                variant="onDark"
+                tone="danger"
+                icon={LogOut}
+                label="Sair"
+                onClick={() => {
+                  logout()
+                  go('/login')
+                }}
+              />
             </div>
           </div>
         </>

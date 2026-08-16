@@ -23,7 +23,7 @@ export function SyncBanner() {
       icon={isOnline ? <RefreshCw size={14} /> : <CloudOff size={14} />}
       action={
         isOnline ? (
-          <Button size="sm" variant="ghost" className="h-7 px-2 text-amber-800" onClick={clearSync}>
+          <Button size="sm" variant="ghost" className="px-2 text-amber-800" onClick={clearSync}>
             Sincronizar
           </Button>
         ) : undefined

@@ -5,17 +5,19 @@ export interface CheckboxProps {
   checked: boolean
   onChange: (checked: boolean) => void
   label?: string
+  ariaLabel?: string
   className?: string
 }
 
-export function Checkbox({ checked, onChange, label, className }: CheckboxProps) {
+export function Checkbox({ checked, onChange, label, ariaLabel, className }: CheckboxProps) {
   return (
     <button
       type="button"
       role="checkbox"
       aria-checked={checked}
+      aria-label={ariaLabel ?? label}
       onClick={() => onChange(!checked)}
-      className={cn('inline-flex items-center gap-2', className)}
+      className={cn('inline-flex min-h-11 min-w-11 items-center justify-center gap-2', className)}
     >
       <span
         className={cn(

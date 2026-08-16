@@ -29,11 +29,23 @@ DevToolbar              botão flutuante dev: alterna offline e tema
 
 Gestão agro multi-tenant com **duas visões**: Gerencial (leitura) e Campo (lançamentos).
 
+### Acesso por responsabilidade
+```
+/login                         [rota]  Login Administração → /fazendas/administracao
+                                      Login Operacional → /fazendas/operacional
+/fazendas/administracao       [rota]  12 funções de gestão, consulta e auditoria
+/fazendas/administracao/:id   [rota]  detalhe mapeado administrativo
+/fazendas/operacional         [rota]  41 funções de entrada e campo
+/fazendas/operacional/:id     [rota]  formulário/estado mapeado operacional
+⚖ rotas dashboards            somente Administração
+⚖ rotas campo/sync            somente Operacional
+```
+
 ### Contexto do módulo (header)
 ```
 Farm Switcher                [sheet]  troca a fazenda ativa (tenant)
 "Lançando em: {fazenda}"     ⚖        badge fixo em toda tela operacional (mitigação IDOR)
-Visão Gerencial ⇄ Campo      [menu]   switch no RevealMenu + ícone olho (modo consulta)
+Perfil Administração/Operação [shell] definido no login e protegido nas rotas do módulo
 Banner crédito pré-aprovado           deep-link → /credito
 ```
 

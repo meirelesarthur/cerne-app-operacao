@@ -7,8 +7,6 @@ export interface Farm {
   uf: string
 }
 
-export type FarmView = 'gerencial' | 'campo'
-
 export type ActivityStatus = 'andamento' | 'concluida' | 'autorizada' | 'atrasada'
 
 export interface Activity {

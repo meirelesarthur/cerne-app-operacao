@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { Bell, Eye, Menu } from 'lucide-react'
 import { Avatar } from '@/components/ui/Avatar'
 import { IconButton } from '@/components/ui/IconButton'
+import { Pressable } from '@/components/ui/Pressable'
 import { useShellStore } from '@/shell/state/shellStore'
 import { cn } from '@/lib/cn'
 
@@ -32,7 +33,7 @@ export function ShellHeader({ onConsultMode, consultActive, children }: ShellHea
   return (
     <header className="bg-canvas px-4 pb-1 pt-4">
       <div className="flex items-center gap-3">
-        <button
+        <Pressable
           className="flex min-w-0 flex-1 items-center gap-3 text-left"
           onClick={() => navigate('/perfil')}
           aria-label="Abrir perfil"
@@ -42,7 +43,7 @@ export function ShellHeader({ onConsultMode, consultActive, children }: ShellHea
             <p className="text-sm font-medium leading-tight text-fg-muted">{greeting},</p>
             <p className="truncate text-xl font-bold leading-tight tracking-tight text-fg">{user.name}</p>
           </div>
-        </button>
+        </Pressable>
 
         <div className="flex shrink-0 gap-2">
           {onConsultMode && (

@@ -17,6 +17,7 @@ fluxo e servir de handoff ao time mobile. Baseado em `spec-cerne-app.md`.
 npm install
 npm run dev            # http://localhost:5173
 npm run build          # typecheck (tsc -b) + build de produção
+npm run quality:functional # valida as 53 funções e bloqueia regressões do catálogo
 npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de src/design/tokens.ts
 ```
 
@@ -51,9 +52,10 @@ src/
 
 ## Módulo Fazendas
 
-- **Duas visões** (switch Gerencial ⇄ Campo): Gerencial (leitura) e Campo (escrita).
+- **Dois ambientes protegidos por perfil**: Administração (leitura/decisão) e Operacional (entrada/campo).
 - **Farm switcher** (multi-tenant) no header do módulo; badge "Lançando em: {fazenda}" nos formulários.
-- **7 dashboards** administrativos e **6 fluxos** operacionais (§4/§5), com estados de loading/vazio/erro/offline.
+- **12 funções administrativas** e **41 operacionais** cobertas pelo catálogo normalizado, com
+  46 jornadas frontend prontas e 7 integrações de hardware funcionalmente simuladas.
 
 ### Regras de negócio refletidas na UI (§7.2)
 
@@ -76,6 +78,15 @@ src/
 - [x] Tema light 100% funcional; GB Mode com cores base aplicadas.
 - [x] Nenhum uso de localStorage/sessionStorage (estado em memória).
 - [x] Estrutura `shell/` + `modules/<nome>/`, pronta para mapeamento 1:1 no mobile.
+- [x] Sessão demonstrativa obrigatória, logout efetivo e redirecionamento de rotas internas para o login.
+- [x] Gate automatizado garantindo 12 funções administrativas, 41 operacionais, IDs únicos,
+  zero itens apenas `Mapeado` e simulação presente em toda dependência de hardware.
+- [x] Controles primários e secundários do design system com alvo mínimo de toque de 44 px,
+  foco visível, rótulos acessíveis e ausência de rolagem horizontal em 390 px.
+- [x] Nenhuma tela ou componente de módulo usa elementos interativos proibidos diretamente;
+  superfícies customizadas passam pelo primitivo `Pressable` do catálogo UI.
+- [x] Cores dos componentes TSX vêm dos tokens, Outfit permanece como fonte única e o gate
+  rejeita novas cores literais ou famílias tipográficas não autorizadas.
 
 ## Notas de handoff (mobile)
 
