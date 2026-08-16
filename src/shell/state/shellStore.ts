@@ -8,8 +8,10 @@ import { create } from 'zustand'
 export interface UserProfile {
   name: string
   initials: string
-  role: 'operador' | 'admin' | 'ambos'
+  role: AccessRole
 }
+
+export type AccessRole = 'operador' | 'admin'
 
 export interface AppNotification {
   id: string
@@ -29,6 +31,7 @@ interface ShellState {
   balanceHidden: boolean
   /** menu "reveal" global (aba Mais/Menu) — spec do superapp. */
   menuOpen: boolean
+  setAccessRole: (role: AccessRole) => void
   setOnline: (v: boolean) => void
   toggleOnline: () => void
   toggleBalanceHidden: () => void
@@ -47,11 +50,19 @@ const MOCK_NOTIFICATIONS: AppNotification[] = [
 ]
 
 export const useShellStore = create<ShellState>((set, get) => ({
-  user: { name: 'Silvio Ventura', initials: 'SV', role: 'ambos' },
+  user: { name: 'Silvio Ventura', initials: 'SV', role: 'admin' },
   notifications: MOCK_NOTIFICATIONS,
   isOnline: true,
   balanceHidden: false,
   menuOpen: false,
+  setAccessRole: (role) =>
+    set({
+      user:
+        role === 'admin'
+          ? { name: 'Silvio Ventura', initials: 'SV', role }
+          : { name: 'João Oliveira', initials: 'JO', role },
+      menuOpen: false,
+    }),
   setOnline: (v) => set({ isOnline: v }),
   toggleOnline: () => set((s) => ({ isOnline: !s.isOnline })),
   toggleBalanceHidden: () => set((s) => ({ balanceHidden: !s.balanceHidden })),

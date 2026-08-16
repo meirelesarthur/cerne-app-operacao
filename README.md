@@ -51,7 +51,7 @@ src/
 
 ## Módulo Fazendas
 
-- **Duas visões** (switch Gerencial ⇄ Campo): Gerencial (leitura) e Campo (escrita).
+- **Dois ambientes protegidos por perfil**: Administração (leitura/decisão) e Operacional (entrada/campo).
 - **Farm switcher** (multi-tenant) no header do módulo; badge "Lançando em: {fazenda}" nos formulários.
 - **7 dashboards** administrativos e **6 fluxos** operacionais (§4/§5), com estados de loading/vazio/erro/offline.
 

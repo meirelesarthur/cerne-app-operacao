@@ -1,26 +1,26 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { ClipboardCheck, LayoutDashboard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Heading } from '@/components/ui/Heading'
-import { FormField } from '@/components/ui/FormField'
-import { TextInput } from '@/components/ui/TextInput'
-import { Checkbox } from '@/components/ui/Checkbox'
 import { t } from '@/design/tokens'
 import loginBg from '@/images/login_bg.png'
 import logoMinWhite from '@/images/logo-min-white.svg'
+import { useShellStore, type AccessRole } from '@/shell/state/shellStore'
 
 /**
  * Login do Shell (mock, sem autenticação real): arte de campo em tela cheia
  * como fundo fixo (não rola), véu verde só no topo para a marca branca, e
- * cartão de boas-vindas com o formulário flutuando sobre a arte.
- * Qualquer entrada leva ao superapp.
+ * cartão de boas-vindas com a escolha explícita do ambiente. O protótipo não
+ * autentica credenciais: cada CTA define o perfil e abre somente suas rotas.
  */
 export function Login() {
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [senha, setSenha] = useState('')
-  const [manterConectado, setManterConectado] = useState(true)
+  const setAccessRole = useShellStore((s) => s.setAccessRole)
+  const enterAs = (role: AccessRole) => {
+    setAccessRole(role)
+    navigate(role === 'admin' ? '/fazendas/administracao' : '/fazendas/operacional')
+  }
 
   return (
     <div className="relative h-full bg-canvas">
@@ -51,53 +51,45 @@ export function Login() {
           </p>
         </div>
 
-        {/* cartão do formulário flutuando sobre a arte */}
+        {/* cartão de escolha de responsabilidade flutuando sobre a arte */}
         <div className="flex flex-1 flex-col px-5 pb-8">
-        <Card className="rounded-3xl p-6 shadow-modal">
-          <div className="flex flex-col items-center gap-1 text-center">
-            <Heading level={2}>Bem-vindo!</Heading>
-            <p className="flex items-center gap-1 text-sm text-fg-muted">
-              Primeira vez por aqui?
-              <Button variant="link" onClick={() => navigate('/onboarding')}>
-                Conhecer o app
-              </Button>
-            </p>
-          </div>
-
-          <div className="mt-6 flex flex-col gap-4">
-            <FormField label="E-mail" htmlFor="login-email">
-              <TextInput
-                id="login-email"
-                type="email"
-                autoComplete="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </FormField>
-
-            <FormField label="Senha" htmlFor="login-senha">
-              <TextInput
-                id="login-senha"
-                type="password"
-                autoComplete="current-password"
-                placeholder="Digite sua senha"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-              />
-            </FormField>
-
-            <div className="flex items-center justify-between">
-              <Checkbox checked={manterConectado} onChange={setManterConectado} label="Manter conectado" />
-              {/* mock — recuperação de senha fora do escopo do protótipo */}
-              <Button variant="link">Esqueceu a senha?</Button>
+          <Card className="rounded-3xl p-6 shadow-modal">
+            <div className="flex flex-col items-center gap-1 text-center">
+              <Heading level={2}>Bem-vindo!</Heading>
+              <p className="flex items-center gap-1 text-sm text-fg-muted">
+                Primeira vez por aqui?
+                <Button variant="link" onClick={() => navigate('/onboarding')}>
+                  Conhecer o app
+                </Button>
+              </p>
             </div>
 
-            <Button fullWidth size="lg" className="mt-1 rounded-full" onClick={() => navigate('/inicio')}>
-              Entrar
-            </Button>
-          </div>
-        </Card>
+            <div className="mt-6 flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <p className="text-center text-sm font-semibold text-fg">Escolha o ambiente de acesso</p>
+                <Button
+                  fullWidth
+                  size="lg"
+                  leftIcon={<LayoutDashboard size={19} />}
+                  onClick={() => enterAs('admin')}
+                >
+                  Login Administração
+                </Button>
+                <Button
+                  fullWidth
+                  size="lg"
+                  variant="secondary"
+                  leftIcon={<ClipboardCheck size={19} />}
+                  onClick={() => enterAs('operador')}
+                >
+                  Login Operacional
+                </Button>
+                <p className="mt-1 text-center text-xs text-fg-muted">
+                  Acesso demonstrativo sem autenticação real. Cada perfil abre apenas as responsabilidades correspondentes.
+                </p>
+              </div>
+            </div>
+          </Card>
 
           <p className="mt-auto pt-6 text-center text-xs text-white/70">
             GB CERNE · Superapp corporativo do agronegócio

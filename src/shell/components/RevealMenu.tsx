@@ -5,7 +5,6 @@ import { Avatar } from '@/components/ui/Avatar'
 import { MenuItem } from '@/components/ui/MenuItem'
 import { Badge } from '@/components/ui/Badge'
 import { getMenuSections, type ModuleDef } from '@/shell/moduleConfig'
-import { ViewSwitch } from '@/modules/fazendas/components/ViewSwitch'
 import { useShellStore } from '@/shell/state/shellStore'
 import { useTheme } from '@/context/ThemeContext'
 import { t } from '@/design/tokens'
@@ -55,7 +54,7 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
   }
 
   const roleLabel = user.role === 'operador' ? 'Operador' : 'Administrador'
-  const sections = getMenuSections(module)
+  const sections = getMenuSections(module, user.role)
   const ModuleIcon = module.icon
 
   // índice corrido para o stagger atravessar seções de tamanhos variados
@@ -99,14 +98,6 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
             </span>
             <span className="text-sm font-semibold text-white/80">{module.label}</span>
           </div>
-
-          {/* switch de visão do Fazendas (Gerencial ⇄ Campo) — saiu da tela para o menu */}
-          {module.id === 'fazendas' && (
-            <div className="animate-rise mb-2 px-3" style={next()}>
-              <p className="pb-1.5 text-xs font-semibold uppercase tracking-wide text-white/40">Visão</p>
-              <ViewSwitch onChange={closeMenu} />
-            </div>
-          )}
 
           {/* funcionalidades do módulo atual */}
           {sections.map((section) => (

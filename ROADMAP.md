@@ -95,3 +95,13 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
   console limpo; `tsc -b --noEmit` sem erros
 - ↪ Placeholders honestos remanescentes (rotulados, por decisão): `/bank/ajuda`,
   `/marketplace/ajuda`, mapa de localização em Consultas, segunda via/ajustar limite em Cartões
+
+## Fase 9 — Perfis e cobertura AGRO365  ✅
+- [x] Login demonstrativo separado: Administração e Operacional
+- [x] Rotas, navegação e identidade do ambiente protegidas por perfil
+- [x] Catálogo funcional normalizado a partir de `mapeamento_funcional_agro365_v2.md`
+- [x] Central administrativa com dashboards, consultas e auditoria
+- [x] Central operacional com todas as entradas do sitemap mapeado
+- [x] Estados `Pronto`, `Mapeado` e `Hardware` para comunicar maturidade sem inventar requisitos
+- [x] Dashboards financeiro/operacional e pecuário aperfeiçoados com os indicadores observados
+- [x] Esteira de evolução e definição de pronto em `docs/ESTEIRA-PERFIS-AGRO365.md`

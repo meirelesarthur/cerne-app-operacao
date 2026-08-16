@@ -29,19 +29,20 @@ import { useFazendasStore } from '../state/fazendasStore'
 import { ATIVIDADES } from '../mocks/atividades'
 import type { Activity } from '../types'
 import { t } from '@/design/tokens'
+import { useShellStore } from '@/shell/state/shellStore'
 
 /** delay escalonado de entrada por tile (motion tokenizado, ver Lei 3) */
 const stagger = (i: number) => ({ animationDelay: `calc(${i} * ${t.animation.stagger})` })
 
 /**
  * Home do módulo Fazendas (aba Dashboard), reproduzindo o padrão do print.
- * Alterna conteúdo entre a visão Gerencial (leitura) e Campo (escrita) via fazendasStore.
+ * O conteúdo é definido pelo perfil de acesso, sem alternância local entre responsabilidades.
  */
 export function FazendasHome() {
   const navigate = useNavigate()
-  const view = useFazendasStore((s) => s.view)
+  const role = useShellStore((s) => s.user.role)
 
-  return view === 'gerencial' ? <HomeGerencial navigate={navigate} /> : <HomeCampo navigate={navigate} />
+  return role === 'admin' ? <HomeGerencial navigate={navigate} /> : <HomeCampo navigate={navigate} />
 }
 
 function HomeGerencial({ navigate }: { navigate: ReturnType<typeof useNavigate> }) {

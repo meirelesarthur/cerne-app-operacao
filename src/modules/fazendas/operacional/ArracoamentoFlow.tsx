@@ -5,6 +5,8 @@ import { FormField } from '@/components/ui/FormField'
 import { FormSelect } from '@/components/ui/FormSelect'
 import { SearchSelect } from '@/components/ui/SearchSelect'
 import { Stepper } from '@/components/ui/Stepper'
+import { TextInput } from '@/components/ui/TextInput'
+import { Textarea } from '@/components/ui/Textarea'
 import { useShellStore } from '@/shell/state/shellStore'
 import { useFazendasStore } from '../state/fazendasStore'
 import { LOTES_OPCOES, DIETAS, DEPOSITOS } from '../mocks/operacional'
@@ -21,9 +23,13 @@ export function ArracoamentoFlow() {
   const [dieta, setDieta] = useState('')
   const [qtd, setQtd] = useState(500)
   const [deposito, setDeposito] = useState('')
+  const [area, setArea] = useState('')
+  const [modulo, setModulo] = useState('')
+  const [cocho, setCocho] = useState('')
+  const [observacao, setObservacao] = useState('')
   const [done, setDone] = useState<null | { queued: boolean }>(null)
 
-  const valid = lote && dieta && deposito && qtd > 0
+  const valid = lote && dieta && deposito && area && modulo && cocho && qtd > 0
 
   const confirmar = () => {
     const queued = !isOnline
@@ -49,6 +55,26 @@ export function ArracoamentoFlow() {
         </FormField>
         <FormField label="Depósito de origem" required>
           <FormSelect options={DEPOSITOS} value={deposito} onChange={(e) => setDeposito(e.target.value)} placeholder="Selecione o depósito" />
+        </FormField>
+        <FormField label="Área" required>
+          <FormSelect
+            options={[
+              { value: 'pasto-norte', label: 'Pasto Norte' },
+              { value: 'confinamento', label: 'Confinamento' },
+            ]}
+            value={area}
+            onChange={(e) => setArea(e.target.value)}
+            placeholder="Selecione a área"
+          />
+        </FormField>
+        <FormField label="Módulo" required>
+          <TextInput value={modulo} onChange={(e) => setModulo(e.target.value)} placeholder="Informe o módulo" />
+        </FormField>
+        <FormField label="Cocho" required>
+          <TextInput value={cocho} onChange={(e) => setCocho(e.target.value)} placeholder="Informe o cocho" />
+        </FormField>
+        <FormField label="Observação">
+          <Textarea value={observacao} onChange={(e) => setObservacao(e.target.value)} placeholder="Informações adicionais" />
         </FormField>
       </div>
     </FlowShell>

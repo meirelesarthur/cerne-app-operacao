@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from 'react-router-dom'
 import type { ModuleDef } from '@/shell/moduleConfig'
 import { cn } from '@/lib/cn'
+import { useShellStore } from '@/shell/state/shellStore'
 
 /**
  * Abas de contexto do módulo ativo (Nova UI): chips-pílula roláveis no topo —
@@ -11,12 +12,13 @@ import { cn } from '@/lib/cn'
 export function ContextTabs({ module }: { module: ModuleDef }) {
   const navigate = useNavigate()
   const location = useLocation()
+  const role = useShellStore((s) => s.user.role)
 
   // sub-path atual dentro do módulo (ex.: /fazendas/atividades → "atividades")
   const rest = location.pathname.replace(new RegExp(`^/${module.id}/?`), '')
   const activePath = rest.split('/')[0] ?? ''
 
-  const tabs = module.bottomTabs.filter((tab) => !tab.action)
+  const tabs = module.bottomTabs.filter((tab) => !tab.action && (!tab.audience || tab.audience.includes(role)))
 
   return (
     <nav

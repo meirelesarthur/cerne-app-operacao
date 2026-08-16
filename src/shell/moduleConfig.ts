@@ -33,6 +33,7 @@ import {
   Heart,
   BarChart3,
 } from 'lucide-react'
+import type { AccessRole } from '@/shell/state/shellStore'
 
 /**
  * Registro central de módulos do superapp (spec §3.4/§7.3).
@@ -51,6 +52,8 @@ export interface BottomTab {
   elevated?: boolean
   /** ação especial em vez de navegação (ex.: 'menu' abre o RevealMenu global) */
   action?: 'menu'
+  /** perfis que podem ver esta navegação; ausente = todos. */
+  audience?: AccessRole[]
 }
 
 export interface ModuleMenuItem {
@@ -64,6 +67,8 @@ export interface ModuleMenuItem {
 export interface ModuleMenuSection {
   title: string
   items: ModuleMenuItem[]
+  /** perfis que podem ver esta seção; ausente = todos. */
+  audience?: AccessRole[]
 }
 
 export interface ModuleDef {
@@ -81,13 +86,15 @@ export interface ModuleDef {
 }
 
 /** Fallback do RevealMenu: seção única derivada das abas navegáveis do módulo. */
-export function getMenuSections(module: ModuleDef): ModuleMenuSection[] {
-  if (module.menuSections) return module.menuSections
+export function getMenuSections(module: ModuleDef, role?: AccessRole): ModuleMenuSection[] {
+  if (module.menuSections) {
+    return module.menuSections.filter((section) => !section.audience || (role ? section.audience.includes(role) : true))
+  }
   return [
     {
       title: 'Funcionalidades',
       items: module.bottomTabs
-        .filter((tab) => tab.path !== '' && !tab.action)
+        .filter((tab) => tab.path !== '' && !tab.action && (!tab.audience || (role ? tab.audience.includes(role) : true)))
         .map((tab) => ({ id: tab.id, label: tab.label, icon: tab.icon, route: `/${module.id}/${tab.path}` })),
     },
   ]
@@ -113,15 +120,24 @@ export const MODULES: ModuleDef[] = [
     icon: Sprout,
     homeRoute: '/fazendas',
     bottomTabs: [
-      { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, path: '' },
+      { id: 'dashboard', label: 'Resumo', icon: LayoutDashboard, path: '' },
+      { id: 'administracao', label: 'Gestão', icon: BarChart3, path: 'administracao', audience: ['admin'] },
+      { id: 'operacional', label: 'Rotinas', icon: ClipboardList, path: 'operacional', audience: ['operador'] },
       { id: 'fazendas', label: 'Fazendas', icon: Sprout, path: 'fazendas' },
       { id: 'atividades', label: 'Atividades', icon: Activity, path: 'atividades' },
-      { id: 'financeiro', label: 'Financeiro', icon: Wallet, path: 'financeiro' },
       { id: 'mais', label: 'Mais', icon: MoreHorizontal, path: 'mais', action: 'menu' },
     ],
     menuSections: [
       {
+        title: 'Administração',
+        audience: ['admin'],
+        items: [
+          { id: 'central-admin', label: 'Central de gestão', icon: BarChart3, route: '/fazendas/administracao' },
+        ],
+      },
+      {
         title: 'Dashboards gerenciais',
+        audience: ['admin'],
         items: [
           { id: 'financeiro', label: 'Financeiro', icon: Wallet, route: '/fazendas/dashboards/financeiro' },
           { id: 'pecuaria', label: 'Pecuária de Corte', icon: Beef, route: '/fazendas/dashboards/pecuaria' },
@@ -134,7 +150,9 @@ export const MODULES: ModuleDef[] = [
       },
       {
         title: 'Operacional',
+        audience: ['operador'],
         items: [
+          { id: 'central-operacional', label: 'Todas as rotinas', icon: ClipboardList, route: '/fazendas/operacional' },
           { id: 'sync', label: 'Fila de sincronização', icon: RefreshCw, route: '/fazendas/mais/sync' },
           { id: 'atividades', label: 'Todas as atividades', icon: Activity, route: '/fazendas/atividades' },
         ],

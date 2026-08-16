@@ -15,7 +15,7 @@ import { PerfilConfig } from './shell/pages/PerfilConfig'
 export function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
+      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <PhoneFrame>
           <Routes>
             <Route path="/login" element={<Login />} />

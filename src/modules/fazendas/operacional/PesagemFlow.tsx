@@ -19,11 +19,14 @@ export function PesagemFlow() {
   const registrarPesagemDoDia = useFazendasStore((s) => s.registrarPesagemDoDia)
 
   const [lote, setLote] = useState('')
+  const [responsavel, setResponsavel] = useState('')
+  const [especie, setEspecie] = useState('')
+  const [categoria, setCategoria] = useState('')
   const [peso, setPeso] = useState('')
   const [deposito, setDeposito] = useState('')
   const [done, setDone] = useState<null | { queued: boolean }>(null)
 
-  const valid = lote && Number(peso) > 0 && deposito
+  const valid = responsavel && especie && categoria && lote && Number(peso) > 0 && deposito
 
   const confirmar = () => {
     registrarPesagemDoDia()
@@ -48,6 +51,41 @@ export function PesagemFlow() {
   return (
     <FlowShell title="Pesagem" primaryLabel="Registrar pesagem" onPrimary={confirmar} primaryDisabled={!valid}>
       <div className="flex flex-col gap-5">
+        <FormField label="Responsável" required>
+          <FormSelect
+            options={[
+              { value: 'joao', label: 'João Oliveira' },
+              { value: 'maria', label: 'Maria Souza' },
+            ]}
+            value={responsavel}
+            onChange={(e) => setResponsavel(e.target.value)}
+            placeholder="Selecione o responsável"
+          />
+        </FormField>
+        <FormField label="Espécie" required>
+          <FormSelect
+            options={[
+              { value: 'bovino', label: 'Bovino' },
+              { value: 'bubalino', label: 'Bubalino' },
+            ]}
+            value={especie}
+            onChange={(e) => setEspecie(e.target.value)}
+            placeholder="Selecione a espécie"
+          />
+        </FormField>
+        <FormField label="Categoria" required>
+          <FormSelect
+            options={[
+              { value: 'bezerro', label: 'Bezerro' },
+              { value: 'novilha', label: 'Novilha' },
+              { value: 'vaca', label: 'Vaca' },
+              { value: 'boi', label: 'Boi' },
+            ]}
+            value={categoria}
+            onChange={(e) => setCategoria(e.target.value)}
+            placeholder="Selecione a categoria"
+          />
+        </FormField>
         <FormField label="Lote / carga" required>
           <SearchSelect options={LOTES_OPCOES} value={lote} onChange={setLote} placeholder="Buscar lote..." />
         </FormField>
