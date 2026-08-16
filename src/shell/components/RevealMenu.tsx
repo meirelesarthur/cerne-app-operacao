@@ -31,6 +31,7 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
   const unread = useShellStore((s) => s.notifications.filter((n) => !n.read).length)
   const isOnline = useShellStore((s) => s.isOnline)
   const toggleOnline = useShellStore((s) => s.toggleOnline)
+  const logout = useShellStore((s) => s.logout)
   const { isGbMode, toggle } = useTheme()
 
   // Esc fecha o menu enquanto aberto
@@ -160,7 +161,16 @@ export function RevealMenu({ module }: { module: ModuleDef }) {
 
           <div className="mt-auto pt-4">
             <div className="animate-rise" style={next()}>
-              <MenuItem variant="onDark" tone="danger" icon={LogOut} label="Sair" onClick={() => go('/login')} />
+              <MenuItem
+                variant="onDark"
+                tone="danger"
+                icon={LogOut}
+                label="Sair"
+                onClick={() => {
+                  logout()
+                  go('/login')
+                }}
+              />
             </div>
           </div>
         </>

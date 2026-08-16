@@ -17,6 +17,7 @@ fluxo e servir de handoff ao time mobile. Baseado em `spec-cerne-app.md`.
 npm install
 npm run dev            # http://localhost:5173
 npm run build          # typecheck (tsc -b) + build de produção
+npm run quality:functional # valida as 53 funções e bloqueia regressões do catálogo
 npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de src/design/tokens.ts
 ```
 
@@ -53,7 +54,8 @@ src/
 
 - **Dois ambientes protegidos por perfil**: Administração (leitura/decisão) e Operacional (entrada/campo).
 - **Farm switcher** (multi-tenant) no header do módulo; badge "Lançando em: {fazenda}" nos formulários.
-- **7 dashboards** administrativos e **6 fluxos** operacionais (§4/§5), com estados de loading/vazio/erro/offline.
+- **12 funções administrativas** e **41 operacionais** cobertas pelo catálogo normalizado, com
+  46 jornadas frontend prontas e 7 integrações de hardware funcionalmente simuladas.
 
 ### Regras de negócio refletidas na UI (§7.2)
 
@@ -76,6 +78,9 @@ src/
 - [x] Tema light 100% funcional; GB Mode com cores base aplicadas.
 - [x] Nenhum uso de localStorage/sessionStorage (estado em memória).
 - [x] Estrutura `shell/` + `modules/<nome>/`, pronta para mapeamento 1:1 no mobile.
+- [x] Sessão demonstrativa obrigatória, logout efetivo e redirecionamento de rotas internas para o login.
+- [x] Gate automatizado garantindo 12 funções administrativas, 41 operacionais, IDs únicos,
+  zero itens apenas `Mapeado` e simulação presente em toda dependência de hardware.
 
 ## Notas de handoff (mobile)
 

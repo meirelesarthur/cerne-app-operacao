@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "tsc -b --noEmit",
+    "quality:functional": "node scripts/validate-functional-catalog.mjs",
     "tokens:export": "tsx scripts/export-tokens-dtcg.ts",
     "tokens:export:flutter": "tsx scripts/export-tokens-flutter.ts && dart format apps/mobile/lib/design/generated"
   },

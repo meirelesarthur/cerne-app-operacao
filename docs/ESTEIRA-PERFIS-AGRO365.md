@@ -90,8 +90,20 @@ Com as Ondas A e B, o catálogo possui **34 funcionalidades prontas**, **12 mape
   navegáveis e dados demonstrativos.
 - **Cobertura:** não existem mais funcionalidades com selo `Mapeado`.
 
-A Onda E permanece na fila. A cobertura funcional é de **46 funcionalidades prontas** e
-**7 com simulação funcional de hardware**, totalizando as **53 entradas do catálogo**.
+A cobertura funcional é de **46 funcionalidades prontas** e **7 com simulação funcional de
+hardware**, totalizando as **53 entradas do catálogo**. A Onda E de endurecimento frontend
+também foi concluída; integrações reais de produção permanecem como próximo ciclo do time mobile.
+
+### Onda E — endurecimento frontend concluído
+
+- **Sessão demonstrativa protegida:** rotas internas exigem a escolha explícita do perfil no login.
+- **Logout efetivo:** sair encerra a sessão em memória e impede reentrada por URL sem novo login.
+- **Proteção por responsabilidade:** a sessão protege o shell e o módulo Fazendas mantém o desvio
+  de rotas cruzadas entre Administração e Operacional.
+- **Gate automatizado:** `npm run quality:functional` valida as 53 entradas, a divisão 12/41,
+  identificadores únicos, ausência de itens `Mapeado` e simulação para todo item `Hardware`.
+- **Limite honesto:** RBAC de backend, telemetria de produção, integrações nativas e paridade Flutter
+  são requisitos da implementação mobile, não promessas do protótipo frontend.
 
 ## Convenção de maturidade no protótipo
 
@@ -166,4 +178,12 @@ Uma funcionalidade só muda de `Mapeado` para `Pronto` quando possui:
    Scanner SISBOV, Localizar Animal e Perdas.
 4. **Onda D — supervisão, auditoria e lacunas (concluída no frontend):** consultas,
    processamentos, exportações e as oito rotinas operacionais restantes.
-5. **Onda E — endurecimento:** RBAC real, telemetria, testes automatizados e paridade Flutter.
+5. **Onda E — endurecimento frontend (concluída):** sessão demonstrativa protegida, logout efetivo,
+   gate automatizado do catálogo e documentação das fronteiras de produção.
+
+## Próximo ciclo de produção
+
+- RBAC real validado no backend, com escopo de fazenda e permissões por ação.
+- Telemetria conectada ao ambiente corporativo e política de dados aprovada.
+- Testes unitários, de integração e E2E na stack escolhida pelo time mobile.
+- Paridade Flutter e testes em dispositivo para Bluetooth, RFID, câmera, localização e balança.

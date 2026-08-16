@@ -16,9 +16,9 @@ import { useShellStore, type AccessRole } from '@/shell/state/shellStore'
  */
 export function Login() {
   const navigate = useNavigate()
-  const setAccessRole = useShellStore((s) => s.setAccessRole)
+  const loginAs = useShellStore((s) => s.loginAs)
   const enterAs = (role: AccessRole) => {
-    setAccessRole(role)
+    loginAs(role)
     navigate(role === 'admin' ? '/fazendas/administracao' : '/fazendas/operacional')
   }
 

@@ -139,3 +139,11 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Compra de Animais e Apartação com jornadas completas
 - [x] Minhas OS com consulta por funcionário e fazenda
 - [x] Catálogo com 46 itens `Pronto`, 7 `Hardware` simulados e nenhum `Mapeado`
+
+## Fase 14 — Onda E · Endurecimento frontend  ✅
+- [x] Sessão demonstrativa obrigatória antes do acesso às rotas internas
+- [x] Logout encerra a sessão em memória e redireciona para a escolha de perfil
+- [x] Proteção de rota no Shell combinada aos desvios Admin/Operacional do módulo Fazendas
+- [x] Gate `quality:functional` valida 12 funções administrativas e 41 operacionais
+- [x] Gate rejeita IDs duplicados, itens `Mapeado`, jornadas sem mecanismo demonstrável e hardware sem simulação
+- [x] Fronteiras de produção documentadas sem apresentar RBAC, telemetria ou integração nativa como prontas

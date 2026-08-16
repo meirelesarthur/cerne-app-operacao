@@ -24,6 +24,8 @@ export interface AppNotification {
 
 interface ShellState {
   user: UserProfile
+  /** Sessão demonstrativa; não representa autenticação ou RBAC de produção. */
+  isAuthenticated: boolean
   notifications: AppNotification[]
   /** toggle de dev (spec §7.3) — simula perda de conexão para demonstrar banners de sync. */
   isOnline: boolean
@@ -31,7 +33,8 @@ interface ShellState {
   balanceHidden: boolean
   /** menu "reveal" global (aba Mais/Menu) — spec do superapp. */
   menuOpen: boolean
-  setAccessRole: (role: AccessRole) => void
+  loginAs: (role: AccessRole) => void
+  logout: () => void
   setOnline: (v: boolean) => void
   toggleOnline: () => void
   toggleBalanceHidden: () => void
@@ -51,18 +54,21 @@ const MOCK_NOTIFICATIONS: AppNotification[] = [
 
 export const useShellStore = create<ShellState>((set, get) => ({
   user: { name: 'Silvio Ventura', initials: 'SV', role: 'admin' },
+  isAuthenticated: false,
   notifications: MOCK_NOTIFICATIONS,
   isOnline: true,
   balanceHidden: false,
   menuOpen: false,
-  setAccessRole: (role) =>
+  loginAs: (role) =>
     set({
       user:
         role === 'admin'
           ? { name: 'Silvio Ventura', initials: 'SV', role }
           : { name: 'João Oliveira', initials: 'JO', role },
+      isAuthenticated: true,
       menuOpen: false,
     }),
+  logout: () => set({ isAuthenticated: false, menuOpen: false }),
   setOnline: (v) => set({ isOnline: v }),
   toggleOnline: () => set((s) => ({ isOnline: !s.isOnline })),
   toggleBalanceHidden: () => set((s) => ({ balanceHidden: !s.balanceHidden })),
