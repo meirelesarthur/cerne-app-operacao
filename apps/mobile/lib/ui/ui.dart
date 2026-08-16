@@ -2,6 +2,8 @@
 /// Telas (F3/F4) importam só este arquivo, nunca os componentes de `lib/ui/` individualmente.
 library;
 
+export 'addable_group_list.dart';
+export 'audit_export_panel.dart';
 export 'avatar.dart';
 export 'badge.dart';
 export 'balance_card.dart';
@@ -21,6 +23,7 @@ export 'error_state.dart';
 export 'file_upload.dart';
 export 'form_field.dart';
 export 'form_select.dart';
+export 'hardware_simulator.dart';
 export 'heading.dart';
 export 'icon_button.dart';
 export 'illustration_slot.dart';
@@ -30,6 +33,7 @@ export 'mini_app_tile.dart';
 export 'modal.dart';
 export 'page_dots.dart';
 export 'progress_bar.dart';
+export 'pressable.dart';
 export 'quick_action.dart';
 export 'search_select.dart';
 export 'skeleton.dart';

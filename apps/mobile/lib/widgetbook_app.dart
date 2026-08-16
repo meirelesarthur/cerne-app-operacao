@@ -65,6 +65,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildButtonWidgetbookComponent(),
                 buildIconButtonWidgetbookComponent(),
                 buildQuickActionWidgetbookComponent(),
+                buildPressableWidgetbookComponent(),
               ],
             ),
             WidgetbookFolder(
@@ -91,6 +92,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildToggleSwitchWidgetbookComponent(),
                 buildFileUploadWidgetbookComponent(),
                 buildStepperWidgetbookComponent(),
+                buildAddableGroupListWidgetbookComponent(),
               ],
             ),
             WidgetbookFolder(
@@ -104,6 +106,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildSpinnerWidgetbookComponent(),
                 buildTooltipWidgetbookComponent(),
                 buildProgressBarWidgetbookComponent(),
+                buildHardwareSimulatorWidgetbookComponent(),
               ],
             ),
             WidgetbookFolder(
@@ -119,6 +122,7 @@ class CerneWidgetbook extends StatelessWidget {
               children: [
                 buildTransactionListItemWidgetbookComponent(),
                 buildMenuItemWidgetbookComponent(),
+                buildAuditExportPanelWidgetbookComponent(),
                 buildBadgeWidgetbookComponent(),
                 buildChipWidgetbookComponent(),
                 buildTagWidgetbookComponent(),

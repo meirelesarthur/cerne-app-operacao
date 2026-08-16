@@ -14,7 +14,7 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0 e M1 da nova portabilidade foram concluídas localmente; nenhuma tela ou rota de perfil foi alterada ainda.
+- M0, M1 e M2 da nova portabilidade foram concluídas localmente; nenhuma rota de perfil foi alterada ainda.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
 - `RTK.md`, embora referenciado nas instruções do projeto, não foi encontrado no repositório neste checkpoint.
@@ -101,10 +101,10 @@ Commit planejado: `feat(mobile): porta catalogo funcional AGRO365 para Dart`.
 
 ### M2 — Motor de jornadas e componentes
 
-- [ ] Portar para widgets reutilizáveis o motor lista → formulário → validação → sucesso → detalhe.
-- [ ] Criar armazenamento de registros de protótipo com Riverpod.
-- [ ] Criar equivalentes Flutter de grupos adicionáveis, superfície pressionável, exportação de auditoria e simulador de hardware.
-- [ ] Publicar componentes e variantes no Widgetbook antes de usá-los em telas.
+- [x] Criar motor reutilizável para lista → formulário → validação → sucesso, com rascunho de detalhe consumido pelo armazenamento; a composição visual da tela entra em M3.
+- [x] Criar armazenamento de registros de protótipo com Riverpod.
+- [x] Criar equivalentes Flutter de grupos adicionáveis, superfície pressionável, preparação de exportação de auditoria e simulador de hardware.
+- [x] Publicar componentes e variantes no Widgetbook antes de usá-los em telas.
 
 Gate: uma funcionalidade dirigida pelo catálogo completa a jornada inteira e possui testes.
 
@@ -272,8 +272,8 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 |---|---|---|---|---|
 | Memória inicial | Concluída | preencher pelo histórico Git | Arquivo criado; nenhuma implementação iniciada | React permanece oficial por ora |
 | M0 | Concluída | `8e03fad` | Matriz 53/53; contagem 12/41 conferida | React congelado como referência; nenhuma tela alterada |
-| M1 | Concluída | este commit (`feat(mobile): porta catalogo funcional AGRO365 para Dart`) | Analyze limpo; 7 testes de contrato; 58 testes de Fazendas verdes | 168 campos, 156 obrigatórios, 46 Ready e 7 Hardware; suíte global excedeu 10 min sem falha reportada |
-| M2 | Pendente | — | — | — |
+| M1 | Concluída | `da3c8dd` | Analyze limpo; 7 testes de contrato; 58 testes de Fazendas verdes | 168 campos, 156 obrigatórios, 46 Ready e 7 Hardware; suíte global excedeu 10 min sem falha reportada |
+| M2 | Concluída | este commit (`feat(mobile): cria motor funcional reutilizavel AGRO365`) | Analyze limpo; 10 testes novos; Widgetbook Web compilado | Catálogo ampliado de 42 para 46 componentes; download físico do arquivo de auditoria será conectado em M7 |
 | M3 | Pendente | — | — | — |
 | M4 / A | Pendente | — | — | — |
 | M5 / B | Pendente | — | — | — |
