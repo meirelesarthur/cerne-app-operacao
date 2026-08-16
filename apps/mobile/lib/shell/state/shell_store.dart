@@ -4,17 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// tudo em memória (sem persistência local, restrição do protótipo).
 
 class UserProfile {
-  const UserProfile({
-    required this.name,
-    required this.initials,
-    required this.role,
-  });
+  const UserProfile({required this.name, required this.initials});
 
   final String name;
   final String initials;
-
-  /// 'operador' | 'admin' | 'ambos'.
-  final String role;
 }
 
 class AppNotification {
@@ -127,7 +120,7 @@ class ShellStoreNotifier extends Notifier<ShellState> {
   @override
   ShellState build() {
     return const ShellState(
-      user: UserProfile(name: 'Silvio Ventura', initials: 'SV', role: 'ambos'),
+      user: UserProfile(name: 'Silvio Ventura', initials: 'SV'),
       notifications: _mockNotifications,
       isOnline: true,
       balanceHidden: false,

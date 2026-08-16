@@ -16,6 +16,7 @@ import 'components/reveal_menu.dart';
 import 'components/shell_header.dart';
 import 'module_config.dart';
 import 'state/shell_store.dart';
+import 'state/prototype_session_store.dart';
 
 /// Layout do Shell (spec §3.1) — espelha `ShellLayout.tsx`: header global fixo +
 /// abas de contexto + conteúdo do módulo ativo + dock de módulos flutuante +
@@ -45,6 +46,7 @@ class ShellLayout extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final module = getModule(moduleId) ?? modules.first;
     final state = ref.watch(shellStoreProvider);
+    final profile = ref.watch(prototypeSessionProvider).profile;
     final menuOpen = state.menuOpen;
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
@@ -111,6 +113,7 @@ class ShellLayout extends ConsumerWidget {
                           ),
                           AppContextTabs(
                             module: module,
+                            profile: profile,
                             activePath: activeTab,
                             onTabSelected: (path) => _go(
                               context,
@@ -149,7 +152,10 @@ class ShellLayout extends ConsumerWidget {
                                       onModuleSelected: (id) => _go(
                                         context,
                                         ref,
-                                        getModule(id)!.homeRoute,
+                                        moduleHomeRoute(
+                                          getModule(id)!,
+                                          profile,
+                                        ),
                                       ),
                                     ),
                                   ),

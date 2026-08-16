@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/shell/module_config.dart';
+import 'package:cerne_app/shell/state/prototype_session_store.dart';
 
 void main() {
   group('module_config', () {
@@ -41,5 +42,34 @@ void main() {
         expect(sections.first.items.map((i) => i.id), isNot(contains('menu')));
       },
     );
+
+    test('Fazendas filtra abas e menus pelo perfil da sessão', () {
+      final fazendas = getModule('fazendas')!;
+      final adminTabs = visibleBottomTabs(
+        fazendas,
+        UserAccessProfile.administration,
+      );
+      final operationalTabs = visibleBottomTabs(
+        fazendas,
+        UserAccessProfile.operational,
+      );
+
+      expect(adminTabs.map((tab) => tab.id), contains('dashboard'));
+      expect(adminTabs.map((tab) => tab.id), isNot(contains('rotinas')));
+      expect(operationalTabs.map((tab) => tab.id), contains('rotinas'));
+      expect(
+        operationalTabs.map((tab) => tab.id),
+        isNot(contains('dashboard')),
+      );
+
+      final operationalItems = getMenuSections(
+        fazendas,
+        profile: UserAccessProfile.operational,
+      ).expand((section) => section.items);
+      expect(
+        operationalItems.map((item) => item.route),
+        isNot(contains('/fazendas/dashboards/financeiro')),
+      );
+    });
   });
 }

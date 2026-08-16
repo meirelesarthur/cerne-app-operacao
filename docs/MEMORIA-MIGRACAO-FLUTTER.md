@@ -14,7 +14,8 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0, M1 e M2 da nova portabilidade foram concluídas localmente; nenhuma rota de perfil foi alterada ainda.
+- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 foi concluída localmente e aguarda push sob demanda.
+- O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
 - `RTK.md`, embora referenciado nas instruções do projeto, não foi encontrado no repositório neste checkpoint.
@@ -112,12 +113,12 @@ Commit planejado: `feat(mobile): cria motor funcional reutilizavel AGRO365`.
 
 ### M3 — Separação de responsabilidades
 
-- [ ] Criar botões Login Administração e Login Operacional no Flutter.
-- [ ] Persistir o perfil da sessão demonstrativa em Riverpod.
-- [ ] Proteger o shell e deep links sem sessão.
-- [ ] Criar central de gestão e central de rotinas.
-- [ ] Restringir rotas, abas, menus e ações por perfil.
-- [ ] Remover do Flutter a alternância local Gerencial/Campo; o perfil deve definir a responsabilidade durante a sessão.
+- [x] Criar botões Login Administração e Login Operacional no Flutter.
+- [x] Persistir o perfil da sessão demonstrativa em Riverpod.
+- [x] Proteger o shell e deep links sem sessão.
+- [x] Criar central de gestão e central de rotinas.
+- [x] Restringir rotas, abas, menus e ações por perfil.
+- [x] Remover do Flutter a alternância local Gerencial/Campo; o perfil define a responsabilidade durante a sessão.
 
 Gate: operador não acessa dashboards; administrador não cria entradas; logout invalida a sessão.
 
@@ -273,8 +274,8 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | Memória inicial | Concluída | preencher pelo histórico Git | Arquivo criado; nenhuma implementação iniciada | React permanece oficial por ora |
 | M0 | Concluída | `8e03fad` | Matriz 53/53; contagem 12/41 conferida | React congelado como referência; nenhuma tela alterada |
 | M1 | Concluída | `da3c8dd` | Analyze limpo; 7 testes de contrato; 58 testes de Fazendas verdes | 168 campos, 156 obrigatórios, 46 Ready e 7 Hardware; suíte global excedeu 10 min sem falha reportada |
-| M2 | Concluída | este commit (`feat(mobile): cria motor funcional reutilizavel AGRO365`) | Analyze limpo; 10 testes novos; Widgetbook Web compilado | Catálogo ampliado de 42 para 46 componentes; download físico do arquivo de auditoria será conectado em M7 |
-| M3 | Pendente | — | — | — |
+| M2 | Concluída | `3021f9c` | Analyze limpo; 10 testes novos; Widgetbook Web compilado | Catálogo ampliado de 42 para 46 componentes; download físico do arquivo de auditoria será conectado em M7 |
+| M3 | Concluída | este commit (`feat(mobile): separa ambientes administrativo e operacional`) | Analyze limpo; 45 testes focados verdes; Flutter Web compilado | Duas centrais derivadas do catálogo 12/41; rotas cruzadas redirecionam; logout invalida sessão; jornadas sem tela própria permanecem para M4–M7 |
 | M4 / A | Pendente | — | — | — |
 | M5 / B | Pendente | — | — | — |
 | M6 / C | Pendente | — | — | — |

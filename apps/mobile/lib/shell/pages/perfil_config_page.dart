@@ -9,6 +9,7 @@ import '../../design/theme/theme_provider.dart';
 import '../../ui/ui.dart';
 import '../components/sub_page_header.dart';
 import '../state/shell_store.dart';
+import '../state/prototype_session_store.dart';
 
 /// Perfil / Configurações do Shell — espelha `PerfilConfig.tsx`: hero `ink` com
 /// avatar central + lista de itens-cápsula. Conta + tema light/gbMode
@@ -20,8 +21,9 @@ class PerfilConfigPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final user = ref.watch(shellStoreProvider).user;
+    final profile = ref.watch(prototypeSessionProvider).profile;
     final isGbMode = ref.watch(themeVariantProvider) == AppThemeVariant.gbMode;
-    final roleLabel = user.role == 'operador' ? 'Operador' : 'Administrador';
+    final roleLabel = profile?.roleLabel ?? 'Sessão não iniciada';
 
     return Scaffold(
       backgroundColor: semantic.bgCanvas,
@@ -84,7 +86,10 @@ class PerfilConfigPage extends ConsumerWidget {
                     icon: LucideIcons.logOut,
                     label: 'Sair',
                     tone: AppMenuItemTone.danger,
-                    onTap: () => context.go('/login'),
+                    onTap: () {
+                      ref.read(prototypeSessionProvider.notifier).logout();
+                      context.go('/login');
+                    },
                   ),
                 ],
               ),

@@ -1,23 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/design/theme/theme_provider.dart';
-import 'package:cerne_app/router/app_router.dart';
 import 'package:cerne_app/shell/components/context_tabs.dart';
+import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
 
+import '../support/router_test_harness.dart';
 import '../support/test_viewport.dart';
 
-Widget _wrap([ProviderContainer? container]) {
-  final child = MaterialApp.router(
-    theme: buildAppTheme(AppThemeVariant.light),
-    routerConfig: appRouter,
-  );
-  if (container == null) return ProviderScope(child: child);
-  return UncontrolledProviderScope(container: container, child: child);
-}
+late RouterTestHarness harness;
 
 /// `pumpAndSettle` só continua pumpando enquanto frames são agendados — um
 /// `Future.delayed` isolado (SimulatedLoad/RiseIn da HubHomeScreen, renderizada
@@ -28,28 +20,29 @@ Future<void> _settleHubTimers(WidgetTester tester) =>
     tester.pump(const Duration(seconds: 1));
 
 void main() {
-  // appRouter é uma instância global (top-level) — cada teste navega a partir
-  // de onde o anterior parou. Reseta explicitamente para o ponto de partida.
-  setUp(() => appRouter.go('/inicio'));
+  setUp(() {
+    harness = RouterTestHarness(profile: UserAccessProfile.administration);
+    addTearDown(() => harness.dispose());
+    harness.router.go('/inicio');
+  });
 
   group('appRouter', () {
-    testWidgets('"/" redireciona para "/inicio" e mostra o módulo Início', (
+    testWidgets('"/" redireciona para a central do perfil autenticado', (
       tester,
     ) async {
-      appRouter.go('/');
-      await tester.pumpWidget(_wrap());
-      await _settleHubTimers(tester);
+      harness.router.go('/');
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Início'), findsWidgets);
+      expect(find.text('Central de gestão'), findsOneWidget);
     });
 
     testWidgets('deep-link "/bank/extrato" abre o módulo Bank na aba Extrato', (
       tester,
     ) async {
       await setTallSurface(tester);
-      appRouter.go('/bank/extrato');
-      await tester.pumpWidget(_wrap());
+      harness.router.go('/bank/extrato');
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       // Tela real do módulo Bank (F4.4) — a versão placeholder (F3) mostrava
@@ -67,8 +60,8 @@ void main() {
         // ':moduleId' — todas são segmentos literais) — sempre caía no fallback
         // 'inicio', então header/tabs/dock nunca refletiam o módulo real.
         await setTallSurface(tester);
-        appRouter.go('/fazendas');
-        await tester.pumpWidget(_wrap());
+        harness.router.go('/fazendas');
+        await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
         // Abas de Fazendas (moduleConfig) — não existem no módulo Início.
@@ -76,13 +69,10 @@ void main() {
         // "Financeiro" no grid, então `find.text('Financeiro')` sozinho é ambíguo.
         final contextTabs = find.byType(AppContextTabs);
         expect(
-          find.descendant(of: contextTabs, matching: find.text('Dashboard')),
+          find.descendant(of: contextTabs, matching: find.text('Gestão')),
           findsOneWidget,
         );
-        expect(
-          find.descendant(of: contextTabs, matching: find.text('Financeiro')),
-          findsOneWidget,
-        );
+        expect(find.text('Central de gestão'), findsOneWidget);
         // Abas do Início não devem aparecer.
         expect(find.text('Apps'), findsNothing);
         expect(find.text('Carteira'), findsNothing);
@@ -93,7 +83,7 @@ void main() {
       'trocar de módulo pelo dock preserva o header (Silvio Ventura continua visível)',
       (tester) async {
         await setTallSurface(tester);
-        await tester.pumpWidget(_wrap());
+        await tester.pumpWidget(harness.buildApp());
         await _settleHubTimers(tester);
         await tester.pumpAndSettle();
 
@@ -112,7 +102,7 @@ void main() {
     testWidgets('tocar em "Mais" abre o RevealMenu do módulo ativo', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await _settleHubTimers(tester);
       await tester.pumpAndSettle();
 
@@ -127,16 +117,13 @@ void main() {
       (tester) async {
         // Regressão: um overlay "tocar fora fecha o menu" cobrindo a tela inteira
         // por cima do RevealMenu bloqueava os toques nos próprios itens do menu.
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-
-        await tester.pumpWidget(_wrap(container));
+        await tester.pumpWidget(harness.buildApp());
         await _settleHubTimers(tester);
         await tester.pumpAndSettle();
 
         await tester.tap(find.byTooltip('Mais'));
         await tester.pumpAndSettle();
-        expect(container.read(shellStoreProvider).menuOpen, isTrue);
+        expect(harness.container.read(shellStoreProvider).menuOpen, isTrue);
 
         // "Modo GB" pode estar abaixo do fold do painel rolável.
         await tester.scrollUntilVisible(
@@ -147,8 +134,47 @@ void main() {
         await tester.tap(find.text('Modo GB'));
         await tester.pumpAndSettle();
 
-        expect(container.read(themeVariantProvider), AppThemeVariant.gbMode);
+        expect(
+          harness.container.read(themeVariantProvider),
+          AppThemeVariant.gbMode,
+        );
       },
     );
+
+    testWidgets('deep link sem sessão retorna ao login', (tester) async {
+      harness.dispose();
+      harness = RouterTestHarness();
+      harness.router.go('/fazendas/dashboards/financeiro');
+
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Login Administração'), findsOneWidget);
+      expect(find.text('Login Operacional'), findsOneWidget);
+    });
+
+    testWidgets('operador não acessa dashboard administrativo', (tester) async {
+      harness.dispose();
+      harness = RouterTestHarness(profile: UserAccessProfile.operational);
+      harness.router.go('/fazendas/dashboards/financeiro');
+
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Central de rotinas'), findsOneWidget);
+      expect(find.text('Resumo financeiro'), findsNothing);
+    });
+
+    testWidgets('administrador não acessa fluxo de entrada operacional', (
+      tester,
+    ) async {
+      harness.router.go('/fazendas/campo/pesagem');
+
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Central de gestão'), findsOneWidget);
+      expect(find.text('Nova pesagem'), findsNothing);
+    });
   });
 }

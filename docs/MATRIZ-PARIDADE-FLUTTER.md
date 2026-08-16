@@ -4,6 +4,8 @@ Data-base: 16/08/2026. Fonte funcional: `mapeamento_funcional_agro365_v2.md`, no
 
 Desde M1, o contrato equivalente está portado para `apps/mobile/lib/modules/fazendas/functional_catalog.dart` e passa a ser a fonte funcional do Flutter. As linhas abaixo continuam como **Legado** ou **Ausente** até que suas jornadas visuais sejam efetivamente integradas nas ondas M2–M11.
 
+Checkpoint M3: os 12 itens administrativos aparecem na Central de gestão e os 41 operacionais na Central de rotinas. Sessão, menus, abas e deep links já respeitam o perfil; os estados **Legado/Ausente** abaixo permanecem até a implementação integral das jornadas nas ondas M4–M7.
+
 ## Regra de leitura
 
 - **React:** referência funcional congelada até o corte; não recebe funcionalidades novas.

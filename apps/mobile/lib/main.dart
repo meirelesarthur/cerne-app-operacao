@@ -14,18 +14,19 @@ void main() {
   runApp(const ProviderScope(child: CerneApp()));
 }
 
-/// Raiz do app — `MaterialApp.router` sobre o `appRouter` (F3: ShellRoute + go_router).
+/// Raiz do app — o roteador é criado no mesmo escopo Riverpod da sessão.
 class CerneApp extends ConsumerWidget {
   const CerneApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final variant = ref.watch(themeVariantProvider);
+    final router = ref.watch(appRouterProvider);
     return MaterialApp.router(
       title: 'GB CERNE',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(variant),
-      routerConfig: appRouter,
+      routerConfig: router,
     );
   }
 }

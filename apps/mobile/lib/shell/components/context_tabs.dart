@@ -5,6 +5,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../module_config.dart';
+import '../state/prototype_session_store.dart';
 
 /// Abas de contexto do módulo ativo (Nova UI): chips-pílula roláveis no topo —
 /// espelha `ContextTabs.tsx`. A ativa vira cápsula ink com texto verde vibrante.
@@ -19,16 +20,21 @@ class AppContextTabs extends StatelessWidget {
     required this.module,
     required this.activePath,
     required this.onTabSelected,
+    this.profile,
   });
 
   final ModuleDef module;
   final String activePath;
   final ValueChanged<String> onTabSelected;
+  final UserAccessProfile? profile;
 
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final tabs = module.bottomTabs.where((tab) => tab.action == null).toList();
+    final tabs = visibleBottomTabs(
+      module,
+      profile,
+    ).where((tab) => tab.action == null).toList();
 
     return Semantics(
       container: true,

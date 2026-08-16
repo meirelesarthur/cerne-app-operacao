@@ -8,6 +8,7 @@ import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
 import '../state/shell_store.dart';
+import '../state/prototype_session_store.dart';
 
 /// Header global do Shell (Nova UI): zona clara sobre o canvas — avatar +
 /// saudação à esquerda, bolhas de ação circulares à direita. Persiste ao
@@ -49,6 +50,7 @@ class AppShellHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final state = ref.watch(shellStoreProvider);
+    final profile = ref.watch(prototypeSessionProvider).profile;
     final user = state.user;
     final unread = state.unreadCount;
     final menuOpen = state.menuOpen;
@@ -113,6 +115,17 @@ class AppShellHeader extends ConsumerWidget {
                                     color: semantic.fgDefault,
                                   ),
                                 ),
+                                if (profile != null)
+                                  Text(
+                                    'Ambiente ${profile.label}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: AppTypography.xs,
+                                      fontWeight: AppTypography.weightSemibold,
+                                      color: semantic.accentDefault,
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
