@@ -35,6 +35,23 @@ A fazenda ativa, os estados offline e os componentes do design system continuam 
 - Dashboard pecuário ampliado com estoque por categoria, desempenho no intervalo e última pesagem.
 - Pesagem e Nutrição/Arraçoamento aperfeiçoados com os campos observados no mapeamento.
 
+## Execução da esteira frontend
+
+### Onda A — concluída no protótipo
+
+- **Áreas:** lista e cadastro operacional, validação obrigatória, detalhe e consulta administrativa
+  alimentada pela mesma fonte em memória.
+- **Formulações:** lista, criação, matérias-primas vinculadas, validação e confirmação.
+- **Batidas:** lista, formulário de produção, destino, quantidade, itens vinculados e confirmação.
+- **Apontamento agrícola:** lista, operação, área, data, recursos associados e confirmação.
+- **Frota:** listas e formulários de Abastecimento e Manutenção, com campos operacionais,
+  validação e detalhe do registro.
+- **Motor reutilizável:** todas as rotinas acima percorrem lista → formulário → validação → sucesso
+  → consulta, com estado frontend compartilhado durante a sessão e sem dependência de backend.
+
+Com esta onda, o catálogo possui **27 funcionalidades prontas**, **19 mapeadas** e
+**7 dependentes de hardware**. As Ondas B a E permanecem na fila priorizada abaixo.
+
 ## Convenção de maturidade no protótipo
 
 | Selo | Significado | Próxima ação |
@@ -100,7 +117,8 @@ Uma funcionalidade só muda de `Mapeado` para `Pronto` quando possui:
 
 ## Ordem sugerida de evolução
 
-1. **Onda A — alto uso, baixo risco:** Áreas, Formulações, Batidas, Apontamento e Frota.
+1. **Onda A — alto uso, baixo risco (concluída no frontend):** Áreas, Formulações, Batidas,
+   Apontamento e Frota.
 2. **Onda B — pecuária sem hardware:** Lotes, Animal, Transferência de Lote/Área, Sanitário,
    Desmama, Pastagens e Reprodução.
 3. **Onda C — hardware:** Conexão, Balança, RFID, Scanner SISBOV, Localizar Animal e Perdas.

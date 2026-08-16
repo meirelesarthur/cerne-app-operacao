@@ -67,7 +67,8 @@ export function ResponsibilityWorkspace({ role }: { role: WorkspaceRole }) {
   const mappedCount = features.filter((feature) => feature.status !== 'ready').length
 
   const openFeature = (feature: FeatureDefinition) => {
-    navigate(feature.existingRoute ?? `/fazendas/${role}/${feature.id}`)
+    const routeSegment = administrative ? 'administracao' : 'operacional'
+    navigate(feature.existingRoute ?? `/fazendas/${routeSegment}/${feature.id}`)
   }
 
   return (

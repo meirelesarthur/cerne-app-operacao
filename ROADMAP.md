@@ -105,3 +105,11 @@ Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 - [x] Estados `Pronto`, `Mapeado` e `Hardware` para comunicar maturidade sem inventar requisitos
 - [x] Dashboards financeiro/operacional e pecuário aperfeiçoados com os indicadores observados
 - [x] Esteira de evolução e definição de pronto em `docs/ESTEIRA-PERFIS-AGRO365.md`
+
+## Fase 10 — Onda A da esteira funcional  ✅
+- [x] Motor frontend reutilizável de lista, formulário, validação, sucesso e detalhe
+- [x] Estado em memória compartilhado entre entrada operacional e consulta administrativa
+- [x] Áreas: cadastro operacional e consulta administrativa conectados
+- [x] Formulações, Batidas e Apontamento agrícola com listas e lançamentos funcionais
+- [x] Abastecimentos e Manutenção de frota com listas e lançamentos funcionais
+- [x] Validação mobile dos fluxos, proteção de perfil e roteamento administrativo

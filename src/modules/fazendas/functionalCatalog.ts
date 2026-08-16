@@ -31,6 +31,13 @@ export interface FeatureDefinition {
   primaryAction?: string
   emptyLabel?: string
   sourceDetail?: string
+  /** ativa a jornada lista → formulário → sucesso → detalhe. */
+  listMode?: boolean
+  /** permite que uma consulta administrativa leia os registros de outra função. */
+  dataSourceId?: string
+  createAction?: string
+  recordTitleField?: string
+  recordDescriptionFields?: string[]
 }
 
 const responsavel: FeatureField = {
@@ -103,9 +110,11 @@ export const ADMIN_FEATURES: FeatureDefinition[] = [
     group: 'Consultas e auditoria',
     title: 'Áreas cadastradas',
     objective: 'Consultar as áreas usadas pelos processos da fazenda.',
-    status: 'mapped',
+    status: 'ready',
+    listMode: true,
+    dataSourceId: 'cadastrar-area',
     emptyLabel: 'Nenhuma área encontrada para os filtros atuais.',
-    sourceDetail: 'A fonte exibiu lista, visualização e inclusão, sem mostrar os campos internos.',
+    sourceDetail: 'A consulta usa os mesmos registros criados no ambiente operacional.',
   },
   {
     id: 'saldo-estoque',
@@ -151,9 +160,21 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     group: 'Cadastros',
     title: 'Áreas',
     objective: 'Cadastrar áreas usadas nos processos da fazenda.',
-    status: 'mapped',
-    primaryAction: 'Adicionar área',
-    sourceDetail: 'Os campos internos não foram abertos na gravação.',
+    status: 'ready',
+    listMode: true,
+    fields: [
+      { id: 'nome', label: 'Nome da área', required: true, placeholder: 'Ex.: Talhão 03' },
+      { id: 'tipo', label: 'Tipo de uso', type: 'select', required: true, options: ['Agricultura', 'Pecuária', 'Fruticultura', 'Reserva'] },
+      { id: 'area-total', label: 'Área total', type: 'number', required: true },
+      { id: 'unidade', label: 'Unidade', type: 'select', required: true, options: ['ha', 'm²'] },
+      { id: 'localizacao', label: 'Localização', required: true, placeholder: 'Setor ou referência' },
+      { id: 'cultura', label: 'Cultura / cobertura', placeholder: 'Opcional' },
+      { id: 'observacao', label: 'Observação', type: 'textarea', placeholder: 'Informações adicionais' },
+    ],
+    createAction: 'Adicionar área',
+    primaryAction: 'Salvar área',
+    recordTitleField: 'nome',
+    recordDescriptionFields: ['tipo', 'area-total', 'unidade'],
   },
   {
     id: 'formulacoes',
@@ -161,6 +182,7 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     title: 'Formulações',
     objective: 'Criar formulações compostas por matérias-primas e percentuais.',
     status: 'ready',
+    listMode: true,
     fields: [
       responsavel,
       { id: 'ativo', label: 'Ativo', type: 'select', required: true, options: ['Sim', 'Não'] },
@@ -171,8 +193,11 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
       { id: 'materia-prima', label: 'Matéria-prima', required: true },
       { id: 'porcentagem', label: 'Porcentagem (%)', type: 'number', required: true },
     ],
-    sections: ['Dados da formulação', 'Matérias-primas'],
+    sections: ['Matérias-primas'],
     primaryAction: 'Salvar formulação',
+    createAction: 'Nova formulação',
+    recordTitleField: 'produto',
+    recordDescriptionFields: ['quantidade', 'unidade', 'ativo'],
   },
   {
     id: 'batidas',
@@ -180,6 +205,7 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     title: 'Batida',
     objective: 'Registrar a produção de uma formulação para um armazém de destino.',
     status: 'ready',
+    listMode: true,
     fields: [
       responsavel,
       { id: 'tipo', label: 'Tipo', type: 'select', required: true, options: ['Estoque', 'Formulação'] },
@@ -189,6 +215,9 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
       { id: 'unidade', label: 'Unidade de medida', type: 'select', required: true, options: ['kg', 't', 'L'] },
     ],
     primaryAction: 'Salvar batida',
+    createAction: 'Nova batida',
+    recordTitleField: 'produto',
+    recordDescriptionFields: ['quantidade', 'unidade', 'armazem'],
     emptyLabel: 'Nenhuma batida registrada.',
   },
   {
@@ -250,6 +279,7 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     title: 'Apontamento agrícola',
     objective: 'Registrar uma operação agrícola e os recursos associados.',
     status: 'ready',
+    listMode: true,
     fields: [
       responsavel,
       { id: 'area', label: 'Área', type: 'select', required: true, options: ['Talhão 01', 'Talhão 02', 'Pasto Norte'] },
@@ -262,6 +292,9 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     ],
     sections: ['Insumos', 'Abastecimentos', 'Máquinas / Implementos', 'Mão de obra / Serviços', 'Ocorrências', 'Produção'],
     primaryAction: 'Salvar apontamento',
+    createAction: 'Novo apontamento',
+    recordTitleField: 'atividade',
+    recordDescriptionFields: ['operacao', 'area', 'area-utilizada'],
   },
   {
     id: 'marcacao',
@@ -510,19 +543,45 @@ export const OPERATIONAL_FEATURES: FeatureDefinition[] = [
     group: 'Gestão de frota',
     title: 'Abastecimentos',
     objective: 'Consultar e registrar abastecimentos da frota.',
-    status: 'mapped',
-    primaryAction: 'Novo abastecimento',
+    status: 'ready',
+    listMode: true,
+    fields: [
+      responsavel,
+      { id: 'data', label: 'Data', type: 'date', required: true },
+      { id: 'veiculo', label: 'Veículo / equipamento', type: 'select', required: true, options: ['Trator John Deere 6110', 'Colheitadeira CR7', 'Caminhão Boiadeiro', 'Pulverizador'] },
+      { id: 'combustivel', label: 'Combustível', type: 'select', required: true, options: ['Diesel S10', 'Diesel S500', 'Gasolina', 'Etanol'] },
+      { id: 'quantidade', label: 'Quantidade (L)', type: 'number', required: true },
+      { id: 'medidor', label: 'Hodômetro / horímetro', type: 'number', required: true },
+      { id: 'origem', label: 'Posto / tanque de origem', required: true },
+    ],
+    createAction: 'Novo abastecimento',
+    primaryAction: 'Registrar abastecimento',
+    recordTitleField: 'veiculo',
+    recordDescriptionFields: ['quantidade', 'combustivel', 'data'],
     emptyLabel: 'Nenhum abastecimento registrado.',
-    sourceDetail: 'O formulário interno não foi exibido.',
+    sourceDetail: 'Campos complementares adotados como premissa funcional do protótipo frontend.',
   },
   {
     id: 'manutencao-frota',
     group: 'Gestão de frota',
     title: 'Manutenção',
     objective: 'Controlar manutenções da frota.',
-    status: 'mapped',
-    primaryAction: 'Nova manutenção',
-    sourceDetail: 'Os campos internos não foram exibidos.',
+    status: 'ready',
+    listMode: true,
+    fields: [
+      responsavel,
+      { id: 'equipamento', label: 'Veículo / equipamento', type: 'select', required: true, options: ['Trator John Deere 6110', 'Colheitadeira CR7', 'Caminhão Boiadeiro', 'Pulverizador'] },
+      { id: 'tipo', label: 'Tipo', type: 'select', required: true, options: ['Preventiva', 'Corretiva', 'Inspeção'] },
+      { id: 'descricao', label: 'Serviço', required: true, placeholder: 'Descreva a manutenção' },
+      { id: 'data', label: 'Data prevista', type: 'date', required: true },
+      { id: 'oficina', label: 'Oficina / responsável externo', required: true },
+      { id: 'custo', label: 'Custo estimado (R$)', type: 'number' },
+      { id: 'observacao', label: 'Observação', type: 'textarea' },
+    ],
+    createAction: 'Nova manutenção',
+    primaryAction: 'Programar manutenção',
+    recordTitleField: 'descricao',
+    recordDescriptionFields: ['tipo', 'equipamento', 'data'],
   },
   {
     id: 'minhas-os',

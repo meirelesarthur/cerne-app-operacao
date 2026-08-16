@@ -1,7 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { Bluetooth, ClipboardCheck, Info, ShieldCheck } from 'lucide-react'
+import { Bluetooth, ClipboardCheck, Info, Plus, ShieldCheck } from 'lucide-react'
+import { AddableGroupList } from '@/components/ui/AddableGroupList'
 import { Banner } from '@/components/ui/Banner'
+import { BottomSheet } from '@/components/ui/BottomSheet'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Chip } from '@/components/ui/Chip'
@@ -23,15 +25,19 @@ import {
   type FeatureDefinition,
   type FeatureField,
 } from '../functionalCatalog'
+import {
+  usePrototypeRecordsStore,
+  type PrototypeRecord,
+} from '../state/prototypeRecordsStore'
 
 type WorkspaceRole = 'administrativo' | 'operacional'
+type ScreenMode = 'list' | 'form' | 'success'
+
+function workspaceRoute(role: WorkspaceRole) {
+  return `/fazendas/${role === 'administrativo' ? 'administracao' : 'operacional'}`
+}
 
 const READ_ONLY_SAMPLES: Record<string, { label: string; description: string }[]> = {
-  areas: [
-    { label: 'Talhão 01', description: 'Agricultura · 42 ha' },
-    { label: 'Pasto Norte', description: 'Pecuária · 68 ha' },
-    { label: 'Pomar Sul', description: 'Fruticultura · 15 ha' },
-  ],
   'saldo-estoque': [
     { label: 'Ração Engorda', description: 'Armazém A · 12.400 kg' },
     { label: 'Sal Mineral', description: 'Armazém A · 3.200 kg' },
@@ -41,6 +47,12 @@ const READ_ONLY_SAMPLES: Record<string, { label: string; description: string }[]
     { label: 'Transferência do Lote 42', description: 'Pendente · aguardando sincronização' },
     { label: 'Pesagem do Lote 19', description: 'Concluído · hoje às 08:03' },
   ],
+}
+
+const STATUS_LABEL: Record<PrototypeRecord['status'], string> = {
+  ativo: 'Ativo',
+  concluido: 'Concluído',
+  programado: 'Programado',
 }
 
 function FieldControl({
@@ -87,8 +99,17 @@ function FieldControl({
   )
 }
 
-function FeatureForm({ feature, onComplete }: { feature: FeatureDefinition; onComplete: () => void }) {
+function FeatureForm({
+  feature,
+  onCancel,
+  onComplete,
+}: {
+  feature: FeatureDefinition
+  onCancel?: () => void
+  onComplete: (values: Record<string, string>, groupCounts: Record<string, number>) => void
+}) {
   const [values, setValues] = useState<Record<string, string>>({})
+  const [groupCounts, setGroupCounts] = useState<Record<string, number>>({})
   const valid = (feature.fields ?? []).every((field) => !field.required || Boolean(values[field.id]?.trim()))
 
   return (
@@ -111,37 +132,165 @@ function FeatureForm({ feature, onComplete }: { feature: FeatureDefinition; onCo
         ))}
       </Card>
 
-      {feature.sections && (
+      {feature.sections?.length ? (
         <Card>
-          <SectionTitle className="mb-3">Grupos do fluxo</SectionTitle>
-          <div className="flex flex-wrap gap-2">
-            {feature.sections.map((section) => (
-              <Tag key={section}>{section}</Tag>
-            ))}
-          </div>
-          <p className="mt-3 text-xs text-fg-muted">
-            Os grupos seguem a estrutura observada e serão detalhados em etapas próprias na evolução do protótipo.
-          </p>
+          <SectionTitle className="mb-3">Itens vinculados</SectionTitle>
+          <AddableGroupList
+            groups={feature.sections}
+            counts={groupCounts}
+            onAdd={(group) => setGroupCounts((current) => ({ ...current, [group]: (current[group] ?? 0) + 1 }))}
+          />
         </Card>
-      )}
+      ) : null}
 
-      <Button fullWidth size="lg" disabled={!valid} onClick={onComplete}>
-        {feature.primaryAction ?? 'Salvar registro'}
-      </Button>
+      <div className="flex flex-col gap-2">
+        <Button fullWidth size="lg" disabled={!valid} onClick={() => onComplete(values, groupCounts)}>
+          {feature.primaryAction ?? 'Salvar registro'}
+        </Button>
+        {onCancel && (
+          <Button fullWidth size="lg" variant="ghost" onClick={onCancel}>
+            Cancelar
+          </Button>
+        )}
+      </div>
     </div>
   )
 }
 
-/** Tela de detalhe dirigida pelo catálogo para itens ainda sem uma tela dedicada. */
+function makeRecord(
+  feature: FeatureDefinition,
+  values: Record<string, string>,
+  groupCounts: Record<string, number>,
+): Omit<PrototypeRecord, 'id'> {
+  const fieldLabel = Object.fromEntries((feature.fields ?? []).map((field) => [field.id, field.label]))
+  const details = Object.fromEntries(
+    Object.entries(values)
+      .filter(([, value]) => value.trim())
+      .map(([id, value]) => [fieldLabel[id] ?? id, value]),
+  )
+
+  Object.entries(groupCounts).forEach(([group, count]) => {
+    if (count > 0) details[group] = `${count} item(ns)`
+  })
+
+  const title = values[feature.recordTitleField ?? 'nome'] || feature.title
+  const fallbackDescription = (feature.recordDescriptionFields ?? [])
+    .map((fieldId) => values[fieldId])
+    .filter(Boolean)
+    .join(' · ')
+  const descriptionByFeature: Record<string, string> = {
+    'cadastrar-area': [values.tipo, values['area-total'] && values.unidade ? `${values['area-total']} ${values.unidade}` : ''].filter(Boolean).join(' · '),
+    formulacoes: [values.quantidade && values.unidade ? `${values.quantidade} ${values.unidade}` : '', values.ativo === 'Sim' ? 'Ativa' : 'Inativa'].filter(Boolean).join(' · '),
+    batidas: [values.formulacao, values.quantidade && values.unidade ? `${values.quantidade} ${values.unidade}` : ''].filter(Boolean).join(' · '),
+    apontamento: [values.operacao, values.data].filter(Boolean).join(' · '),
+    abastecimentos: [values.quantidade ? `${values.quantidade} L` : '', values.combustivel].filter(Boolean).join(' · '),
+    'manutencao-frota': [values.tipo, values.data].filter(Boolean).join(' · '),
+  }
+  const description = descriptionByFeature[feature.id] || fallbackDescription
+
+  return {
+    title,
+    description: description || 'Registro criado agora',
+    status: feature.id === 'manutencao-frota' ? 'programado' : feature.id === 'cadastrar-area' || feature.id === 'formulacoes' ? 'ativo' : 'concluido',
+    details,
+  }
+}
+
+function RecordsList({
+  feature,
+  records,
+  canCreate,
+  onCreate,
+  onSelect,
+}: {
+  feature: FeatureDefinition
+  records: PrototypeRecord[]
+  canCreate: boolean
+  onCreate: () => void
+  onSelect: (record: PrototypeRecord) => void
+}) {
+  return (
+    <div className="flex flex-col gap-4">
+      <Card>
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <SectionTitle>Registros</SectionTitle>
+          <Chip tone="neutral">{records.length}</Chip>
+        </div>
+        {records.length ? (
+          <div className="flex flex-col gap-2">
+            {records.map((record) => (
+              <MenuItem
+                key={record.id}
+                label={record.title}
+                description={record.description}
+                trailing={<Chip tone={record.status === 'programado' ? 'blue' : 'brand'}>{STATUS_LABEL[record.status]}</Chip>}
+                onClick={() => onSelect(record)}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            icon={ClipboardCheck}
+            title={feature.emptyLabel ?? 'Nenhum registro encontrado'}
+            description="Use a ação abaixo para criar o primeiro registro desta rotina."
+          />
+        )}
+      </Card>
+
+      {canCreate && (
+        <Button fullWidth size="lg" leftIcon={<Plus size={18} />} onClick={onCreate}>
+          {feature.createAction ?? 'Novo registro'}
+        </Button>
+      )}
+    </div>
+  )
+}
+
+function RecordDetailsSheet({ record, onClose }: { record: PrototypeRecord | null; onClose: () => void }) {
+  return (
+    <BottomSheet open={Boolean(record)} onClose={onClose} title={record?.title}>
+      {record && (
+        <div className="flex flex-col gap-4">
+          <Chip tone={record.status === 'programado' ? 'blue' : 'brand'} className="self-start">
+            {STATUS_LABEL[record.status]}
+          </Chip>
+          <div className="flex flex-col gap-2">
+            {Object.entries(record.details).map(([label, value]) => (
+              <div key={label} className="flex items-start justify-between gap-4 border-b border-border-subtle py-2 last:border-b-0">
+                <p className="text-sm text-fg-muted">{label}</p>
+                <p className="text-right text-sm font-semibold text-fg">{value}</p>
+              </div>
+            ))}
+          </div>
+          <Button fullWidth variant="secondary" onClick={onClose}>
+            Fechar
+          </Button>
+        </div>
+      )}
+    </BottomSheet>
+  )
+}
+
+/** Tela dirigida pelo catálogo: suporta consulta, lista, formulário e sucesso em memória. */
 export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
   const { featureId } = useParams()
   const navigate = useNavigate()
-  const [complete, setComplete] = useState(false)
+  const [mode, setMode] = useState<ScreenMode>('list')
+  const [selectedRecord, setSelectedRecord] = useState<PrototypeRecord | null>(null)
+  const [lastCreated, setLastCreated] = useState<PrototypeRecord | null>(null)
   const feature = featureId ? FEATURE_BY_ID[featureId] : undefined
+  const recordsByFeature = usePrototypeRecordsStore((state) => state.recordsByFeature)
+  const addRecord = usePrototypeRecordsStore((state) => state.addRecord)
   const allowedIds = useMemo(
     () => new Set((role === 'administrativo' ? ADMIN_FEATURES : OPERATIONAL_FEATURES).map((item) => item.id)),
     [role],
   )
+
+  useEffect(() => {
+    setMode('list')
+    setSelectedRecord(null)
+    setLastCreated(null)
+  }, [featureId])
 
   if (!feature || !allowedIds.has(feature.id)) {
     return (
@@ -149,43 +298,60 @@ export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
         icon={ShieldCheck}
         title="Funcionalidade fora deste perfil"
         description="Volte ao ambiente correspondente para acessar esta responsabilidade."
-        action={<Button onClick={() => navigate(`/fazendas/${role}`)}>Voltar ao ambiente</Button>}
+        action={<Button onClick={() => navigate(workspaceRoute(role))}>Voltar ao ambiente</Button>}
         className="h-full"
       />
     )
   }
 
-  if (complete) {
+  const dataSourceId = feature.dataSourceId ?? feature.id
+  const records = recordsByFeature[dataSourceId] ?? []
+  const samples = READ_ONLY_SAMPLES[feature.id]
+  const canCreate = role === 'operacional' && Boolean(feature.fields?.length)
+
+  const completeForm = (values: Record<string, string>, groupCounts: Record<string, number>) => {
+    const created = addRecord(dataSourceId, makeRecord(feature, values, groupCounts))
+    setLastCreated(created)
+    setMode('success')
+  }
+
+  if (mode === 'success') {
     return (
       <SuccessPanel
-        title="Registro de demonstração concluído"
-        description="O fluxo foi validado no protótipo e está pronto para o detalhamento técnico do time mobile."
+        title={`${lastCreated?.title ?? feature.title} salvo`}
+        description="O registro foi incluído no protótipo e já está disponível na lista desta sessão."
       >
-        <Button fullWidth onClick={() => navigate(`/fazendas/${role}`)}>
+        {feature.listMode && (
+          <Button fullWidth onClick={() => setMode('list')}>
+            Ver registros
+          </Button>
+        )}
+        <Button fullWidth variant="secondary" onClick={() => navigate(workspaceRoute(role))}>
           Voltar às funcionalidades
         </Button>
       </SuccessPanel>
     )
   }
 
-  const samples = READ_ONLY_SAMPLES[feature.id]
-
   return (
     <div className="flex h-full flex-col bg-canvas">
-      <SubPageHeader title={feature.title} />
+      <SubPageHeader
+        title={feature.title}
+        onBack={mode === 'form' && feature.listMode ? () => setMode('list') : undefined}
+      />
       {role === 'operacional' && <ContextBadge />}
       <div className="no-scrollbar flex flex-1 flex-col gap-4 overflow-y-auto p-4">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Chip tone={role === 'administrativo' ? 'blue' : 'brand'}>
               {role === 'administrativo' ? 'Administração' : 'Operação'}
             </Chip>
             <Chip tone={feature.status === 'hardware' ? 'amber' : feature.status === 'mapped' ? 'blue' : 'brand'}>
-              {feature.status === 'hardware' ? 'Depende de hardware' : feature.status === 'mapped' ? 'Escopo mapeado' : 'Fluxo detalhado'}
+              {feature.status === 'hardware' ? 'Simulação de hardware' : feature.status === 'mapped' ? 'Escopo mapeado' : 'Funcional no protótipo'}
             </Chip>
           </div>
           <Heading level={2} className="mt-3">
-            {feature.title}
+            {mode === 'form' ? feature.createAction ?? feature.title : feature.title}
           </Heading>
           <p className="mt-1 text-md text-fg-muted">{feature.objective}</p>
         </div>
@@ -198,7 +364,7 @@ export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
 
         {feature.status === 'hardware' && (
           <Banner tone="offline" icon={<Bluetooth size={15} />}>
-            A apresentação simula a preparação do fluxo. A integração nativa será validada no app mobile.
+            A integração nativa é simulada neste protótipo frontend.
           </Banner>
         )}
 
@@ -213,8 +379,20 @@ export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
           </Card>
         )}
 
-        {feature.fields?.length ? (
-          <FeatureForm feature={feature} onComplete={() => setComplete(true)} />
+        {feature.listMode && mode === 'list' ? (
+          <RecordsList
+            feature={feature}
+            records={records}
+            canCreate={canCreate}
+            onCreate={() => setMode('form')}
+            onSelect={setSelectedRecord}
+          />
+        ) : feature.fields?.length ? (
+          <FeatureForm
+            feature={feature}
+            onComplete={completeForm}
+            onCancel={feature.listMode ? () => setMode('list') : undefined}
+          />
         ) : samples ? (
           <Card className="flex flex-col gap-2">
             <SectionTitle>Visão de consulta</SectionTitle>
@@ -234,7 +412,7 @@ export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
           <Card>
             <SectionTitle className="mb-2">Acesso prototipado</SectionTitle>
             <p className="mb-4 text-sm text-fg-muted">
-              A navegação e a responsabilidade estão definidas. Os campos aguardam evidência funcional para não criar regras incorretas.
+              A navegação e a responsabilidade estão definidas. Este fluxo será detalhado na próxima onda.
             </p>
             <Button fullWidth variant="secondary" leftIcon={<ClipboardCheck size={18} />} disabled>
               {feature.primaryAction}
@@ -242,6 +420,8 @@ export function MappedFeatureScreen({ role }: { role: WorkspaceRole }) {
           </Card>
         ) : null}
       </div>
+
+      <RecordDetailsSheet record={selectedRecord} onClose={() => setSelectedRecord(null)} />
     </div>
   )
 }
