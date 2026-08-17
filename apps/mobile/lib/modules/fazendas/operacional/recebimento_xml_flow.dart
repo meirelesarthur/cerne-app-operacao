@@ -182,6 +182,7 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                           AppCheckbox(
                             checked: _conferidos[item.id] ?? false,
                             onChanged: (_) => _toggle(item.id),
+                            semanticLabel: 'Conferir ${item.descricao}',
                           ),
                           const SizedBox(width: AppSpacing.space3),
                           Expanded(
