@@ -60,6 +60,9 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
 
+  # Download local dos arquivos de auditoria no protótipo Flutter Web.
+  web: ^1.1.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

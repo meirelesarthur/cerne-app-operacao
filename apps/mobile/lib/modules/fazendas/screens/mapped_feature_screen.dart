@@ -188,7 +188,9 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                 ),
                 const SizedBox(height: AppSpacing.space4),
               ],
-              if (feature.listMode &&
+              if (feature.auditExport case final auditExport?)
+                _AuditExportJourney(kind: auditExport)
+              else if (feature.listMode &&
                   _journey.mode == FunctionalJourneyMode.list)
                 _RecordsList(
                   feature: feature,
@@ -215,6 +217,75 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     );
   }
 }
+
+class _AuditExportJourney extends StatelessWidget {
+  const _AuditExportJourney({required this.kind});
+
+  final AuditExportKind kind;
+
+  @override
+  Widget build(BuildContext context) {
+    return AppAuditExportPanel(
+      filename: kind == AuditExportKind.estoque
+          ? 'auditoria-estoque'
+          : 'auditoria-pecuaria',
+      rows: switch (kind) {
+        AuditExportKind.estoque => _stockAuditRows,
+        AuditExportKind.pecuaria => _livestockAuditRows,
+      },
+      downloadFile: true,
+      onExport: (_) {},
+    );
+  }
+}
+
+const _stockAuditRows = <Map<String, String>>[
+  {
+    'data': '2026-08-16 08:42',
+    'usuário': 'João Oliveira',
+    'ação': 'Batida registrada',
+    'entidade': 'Ração engorda',
+    'quantidade': '1.000 kg',
+  },
+  {
+    'data': '2026-08-15 17:18',
+    'usuário': 'Maria Souza',
+    'ação': 'Estoque ajustado',
+    'entidade': 'Sal mineral',
+    'quantidade': '120 kg',
+  },
+  {
+    'data': '2026-08-14 14:05',
+    'usuário': 'Carlos Dias',
+    'ação': 'Entrada confirmada',
+    'entidade': 'Milho moído',
+    'quantidade': '4.500 kg',
+  },
+];
+
+const _livestockAuditRows = <Map<String, String>>[
+  {
+    'data': '2026-08-16 09:15',
+    'usuário': 'Maria Souza',
+    'ação': 'Diagnóstico registrado',
+    'entidade': 'Lote Matrizes 01',
+    'resultado': '94 prenhes',
+  },
+  {
+    'data': '2026-08-15 16:20',
+    'usuário': 'João Oliveira',
+    'ação': 'Transferência concluída',
+    'entidade': 'RFID 982000123456120',
+    'resultado': 'Lote 42',
+  },
+  {
+    'data': '2026-08-14 11:30',
+    'usuário': 'Carlos Dias',
+    'ação': 'Pesagem registrada',
+    'entidade': 'Lote Recria 02',
+    'resultado': '318 kg médio',
+  },
+];
 
 class _FeatureIntroduction extends StatelessWidget {
   const _FeatureIntroduction({required this.feature, required this.formMode});

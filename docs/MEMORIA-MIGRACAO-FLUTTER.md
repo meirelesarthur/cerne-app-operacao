@@ -14,7 +14,7 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3, M4, M5 e M6 foram concluídas localmente e aguardam push sob demanda.
+- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3, M4, M5, M6 e M7 foram concluídas localmente e aguardam push sob demanda.
 - O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
@@ -160,11 +160,11 @@ Commit planejado: `feat(mobile): conclui onda C de simulacoes de hardware`.
 
 ### M7 — Onda D Flutter
 
-- [ ] Saldo de Estoque e Processamentos Pecuários.
-- [ ] Logs e exportação local de auditoria.
-- [ ] Carga, Descarga, Nota de Cocho e Configurações do Misturador.
-- [ ] Marcação agrícola.
-- [ ] Compra de Animais, Apartação e Minhas OS.
+- [x] Saldo de Estoque e Processamentos Pecuários.
+- [x] Logs e exportação local de auditoria.
+- [x] Carga, Descarga, Nota de Cocho e Configurações do Misturador.
+- [x] Marcação agrícola.
+- [x] Compra de Animais, Apartação e Minhas OS.
 
 Gate: 46 itens `Ready`, sete `Hardware` simulados e nenhum item apenas mapeado.
 
@@ -274,12 +274,12 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | Memória inicial | Concluída | preencher pelo histórico Git | Arquivo criado; nenhuma implementação iniciada | React permanece oficial por ora |
 | M0 | Concluída | `8e03fad` | Matriz 53/53; contagem 12/41 conferida | React congelado como referência; nenhuma tela alterada |
 | M1 | Concluída | `da3c8dd` | Analyze limpo; 7 testes de contrato; 58 testes de Fazendas verdes | 168 campos, 156 obrigatórios, 46 Ready e 7 Hardware; suíte global excedeu 10 min sem falha reportada |
-| M2 | Concluída | `3021f9c` | Analyze limpo; 10 testes novos; Widgetbook Web compilado | Catálogo ampliado de 42 para 46 componentes; download físico do arquivo de auditoria será conectado em M7 |
+| M2 | Concluída | `3021f9c` | Analyze limpo; 10 testes novos; Widgetbook Web compilado | Catálogo ampliado de 42 para 46 componentes; download físico do arquivo de auditoria conectado em M7 |
 | M3 | Concluída | `f786870` | Analyze limpo; 45 testes focados verdes; Flutter Web compilado | Duas centrais derivadas do catálogo 12/41; rotas cruzadas redirecionam; logout invalida sessão; jornadas sem tela própria permanecem para M4–M7 |
 | M4 / A | Concluída | `93f5d58` | Analyze limpo; 25 testes focados verdes; teste ponta a ponta lista → validação → sucesso → consulta | Tela dirigida pelo catálogo reutiliza o motor M2; seis contratos da onda usam os mesmos registros Riverpod e Administração lê Áreas criadas no Operacional |
 | M5 / B | Concluída | `a78bdf5` | Analyze limpo; 19 testes focados verdes | Treze contratos executáveis; período reprodutivo inválido é bloqueado; grupos de Pastagens aceitam itens vinculados |
-| M6 / C | Concluída | este commit (`feat(mobile): conclui onda C de simulacoes de hardware`) | Analyze limpo; 13 testes focados e 77 testes ampliados verdes; Flutter Web compilado | Sete contratos bloqueiam sem captura; Bluetooth usa descoberta em duas etapas; RFID aceita captura ou entrada manual; scanner mantém enquadramento semântico |
-| M7 / D | Pendente | — | — | — |
+| M6 / C | Concluída | `0275bc7` | Analyze limpo; 13 testes focados e 77 testes ampliados verdes; Flutter Web compilado | Sete contratos bloqueiam sem captura; Bluetooth usa descoberta em duas etapas; RFID aceita captura ou entrada manual; scanner mantém enquadramento semântico |
+| M7 / D | Concluída | este commit (`feat(mobile): conclui onda D de cobertura funcional`) | Analyze limpo; 12 testes focados e 83 testes ampliados verdes; Flutter Web compilado | As 46 funcionalidades Ready têm destino executável; consultas e OS recebem amostras; auditorias geram CSV/JSON e baixam o arquivo no Flutter Web |
 | M8 / E | Pendente | — | — | — |
 | M9 / F | Pendente | — | — | — |
 | M10 / G | Pendente | — | — | — |
