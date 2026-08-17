@@ -14,7 +14,7 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 a M9 foram concluídas localmente e aguardam push sob demanda.
+- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 a M10 foram concluídas localmente e aguardam push sob demanda.
 - O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
@@ -194,9 +194,9 @@ Commit planejado: `fix(mobile): conclui onda F de acessibilidade`.
 
 ### M10 — Onda G Flutter
 
-- [ ] Auditar component-first em todas as telas novas.
-- [ ] Bloquear controles visíveis reimplementados fora de `lib/ui` quando houver equivalente no catálogo.
-- [ ] Garantir que todos os novos componentes apareçam no Widgetbook.
+- [x] Auditar component-first em todas as telas novas.
+- [x] Bloquear controles visíveis reimplementados fora de `lib/ui` quando houver equivalente no catálogo.
+- [x] Garantir que todos os novos componentes apareçam no Widgetbook.
 
 Gate: zero duplicação local de widgets do design system.
 
@@ -281,8 +281,8 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | M6 / C | Concluída | `0275bc7` | Analyze limpo; 13 testes focados e 77 testes ampliados verdes; Flutter Web compilado | Sete contratos bloqueiam sem captura; Bluetooth usa descoberta em duas etapas; RFID aceita captura ou entrada manual; scanner mantém enquadramento semântico |
 | M7 / D | Concluída | `5cab23f` | Analyze limpo; 12 testes focados e 83 testes ampliados verdes; Flutter Web compilado | As 46 funcionalidades Ready têm destino executável; consultas e OS recebem amostras; auditorias geram CSV/JSON e baixam o arquivo no Flutter Web |
 | M8 / E | Concluída | `1cda773` | Analyze limpo; 53 testes do gate funcional verdes | Política cobre sessão ausente, famílias de rotas cruzadas, logout e redirecionamento para a central correta; CI executa o gate antes da suíte global |
-| M9 / F | Concluída | este commit (`fix(mobile): conclui onda F de acessibilidade`) | Analyze limpo; 6 testes novos e regressão ampliada de 200 testes verdes; Flutter Web compilado | Controles compartilhados preservam alvo mínimo de 44dp; formulário e ações expõem semântica; teclado e viewports 390×844/1024×844 cobertos; login e botões largos não causam overflow |
-| M10 / G | Pendente | — | — | — |
+| M9 / F | Concluída | `fb7eba8` | Analyze limpo; 6 testes novos e regressão ampliada de 200 testes verdes; Flutter Web compilado | Controles compartilhados preservam alvo mínimo de 44dp; formulário e ações expõem semântica; teclado e viewports 390×844/1024×844 cobertos; login e botões largos não causam overflow |
+| M10 / G | Concluída | este commit (`refactor(mobile): conclui onda G component first`) | Analyze limpo; 3 testes arquiteturais, gate CI com 56 testes e regressão focada com 71 testes verdes; app e Widgetbook Web compilados | AppPressable centraliza superfícies interativas em 16 arquivos de shell/módulos; imports públicos passam por ui.dart; gate bloqueia controles crus e componentes sem caso no Widgetbook |
 | M11 / H | Pendente | — | — | — |
 | M12 | Pendente | — | — | — |
 | M13 | Pendente | — | — | — |

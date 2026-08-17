@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
@@ -27,6 +28,33 @@ void main() {
     await tester.tap(find.text('Registro'));
     expect(tapped, isTrue);
     semantics.dispose();
+  });
+
+  testWidgets('Pressable preserva alvo mínimo e ativação por teclado', (
+    tester,
+  ) async {
+    var activated = false;
+    await tester.pumpWidget(
+      _wrap(
+        AppPressable(
+          semanticLabel: 'Abrir filtro',
+          selected: true,
+          onPressed: () => activated = true,
+          child: const Text('Filtro'),
+        ),
+      ),
+    );
+
+    final size = tester.getSize(find.byType(AppPressable));
+    expect(size.width, greaterThanOrEqualTo(44));
+    expect(size.height, greaterThanOrEqualTo(44));
+
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pump();
+    await tester.sendKeyEvent(LogicalKeyboardKey.enter);
+    await tester.pump();
+
+    expect(activated, isTrue);
   });
 
   testWidgets('grupo repetível incrementa pelo callback', (tester) async {

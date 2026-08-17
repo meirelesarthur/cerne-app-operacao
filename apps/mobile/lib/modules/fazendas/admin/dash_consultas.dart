@@ -115,42 +115,41 @@ class _HubTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.xl2),
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.space3),
-          decoration: BoxDecoration(
-            color: selected ? semantic.accentSubtle : semantic.bgSurface,
-            border: Border.all(
-              color: selected ? semantic.accentDefault : semantic.borderDefault,
+    return AppPressable(
+      semanticLabel: label,
+      selected: selected,
+      onPressed: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.xl2),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.space3),
+        decoration: BoxDecoration(
+          color: selected ? semantic.accentSubtle : semantic.bgSurface,
+          border: Border.all(
+            color: selected ? semantic.accentDefault : semantic.borderDefault,
+          ),
+          borderRadius: BorderRadius.circular(AppRadius.xl2),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: selected ? semantic.accentDefault : semantic.fgMuted,
             ),
-            borderRadius: BorderRadius.circular(AppRadius.xl2),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 20,
-                color: selected ? semantic.accentDefault : semantic.fgMuted,
+            const SizedBox(height: 6),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+                color: semantic.fgMuted,
               ),
-              const SizedBox(height: 6),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: semantic.fgMuted,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

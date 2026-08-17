@@ -1,5 +1,4 @@
-import '../ui/transaction_list_item.dart'
-    show AppTransactionItem, AppTransactionDirection;
+import '../ui/ui.dart' show AppTransactionItem, AppTransactionDirection;
 
 /// Mocks do Banking — espelha `src/modules/bank/mocks/banking.ts`. Determinísticos
 /// (sem `Date.now`). Consumidos pelo hub (widget de conta) e pelo módulo Bank.

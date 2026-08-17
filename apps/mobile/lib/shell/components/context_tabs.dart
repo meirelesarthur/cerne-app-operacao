@@ -5,6 +5,7 @@ import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
+import '../../ui/ui.dart';
 import '../module_config.dart';
 import '../state/prototype_session_store.dart';
 
@@ -67,31 +68,27 @@ class AppContextTabs extends StatelessWidget {
                 child: Material(
                   color: active ? semantic.inkBg : semantic.bgSurface,
                   borderRadius: BorderRadius.circular(AppRadius.full),
-                  child: InkWell(
-                    onTap: () => onTabSelected(tab.path),
+                  child: AppPressable(
+                    semanticLabel: tab.label,
+                    selected: active,
+                    onPressed: () => onTabSelected(tab.path),
                     borderRadius: BorderRadius.circular(AppRadius.full),
-                    child: Semantics(
-                      button: true,
-                      selected: active,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(
-                          minHeight: AppSize.control,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: AppSize.control,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppSpacing.space4,
+                          vertical: AppSpacing.space2,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.space4,
-                            vertical: AppSpacing.space2,
-                          ),
-                          child: Center(
-                            child: Text(
-                              tab.label,
-                              style: TextStyle(
-                                fontSize: AppTypography.md,
-                                fontWeight: AppTypography.weightSemibold,
-                                color: active
-                                    ? semantic.ctaBg
-                                    : semantic.fgMuted,
-                              ),
+                        child: Center(
+                          child: Text(
+                            tab.label,
+                            style: TextStyle(
+                              fontSize: AppTypography.md,
+                              fontWeight: AppTypography.weightSemibold,
+                              color: active ? semantic.ctaBg : semantic.fgMuted,
                             ),
                           ),
                         ),

@@ -6,6 +6,7 @@ import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
+import '../../../ui/ui.dart';
 
 /// Card de deep-link de crédito pré-aprovado (spec §6.4) — espelha
 /// `CreditoBanner.tsx`: o dado/régua vive no módulo Crédito; aqui é só um
@@ -20,8 +21,9 @@ class CreditoBanner extends StatelessWidget {
     return Material(
       color: semantic.accentSubtle,
       borderRadius: BorderRadius.circular(AppRadius.xl3),
-      child: InkWell(
-        onTap: () => context.go('/credito'),
+      child: AppPressable(
+        semanticLabel: r'Abrir crédito pré-aprovado de R$ 480.000,00',
+        onPressed: () => context.go('/credito'),
         borderRadius: BorderRadius.circular(AppRadius.xl3),
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.space4),

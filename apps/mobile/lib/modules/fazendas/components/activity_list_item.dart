@@ -123,9 +123,11 @@ class ActivityListItem extends StatelessWidget {
     );
 
     if (onTap == null) return row;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(onTap: onTap, child: row),
+    return AppPressable(
+      semanticLabel: 'Abrir atividade ${activity.title}',
+      onPressed: onTap,
+      minTouchTarget: false,
+      child: row,
     );
   }
 }

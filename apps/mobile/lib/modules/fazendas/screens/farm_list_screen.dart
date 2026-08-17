@@ -70,8 +70,12 @@ class _FarmRow extends StatelessWidget {
     return Material(
       color: active ? semantic.accentSubtle : semantic.bgSurface,
       borderRadius: BorderRadius.circular(AppRadius.xl3),
-      child: InkWell(
-        onTap: onTap,
+      child: AppPressable(
+        semanticLabel: active
+            ? '$name, fazenda ativa'
+            : 'Selecionar fazenda $name',
+        selected: active,
+        onPressed: onTap,
         borderRadius: BorderRadius.circular(AppRadius.xl3),
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.space3),

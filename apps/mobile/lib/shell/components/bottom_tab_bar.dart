@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_radius.dart';
 import '../../design/theme/app_theme_extension.dart';
+import '../../ui/ui.dart';
 import '../module_config.dart';
 
 /// Dock de módulos (Nova UI): cápsula flutuante icon-only — os 6 módulos
@@ -89,25 +90,23 @@ class _ModuleButton extends StatelessWidget {
 
     return Tooltip(
       message: label,
-      child: Semantics(
-        button: true,
-        label: label,
-        selected: active,
-        child: Material(
-          color: active ? semantic.inkBg : Colors.transparent,
-          shape: const CircleBorder(),
-          child: InkWell(
-            onTap: onTap,
-            customBorder: const CircleBorder(),
-            child: SizedBox(
-              width: AppComponentMetrics.tabbarItemSize,
-              height: AppComponentMetrics.tabbarItemSize,
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: active ? semantic.navActive : semantic.navFg,
-                ),
+      child: Material(
+        color: active ? semantic.inkBg : Colors.transparent,
+        shape: const CircleBorder(),
+        child: AppPressable(
+          semanticLabel: label,
+          selected: active,
+          onPressed: onTap,
+          minTouchTarget: false,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          child: SizedBox(
+            width: AppComponentMetrics.tabbarItemSize,
+            height: AppComponentMetrics.tabbarItemSize,
+            child: Center(
+              child: Icon(
+                icon,
+                size: 20,
+                color: active ? semantic.navActive : semantic.navFg,
               ),
             ),
           ),

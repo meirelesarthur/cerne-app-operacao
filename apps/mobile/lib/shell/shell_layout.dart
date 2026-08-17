@@ -184,7 +184,7 @@ class ShellLayout extends ConsumerWidget {
 /// desenhado por cima bloquearia também os toques no `AppRevealMenu` ao lado,
 /// já que ambos ocupam a Stack inteira. Botões internos (header, tabs, dock)
 /// continuam recebendo seus próprios toques normalmente — a arena de gestos
-/// do Flutter prioriza o `GestureDetector`/`InkWell` mais interno.
+/// do Flutter prioriza o `AppPressable` mais interno.
 class _ShrunkAppTapToClose extends StatelessWidget {
   const _ShrunkAppTapToClose({
     required this.menuOpen,
@@ -199,9 +199,11 @@ class _ShrunkAppTapToClose extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!menuOpen) return child;
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onClose,
+    return AppPressable(
+      semanticLabel: 'Fechar menu',
+      onPressed: onClose,
+      minTouchTarget: false,
+      showVisualFeedback: false,
       child: child,
     );
   }

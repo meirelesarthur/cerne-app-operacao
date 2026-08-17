@@ -2,6 +2,7 @@
 set -euo pipefail
 
 flutter test \
+  test/architecture/component_first_test.dart \
   test/modules/fazendas/functional_catalog_test.dart \
   test/modules/fazendas/functional_journey_engine_test.dart \
   test/modules/fazendas/screens/mapped_feature_screen_test.dart \

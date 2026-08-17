@@ -187,8 +187,10 @@ class _TipoButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return InkWell(
-      onTap: onTap,
+    return AppPressable(
+      semanticLabel: label,
+      selected: selected,
+      onPressed: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
         padding: const EdgeInsets.symmetric(

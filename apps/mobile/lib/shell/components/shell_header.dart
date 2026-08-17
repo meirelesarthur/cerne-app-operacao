@@ -77,60 +77,58 @@ class AppShellHeader extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Semantics(
-                    button: true,
-                    label: 'Abrir perfil',
-                    child: InkWell(
-                      onTap: onOpenProfile,
-                      child: Row(
-                        children: [
-                          AppAvatar(
-                            name: user.name,
-                            initials: user.initials,
-                            size: AppAvatarSize.lg,
-                          ),
-                          const SizedBox(width: AppSpacing.space3),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  '$greeting,',
-                                  style: TextStyle(
-                                    fontSize: AppTypography.md,
-                                    fontWeight: AppTypography.weightMedium,
-                                    height: AppTypography.lineHeightTight,
-                                    color: semantic.fgMuted,
-                                  ),
+                  child: AppPressable(
+                    semanticLabel: 'Abrir perfil',
+                    onPressed: onOpenProfile,
+                    minTouchTarget: false,
+                    child: Row(
+                      children: [
+                        AppAvatar(
+                          name: user.name,
+                          initials: user.initials,
+                          size: AppAvatarSize.lg,
+                        ),
+                        const SizedBox(width: AppSpacing.space3),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '$greeting,',
+                                style: TextStyle(
+                                  fontSize: AppTypography.md,
+                                  fontWeight: AppTypography.weightMedium,
+                                  height: AppTypography.lineHeightTight,
+                                  color: semantic.fgMuted,
                                 ),
+                              ),
+                              Text(
+                                user.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: AppTypography.xl2,
+                                  fontWeight: AppTypography.weightBold,
+                                  height: AppTypography.lineHeightTight,
+                                  color: semantic.fgDefault,
+                                ),
+                              ),
+                              if (profile != null)
                                 Text(
-                                  user.name,
+                                  'Ambiente ${profile.label}',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: AppTypography.xl2,
-                                    fontWeight: AppTypography.weightBold,
-                                    height: AppTypography.lineHeightTight,
-                                    color: semantic.fgDefault,
+                                    fontSize: AppTypography.xs,
+                                    fontWeight: AppTypography.weightSemibold,
+                                    color: semantic.accentDefault,
                                   ),
                                 ),
-                                if (profile != null)
-                                  Text(
-                                    'Ambiente ${profile.label}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: AppTypography.xs,
-                                      fontWeight: AppTypography.weightSemibold,
-                                      color: semantic.accentDefault,
-                                    ),
-                                  ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

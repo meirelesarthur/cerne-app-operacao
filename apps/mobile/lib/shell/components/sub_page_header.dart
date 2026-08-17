@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_spacing.dart';
-import '../../ui/heading.dart';
-import '../../ui/icon_button.dart';
+import '../../ui/ui.dart';
 
 /// Espelha `SubPageHeader.tsx` — bolha circular de voltar + título centralizado
 /// sobre o canvas, usado pelas páginas secundárias do shell (Perfil, Notificações, Login).

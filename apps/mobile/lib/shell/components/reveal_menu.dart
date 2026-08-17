@@ -187,54 +187,51 @@ class _MenuContent extends StatelessWidget {
       // identidade do usuário
       _stagger(
         next(),
-        Material(
-          color: Colors.transparent,
+        AppPressable(
+          semanticLabel: 'Abrir perfil de ${user.name}',
+          onPressed: () => onNavigate('/perfil'),
           borderRadius: BorderRadius.circular(AppRadius.xl2),
-          child: InkWell(
-            onTap: () => onNavigate('/perfil'),
-            borderRadius: BorderRadius.circular(AppRadius.xl2),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.space2),
-              child: Row(
-                children: [
-                  AppAvatar(
-                    name: user.name,
-                    initials: user.initials,
-                    size: AppAvatarSize.lg,
-                  ),
-                  const SizedBox(width: AppSpacing.space3),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          user.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: AppTypography.lg,
-                            fontWeight: AppTypography.weightBold,
-                            color: semantic.inkFg,
-                          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.space2),
+            child: Row(
+              children: [
+                AppAvatar(
+                  name: user.name,
+                  initials: user.initials,
+                  size: AppAvatarSize.lg,
+                ),
+                const SizedBox(width: AppSpacing.space3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        user.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: AppTypography.lg,
+                          fontWeight: AppTypography.weightBold,
+                          color: semantic.inkFg,
                         ),
-                        Text(
-                          '$roleLabel · GB CERNE',
-                          style: TextStyle(
-                            fontSize: AppTypography.xs,
-                            color: semantic.inkMuted,
-                          ),
+                      ),
+                      Text(
+                        '$roleLabel · GB CERNE',
+                        style: TextStyle(
+                          fontSize: AppTypography.xs,
+                          color: semantic.inkMuted,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Icon(
-                    LucideIcons.chevronRight,
-                    size: 18,
-                    color: semantic.inkMuted,
-                  ),
-                ],
-              ),
+                ),
+                Icon(
+                  LucideIcons.chevronRight,
+                  size: 18,
+                  color: semantic.inkMuted,
+                ),
+              ],
             ),
           ),
         ),
