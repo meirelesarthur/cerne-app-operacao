@@ -14,7 +14,7 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3, M4 e M5 foram concluídas localmente e aguardam push sob demanda.
+- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3, M4, M5 e M6 foram concluídas localmente e aguardam push sob demanda.
 - O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
@@ -148,11 +148,11 @@ Commit planejado: `feat(mobile): conclui onda B de pecuaria e reproducao`.
 
 ### M6 — Onda C Flutter
 
-- [ ] Descoberta e conexão Bluetooth simuladas.
-- [ ] Balança e captura de peso simuladas.
-- [ ] RFID e alternativa manual.
-- [ ] Scanner SISBOV.
-- [ ] Transferência de animal, Localização e Perdas.
+- [x] Descoberta e conexão Bluetooth simuladas.
+- [x] Balança e captura de peso simuladas.
+- [x] RFID e alternativa manual.
+- [x] Scanner SISBOV.
+- [x] Transferência de animal, Localização e Perdas.
 
 Gate: os sete itens têm simulação navegável e permanecem identificados como dependentes de hardware real.
 
@@ -277,8 +277,8 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | M2 | Concluída | `3021f9c` | Analyze limpo; 10 testes novos; Widgetbook Web compilado | Catálogo ampliado de 42 para 46 componentes; download físico do arquivo de auditoria será conectado em M7 |
 | M3 | Concluída | `f786870` | Analyze limpo; 45 testes focados verdes; Flutter Web compilado | Duas centrais derivadas do catálogo 12/41; rotas cruzadas redirecionam; logout invalida sessão; jornadas sem tela própria permanecem para M4–M7 |
 | M4 / A | Concluída | `93f5d58` | Analyze limpo; 25 testes focados verdes; teste ponta a ponta lista → validação → sucesso → consulta | Tela dirigida pelo catálogo reutiliza o motor M2; seis contratos da onda usam os mesmos registros Riverpod e Administração lê Áreas criadas no Operacional |
-| M5 / B | Concluída | este commit (`feat(mobile): conclui onda B de pecuaria e reproducao`) | Analyze limpo; 19 testes focados verdes | Treze contratos executáveis; período reprodutivo inválido é bloqueado; grupos de Pastagens aceitam itens vinculados |
-| M6 / C | Pendente | — | — | — |
+| M5 / B | Concluída | `a78bdf5` | Analyze limpo; 19 testes focados verdes | Treze contratos executáveis; período reprodutivo inválido é bloqueado; grupos de Pastagens aceitam itens vinculados |
+| M6 / C | Concluída | este commit (`feat(mobile): conclui onda C de simulacoes de hardware`) | Analyze limpo; 13 testes focados e 77 testes ampliados verdes; Flutter Web compilado | Sete contratos bloqueiam sem captura; Bluetooth usa descoberta em duas etapas; RFID aceita captura ou entrada manual; scanner mantém enquadramento semântico |
 | M7 / D | Pendente | — | — | — |
 | M8 / E | Pendente | — | — | — |
 | M9 / F | Pendente | — | — | — |

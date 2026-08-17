@@ -66,27 +66,30 @@ class AppFormField extends StatelessWidget {
         child,
         if (error != null) ...[
           const SizedBox(height: AppSpacing.space2),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                LucideIcons.alertCircle,
-                size: 12,
-                color: AppColors.red600,
-              ),
-              const SizedBox(width: AppSpacing.space1),
-              Flexible(
-                child: Text(
-                  error!,
-                  style: const TextStyle(
-                    fontFamily: AppTypography.fontFamily,
-                    fontSize: AppTypography.xs,
-                    fontWeight: AppTypography.weightMedium,
-                    color: AppColors.red600,
+          Semantics(
+            liveRegion: true,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  LucideIcons.alertCircle,
+                  size: 12,
+                  color: AppColors.red600,
+                ),
+                const SizedBox(width: AppSpacing.space1),
+                Flexible(
+                  child: Text(
+                    error!,
+                    style: const TextStyle(
+                      fontFamily: AppTypography.fontFamily,
+                      fontSize: AppTypography.xs,
+                      fontWeight: AppTypography.weightMedium,
+                      color: AppColors.red600,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ] else if (hint != null) ...[
           const SizedBox(height: AppSpacing.space2),

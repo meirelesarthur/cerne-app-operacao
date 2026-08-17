@@ -393,25 +393,58 @@ class _FeatureForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final simulationTarget = feature.simulationTargetField;
+    final visibleFields = feature.fields
+        .where((field) => field.id != simulationTarget)
+        .toList(growable: false);
+    final simulation = feature.simulation;
+    final simulationValue = simulation == null
+        ? null
+        : journey.form.values[simulationTarget ?? '_hardware'] ?? '';
+    final simulationError = journey.form.attempted
+        ? featureSimulationError(feature, journey.form)
+        : null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (feature.fields.isNotEmpty)
+        if (simulation != null) ...[
+          AppHardwareSimulator(
+            kind: _simulationKind(simulation),
+            value: simulationValue,
+            error: simulationError,
+            manualEntryLabel: simulationTarget == null
+                ? null
+                : feature.fields
+                      .firstWhere((field) => field.id == simulationTarget)
+                      .label,
+            manualEntryPlaceholder: simulationTarget == null
+                ? null
+                : feature.fields
+                      .firstWhere((field) => field.id == simulationTarget)
+                      .placeholder,
+            onCapture: (value) =>
+                onValueChanged(simulationTarget ?? '_hardware', value),
+          ),
+          if (visibleFields.isNotEmpty || feature.sections.isNotEmpty)
+            const SizedBox(height: AppSpacing.space4),
+        ],
+        if (visibleFields.isNotEmpty)
           AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const AppSectionTitle(child: Text('Dados do registro')),
                 const SizedBox(height: AppSpacing.space4),
-                for (var index = 0; index < feature.fields.length; index++) ...[
+                for (var index = 0; index < visibleFields.length; index++) ...[
                   _FeatureFieldControl(
                     feature: feature,
-                    field: feature.fields[index],
+                    field: visibleFields[index],
                     journey: journey,
                     onChanged: (value) =>
-                        onValueChanged(feature.fields[index].id, value),
+                        onValueChanged(visibleFields[index].id, value),
                   ),
-                  if (index < feature.fields.length - 1)
+                  if (index < visibleFields.length - 1)
                     const SizedBox(height: AppSpacing.space4),
                 ],
               ],
@@ -455,6 +488,14 @@ class _FeatureForm extends StatelessWidget {
     );
   }
 }
+
+AppHardwareSimulationKind _simulationKind(HardwareSimulationKind kind) =>
+    switch (kind) {
+      HardwareSimulationKind.devices => AppHardwareSimulationKind.devices,
+      HardwareSimulationKind.scale => AppHardwareSimulationKind.scale,
+      HardwareSimulationKind.rfid => AppHardwareSimulationKind.rfid,
+      HardwareSimulationKind.scanner => AppHardwareSimulationKind.scanner,
+    };
 
 class _FeatureFieldControl extends StatelessWidget {
   const _FeatureFieldControl({

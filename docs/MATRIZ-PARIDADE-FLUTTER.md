@@ -49,33 +49,33 @@ Checkpoint M3: os 12 itens administrativos aparecem na Central de gestão e os 4
 | `cadastrar-area` | Cadastros | Áreas | Pronto | Portado: lista e formulário | `/fazendas/operacional/cadastrar-area` | M4/A |
 | `formulacoes` | Estoque | Formulações | Pronto | Portado: lista e formulário | `/fazendas/operacional/formulacoes` | M4/A |
 | `batidas` | Estoque | Batida | Pronto | Portado: lista e formulário | `/fazendas/operacional/batidas` | M4/A |
-| `conexao-aparelhos` | Misturador | Conexão de aparelhos | Hardware | Ausente | `/fazendas/operacional/conexao-aparelhos` | M6/C |
+| `conexao-aparelhos` | Misturador | Conexão de aparelhos | Hardware | Portado: descoberta e conexão simuladas | `/fazendas/operacional/conexao-aparelhos` | M6/C |
 | `carga` | Misturador | Carga | Pronto | Ausente | `/fazendas/operacional/carga` | M7/D |
 | `descarga` | Misturador | Descarga | Pronto | Ausente | `/fazendas/operacional/descarga` | M7/D |
-| `balanca` | Misturador | Balança | Hardware | Ausente | `/fazendas/operacional/balanca` | M6/C |
+| `balanca` | Misturador | Balança | Hardware | Portado: captura de peso simulada | `/fazendas/operacional/balanca` | M6/C |
 | `nota-cocho` | Misturador | Nota de cocho | Pronto | Ausente | `/fazendas/operacional/nota-cocho` | M7/D |
 | `configuracoes-misturador` | Misturador | Configurações | Pronto | Ausente | `/fazendas/operacional/configuracoes-misturador` | M7/D |
 | `apontamento` | Agricultura | Apontamento agrícola | Pronto | Portado: lista e formulário | `/fazendas/operacional/apontamento` | M4/A |
 | `marcacao` | Agricultura | Marcação | Pronto | Ausente | `/fazendas/operacional/marcacao` | M7/D |
 | `colheita-frutas` | Agricultura | Colheita de frutas | Pronto | Ausente | `/fazendas/operacional/colheita-frutas` | M7/D |
 | `rebanho-inicial` | Pecuária | Rebanho inicial | Pronto | Portado: lista e formulário | `/fazendas/operacional/rebanho-inicial` | M5/B |
-| `conexao-aparelhos-pecuaria` | Pecuária | Conexão de aparelhos | Hardware | Ausente | `/fazendas/operacional/conexao-aparelhos-pecuaria` | M6/C |
+| `conexao-aparelhos-pecuaria` | Pecuária | Conexão de aparelhos | Hardware | Portado: descoberta e conexão simuladas | `/fazendas/operacional/conexao-aparelhos-pecuaria` | M6/C |
 | `lote-animais` | Pecuária | Lote de animais | Pronto | Portado: lista e formulário | `/fazendas/operacional/lote-animais` | M5/B |
 | `registrar-animal` | Pecuária | Registrar animal | Pronto | Portado: lista e formulário | `/fazendas/operacional/registrar-animal` | M5/B |
 | `pesagem` | Pecuária | Pesagens | Pronto | Legado: fluxo dedicado | `/fazendas/campo/pesagem` sob perfil operacional | M3/M7 |
-| `transferencia-animal` | Pecuária | Transferência animal/lote | Hardware | Ausente | `/fazendas/operacional/transferencia-animal` | M6/C |
-| `scanner-sisbov` | Pecuária | Scanner SISBOV | Hardware | Ausente | `/fazendas/operacional/scanner-sisbov` | M6/C |
+| `transferencia-animal` | Pecuária | Transferência animal/lote | Hardware | Portado: RFID ou identificação manual | `/fazendas/operacional/transferencia-animal` | M6/C |
+| `scanner-sisbov` | Pecuária | Scanner SISBOV | Hardware | Portado: enquadramento e captura simulados | `/fazendas/operacional/scanner-sisbov` | M6/C |
 | `transferencia-lote-area` | Pecuária | Transferência lote/área | Pronto | Portado: lista e formulário | `/fazendas/operacional/transferencia-lote-area` | M5/B |
 | `nascimentos` | Pecuária | Nascimentos | Pronto | Legado: fluxo compartilhado de ciclo | `/fazendas/campo/ciclo` sob perfil operacional | M3/M7 |
 | `mortes` | Pecuária | Mortes | Pronto | Legado: fluxo compartilhado de ciclo | `/fazendas/campo/ciclo` sob perfil operacional | M3/M7 |
-| `perdas` | Pecuária | Perdas | Hardware | Ausente | `/fazendas/operacional/perdas` | M6/C |
+| `perdas` | Pecuária | Perdas | Hardware | Portado: RFID ou identificação manual | `/fazendas/operacional/perdas` | M6/C |
 | `compras-animais` | Pecuária | Compra de animais | Pronto | Ausente | `/fazendas/operacional/compras-animais` | M7/D |
 | `vendas` | Pecuária | Vendas | Pronto | Legado: fluxo dedicado | `/fazendas/campo/venda` sob perfil operacional | M3/M7 |
 | `nutricoes` | Pecuária | Nutrições | Pronto | Legado: arraçoamento | `/fazendas/campo/arracoamento` sob perfil operacional | M3/M7 |
 | `sanitario` | Pecuária | Sanitário | Pronto | Portado: lista e formulário | `/fazendas/operacional/sanitario` | M5/B |
 | `desmama` | Pecuária | Desmama | Pronto | Portado: lista e formulário | `/fazendas/operacional/desmama` | M5/B |
 | `apartacao` | Pecuária | Apartação | Pronto | Ausente | `/fazendas/operacional/apartacao` | M7/D |
-| `localizar-animal` | Pecuária | Localizar animal | Hardware | Ausente | `/fazendas/operacional/localizar-animal` | M6/C |
+| `localizar-animal` | Pecuária | Localizar animal | Hardware | Portado: RFID ou identificação manual | `/fazendas/operacional/localizar-animal` | M6/C |
 | `pastagens` | Pecuária | Pastagens | Pronto | Portado: formulário e grupos | `/fazendas/operacional/pastagens` | M5/B |
 | `estacao-monta` | Reprodução | Estação de monta | Pronto | Portado: período validado | `/fazendas/operacional/estacao-monta` | M5/B |
 | `lotes-reproducao` | Reprodução | Lotes/reprodução | Pronto | Portado: lista e formulário | `/fazendas/operacional/lotes-reproducao` | M5/B |

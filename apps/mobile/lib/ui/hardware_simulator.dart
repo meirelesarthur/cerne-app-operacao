@@ -10,6 +10,8 @@ import '../design/theme/app_theme_extension.dart';
 import 'button.dart';
 import 'card.dart';
 import 'chip.dart';
+import 'form_field.dart';
+import 'text_input.dart';
 
 enum AppHardwareSimulationKind { devices, scale, rfid, scanner }
 
@@ -20,11 +22,15 @@ class AppHardwareSimulator extends StatefulWidget {
     required this.onCapture,
     this.value,
     this.error,
+    this.manualEntryLabel,
+    this.manualEntryPlaceholder,
   });
 
   final AppHardwareSimulationKind kind;
   final String? value;
   final String? error;
+  final String? manualEntryLabel;
+  final String? manualEntryPlaceholder;
   final ValueChanged<String> onCapture;
 
   @override
@@ -33,6 +39,31 @@ class AppHardwareSimulator extends StatefulWidget {
 
 class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
   bool _devicesFound = false;
+  late final TextEditingController _manualController;
+
+  @override
+  void initState() {
+    super.initState();
+    _manualController = TextEditingController(text: widget.value);
+  }
+
+  @override
+  void didUpdateWidget(covariant AppHardwareSimulator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final nextValue = widget.value ?? '';
+    if (_manualController.text != nextValue) {
+      _manualController.value = TextEditingValue(
+        text: nextValue,
+        selection: TextSelection.collapsed(offset: nextValue.length),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _manualController.dispose();
+    super.dispose();
+  }
 
   bool get _ready => widget.value?.isNotEmpty ?? false;
 
@@ -195,14 +226,17 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
               ),
             ),
           ],
-          if (widget.error != null) ...[
+          if (widget.error != null && widget.manualEntryLabel == null) ...[
             const SizedBox(height: AppSpacing.space2),
-            Text(
-              widget.error!,
-              style: const TextStyle(
-                fontSize: AppTypography.sm,
-                fontWeight: AppTypography.weightSemibold,
-                color: AppColors.red600,
+            Semantics(
+              liveRegion: true,
+              child: Text(
+                widget.error!,
+                style: const TextStyle(
+                  fontSize: AppTypography.sm,
+                  fontWeight: AppTypography.weightSemibold,
+                  color: AppColors.red600,
+                ),
               ),
             ),
           ],
@@ -226,6 +260,39 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
                   : copy.action,
             ),
           ),
+          if (widget.manualEntryLabel != null) ...[
+            const SizedBox(height: AppSpacing.space4),
+            Row(
+              children: [
+                Expanded(child: Divider(color: semantic.borderSubtle)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space3,
+                  ),
+                  child: Text(
+                    'ou informe manualmente',
+                    style: TextStyle(
+                      fontSize: AppTypography.sm,
+                      color: semantic.fgMuted,
+                    ),
+                  ),
+                ),
+                Expanded(child: Divider(color: semantic.borderSubtle)),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.space4),
+            AppFormField(
+              label: widget.manualEntryLabel!,
+              required: true,
+              error: widget.error,
+              child: AppTextInput(
+                controller: _manualController,
+                placeholder: widget.manualEntryPlaceholder,
+                invalid: widget.error != null,
+                onChanged: widget.onCapture,
+              ),
+            ),
+          ],
         ],
       ),
     );
