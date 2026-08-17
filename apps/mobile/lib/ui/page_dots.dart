@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_motion.dart';
+import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -48,7 +49,19 @@ class AppPageDots extends StatelessWidget {
         button: onSelect != null,
         label: 'Página ${i + 1} de $count',
         child: onSelect != null
-            ? GestureDetector(onTap: () => onSelect!(i), child: dot)
+            ? Material(
+                color: Colors.transparent,
+                shape: const CircleBorder(),
+                child: InkWell(
+                  onTap: () => onSelect!(i),
+                  customBorder: const CircleBorder(),
+                  child: SizedBox(
+                    width: AppSize.control,
+                    height: AppSize.control,
+                    child: Center(child: dot),
+                  ),
+                ),
+              )
             : dot,
       );
     });
@@ -60,7 +73,8 @@ class AppPageDots extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           for (var i = 0; i < dots.length; i++) ...[
-            if (i > 0) const SizedBox(width: AppSpacing.space2),
+            if (i > 0 && onSelect == null)
+              const SizedBox(width: AppSpacing.space2),
             dots[i],
           ],
         ],

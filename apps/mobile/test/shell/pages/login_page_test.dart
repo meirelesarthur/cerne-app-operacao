@@ -40,7 +40,10 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Manter conectado'));
+      final keepConnected = find.text('Manter conectado');
+      await tester.ensureVisible(keepConnected);
+      await tester.pumpAndSettle();
+      await tester.tap(keepConnected);
       await tester.pump();
 
       expect(tester.takeException(), isNull);

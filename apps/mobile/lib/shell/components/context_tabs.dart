@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../design/generated/app_radius.dart';
+import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
@@ -72,18 +73,25 @@ class AppContextTabs extends StatelessWidget {
                     child: Semantics(
                       button: true,
                       selected: active,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.space4,
-                          vertical: AppSpacing.space2,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minHeight: AppSize.control,
                         ),
-                        child: Center(
-                          child: Text(
-                            tab.label,
-                            style: TextStyle(
-                              fontSize: AppTypography.md,
-                              fontWeight: AppTypography.weightSemibold,
-                              color: active ? semantic.ctaBg : semantic.fgMuted,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.space4,
+                            vertical: AppSpacing.space2,
+                          ),
+                          child: Center(
+                            child: Text(
+                              tab.label,
+                              style: TextStyle(
+                                fontSize: AppTypography.md,
+                                fontWeight: AppTypography.weightSemibold,
+                                color: active
+                                    ? semantic.ctaBg
+                                    : semantic.fgMuted,
+                              ),
                             ),
                           ),
                         ),

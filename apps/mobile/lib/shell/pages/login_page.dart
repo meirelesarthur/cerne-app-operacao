@@ -134,8 +134,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             children: [
                               const AppHeading(child: Text('Bem-vindo!')),
                               const SizedBox(height: AppSpacing.space1),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   const Text('Primeira vez por aqui?'),
                                   AppButton(
@@ -166,8 +167,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.space4),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Wrap(
+                            alignment: WrapAlignment.spaceBetween,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            runSpacing: AppSpacing.space1,
                             children: [
                               AppCheckbox(
                                 checked: _manterConectado,

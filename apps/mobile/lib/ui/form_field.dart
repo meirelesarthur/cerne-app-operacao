@@ -34,75 +34,79 @@ class AppFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontFamily: AppTypography.fontFamily,
-                fontSize: AppTypography.sm,
-                fontWeight: AppTypography.weightSemibold,
-                color: semantic.fgDefault,
-              ),
-            ),
-            if (required)
-              const Text(
-                ' *',
+    return Semantics(
+      container: true,
+      label: required ? '$label, obrigatório' : label,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
                 style: TextStyle(
                   fontFamily: AppTypography.fontFamily,
                   fontSize: AppTypography.sm,
                   fontWeight: AppTypography.weightSemibold,
-                  color: AppColors.red500,
+                  color: semantic.fgDefault,
                 ),
               ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.space2),
-        child,
-        if (error != null) ...[
-          const SizedBox(height: AppSpacing.space2),
-          Semantics(
-            liveRegion: true,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  LucideIcons.alertCircle,
-                  size: 12,
-                  color: AppColors.red600,
-                ),
-                const SizedBox(width: AppSpacing.space1),
-                Flexible(
-                  child: Text(
-                    error!,
-                    style: const TextStyle(
-                      fontFamily: AppTypography.fontFamily,
-                      fontSize: AppTypography.xs,
-                      fontWeight: AppTypography.weightMedium,
-                      color: AppColors.red600,
-                    ),
+              if (required)
+                const Text(
+                  ' *',
+                  style: TextStyle(
+                    fontFamily: AppTypography.fontFamily,
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightSemibold,
+                    color: AppColors.red500,
                   ),
                 ),
-              ],
-            ),
+            ],
           ),
-        ] else if (hint != null) ...[
           const SizedBox(height: AppSpacing.space2),
-          Text(
-            hint!,
-            style: TextStyle(
-              fontFamily: AppTypography.fontFamily,
-              fontSize: AppTypography.xs,
-              color: semantic.fgSubtle,
+          child,
+          if (error != null) ...[
+            const SizedBox(height: AppSpacing.space2),
+            Semantics(
+              liveRegion: true,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    LucideIcons.alertCircle,
+                    size: 12,
+                    color: AppColors.red600,
+                  ),
+                  const SizedBox(width: AppSpacing.space1),
+                  Flexible(
+                    child: Text(
+                      error!,
+                      style: const TextStyle(
+                        fontFamily: AppTypography.fontFamily,
+                        fontSize: AppTypography.xs,
+                        fontWeight: AppTypography.weightMedium,
+                        color: AppColors.red600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          ] else if (hint != null) ...[
+            const SizedBox(height: AppSpacing.space2),
+            Text(
+              hint!,
+              style: TextStyle(
+                fontFamily: AppTypography.fontFamily,
+                fontSize: AppTypography.xs,
+                color: semantic.fgSubtle,
+              ),
+            ),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

@@ -65,6 +65,7 @@ class AppColors {
   static const Color chartRevenue = Color(0xFF059669);
   static const Color chartExpense = Color(0xFFDC2626);
   static const Color chartFinance = Color(0xFF2563EB);
+  static const Color chartOnDark = Color(0xE6FFFFFF);
   static const Color chartGrid = Color(0xFFE5E7EB);
   static const Color chartAxis = Color(0xFF9CA3AF);
   static const List<Color> chartSeries = [

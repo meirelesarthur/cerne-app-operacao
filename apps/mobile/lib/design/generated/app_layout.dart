@@ -19,11 +19,11 @@ class AppSize {
   static const double control = 44;
   static const double controlSm = 36;
   static const double controlLg = 52;
-  static const double btnSm = 36;
+  static const double btnSm = 44;
   static const double btnMd = 44;
   static const double btnLg = 52;
-  static const double iconBtnSm = 32;
-  static const double iconBtnMd = 40;
+  static const double iconBtnSm = 44;
+  static const double iconBtnMd = 44;
   static const double iconBtnLg = 48;
   static const double toggleTrack = 40;
   static const double toggleThumb = 18;

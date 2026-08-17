@@ -14,7 +14,7 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 a M8 foram concluídas localmente e aguardam push sob demanda.
+- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 a M9 foram concluídas localmente e aguardam push sob demanda.
 - O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
@@ -183,10 +183,10 @@ Commit planejado: `fix(mobile): conclui onda E de endurecimento frontend`.
 
 ### M9 — Onda F Flutter
 
-- [ ] Alvos de toque mínimos de 44dp.
-- [ ] `Semantics` e rótulos contextuais.
-- [ ] Foco/teclado na web.
-- [ ] Auditoria em 390×844 e layouts adaptativos sem overflow.
+- [x] Alvos de toque mínimos de 44dp.
+- [x] `Semantics` e rótulos contextuais.
+- [x] Foco/teclado na web.
+- [x] Auditoria em 390×844 e layouts adaptativos sem overflow.
 
 Gate: testes de semântica e inspeção das jornadas críticas aprovados.
 
@@ -280,8 +280,8 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | M5 / B | Concluída | `a78bdf5` | Analyze limpo; 19 testes focados verdes | Treze contratos executáveis; período reprodutivo inválido é bloqueado; grupos de Pastagens aceitam itens vinculados |
 | M6 / C | Concluída | `0275bc7` | Analyze limpo; 13 testes focados e 77 testes ampliados verdes; Flutter Web compilado | Sete contratos bloqueiam sem captura; Bluetooth usa descoberta em duas etapas; RFID aceita captura ou entrada manual; scanner mantém enquadramento semântico |
 | M7 / D | Concluída | `5cab23f` | Analyze limpo; 12 testes focados e 83 testes ampliados verdes; Flutter Web compilado | As 46 funcionalidades Ready têm destino executável; consultas e OS recebem amostras; auditorias geram CSV/JSON e baixam o arquivo no Flutter Web |
-| M8 / E | Concluída | este commit (`fix(mobile): conclui onda E de endurecimento frontend`) | Analyze limpo; 53 testes do gate funcional verdes | Política cobre sessão ausente, famílias de rotas cruzadas, logout e redirecionamento para a central correta; CI executa o gate antes da suíte global |
-| M9 / F | Pendente | — | — | — |
+| M8 / E | Concluída | `1cda773` | Analyze limpo; 53 testes do gate funcional verdes | Política cobre sessão ausente, famílias de rotas cruzadas, logout e redirecionamento para a central correta; CI executa o gate antes da suíte global |
+| M9 / F | Concluída | este commit (`fix(mobile): conclui onda F de acessibilidade`) | Analyze limpo; 6 testes novos e regressão ampliada de 200 testes verdes; Flutter Web compilado | Controles compartilhados preservam alvo mínimo de 44dp; formulário e ações expõem semântica; teclado e viewports 390×844/1024×844 cobertos; login e botões largos não causam overflow |
 | M10 / G | Pendente | — | — | — |
 | M11 / H | Pendente | — | — | — |
 | M12 | Pendente | — | — | — |
