@@ -1,6 +1,6 @@
 /**
  * Exportador de tokens DTCG → Dart (F1 do PLANO-MIGRACAO-FLUTTER.md).
- * Lê tokens/tokens.json (fonte: src/design/tokens.ts, via `npm run tokens:export`) e gera os
+ * Lê tokens/tokens.json (fonte: design/tokens.ts, via `npm run tokens:export`) e gera os
  * arquivos Dart consumidos pelo app Flutter em apps/mobile/lib/design/generated/.
  *
  * Direção do fluxo (imutável, Lei 5): tokens.ts → tokens.json → Dart gerado.
@@ -127,9 +127,9 @@ function boxShadowListLiteral(layers: ShadowLayer[]): string {
 const tokens = JSON.parse(readFileSync(TOKENS_PATH, 'utf8'))
 
 const GUARD = `// GERADO AUTOMATICAMENTE — não editar à mão.
-// Fonte: tokens/tokens.json (DTCG) <- src/design/tokens.ts
+// Fonte: tokens/tokens.json (DTCG) <- design/tokens.ts
 // Pipeline: \`npm run tokens:export\` seguido de \`npm run tokens:export:flutter\`.
-// Qualquer ajuste de valor deve entrar em src/design/tokens.ts (Lei 3/5 do CLAUDE.md).
+// Qualquer ajuste de valor deve entrar em design/tokens.ts (Lei 3/5 do CLAUDE.md).
 `
 
 function header(needsMaterial = true): string {

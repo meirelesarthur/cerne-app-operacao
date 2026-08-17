@@ -7,7 +7,7 @@
  *   3. foundation/component — font, space, size, radius, shadow, dashboardTile, ...
  *
  * REGRAS (CLAUDE.md — Leis 3 e 5):
- *  - Nenhum valor de design hardcoded fora deste arquivo. Telas/componentes consomem via `t.*`.
+ *  - Nenhum valor novo de design nasce fora deste arquivo. O Flutter consome o Dart gerado via DTCG.
  *  - Ao alterar este arquivo, rodar `npm run tokens:export` e commitar `tokens/tokens.json`
  *    (DTCG) na mesma unidade lógica. O código define; Figma/Supernova consomem.
  *  - Única família tipográfica permitida: Outfit.

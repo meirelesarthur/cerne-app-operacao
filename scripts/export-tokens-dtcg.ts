@@ -1,6 +1,6 @@
 /**
  * Exportador de tokens → W3C DTCG (Lei 5).
- * Lê src/design/tokens.ts e emite tokens/tokens.json no formato Design Tokens Community Group,
+ * Lê design/tokens.ts e emite tokens/tokens.json no formato Design Tokens Community Group,
  * consumível por Tokens Studio → Figma Variables → Supernova.
  *
  * Direção do fluxo (imutável): o CÓDIGO define, o design CONSOME.
@@ -24,7 +24,7 @@ import {
   component,
   themePalette,
   layout,
-} from '../src/design/tokens'
+} from '../design/tokens'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 

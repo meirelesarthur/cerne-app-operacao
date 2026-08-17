@@ -12,8 +12,8 @@ fluxo e servir de handoff ao time mobile. Baseado em `spec-cerne-app.md`.
 - **Widgetbook** publicado junto com o app em `/storybook/`
 - **Cloudflare Workers Static Assets** com fallbacks separados para app e Widgetbook
 
-O React permanece congelado no repositório apenas como rollback até a M13. Ele não participa mais
-dos comandos oficiais de desenvolvimento, qualidade ou deploy.
+Flutter é o único runtime do repositório. O último estado React está preservado somente na tag Git
+`react-rollback-final-2026-08-17`.
 
 ## Como rodar
 
@@ -25,11 +25,11 @@ npm test               # suíte Flutter
 npm run quality:functional # gate de arquitetura, acesso e 53 funções
 npm run build          # app + Widgetbook em apps/mobile/build/site
 npm run smoke:deploy   # valida rotas e fallbacks Cloudflare
-npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de src/design/tokens.ts
+npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de design/tokens.ts
 ```
 
-Para diagnóstico temporário do rollback: `npm run build:react:rollback`. A configuração completa do
-Worker está em `docs/DEPLOY-FLUTTER-CLOUDFLARE.md`.
+A configuração completa do Worker está em `docs/DEPLOY-FLUTTER-CLOUDFLARE.md`. O último runtime
+React existe somente na tag Git `react-rollback-final-2026-08-17`.
 
 ## Arquitetura
 

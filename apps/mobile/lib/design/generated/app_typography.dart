@@ -1,7 +1,7 @@
 // GERADO AUTOMATICAMENTE — não editar à mão.
-// Fonte: tokens/tokens.json (DTCG) <- src/design/tokens.ts
+// Fonte: tokens/tokens.json (DTCG) <- design/tokens.ts
 // Pipeline: `npm run tokens:export` seguido de `npm run tokens:export:flutter`.
-// Qualquer ajuste de valor deve entrar em src/design/tokens.ts (Lei 3/5 do CLAUDE.md).
+// Qualquer ajuste de valor deve entrar em design/tokens.ts (Lei 3/5 do CLAUDE.md).
 
 import 'package:flutter/material.dart';
 

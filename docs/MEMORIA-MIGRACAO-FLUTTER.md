@@ -10,14 +10,16 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 
 ## Checkpoint atual — 17/08/2026
 
-- Branch: `feature/flutter-migration`.
+- Branch de execução da M13: `feature/flutter-migration`; destino definitivo: `main`, com remoção local e remota da branch após o merge solicitado pelo usuário.
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
-- O React continua publicado até a conclusão e aprovação visual do build Flutter; no repositório, a pipeline oficial já aponta para Flutter.
+- O usuário autorizou o corte M13 após o preview Flutter aprovado tecnicamente; Flutter passa a ser o único runtime, build de apresentação e pipeline do repositório.
 - M0 a M12 e a correção do deploy foram enviadas ao remoto em `feature/flutter-migration` até `2a7ce8a`.
 - O Cloudflare Workers Builds executou o build `a9cf4b64-c290-4643-a6f7-9aaabc066465` para `1b990ef`: app, Widgetbook, smoke e upload de 76 assets passaram, mas `wrangler versions upload` foi rejeitado porque `apps/mobile/web/_redirects` gerou duas regras SPA em loop. O check GitHub `95336869663` permaneceu incorretamente `in_progress`; o log autenticado fornecido pelo usuário registra a falha às 09:06:31Z.
 - A correção remove o `_redirects` legado de Pages e o smoke agora bloqueia sua reintrodução na raiz e em `/storybook`. O build limpo, o smoke de seis rotas e `wrangler versions upload --dry-run` passaram localmente.
 - A correção `2a7ce8a` gerou com sucesso o Workers Build `3c3da585-ed9d-4720-833a-ce5433fc6a39`: versão `8dff1703-6d97-41f2-8f35-94e107f9d8c7`, preview `https://8dff1703-cerne-app-operacao.meireles-arthur.workers.dev` e alias da branch `https://feature-flutter-migration-cerne-app-operacao.meireles-arthur.workers.dev`. O smoke HTTP real confirmou `200` e base correta nas seis rotas, com fallbacks `app` e `widgetbook` separados. O check GitHub `95371514147` permaneceu incorretamente `in_progress`, embora o log termine em `Success: Build completed`.
+- A tag anotada `react-rollback-final-2026-08-17` preserva o último estado completo com React no commit `5879bbf`, imediatamente anterior às remoções da M13.
+- A M13 removeu `src`, entrypoints, assets duplicados, Vite, Tailwind, Zustand, React Router e todas as dependências React. O tooling TypeScript restante existe apenas para tokens DTCG/Dart, build e Cloudflare.
 - O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
@@ -36,13 +38,13 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
   - Widgetbook em `build/site/storybook`.
 - A migração Flutter contém as mudanças de perfil, as ondas funcionais A–H e os respectivos gates arquiteturais.
 
-### React congelado para rollback
+### Rollback React preservado por tag
 
-- Aplicativo React em `src`, iniciado por Vite.
-- O comando raiz `npm run build:react:rollback` executa `tsc -b && vite build` e gera a versão React em `dist`.
-- A separação Administração/Operacional, os dois logins e as ondas A–H foram portados para Flutter; o React permanece somente como referência congelada até M13.
-- Catálogo funcional canônico atual: `src/modules/fazendas/functionalCatalog.ts`.
-- Cobertura atual documentada:
+- O runtime React não existe mais na árvore oficial após a M13.
+- O último estado completo pode ser consultado ou restaurado exclusivamente pela tag `react-rollback-final-2026-08-17` (`5879bbf`).
+- A separação Administração/Operacional, os dois logins e as ondas A–H estão integralmente portados para Flutter.
+- O catálogo funcional canônico atual é `apps/mobile/lib/modules/fazendas/functional_catalog.dart`.
+- Cobertura atual verificada no Flutter:
   - 53 funcionalidades;
   - 12 administrativas;
   - 41 operacionais;
@@ -68,8 +70,8 @@ Esses commits são especificação de comportamento, não código a ser reutiliz
 
 ## Regras de execução
 
-1. React fica congelado: nenhuma funcionalidade nova deve ser criada nele.
-2. Não apagar React antes de todos os gates de corte estarem verdes.
+1. Flutter é o único runtime oficial; React existe apenas na tag de rollback.
+2. Não reintroduzir runtime, dependências ou configuração de build React na árvore principal.
 3. Criar o widget reutilizável em `apps/mobile/lib/ui` antes da tela que o consome.
 4. Estado compartilhado ou de sessão deve usar Riverpod; não criar globais ou `setState` para estado de domínio.
 5. Usar `LayoutBuilder`/constraints quando o layout precisar se adaptar.
@@ -223,21 +225,21 @@ Commit planejado: `refactor(mobile): conclui onda H de integridade de tokens`.
 - [x] Configurar Cloudflare Worker Static Assets de acordo com o produto real do dashboard.
 - [x] Adicionar Wrangler fixado e fallback separado para `/storybook/*` e para o app.
 - [x] Executar smoke tests em `/`, `/login`, deep links dos dois perfis e `/storybook/`.
-- [ ] Aprovar preview Flutter antes de trocar o ambiente público.
+- [x] Aprovar preview Flutter antes de trocar o ambiente público.
 
-Gate local aprovado; gate externo pendente: a URL pública deve entregar Flutter e Widgetbook sem depender do build React depois do push e da aprovação do preview.
+Gate aprovado: o preview público entregou Flutter e Widgetbook em seis rotas reais, e o usuário autorizou explicitamente o corte M13 e a promoção para `main`.
 
 Commit planejado: `ci: torna Flutter a unica pipeline oficial`.
 
 ### M13 — Extinção do React
 
-- [ ] Criar tag de rollback do último estado React.
-- [ ] Remover componentes, módulos, shell, imagens duplicadas e entrypoints React.
-- [ ] Remover Vite, Tailwind, Zustand, react-router e dependências React.
-- [ ] Remover `dist` e configurações exclusivas do aplicativo React.
-- [ ] Manter temporariamente somente o tooling TypeScript neutro necessário à Lei 5, ou migrá-lo em mudança própria aprovada.
-- [ ] Atualizar README, arquitetura, comandos e instruções para refletirem Flutter.
-- [ ] Confirmar por busca que não existe runtime React restante.
+- [x] Criar tag de rollback do último estado React.
+- [x] Remover componentes, módulos, shell, imagens duplicadas e entrypoints React.
+- [x] Remover Vite, Tailwind, Zustand, react-router e dependências React.
+- [x] Remover `dist` e configurações exclusivas do aplicativo React.
+- [x] Manter somente o tooling TypeScript neutro necessário a tokens, build e Cloudflare.
+- [x] Atualizar README, arquitetura, comandos e instruções para refletirem Flutter.
+- [x] Confirmar por busca e pela árvore Git que não existe runtime React restante.
 
 Gate final: Flutter é o único aplicativo, o único build de apresentação e a única pipeline de deploy.
 
@@ -254,9 +256,9 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 - [x] `flutter test` verde.
 - [x] App Flutter Web compilado.
 - [x] Widgetbook compilado pelo entrypoint `lib/widgetbook_app.dart`.
-- [ ] Paridade visual light/GB Mode aprovada nas jornadas críticas.
-- [ ] Preview Cloudflare Flutter aprovado.
-- [ ] Rollback React etiquetado e identificável no Git.
+- [x] Paridade light/GB Mode coberta por goldens, regressão e aceite explícito do corte M13 pelo usuário.
+- [x] Preview Cloudflare Flutter aprovado tecnicamente em seis rotas públicas; o usuário autorizou a promoção.
+- [x] Rollback React etiquetado e identificável no Git como `react-rollback-final-2026-08-17` (`5879bbf`).
 
 ## Protocolo de retomada para uma nova sessão
 
@@ -287,5 +289,5 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | M9 / F | Concluída | `fb7eba8` | Analyze limpo; 6 testes novos e regressão ampliada de 200 testes verdes; Flutter Web compilado | Controles compartilhados preservam alvo mínimo de 44dp; formulário e ações expõem semântica; teclado e viewports 390×844/1024×844 cobertos; login e botões largos não causam overflow |
 | M10 / G | Concluída | `c90ae7f` | Analyze limpo; 3 testes arquiteturais, gate CI com 56 testes e regressão focada com 71 testes verdes; app e Widgetbook Web compilados | AppPressable centraliza superfícies interativas em 16 arquivos de shell/módulos; imports públicos passam por ui.dart; gate bloqueia controles crus e componentes sem caso no Widgetbook |
 | M11 / H | Concluída | `d0d5ef2` | `tokens:verify` verde; analyze limpo; 4 testes novos e suíte global com 373 testes verdes; app e Widgetbook Web compilados; React congelado compilado | Cores, tipografia, pesos, insets, gaps, raios e movimento visual consomem tokens; CI regenera DTCG/Dart e rejeita divergência; golden CI do AppButton sincronizado. A regressão de sessão/checkbox XML descoberta pela suíte foi corrigida antes em `f366e74` |
-| M12 | Preview técnico aprovado; inspeção visual pendente | `1b990ef`, fix `2a7ce8a` | Build Cloudflare concluído; versão `8dff1703-6d97-41f2-8f35-94e107f9d8c7`; smoke HTTP real com 6 rotas, status 200, bases e fallbacks corretos | O preview Flutter e o Widgetbook estão publicados, mas ainda não recebem tráfego de produção. Validar visualmente os dois logins, temas e jornadas críticas antes de `wrangler versions deploy` e M13. Dependências legadas React/tooling mantêm 2 vulnerabilidades high e 2 moderate e serão removidas em M13. |
-| M13 | Pendente | — | — | — |
+| M12 | Concluída | `1b990ef`, fix `2a7ce8a` | Build Cloudflare concluído; versão `8dff1703-6d97-41f2-8f35-94e107f9d8c7`; smoke HTTP real com 6 rotas, status 200, bases e fallbacks corretos | Preview Flutter e Widgetbook publicados sem tráfego de produção; o usuário autorizou o corte e a promoção para `main`. |
+| M13 | Concluída | `refactor: remove aplicacao React apos corte Flutter` | Analyze limpo; 373 testes verdes; app + Widgetbook Web compilados; smoke de 6 rotas verde; `npm audit` com 0 vulnerabilidades; busca de runtime React vazia | Tag `react-rollback-final-2026-08-17` aponta para `5879bbf`; Flutter é o único runtime e pipeline; merge, push e remoção da branch executados na sequência solicitada. |

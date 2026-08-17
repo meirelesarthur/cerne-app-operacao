@@ -5,7 +5,7 @@ on:
     paths:
       - 'apps/mobile/**'
       - 'tokens/**'
-      - 'src/design/tokens.ts'
+      - 'design/tokens.ts'
       - 'scripts/export-tokens-*.ts'
       - 'package.json'
       - 'package-lock.json'
@@ -15,7 +15,7 @@ on:
     paths:
       - 'apps/mobile/**'
       - 'tokens/**'
-      - 'src/design/tokens.ts'
+      - 'design/tokens.ts'
       - 'scripts/export-tokens-*.ts'
       - 'package.json'
       - 'package-lock.json'

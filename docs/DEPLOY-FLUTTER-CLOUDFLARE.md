@@ -65,6 +65,5 @@ Antes de promover a versão Flutter para produção:
 4. conferir temas Light e GB Mode nas jornadas críticas;
 5. somente então promover a versão no dashboard ou executar `wrangler deploy` na branch de produção.
 
-O React continua disponível no histórico Git como rollback até a M13. Ele não participa mais do
-comando oficial `npm run build`; para diagnóstico temporário, o build congelado permanece em
-`npm run build:react:rollback` até sua remoção definitiva.
+O runtime React foi removido na M13. O último estado recuperável está preservado exclusivamente na
+tag Git `react-rollback-final-2026-08-17`.
