@@ -8,13 +8,13 @@ Transformar o Flutter em `apps/mobile` na única implementação oficial do GB C
 
 O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simulações. Autenticação real, RBAC de backend, APIs e integrações nativas de hardware não devem ser apresentados como concluídos.
 
-## Checkpoint atual — 16/08/2026
+## Checkpoint atual — 17/08/2026
 
 - Branch: `feature/flutter-migration`.
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
-- O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 a M11 foram concluídas localmente e aguardam push sob demanda.
+- O React continua publicado até o push e a aprovação do preview Flutter; no repositório local, a pipeline oficial já aponta para Flutter.
+- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 a M12 foram implementadas localmente e aguardam push sob demanda.
 - O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
@@ -28,16 +28,16 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Seis módulos: Início, Fazendas, Bank, Crédito, Marketplace e Armazém.
 - Estado com Riverpod, rotas com `go_router`, tema/tokenização e fonte Outfit local.
 - Catálogo Flutter e Widgetbook em `apps/mobile/lib/widgetbook_app.dart`.
-- Build combinado disponível em `apps/mobile/tool/cf_pages_build.sh`, gerando:
+- Build combinado oficial disponível por `npm run build` (com wrapper de compatibilidade em `apps/mobile/tool/cf_pages_build.sh`), gerando:
   - aplicativo em `build/site`;
   - Widgetbook em `build/site/storybook`.
-- A migração Flutter existente representa a versão anterior do protótipo, antes das mudanças recentes de perfil e das ondas funcionais A–H.
+- A migração Flutter contém as mudanças de perfil, as ondas funcionais A–H e os respectivos gates arquiteturais.
 
-### React ainda mais recente
+### React congelado para rollback
 
 - Aplicativo React em `src`, iniciado por Vite.
-- O comando raiz `npm run build` executa `tsc -b && vite build` e gera a versão React em `dist`.
-- A separação Administração/Operacional, os dois logins e as ondas A–H estão implementados principalmente no React.
+- O comando raiz `npm run build:react:rollback` executa `tsc -b && vite build` e gera a versão React em `dist`.
+- A separação Administração/Operacional, os dois logins e as ondas A–H foram portados para Flutter; o React permanece somente como referência congelada até M13.
 - Catálogo funcional canônico atual: `src/modules/fazendas/functionalCatalog.ts`.
 - Cobertura atual documentada:
   - 53 funcionalidades;
@@ -214,15 +214,15 @@ Commit planejado: `refactor(mobile): conclui onda H de integridade de tokens`.
 
 ### M12 — Pipeline oficial e corte Cloudflare
 
-- [ ] Fixar Flutter `3.44.6` no CI e no build Cloudflare.
-- [ ] Fazer o CI compilar o app e o entrypoint real do Widgetbook.
-- [ ] Gerar exclusivamente `apps/mobile/build/site`.
-- [ ] Configurar Cloudflare Pages ou Worker Static Assets de acordo com o produto real do dashboard.
-- [ ] Se for Worker, adicionar Wrangler e fallback separado para `/storybook/*` e para o app.
-- [ ] Executar smoke tests em `/`, `/login`, deep links dos dois perfis e `/storybook/`.
+- [x] Fixar Flutter `3.44.6` no CI e no build Cloudflare.
+- [x] Fazer o CI compilar o app e o entrypoint real do Widgetbook.
+- [x] Gerar exclusivamente `apps/mobile/build/site`.
+- [x] Configurar Cloudflare Worker Static Assets de acordo com o produto real do dashboard.
+- [x] Adicionar Wrangler fixado e fallback separado para `/storybook/*` e para o app.
+- [x] Executar smoke tests em `/`, `/login`, deep links dos dois perfis e `/storybook/`.
 - [ ] Aprovar preview Flutter antes de trocar o ambiente público.
 
-Gate: a URL pública entrega Flutter e o Widgetbook sem depender do build React.
+Gate local aprovado; gate externo pendente: a URL pública deve entregar Flutter e Widgetbook sem depender do build React depois do push e da aprovação do preview.
 
 Commit planejado: `ci: torna Flutter a unica pipeline oficial`.
 
@@ -283,6 +283,6 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | M8 / E | Concluída | `1cda773` | Analyze limpo; 53 testes do gate funcional verdes | Política cobre sessão ausente, famílias de rotas cruzadas, logout e redirecionamento para a central correta; CI executa o gate antes da suíte global |
 | M9 / F | Concluída | `fb7eba8` | Analyze limpo; 6 testes novos e regressão ampliada de 200 testes verdes; Flutter Web compilado | Controles compartilhados preservam alvo mínimo de 44dp; formulário e ações expõem semântica; teclado e viewports 390×844/1024×844 cobertos; login e botões largos não causam overflow |
 | M10 / G | Concluída | `c90ae7f` | Analyze limpo; 3 testes arquiteturais, gate CI com 56 testes e regressão focada com 71 testes verdes; app e Widgetbook Web compilados | AppPressable centraliza superfícies interativas em 16 arquivos de shell/módulos; imports públicos passam por ui.dart; gate bloqueia controles crus e componentes sem caso no Widgetbook |
-| M11 / H | Concluída | este commit (`refactor(mobile): conclui onda H de integridade de tokens`) | `tokens:verify` verde; analyze limpo; 4 testes novos e suíte global com 373 testes verdes; app e Widgetbook Web compilados; React congelado compilado | Cores, tipografia, pesos, insets, gaps, raios e movimento visual consomem tokens; CI regenera DTCG/Dart e rejeita divergência; golden CI do AppButton sincronizado. A regressão de sessão/checkbox XML descoberta pela suíte foi corrigida antes em `f366e74` |
-| M12 | Pendente | — | — | — |
+| M11 / H | Concluída | `d0d5ef2` | `tokens:verify` verde; analyze limpo; 4 testes novos e suíte global com 373 testes verdes; app e Widgetbook Web compilados; React congelado compilado | Cores, tipografia, pesos, insets, gaps, raios e movimento visual consomem tokens; CI regenera DTCG/Dart e rejeita divergência; golden CI do AppButton sincronizado. A regressão de sessão/checkbox XML descoberta pela suíte foi corrigida antes em `f366e74` |
+| M12 | Implementada localmente; preview pendente | este commit (`ci: torna Flutter a unica pipeline oficial`) | `npm run build` verde em 301 s; analyze limpo; 31 testes funcionais/arquiteturais verdes; smoke com 6 rotas e dois shells verde; Wrangler `4.123.0` dry-run verde; rollback React compilado | Worker Static Assets publica somente `apps/mobile/build/site`; app e Widgetbook têm fallbacks separados. O React continua público e disponível por comandos `*:react:rollback` até push e aceite visual do preview. Dependências legadas React/tooling mantêm 2 vulnerabilidades high e 2 moderate no audit completo e serão removidas em M13. |
 | M13 | Pendente | — | — | — |

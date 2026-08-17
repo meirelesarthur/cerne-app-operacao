@@ -68,4 +68,9 @@ jobs:
         run: flutter test
 
       - name: Build web (Widgetbook + app compile check)
-        run: flutter build web --release
+        working-directory: .
+        run: npm run build
+
+      - name: Smoke test Cloudflare routes
+        working-directory: .
+        run: npm run smoke:deploy
