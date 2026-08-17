@@ -24,6 +24,10 @@ arquivo chegam ao Worker, que usa fallbacks separados:
 - `/storybook` e `/storybook/*` → `/storybook/index.html`;
 - todas as demais rotas navegáveis → `/index.html`.
 
+O artefato não contém `_redirects`: esse arquivo pertence ao fluxo Cloudflare Pages e conflita com
+o roteamento do Worker Static Assets. O smoke test bloqueia sua reintrodução tanto na raiz quanto
+em `/storybook`.
+
 ## SDK e comandos
 
 `scripts/build-flutter-site.mjs` exige Flutter `3.44.6`. Se essa versão não estiver disponível no

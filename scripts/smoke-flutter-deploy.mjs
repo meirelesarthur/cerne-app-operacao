@@ -51,6 +51,11 @@ assert(existsSync(join(siteRoot, 'index.html')), 'App Flutter ausente em build/s
 assert(existsSync(join(siteRoot, 'main.dart.js')), 'Bundle do app Flutter ausente')
 assert(existsSync(join(siteRoot, 'storybook/index.html')), 'Widgetbook ausente em build/site/storybook/index.html')
 assert(existsSync(join(siteRoot, 'storybook/main.dart.js')), 'Bundle do Widgetbook ausente')
+assert(!existsSync(join(siteRoot, '_redirects')), 'Worker não deve publicar _redirects legado do Cloudflare Pages')
+assert(
+  !existsSync(join(siteRoot, 'storybook/_redirects')),
+  'Widgetbook não deve publicar _redirects legado do Cloudflare Pages',
+)
 
 const cases = [
   { path: '/', base: '<base href="/">' },
