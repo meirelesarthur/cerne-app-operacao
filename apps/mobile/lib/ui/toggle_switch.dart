@@ -38,29 +38,45 @@ class AppToggleSwitch extends StatelessWidget {
         toggled: checked,
         label: label,
         enabled: !disabled,
-        child: GestureDetector(
-          onTap: disabled ? null : () => onChanged(!checked),
-          child: AnimatedContainer(
-            duration: AppMotion.base,
-            curve: AppMotion.easingInOut,
-            width: AppSize.toggleTrack,
-            height: trackHeight,
-            padding: const EdgeInsets.all(AppSpacing.space1),
-            decoration: BoxDecoration(
-              color: checked ? semantic.accentDefault : AppColors.neutral300,
-              borderRadius: BorderRadius.circular(trackHeight),
-            ),
-            child: AnimatedAlign(
-              duration: AppMotion.base,
-              curve: AppMotion.easingInOut,
-              alignment: checked ? Alignment.centerRight : Alignment.centerLeft,
-              child: Container(
-                width: AppSize.toggleThumb,
-                height: AppSize.toggleThumb,
-                decoration: BoxDecoration(
-                  color: semantic.bgSurface,
-                  shape: BoxShape.circle,
-                  boxShadow: semantic.shadowCard,
+        child: Material(
+          color: AppColors.transparent,
+          shape: const CircleBorder(),
+          child: InkWell(
+            onTap: disabled ? null : () => onChanged(!checked),
+            canRequestFocus: !disabled,
+            customBorder: const CircleBorder(),
+            child: SizedBox(
+              width: AppSize.control,
+              height: AppSize.control,
+              child: Center(
+                child: AnimatedContainer(
+                  duration: AppMotion.base,
+                  curve: AppMotion.easingInOut,
+                  width: AppSize.toggleTrack,
+                  height: trackHeight,
+                  padding: const EdgeInsets.all(AppSpacing.space1),
+                  decoration: BoxDecoration(
+                    color: checked
+                        ? semantic.accentDefault
+                        : AppColors.neutral300,
+                    borderRadius: BorderRadius.circular(trackHeight),
+                  ),
+                  child: AnimatedAlign(
+                    duration: AppMotion.base,
+                    curve: AppMotion.easingInOut,
+                    alignment: checked
+                        ? Alignment.centerRight
+                        : Alignment.centerLeft,
+                    child: Container(
+                      width: AppSize.toggleThumb,
+                      height: AppSize.toggleThumb,
+                      decoration: BoxDecoration(
+                        color: semantic.bgSurface,
+                        shape: BoxShape.circle,
+                        boxShadow: semantic.shadowCard,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

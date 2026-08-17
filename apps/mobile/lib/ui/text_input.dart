@@ -93,9 +93,11 @@ class AppTextInput extends StatelessWidget {
         ),
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
-        border: border(Colors.transparent),
-        enabledBorder: border(invalid ? AppColors.red500 : Colors.transparent),
-        disabledBorder: border(Colors.transparent),
+        border: border(AppColors.transparent),
+        enabledBorder: border(
+          invalid ? AppColors.red500 : AppColors.transparent,
+        ),
+        disabledBorder: border(AppColors.transparent),
         focusedBorder: border(
           invalid ? AppColors.red500 : semantic.accentDefault,
           width: 2,

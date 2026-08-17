@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_spacing.dart';
+import 'audit_export_downloader.dart';
 import 'banner.dart';
 import 'button.dart';
 import 'card.dart';
@@ -36,11 +37,13 @@ class AppAuditExportPanel extends StatefulWidget {
     required this.filename,
     required this.rows,
     required this.onExport,
+    this.downloadFile = false,
   });
 
   final String filename;
   final List<Map<String, String>> rows;
   final ValueChanged<AppAuditExport> onExport;
+  final bool downloadFile;
 
   @override
   State<AppAuditExportPanel> createState() => _AppAuditExportPanelState();
@@ -50,6 +53,7 @@ class _AppAuditExportPanelState extends State<AppAuditExportPanel> {
   AppAuditPeriod _period = AppAuditPeriod.thirtyDays;
   AppAuditFormat _format = AppAuditFormat.csv;
   AppAuditExport? _lastExport;
+  bool _downloaded = false;
 
   String _csvValue(String value) => '"${value.replaceAll('"', '""')}"';
 
@@ -78,7 +82,17 @@ class _AppAuditExportPanelState extends State<AppAuditExportPanel> {
       rowCount: filtered.length,
     );
 
-    setState(() => _lastExport = result);
+    final downloaded =
+        widget.downloadFile &&
+        downloadTextFile(
+          filename: result.filename,
+          mimeType: result.mimeType,
+          content: result.content,
+        );
+    setState(() {
+      _lastExport = result;
+      _downloaded = downloaded;
+    });
     widget.onExport(result);
   }
 
@@ -146,7 +160,10 @@ class _AppAuditExportPanelState extends State<AppAuditExportPanel> {
                   size: AppSpacing.space4,
                 ),
                 onPressed: _export,
-                child: Text('Preparar ${_format.name.toUpperCase()}'),
+                child: Text(
+                  '${widget.downloadFile ? 'Baixar' : 'Preparar'} '
+                  '${_format.name.toUpperCase()}',
+                ),
               ),
             ],
           ),
@@ -156,7 +173,8 @@ class _AppAuditExportPanelState extends State<AppAuditExportPanel> {
             tone: AppBannerTone.success,
             icon: const Icon(LucideIcons.fileCheck2, size: AppSpacing.space4),
             child: Text(
-              '${_lastExport!.filename} preparado com '
+              '${_lastExport!.filename} '
+              '${_downloaded ? 'baixado' : 'preparado'} com '
               '${_lastExport!.rowCount} registros.',
             ),
           ),

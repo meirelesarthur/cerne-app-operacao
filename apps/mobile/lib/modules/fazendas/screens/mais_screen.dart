@@ -7,6 +7,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shared/rise_in.dart';
 import '../../../ui/ui.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 class _LinkItem {
   const _LinkItem({required this.label, required this.icon, required this.to});
@@ -146,51 +147,46 @@ class _MaisRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space4,
-            vertical: AppSpacing.space3,
-          ),
-          decoration: showDivider
-              ? BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(color: semantic.borderSubtle),
-                  ),
-                )
-              : null,
-          child: Row(
-            children: [
-              Container(
-                width: AppSpacing.space9,
-                height: AppSpacing.space9,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: semantic.accentSubtle,
+    return AppPressable(
+      semanticLabel: item.label,
+      onPressed: onTap,
+      minTouchTarget: false,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space4,
+          vertical: AppSpacing.space3,
+        ),
+        decoration: showDivider
+            ? BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(color: semantic.borderSubtle),
                 ),
-                child: Icon(item.icon, size: 18, color: semantic.accentDefault),
+              )
+            : null,
+        child: Row(
+          children: [
+            Container(
+              width: AppSpacing.space9,
+              height: AppSpacing.space9,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: semantic.accentSubtle,
               ),
-              const SizedBox(width: AppSpacing.space3),
-              Expanded(
-                child: Text(
-                  item.label,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: semantic.fgDefault,
-                  ),
+              child: Icon(item.icon, size: 18, color: semantic.accentDefault),
+            ),
+            const SizedBox(width: AppSpacing.space3),
+            Expanded(
+              child: Text(
+                item.label,
+                style: TextStyle(
+                  fontWeight: AppTypography.weightMedium,
+                  color: semantic.fgDefault,
                 ),
               ),
-              Icon(
-                LucideIcons.chevronRight,
-                size: 16,
-                color: semantic.fgSubtle,
-              ),
-            ],
-          ),
+            ),
+            Icon(LucideIcons.chevronRight, size: 16, color: semantic.fgSubtle),
+          ],
         ),
       ),
     );

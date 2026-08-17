@@ -7,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Página do Produto (PDP) do Marketplace — acessada a partir do card na Home.
 /// Espelha `ProdutoDetalhe.tsx`.
@@ -91,8 +92,8 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
               RichText(
                 text: TextSpan(
                   style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
+                    fontSize: AppTypography.display,
+                    fontWeight: AppTypography.weightBold,
                     color: semantic.fgDefault,
                   ),
                   children: [
@@ -100,8 +101,8 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                     TextSpan(
                       text: ' /${produto.unidade}',
                       style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal,
+                        fontSize: AppTypography.md,
+                        fontWeight: AppTypography.weightNormal,
                         color: semantic.fgMuted,
                       ),
                     ),
@@ -121,7 +122,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Icon(LucideIcons.truck, size: 11),
-                              SizedBox(width: 4),
+                              SizedBox(width: AppSpacing.space1),
                               Text('Frete grátis'),
                             ],
                           ),
@@ -157,7 +158,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: AppTypography.weightSemibold,
                               color: semantic.fgDefault,
                             ),
                           ),
@@ -174,7 +175,10 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
               const SizedBox(height: AppSpacing.space2),
               Text(
                 produto.descricao,
-                style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: AppTypography.md,
+                  color: semantic.fgMuted,
+                ),
               ),
               const SizedBox(height: AppSpacing.space5),
 
@@ -203,7 +207,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                             Text(
                               spec.label,
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: AppTypography.md,
                                 color: semantic.fgMuted,
                               ),
                             ),
@@ -215,8 +219,8 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
+                                  fontSize: AppTypography.md,
+                                  fontWeight: AppTypography.weightSemibold,
                                   color: semantic.fgDefault,
                                 ),
                               ),
@@ -256,7 +260,10 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
               Text(
                 'Finalização de compra integrada em uma próxima fase.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: semantic.fgSubtle),
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  color: semantic.fgSubtle,
+                ),
               ),
             ],
           ),

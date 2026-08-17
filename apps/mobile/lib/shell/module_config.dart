@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import 'state/prototype_session_store.dart';
+
 /// Registro central de módulos do superapp — espelha `moduleConfig.ts` (spec §3.4/§7.3).
 /// O Shell itera este registro para montar o dock de módulos (`AppBottomTabBar`) e injeta os
 /// `bottomTabs` do módulo ativo nas `AppContextTabs` do topo; a ação 'menu' vira bolha no header.
@@ -14,6 +16,7 @@ class BottomTab {
     required this.path,
     this.elevated = false,
     this.action,
+    this.profiles = const {},
   });
 
   final String id;
@@ -28,6 +31,11 @@ class BottomTab {
 
   /// Ação especial em vez de navegação (ex.: 'menu' abre o RevealMenu global).
   final String? action;
+
+  final Set<UserAccessProfile> profiles;
+
+  bool isVisibleTo(UserAccessProfile? profile) =>
+      profiles.isEmpty || profiles.contains(profile);
 }
 
 class ModuleMenuItem {
@@ -36,6 +44,7 @@ class ModuleMenuItem {
     required this.label,
     required this.icon,
     required this.route,
+    this.profiles = const {},
   });
 
   final String id;
@@ -44,6 +53,11 @@ class ModuleMenuItem {
 
   /// Rota absoluta do destino.
   final String route;
+
+  final Set<UserAccessProfile> profiles;
+
+  bool isVisibleTo(UserAccessProfile? profile) =>
+      profiles.isEmpty || profiles.contains(profile);
 }
 
 class ModuleMenuSection {
@@ -77,12 +91,27 @@ class ModuleDef {
 }
 
 /// Fallback do RevealMenu: seção única derivada das abas navegáveis do módulo.
-List<ModuleMenuSection> getMenuSections(ModuleDef module) {
-  if (module.menuSections != null) return module.menuSections!;
+List<ModuleMenuSection> getMenuSections(
+  ModuleDef module, {
+  UserAccessProfile? profile,
+}) {
+  if (module.menuSections != null) {
+    return module.menuSections!
+        .map(
+          (section) => ModuleMenuSection(
+            title: section.title,
+            items: section.items
+                .where((item) => item.isVisibleTo(profile))
+                .toList(),
+          ),
+        )
+        .where((section) => section.items.isNotEmpty)
+        .toList();
+  }
   return [
     ModuleMenuSection(
       title: 'Funcionalidades',
-      items: module.bottomTabs
+      items: visibleBottomTabs(module, profile)
           .where((tab) => tab.path.isNotEmpty && tab.action == null)
           .map(
             (tab) => ModuleMenuItem(
@@ -95,6 +124,16 @@ List<ModuleMenuSection> getMenuSections(ModuleDef module) {
           .toList(),
     ),
   ];
+}
+
+List<BottomTab> visibleBottomTabs(
+  ModuleDef module,
+  UserAccessProfile? profile,
+) => module.bottomTabs.where((tab) => tab.isVisibleTo(profile)).toList();
+
+String moduleHomeRoute(ModuleDef module, UserAccessProfile? profile) {
+  if (module.id == 'fazendas' && profile != null) return profile.homeRoute;
+  return module.homeRoute;
 }
 
 const List<ModuleDef> modules = [
@@ -135,9 +174,17 @@ const List<ModuleDef> modules = [
     bottomTabs: [
       BottomTab(
         id: 'dashboard',
-        label: 'Dashboard',
+        label: 'Gestão',
         icon: LucideIcons.layoutDashboard,
-        path: '',
+        path: 'administracao',
+        profiles: {UserAccessProfile.administration},
+      ),
+      BottomTab(
+        id: 'rotinas',
+        label: 'Rotinas',
+        icon: LucideIcons.clipboardList,
+        path: 'operacional',
+        profiles: {UserAccessProfile.operational},
       ),
       BottomTab(
         id: 'fazendas',
@@ -156,6 +203,7 @@ const List<ModuleDef> modules = [
         label: 'Financeiro',
         icon: LucideIcons.wallet,
         path: 'financeiro',
+        profiles: {UserAccessProfile.administration},
       ),
       BottomTab(
         id: 'mais',
@@ -167,6 +215,25 @@ const List<ModuleDef> modules = [
     ],
     menuSections: [
       ModuleMenuSection(
+        title: 'Ambiente',
+        items: [
+          ModuleMenuItem(
+            id: 'central-administracao',
+            label: 'Central de gestão',
+            icon: LucideIcons.layoutDashboard,
+            route: '/fazendas/administracao',
+            profiles: {UserAccessProfile.administration},
+          ),
+          ModuleMenuItem(
+            id: 'central-operacional',
+            label: 'Central de rotinas',
+            icon: LucideIcons.clipboardList,
+            route: '/fazendas/operacional',
+            profiles: {UserAccessProfile.operational},
+          ),
+        ],
+      ),
+      ModuleMenuSection(
         title: 'Dashboards gerenciais',
         items: [
           ModuleMenuItem(
@@ -174,42 +241,49 @@ const List<ModuleDef> modules = [
             label: 'Financeiro',
             icon: LucideIcons.wallet,
             route: '/fazendas/dashboards/financeiro',
+            profiles: {UserAccessProfile.administration},
           ),
           ModuleMenuItem(
             id: 'pecuaria',
             label: 'Pecuária de Corte',
             icon: LucideIcons.beef,
             route: '/fazendas/dashboards/pecuaria',
+            profiles: {UserAccessProfile.administration},
           ),
           ModuleMenuItem(
             id: 'confinamento',
             label: 'Lotação de Currais',
             icon: LucideIcons.warehouse,
             route: '/fazendas/dashboards/confinamento',
+            profiles: {UserAccessProfile.administration},
           ),
           ModuleMenuItem(
             id: 'ativos',
             label: 'Ativos / Depreciação',
             icon: LucideIcons.package,
             route: '/fazendas/dashboards/ativos',
+            profiles: {UserAccessProfile.administration},
           ),
           ModuleMenuItem(
             id: 'suprimentos',
             label: 'Suprimentos',
             icon: LucideIcons.boxes,
             route: '/fazendas/dashboards/suprimentos',
+            profiles: {UserAccessProfile.administration},
           ),
           ModuleMenuItem(
             id: 'uso',
             label: 'Análise de Uso',
             icon: LucideIcons.users,
             route: '/fazendas/dashboards/uso',
+            profiles: {UserAccessProfile.administration},
           ),
           ModuleMenuItem(
             id: 'consultas',
             label: 'Consultas Gerenciais',
             icon: LucideIcons.search,
             route: '/fazendas/dashboards/consultas',
+            profiles: {UserAccessProfile.administration},
           ),
         ],
       ),
@@ -221,6 +295,7 @@ const List<ModuleDef> modules = [
             label: 'Fila de sincronização',
             icon: LucideIcons.refreshCw,
             route: '/fazendas/mais/sync',
+            profiles: {UserAccessProfile.operational},
           ),
           ModuleMenuItem(
             id: 'atividades',

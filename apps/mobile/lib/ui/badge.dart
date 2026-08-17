@@ -24,7 +24,7 @@ class AppBadge extends StatelessWidget {
 
   ({Color bg, Color fg}) _colors(AppSemanticColors s) => switch (tone) {
     AppBadgeTone.brand => (bg: s.ctaBg, fg: s.ctaFg),
-    AppBadgeTone.red => (bg: AppColors.red600, fg: Colors.white),
+    AppBadgeTone.red => (bg: AppColors.red600, fg: AppColors.neutral0),
     AppBadgeTone.neutral => (
       bg: AppColors.neutral200,
       fg: AppColors.neutral700,

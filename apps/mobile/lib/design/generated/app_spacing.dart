@@ -1,7 +1,7 @@
 // GERADO AUTOMATICAMENTE — não editar à mão.
-// Fonte: tokens/tokens.json (DTCG) <- src/design/tokens.ts
+// Fonte: tokens/tokens.json (DTCG) <- design/tokens.ts
 // Pipeline: `npm run tokens:export` seguido de `npm run tokens:export:flutter`.
-// Qualquer ajuste de valor deve entrar em src/design/tokens.ts (Lei 3/5 do CLAUDE.md).
+// Qualquer ajuste de valor deve entrar em design/tokens.ts (Lei 3/5 do CLAUDE.md).
 
 class AppSpacing {
   AppSpacing._();
@@ -19,6 +19,11 @@ class AppSpacing {
   static const double space10 = 40;
   static const double space12 = 48;
   static const double space14 = 56;
+  static const double space15 = 60;
   static const double space16 = 64;
   static const double space20 = 80;
+  static const double quarter = 1;
+  static const double half = 2;
+  static const double oneHalf = 6;
+  static const double twoHalf = 10;
 }

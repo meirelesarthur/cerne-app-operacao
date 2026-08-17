@@ -4,8 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/screens/fazendas_home.dart';
-import 'package:cerne_app/modules/fazendas/state/fazendas_store.dart';
-import 'package:cerne_app/modules/fazendas/types.dart';
+import 'package:cerne_app/shell/state/prototype_session_store.dart';
 
 import '../../../support/test_viewport.dart';
 
@@ -36,7 +35,9 @@ void main() {
       await setTallSurface(tester);
       final container = ProviderContainer();
       addTearDown(container.dispose);
-      container.read(fazendasStoreProvider.notifier).setView(FarmView.campo);
+      container
+          .read(prototypeSessionProvider.notifier)
+          .loginAs(UserAccessProfile.operational);
 
       await tester.pumpWidget(
         UncontrolledProviderScope(

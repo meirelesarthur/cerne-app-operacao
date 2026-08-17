@@ -1,5 +1,4 @@
-import '../../../ui/form_select.dart' show AppFormSelectOption;
-import '../../../ui/search_select.dart' show AppSearchSelectOption;
+import '../../../ui/ui.dart' show AppFormSelectOption, AppSearchSelectOption;
 
 /// Opções mockadas para os formulários operacionais (spec §5) — espelha
 /// `src/modules/fazendas/mocks/operacional.ts`. Consumido pelos 6 fluxos de

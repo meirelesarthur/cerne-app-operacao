@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../../ui/mini_app_tile.dart' show AppMiniAppTileBadge;
+import '../../../ui/ui.dart' show AppMiniAppTileBadge;
 
 /// Catálogo de mini-apps do hub — espelha `src/modules/hub/mocks/apps.ts`. O contrato
 /// (ícone, nome, descrição, rota, selo) permite injetar novos apps sem alterar as telas do hub.

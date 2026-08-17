@@ -63,5 +63,26 @@ void main() {
         }
       }
     });
+
+    testWidgets('todos os tamanhos preservam alvo mínimo de 44dp', (
+      tester,
+    ) async {
+      for (final size in AppIconButtonSize.values) {
+        await tester.pumpWidget(
+          _wrap(
+            AppIconButton(
+              icon: const Icon(Icons.star),
+              label: 'Favoritar',
+              size: size,
+              onPressed: () {},
+            ),
+          ),
+        );
+
+        final dimensions = tester.getSize(find.byType(AppIconButton));
+        expect(dimensions.width, greaterThanOrEqualTo(44));
+        expect(dimensions.height, greaterThanOrEqualTo(44));
+      }
+    });
   });
 }

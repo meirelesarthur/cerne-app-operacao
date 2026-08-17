@@ -123,7 +123,7 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                   child: const Icon(
                     LucideIcons.handCoins,
                     size: 22,
-                    color: Colors.white,
+                    color: AppColors.neutral0,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.space3),

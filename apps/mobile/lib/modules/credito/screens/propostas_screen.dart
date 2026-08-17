@@ -73,7 +73,7 @@ class PropostasScreen extends StatelessWidget {
                             color: semantic.fgDefault,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpacing.half),
                         Text(
                           proposta.data,
                           style: TextStyle(

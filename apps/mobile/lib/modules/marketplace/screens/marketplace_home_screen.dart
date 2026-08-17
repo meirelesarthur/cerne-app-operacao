@@ -10,6 +10,7 @@ import '../../../shared/rise_in.dart';
 import '../../../shared/simulated_load.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Home do Marketplace (New-UI): busca de insumos, categorias em pílula,
 /// banner de oferta em destaque e grid de produtos do catálogo. Espelha
@@ -134,9 +135,9 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
                 const Text(
                   OfertaDestaque.titulo,
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                    color: AppColors.neutral0,
+                    fontSize: AppTypography.xlPlus,
+                    fontWeight: AppTypography.weightBold,
                   ),
                 ),
                 const SizedBox(height: AppSpacing.space1),
@@ -145,8 +146,8 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
                   child: Text(
                     OfertaDestaque.subtitulo,
                     style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.8),
-                      fontSize: 14,
+                      color: AppColors.neutral0.withValues(alpha: 0.8),
+                      fontSize: AppTypography.md,
                     ),
                   ),
                 ),
@@ -259,28 +260,32 @@ class _ProdutoCard extends StatelessWidget {
             produto.nome,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              fontSize: AppTypography.md,
+              fontWeight: AppTypography.weightSemibold,
+            ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.half),
           Text(
             produto.vendedor,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(fontSize: 12),
+            style: const TextStyle(fontSize: AppTypography.sm),
           ),
           const SizedBox(height: AppSpacing.space2),
           RichText(
             text: TextSpan(
-              style: DefaultTextStyle.of(
-                context,
-              ).style.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+              style: DefaultTextStyle.of(context).style.copyWith(
+                fontSize: AppTypography.xlPlus,
+                fontWeight: AppTypography.weightBold,
+              ),
               children: [
                 TextSpan(text: produto.preco),
                 TextSpan(
                   text: ' /${produto.unidade}',
                   style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.normal,
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightNormal,
                   ),
                 ),
               ],
@@ -299,7 +304,7 @@ class _ProdutoCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(LucideIcons.truck, size: 11),
-                          SizedBox(width: 4),
+                          SizedBox(width: AppSpacing.space1),
                           Text('Frete grátis'),
                         ],
                       ),

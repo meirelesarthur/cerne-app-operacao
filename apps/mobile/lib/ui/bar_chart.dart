@@ -139,7 +139,7 @@ class _BarChartPainter extends CustomPainter {
           style: const TextStyle(
             fontSize: AppTypography.xs,
             fontWeight: AppTypography.weightSemibold,
-            color: Colors.white,
+            color: AppColors.neutral0,
           ),
         ),
         textDirection: TextDirection.ltr,
@@ -178,14 +178,14 @@ WidgetbookComponent buildBarChartWidgetbookComponent() {
       WidgetbookUseCase(
         name: 'Padrão',
         builder: (context) => const Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(AppSpacing.space4),
           child: AppBarChart(data: sample),
         ),
       ),
       WidgetbookUseCase(
         name: 'Formatação de valor',
         builder: (context) => Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.space4),
           child: AppBarChart(
             data: sample,
             formatValue: (v) => 'R\$ ${v.toStringAsFixed(0)}k',

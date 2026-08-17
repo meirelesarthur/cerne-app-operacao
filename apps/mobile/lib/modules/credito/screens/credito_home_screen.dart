@@ -188,7 +188,7 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                         fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.half),
                     Text(
                       'Taxa ${_linhaAtual.taxa} · $_prazoSelecionado parcelas',
                       style: TextStyle(
@@ -239,7 +239,7 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                               child: Icon(
                                 _linhaIcons[linha.id] ?? LucideIcons.fileText,
                                 size: 22,
-                                color: Colors.white,
+                                color: AppColors.neutral0,
                               ),
                             ),
                             const SizedBox(width: AppSpacing.space3),
@@ -271,7 +271,7 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(height: 2),
+                                  const SizedBox(height: AppSpacing.half),
                                   Text(
                                     linha.descricao,
                                     maxLines: 1,
@@ -359,7 +359,7 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                                         color: semantic.fgDefault,
                                       ),
                                     ),
-                                    const SizedBox(height: 2),
+                                    const SizedBox(height: AppSpacing.half),
                                     Text(
                                       proposta.data,
                                       style: TextStyle(
@@ -447,7 +447,7 @@ class _CreditoHero extends StatelessWidget {
                   gradient: RadialGradient(
                     colors: [
                       AppComponentColors.hubBankCardGlow,
-                      Colors.transparent,
+                      AppColors.transparent,
                     ],
                     stops: [0.0, 0.7],
                   ),
@@ -467,13 +467,13 @@ class _CreditoHero extends StatelessWidget {
                     height: AppSpacing.space8,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.1),
+                      color: AppColors.neutral0.withValues(alpha: 0.1),
                     ),
                     alignment: Alignment.center,
                     child: const Icon(
                       LucideIcons.handCoins,
                       size: 16,
-                      color: Colors.white,
+                      color: AppColors.neutral0,
                     ),
                   ),
                   const SizedBox(width: AppSpacing.space2),
@@ -490,7 +490,7 @@ class _CreditoHero extends StatelessWidget {
                   fontSize: AppTypography.xl4,
                   fontWeight: AppTypography.weightBold,
                   height: AppTypography.lineHeightTight,
-                  color: Colors.white,
+                  color: AppColors.neutral0,
                   fontFeatures: [FontFeature.tabularFigures()],
                 ),
               ),

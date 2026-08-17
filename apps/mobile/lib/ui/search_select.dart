@@ -6,6 +6,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 class AppSearchSelectOption {
   const AppSearchSelectOption({
@@ -148,7 +149,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
                       child: Container(
                         color: selected
                             ? semantic.accentSubtle
-                            : Colors.transparent,
+                            : AppColors.transparent,
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.space3,
                           vertical: AppSpacing.space2,

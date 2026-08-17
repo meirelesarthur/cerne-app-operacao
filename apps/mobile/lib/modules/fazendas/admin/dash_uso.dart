@@ -10,6 +10,8 @@ import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
+import 'package:cerne_app/design/generated/app_motion.dart';
 
 const _periodos = ['Hoje', '7 dias', '30 dias'];
 
@@ -108,31 +110,30 @@ class _FiltroPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.full),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space3,
-            vertical: AppSpacing.space1,
+    return AppPressable(
+      semanticLabel: 'Filtrar por $label',
+      selected: selected,
+      onPressed: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.full),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space3,
+          vertical: AppSpacing.space1,
+        ),
+        decoration: BoxDecoration(
+          color: selected ? semantic.accentDefault : semantic.bgSurface,
+          border: Border.all(
+            color: selected ? semantic.accentDefault : semantic.borderDefault,
           ),
-          decoration: BoxDecoration(
-            color: selected ? semantic.accentDefault : semantic.bgSurface,
-            border: Border.all(
-              color: selected ? semantic.accentDefault : semantic.borderDefault,
-            ),
-            borderRadius: BorderRadius.circular(AppRadius.full),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: AppTypography.base,
-              fontWeight: AppTypography.weightSemibold,
-              color: selected ? Colors.white : semantic.fgMuted,
-            ),
+          borderRadius: BorderRadius.circular(AppRadius.full),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: AppTypography.base,
+            fontWeight: AppTypography.weightSemibold,
+            color: selected ? AppColors.neutral0 : semantic.fgMuted,
           ),
         ),
       ),
@@ -167,8 +168,13 @@ class _FazendaTile extends StatelessWidget {
       ),
       child: Column(
         children: [
-          InkWell(
-            onTap: onTap,
+          AppPressable(
+            semanticLabel: open
+                ? 'Recolher detalhes de ${fazenda.nome}'
+                : 'Expandir detalhes de ${fazenda.nome}',
+            toggled: open,
+            onPressed: onTap,
+            minTouchTarget: false,
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.space3),
               child: Row(
@@ -199,7 +205,7 @@ class _FazendaTile extends StatelessWidget {
                   ),
                   AnimatedRotation(
                     turns: open ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 150),
+                    duration: AppMotion.fast,
                     child: Icon(
                       LucideIcons.chevronDown,
                       size: 18,

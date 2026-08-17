@@ -4,25 +4,63 @@ import 'package:go_router/go_router.dart';
 import '../../design/theme/app_theme_extension.dart';
 import 'admin/admin_dashboard.dart';
 import 'components/sync_banner.dart';
+import 'functional_catalog.dart';
 import 'operacional/campo_flow.dart';
 import 'screens/atividades_screen.dart';
 import 'screens/farm_list_screen.dart';
 import 'screens/fazendas_home.dart';
 import 'screens/mais_screen.dart';
+import 'screens/mapped_feature_screen.dart';
+import 'screens/responsibility_workspace.dart';
 import 'screens/sync_queue_screen.dart';
 
 /// Rotas do módulo Fazendas (ex-"Cerne") — espelha `FazendasModule.tsx`.
 /// Registrado no `ShellRoute` principal (`lib/router/app_router.dart`), no
 /// mesmo padrão de `buildHubModuleRoute()`.
 ///
-/// A troca de fazenda ativa vive na tela dedicada (tab "Fazendas" /
-/// `FarmListScreen`); o switch Gerencial ⇄ Campo vive no menu "Mais"
-/// (`AppRevealMenu`, via `ViewSwitch` — ver `components/view_switch.dart`).
+/// A troca de fazenda ativa vive na tela dedicada (tab "Fazendas"). O perfil
+/// da sessão define se o ambiente é Administração ou Operacional.
 GoRoute buildFazendasModuleRoute() {
   return GoRoute(
     path: '/fazendas',
     builder: (context, state) => const _FazendasScaffold(child: FazendasHome()),
     routes: [
+      GoRoute(
+        path: 'administracao',
+        builder: (context, state) => const _FazendasScaffold(
+          child: ResponsibilityWorkspace(
+            profile: FeatureProfile.administration,
+          ),
+        ),
+        routes: [
+          GoRoute(
+            path: ':featureId',
+            builder: (context, state) => _FazendasScaffold(
+              child: MappedFeatureScreen(
+                featureId: state.pathParameters['featureId']!,
+                profile: FeatureProfile.administration,
+              ),
+            ),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: 'operacional',
+        builder: (context, state) => const _FazendasScaffold(
+          child: ResponsibilityWorkspace(profile: FeatureProfile.operational),
+        ),
+        routes: [
+          GoRoute(
+            path: ':featureId',
+            builder: (context, state) => _FazendasScaffold(
+              child: MappedFeatureScreen(
+                featureId: state.pathParameters['featureId']!,
+                profile: FeatureProfile.operational,
+              ),
+            ),
+          ),
+        ],
+      ),
       GoRoute(
         path: 'atividades',
         builder: (context, state) =>

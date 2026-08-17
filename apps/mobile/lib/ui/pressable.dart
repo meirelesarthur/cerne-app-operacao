@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Superfície interativa sem aparência própria, com semântica, foco, ripple e
 /// alvo mínimo centralizados no catálogo.
@@ -14,6 +16,9 @@ class AppPressable extends StatelessWidget {
     this.onPressed,
     this.borderRadius,
     this.minTouchTarget = true,
+    this.selected,
+    this.toggled,
+    this.showVisualFeedback = true,
   });
 
   final Widget child;
@@ -21,16 +26,22 @@ class AppPressable extends StatelessWidget {
   final VoidCallback? onPressed;
   final BorderRadius? borderRadius;
   final bool minTouchTarget;
+  final bool? selected;
+  final bool? toggled;
+  final bool showVisualFeedback;
 
   @override
   Widget build(BuildContext context) {
     final radius = borderRadius ?? BorderRadius.circular(AppRadius.xl2);
     final content = Material(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       child: InkWell(
         onTap: onPressed,
         borderRadius: radius,
         canRequestFocus: onPressed != null,
+        overlayColor: showVisualFeedback
+            ? null
+            : const WidgetStatePropertyAll(AppColors.transparent),
         child: child,
       ),
     );
@@ -39,11 +50,14 @@ class AppPressable extends StatelessWidget {
       button: true,
       enabled: onPressed != null,
       label: semanticLabel,
+      selected: selected,
+      toggled: toggled,
+      excludeSemantics: true,
       child: minTouchTarget
           ? ConstrainedBox(
               constraints: const BoxConstraints(
-                minWidth: AppSpacing.space12,
-                minHeight: AppSpacing.space12,
+                minWidth: AppSize.control,
+                minHeight: AppSize.control,
               ),
               child: content,
             )

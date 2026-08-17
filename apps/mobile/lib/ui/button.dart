@@ -69,17 +69,17 @@ class AppButton extends StatelessWidget {
           border: s.borderDefault,
         ),
         AppButtonVariant.ghost => (
-          bg: Colors.transparent,
+          bg: AppColors.transparent,
           fg: s.fgDefault,
           border: null,
         ),
         AppButtonVariant.danger => (
           bg: AppColors.red600,
-          fg: Colors.white,
+          fg: AppColors.neutral0,
           border: null,
         ),
         AppButtonVariant.link => (
-          bg: Colors.transparent,
+          bg: AppColors.transparent,
           fg: s.accentDefault,
           border: null,
         ),
@@ -104,19 +104,12 @@ class AppButton extends StatelessWidget {
             padding: const EdgeInsets.only(right: AppSpacing.space2),
             child: leftIcon,
           ),
-        DefaultTextStyle(
-          style: TextStyle(
-            fontSize: variant == AppButtonVariant.link
-                ? AppTypography.sm
-                : _fontSize,
-            fontWeight: AppTypography.weightSemibold,
-            color: colors.fg,
-            decoration: variant == AppButtonVariant.link
-                ? TextDecoration.underline
-                : null,
-          ),
-          child: child,
-        ),
+        if (fullWidth)
+          Flexible(
+            child: _ButtonLabel(style: _labelStyle(colors.fg), child: child),
+          )
+        else
+          _ButtonLabel(style: _labelStyle(colors.fg), child: child),
         if (!loading && rightIcon != null)
           Padding(
             padding: const EdgeInsets.only(left: AppSpacing.space2),
@@ -128,9 +121,26 @@ class AppButton extends StatelessWidget {
     if (variant == AppButtonVariant.link) {
       return Opacity(
         opacity: _disabled && !loading ? 0.7 : 1,
-        child: GestureDetector(
-          onTap: _disabled ? null : onPressed,
-          child: content,
+        child: Material(
+          color: AppColors.transparent,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          child: InkWell(
+            onTap: _disabled ? null : onPressed,
+            canRequestFocus: !_disabled,
+            borderRadius: BorderRadius.circular(AppRadius.full),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                minHeight: AppSize.btnMd,
+                minWidth: AppSize.btnMd,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.space1,
+                ),
+                child: Center(child: content),
+              ),
+            ),
+          ),
         ),
       );
     }
@@ -147,6 +157,7 @@ class AppButton extends StatelessWidget {
         ),
         child: InkWell(
           onTap: _disabled ? null : onPressed,
+          canRequestFocus: !_disabled,
           borderRadius: BorderRadius.circular(AppRadius.full),
           child: Container(
             height: _height,
@@ -159,6 +170,30 @@ class AppButton extends StatelessWidget {
       ),
     );
   }
+
+  TextStyle _labelStyle(Color color) => TextStyle(
+    fontSize: variant == AppButtonVariant.link ? AppTypography.sm : _fontSize,
+    fontWeight: AppTypography.weightSemibold,
+    color: color,
+    decoration: variant == AppButtonVariant.link
+        ? TextDecoration.underline
+        : null,
+  );
+}
+
+class _ButtonLabel extends StatelessWidget {
+  const _ButtonLabel({required this.style, required this.child});
+
+  final TextStyle style;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => DefaultTextStyle(
+    style: style,
+    maxLines: 1,
+    overflow: TextOverflow.ellipsis,
+    child: child,
+  );
 }
 
 /// Use-cases da galeria (F2.5) — agregado em `widgetbook_app.dart`.
@@ -240,7 +275,7 @@ WidgetbookComponent buildButtonWidgetbookComponent() {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.space3),
               SizedBox(
                 width: 280,
                 child: AppButton(

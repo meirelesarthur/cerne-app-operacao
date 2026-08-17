@@ -75,5 +75,27 @@ void main() {
         }
       }
     });
+
+    testWidgets('tamanhos e variante link preservam alvo mínimo de 44dp', (
+      tester,
+    ) async {
+      for (final variant in AppButtonVariant.values) {
+        await tester.pumpWidget(
+          _wrap(
+            AppButton(
+              variant: variant,
+              size: AppButtonSize.sm,
+              onPressed: () {},
+              child: const Text('Alvo'),
+            ),
+          ),
+        );
+
+        expect(
+          tester.getSize(find.byType(AppButton)).height,
+          greaterThanOrEqualTo(44),
+        );
+      }
+    });
   });
 }

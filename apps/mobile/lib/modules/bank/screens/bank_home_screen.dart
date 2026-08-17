@@ -11,6 +11,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../components/bank_card_visual.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Home do módulo GB Bank (New-UI): saldo, ações rápidas, cartão corporativo,
 /// deep-link para Crédito e últimas movimentações — experiência completa do
@@ -166,7 +167,7 @@ class BankHomeScreen extends ConsumerWidget {
                   child: const Icon(
                     LucideIcons.trendingUp,
                     size: 22,
-                    color: Colors.white,
+                    color: AppColors.neutral0,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.space3),

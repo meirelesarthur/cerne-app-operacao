@@ -1,23 +1,19 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cerne_app/design/theme/app_theme.dart';
-import 'package:cerne_app/router/app_router.dart';
-
-Widget _wrap() => ProviderScope(
-  child: MaterialApp.router(
-    theme: buildAppTheme(AppThemeVariant.light),
-    routerConfig: appRouter,
-  ),
-);
+import '../../support/router_test_harness.dart';
 
 void main() {
-  setUp(() => appRouter.go('/onboarding'));
+  late RouterTestHarness harness;
+
+  setUp(() {
+    harness = RouterTestHarness();
+    addTearDown(harness.dispose);
+    harness.router.go('/onboarding');
+  });
 
   group('OnboardingPage', () {
     testWidgets('mostra o primeiro slide, os dots e as ações', (tester) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       expect(find.text('Sua fazenda na palma da mão'), findsOneWidget);
@@ -29,7 +25,7 @@ void main() {
     testWidgets('"Próximo" avança os slides até "Começar" no último', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Próximo'));
@@ -44,7 +40,7 @@ void main() {
     });
 
     testWidgets('"Pular" leva direto para o login', (tester) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Pular'));
@@ -56,7 +52,7 @@ void main() {
     testWidgets('"Começar" no último slide também leva ao login', (
       tester,
     ) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Próximo'));

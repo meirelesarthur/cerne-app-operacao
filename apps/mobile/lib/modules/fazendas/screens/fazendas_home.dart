@@ -7,6 +7,7 @@ import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shared/rise_in.dart';
+import '../../../shell/state/prototype_session_store.dart';
 import '../../../ui/ui.dart';
 import '../components/activity_detail_sheet.dart';
 import '../components/activity_list_item.dart';
@@ -16,19 +17,19 @@ import '../components/shortcut_grid.dart';
 import '../mocks/atividades.dart';
 import '../state/fazendas_store.dart';
 import '../types.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Home do módulo Fazendas (aba Dashboard) — espelha `FazendasHome.tsx`:
-/// alterna conteúdo entre a visão Gerencial (leitura) e Campo (escrita) via
-/// `fazendasStoreProvider`.
+/// O conteúdo é definido exclusivamente pelo perfil da sessão demonstrativa.
 class FazendasHome extends ConsumerWidget {
   const FazendasHome({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final view = ref.watch(fazendasStoreProvider.select((s) => s.view));
-    return view == FarmView.gerencial
-        ? const _HomeGerencial()
-        : const _HomeCampo();
+    final profile = ref.watch(prototypeSessionProvider).profile;
+    return profile == UserAccessProfile.operational
+        ? const _HomeCampo()
+        : const _HomeGerencial();
   }
 }
 
@@ -232,8 +233,8 @@ class _SafraPill extends StatelessWidget {
           Text(
             'Safra 24/25',
             style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
+              fontWeight: AppTypography.weightSemibold,
+              fontSize: AppTypography.base,
               color: semantic.fgDefault,
             ),
           ),

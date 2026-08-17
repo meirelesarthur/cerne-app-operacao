@@ -1,13 +1,15 @@
 // GERADO AUTOMATICAMENTE — não editar à mão.
-// Fonte: tokens/tokens.json (DTCG) <- src/design/tokens.ts
+// Fonte: tokens/tokens.json (DTCG) <- design/tokens.ts
 // Pipeline: `npm run tokens:export` seguido de `npm run tokens:export:flutter`.
-// Qualquer ajuste de valor deve entrar em src/design/tokens.ts (Lei 3/5 do CLAUDE.md).
+// Qualquer ajuste de valor deve entrar em design/tokens.ts (Lei 3/5 do CLAUDE.md).
 
 import 'package:flutter/material.dart';
 
 class AppColors {
   AppColors._();
 
+  static const Color transparent = Color(0x00000000);
+  static const Color black = Color(0xFF000000);
   static const Color brand50 = Color(0xFFF0FDF4);
   static const Color brand100 = Color(0xFFDCFCE7);
   static const Color brand200 = Color(0xFFBBF7D0);
@@ -65,6 +67,7 @@ class AppColors {
   static const Color chartRevenue = Color(0xFF059669);
   static const Color chartExpense = Color(0xFFDC2626);
   static const Color chartFinance = Color(0xFF2563EB);
+  static const Color chartOnDark = Color(0xE6FFFFFF);
   static const Color chartGrid = Color(0xFFE5E7EB);
   static const Color chartAxis = Color(0xFF9CA3AF);
   static const List<Color> chartSeries = [

@@ -93,14 +93,14 @@ ThemeData buildAppTheme(AppThemeVariant variant) {
       secondary: AppColors.brand500,
       onSecondary: semantic.accentContrast,
       error: AppColors.red600,
-      onError: Colors.white,
+      onError: AppColors.neutral0,
       surface: semantic.bgSurface,
       onSurface: semantic.fgDefault,
     ),
     dividerColor: semantic.borderDefault,
     cardTheme: CardThemeData(
       color: semantic.bgSurface,
-      surfaceTintColor: Colors.transparent,
+      surfaceTintColor: AppColors.transparent,
       elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadius.lg),

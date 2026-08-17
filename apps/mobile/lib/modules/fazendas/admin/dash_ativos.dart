@@ -7,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 const Map<AtivoEstado, ({String label, AppChipTone tone, IconData icon})>
 _estadoMeta = {
@@ -103,7 +104,7 @@ class _AtivoCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: AppTypography.weightSemibold,
                           color: semantic.fgDefault,
                         ),
                       ),
@@ -119,7 +120,7 @@ class _AtivoCard extends StatelessWidget {
                     Text(
                       ativo.aquisicao,
                       style: TextStyle(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: AppTypography.weightSemibold,
                         color: semantic.fgDefault,
                       ),
                     ),
@@ -131,11 +132,11 @@ class _AtivoCard extends StatelessWidget {
                           size: 11,
                           color: semantic.fgSubtle,
                         ),
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpacing.space1),
                         Text(
                           ativo.proximaManutencao,
                           style: TextStyle(
-                            fontSize: 11,
+                            fontSize: AppTypography.xs,
                             color: semantic.fgSubtle,
                           ),
                         ),
@@ -158,8 +159,8 @@ class _AtivoCard extends StatelessWidget {
                 Text(
                   '${ativo.depreciado}%',
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightMedium,
                     color: semantic.fgMuted,
                   ),
                 ),
@@ -200,8 +201,8 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w600,
+                          fontSize: AppTypography.xl,
+                          fontWeight: AppTypography.weightSemibold,
                           color: semantic.fgDefault,
                         ),
                       ),
@@ -251,7 +252,7 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
                 Text(
                   '${ativo.depreciado}%',
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: AppTypography.weightSemibold,
                     color: semantic.fgDefault,
                   ),
                 ),
@@ -265,7 +266,10 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
             const SizedBox(height: AppSpacing.space4),
             Text(
               'Ficha completa do ativo, histórico de manutenções e anexos ficam no sistema web GB CERNE.',
-              style: TextStyle(fontSize: 13, color: semantic.fgSubtle),
+              style: TextStyle(
+                fontSize: AppTypography.base,
+                color: semantic.fgSubtle,
+              ),
             ),
           ],
         );
@@ -288,7 +292,13 @@ class _DetailRow extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(fontSize: 13, color: semantic.fgMuted)),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: AppTypography.base,
+              color: semantic.fgMuted,
+            ),
+          ),
           Flexible(
             child: Text(
               value,
@@ -296,8 +306,8 @@ class _DetailRow extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
+                fontSize: AppTypography.base,
+                fontWeight: AppTypography.weightSemibold,
                 color: semantic.fgDefault,
               ),
             ),

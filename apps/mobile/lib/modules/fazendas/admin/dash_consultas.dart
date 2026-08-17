@@ -7,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 enum _Secao { lotes, estoque, pesagens, localizacao }
 
@@ -43,12 +44,12 @@ class _DashConsultasState extends State<DashConsultas> {
           Row(
             children: [
               Icon(LucideIcons.lock, size: 12, color: semantic.fgSubtle),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpacing.oneHalf),
               Text(
                 'Somente leitura — dados espelhados do web.',
                 style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
+                  fontSize: AppTypography.xs,
+                  fontWeight: AppTypography.weightMedium,
                   color: semantic.fgSubtle,
                 ),
               ),
@@ -115,42 +116,41 @@ class _HubTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.xl2),
-        child: Container(
-          padding: const EdgeInsets.all(AppSpacing.space3),
-          decoration: BoxDecoration(
-            color: selected ? semantic.accentSubtle : semantic.bgSurface,
-            border: Border.all(
-              color: selected ? semantic.accentDefault : semantic.borderDefault,
+    return AppPressable(
+      semanticLabel: label,
+      selected: selected,
+      onPressed: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.xl2),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.space3),
+        decoration: BoxDecoration(
+          color: selected ? semantic.accentSubtle : semantic.bgSurface,
+          border: Border.all(
+            color: selected ? semantic.accentDefault : semantic.borderDefault,
+          ),
+          borderRadius: BorderRadius.circular(AppRadius.xl2),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 20,
+              color: selected ? semantic.accentDefault : semantic.fgMuted,
             ),
-            borderRadius: BorderRadius.circular(AppRadius.xl2),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                icon,
-                size: 20,
-                color: selected ? semantic.accentDefault : semantic.fgMuted,
+            const SizedBox(height: AppSpacing.oneHalf),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: AppTypography.xs,
+                fontWeight: AppTypography.weightMedium,
+                color: semantic.fgMuted,
               ),
-              const SizedBox(height: 6),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: semantic.fgMuted,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -193,7 +193,7 @@ class _ReadOnlyList extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontWeight: FontWeight.w600,
+                            fontWeight: AppTypography.weightSemibold,
                             color: semantic.fgDefault,
                           ),
                         ),
@@ -202,7 +202,7 @@ class _ReadOnlyList extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            fontSize: 13,
+                            fontSize: AppTypography.base,
                             color: semantic.fgMuted,
                           ),
                         ),

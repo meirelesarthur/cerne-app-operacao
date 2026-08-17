@@ -61,7 +61,10 @@ class AppChip extends StatelessWidget {
     final colors = _colors;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.twoHalf,
+        vertical: AppSpacing.space1,
+      ),
       decoration: BoxDecoration(
         color: colors.bg,
         border: Border.all(color: colors.border),

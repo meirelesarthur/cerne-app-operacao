@@ -37,7 +37,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byType(GestureDetector));
+      await tester.tap(find.byType(InkWell));
       await tester.pump();
 
       expect(result, isTrue);
@@ -56,7 +56,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byType(GestureDetector), warnIfMissed: false);
+      await tester.tap(find.byType(InkWell), warnIfMissed: false);
       await tester.pump();
 
       expect(tapped, isFalse);

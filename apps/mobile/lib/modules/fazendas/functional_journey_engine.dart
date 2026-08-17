@@ -94,9 +94,19 @@ bool isFeatureFormValid(FeatureDefinition feature, FunctionalFormState state) {
     (field) => featureFieldError(feature, field, state.values) == null,
   );
   if (!fieldsValid) return false;
-  if (feature.simulation == null) return true;
+  return featureSimulationError(feature, state) == null;
+}
+
+String? featureSimulationError(
+  FeatureDefinition feature,
+  FunctionalFormState state,
+) {
+  if (feature.simulation == null) return null;
   final target = feature.simulationTargetField ?? '_hardware';
-  return state.values[target]?.trim().isNotEmpty ?? false;
+  if (state.values[target]?.trim().isNotEmpty ?? false) return null;
+  return feature.simulationTargetField == null
+      ? 'Conclua a simulação para continuar.'
+      : 'Capture ou informe a identificação manualmente.';
 }
 
 PrototypeRecordDraft buildPrototypeRecordDraft(

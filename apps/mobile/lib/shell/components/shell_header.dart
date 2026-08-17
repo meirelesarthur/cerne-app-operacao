@@ -8,6 +8,7 @@ import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
 import '../state/shell_store.dart';
+import '../state/prototype_session_store.dart';
 
 /// Header global do Shell (Nova UI): zona clara sobre o canvas — avatar +
 /// saudação à esquerda, bolhas de ação circulares à direita. Persiste ao
@@ -49,6 +50,7 @@ class AppShellHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final state = ref.watch(shellStoreProvider);
+    final profile = ref.watch(prototypeSessionProvider).profile;
     final user = state.user;
     final unread = state.unreadCount;
     final menuOpen = state.menuOpen;
@@ -75,49 +77,58 @@ class AppShellHeader extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Semantics(
-                    button: true,
-                    label: 'Abrir perfil',
-                    child: InkWell(
-                      onTap: onOpenProfile,
-                      child: Row(
-                        children: [
-                          AppAvatar(
-                            name: user.name,
-                            initials: user.initials,
-                            size: AppAvatarSize.lg,
-                          ),
-                          const SizedBox(width: AppSpacing.space3),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  '$greeting,',
-                                  style: TextStyle(
-                                    fontSize: AppTypography.md,
-                                    fontWeight: AppTypography.weightMedium,
-                                    height: AppTypography.lineHeightTight,
-                                    color: semantic.fgMuted,
-                                  ),
+                  child: AppPressable(
+                    semanticLabel: 'Abrir perfil',
+                    onPressed: onOpenProfile,
+                    minTouchTarget: false,
+                    child: Row(
+                      children: [
+                        AppAvatar(
+                          name: user.name,
+                          initials: user.initials,
+                          size: AppAvatarSize.lg,
+                        ),
+                        const SizedBox(width: AppSpacing.space3),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '$greeting,',
+                                style: TextStyle(
+                                  fontSize: AppTypography.md,
+                                  fontWeight: AppTypography.weightMedium,
+                                  height: AppTypography.lineHeightTight,
+                                  color: semantic.fgMuted,
                                 ),
+                              ),
+                              Text(
+                                user.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: AppTypography.xl2,
+                                  fontWeight: AppTypography.weightBold,
+                                  height: AppTypography.lineHeightTight,
+                                  color: semantic.fgDefault,
+                                ),
+                              ),
+                              if (profile != null)
                                 Text(
-                                  user.name,
+                                  'Ambiente ${profile.label}',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: AppTypography.xl2,
-                                    fontWeight: AppTypography.weightBold,
-                                    height: AppTypography.lineHeightTight,
-                                    color: semantic.fgDefault,
+                                    fontSize: AppTypography.xs,
+                                    fontWeight: AppTypography.weightSemibold,
+                                    color: semantic.accentDefault,
                                   ),
                                 ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

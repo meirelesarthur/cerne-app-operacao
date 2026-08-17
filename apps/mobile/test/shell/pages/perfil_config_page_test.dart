@@ -1,28 +1,22 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/design/theme/theme_provider.dart';
-import 'package:cerne_app/router/app_router.dart';
+import 'package:cerne_app/shell/state/prototype_session_store.dart';
 
-Widget _wrap(ProviderContainer container) => UncontrolledProviderScope(
-  container: container,
-  child: MaterialApp.router(
-    theme: buildAppTheme(AppThemeVariant.light),
-    routerConfig: appRouter,
-  ),
-);
+import '../../support/router_test_harness.dart';
 
 void main() {
-  setUp(() => appRouter.go('/perfil'));
+  late RouterTestHarness harness;
+
+  setUp(() {
+    harness = RouterTestHarness(profile: UserAccessProfile.administration);
+    addTearDown(harness.dispose);
+    harness.router.go('/perfil');
+  });
 
   group('PerfilConfigPage', () {
     testWidgets('mostra o usuário do shellStore sem exceção', (tester) async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      await tester.pumpWidget(_wrap(container));
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       expect(find.text('Silvio Ventura'), findsOneWidget);
@@ -35,40 +29,41 @@ void main() {
     testWidgets('tocar em "Tema" alterna o themeVariantProvider', (
       tester,
     ) async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      await tester.pumpWidget(_wrap(container));
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(container.read(themeVariantProvider), AppThemeVariant.light);
+      expect(
+        harness.container.read(themeVariantProvider),
+        AppThemeVariant.light,
+      );
 
       await tester.tap(find.text('Tema'));
       await tester.pump();
 
-      expect(container.read(themeVariantProvider), AppThemeVariant.gbMode);
+      expect(
+        harness.container.read(themeVariantProvider),
+        AppThemeVariant.gbMode,
+      );
     });
 
     testWidgets('tocar em "Sair" navega para o login', (tester) async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      await tester.pumpWidget(_wrap(container));
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Sair'));
       await tester.pumpAndSettle();
 
       expect(find.text('Bem-vindo!'), findsOneWidget);
+      expect(
+        harness.container.read(prototypeSessionProvider).isAuthenticated,
+        isFalse,
+      );
     });
 
     testWidgets('tocar em "Notificações" navega para a tela de notificações', (
       tester,
     ) async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      await tester.pumpWidget(_wrap(container));
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Notificações'));

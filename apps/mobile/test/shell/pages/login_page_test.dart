@@ -1,36 +1,33 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cerne_app/design/theme/app_theme.dart';
-import 'package:cerne_app/router/app_router.dart';
+import 'package:cerne_app/shell/state/prototype_session_store.dart';
 
+import '../../support/router_test_harness.dart';
 import '../../support/test_viewport.dart';
 
-Widget _wrap() => ProviderScope(
-  child: MaterialApp.router(
-    theme: buildAppTheme(AppThemeVariant.light),
-    routerConfig: appRouter,
-  ),
-);
-
 void main() {
-  // appRouter é uma instância global — reseta o ponto de partida a cada teste.
-  setUp(() => appRouter.go('/login'));
+  late RouterTestHarness harness;
+
+  setUp(() {
+    harness = RouterTestHarness();
+    addTearDown(harness.dispose);
+    harness.router.go('/login');
+  });
 
   group('LoginPage', () {
     testWidgets('renderiza marca e formulário sem exceção', (tester) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       expect(find.text('GB CERNE'), findsOneWidget);
       expect(find.text('Bem-vindo!'), findsOneWidget);
-      expect(find.text('Entrar'), findsOneWidget);
+      expect(find.text('Login Administração'), findsOneWidget);
+      expect(find.text('Login Operacional'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
     testWidgets('"Conhecer o app" navega para o onboarding', (tester) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Conhecer o app'));
@@ -40,27 +37,50 @@ void main() {
     });
 
     testWidgets('alterna "Manter conectado" ao tocar', (tester) async {
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Manter conectado'));
+      final keepConnected = find.text('Manter conectado');
+      await tester.ensureVisible(keepConnected);
+      await tester.pumpAndSettle();
+      await tester.tap(keepConnected);
       await tester.pump();
 
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('"Entrar" navega para o hub (Início)', (tester) async {
+    testWidgets('Login Administração inicia sessão e abre central de gestão', (
+      tester,
+    ) async {
       await setTallSurface(tester);
-      await tester.pumpWidget(_wrap());
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Entrar'));
-      // SimulatedLoad/RiseIn da HubHomeScreen usam Future.delayed isolado —
-      // avança o relógio antes de deixar pumpAndSettle assentar (ver app_router_test.dart).
-      await tester.pump(const Duration(seconds: 1));
+      await tester.tap(find.text('Login Administração'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Seus apps'), findsOneWidget);
+      expect(find.text('Central de gestão'), findsOneWidget);
+      expect(
+        harness.container.read(prototypeSessionProvider).profile,
+        UserAccessProfile.administration,
+      );
+    });
+
+    testWidgets('Login Operacional inicia sessão e abre central de rotinas', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Login Operacional'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Central de rotinas'), findsOneWidget);
+      expect(
+        harness.container.read(prototypeSessionProvider).profile,
+        UserAccessProfile.operational,
+      );
     });
   });
 }

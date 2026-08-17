@@ -6,6 +6,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/estoque_mocks.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Detalhe de Movimentação do Armazém: BottomSheet acionado pelo item de
 /// lista (`AppTransactionListItem`) tanto na Home quanto em Movimentações — o
@@ -69,8 +70,8 @@ class _SheetBody extends StatelessWidget {
             Text(
               '${isEntrada ? '+' : '−'} ${mov.quantidade}',
               style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
+                fontSize: AppTypography.display,
+                fontWeight: AppTypography.weightBold,
                 height: 1.1,
                 color: isEntrada ? semantic.accentDefault : semantic.fgDefault,
               ),
@@ -78,14 +79,17 @@ class _SheetBody extends StatelessWidget {
             Text(
               mov.item,
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontSize: AppTypography.xl,
+                fontWeight: AppTypography.weightSemibold,
                 color: semantic.fgDefault,
               ),
             ),
             Text(
               mov.tempo,
-              style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+              style: TextStyle(
+                fontSize: AppTypography.md,
+                color: semantic.fgMuted,
+              ),
             ),
           ],
         ),
@@ -126,16 +130,19 @@ class _SheetBody extends StatelessWidget {
               Text(
                 'NOTA',
                 style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
+                  fontSize: AppTypography.sm,
+                  fontWeight: AppTypography.weightSemibold,
                   color: semantic.fgSubtle,
                   letterSpacing: 0.4,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpacing.space1),
               Text(
                 mov.nota,
-                style: TextStyle(fontSize: 14, color: semantic.fgDefault),
+                style: TextStyle(
+                  fontSize: AppTypography.md,
+                  color: semantic.fgDefault,
+                ),
               ),
             ],
           ),
@@ -144,7 +151,10 @@ class _SheetBody extends StatelessWidget {
 
         Text(
           'Comprovante fiscal e histórico completo ficam disponíveis no sistema web GB CERNE.',
-          style: TextStyle(fontSize: 14, color: semantic.fgSubtle),
+          style: TextStyle(
+            fontSize: AppTypography.md,
+            color: semantic.fgSubtle,
+          ),
         ),
       ],
     );
@@ -164,7 +174,10 @@ class _DetailRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: TextStyle(fontSize: 14, color: semantic.fgMuted)),
+        Text(
+          label,
+          style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
+        ),
         const SizedBox(width: AppSpacing.space3),
         Flexible(
           child: Text(
@@ -173,8 +186,8 @@ class _DetailRow extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
+              fontSize: AppTypography.md,
+              fontWeight: AppTypography.weightSemibold,
               color: semantic.fgDefault,
             ),
           ),

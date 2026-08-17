@@ -89,7 +89,7 @@ class _Timeline extends StatelessWidget {
     _StepState.done => (
       border: s.accentDefault,
       bg: s.accentDefault,
-      fg: Colors.white,
+      fg: AppColors.neutral0,
     ),
     _StepState.current => (
       border: s.accentDefault,
@@ -104,7 +104,7 @@ class _Timeline extends StatelessWidget {
     _StepState.rejected => (
       border: AppColors.red500,
       bg: AppColors.red500,
-      fg: Colors.white,
+      fg: AppColors.neutral0,
     ),
   };
 
@@ -163,7 +163,9 @@ class _Timeline extends StatelessWidget {
                       ),
                       if (!isLast)
                         Container(
-                          margin: const EdgeInsets.symmetric(vertical: 2),
+                          margin: const EdgeInsets.symmetric(
+                            vertical: AppSpacing.half,
+                          ),
                           width: 1,
                           height: AppSpacing.space9,
                           color: step.state == _StepState.pending
@@ -176,7 +178,7 @@ class _Timeline extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.only(
-                        bottom: isLast ? 0 : AppSpacing.space5,
+                        bottom: isLast ? AppSpacing.space0 : AppSpacing.space5,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,7 +194,9 @@ class _Timeline extends StatelessWidget {
                           ),
                           if (step.date != null)
                             Padding(
-                              padding: const EdgeInsets.only(top: 2),
+                              padding: const EdgeInsets.only(
+                                top: AppSpacing.half,
+                              ),
                               child: Text(
                                 step.date!,
                                 style: TextStyle(

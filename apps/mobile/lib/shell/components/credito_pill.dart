@@ -5,6 +5,7 @@ import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
+import '../../ui/ui.dart';
 
 /// Pílula de crédito pré-aprovado no header do Shell (Nova UI): cápsula de
 /// superfície theme-aware com valor em destaque — espelha `CreditoPill.tsx`.
@@ -33,8 +34,9 @@ class AppCreditoPill extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.full),
           side: BorderSide(color: semantic.borderTint),
         ),
-        child: InkWell(
-          onTap: onTap,
+        child: AppPressable(
+          semanticLabel: 'Abrir crédito pré-aprovado de $_valor',
+          onPressed: onTap,
           borderRadius: BorderRadius.circular(AppRadius.full),
           child: Padding(
             padding: const EdgeInsets.symmetric(

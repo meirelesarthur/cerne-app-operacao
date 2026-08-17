@@ -24,10 +24,10 @@ Future<T?> showAppBottomSheet<T>(
   return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
+    backgroundColor: AppColors.transparent,
     // bg-black/40 no React — valor arbitrário do Tailwind, não um token de
     // `tokens.ts`; preservado igual à origem.
-    barrierColor: Colors.black.withValues(alpha: 0.4),
+    barrierColor: AppColors.black.withValues(alpha: 0.4),
     builder: (context) => AppBottomSheet(
       title: title,
       maxHeightFraction: maxHeightFraction,

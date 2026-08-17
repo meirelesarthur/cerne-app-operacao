@@ -117,31 +117,30 @@ class _FiltroPill extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.full),
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space3,
-            vertical: AppSpacing.space1,
+    return AppPressable(
+      semanticLabel: 'Filtrar por $label',
+      selected: selected,
+      onPressed: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.full),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space3,
+          vertical: AppSpacing.space1,
+        ),
+        decoration: BoxDecoration(
+          color: selected ? semantic.accentDefault : semantic.bgSurface,
+          border: Border.all(
+            color: selected ? semantic.accentDefault : semantic.borderDefault,
           ),
-          decoration: BoxDecoration(
-            color: selected ? semantic.accentDefault : semantic.bgSurface,
-            border: Border.all(
-              color: selected ? semantic.accentDefault : semantic.borderDefault,
-            ),
-            borderRadius: BorderRadius.circular(AppRadius.full),
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: AppTypography.base,
-              fontWeight: AppTypography.weightSemibold,
-              color: selected ? Colors.white : semantic.fgMuted,
-            ),
+          borderRadius: BorderRadius.circular(AppRadius.full),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: AppTypography.base,
+            fontWeight: AppTypography.weightSemibold,
+            color: selected ? AppColors.neutral0 : semantic.fgMuted,
           ),
         ),
       ),
@@ -320,7 +319,7 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
                         size: 14,
                         color: variacaoColor,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.space1),
                       Text(
                         '${alta ? '+' : ''}${c.variacao.toStringAsFixed(1)}% frente à cotação anterior',
                         style: TextStyle(

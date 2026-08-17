@@ -4,8 +4,8 @@ import '../mocks/fazendas.dart';
 import '../types.dart';
 
 /// Store do módulo Fazendas (spec §7.3) — espelha `fazendasStore.ts`. Isolada
-/// do Shell. Guarda a visão ativa (Gerencial/Campo), a fazenda ativa (tenant)
-/// e a fila de sync mockada. Tudo em memória (sem persistência local).
+/// do Shell. Guarda a fazenda ativa (tenant) e a fila de sync mockada. A
+/// responsabilidade administrativa/operacional pertence à sessão do Shell.
 ///
 /// NOTA (F4 core): este arquivo substitui uma versão mínima temporária que
 /// havia sido criada em paralelo pelos fluxos operacionais (F5) com uma API
@@ -17,14 +17,12 @@ class FazendasState {
   const FazendasState({
     required this.farms,
     required this.activeFarmId,
-    required this.view,
     required this.syncQueue,
     required this.pesagemDoDiaFeita,
   });
 
   final List<Farm> farms;
   final String activeFarmId;
-  final FarmView view;
   final List<SyncItem> syncQueue;
 
   /// pesagem do dia registrada? Pré-requisito da transferência de lote
@@ -37,14 +35,12 @@ class FazendasState {
   FazendasState copyWith({
     List<Farm>? farms,
     String? activeFarmId,
-    FarmView? view,
     List<SyncItem>? syncQueue,
     bool? pesagemDoDiaFeita,
   }) {
     return FazendasState(
       farms: farms ?? this.farms,
       activeFarmId: activeFarmId ?? this.activeFarmId,
-      view: view ?? this.view,
       syncQueue: syncQueue ?? this.syncQueue,
       pesagemDoDiaFeita: pesagemDoDiaFeita ?? this.pesagemDoDiaFeita,
     );
@@ -62,15 +58,12 @@ class FazendasStoreNotifier extends Notifier<FazendasState> {
     return FazendasState(
       farms: fazendas,
       activeFarmId: fazendas.first.id,
-      view: FarmView.gerencial,
       syncQueue: const [],
       pesagemDoDiaFeita: false,
     );
   }
 
   void setActiveFarm(String id) => state = state.copyWith(activeFarmId: id);
-
-  void setView(FarmView view) => state = state.copyWith(view: view);
 
   void enqueueSync(SyncItem item) =>
       state = state.copyWith(syncQueue: [...state.syncQueue, item]);

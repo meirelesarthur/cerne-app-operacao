@@ -1,7 +1,7 @@
 // GERADO AUTOMATICAMENTE — não editar à mão.
-// Fonte: tokens/tokens.json (DTCG) <- src/design/tokens.ts
+// Fonte: tokens/tokens.json (DTCG) <- design/tokens.ts
 // Pipeline: `npm run tokens:export` seguido de `npm run tokens:export:flutter`.
-// Qualquer ajuste de valor deve entrar em src/design/tokens.ts (Lei 3/5 do CLAUDE.md).
+// Qualquer ajuste de valor deve entrar em design/tokens.ts (Lei 3/5 do CLAUDE.md).
 
 import 'package:flutter/material.dart';
 
@@ -10,6 +10,7 @@ class AppMotion {
 
   static const Duration fast = Duration(milliseconds: 150);
   static const Duration base = Duration(milliseconds: 200);
+  static const Duration medium = Duration(milliseconds: 250);
   static const Duration slow = Duration(milliseconds: 300);
   static const Duration slower = Duration(milliseconds: 400);
   static const Duration stagger = Duration(milliseconds: 40);

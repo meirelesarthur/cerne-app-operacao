@@ -10,6 +10,7 @@ import '../mocks/atividades.dart';
 import '../mocks/dashboards_mocks.dart';
 import '../types.dart';
 import 'dashboard_screen.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 const _icons = [LucideIcons.wallet, LucideIcons.package, LucideIcons.beef];
 
@@ -90,7 +91,10 @@ class DashPecuaria extends StatelessWidget {
               ).extension<AppSemanticColors>()!;
               return Text(
                 'Indicadores produtivos/reprodutivos em definição no legado — não exibidos para evitar dado incorreto.',
-                style: TextStyle(fontSize: 11, color: semantic.fgSubtle),
+                style: TextStyle(
+                  fontSize: AppTypography.xs,
+                  color: semantic.fgSubtle,
+                ),
               );
             },
           ),

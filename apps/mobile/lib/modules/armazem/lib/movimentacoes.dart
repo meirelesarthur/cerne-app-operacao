@@ -1,5 +1,4 @@
-import '../../../ui/transaction_list_item.dart'
-    show AppTransactionItem, AppTransactionDirection;
+import '../../../ui/ui.dart' show AppTransactionItem, AppTransactionDirection;
 import '../mocks/estoque_mocks.dart';
 
 /// Adapta uma [Movimentacao] do Armazém para o shape de [AppTransactionItem],

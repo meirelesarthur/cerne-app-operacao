@@ -11,9 +11,9 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../design/theme/theme_provider.dart';
-import '../../modules/fazendas/components/view_switch.dart';
 import '../../ui/ui.dart';
 import '../module_config.dart';
+import '../state/prototype_session_store.dart';
 import '../state/shell_store.dart';
 
 /// Painel do menu "reveal" global (Nova UI): revelado à direita — espelha
@@ -30,8 +30,7 @@ import '../state/shell_store.dart';
 ///   React) não é implementado aqui — é responsabilidade do `ShellLayout`
 ///   ao trocar de rota.
 /// - Fecha em Esc via `Focus`/`KeyEvent` enquanto o menu está aberto.
-/// - `ViewSwitch` do módulo Fazendas não é portado (módulo Fazendas é da F4,
-///   ainda não implementado no Flutter) — ver TODO abaixo.
+/// - O ambiente Fazendas vem do perfil da sessão; não existe alternância local.
 /// - Como não há `location`/go_router acoplado, o destaque de "item ativo"
 ///   usa um [activeRoute] opcional (extensão sobre a spec, default `null` =
 ///   nenhum item destacado) em vez do `location.pathname === item.route` do
@@ -82,6 +81,7 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
     final state = ref.watch(shellStoreProvider);
     final themeVariant = ref.watch(themeVariantProvider);
     final menuOpen = state.menuOpen;
+    final profile = ref.watch(prototypeSessionProvider).profile;
 
     if (menuOpen && !_focusNode.hasFocus) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -116,6 +116,7 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
                         ? _MenuContent(
                             module: widget.module,
                             state: state,
+                            profile: profile,
                             themeVariant: themeVariant,
                             activeRoute: widget.activeRoute,
                             semantic: semantic,
@@ -126,6 +127,12 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
                             onToggleOnline: () => ref
                                 .read(shellStoreProvider.notifier)
                                 .toggleOnline(),
+                            onLogout: () {
+                              ref
+                                  .read(prototypeSessionProvider.notifier)
+                                  .logout();
+                              widget.onNavigate('/login');
+                            },
                           )
                         : const SizedBox.shrink(),
                   ),
@@ -143,22 +150,26 @@ class _MenuContent extends StatelessWidget {
   const _MenuContent({
     required this.module,
     required this.state,
+    required this.profile,
     required this.themeVariant,
     required this.activeRoute,
     required this.semantic,
     required this.onNavigate,
     required this.onToggleTheme,
     required this.onToggleOnline,
+    required this.onLogout,
   });
 
   final ModuleDef module;
   final ShellState state;
+  final UserAccessProfile? profile;
   final AppThemeVariant themeVariant;
   final String? activeRoute;
   final AppSemanticColors semantic;
   final ValueChanged<String> onNavigate;
   final VoidCallback onToggleTheme;
   final VoidCallback onToggleOnline;
+  final VoidCallback onLogout;
 
   @override
   Widget build(BuildContext context) {
@@ -166,8 +177,8 @@ class _MenuContent extends StatelessWidget {
     final unread = state.unreadCount;
     final isOnline = state.isOnline;
     final isGbMode = themeVariant == AppThemeVariant.gbMode;
-    final roleLabel = user.role == 'operador' ? 'Operador' : 'Administrador';
-    final sections = getMenuSections(module);
+    final roleLabel = profile?.roleLabel ?? 'Sessão não iniciada';
+    final sections = getMenuSections(module, profile: profile);
 
     var idx = 0;
     int next() => idx++;
@@ -176,54 +187,51 @@ class _MenuContent extends StatelessWidget {
       // identidade do usuário
       _stagger(
         next(),
-        Material(
-          color: Colors.transparent,
+        AppPressable(
+          semanticLabel: 'Abrir perfil de ${user.name}',
+          onPressed: () => onNavigate('/perfil'),
           borderRadius: BorderRadius.circular(AppRadius.xl2),
-          child: InkWell(
-            onTap: () => onNavigate('/perfil'),
-            borderRadius: BorderRadius.circular(AppRadius.xl2),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.space2),
-              child: Row(
-                children: [
-                  AppAvatar(
-                    name: user.name,
-                    initials: user.initials,
-                    size: AppAvatarSize.lg,
-                  ),
-                  const SizedBox(width: AppSpacing.space3),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          user.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: AppTypography.lg,
-                            fontWeight: AppTypography.weightBold,
-                            color: semantic.inkFg,
-                          ),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.space2),
+            child: Row(
+              children: [
+                AppAvatar(
+                  name: user.name,
+                  initials: user.initials,
+                  size: AppAvatarSize.lg,
+                ),
+                const SizedBox(width: AppSpacing.space3),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        user.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: AppTypography.lg,
+                          fontWeight: AppTypography.weightBold,
+                          color: semantic.inkFg,
                         ),
-                        Text(
-                          '$roleLabel · GB CERNE',
-                          style: TextStyle(
-                            fontSize: AppTypography.xs,
-                            color: semantic.inkMuted,
-                          ),
+                      ),
+                      Text(
+                        '$roleLabel · GB CERNE',
+                        style: TextStyle(
+                          fontSize: AppTypography.xs,
+                          color: semantic.inkMuted,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Icon(
-                    LucideIcons.chevronRight,
-                    size: 18,
-                    color: semantic.inkMuted,
-                  ),
-                ],
-              ),
+                ),
+                Icon(
+                  LucideIcons.chevronRight,
+                  size: 18,
+                  color: semantic.inkMuted,
+                ),
+              ],
             ),
           ),
         ),
@@ -261,19 +269,6 @@ class _MenuContent extends StatelessWidget {
         ),
       ),
       const SizedBox(height: AppSpacing.space2),
-
-      // Switch de visão do módulo Fazendas (Gerencial ⇄ Campo) — só nesse módulo.
-      if (module.id == 'fazendas')
-        _stagger(
-          next(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: ViewSwitch(onChanged: (_) => onNavigate(module.homeRoute)),
-            ),
-          ),
-        ),
 
       // funcionalidades do módulo atual
       for (final section in sections) ...[
@@ -427,7 +422,7 @@ class _MenuContent extends StatelessWidget {
               tone: AppMenuItemTone.danger,
               icon: LucideIcons.logOut,
               label: 'Sair',
-              onTap: () => onNavigate('/login'),
+              onTap: onLogout,
             ),
           ),
         ),

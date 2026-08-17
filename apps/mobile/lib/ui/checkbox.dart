@@ -3,9 +3,12 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_radius.dart';
+import '../design/generated/app_layout.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
+import 'package:cerne_app/design/generated/app_motion.dart';
 
 /// Espelha `Checkbox.tsx` — controle `role="checkbox"` acessível, componente
 /// controlado (`checked`/`onChanged`), encapsulando o toque para cumprir a Lei 1.
@@ -15,11 +18,16 @@ class AppCheckbox extends StatelessWidget {
     required this.checked,
     required this.onChanged,
     this.label,
-  });
+    this.semanticLabel,
+  }) : assert(
+         label != null || semanticLabel != null,
+         'Informe label ou semanticLabel para acessibilidade.',
+       );
 
   final bool checked;
   final ValueChanged<bool> onChanged;
   final String? label;
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -27,49 +35,58 @@ class AppCheckbox extends StatelessWidget {
 
     return Semantics(
       checked: checked,
-      label: label,
+      label: semanticLabel ?? label,
       child: InkWell(
         onTap: () => onChanged(!checked),
         borderRadius: BorderRadius.circular(AppRadius.md),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: AppSpacing.space1),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 150),
-                width: AppSpacing.space5,
-                height: AppSpacing.space5,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                  color: checked ? semantic.accentDefault : semantic.bgSurface,
-                  border: Border.all(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: AppSize.control,
+            minHeight: AppSize.control,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: AppSpacing.space1),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
+                  duration: AppMotion.fast,
+                  width: AppSpacing.space5,
+                  height: AppSpacing.space5,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                     color: checked
                         ? semantic.accentDefault
-                        : semantic.borderStrong,
+                        : semantic.bgSurface,
+                    border: Border.all(
+                      color: checked
+                          ? semantic.accentDefault
+                          : semantic.borderStrong,
+                    ),
                   ),
+                  child: checked
+                      ? const Icon(
+                          LucideIcons.check,
+                          size: 13,
+                          color: AppColors.neutral0,
+                        )
+                      : null,
                 ),
-                child: checked
-                    ? const Icon(
-                        LucideIcons.check,
-                        size: 13,
-                        color: Colors.white,
-                      )
-                    : null,
-              ),
-              if (label != null) ...[
-                const SizedBox(width: AppSpacing.space2),
-                Text(
-                  label!,
-                  style: TextStyle(
-                    fontFamily: AppTypography.fontFamily,
-                    fontSize: AppTypography.md,
-                    color: semantic.fgDefault,
+                if (label != null) ...[
+                  const SizedBox(width: AppSpacing.space2),
+                  Text(
+                    label!,
+                    style: TextStyle(
+                      fontFamily: AppTypography.fontFamily,
+                      fontSize: AppTypography.md,
+                      color: semantic.fgDefault,
+                    ),
                   ),
-                ),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

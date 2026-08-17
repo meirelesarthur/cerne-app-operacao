@@ -6,49 +6,55 @@ fluxo e servir de handoff ao time mobile. Baseado em `spec-cerne-app.md`.
 
 ## Stack
 
-- **React 18 + TypeScript** (strict) · **Vite 5**
-- **Tailwind CSS 3** derivado dos tokens · fonte **Outfit** self-hospedada (`@fontsource`)
-- **react-router-dom** (roteamento em 2 níveis) · **zustand** (estado)
-- **lucide-react** (ícones) · gráficos **SVG próprios** (sem lib de charting)
+- **Flutter 3.44.6 + Dart 3** em `apps/mobile`
+- **Riverpod** (estado) · **go_router** (roteamento protegido em dois níveis)
+- **Outfit** self-hosted · **Lucide Icons Flutter** · gráficos próprios tokenizados
+- **Widgetbook** publicado junto com o app em `/storybook/`
+- **Cloudflare Workers Static Assets** com fallbacks separados para app e Widgetbook
+
+Flutter é o único runtime do repositório. O último estado React está preservado somente na tag Git
+`react-rollback-final-2026-08-17`.
 
 ## Como rodar
 
 ```bash
 npm install
-npm run dev            # http://localhost:5173
-npm run build          # typecheck (tsc -b) + build de produção
-npm run quality:functional # valida as 53 funções e bloqueia regressões do catálogo
-npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de src/design/tokens.ts
+npm run dev            # Flutter Web no Chrome
+npm run lint           # flutter analyze --fatal-infos
+npm test               # suíte Flutter
+npm run quality:functional # gate de arquitetura, acesso e 53 funções
+npm run build          # app + Widgetbook em apps/mobile/build/site
+npm run smoke:deploy   # valida rotas e fallbacks Cloudflare
+npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de design/tokens.ts
 ```
 
-No app, um **botão flutuante de dev** (canto inferior direito) alterna **offline** (banners de sync) e
-**tema** (light / GB Mode escuro).
+A configuração completa do Worker está em `docs/DEPLOY-FLUTTER-CLOUDFLARE.md`. O último runtime
+React existe somente na tag Git `react-rollback-final-2026-08-17`.
 
 ## Arquitetura
 
-Roteamento em dois níveis (spec §7.3): `/:moduleId/*` → o **Shell** escolhe o módulo e injeta seu
-bottom tab bar; cada módulo tem suas rotas internas.
+Roteamento em dois níveis: `/:moduleId/*` → o **Shell** Flutter escolhe o módulo e injeta seu bottom
+tab bar; cada módulo tem suas rotas internas e as famílias administrativas/operacionais respeitam a
+sessão demonstrativa.
 
 ```
-src/
-  design/tokens.ts        # fonte única de tokens (Lei 3/5) → export DTCG em tokens/tokens.json
-  styles/tokens.css       # CSS vars light/gbMode (data-theme)
-  context/ThemeContext     # tema light | gbMode
-  components/ui/           # biblioteca de componentes (Lei 1) — tudo consome t.*
-  shell/                   # Header global, ModuleSwitcher, BottomTabBar genérico, DevToolbar,
-                           #   moduleConfig (registro de módulos), shellStore, páginas do Shell
+apps/mobile/lib/
+  design/generated/       # Dart gerado do DTCG; nunca editado manualmente
+  design/theme/           # temas Light e GB Mode
+  ui/                     # catálogo component-first e casos do Widgetbook
+  router/                 # go_router + política de acesso
+  shell/                  # shell global e sessão demonstrativa
   modules/
-    fazendas/              # módulo completo: components, admin/ (7 dashboards), operacional/ (6 fluxos),
-                           #   screens/, state/fazendasStore, mocks/
-    PlaceholderModule      # casca genérica (Bank/Crédito/Marketplace/Armazém)
+    fazendas/             # 12 funções administrativas + 41 operacionais
+    hub|bank|credito|marketplace|armazem/
 ```
 
 ### Design system (Leis do projeto)
 
-- **Lei 1** — todo elemento é um componente de `src/components/ui/`; nada de `<button>/<input>/<table>/<h1-6>` cru em telas.
-- **Lei 2** — componentes são fonte única; extensão via props, sem `style` inline sobrescrevendo.
-- **Lei 3** — todo valor de design vem de `src/design/tokens.ts` (via `t.*` ou CSS vars); fonte Outfit apenas.
-- **Lei 5** — `tokens.ts` é a fonte; `npm run tokens:export` gera `tokens/tokens.json` (W3C DTCG).
+- **Lei 1** — controles visíveis passam pelo catálogo `apps/mobile/lib/ui`.
+- **Lei 2** — widgets compartilhados são fonte única; telas não reimplementam componentes.
+- **Lei 3** — todo valor visual vem do tema ou dos arquivos Dart gerados; fonte Outfit apenas.
+- **Lei 5** — `tokens.ts` → `tokens.json` W3C DTCG → Dart gerado, verificado por `tokens:verify`.
 
 ## Módulo Fazendas
 
@@ -68,7 +74,7 @@ src/
 ## Checklist de aceite (spec §9)
 
 - [x] Shell funcional: Barra de Módulos troca header, conteúdo e bottom tab bar dos 5 módulos.
-- [x] Cores/spacing/radius/shadow vêm de tokens; sem valores hardcoded no JSX.
+- [x] Cores/spacing/radius/shadow vêm de tokens; sem valores hardcoded nas telas Flutter.
 - [x] Módulo Fazendas: duas visões (Gerencial/Campo) via switch, com farm switcher (mock).
 - [x] 7 telas administrativas + fluxos operacionais implementados com mock, dentro do módulo Fazendas.
 - [x] Bank/Crédito/Marketplace/Armazém navegáveis como cascas, cada um com seu bottom tab bar.
@@ -76,21 +82,21 @@ src/
 - [x] Trava de pesagem do dia bloqueando transferência funciona no protótipo.
 - [x] Banner de offline/sync demonstrável via toggle de dev, restrito ao módulo Fazendas.
 - [x] Tema light 100% funcional; GB Mode com cores base aplicadas.
-- [x] Nenhum uso de localStorage/sessionStorage (estado em memória).
-- [x] Estrutura `shell/` + `modules/<nome>/`, pronta para mapeamento 1:1 no mobile.
+- [x] Estado demonstrativo em memória por Riverpod, sem backend ou autenticação real.
+- [x] Estrutura Flutter `shell/` + `modules/<nome>/` como pipeline mobile oficial.
 - [x] Sessão demonstrativa obrigatória, logout efetivo e redirecionamento de rotas internas para o login.
 - [x] Gate automatizado garantindo 12 funções administrativas, 41 operacionais, IDs únicos,
   zero itens apenas `Mapeado` e simulação presente em toda dependência de hardware.
 - [x] Controles primários e secundários do design system com alvo mínimo de toque de 44 px,
   foco visível, rótulos acessíveis e ausência de rolagem horizontal em 390 px.
-- [x] Nenhuma tela ou componente de módulo usa elementos interativos proibidos diretamente;
-  superfícies customizadas passam pelo primitivo `Pressable` do catálogo UI.
-- [x] Cores dos componentes TSX vêm dos tokens, Outfit permanece como fonte única e o gate
+- [x] Nenhuma tela ou componente de módulo usa controles interativos proibidos diretamente;
+  superfícies customizadas passam pelo `AppPressable` do catálogo UI.
+- [x] Cores dos widgets Dart vêm dos tokens, Outfit permanece como fonte única e o gate
   rejeita novas cores literais ou famílias tipográficas não autorizadas.
 
-## Notas de handoff (mobile)
+## Limites do protótipo
 
-- A estrutura `modules/<nome>/` já nasce como feature-modules — mapeável 1:1 para módulos nativos.
-- Gráficos são SVG próprios tokenizados; no mobile, indicar equivalente nativo mantendo os tokens.
-- Estado em memória (zustand). Em app real, a fila de sync e a visão/fazenda ativa podem ser persistidas.
-- Fora do escopo desta fase (não exigidos pelo spec): Storybook, testes automatizados e Chakra UI.
+- Autenticação, RBAC, APIs e persistência continuam simulados no frontend.
+- Bluetooth, RFID, câmera, localização e balança possuem jornadas demonstrativas; integração nativa
+  real continua fora do escopo do protótipo web.
+- O Widgetbook é o catálogo oficial de componentes Flutter e faz parte do mesmo build Cloudflare.

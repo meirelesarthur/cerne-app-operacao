@@ -1,5 +1,8 @@
 # Plano de Migração — Protótipo React → App Flutter (GB CERNE)
 
+> **Plano concluído:** M0–M13 foram executadas. Flutter é o único runtime oficial; o último estado
+> React está disponível apenas na tag `react-rollback-final-2026-08-17`.
+
 **Objetivo:** levar o GB CERNE de protótipo React navegável a **app de produção em Flutter/Dart**,
 aproveitando o que o protótipo já define como contrato (tokens DTCG, catálogo de componentes,
 arquitetura de módulos) e entregando ao time mobile uma esteira com fases, critérios de aceite

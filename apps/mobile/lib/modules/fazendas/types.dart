@@ -16,9 +16,6 @@ class Farm {
   final String uf;
 }
 
-/// Espelha `FarmView` (`'gerencial' | 'campo'`).
-enum FarmView { gerencial, campo }
-
 /// Espelha `ActivityStatus`.
 enum ActivityStatus { andamento, concluida, autorizada, atrasada }
 

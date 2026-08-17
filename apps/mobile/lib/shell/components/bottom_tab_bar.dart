@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_radius.dart';
 import '../../design/theme/app_theme_extension.dart';
+import '../../ui/ui.dart';
 import '../module_config.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
+import 'package:cerne_app/design/generated/app_spacing.dart';
 
 /// Dock de módulos (Nova UI): cápsula flutuante icon-only — os 6 módulos
 /// sempre visíveis (sem rolagem nem corte em viewports estreitos), o ativo
@@ -44,7 +47,9 @@ class AppBottomTabBar extends StatelessWidget {
             sigmaY: AppComponentMetrics.tabbarBlur,
           ),
           child: Container(
-            padding: const EdgeInsets.all(AppComponentMetrics.tabbarInset / 2),
+            padding: const EdgeInsets.all(
+              AppComponentMetrics.tabbarInset / AppSpacing.half,
+            ),
             decoration: BoxDecoration(
               color: semantic.navBg,
               borderRadius: BorderRadius.circular(AppRadius.full),
@@ -89,25 +94,23 @@ class _ModuleButton extends StatelessWidget {
 
     return Tooltip(
       message: label,
-      child: Semantics(
-        button: true,
-        label: label,
-        selected: active,
-        child: Material(
-          color: active ? semantic.inkBg : Colors.transparent,
-          shape: const CircleBorder(),
-          child: InkWell(
-            onTap: onTap,
-            customBorder: const CircleBorder(),
-            child: SizedBox(
-              width: AppComponentMetrics.tabbarItemSize,
-              height: AppComponentMetrics.tabbarItemSize,
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 20,
-                  color: active ? semantic.navActive : semantic.navFg,
-                ),
+      child: Material(
+        color: active ? semantic.inkBg : AppColors.transparent,
+        shape: const CircleBorder(),
+        child: AppPressable(
+          semanticLabel: label,
+          selected: active,
+          onPressed: onTap,
+          minTouchTarget: false,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          child: SizedBox(
+            width: AppComponentMetrics.tabbarItemSize,
+            height: AppComponentMetrics.tabbarItemSize,
+            child: Center(
+              child: Icon(
+                icon,
+                size: 20,
+                color: active ? semantic.navActive : semantic.navFg,
               ),
             ),
           ),

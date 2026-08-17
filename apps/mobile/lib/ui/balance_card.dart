@@ -64,7 +64,7 @@ class AppBalanceCard extends StatelessWidget {
                     gradient: RadialGradient(
                       colors: [
                         AppComponentColors.hubBankCardGlow,
-                        Colors.transparent,
+                        AppColors.transparent,
                       ],
                       stops: [0.0, 0.7],
                     ),
@@ -125,7 +125,7 @@ class AppBalanceCard extends StatelessWidget {
                         toggled: hidden,
                         label: hidden ? 'Mostrar saldo' : 'Ocultar saldo',
                         child: Material(
-                          color: Colors.transparent,
+                          color: AppColors.transparent,
                           shape: const CircleBorder(),
                           child: InkWell(
                             onTap: onToggleHidden,
@@ -307,7 +307,7 @@ WidgetbookComponent buildBalanceCardWidgetbookComponent() {
                 width: 340,
                 child: AppBalanceCard(value: 'R\$ 128.450,32', loading: true),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.space4),
               SizedBox(
                 width: 340,
                 child: AppBalanceCard(

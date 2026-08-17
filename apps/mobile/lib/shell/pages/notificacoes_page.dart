@@ -10,6 +10,7 @@ import '../../ui/ui.dart';
 import '../components/sub_page_header.dart';
 import '../module_config.dart';
 import '../state/shell_store.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 const Map<String, IconData> _moduleIcon = {
   'fazendas': LucideIcons.sprout,
@@ -116,7 +117,8 @@ class NotificacoesPage extends ConsumerWidget {
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
-                                                fontWeight: FontWeight.w600,
+                                                fontWeight: AppTypography
+                                                    .weightSemibold,
                                                 color: semantic.fgDefault,
                                               ),
                                             ),
@@ -127,7 +129,7 @@ class NotificacoesPage extends ConsumerWidget {
                                           Text(
                                             n.time,
                                             style: TextStyle(
-                                              fontSize: 11,
+                                              fontSize: AppTypography.xs,
                                               color: semantic.fgSubtle,
                                             ),
                                           ),

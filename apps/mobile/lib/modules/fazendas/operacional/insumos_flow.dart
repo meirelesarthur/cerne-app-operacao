@@ -113,7 +113,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
                       padding: EdgeInsets.only(
                         right: op == _Lancamento.aplicacao
                             ? AppSpacing.space2
-                            : 0,
+                            : AppSpacing.space0,
                       ),
                       child: _TipoButton(
                         label: op == _Lancamento.aplicacao
@@ -187,8 +187,10 @@ class _TipoButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return InkWell(
-      onTap: onTap,
+    return AppPressable(
+      semanticLabel: label,
+      selected: selected,
+      onPressed: onTap,
       borderRadius: BorderRadius.circular(AppRadius.lg),
       child: Container(
         padding: const EdgeInsets.symmetric(

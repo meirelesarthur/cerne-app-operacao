@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../modules/armazem/armazem_module.dart';
@@ -13,6 +15,7 @@ import '../shell/pages/notificacoes_page.dart';
 import '../shell/pages/onboarding_page.dart';
 import '../shell/pages/perfil_config_page.dart';
 import '../shell/shell_layout.dart';
+import '../shell/state/prototype_session_store.dart';
 
 /// Router do app — `ShellRoute` (F3.1) com rotas `/:moduleId` e `/:moduleId/:tab`
 /// aninhadas, espelhando a navegação de 2 níveis do protótipo React
@@ -22,63 +25,116 @@ import '../shell/shell_layout.dart';
 /// por isso o `moduleId`/`tab` ativos são derivados de `state.uri.pathSegments`
 /// dentro do builder do `ShellRoute`, não de `state.pathParameters` (não há
 /// parâmetro nomeado `:moduleId` em nenhuma rota).
-final GoRouter appRouter = GoRouter(
-  initialLocation: '/inicio',
-  routes: [
-    GoRoute(path: '/', redirect: (context, state) => '/inicio'),
-    ShellRoute(
-      builder: (context, state, child) {
-        final segments = state.uri.pathSegments;
-        final moduleId = segments.isNotEmpty ? segments.first : 'inicio';
-        final tab = segments.length > 1 ? segments[1] : '';
-        return ShellLayout(moduleId: moduleId, activeTab: tab, child: child);
-      },
-      routes: [
-        buildHubModuleRoute(),
-        buildFazendasModuleRoute(),
-        buildBankModuleRoute(),
-        buildCreditoModuleRoute(),
-        buildMarketplaceModuleRoute(),
-        buildArmazemModuleRoute(),
-        for (final module in modules.where(
-          (m) => !_wiredModules.contains(m.id),
-        ))
-          GoRoute(
-            path: '/${module.id}',
-            builder: (context, state) => ModulePlaceholderScreen(
-              moduleLabel: module.label,
-              tabLabel: _tabLabel(module, ''),
-            ),
-            routes: [
-              GoRoute(
-                path: ':tab',
-                builder: (context, state) {
-                  final tab = state.pathParameters['tab']!;
-                  return ModulePlaceholderScreen(
-                    moduleLabel: module.label,
-                    tabLabel: _tabLabel(module, tab),
-                  );
-                },
+final appRouterProvider = Provider<GoRouter>((ref) {
+  final refresh = ValueNotifier(0);
+  ref.listen<PrototypeSessionState>(prototypeSessionProvider, (previous, next) {
+    refresh.value++;
+  });
+
+  final router = GoRouter(
+    initialLocation: '/login',
+    refreshListenable: refresh,
+    redirect: (context, state) {
+      final session = ref.read(prototypeSessionProvider);
+      return redirectForSession(state.uri.path, session);
+    },
+    routes: [
+      GoRoute(path: '/', redirect: (context, state) => '/inicio'),
+      ShellRoute(
+        builder: (context, state, child) {
+          final segments = state.uri.pathSegments;
+          final moduleId = segments.isNotEmpty ? segments.first : 'inicio';
+          final tab = segments.length > 1 ? segments[1] : '';
+          return ShellLayout(moduleId: moduleId, activeTab: tab, child: child);
+        },
+        routes: [
+          buildHubModuleRoute(),
+          buildFazendasModuleRoute(),
+          buildBankModuleRoute(),
+          buildCreditoModuleRoute(),
+          buildMarketplaceModuleRoute(),
+          buildArmazemModuleRoute(),
+          for (final module in modules.where(
+            (m) => !_wiredModules.contains(m.id),
+          ))
+            GoRoute(
+              path: '/${module.id}',
+              builder: (context, state) => ModulePlaceholderScreen(
+                moduleLabel: module.label,
+                tabLabel: _tabLabel(module, ''),
               ),
-            ],
-          ),
-      ],
-    ),
-    GoRoute(
-      path: '/perfil',
-      builder: (context, state) => const PerfilConfigPage(),
-    ),
-    GoRoute(
-      path: '/notificacoes',
-      builder: (context, state) => const NotificacoesPage(),
-    ),
-    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
-    GoRoute(
-      path: '/onboarding',
-      builder: (context, state) => const OnboardingPage(),
-    ),
-  ],
-);
+              routes: [
+                GoRoute(
+                  path: ':tab',
+                  builder: (context, state) {
+                    final tab = state.pathParameters['tab']!;
+                    return ModulePlaceholderScreen(
+                      moduleLabel: module.label,
+                      tabLabel: _tabLabel(module, tab),
+                    );
+                  },
+                ),
+              ],
+            ),
+        ],
+      ),
+      GoRoute(
+        path: '/perfil',
+        builder: (context, state) => const PerfilConfigPage(),
+      ),
+      GoRoute(
+        path: '/notificacoes',
+        builder: (context, state) => const NotificacoesPage(),
+      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+      GoRoute(
+        path: '/onboarding',
+        builder: (context, state) => const OnboardingPage(),
+      ),
+    ],
+  );
+
+  ref.onDispose(() {
+    router.dispose();
+    refresh.dispose();
+  });
+  return router;
+});
+
+/// Política única de acesso do protótipo, separada do roteador para permitir
+/// testes determinísticos de deep links e perfis cruzados.
+String? redirectForSession(String path, PrototypeSessionState session) {
+  final isPublic = path == '/login' || path == '/onboarding';
+  final profile = session.profile;
+
+  if (profile == null) {
+    return isPublic ? null : '/login';
+  }
+
+  if (path == '/' || path == '/fazendas' || path == '/login') {
+    return profile.homeRoute;
+  }
+  if (path == '/fazendas/mais') return profile.homeRoute;
+  if (path == '/onboarding') return null;
+
+  final isAdministrationRoute =
+      path.startsWith('/fazendas/administracao') ||
+      path.startsWith('/fazendas/dashboards') ||
+      path == '/fazendas/financeiro';
+  final isOperationalRoute =
+      path.startsWith('/fazendas/operacional') ||
+      path.startsWith('/fazendas/campo') ||
+      path == '/fazendas/mais/sync';
+
+  if (profile == UserAccessProfile.administration && isOperationalRoute) {
+    return profile.homeRoute;
+  }
+  if (profile == UserAccessProfile.operational && isAdministrationRoute) {
+    return profile.homeRoute;
+  }
+
+  return null;
+}
 
 /// Módulos com rota real registrada (todos, após a F4) — o loop genérico de
 /// `ModulePlaceholderScreen` abaixo só existe como rede de segurança para um

@@ -5,6 +5,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/estoque_mocks.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Aba "Relatórios": relatórios mockados de operação do armazém (spec D2.5).
 /// Espelha `RelatoriosScreen.tsx`.
@@ -43,7 +44,7 @@ class RelatoriosScreen extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontWeight: FontWeight.w600,
+                              fontWeight: AppTypography.weightSemibold,
                               color: semantic.fgDefault,
                             ),
                           ),
@@ -58,10 +59,13 @@ class RelatoriosScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpacing.half),
                     Text(
                       rel.periodo,
-                      style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+                      style: TextStyle(
+                        fontSize: AppTypography.sm,
+                        color: semantic.fgMuted,
+                      ),
                     ),
                   ],
                 ),

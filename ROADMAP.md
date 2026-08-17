@@ -1,10 +1,14 @@
 # Roadmap — Protótipo Superapp GB CERNE (módulo Fazendas)
 
+> **Documento histórico:** as fases React abaixo registram a origem do protótipo. A migração M0–M13
+> foi concluída em 17/08/2026; Flutter 3.44.6 é o único runtime oficial. Consulte
+> `docs/MEMORIA-MIGRACAO-FLUTTER.md` para os commits e gates atuais.
+
 Esteira de desenvolvimento em fases, conforme `spec-cerne-app.md` §8 e o `CLAUDE.md`.
 Marcação `[x]` a cada etapa concluída, com o commit correspondente.
 
 > **Escopo:** protótipo frontend mobile de alta fidelidade, dados mockados, sem backend.
-> **Stack:** React 18 + Vite 5 + TS · Tailwind (tokens) · react-router · zustand · lucide-react · charts SVG próprios.
+> **Stack histórica:** React 18 + Vite 5 + TS · Tailwind · react-router · zustand · lucide-react.
 > **Fora de escopo (não exigido pelo spec):** Chakra UI, Storybook, testes automatizados — opcionais na Fase 7.
 
 ---

@@ -278,8 +278,9 @@ class _EventTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return InkWell(
-      onTap: onTap,
+    return AppPressable(
+      semanticLabel: '${e.label}: ${e.desc}',
+      onPressed: onTap,
       borderRadius: BorderRadius.circular(AppRadius.xl3),
       child: Container(
         padding: const EdgeInsets.all(AppSpacing.space4),

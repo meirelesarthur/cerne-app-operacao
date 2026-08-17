@@ -6,6 +6,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Direção do lançamento — espelha `'in' | 'out'` de `TransactionItem` (React).
 enum AppTransactionDirection { income, expense }
@@ -142,7 +143,7 @@ class AppTransactionListItem extends StatelessWidget {
     if (onTap == null) return row;
 
     return Material(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppRadius.md),

@@ -50,7 +50,7 @@ class AppMenuItem extends StatelessWidget {
 
     final containerColor = active
         ? (_isOnDark
-              ? Colors.white.withValues(alpha: 0.15)
+              ? AppColors.neutral0.withValues(alpha: 0.15)
               : semantic.accentSubtle)
         : (_isOnDark ? semantic.inkBubble : semantic.bgSurface);
 
@@ -169,7 +169,7 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
       WidgetbookUseCase(
         name: 'Light — padrão',
         builder: (context) => Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.space4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -179,14 +179,14 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
                 description: 'Dados pessoais e documentos',
                 onTap: () {},
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
                 icon: LucideIcons.bell,
                 label: 'Notificações',
                 active: true,
                 onTap: () {},
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
                 icon: LucideIcons.logOut,
                 label: 'Sair',
@@ -201,7 +201,7 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
         name: 'onDark',
         builder: (context) => Container(
           color: Theme.of(context).extension<AppSemanticColors>()!.inkBg,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.space4),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -211,7 +211,7 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
                 variant: AppMenuItemVariant.onDark,
                 onTap: () {},
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
                 icon: LucideIcons.shield,
                 label: 'Segurança',

@@ -8,6 +8,8 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shared/rise_in.dart';
 import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Aba "Fazendas" — espelha `FarmListScreen.tsx`: lista de fazendas vinculadas;
 /// toque troca o tenant ativo.
@@ -70,8 +72,12 @@ class _FarmRow extends StatelessWidget {
     return Material(
       color: active ? semantic.accentSubtle : semantic.bgSurface,
       borderRadius: BorderRadius.circular(AppRadius.xl3),
-      child: InkWell(
-        onTap: onTap,
+      child: AppPressable(
+        semanticLabel: active
+            ? '$name, fazenda ativa'
+            : 'Selecionar fazenda $name',
+        selected: active,
+        onPressed: onTap,
         borderRadius: BorderRadius.circular(AppRadius.xl3),
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.space3),
@@ -94,7 +100,7 @@ class _FarmRow extends StatelessWidget {
                 child: const Icon(
                   LucideIcons.leaf,
                   size: 20,
-                  color: Colors.white,
+                  color: AppColors.neutral0,
                 ),
               ),
               const SizedBox(width: AppSpacing.space3),
@@ -106,13 +112,16 @@ class _FarmRow extends StatelessWidget {
                     Text(
                       name,
                       style: TextStyle(
-                        fontWeight: FontWeight.w600,
+                        fontWeight: AppTypography.weightSemibold,
                         color: semantic.fgDefault,
                       ),
                     ),
                     Text(
                       '$city/$uf',
-                      style: TextStyle(fontSize: 13, color: semantic.fgMuted),
+                      style: TextStyle(
+                        fontSize: AppTypography.base,
+                        color: semantic.fgMuted,
+                      ),
                     ),
                   ],
                 ),

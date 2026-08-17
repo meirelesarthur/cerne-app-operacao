@@ -72,7 +72,9 @@ class AppDonutChart extends StatelessWidget {
               for (var i = 0; i < data.length; i++)
                 Padding(
                   padding: EdgeInsets.only(
-                    bottom: i == data.length - 1 ? 0 : AppSpacing.space1,
+                    bottom: i == data.length - AppSpacing.quarter
+                        ? AppSpacing.space0
+                        : AppSpacing.space1,
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

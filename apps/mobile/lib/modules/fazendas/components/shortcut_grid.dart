@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
+import '../../../ui/ui.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Item de atalho ícone + rótulo — espelha `Shortcut` (interface) de `ShortcutGrid.tsx`.
 class Shortcut {
@@ -43,8 +45,9 @@ class ShortcutGrid extends StatelessWidget {
       childAspectRatio: 0.82,
       children: [
         for (final it in items)
-          InkWell(
-            onTap: it.onTap,
+          AppPressable(
+            semanticLabel: it.label,
+            onPressed: it.onTap,
             borderRadius: BorderRadius.circular(AppRadius.xl2),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -67,8 +70,8 @@ class ShortcutGrid extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightMedium,
                     height: 1.1,
                     color: semantic.fgMuted,
                   ),

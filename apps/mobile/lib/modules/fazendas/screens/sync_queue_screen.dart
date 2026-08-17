@@ -10,6 +10,7 @@ import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../components/activity_list_item.dart' show kindIcon;
 import '../state/fazendas_store.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Tela "Fila de sincronização" (spec §3.2/§6.9) — espelha
 /// `SyncQueueScreen.tsx`: lista os lançamentos ainda não enviados ao servidor.
@@ -103,7 +104,8 @@ class SyncQueueScreen extends ConsumerWidget {
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
-                                            fontWeight: FontWeight.w600,
+                                            fontWeight:
+                                                AppTypography.weightSemibold,
                                             color: semantic.fgDefault,
                                           ),
                                         ),

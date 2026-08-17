@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_colors.dart';
+import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import '../state/prototype_session_store.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Login do Shell (mock, sem autenticação real) — espelha `Login.tsx`: arte de
 /// campo em tela cheia como fundo fixo, véu escuro só no topo para a marca
@@ -17,14 +21,14 @@ import '../../ui/ui.dart';
 /// (fora do escopo desta mudança — ver relatório da tarefa). No lugar da marca
 /// SVG, usa-se o fallback tokenizado já adotado por `AppIllustrationSlot`
 /// (bolha `ink` + ícone do catálogo).
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
   bool _manterConectado = true;
@@ -34,6 +38,11 @@ class _LoginPageState extends State<LoginPage> {
     _emailController.dispose();
     _senhaController.dispose();
     super.dispose();
+  }
+
+  void _loginAs(UserAccessProfile profile) {
+    ref.read(prototypeSessionProvider.notifier).loginAs(profile);
+    context.go(profile.homeRoute);
   }
 
   @override
@@ -126,8 +135,9 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               const AppHeading(child: Text('Bem-vindo!')),
                               const SizedBox(height: AppSpacing.space1),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   const Text('Primeira vez por aqui?'),
                                   AppButton(
@@ -158,8 +168,10 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.space4),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          Wrap(
+                            alignment: WrapAlignment.spaceBetween,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            runSpacing: AppSpacing.space1,
                             children: [
                               AppCheckbox(
                                 checked: _manterConectado,
@@ -176,11 +188,47 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           const SizedBox(height: AppSpacing.space3),
-                          AppButton(
-                            fullWidth: true,
-                            size: AppButtonSize.lg,
-                            onPressed: () => context.go('/inicio'),
-                            child: const Text('Entrar'),
+                          Text(
+                            'Escolha o ambiente para esta sessão demonstrativa.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: semantic.fgMuted),
+                          ),
+                          const SizedBox(height: AppSpacing.space3),
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              final administrationButton = AppButton(
+                                fullWidth: true,
+                                size: AppButtonSize.lg,
+                                onPressed: () =>
+                                    _loginAs(UserAccessProfile.administration),
+                                child: const Text('Login Administração'),
+                              );
+                              final operationalButton = AppButton(
+                                fullWidth: true,
+                                size: AppButtonSize.lg,
+                                variant: AppButtonVariant.secondary,
+                                onPressed: () =>
+                                    _loginAs(UserAccessProfile.operational),
+                                child: const Text('Login Operacional'),
+                              );
+
+                              if (constraints.maxWidth > AppSize.phone) {
+                                return Row(
+                                  children: [
+                                    Expanded(child: administrationButton),
+                                    const SizedBox(width: AppSpacing.space3),
+                                    Expanded(child: operationalButton),
+                                  ],
+                                );
+                              }
+                              return Column(
+                                children: [
+                                  administrationButton,
+                                  const SizedBox(height: AppSpacing.space3),
+                                  operationalButton,
+                                ],
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -192,7 +240,7 @@ class _LoginPageState extends State<LoginPage> {
                       'GB CERNE · Superapp corporativo do agronegócio',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: AppTypography.xs,
                         color: semantic.fgInverse.withValues(alpha: 0.7),
                       ),
                     ),

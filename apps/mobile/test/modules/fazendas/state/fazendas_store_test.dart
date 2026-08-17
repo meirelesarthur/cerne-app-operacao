@@ -14,7 +14,6 @@ void main() {
 
         final state = container.read(fazendasStoreProvider);
 
-        expect(state.view, FarmView.gerencial);
         expect(state.activeFarmId, state.farms.first.id);
         expect(state.activeFarm.id, state.farms.first.id);
         expect(state.syncQueue, isEmpty);
@@ -32,16 +31,6 @@ void main() {
 
       expect(container.read(fazendasStoreProvider).activeFarmId, secondFarmId);
       expect(container.read(fazendasStoreProvider).activeFarm.id, secondFarmId);
-    });
-
-    test('setView alterna entre gerencial e campo', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      final notifier = container.read(fazendasStoreProvider.notifier);
-
-      notifier.setView(FarmView.campo);
-
-      expect(container.read(fazendasStoreProvider).view, FarmView.campo);
     });
 
     test('enqueueSync adiciona item e clearSync esvazia a fila', () {
