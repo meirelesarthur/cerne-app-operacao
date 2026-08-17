@@ -10,6 +10,8 @@ import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
+import 'package:cerne_app/design/generated/app_motion.dart';
 
 const _periodos = ['Hoje', '7 dias', '30 dias'];
 
@@ -131,7 +133,7 @@ class _FiltroPill extends StatelessWidget {
           style: TextStyle(
             fontSize: AppTypography.base,
             fontWeight: AppTypography.weightSemibold,
-            color: selected ? Colors.white : semantic.fgMuted,
+            color: selected ? AppColors.neutral0 : semantic.fgMuted,
           ),
         ),
       ),
@@ -203,7 +205,7 @@ class _FazendaTile extends StatelessWidget {
                   ),
                   AnimatedRotation(
                     turns: open ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 150),
+                    duration: AppMotion.fast,
                     child: Icon(
                       LucideIcons.chevronDown,
                       size: 18,

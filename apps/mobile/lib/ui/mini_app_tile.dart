@@ -111,7 +111,9 @@ class AppMiniAppTile extends StatelessWidget {
                           Padding(
                             // mt-0.5 (2px) do React — valor fixo fora da escala
                             // de espaçamento, igual ao padrão de `chip.dart`.
-                            padding: const EdgeInsets.only(top: 2),
+                            padding: const EdgeInsets.only(
+                              top: AppSpacing.half,
+                            ),
                             child: Text(
                               description!,
                               maxLines: 2,

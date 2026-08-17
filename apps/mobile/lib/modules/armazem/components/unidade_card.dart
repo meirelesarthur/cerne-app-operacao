@@ -4,6 +4,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/estoque_mocks.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Rótulo + tom de status — fonte única, reutilizado no `UnidadeDetailSheet`
 /// (Lei 2).
@@ -41,7 +42,7 @@ class UnidadeCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: AppTypography.weightSemibold,
                     color: semantic.fgDefault,
                   ),
                 ),
@@ -49,10 +50,13 @@ class UnidadeCard extends StatelessWidget {
               AppChip(tone: chip.tone, child: Text(chip.label)),
             ],
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.half),
           Text(
             '${unidade.produto} · ${unidade.capacidade}',
-            style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+            style: TextStyle(
+              fontSize: AppTypography.sm,
+              color: semantic.fgMuted,
+            ),
           ),
           const SizedBox(height: AppSpacing.space3),
           Row(
@@ -67,7 +71,7 @@ class UnidadeCard extends StatelessWidget {
               Text(
                 '${unidade.ocupacaoPct}%',
                 style: TextStyle(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: AppTypography.weightSemibold,
                   color: semantic.fgDefault,
                 ),
               ),

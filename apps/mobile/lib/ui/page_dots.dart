@@ -6,6 +6,7 @@ import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Espelha `PageDots.tsx` — indicador de páginas (carrossel/onboarding): dots
 /// pequenos, o ativo alonga em pílula na cor accent. Interativo quando
@@ -50,7 +51,7 @@ class AppPageDots extends StatelessWidget {
         label: 'Página ${i + 1} de $count',
         child: onSelect != null
             ? Material(
-                color: Colors.transparent,
+                color: AppColors.transparent,
                 shape: const CircleBorder(),
                 child: InkWell(
                   onTap: () => onSelect!(i),

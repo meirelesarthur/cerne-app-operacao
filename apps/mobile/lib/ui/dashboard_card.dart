@@ -165,14 +165,14 @@ class AppDashboardCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: _dark
-                      ? Colors.white.withValues(alpha: 0.15)
+                      ? AppColors.neutral0.withValues(alpha: 0.15)
                       : semantic.accentSubtle,
                   border: _dark ? null : Border.all(color: semantic.borderTint),
                 ),
                 child: Icon(
                   icon,
                   size: 18,
-                  color: _dark ? Colors.white : semantic.accentDefault,
+                  color: _dark ? AppColors.neutral0 : semantic.accentDefault,
                 ),
               ),
               if (delta != null)
@@ -185,19 +185,19 @@ class AppDashboardCard extends StatelessWidget {
                           : LucideIcons.trendingDown,
                       size: 13,
                       color: _dark
-                          ? Colors.white.withValues(alpha: 0.9)
+                          ? AppColors.neutral0.withValues(alpha: 0.9)
                           : (delta! >= 0
                                 ? semantic.accentDefault
                                 : AppColors.red600),
                     ),
-                    const SizedBox(width: 2),
+                    const SizedBox(width: AppSpacing.half),
                     Text(
                       '${delta! >= 0 ? '+' : ''}${delta!.toStringAsFixed(delta! % 1 == 0 ? 0 : 1)}%',
                       style: TextStyle(
                         fontSize: AppTypography.sm,
                         fontWeight: AppTypography.weightSemibold,
                         color: _dark
-                            ? Colors.white.withValues(alpha: 0.9)
+                            ? AppColors.neutral0.withValues(alpha: 0.9)
                             : (delta! >= 0
                                   ? semantic.accentDefault
                                   : AppColors.red600),
@@ -215,7 +215,7 @@ class AppDashboardCard extends StatelessWidget {
                 fontSize: AppTypography.md,
                 fontWeight: AppTypography.weightMedium,
                 color: _dark
-                    ? Colors.white.withValues(alpha: 0.75)
+                    ? AppColors.neutral0.withValues(alpha: 0.75)
                     : semantic.fgMuted,
               ),
             ),
@@ -228,7 +228,7 @@ class AppDashboardCard extends StatelessWidget {
                 fontSize: AppTypography.xl2,
                 fontWeight: AppTypography.weightBold,
                 height: AppTypography.lineHeightTight,
-                color: _dark ? Colors.white : semantic.fgDefault,
+                color: _dark ? AppColors.neutral0 : semantic.fgDefault,
               ),
             ),
           ),
@@ -239,7 +239,7 @@ class AppDashboardCard extends StatelessWidget {
                 builder: (context, constraints) => AppSparklineArea(
                   data: spark!,
                   color: _dark
-                      ? Colors.white.withValues(alpha: 0.9)
+                      ? AppColors.neutral0.withValues(alpha: 0.9)
                       : semantic.accentDefault,
                   width: constraints.maxWidth,
                   height: 34,
@@ -251,7 +251,7 @@ class AppDashboardCard extends StatelessWidget {
     );
 
     return Material(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       borderRadius: BorderRadius.circular(AppRadius.xl2),
       child: InkWell(
         onTap: onTap,

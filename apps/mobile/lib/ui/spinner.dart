@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Espelha `Spinner.tsx` — indicador de carregamento circular, cor herdada do contexto
 /// (`currentColor` no React) via [color] explícito ou `IconTheme`/`DefaultTextStyle` do pai.
@@ -22,7 +23,7 @@ class AppSpinner extends StatelessWidget {
           color ??
               IconTheme.of(context).color ??
               DefaultTextStyle.of(context).style.color ??
-              Colors.black,
+              AppColors.black,
         ),
       ),
     );

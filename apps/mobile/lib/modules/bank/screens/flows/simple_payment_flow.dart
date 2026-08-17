@@ -11,6 +11,7 @@ import '../../../../shell/state/shell_store.dart';
 import '../../../../ui/ui.dart';
 import '../../components/bank_flow_shell.dart';
 import 'package:cerne_app/modules/bank/lib/currency.dart';
+import 'package:cerne_app/design/generated/app_radius.dart';
 
 enum PaymentKind { boleto, transferir, cobrar }
 
@@ -272,7 +273,7 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
               padding: const EdgeInsets.all(AppSpacing.space4),
               decoration: BoxDecoration(
                 border: Border.all(color: semantic.borderDefault),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppRadius.lgPlus),
                 color: semantic.bgSubtle,
               ),
               child: Column(

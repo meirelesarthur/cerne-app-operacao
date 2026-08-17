@@ -6,6 +6,8 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/pedidos.dart';
+import 'package:cerne_app/design/generated/app_radius.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 const Map<PedidoStatus, String> _statusLabel = {
   PedidoStatus.entregue: 'Entregue',
@@ -79,14 +81,15 @@ class MarketplacePedidosScreen extends StatelessWidget {
                                     Text(
                                       'Pedido ${pedido.numero}',
                                       style: TextStyle(
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight:
+                                            AppTypography.weightSemibold,
                                         color: semantic.fgDefault,
                                       ),
                                     ),
                                     Text(
                                       pedido.data,
                                       style: TextStyle(
-                                        fontSize: 12,
+                                        fontSize: AppTypography.sm,
                                         color: semantic.fgMuted,
                                       ),
                                     ),
@@ -109,7 +112,7 @@ class MarketplacePedidosScreen extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: AppTypography.md,
                               color: semantic.fgMuted,
                             ),
                           ),
@@ -117,8 +120,8 @@ class MarketplacePedidosScreen extends StatelessWidget {
                           Text(
                             pedido.valor,
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontSize: AppTypography.xlPlus,
+                              fontWeight: AppTypography.weightBold,
                               color: semantic.fgDefault,
                             ),
                           ),
@@ -153,7 +156,7 @@ class _PedidoDetalheBody extends StatelessWidget {
             Text(
               pedido.data,
               style: TextStyle(
-                fontWeight: FontWeight.w600,
+                fontWeight: AppTypography.weightSemibold,
                 color: semantic.fgDefault,
               ),
             ),
@@ -177,14 +180,16 @@ class _PedidoDetalheBody extends StatelessWidget {
           decoration: BoxDecoration(
             color: semantic.bgSubtle,
             border: Border.all(color: semantic.borderDefault),
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadius.lgPlus),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               for (final item in pedido.itens)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.space1,
+                  ),
                   child: Row(
                     children: [
                       Expanded(
@@ -217,15 +222,15 @@ class _PedidoDetalheBody extends StatelessWidget {
               Text(
                 'Total',
                 style: TextStyle(
-                  fontWeight: FontWeight.w600,
+                  fontWeight: AppTypography.weightSemibold,
                   color: semantic.fgDefault,
                 ),
               ),
               Text(
                 pedido.valor,
                 style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontSize: AppTypography.xlPlus,
+                  fontWeight: AppTypography.weightBold,
                   color: semantic.fgDefault,
                 ),
               ),

@@ -16,8 +16,10 @@ class AppTypography {
   static const double md = 14;
   static const double lg = 15;
   static const double xl = 16;
+  static const double xlPlus = 18;
   static const double xl2 = 22;
   static const double xl3 = 26;
+  static const double display = 30;
   static const double xl4 = 32;
 
   static const FontWeight weightNormal = FontWeight.w400;

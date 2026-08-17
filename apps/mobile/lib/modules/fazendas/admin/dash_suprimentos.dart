@@ -140,7 +140,7 @@ class _FiltroPill extends StatelessWidget {
           style: TextStyle(
             fontSize: AppTypography.base,
             fontWeight: AppTypography.weightSemibold,
-            color: selected ? Colors.white : semantic.fgMuted,
+            color: selected ? AppColors.neutral0 : semantic.fgMuted,
           ),
         ),
       ),
@@ -319,7 +319,7 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
                         size: 14,
                         color: variacaoColor,
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(width: AppSpacing.space1),
                       Text(
                         '${alta ? '+' : ''}${c.variacao.toStringAsFixed(1)}% frente à cotação anterior',
                         style: TextStyle(

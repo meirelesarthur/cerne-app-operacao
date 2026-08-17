@@ -5,6 +5,7 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import 'package:cerne_app/design/generated/app_motion.dart';
 
 class _OnboardingSlide {
   const _OnboardingSlide({
@@ -73,10 +74,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     if (_isLast) {
       _finish();
     } else {
-      _controller.nextPage(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeOut,
-      );
+      _controller.nextPage(duration: AppMotion.medium, curve: Curves.easeOut);
     }
   }
 
@@ -119,7 +117,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               active: _slide,
                               onSelect: (i) => _controller.animateToPage(
                                 i,
-                                duration: const Duration(milliseconds: 250),
+                                duration: AppMotion.medium,
                                 curve: Curves.easeOut,
                               ),
                             ),

@@ -69,17 +69,17 @@ class AppButton extends StatelessWidget {
           border: s.borderDefault,
         ),
         AppButtonVariant.ghost => (
-          bg: Colors.transparent,
+          bg: AppColors.transparent,
           fg: s.fgDefault,
           border: null,
         ),
         AppButtonVariant.danger => (
           bg: AppColors.red600,
-          fg: Colors.white,
+          fg: AppColors.neutral0,
           border: null,
         ),
         AppButtonVariant.link => (
-          bg: Colors.transparent,
+          bg: AppColors.transparent,
           fg: s.accentDefault,
           border: null,
         ),
@@ -122,7 +122,7 @@ class AppButton extends StatelessWidget {
       return Opacity(
         opacity: _disabled && !loading ? 0.7 : 1,
         child: Material(
-          color: Colors.transparent,
+          color: AppColors.transparent,
           borderRadius: BorderRadius.circular(AppRadius.full),
           child: InkWell(
             onTap: _disabled ? null : onPressed,
@@ -275,7 +275,7 @@ WidgetbookComponent buildButtonWidgetbookComponent() {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpacing.space3),
               SizedBox(
                 width: 280,
                 child: AppButton(

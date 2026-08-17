@@ -70,7 +70,7 @@ class AppKpiStatCard extends StatelessWidget {
             ),
           ),
           if (caption != null) ...[
-            const SizedBox(height: 2),
+            const SizedBox(height: AppSpacing.half),
             Text(
               caption!,
               style: TextStyle(

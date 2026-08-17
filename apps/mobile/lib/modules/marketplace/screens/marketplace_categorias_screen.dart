@@ -7,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Categorias do Marketplace — grade derivada das categorias com produtos no
 /// catálogo mockado. Tocar numa categoria leva à Home já filtrada por ela.
@@ -66,12 +67,12 @@ class MarketplaceCategoriasScreen extends StatelessWidget {
                       Text(
                         entry.categoria.label,
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontSize: AppTypography.md,
+                          fontWeight: AppTypography.weightSemibold,
                           color: semantic.fgDefault,
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: AppSpacing.oneHalf),
                       AppTag(
                         child: Text(
                           entry.total == 1

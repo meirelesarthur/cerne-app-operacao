@@ -88,6 +88,8 @@ const dtcg = {
   $metadata: { tokenSetOrder: ['core', 'semantic', 'light', 'gbMode', 'component'] },
   core: {
     color: {
+      transparent: color(primitive.transparent),
+      black: color(primitive.black),
       brand: mapColors(primitive.brand),
       neutral: mapColors(primitive.neutral),
       red: mapColors(primitive.red),

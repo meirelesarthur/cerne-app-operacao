@@ -4,6 +4,7 @@ import 'package:widgetbook/widgetbook.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Espelha `Card.tsx` do protótipo React. `variant: ink` é a superfície escura
 /// de destaque (hero da referência) — permanece escura nos dois temas.
@@ -62,7 +63,7 @@ class AppCard extends StatelessWidget {
       child: ClipRRect(
         borderRadius: radius,
         child: Material(
-          color: Colors.transparent,
+          color: AppColors.transparent,
           child: interactive && onTap != null
               ? InkWell(onTap: onTap, child: content)
               : content,
@@ -86,7 +87,7 @@ WidgetbookComponent buildCardWidgetbookComponent() {
                 width: 280,
                 child: AppCard(child: Text('Card padrão (surface)')),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.space4),
               const SizedBox(
                 width: 280,
                 child: AppCard(
@@ -94,7 +95,7 @@ WidgetbookComponent buildCardWidgetbookComponent() {
                   child: Text('Card ink (hero)'),
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpacing.space4),
               SizedBox(
                 width: 280,
                 child: AppCard(

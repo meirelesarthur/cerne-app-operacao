@@ -5,6 +5,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/estoque_mocks.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 const Map<UnidadeStatus, ({AppChipTone tone, String label})> _statusChip = {
   UnidadeStatus.ok: (tone: AppChipTone.brand, label: 'Ok'),
@@ -107,7 +108,7 @@ class _ItemEstoqueCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: AppTypography.weightSemibold,
                     color: semantic.fgDefault,
                   ),
                 ),
@@ -115,10 +116,13 @@ class _ItemEstoqueCard extends StatelessWidget {
               AppChip(tone: chip.tone, child: Text(chip.label)),
             ],
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: AppSpacing.half),
           Text(
             unidadeNome,
-            style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+            style: TextStyle(
+              fontSize: AppTypography.sm,
+              color: semantic.fgMuted,
+            ),
           ),
           const SizedBox(height: AppSpacing.space3),
           Row(
@@ -133,8 +137,8 @@ class _ItemEstoqueCard extends StatelessWidget {
               Text(
                 '${item.quantidadeLabel} / ${item.capacidadeLabel}',
                 style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
+                  fontSize: AppTypography.sm,
+                  fontWeight: AppTypography.weightMedium,
                   color: semantic.fgMuted,
                 ),
               ),

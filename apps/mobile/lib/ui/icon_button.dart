@@ -4,6 +4,8 @@ import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_layout.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
+import 'package:cerne_app/design/generated/app_spacing.dart';
 
 /// Espelha `IconButton.tsx` do protótipo React — bolha circular com touch target
 /// generoso. `label` é obrigatório (acessibilidade: vira `Semantics`/`Tooltip`).
@@ -39,7 +41,7 @@ class AppIconButton extends StatelessWidget {
   ({Color bg, Color fg, List<BoxShadow> shadow}) _colors(AppSemanticColors s) =>
       switch (variant) {
         AppIconButtonVariant.ghost => (
-          bg: Colors.transparent,
+          bg: AppColors.transparent,
           fg: s.fgDefault,
           shadow: const <BoxShadow>[],
         ),
@@ -115,8 +117,8 @@ WidgetbookComponent buildIconButtonWidgetbookComponent() {
                 onPressed: () {},
               ),
               Container(
-                padding: const EdgeInsets.all(12),
-                color: Colors.black,
+                padding: const EdgeInsets.all(AppSpacing.space3),
+                color: AppColors.black,
                 child: AppIconButton(
                   icon: const Icon(LucideIcons.x),
                   label: 'Fechar',

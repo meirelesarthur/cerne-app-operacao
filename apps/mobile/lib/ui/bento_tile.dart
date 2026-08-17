@@ -82,7 +82,7 @@ class AppBentoTile extends StatelessWidget {
                 width: _iconBox,
                 decoration: BoxDecoration(
                   color: _isAccent
-                      ? Colors.white.withValues(alpha: 0.15)
+                      ? AppColors.neutral0.withValues(alpha: 0.15)
                       : semantic.accentSubtle,
                   shape: BoxShape.circle,
                   border: _isAccent
@@ -93,12 +93,14 @@ class AppBentoTile extends StatelessWidget {
                 child: Icon(
                   icon,
                   size: _iconGlyph,
-                  color: _isAccent ? Colors.white : semantic.accentDefault,
+                  color: _isAccent
+                      ? AppColors.neutral0
+                      : semantic.accentDefault,
                 ),
               ),
               Padding(
                 padding: EdgeInsets.only(
-                  right: _isAccent ? AppSpacing.space8 : 0,
+                  right: _isAccent ? AppSpacing.space8 : AppSpacing.space0,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,19 +111,21 @@ class AppBentoTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: AppTypography.md,
                         fontWeight: AppTypography.weightSemibold,
-                        color: _isAccent ? Colors.white : semantic.fgDefault,
+                        color: _isAccent
+                            ? AppColors.neutral0
+                            : semantic.fgDefault,
                       ),
                     ),
                     if (caption != null)
                       Padding(
-                        padding: const EdgeInsets.only(top: 2),
+                        padding: const EdgeInsets.only(top: AppSpacing.half),
                         child: Text(
                           caption!,
                           style: TextStyle(
                             fontSize: AppTypography.xs,
                             height: AppTypography.lineHeightSnug,
                             color: _isAccent
-                                ? Colors.white.withValues(alpha: 0.7)
+                                ? AppColors.neutral0.withValues(alpha: 0.7)
                                 : semantic.fgMuted,
                           ),
                         ),
@@ -139,14 +143,14 @@ class AppBentoTile extends StatelessWidget {
                 height: AppSpacing.space8,
                 width: AppSpacing.space8,
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.15),
+                  color: AppColors.neutral0.withValues(alpha: 0.15),
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
                 child: const Icon(
                   LucideIcons.arrowRight,
                   size: 16,
-                  color: Colors.white,
+                  color: AppColors.neutral0,
                 ),
               ),
             ),
@@ -155,7 +159,7 @@ class AppBentoTile extends StatelessWidget {
     );
 
     return Material(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       borderRadius: BorderRadius.circular(AppRadius.xl3),
       child: InkWell(
         onTap: onTap,
@@ -173,7 +177,7 @@ WidgetbookComponent buildBentoTileWidgetbookComponent() {
       WidgetbookUseCase(
         name: 'Surface',
         builder: (context) => Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.space4),
           child: SizedBox(
             width: 160,
             child: AppBentoTile(
@@ -188,7 +192,7 @@ WidgetbookComponent buildBentoTileWidgetbookComponent() {
       WidgetbookUseCase(
         name: 'Accent (destaque)',
         builder: (context) => Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(AppSpacing.space4),
           child: SizedBox(
             width: 160,
             child: AppBentoTile(

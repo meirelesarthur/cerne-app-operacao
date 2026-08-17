@@ -6,6 +6,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 class AppFormSelectOption {
   const AppFormSelectOption({required this.value, required this.label});
@@ -70,9 +71,9 @@ class AppFormSelect extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.space5,
         ),
-        border: border(Colors.transparent),
-        enabledBorder: border(Colors.transparent),
-        disabledBorder: border(Colors.transparent),
+        border: border(AppColors.transparent),
+        enabledBorder: border(AppColors.transparent),
+        disabledBorder: border(AppColors.transparent),
         focusedBorder: border(semantic.accentDefault),
       ),
       items: [

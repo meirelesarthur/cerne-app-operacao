@@ -7,6 +7,8 @@ import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Card de deep-link de crédito pré-aprovado (spec §6.4) — espelha
 /// `CreditoBanner.tsx`: o dado/régua vive no módulo Crédito; aqui é só um
@@ -44,7 +46,7 @@ class CreditoBanner extends StatelessWidget {
                 child: const Icon(
                   LucideIcons.handCoins,
                   size: 22,
-                  color: Colors.white,
+                  color: AppColors.neutral0,
                 ),
               ),
               const SizedBox(width: AppSpacing.space3),
@@ -56,7 +58,7 @@ class CreditoBanner extends StatelessWidget {
                     Text(
                       'Crédito pré-aprovado',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppTypography.base,
                         color: semantic.accentDefault,
                       ),
                     ),
@@ -65,14 +67,14 @@ class CreditoBanner extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontWeight: FontWeight.w700,
+                        fontWeight: AppTypography.weightBold,
                         color: semantic.fgDefault,
                       ),
                     ),
                     Text(
                       'Ver no módulo Crédito',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: AppTypography.sm,
                         color: semantic.accentDefault,
                       ),
                     ),

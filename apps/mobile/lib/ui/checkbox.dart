@@ -7,6 +7,8 @@ import '../design/generated/app_layout.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
+import 'package:cerne_app/design/generated/app_motion.dart';
 
 /// Espelha `Checkbox.tsx` — controle `role="checkbox"` acessível, componente
 /// controlado (`checked`/`onChanged`), encapsulando o toque para cumprir a Lei 1.
@@ -49,7 +51,7 @@ class AppCheckbox extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AnimatedContainer(
-                  duration: const Duration(milliseconds: 150),
+                  duration: AppMotion.fast,
                   width: AppSpacing.space5,
                   height: AppSpacing.space5,
                   alignment: Alignment.center,
@@ -68,7 +70,7 @@ class AppCheckbox extends StatelessWidget {
                       ? const Icon(
                           LucideIcons.check,
                           size: 13,
-                          color: Colors.white,
+                          color: AppColors.neutral0,
                         )
                       : null,
                 ),

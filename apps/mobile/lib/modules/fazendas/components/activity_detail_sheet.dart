@@ -6,6 +6,8 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../types.dart';
 import 'activity_list_item.dart';
+import 'package:cerne_app/design/generated/app_radius.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Nome legível do tipo de atividade (spec §6.7) — espelha `KIND_LABEL`.
 const Map<ActivityKind, String> _kindLabel = {
@@ -99,8 +101,8 @@ class _ActivityDetailBody extends StatelessWidget {
                   Text(
                     _kindLabel[activity.kind]!.toUpperCase(),
                     style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
+                      fontSize: AppTypography.xs,
+                      fontWeight: AppTypography.weightBold,
                       color: semantic.fgSubtle,
                       letterSpacing: 0.4,
                     ),
@@ -110,8 +112,8 @@ class _ActivityDetailBody extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+                      fontSize: AppTypography.xlPlus,
+                      fontWeight: AppTypography.weightSemibold,
                       color: semantic.fgDefault,
                     ),
                   ),
@@ -128,7 +130,7 @@ class _ActivityDetailBody extends StatelessWidget {
           padding: const EdgeInsets.all(AppSpacing.space4),
           decoration: BoxDecoration(
             color: semantic.bgSubtle,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadius.lgPlus),
             border: Border.all(color: semantic.borderDefault),
           ),
           child: Column(
@@ -153,7 +155,10 @@ class _ActivityDetailBody extends StatelessWidget {
               const SizedBox(width: AppSpacing.space1),
               Text(
                 'Registrado no campo',
-                style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  color: semantic.fgMuted,
+                ),
               ),
               const SizedBox(width: AppSpacing.space1),
               Text('·', style: TextStyle(color: semantic.fgMuted)),
@@ -166,7 +171,10 @@ class _ActivityDetailBody extends StatelessWidget {
               const SizedBox(width: AppSpacing.space1),
               Text(
                 'sincronizado',
-                style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  color: semantic.fgMuted,
+                ),
               ),
             ],
           ),
@@ -175,7 +183,10 @@ class _ActivityDetailBody extends StatelessWidget {
         const SizedBox(height: AppSpacing.space3),
         Text(
           'Histórico completo, anexos e edição desta atividade ficam no sistema web GB CERNE.',
-          style: TextStyle(fontSize: 13, color: semantic.fgSubtle),
+          style: TextStyle(
+            fontSize: AppTypography.base,
+            color: semantic.fgSubtle,
+          ),
         ),
       ],
     );
@@ -207,7 +218,7 @@ class _DetailRow extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontWeight: FontWeight.w600,
+                fontWeight: AppTypography.weightSemibold,
                 color: semantic.fgDefault,
               ),
             ),

@@ -7,6 +7,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shared/rise_in.dart';
 import '../../../ui/ui.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 class _LinkItem {
   const _LinkItem({required this.label, required this.icon, required this.to});
@@ -179,7 +180,7 @@ class _MaisRow extends StatelessWidget {
               child: Text(
                 item.label,
                 style: TextStyle(
-                  fontWeight: FontWeight.w500,
+                  fontWeight: AppTypography.weightMedium,
                   color: semantic.fgDefault,
                 ),
               ),

@@ -18,6 +18,8 @@
  * ------------------------------------------------------------------ */
 
 export const primitive = {
+  transparent: 'rgba(0,0,0,0)',
+  black: '#000000',
   brand: {
     50: '#f0fdf4',
     100: '#dcfce7',
@@ -202,8 +204,10 @@ export const font = {
     md: '14px',
     lg: '15px',
     xl: '16px',
+    xlPlus: '18px',
     '2xl': '22px',
     '3xl': '26px',
+    display: '30px',
     '4xl': '32px',
   },
   weight: { normal: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800 },
@@ -213,8 +217,12 @@ export const font = {
 // escala de espaço base 4px (keys alinhadas ao Tailwind)
 export const space = {
   0: '0px',
+  quarter: '1px',
+  half: '2px',
   1: '4px',
+  oneHalf: '6px',
   2: '8px',
+  twoHalf: '10px',
   3: '12px',
   4: '16px',
   5: '20px',
@@ -225,6 +233,7 @@ export const space = {
   10: '40px',
   12: '48px',
   14: '56px',
+  15: '60px',
   16: '64px',
   20: '80px',
 } as const
@@ -247,7 +256,9 @@ export const radius = {
   sm: '6px',
   md: '8px',
   base: '10px',
+  mdPlus: '12px',
   lg: '14px',
+  lgPlus: '16px',
   xl: '18px',
   '2xl': '22px',
   '3xl': '28px',
@@ -283,7 +294,7 @@ export const transition = {
 } as const
 
 export const animation = {
-  duration: { fast: '150ms', base: '200ms', slow: '300ms', slower: '400ms' },
+  duration: { fast: '150ms', base: '200ms', medium: '250ms', slow: '300ms', slower: '400ms' },
   easing: {
     in: 'cubic-bezier(0.4, 0, 1, 1)',
     out: 'cubic-bezier(0, 0, 0.2, 1)',

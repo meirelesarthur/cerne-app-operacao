@@ -70,7 +70,7 @@ class _TooltipBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.transparent,
+      color: AppColors.transparent,
       child: Container(
         // 200px é um valor arbitrário já hardcoded no React (`max-w-[200px]`),
         // não um token de `tokens.ts` — preservado igual à origem.
@@ -105,7 +105,7 @@ WidgetbookComponent buildTooltipWidgetbookComponent() {
         name: 'Padrão',
         builder: (context) => const Center(
           child: Padding(
-            padding: EdgeInsets.only(top: 60),
+            padding: EdgeInsets.only(top: AppSpacing.space15),
             child: AppTooltip(
               content: 'Informação adicional sobre este item.',
               child: Icon(Icons.info_outline),

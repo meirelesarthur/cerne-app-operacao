@@ -17,6 +17,7 @@ import '../components/shortcut_grid.dart';
 import '../mocks/atividades.dart';
 import '../state/fazendas_store.dart';
 import '../types.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Home do módulo Fazendas (aba Dashboard) — espelha `FazendasHome.tsx`:
 /// O conteúdo é definido exclusivamente pelo perfil da sessão demonstrativa.
@@ -232,8 +233,8 @@ class _SafraPill extends StatelessWidget {
           Text(
             'Safra 24/25',
             style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 13,
+              fontWeight: AppTypography.weightSemibold,
+              fontSize: AppTypography.base,
               color: semantic.fgDefault,
             ),
           ),

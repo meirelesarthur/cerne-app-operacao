@@ -8,6 +8,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/estoque_mocks.dart';
 import 'unidade_card.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Detalhe de Unidade de armazenagem: BottomSheet acionado pelo `UnidadeCard`
 /// na Home e na aba Unidades — capacidade, ocupação, produtos armazenados,
@@ -47,8 +48,8 @@ class _SheetBody extends StatelessWidget {
             Text(
               unidade.nome,
               style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontSize: AppTypography.xl,
+                fontWeight: AppTypography.weightSemibold,
                 color: semantic.fgDefault,
               ),
             ),
@@ -73,13 +74,16 @@ class _SheetBody extends StatelessWidget {
                 children: [
                   Text(
                     'Ocupação',
-                    style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+                    style: TextStyle(
+                      fontSize: AppTypography.md,
+                      color: semantic.fgMuted,
+                    ),
                   ),
                   Text(
                     '${unidade.ocupacaoPct}% de ${unidade.capacidade}',
                     style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
+                      fontSize: AppTypography.md,
+                      fontWeight: AppTypography.weightSemibold,
                       color: semantic.fgDefault,
                     ),
                   ),
@@ -99,8 +103,8 @@ class _SheetBody extends StatelessWidget {
           Text(
             'PRODUTOS ARMAZENADOS',
             style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontSize: AppTypography.sm,
+              fontWeight: AppTypography.weightSemibold,
               color: semantic.fgSubtle,
               letterSpacing: 0.4,
             ),
@@ -123,14 +127,17 @@ class _SheetBody extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontWeight: FontWeight.w500,
+                        fontWeight: AppTypography.weightMedium,
                         color: semantic.fgDefault,
                       ),
                     ),
                   ),
                   Text(
                     it.quantidadeLabel,
-                    style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+                    style: TextStyle(
+                      fontSize: AppTypography.md,
+                      color: semantic.fgMuted,
+                    ),
                   ),
                 ],
               ),
@@ -141,11 +148,14 @@ class _SheetBody extends StatelessWidget {
         Row(
           children: [
             Icon(LucideIcons.mapPin, size: 14, color: semantic.fgMuted),
-            const SizedBox(width: 6),
+            const SizedBox(width: AppSpacing.oneHalf),
             Expanded(
               child: Text(
                 unidade.endereco,
-                style: TextStyle(fontSize: 14, color: semantic.fgMuted),
+                style: TextStyle(
+                  fontSize: AppTypography.md,
+                  color: semantic.fgMuted,
+                ),
               ),
             ),
           ],

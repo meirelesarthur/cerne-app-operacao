@@ -7,6 +7,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'icon_button.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Espelha `Modal.tsx` (spec §6.10).
 ///
@@ -27,7 +28,7 @@ Future<T?> showAppModal<T>(
   return showDialog<T>(
     context: context,
     // bg-black/45 no React — valor arbitrário do Tailwind, preservado.
-    barrierColor: Colors.black.withValues(alpha: 0.45),
+    barrierColor: AppColors.black.withValues(alpha: 0.45),
     builder: (context) => AppModal(title: title, footer: footer, child: child),
   );
 }
@@ -47,7 +48,7 @@ class AppModal extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Dialog(
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       insetPadding: const EdgeInsets.all(AppSpacing.space4),
       child: Semantics(
         container: true,

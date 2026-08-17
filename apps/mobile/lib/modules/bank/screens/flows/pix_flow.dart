@@ -11,6 +11,7 @@ import '../../../../shell/state/shell_store.dart';
 import '../../../../ui/ui.dart';
 import '../../components/bank_flow_shell.dart';
 import 'package:cerne_app/modules/bank/lib/currency.dart';
+import 'package:cerne_app/design/generated/app_radius.dart';
 
 class _Destino {
   const _Destino({
@@ -344,7 +345,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
               ),
               decoration: BoxDecoration(
                 border: Border.all(color: semantic.borderDefault),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.mdPlus),
                 color: semantic.bgSubtle,
               ),
               child: Row(
@@ -443,7 +444,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
               padding: const EdgeInsets.all(AppSpacing.space4),
               decoration: BoxDecoration(
                 border: Border.all(color: semantic.borderDefault),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppRadius.lgPlus),
                 color: semantic.bgSubtle,
               ),
               child: Column(

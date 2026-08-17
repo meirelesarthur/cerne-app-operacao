@@ -10,6 +10,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
 import '../state/prototype_session_store.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Login do Shell (mock, sem autenticação real) — espelha `Login.tsx`: arte de
 /// campo em tela cheia como fundo fixo, véu escuro só no topo para a marca
@@ -239,7 +240,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       'GB CERNE · Superapp corporativo do agronegócio',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: AppTypography.xs,
                         color: semantic.fgInverse.withValues(alpha: 0.7),
                       ),
                     ),

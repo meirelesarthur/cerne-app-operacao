@@ -46,7 +46,7 @@ class BankCardVisual extends StatelessWidget {
                   gradient: RadialGradient(
                     colors: [
                       AppComponentColors.hubBankCardGlow,
-                      Colors.transparent,
+                      AppColors.transparent,
                     ],
                     stops: [0.0, 0.7],
                   ),
@@ -74,13 +74,13 @@ class BankCardVisual extends StatelessWidget {
                             color: AppComponentColors.hubBankCardFgMuted,
                           ),
                         ),
-                        SizedBox(height: 2),
+                        SizedBox(height: AppSpacing.half),
                         Text(
                           Cartao.titular,
                           style: TextStyle(
                             fontSize: AppTypography.sm,
                             fontWeight: AppTypography.weightSemibold,
-                            color: Colors.white,
+                            color: AppColors.neutral0,
                           ),
                         ),
                       ],
@@ -92,7 +92,7 @@ class BankCardVisual extends StatelessWidget {
                       fontSize: AppTypography.sm,
                       fontWeight: AppTypography.weightBold,
                       fontStyle: FontStyle.italic,
-                      color: Colors.white,
+                      color: AppColors.neutral0,
                     ),
                   ),
                 ],
@@ -105,7 +105,7 @@ class BankCardVisual extends StatelessWidget {
                     style: TextStyle(
                       fontSize: AppTypography.lg,
                       fontWeight: AppTypography.weightSemibold,
-                      color: Colors.white,
+                      color: AppColors.neutral0,
                       letterSpacing: 2,
                       fontFeatures: [FontFeature.tabularFigures()],
                     ),
@@ -134,7 +134,7 @@ class BankCardVisual extends StatelessWidget {
                             style: TextStyle(
                               fontSize: AppTypography.sm,
                               fontWeight: AppTypography.weightSemibold,
-                              color: Colors.white,
+                              color: AppColors.neutral0,
                               fontFeatures: [FontFeature.tabularFigures()],
                             ),
                           ),

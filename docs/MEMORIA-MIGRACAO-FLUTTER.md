@@ -14,7 +14,7 @@ O escopo continua sendo um protótipo exclusivamente frontend, com mocks e simul
 - Baseline antes da criação desta memória: `960fe545b73e7092587a30b746db3ed495c47acd`.
 - A branch local estava sincronizada com `origin/feature/flutter-migration` nesse baseline.
 - O React continua sendo a versão mais recente para apresentação e deve permanecer publicado até o corte formal.
-- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 a M10 foram concluídas localmente e aguardam push sob demanda.
+- M0, M1 e M2 foram enviadas ao remoto até `3021f9c`; M3 a M11 foram concluídas localmente e aguardam push sob demanda.
 - O Flutter agora exige sessão demonstrativa, oferece Login Administração/Login Operacional e protege rotas cruzadas por perfil.
 - A correção temporária do deploy React foi enviada no commit `0489a2e`: `wrangler.jsonc` publica `dist` como SPA no Cloudflare Worker.
 - `AGENTS.md` aparece como arquivo não rastreado e pertence ao usuário: não adicionar, editar ou remover sem autorização explícita.
@@ -204,9 +204,9 @@ Commit planejado: `refactor(mobile): conclui onda G component first`.
 
 ### M11 — Onda H Flutter
 
-- [ ] Auditar cores, tipografia, espaçamento, raio, sombra e movimento.
-- [ ] Sincronizar `tokens.ts` → DTCG → Dart gerado quando necessário.
-- [ ] Criar/verificar guardrails contra hardcode visual.
+- [x] Auditar cores, tipografia, espaçamento, raio, sombra e movimento.
+- [x] Sincronizar `tokens.ts` → DTCG → Dart gerado quando necessário.
+- [x] Criar/verificar guardrails contra hardcode visual.
 
 Gate: tokens DTCG e arquivos Dart gerados não divergem.
 
@@ -242,15 +242,15 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 
 ## Gates obrigatórios antes de M13
 
-- [ ] 53/53 funcionalidades presentes no catálogo Dart.
-- [ ] 12 administrativas e 41 operacionais verificadas por teste.
-- [ ] Login e rotas protegidas nos dois perfis.
-- [ ] Ondas A–H portadas e commitadas separadamente.
-- [ ] `dart format` limpo.
-- [ ] `flutter analyze --fatal-infos` verde.
-- [ ] `flutter test` verde.
-- [ ] App Flutter Web compilado.
-- [ ] Widgetbook compilado pelo entrypoint `lib/widgetbook_app.dart`.
+- [x] 53/53 funcionalidades presentes no catálogo Dart.
+- [x] 12 administrativas e 41 operacionais verificadas por teste.
+- [x] Login e rotas protegidas nos dois perfis.
+- [x] Ondas A–H portadas e commitadas separadamente.
+- [x] `dart format` limpo.
+- [x] `flutter analyze --fatal-infos` verde.
+- [x] `flutter test` verde.
+- [x] App Flutter Web compilado.
+- [x] Widgetbook compilado pelo entrypoint `lib/widgetbook_app.dart`.
 - [ ] Paridade visual light/GB Mode aprovada nas jornadas críticas.
 - [ ] Preview Cloudflare Flutter aprovado.
 - [ ] Rollback React etiquetado e identificável no Git.
@@ -282,7 +282,7 @@ Commit planejado: `refactor: remove aplicacao React apos corte Flutter`.
 | M7 / D | Concluída | `5cab23f` | Analyze limpo; 12 testes focados e 83 testes ampliados verdes; Flutter Web compilado | As 46 funcionalidades Ready têm destino executável; consultas e OS recebem amostras; auditorias geram CSV/JSON e baixam o arquivo no Flutter Web |
 | M8 / E | Concluída | `1cda773` | Analyze limpo; 53 testes do gate funcional verdes | Política cobre sessão ausente, famílias de rotas cruzadas, logout e redirecionamento para a central correta; CI executa o gate antes da suíte global |
 | M9 / F | Concluída | `fb7eba8` | Analyze limpo; 6 testes novos e regressão ampliada de 200 testes verdes; Flutter Web compilado | Controles compartilhados preservam alvo mínimo de 44dp; formulário e ações expõem semântica; teclado e viewports 390×844/1024×844 cobertos; login e botões largos não causam overflow |
-| M10 / G | Concluída | este commit (`refactor(mobile): conclui onda G component first`) | Analyze limpo; 3 testes arquiteturais, gate CI com 56 testes e regressão focada com 71 testes verdes; app e Widgetbook Web compilados | AppPressable centraliza superfícies interativas em 16 arquivos de shell/módulos; imports públicos passam por ui.dart; gate bloqueia controles crus e componentes sem caso no Widgetbook |
-| M11 / H | Pendente | — | — | — |
+| M10 / G | Concluída | `c90ae7f` | Analyze limpo; 3 testes arquiteturais, gate CI com 56 testes e regressão focada com 71 testes verdes; app e Widgetbook Web compilados | AppPressable centraliza superfícies interativas em 16 arquivos de shell/módulos; imports públicos passam por ui.dart; gate bloqueia controles crus e componentes sem caso no Widgetbook |
+| M11 / H | Concluída | este commit (`refactor(mobile): conclui onda H de integridade de tokens`) | `tokens:verify` verde; analyze limpo; 4 testes novos e suíte global com 373 testes verdes; app e Widgetbook Web compilados; React congelado compilado | Cores, tipografia, pesos, insets, gaps, raios e movimento visual consomem tokens; CI regenera DTCG/Dart e rejeita divergência; golden CI do AppButton sincronizado. A regressão de sessão/checkbox XML descoberta pela suíte foi corrigida antes em `f366e74` |
 | M12 | Pendente | — | — | — |
 | M13 | Pendente | — | — | — |

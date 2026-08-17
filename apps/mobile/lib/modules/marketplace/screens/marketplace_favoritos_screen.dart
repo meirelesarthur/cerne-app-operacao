@@ -8,6 +8,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Favoritos do Marketplace — lista mockada de produtos marcados como
 /// favoritos. Espelha `MarketplaceFavoritos.tsx`.
@@ -84,7 +85,7 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: AppTypography.weightSemibold,
                                     color: semantic.fgDefault,
                                   ),
                                 ),
@@ -93,14 +94,14 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: AppTypography.sm,
                                     color: semantic.fgMuted,
                                   ),
                                 ),
                                 Text(
                                   produto.preco,
                                   style: TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: AppTypography.weightBold,
                                     color: semantic.fgDefault,
                                   ),
                                 ),

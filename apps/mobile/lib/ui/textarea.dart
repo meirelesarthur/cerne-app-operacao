@@ -5,6 +5,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Espelha `Textarea.tsx` — campo multilinha (`rounded-2xl`), fundo sutil.
 /// A altura mínima do React (`min-h-[96px]`) não tem token DTCG equivalente;
@@ -70,9 +71,9 @@ class AppTextarea extends StatelessWidget {
           horizontal: AppSpacing.space5,
           vertical: AppSpacing.space3,
         ),
-        border: border(Colors.transparent),
-        enabledBorder: border(Colors.transparent),
-        disabledBorder: border(Colors.transparent),
+        border: border(AppColors.transparent),
+        enabledBorder: border(AppColors.transparent),
+        disabledBorder: border(AppColors.transparent),
         focusedBorder: border(semantic.accentDefault, width: 2),
       ),
     );

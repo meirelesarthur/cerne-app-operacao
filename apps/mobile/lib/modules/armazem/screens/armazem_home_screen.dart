@@ -13,6 +13,7 @@ import '../components/unidade_card.dart';
 import '../components/unidade_detail_sheet.dart';
 import 'package:cerne_app/modules/armazem/lib/movimentacoes.dart';
 import '../mocks/estoque_mocks.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Home do módulo Armazém: ocupação e alertas em destaque, unidades de
 /// armazenagem (cards interativos com detalhe) e últimas movimentações
@@ -132,14 +133,14 @@ class ArmazemHomeScreen extends StatelessWidget {
                               Text(
                                 alerta.titulo,
                                 style: TextStyle(
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: AppTypography.weightSemibold,
                                   color: semantic.fgDefault,
                                 ),
                               ),
                               Text(
                                 alerta.detalhe,
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: AppTypography.sm,
                                   color: semantic.fgMuted,
                                 ),
                               ),
@@ -231,7 +232,7 @@ class ArmazemHomeScreen extends StatelessWidget {
                   child: const Icon(
                     LucideIcons.shoppingBag,
                     size: 22,
-                    color: Colors.white,
+                    color: AppColors.neutral0,
                   ),
                 ),
                 const SizedBox(width: AppSpacing.space3),
@@ -243,7 +244,7 @@ class ArmazemHomeScreen extends StatelessWidget {
                       Text(
                         'Reponha insumos no Marketplace',
                         style: TextStyle(
-                          fontWeight: FontWeight.w600,
+                          fontWeight: AppTypography.weightSemibold,
                           color: semantic.fgDefault,
                         ),
                       ),
@@ -251,7 +252,10 @@ class ArmazemHomeScreen extends StatelessWidget {
                         'Compre direto dos fornecedores parceiros',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+                        style: TextStyle(
+                          fontSize: AppTypography.sm,
+                          color: semantic.fgMuted,
+                        ),
                       ),
                     ],
                   ),

@@ -93,14 +93,14 @@ WidgetbookComponent buildHeadingWidgetbookComponent() {
                 level: AppHeadingLevel.h1,
                 child: Text('Título nível 1'),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: AppSpacing.space3),
               AppHeading(child: Text('Título nível 2')),
-              SizedBox(height: 12),
+              SizedBox(height: AppSpacing.space3),
               AppHeading(
                 level: AppHeadingLevel.h3,
                 child: Text('Título nível 3'),
               ),
-              SizedBox(height: 12),
+              SizedBox(height: AppSpacing.space3),
               AppHeading(
                 level: AppHeadingLevel.h4,
                 child: Text('Título nível 4'),

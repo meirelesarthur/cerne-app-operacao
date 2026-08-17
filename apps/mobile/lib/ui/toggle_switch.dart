@@ -39,7 +39,7 @@ class AppToggleSwitch extends StatelessWidget {
         label: label,
         enabled: !disabled,
         child: Material(
-          color: Colors.transparent,
+          color: AppColors.transparent,
           shape: const CircleBorder(),
           child: InkWell(
             onTap: disabled ? null : () => onChanged(!checked),

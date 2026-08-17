@@ -113,7 +113,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
                       padding: EdgeInsets.only(
                         right: op == _Lancamento.aplicacao
                             ? AppSpacing.space2
-                            : 0,
+                            : AppSpacing.space0,
                       ),
                       child: _TipoButton(
                         label: op == _Lancamento.aplicacao

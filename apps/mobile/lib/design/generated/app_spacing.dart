@@ -19,6 +19,11 @@ class AppSpacing {
   static const double space10 = 40;
   static const double space12 = 48;
   static const double space14 = 56;
+  static const double space15 = 60;
   static const double space16 = 64;
   static const double space20 = 80;
+  static const double quarter = 1;
+  static const double half = 2;
+  static const double oneHalf = 6;
+  static const double twoHalf = 10;
 }

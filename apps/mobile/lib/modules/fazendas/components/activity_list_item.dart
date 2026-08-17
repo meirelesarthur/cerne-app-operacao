@@ -5,6 +5,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../types.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Ícone por tipo de atividade — fonte única, reutilizado no
 /// `ActivityDetailSheet` (Lei 2). Espelha `KIND_ICON` de `ActivityListItem.tsx`.
@@ -90,7 +91,7 @@ class ActivityListItem extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: AppTypography.weightSemibold,
                     color: semantic.fgDefault,
                   ),
                 ),
@@ -112,7 +113,10 @@ class ActivityListItem extends StatelessWidget {
               const SizedBox(height: AppSpacing.space1),
               Text(
                 activity.time,
-                style: TextStyle(color: semantic.fgSubtle, fontSize: 12),
+                style: TextStyle(
+                  color: semantic.fgSubtle,
+                  fontSize: AppTypography.sm,
+                ),
               ),
             ],
           ),

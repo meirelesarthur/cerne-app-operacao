@@ -5,6 +5,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Dashboard Lotação de Currais / Confinamento (spec §4.2). Espelha
 /// `DashConfinamento.tsx`.
@@ -94,7 +95,7 @@ class _CurralTile extends StatelessWidget {
                   child: Text(
                     curral.nome,
                     style: TextStyle(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: AppTypography.weightSemibold,
                       color: semantic.fgDefault,
                     ),
                   ),
@@ -104,12 +105,18 @@ class _CurralTile extends StatelessWidget {
             ),
             Text(
               curral.setor,
-              style: TextStyle(fontSize: 12, color: semantic.fgMuted),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgMuted,
+              ),
             ),
             const SizedBox(height: AppSpacing.space2),
             RichText(
               text: TextSpan(
-                style: TextStyle(fontSize: 14, color: semantic.fgDefault),
+                style: TextStyle(
+                  fontSize: AppTypography.md,
+                  color: semantic.fgDefault,
+                ),
                 children: [
                   TextSpan(text: '${curral.atual}'),
                   TextSpan(
@@ -150,7 +157,7 @@ void _showCurralDetail(BuildContext context, Curral curral) {
                 Text(
                   curral.setor,
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: AppTypography.weightSemibold,
                     color: semantic.fgDefault,
                   ),
                 ),
@@ -164,7 +171,7 @@ void _showCurralDetail(BuildContext context, Curral curral) {
                 Text(
                   '${curral.atual}/${curral.max} cabeças',
                   style: TextStyle(
-                    fontWeight: FontWeight.w600,
+                    fontWeight: AppTypography.weightSemibold,
                     color: semantic.fgDefault,
                   ),
                 ),
@@ -180,7 +187,10 @@ void _showCurralDetail(BuildContext context, Curral curral) {
             const SizedBox(height: AppSpacing.space4),
             Text(
               'Histórico de ocupação e movimentações do curral aparecem aqui na versão completa.',
-              style: TextStyle(fontSize: 13, color: semantic.fgSubtle),
+              style: TextStyle(
+                fontSize: AppTypography.base,
+                color: semantic.fgSubtle,
+              ),
             ),
           ],
         );
