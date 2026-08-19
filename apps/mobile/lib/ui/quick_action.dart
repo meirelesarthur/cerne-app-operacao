@@ -40,11 +40,10 @@ class AppQuickAction extends StatelessWidget {
               height: AppSpacing.space14,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: semantic.bgSurface,
-                boxShadow: semantic.shadowCard,
+                color: semantic.accentSubtle,
               ),
               alignment: Alignment.center,
-              child: Icon(icon, size: 21, color: semantic.fgDefault),
+              child: Icon(icon, size: 21, color: semantic.accentDefault),
             ),
             const SizedBox(height: AppSpacing.space2),
             Text(

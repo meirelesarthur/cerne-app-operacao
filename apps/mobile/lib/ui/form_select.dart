@@ -67,7 +67,7 @@ class AppFormSelect extends StatelessWidget {
         isDense: true,
         filled: true,
         fillColor: semantic.bgSubtle,
-        constraints: const BoxConstraints(minHeight: AppSpacing.space12),
+        constraints: const BoxConstraints(minHeight: AppSpacing.space14),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.space5,
         ),

@@ -87,7 +87,7 @@ class AppTextInput extends StatelessWidget {
           fontSize: AppTypography.md,
           color: semantic.fgSubtle,
         ),
-        constraints: const BoxConstraints(minHeight: AppSpacing.space12),
+        constraints: const BoxConstraints(minHeight: AppSpacing.space14),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.space5,
         ),
