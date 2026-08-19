@@ -55,7 +55,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100%;
+      /* `height`, nao `min-height`: o `height: 100%` de `#flutter-target`
+         resolve contra a altura *especificada* do pai. Com so `min-height`
+         aqui, a altura especificada e `auto`, a porcentagem do filho vira
+         `auto` e (por ser item flex com `align-items: center`, sem stretch)
+         colapsa pra 0 -- app em branco em qualquer viewport < 820px. */
+      height: 100%;
     }
 
     #flutter-target {
