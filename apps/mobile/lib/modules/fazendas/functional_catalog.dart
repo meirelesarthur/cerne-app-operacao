@@ -237,6 +237,25 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
+      // banco-real: `areas.productive_area`, `areas.unproductive_area` e
+      // `areas.animal_load` já existem no banco e alimentam o dashboard pecuário
+      // real — faltavam no cadastro. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      FeatureField(
+        id: 'area-produtiva',
+        label: 'Área produtiva',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'area-nao-produtiva',
+        label: 'Área não produtiva',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'carga-animal',
+        label: 'Carga animal (UA/ha)',
+        type: FeatureFieldType.number,
+      ),
       FeatureField(
         id: 'unidade',
         label: 'Unidade',
@@ -327,14 +346,32 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
+      // banco-real: `diets.cost_per_kg` e `diets.estimated_cost` — dado que o
+      // banco real já calcula e o protótipo não mostrava. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      FeatureField(
+        id: 'custo-por-kg',
+        label: 'Custo por kg (R\$)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'custo-estimado',
+        label: 'Custo estimado (R\$)',
+        type: FeatureFieldType.number,
+      ),
     ],
     sections: ['Matérias-primas'],
     primaryAction: 'Salvar formulação',
     listMode: true,
     createAction: 'Nova formulação',
     recordTitleField: 'produto',
-    recordDescriptionFields: ['quantidade', 'unidade', 'ativo'],
+    recordDescriptionFields: ['quantidade', 'unidade', 'custo-estimado'],
   ),
+  // banco-real: `diet_beats.quantity` (previsto) e `item_diet_beats.quantity_realized`
+  // (realizado) já vêm separados no banco — a diferença entre os dois é o dado mais
+  // valioso desta tela (mostra desvio de batida) e antes ficava resumido em um único
+  // campo "quantidade de referência". Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
   FeatureDefinition(
     id: 'batidas',
     profile: FeatureProfile.operational,
@@ -368,9 +405,14 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(id: 'produto', label: 'Produto', isRequired: true),
       FeatureField(
         id: 'quantidade',
-        label: 'Quantidade de referência',
+        label: 'Quantidade prevista',
         type: FeatureFieldType.number,
         isRequired: true,
+      ),
+      FeatureField(
+        id: 'quantidade-realizada',
+        label: 'Quantidade realizada',
+        type: FeatureFieldType.number,
       ),
       FeatureField(
         id: 'unidade',
@@ -385,7 +427,7 @@ const operationalFeatures = <FeatureDefinition>[
     listMode: true,
     createAction: 'Nova batida',
     recordTitleField: 'produto',
-    recordDescriptionFields: ['quantidade', 'unidade', 'armazem'],
+    recordDescriptionFields: ['quantidade', 'quantidade-realizada', 'armazem'],
   ),
   FeatureDefinition(
     id: 'conexao-aparelhos',
@@ -610,6 +652,11 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'nome',
     recordDescriptionFields: ['unidade', 'tolerancia', 'alerta'],
   ),
+  // banco-real: a fonte de verdade real desta funcionalidade é a tabela
+  // `service_orders` (responsável, execução e resultado), não `planning_activities`
+  // (que só liga atividade a operação, sem responsável). Os campos de prazo e
+  // resultado abaixo já seguem o formato de `service_orders`. Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
   FeatureDefinition(
     id: 'apontamento',
     profile: FeatureProfile.operational,
@@ -658,6 +705,21 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.select,
         isRequired: true,
         options: ['Armazém A', 'Depósito B'],
+      ),
+      FeatureField(
+        id: 'prazo',
+        label: 'Prazo de execução',
+        type: FeatureFieldType.date,
+      ),
+      FeatureField(
+        id: 'resultado-esperado',
+        label: 'Resultado esperado',
+        type: FeatureFieldType.textarea,
+      ),
+      FeatureField(
+        id: 'criterio-sucesso',
+        label: 'Critério de sucesso',
+        type: FeatureFieldType.textarea,
       ),
     ],
     sections: [
@@ -758,6 +820,15 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Data de referência',
         type: FeatureFieldType.date,
         isRequired: true,
+      ),
+      // banco-real: `animals.entry_date` é a data de entrada do animal na
+      // fazenda e é distinta da data de referência do levantamento — o banco
+      // guarda as duas separadas. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      FeatureField(
+        id: 'data-entrada',
+        label: 'Data de entrada',
+        type: FeatureFieldType.date,
       ),
       FeatureField(
         id: 'especie',
@@ -892,6 +963,10 @@ const operationalFeatures = <FeatureDefinition>[
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/campo/pesagem',
   ),
+  // banco-real: ao integrar, o backend real de troca de LOTE é a tabela
+  // `transfer_batch_farms` — `transfer_animal_farms` é troca entre FAZENDAS e não
+  // deve ser usada aqui apesar do nome parecido. Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
   FeatureDefinition(
     id: 'transferencia-animal',
     profile: FeatureProfile.operational,
@@ -1142,6 +1217,16 @@ const operationalFeatures = <FeatureDefinition>[
         id: 'produto',
         label: 'Produto / procedimento',
         isRequired: true,
+      ),
+      // banco-real: `sanitaries.time_control` indica se o manejo tem
+      // carência/intervalo a respeitar — dado sensível de rastreabilidade
+      // (retirada de leite/carne pós-medicamento) ausente no protótipo. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      FeatureField(
+        id: 'controle-por-tempo',
+        label: 'Controle por tempo (carência)',
+        type: FeatureFieldType.select,
+        options: ['Sim', 'Não'],
       ),
       FeatureField(
         id: 'observacao',

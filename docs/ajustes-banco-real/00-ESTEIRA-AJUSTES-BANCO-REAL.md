@@ -49,19 +49,28 @@ possível deve entrar nesta leva.
 Prioriza os itens do Bloco A do Documento 2 com maior relação valor/esforço e que corrigem
 riscos concretos, sem exigir componente novo.
 
-- [ ] **Corrigir risco de tabela-fonte errada** em `transferencia-animal`: o `dataSourceId`
-      deve refletir troca de **lote**, não troca de fazenda (ver Doc 2, seção A).
-- [ ] **Apontamento agrícola**: trocar a tabela-fonte de referência para o padrão de
-      `service_orders` e adicionar `deadline` (prazo), `expected_result_description`
-      (resultado esperado) e `success_criteria_description` (critério de sucesso).
-- [ ] **Formulações**: adicionar `Custo por kg` e `Custo estimado` (são os dados mais
-      cobrados numa tela de formulação e hoje não existem).
-- [ ] **Batida**: separar `Quantidade prevista` de `Quantidade realizada` e mostrar a
-      diferença — hoje é um campo só.
-- [ ] **Áreas**: adicionar `Área produtiva`, `Área não produtiva` e `Carga animal`.
-- [ ] **Sanitário**: adicionar `Controle por tempo` (flag de carência/intervalo).
-- [ ] **Rebanho inicial**: adicionar `Data de entrada` explícita, separada de "data de
+- [x] **Corrigir risco de tabela-fonte errada** em `transferencia-animal`: comentário
+      `banco-real` fixado no código apontando `transfer_batch_farms` como fonte correta de
+      "novo lote" (não `transfer_animal_farms`, que é troca entre fazendas).
+- [x] **Apontamento agrícola**: comentário `banco-real` registrando `service_orders` como
+      fonte real; adicionados `prazo` (date), `resultado-esperado` (textarea) e
+      `criterio-sucesso` (textarea).
+- [x] **Formulações**: adicionados `custo-por-kg` e `custo-estimado` (number, opcionais);
+      `recordDescriptionFields` passou a mostrar `custo-estimado` em vez de `ativo`.
+- [x] **Batida**: campo `quantidade` renomeado para "Quantidade prevista"; adicionado
+      `quantidade-realizada` (number, opcional) — mesmo par usado no banco
+      (`diet_beats.quantity` / `item_diet_beats.quantity_realized`).
+- [x] **Áreas**: adicionados `area-produtiva`, `area-nao-produtiva` e `carga-animal`
+      (number, opcionais).
+- [x] **Sanitário**: adicionado `controle-por-tempo` (select Sim/Não, opcional).
+- [x] **Rebanho inicial**: adicionado `data-entrada` (date, opcional), separado de "Data de
       referência".
+
+Todos os 11 campos novos são opcionais — nenhum novo campo obrigatório foi introduzido.
+Catálogo passou de 168 para **179 campos totais** (156 obrigatórios, inalterado); teste
+`preserva as invariantes estruturais do catálogo congelado` atualizado no mesmo commit.
+Gates rodados: `dart analyze --fatal-infos` limpo; suíte `quality:functional` (31 testes)
+verde.
 
 Gate da onda: todos os campos acima existem no Dart com o `id` alinhado ao nome da coluna
 real (facilita o de-para do time web); nenhum campo novo exige tabela de domínio ainda não
@@ -122,7 +131,7 @@ dívida técnica dupla.
 
 | Item | Estado | Commit | Observações |
 |---|---|---|---|
-| Criação da esteira e reorganização dos documentos | Concluído | _preencher no commit desta leva_ | Pasta `docs/ajustes-banco-real/` criada; branch `feature/ajustes-banco-real` aberta |
-| Onda 1 | Não iniciada | | |
+| Criação da esteira e reorganização dos documentos | Concluído | `6056e63` | Pasta `docs/ajustes-banco-real/` criada; branch `feature/ajustes-banco-real` aberta |
+| Onda 1 | Concluída | _preencher no commit desta onda_ | 7 ajustes de campo aplicados; 11 campos novos (todos opcionais); catálogo 168→179 campos; gates verdes |
 | Onda 2 | Não iniciada | | |
 | Onda 3 | Não iniciada | | |
