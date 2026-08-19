@@ -47,7 +47,7 @@ para elas).
 |---|---|---|---|
 | Financeiro e operacional | `financial_categories`(60.491), `expenses`(205.164), `incomes`(33.492), `balances`(30.611), `cash_books`(32), `cost_centers`(2.294), `budgets`(209) | ✅ | Volume real robusto para consolidar por período/centro de custo. |
 | Dashboard pecuário | `animals`(146.496), `batches`(1.295), `stocks`(31.063) | ✅ | |
-| Lotação de currais | `feedlot_corrals`(39), `feedlot_corral_batches`(9), `feedlot_yards`(5), `feedlot_sectors`(6) | 🟡 | Estrutura completa (pátio→setor→rua→curral), mas só 1 confinamento populado — suficiente para demo, raso para produção. |
+| Lotação de currais | `feedlot_corrals`(39), `feedlot_corral_batches`(9), `feedlot_yards`(5), `feedlot_sectors`(6) | ✅ | Hierarquia pátio→setor→rua→curral completa. |
 | Ativos e depreciação | `equipments`(4.888), `depreciations`(99.199) | ✅ | `equipments` já traz `vl_acquisition`, `vl_depreciated`, `vl_residual`, `depreciation_type`. |
 | Suprimentos | `request_quotations`(16.863), `request_purchases`(19.744), `providers`(21.868) | 🟡 | `quotations` (cotação de preço de mercado) está **vazia** — se o painel comparar cotação de mercado, falta dado; se comparar cotações de fornecedor (`request_quotations`), está ok. |
 | Análise de uso | `user_activities`(144.832), `users`(1.333), `farm_user`(2.856) | ✅ | |
@@ -103,19 +103,21 @@ Tabelas: `diets` (cabeçalho) + `ingredients` (matéria-prima)
 
 ### `batidas` — Batida
 
-Tabelas: `diet_beats` (1 linha!) + `item_diet_beats` (3 linhas) + `food_beats` (682 linhas)
+Tabelas: `diet_beats` + `item_diet_beats`
+
+> Volume de linha no dump (`diet_beats`/`item_diet_beats`) deixou de ser critério de análise
+> nesta revisão — este dump mede estrutura, não produção real. O que importa é o schema
+> abaixo, que bate por completo.
 
 | Campo Dart | Coluna candidata | Situação | Nota |
 |---|---|---|---|
 | responsavel | `diet_beats.user_id` | ✅ | |
 | tipo | `item_diet_beats.type` | ✅ | |
-| armazem | — | ❌ | `item_diet_beats`/`diet_beats` não têm `warehouse_id` direto (só `stock_id`, que referencia estoque específico, não o armazém em si — precisa join `stocks.warehouse_id`). |
+| armazem | `item_diet_beats.stock_id` → `stocks.warehouse_id` | ✅ | Indireto (join de 2 tabelas), não literal — mas totalmente resolvível, é o padrão normal de modelo relacional. |
 | produto | `item_diet_beats.product_id` | ✅ | |
 | quantidade | `item_diet_beats.quantity` (renomeado para "Quantidade prevista" na leva `banco-real`) | ✅ | |
 | 🆕 quantidade-realizada | `item_diet_beats.quantity_realized` | ✅ | Adicionado na leva `banco-real` — agora previsto e realizado são dois campos, batendo 1:1 com o banco. |
 | unidade | `item_diet_beats.measurement_id` | ✅ | |
-
-⚠️ **Prioridade de gap real**: `diet_beats` tem 1 linha e `item_diet_beats` tem 3 — o dump praticamente não usou esse fluxo. Estrutura pronta, dado insuficiente para popular a tela com histórico relevante.
 
 ---
 
@@ -125,47 +127,67 @@ Tabelas: `diet_beats` (1 linha!) + `item_diet_beats` (3 linhas) + `food_beats` (
 
 ### `carga` — Carga
 
-Tabelas candidatas: `input_entries` / `movement_purchases` (entrada de insumo no armazém)
+Tabela: `item_diet_beats` (mesma fonte de Batida — Carga é o mesmo evento, visto do lado do
+insumo carregado)
+
+> **Correção nesta revisão**: a passagem anterior comparou Carga com `input_entries`/
+> `movement_purchases` (entrada de insumo genérica, sem equipamento) e concluiu que era gap
+> estrutural. Essa comparação usava a tabela errada — `item_diet_beats` já é a tabela de
+> Batida, e cobre Carga por completo.
 
 | Campo Dart | Coluna candidata | Situação | Nota |
 |---|---|---|---|
-| responsavel | `input_entries.user_id` | ✅ | |
-| formulacao | — | 🟡 | `input_entries` é genérico (não amarra a uma dieta); teria que linkar por `movement_id`. |
-| origem (armazém) | — | ❌ | Não há `warehouse_id` direto em `input_entries`; só via `movement_id` → outra tabela. |
-| equipamento | — | ❌ | Sem FK de equipamento/misturador em `input_entries`. |
-| quantidade | `input_entries.total_amount` | 🟡 | É valor monetário total, não quantidade física — não corresponde 1:1. |
-| unidade | — | ❌ | Ausente. |
-
-⚠️ Este é o gap mais claro do grupo Misturador: o dump modela "carga" como lançamento de entrada de insumo genérico, não como operação de carregamento de misturador vinculada a equipamento.
+| responsavel | `diet_beats.user_id` | ✅ | Via a batida à qual o item pertence. |
+| formulacao | `diet_beats.diet_id` | ✅ | |
+| origem (armazém) | `item_diet_beats.stock_id` → `stocks.warehouse_id` | ✅ | Indireto (join), mesmo padrão de Batida. |
+| equipamento | `diet_beats.equipment_id` | ✅ | `NOT NULL` — toda batida tem misturador. |
+| quantidade | `item_diet_beats.quantity` / `quantity_realized` | ✅ | Previsto × realizado, igual Batida. |
+| unidade | `item_diet_beats.measurement_id` | ✅ | |
 
 ### `descarga` — Descarga
 
-Tabela candidata: `stock_writeoffs`
+Tabela: `item_nutritions` (liga a batida ao curral/cocho de destino via `diet_beat_id`)
+
+> **Correção nesta revisão**: a passagem anterior comparou Descarga com `stock_writeoffs`
+> (baixa de estoque genérica) e concluiu gap parcial. `item_nutritions.diet_beat_id` é o elo
+> real entre a batida do misturador e a entrega num `trough_id`/`feedlot_corral_id` — a tabela
+> certa é essa, não `stock_writeoffs`.
 
 | Campo Dart | Coluna candidata | Situação | Nota |
 |---|---|---|---|
-| responsavel | `stock_writeoffs.user_id`/`employee_id` | ✅ | |
-| produto | — | 🟡 | Baixa é por `warehouse_id` + `type`, produto individual fica no item relacionado (não capturado nesta tabela-cabeçalho). |
-| destino | `stock_writeoffs.center_id` | 🟡 | É centro de custo, não "área/cocho". |
-| equipamento | — | ❌ | Sem FK de equipamento. |
-| quantidade | — | ❌ | Fica no item relacionado, não no cabeçalho. |
-| unidade | — | ❌ | Idem. |
+| responsavel | `item_nutritions.nutrition_id` → `nutritions.employee_id` | ✅ | Indireto (join), mesmo padrão de Carga. |
+| produto | `item_nutritions.product_id` | ✅ | Ou herdado da batida via `diet_beat_id` → `item_diet_beats.product_id`. |
+| destino (área/cocho) | `item_nutritions.trough_id` (`NOT NULL`) / `feedlot_corral_id` | ✅ | Modelado por completo — mais forte do que o campo do Dart hoje pede. |
+| equipamento | `item_nutritions.diet_beat_id` → `diet_beats.equipment_id` | ✅ | Indireto (join). |
+| quantidade descarregada | `item_nutritions.quantity` | ✅ | |
+| unidade | `item_nutritions.um` | ✅ | |
 
-### `balanca` (hardware) — ⚪ simulação obrigatória; porém `module_weighings` (2.497 linhas, com `gross_weight`/`tare_weight`/`final_weight`) já modela o **resultado pós-captura** com dado real, caso a tela queira mostrar histórico de pesagens do misturador sem simular a captura em si.
+### `balanca` (hardware) — ⚪ simulação obrigatória; porém `module_weighings` (com
+`gross_weight`/`tare_weight`/`final_weight`) já modela o **resultado pós-captura** com dado
+real, caso a tela queira mostrar histórico de pesagens do misturador sem simular a captura em
+si.
 
 ### `nota-cocho` — Nota de cocho
 
-Tabelas: `troughs`(608) / `area_trough`(0) / `troughs_area`(0)
+Tabela mais próxima: `feedlot_corral_diet_histories` (curral, dieta, data, consumo)
+
+> **Correção nesta revisão**: a passagem anterior citou `area_trough`/`troughs_area` (vazias)
+> como o bloqueio. Isso está errado por dois lados: `troughs.area_id` já dá a relação
+> área↔cocho direto, sem precisar da tabela de vínculo; e o conceito de "avaliação de
+> curral/dieta/data" tem entidade própria em `feedlot_corral_diet_histories`, só não com a
+> escala 0–4 exata.
 
 | Campo Dart | Coluna candidata | Situação | Nota |
 |---|---|---|---|
-| responsavel | — | ❌ | `troughs` não tem `user_id`/`employee_id`. |
-| data | — | ❌ | `troughs` não tem data de evento (só `created_at`). |
-| lote / curral | `troughs.area_id`, `item_nutritions.trough_id`/`feedlot_corral_id` | 🟡 | Vínculo existe via `item_nutritions`, não direto em `troughs`. |
-| nota | — | ❌ | Não há campo de classificação/nota de cocho. |
-| observacao | — | ❌ | Ausente. |
+| responsavel | — | ❌ | `feedlot_corral_diet_histories` não tem `employee_id` — falta essa coluna. |
+| data | `feedlot_corral_diet_histories.date` | ✅ | |
+| lote / curral | `feedlot_corral_diet_histories.feedlot_corral_id` | ✅ | Direto, sem precisar de tabela de vínculo. |
+| nota | `feedlot_corral_diet_histories.feed_intake` | 🟡 | É consumo numérico (kg), não a escala 0–4 categórica que a tela usa — precisa de coluna nova ou de regra de conversão. |
+| observacao | — | ❌ | Falta coluna de texto. |
 
-⚠️ **Gap real**: as tabelas de vínculo área↔cocho (`area_trough`, `troughs_area`) estão **vazias**. "Nota de cocho" como conceito de avaliação/observação de consumo não tem representação direta no schema — provável que essa tela continue como mock/heurística de frontend.
+⚠️ **Decisão pequena, não gap estrutural**: a entidade curral↔dieta↔data já existe; faltam 2–3
+colunas (responsável, observação, escala categórica) na mesma tabela — mesma severidade de
+`estacao-monta` (falta coluna de método).
 
 ### `configuracoes-misturador` — Configurações
 
@@ -229,7 +251,7 @@ Tabelas: `harvest_products`(1) + `harvest_product_boxes`(1)
 | placa | `harvest_products.plate` | ✅ | |
 | motorista | `harvest_products.driver_name` | ✅ | |
 | cpf | `harvest_products.driver_nif` | ✅ | |
-| caixas (kg) | `harvest_product_boxes` (1 linha) | 🔴 | Estrutura pronta e nomes de campo batem quase perfeitamente, **mas o dump tem só 1 registro em cada tabela** — dado insuficiente para popular a tela com histórico. |
+| caixas (kg) | `harvest_product_boxes` | ✅ | Nomes de campo batem 1:1 com a tela. |
 
 ---
 
@@ -334,8 +356,6 @@ Tabela: `loss_animals`(26)
 | lote | idem | 🟡 | |
 | causa | `death_losses`/similar dicionário de causa | ✅ | |
 | observacao | idem | 🟡 | |
-
-Volume baixo (26 linhas) — suficiente para smoke, raso para demonstrar histórico rico.
 
 ### `compras-animais` — Compra de animais
 
@@ -480,8 +500,6 @@ Tabela: `breeding_matings`(35) + `breeding_mating_cows`(70) + `breeding_mating_b
 | quantidade | — | 🟡 | Via contagem de `breeding_mating_cows` vinculadas, não coluna própria. |
 | observacao | — | ❌ | Ausente. |
 
-`breeding_mating_bulls` com só 3 linhas — dado raso para "monta natural" especificamente (o grosso de 35 `breeding_matings` provavelmente é IATF via `type`).
-
 ### `diagnostico-gestacao` — Diagnóstico de gestação
 
 Tabela: `pregnancy_diagnosis`(26) + `pregnancy_diagnosis_animals`(477) + `diagnostic_techniques`(2) + `ultrasounds`(0)
@@ -540,11 +558,9 @@ Tabela: `appropriation_maintenance`(7.538) + `appropriation_maintenance_preventi
 
 Tabela: `service_orders`(15) + `equipment_service_order`(5) + `product_service_order`(5) + `employee_service_order`(11) + `production_service_order`(0) + `protection_service_order`(1)
 
-Status: 🟡 — schema é o mais rico do dump para esta funcionalidade (`service_orders` tem 30+
-colunas: prazo, clima mínimo/máximo, critério de sucesso, avaliação, feedback), **mas o
-volume real é baixíssimo (15 OS)** e duas subtabelas estão vazias/quase vazias
-(`production_service_order`=0, `protection_service_order`=1). Estrutura pronta, dado
-insuficiente para popular uma lista "Minhas OS" com histórico convincente.
+Status: ✅ — schema é o mais rico do dump para esta funcionalidade (`service_orders` tem 30+
+colunas: prazo, clima mínimo/máximo, critério de sucesso, avaliação, feedback). Mesma tabela
+de `apontamento` — as duas compartilham a fonte real.
 
 ---
 
@@ -559,35 +575,51 @@ contrapartida no ERP.
 
 ## Resumo executivo — prioridades de decisão
 
-> **Revisão de 19/08/2026**: nova varredura, a pedido do usuário, para separar dois problemas
-> que a primeira passagem tratava com a mesma severidade: "o banco não modela o conceito"
-> (problema real) e "o dump tem poucas linhas nessa tabela" (característica da amostra — o
-> dump é o recorte de **uma fazenda só**; ter 1 confinamento ou 15 ordens de serviço é
-> esperado para essa escala, não uma falha de modelagem). A taxonomia abaixo substitui a
-> anterior. `Apartação` saiu do grupo "gap estrutural" nesta revisão: a tabela `separations`
-> já existe e cobre o essencial — só falta a coluna de critério, mesma severidade de
-> `estacao-monta`/`lotes-reproducao`.
+> **Revisão de 19/08/2026, 2ª rodada**: duas correções a pedido do usuário. Primeira: separar
+> "o banco não modela o conceito" (problema real) de "o dump tem poucas linhas nessa tabela"
+> (não é problema — este dump serve para analisar **estrutura**, não para medir volume de
+> produção real; os dados aqui podem nem refletir o que está em produção. Ter 1 confinamento
+> ou 15 ordens de serviço é o recorte de uma fazenda só, não uma falha de modelagem).
+> Quantidade de linha deixou de ser critério de classificação — o antigo grupo "dado
+> insuficiente" (6 itens) se fundiu em "Pronto". Segunda: validação pedida explicitamente pelo
+> usuário sobre Carga/Descarga/Nota de cocho. Reexaminando o schema (não o volume): a primeira
+> passagem comparou Carga/Descarga com `input_entries`/`stock_writeoffs` — tabelas genéricas
+> sem equipamento. As tabelas certas são outras, já usadas para Batida e Nutrições:
+> `item_diet_beats` (cada insumo carregado no misturador, com `stock_id` de origem, sob
+> `diet_beats.equipment_id`) é **Carga**; `item_nutritions.diet_beat_id` liga essa batida a um
+> `trough_id`/`feedlot_corral_id` de destino — isso é **Descarga**. As duas viram "Pronto".
+> Nota de cocho tem entidade real em `feedlot_corral_diet_histories` (curral, dieta, data,
+> consumo) — falta responsável, observação e a escala 0–4 categórica: 2–3 colunas numa tabela
+> que já existe, mesma severidade de `estacao-monta` (falta método), não gap estrutural.
+> `Apartação` também saiu do gap estrutural desde a revisão anterior pelo mesmo motivo
+> (`separations` já existe e cobre o essencial).
 
-Das 54 funcionalidades, **42 (77,8%) já são cobertas pelo banco real** de algum jeito — o
-resto se divide em 3 genuinamente sem modelo (5,6%) e 9 fora de escopo por design (16,7%,
-hardware simulado + configuração local). Contando só o que deveria ter API (as 45 que não são
-hardware/configuração local), a cobertura sobe para **93,3%** — e a administração está 100%
-coberta; a diferença toda mora em 3 itens do grupo Misturador.
+Das 54 funcionalidades, **45 (83,3%) já são cobertas pelo banco real** — nenhuma sem modelo. O
+resto é 9 fora de escopo por design (16,7%, hardware simulado + configuração local).
+Contando só o que deveria ter API (as 45 que não são hardware/configuração local), a
+cobertura é **100%** — administração e operação empatam; a única pendência real são 9
+decisões pequenas, nenhuma reunião de modelagem.
 
-### Pronto, sem ressalva (28) — pode trocar mock → dado real com confiança alta
+### Pronto, sem ressalva (36) — pode trocar mock → dado real com confiança alta
 Financeiro, Dashboard pecuário, Ativos, Análise de uso, Consultas gerenciais, Áreas
 cadastradas, Saldo de estoque, 🆕 Produtos, Processamentos, logs de auditoria (2), Lote de
 animais, Registrar animal, Rebanho inicial, Pesagens, Transferência lote/área, Nascimentos,
 Mortes, Compra de animais, Nutrições, Sanitário, Desmama, Pastagens, Marcação,
 Protocolos/estação, Abastecimentos, Manutenção de frota, Apontamento agrícola (já reapontado
-para `service_orders`).
+para `service_orders`), Lotação de currais, Colheita de frutas, Batida, **Carga**, **Descarga**
+(as duas últimas remapeadas nesta rodada), Minhas OS, Monta natural, Diagnóstico de gestação.
 
 ### Resolvido na leva `banco-real` (já não precisa de decisão nova)
 - ~~Transferência animal (hardware): risco de tabela errada~~ — comentário fixado no código.
 - ~~Apontamento agrícola: tabela-fonte ambígua~~ — comentário fixado no código, campos ricos
   de `service_orders` adicionados.
+- ~~Carga/Descarga: "sem modelo no banco"~~ — reclassificação incorreta na 1ª passagem; ambas
+  usam `item_diet_beats`/`item_nutritions`, já mapeadas para Batida/Nutrições.
+- ~~Todo campo "produto" era texto livre~~ — Formulações, Matéria-prima, Batida, Carga e
+  Descarga agora buscam em `catalogoProdutos`; só a tela Produtos cria item em campo livre
+  (commit `7ea88da`).
 
-### Cobertas, decisão pequena pendente (8) — não bloqueia o desenho da rota
+### Cobertas, decisão pequena pendente (9) — não bloqueia o desenho da rota
 - **Áreas, Formulações, Vendas**: enum sem dicionário (`type`, `type`/`objective`,
   `payment_method`) — já marcados `TODO(banco-real)` no código, ver seção C de
   [`03-ajustes-ponto-a-ponto.md`](03-ajustes-ponto-a-ponto.md).
@@ -597,18 +629,11 @@ para `service_orders`).
   finalidade, raça e fornecedor — hoje "escondidos" em joins não triviais.
 - **Apartação**: falta coluna de critério e distinção clara origem/destino — tabela
   (`separations`) já existe e cobre o essencial.
+- **Nota de cocho**: falta responsável, observação e a escala 0–4 categórica em
+  `feedlot_corral_diet_histories` — a entidade curral↔dieta↔data já existe.
 
-### Cobertas, mas valide com mais dado antes de fechar (6) — não é pendência de modelagem
-Colheita de frutas (1 linha), Batida do misturador (1–3 linhas), Minhas OS (15, mesma tabela
-do Apontamento agrícola), Monta natural (35 monta / 3 touros), Diagnóstico de gestação
-(`ultrasounds` = 0), Lotação de currais (1 confinamento — normal para uma única fazenda). O
-schema já bate; o volume baixo reflete o recorte do dump, não uma lacuna do banco.
-
-### Sem modelo no banco (3) — as únicas que precisam de reunião de modelagem
-- **Carga/Descarga (misturador)**: o dump não modela "carga de misturador vinculada a
-  equipamento" como conceito próprio — reaproveitar `input_entries`/`stock_writeoffs`
-  genéricos não fecha o contrato.
-- **Nota de cocho**: vínculo área↔cocho vazio; conceito de "nota" não existe no schema.
+### Sem modelo no banco (0)
+Nenhuma, após a revalidação desta rodada.
 
 ### Fora de escopo por design (9) — não é lacuna de banco
 Todas as `FeatureStatus.hardware` (7: Bluetooth, balança, RFID, scanner) e as 2 sem tabela
@@ -647,7 +672,7 @@ aqui é a lista completa de recursos e as pegadinhas, não o path exato.
 |---|---|---|---|
 | Financeiro e operacional | `GET /dashboards/financeiro` | `financial_categories`, `expenses`, `incomes`, `balances`, `cost_centers` | Painel agregado — provavelmente uma rota de relatório, não CRUD puro. |
 | Dashboard pecuário | `GET /dashboards/pecuaria` | `animals`, `batches`, `stocks` | Idem — agregação. |
-| Lotação de currais | `GET /dashboards/confinamento` | `feedlot_corrals`, `feedlot_corral_batches`, `feedlot_yards`, `feedlot_sectors` | Confirmar se o cliente tem mais de 1 confinamento em produção (dump só tem 1). |
+| Lotação de currais | `GET /dashboards/confinamento` | `feedlot_corrals`, `feedlot_corral_batches`, `feedlot_yards`, `feedlot_sectors` | Nenhuma — hierarquia pátio→setor→rua→curral já modelada por completo. |
 | Ativos e depreciação | `GET /dashboards/ativos` | `equipments`, `depreciations` | Nenhuma. |
 | Suprimentos | `GET /dashboards/suprimentos` | `request_quotations`, `request_purchases`, `providers` | Decidir se compara cotação de fornecedor (`request_quotations`, tem dado) ou preço de mercado (`quotations`, vazia). |
 | Análise de uso | `GET /dashboards/uso` | `user_activities`, `users`, `farm_user` | Nenhuma. |
@@ -665,16 +690,16 @@ aqui é a lista completa de recursos e as pegadinhas, não o path exato.
 |---|---|---|---|
 | Áreas | `POST /areas` | `areas` | Confirmar dicionário de `type` antes de fechar o contrato do campo. |
 | Formulações | `POST /diets` | `diets`, `ingredients` | Confirmar dicionário de `type`/`objective`. |
-| Batida | `POST /diet-beats` | `diet_beats`, `item_diet_beats` | Volume real baixíssimo (1–3 linhas) — validar com dado de produção antes de assumir o contrato como definitivo. |
+| Batida | `POST /diet-beats` | `diet_beats`, `item_diet_beats` | Nenhuma — `equipment_id` do misturador e previsto×realizado já modelados. |
 | Conexão de aparelhos (misturador) | — | — | Hardware simulado; sem rota de API. |
-| Carga | `POST /mixer-loads` (recurso a criar) | nenhuma tabela dedicada hoje | **Reunião de modelagem necessária** — banco não tem conceito de "carga de misturador" vinculado a equipamento. |
-| Descarga | `POST /mixer-unloads` (recurso a criar) | `stock_writeoffs` (parcial) | Idem — cabeçalho existe, item/quantidade não bate 1:1. |
+| Carga | `POST /diet-beats/{id}/items` | `item_diet_beats` (`stock_id` → origem, `diet_beats.equipment_id` → misturador) | Nenhuma — é o mesmo recurso de Batida, visto do lado do insumo carregado. |
+| Descarga | `POST /item-nutritions` | `item_nutritions` (`diet_beat_id` → batida, `trough_id`/`feedlot_corral_id` → destino) | Nenhuma — liga a batida ao curral/cocho de destino. |
 | Balança | — | `module_weighings` (só leitura, se quiser histórico) | Hardware simulado; API só se for expor histórico pós-captura. |
-| Nota de cocho | `POST /trough-scores` (recurso a criar) | `troughs` (parcial) | **Reunião de modelagem necessária** — vínculo área↔cocho vazio no dump. |
+| Nota de cocho | `POST /feedlot-corral-diet-histories` | `feedlot_corral_diet_histories` | Faltam colunas de responsável, observação e a escala 0–4 categórica — decisão pequena, tabela já existe. |
 | Configurações do misturador | — | nenhuma | Não deveria virar API — configuração local de app. |
 | Apontamento agrícola | `POST /service-orders?category=agricola` | `service_orders` | Já reapontado nesta leva; nenhuma adaptação adicional. |
 | Marcação | `POST /markings` | `markings`, `marking_dones`, `marking_forecasts`, `markers` | Nenhuma. |
-| Colheita de frutas | `POST /harvest-products` | `harvest_products`, `harvest_product_boxes` | Volume real de 1 linha — validar contrato com mais dado antes de travar. |
+| Colheita de frutas | `POST /harvest-products` | `harvest_products`, `harvest_product_boxes` | Nenhuma — placa, motorista, CPF e caixas já mapeiam 1:1. |
 | Rebanho inicial | `POST /animals?origin=initial` | `animals` | Nenhuma — `data-entrada` já adicionado nesta leva. |
 | Conexão de aparelhos (pecuária) | — | — | Hardware simulado; sem rota de API. |
 | Lote de animais | `POST /batches` | `batches`, `batch_category_animal` | Nenhuma. |
