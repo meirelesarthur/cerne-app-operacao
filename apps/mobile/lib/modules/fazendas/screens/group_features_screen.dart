@@ -16,11 +16,15 @@ class GroupFeaturesScreen extends StatelessWidget {
   const GroupFeaturesScreen({
     super.key,
     required this.profile,
-    required this.group,
+    required this.groupSlug,
   });
 
   final FeatureProfile profile;
-  final String group;
+
+  /// Slug da rota (`grupo/:group`) — ver [groupFromSlug]. Um slug desconhecido
+  /// (ex.: link antigo/quebrado) cai no estado vazio abaixo em vez de quebrar
+  /// a navegação.
+  final String groupSlug;
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +32,13 @@ class GroupFeaturesScreen extends StatelessWidget {
     final isAdministration = profile == FeatureProfile.administration;
     final segment = isAdministration ? 'administracao' : 'operacional';
     final centerRoute = '/fazendas/$segment';
-    final features = (isAdministration ? adminFeatures : operationalFeatures)
-        .where((f) => f.group == group)
-        .toList();
+    final group = groupFromSlug(groupSlug);
+    final features = group == null
+        ? const <FeatureDefinition>[]
+        : (isAdministration ? adminFeatures : operationalFeatures)
+              .where((f) => f.group == group)
+              .toList();
+    final title = group ?? groupSlug;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.space4),
@@ -53,7 +61,7 @@ class GroupFeaturesScreen extends StatelessWidget {
               ),
               alignment: Alignment.center,
               child: Icon(
-                groupIcon(group),
+                groupIcon(title),
                 size: 22,
                 color: semantic.accentDefault,
               ),
@@ -64,7 +72,7 @@ class GroupFeaturesScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppHeading(child: Text(group)),
+                  AppHeading(child: Text(title)),
                   Text(
                     '${features.length} ${features.length == 1 ? 'função' : 'funções'} neste módulo',
                     style: TextStyle(color: semantic.fgMuted),
@@ -87,6 +95,7 @@ class GroupFeaturesScreen extends StatelessWidget {
               icon: groupIcon(feature.group),
               label: feature.title,
               description: feature.objective,
+              showShadow: false,
               onTap: () => context.go(_destination(feature, segment)),
             ),
             const SizedBox(height: AppSpacing.space2),

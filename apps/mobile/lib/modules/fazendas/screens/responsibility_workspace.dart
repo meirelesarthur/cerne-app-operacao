@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
+import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
@@ -24,6 +26,7 @@ class ResponsibilityWorkspace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final features = profile == FeatureProfile.administration
         ? adminFeatures
         : operationalFeatures;
@@ -37,39 +40,41 @@ class ResponsibilityWorkspace extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.space4),
       children: [
-        AppCard(
-          variant: AppCardVariant.ink,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AppChip(
-                tone: isAdministration ? AppChipTone.blue : AppChipTone.brand,
-                icon: Icon(
-                  isAdministration
-                      ? LucideIcons.layoutDashboard
-                      : LucideIcons.clipboardList,
-                ),
-                child: Text(
-                  isAdministration
-                      ? 'AMBIENTE ADMINISTRAÇÃO'
-                      : 'AMBIENTE OPERACIONAL',
-                ),
-              ),
-              const SizedBox(height: AppSpacing.space3),
-              AppHeading(
-                child: Text(
-                  isAdministration ? 'Central de gestão' : 'Central de rotinas',
-                ),
-              ),
-              const SizedBox(height: AppSpacing.space2),
-              Text(
-                isAdministration
-                    ? 'Indicadores, consultas e auditoria para supervisão e tomada de decisão.'
-                    : 'Cadastros e lançamentos executados pelos funcionários da operação.',
-              ),
-              const SizedBox(height: AppSpacing.space3),
-              Text('${features.length} funcionalidades neste ambiente'),
-            ],
+        // Sem card escuro aqui (pedido do usuário): o cabeçalho da central
+        // fica direto sobre o canvas, como no restante das telas da
+        // referência Força Agro.
+        AppChip(
+          tone: isAdministration ? AppChipTone.blue : AppChipTone.brand,
+          icon: Icon(
+            isAdministration
+                ? LucideIcons.layoutDashboard
+                : LucideIcons.clipboardList,
+          ),
+          child: Text(
+            isAdministration
+                ? 'AMBIENTE ADMINISTRAÇÃO'
+                : 'AMBIENTE OPERACIONAL',
+          ),
+        ),
+        const SizedBox(height: AppSpacing.space3),
+        AppHeading(
+          child: Text(
+            isAdministration ? 'Central de gestão' : 'Central de rotinas',
+          ),
+        ),
+        const SizedBox(height: AppSpacing.space2),
+        Text(
+          isAdministration
+              ? 'Indicadores, consultas e auditoria para supervisão e tomada de decisão.'
+              : 'Cadastros e lançamentos executados pelos funcionários da operação.',
+          style: TextStyle(color: semantic.fgMuted),
+        ),
+        const SizedBox(height: AppSpacing.space2),
+        Text(
+          '${features.length} funcionalidades neste ambiente',
+          style: TextStyle(
+            color: semantic.fgMuted,
+            fontWeight: AppTypography.weightSemibold,
           ),
         ),
         const SizedBox(height: AppSpacing.space5),
@@ -89,7 +94,7 @@ class ResponsibilityWorkspace extends StatelessWidget {
                 icon: groupIcon(group),
                 label: group,
                 onPressed: () => context.go(
-                  '/fazendas/$segment/grupo/${Uri.encodeComponent(group)}',
+                  '/fazendas/$segment/grupo/${groupToSlug(group)}',
                 ),
               );
             },
@@ -97,85 +102,78 @@ class ResponsibilityWorkspace extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.space5),
 
-        const AppSectionTitle(child: Text('Funcionalidades por módulo')),
-        const SizedBox(height: AppSpacing.space3),
-        for (final entry in groups.entries) ...[
-          _GroupAccessCard(
-            group: entry.key,
-            features: entry.value,
-            onTap: () => context.go(
-              '/fazendas/$segment/grupo/${Uri.encodeComponent(entry.key)}',
-            ),
+        // Sem título de seção aqui (pedido do usuário): o grid de módulos já
+        // se lê como continuação natural do acesso rápido acima, no mesmo
+        // estilo ícone-em-cima/rótulo-embaixo da referência Força Agro.
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: groups.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: AppSpacing.space3,
+            mainAxisSpacing: AppSpacing.space3,
+            childAspectRatio: 1.3,
           ),
-          const SizedBox(height: AppSpacing.space3),
-        ],
+          itemBuilder: (context, index) {
+            final group = groups.keys.elementAt(index);
+            return _ModuleGridCard(
+              group: group,
+              onTap: () =>
+                  context.go('/fazendas/$segment/grupo/${groupToSlug(group)}'),
+            );
+          },
+        ),
       ],
     );
   }
 }
 
-class _GroupAccessCard extends StatelessWidget {
-  const _GroupAccessCard({
-    required this.group,
-    required this.features,
-    required this.onTap,
-  });
+class _ModuleGridCard extends StatelessWidget {
+  const _ModuleGridCard({required this.group, required this.onTap});
 
   final String group;
-  final List<FeatureDefinition> features;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final preview = features.map((f) => f.title).take(3).join(' · ');
 
-    return Semantics(
-      button: true,
-      label: 'Abrir módulo $group',
-      child: AppCard(
-        interactive: true,
-        onTap: onTap,
-        child: Row(
-          children: [
-            Container(
-              width: AppSpacing.space12,
-              height: AppSpacing.space12,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: semantic.accentSubtle,
+    final radius = BorderRadius.circular(AppRadius.xl3);
+    return Container(
+      decoration: BoxDecoration(
+        color: semantic.bgSurface,
+        borderRadius: radius,
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: AppPressable(
+        semanticLabel: 'Abrir módulo $group',
+        onPressed: onTap,
+        borderRadius: radius,
+        minTouchTarget: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space2,
+            vertical: AppSpacing.space4,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(groupIcon(group), size: 32, color: semantic.accentDefault),
+              const SizedBox(height: AppSpacing.space2),
+              Text(
+                group,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  fontWeight: AppTypography.weightSemibold,
+                  color: semantic.accentDefault,
+                ),
               ),
-              alignment: Alignment.center,
-              child: Icon(
-                groupIcon(group),
-                size: 22,
-                color: semantic.accentDefault,
-              ),
-            ),
-            const SizedBox(width: AppSpacing.space3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AppHeading(level: AppHeadingLevel.h3, child: Text(group)),
-                  const SizedBox(height: AppSpacing.space1),
-                  Text(
-                    '${features.length} ${features.length == 1 ? 'função' : 'funções'} · $preview',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: semantic.fgMuted),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: AppSpacing.space2),
-            Icon(
-              LucideIcons.chevronRight,
-              size: AppSpacing.space5,
-              color: semantic.fgSubtle,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

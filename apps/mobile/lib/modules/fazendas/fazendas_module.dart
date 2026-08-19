@@ -38,7 +38,7 @@ GoRoute buildFazendasModuleRoute() {
             path: 'grupo/:group',
             builder: (context, state) => _FazendasScaffold(
               child: GroupFeaturesScreen(
-                group: Uri.decodeComponent(state.pathParameters['group']!),
+                groupSlug: state.pathParameters['group']!,
                 profile: FeatureProfile.administration,
               ),
             ),
@@ -64,7 +64,7 @@ GoRoute buildFazendasModuleRoute() {
             path: 'grupo/:group',
             builder: (context, state) => _FazendasScaffold(
               child: GroupFeaturesScreen(
-                group: Uri.decodeComponent(state.pathParameters['group']!),
+                groupSlug: state.pathParameters['group']!,
                 profile: FeatureProfile.operational,
               ),
             ),
