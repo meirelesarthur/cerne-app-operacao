@@ -11,6 +11,10 @@ import 'design/theme/app_theme.dart';
 import 'design/theme/app_theme_extension.dart';
 import 'shared/url_strategy.dart';
 import 'ui/ui.dart';
+import 'widgetbook/patterns/crud_pattern.dart';
+import 'widgetbook/patterns/listing_pattern.dart';
+import 'widgetbook/patterns/login_pattern.dart';
+import 'widgetbook/patterns/menu_pattern.dart';
 
 /// Ponto de entrada da galeria de componentes (F2.5) e da auditoria de tema (F1.4).
 /// Rodar: `flutter run -t lib/widgetbook_app.dart -d chrome`.
@@ -61,6 +65,15 @@ class CerneWidgetbook extends StatelessWidget {
         WidgetbookFolder(
           name: 'Documentação',
           children: [buildCodePreviewWidgetbookComponent()],
+        ),
+        WidgetbookFolder(
+          name: 'Padrões',
+          children: [
+            buildLoginPatternWidgetbookComponent(),
+            buildListingPatternWidgetbookComponent(),
+            buildMenuPatternWidgetbookComponent(),
+            buildCrudPatternWidgetbookComponent(),
+          ],
         ),
         WidgetbookFolder(
           name: 'Catálogo',
