@@ -162,6 +162,10 @@ const adminFeatures = <FeatureDefinition>[
     listMode: true,
     dataSourceId: 'cadastrar-area',
   ),
+  // TODO(banco-real): quando esta consulta ganhar filtro por tipo/classificação
+  // de movimento, checar `stocks.type`/`stock_movements.classification` — sem
+  // tabela de domínio no dump; hoje esta tela ainda não expõe esse filtro.
+  // Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
   FeatureDefinition(
     id: 'saldo-estoque',
     profile: FeatureProfile.administration,
@@ -240,6 +244,10 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         placeholder: 'Ex.: Talhão 03',
       ),
+      // TODO(banco-real): `areas.type` é smallint no banco real, sem tabela de
+      // domínio no dump — as opções abaixo são placeholder. Confirmar com o
+      // time web os valores válidos antes de travar este select em produção.
+      // Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
       FeatureField(
         id: 'tipo',
         label: 'Tipo de uso',
@@ -344,6 +352,11 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['kg', 't', 'L'],
       ),
+      // TODO(banco-real): este campo conflate `diets.type` e `diets.objective`
+      // (duas colunas distintas no banco, ambas sem tabela de domínio no dump).
+      // Confirmar com o time web se devem virar dois selects separados e quais
+      // os valores válidos. Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md,
+      // seção C.
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
@@ -404,6 +417,10 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
       ),
+      // TODO(banco-real): mesmo campo `tipo` de `formulacoes` — conflate
+      // `item_diet_beats.type`/dieta associada, sem tabela de domínio no dump.
+      // Confirmar valores com o time web antes de travar. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
@@ -1589,6 +1606,10 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'nome',
     recordDescriptionFields: ['tipo', 'estacao', 'inicio'],
   ),
+  // TODO(banco-real): quando esta tela ganhar um campo de tipo (natural vs.
+  // IATF vs. outro), checar `breeding_matings.type` — smallint sem tabela de
+  // domínio no dump; hoje esta tela ainda não expõe esse campo. Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
   FeatureDefinition(
     id: 'monta-natural',
     profile: FeatureProfile.operational,
@@ -1816,6 +1837,12 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'descricao',
     recordDescriptionFields: ['tipo', 'equipamento', 'data'],
   ),
+  // TODO(banco-real): quando esta tela ganhar filtro/campo de categoria ou
+  // status, checar `service_orders.category`/`service_orders.status` — sem
+  // tabela de domínio no dump; hoje esta tela ainda não expõe esses campos
+  // (o status mostrado vem de `PrototypeRecordStatus`, genérico do protótipo,
+  // não do banco). Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md,
+  // seção C.
   FeatureDefinition(
     id: 'minhas-os',
     profile: FeatureProfile.operational,

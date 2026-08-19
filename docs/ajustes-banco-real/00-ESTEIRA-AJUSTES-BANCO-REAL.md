@@ -112,9 +112,21 @@ Não é implementação de tela — é documentação explícita dentro do próp
 TODO rastreável) nos `select` que hoje têm opções inventadas, para o time web saber que
 precisa confirmar:
 
-- [ ] `areas.tipo`, `diets.objective`/`tipo`, `service_orders.categoria`/`status`,
-      `breeding_matings.tipo`, `stocks.tipo`/`classificacao` — marcar no código Dart (comentário
-      acima do `options: [...]`) que os valores são placeholder até confirmação do time web.
+- [x] `areas.tipo` (`cadastrar-area`), `diets.objective`/`tipo` (`formulacoes` e `batidas` —
+      duas telas usam o mesmo par de colunas), `sales.payment_method`/`movement_sales.type_payment`
+      (`condPagamento` em `mocks/operacional.dart`) — marcados com `TODO(banco-real)` direto
+      acima do `options: [...]` real, com o campo do banco citado.
+- [x] `service_orders.category`/`status` (`minhas-os`), `breeding_matings.type`
+      (`monta-natural`), `stocks.type`/`stock_movements.classification` (`saldo-estoque`) —
+      **estas três telas ainda não têm o campo correspondente no catálogo** (são consultas
+      sem formulário ou o campo simplesmente não existe hoje). Marcados com comentário
+      preventivo na própria `FeatureDefinition`, para o time web achar o aviso quando o
+      campo for adicionado no futuro — não há `select` fabricado sem necessidade real.
+
+7 marcadores `TODO(banco-real)`/`banco-real` cobrindo os 6 itens do Documento 2, seção C —
+nenhum a mais, nenhum a menos. Gates: `dart analyze --fatal-infos` limpo; `quality:functional`
+(37 testes, incluindo `mapped_feature_wave_d_test`) verde. Nenhuma mudança de contagem de
+campos (comentários não alteram `FeatureField`).
 
 Gate da onda: busca por esse marcador no código retorna exatamente os campos listados no
 Documento 2, seção C — nenhum a mais, nenhum a menos.
@@ -142,5 +154,13 @@ dívida técnica dupla.
 |---|---|---|---|
 | Criação da esteira e reorganização dos documentos | Concluído | `6056e63` | Pasta `docs/ajustes-banco-real/` criada; branch `feature/ajustes-banco-real` aberta |
 | Onda 1 | Concluída | `4ed6dad` | 7 ajustes de campo aplicados; 11 campos novos (todos opcionais); catálogo 168→179 campos; gates verdes |
-| Onda 2 | Concluída | _preencher no commit desta onda_ | Consulta de Produtos criada (8 produtos sintéticos); Central de notificações enriquecida (2 alertas reais do dump); catálogo 53→54 funcionalidades |
-| Onda 3 | Não iniciada | | |
+| Onda 2 | Concluída | `1a2448d` | Consulta de Produtos criada (8 produtos sintéticos); Central de notificações enriquecida (2 alertas reais do dump); catálogo 53→54 funcionalidades |
+| Onda 3 | Concluída | _preencher no commit desta onda_ | 7 marcadores `TODO(banco-real)` cobrindo os 6 dicionários pendentes do Documento 2; gates verdes |
+
+## Leva encerrada
+
+As três ondas planejadas para esta leva estão concluídas. Próximos passos possíveis (fora
+desta leva, avaliar com o usuário antes de iniciar): revisitar Cadastro de Clientes e Linha
+do tempo do animal (backlog da Onda 2), ou abrir a sessão de modelagem conjunta com o time
+web para os três itens de alto esforço (carga/descarga do misturador, nota de cocho,
+critério de apartação).
