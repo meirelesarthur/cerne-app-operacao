@@ -43,44 +43,26 @@ class GroupFeaturesScreen extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.space4),
       children: [
-        AppButton(
-          variant: AppButtonVariant.ghost,
-          leftIcon: const Icon(LucideIcons.arrowLeft, size: AppSpacing.space4),
-          onPressed: () => context.go(centerRoute),
-          child: const Text('Voltar à central'),
-        ),
-        const SizedBox(height: AppSpacing.space3),
-        Row(
-          children: [
-            Container(
-              width: AppSpacing.space12,
-              height: AppSpacing.space12,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: semantic.accentSubtle,
-              ),
-              alignment: Alignment.center,
-              child: Icon(
-                groupIcon(title),
-                size: 22,
-                color: semantic.accentDefault,
-              ),
+        AppScreenHeader(
+          title: title,
+          description:
+              '${features.length} ${features.length == 1 ? 'função' : 'funções'} neste módulo',
+          onBack: () => context.go(centerRoute),
+          backLabel: 'Voltar à central',
+          leading: Container(
+            width: AppSpacing.space12,
+            height: AppSpacing.space12,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: semantic.accentSubtle,
             ),
-            const SizedBox(width: AppSpacing.space3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AppHeading(child: Text(title)),
-                  Text(
-                    '${features.length} ${features.length == 1 ? 'função' : 'funções'} neste módulo',
-                    style: TextStyle(color: semantic.fgMuted),
-                  ),
-                ],
-              ),
+            alignment: Alignment.center,
+            child: Icon(
+              groupIcon(title),
+              size: 22,
+              color: semantic.accentDefault,
             ),
-          ],
+          ),
         ),
         const SizedBox(height: AppSpacing.space4),
         if (features.isEmpty)

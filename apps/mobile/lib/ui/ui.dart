@@ -36,6 +36,7 @@ export 'page_dots.dart';
 export 'progress_bar.dart';
 export 'pressable.dart';
 export 'quick_action.dart';
+export 'screen_header.dart';
 export 'search_select.dart';
 export 'skeleton.dart';
 export 'sparkline_area.dart';

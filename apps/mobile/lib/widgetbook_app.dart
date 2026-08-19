@@ -146,6 +146,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildChipWidgetbookComponent(),
                 buildTagWidgetbookComponent(),
                 buildAvatarWidgetbookComponent(),
+                buildScreenHeaderWidgetbookComponent(),
                 buildHeadingWidgetbookComponent(),
                 buildPageDotsWidgetbookComponent(),
                 buildIllustrationSlotWidgetbookComponent(),

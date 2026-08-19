@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
@@ -39,6 +40,56 @@ void main() {
         expect(feature?.fields, isNotEmpty, reason: id);
         expect(feature?.createAction, isNotEmpty, reason: id);
       }
+    });
+
+    testWidgets('o topo segue o padrão: voltar à esquerda do título', (
+      tester,
+    ) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          const MappedFeatureScreen(
+            featureId: 'cadastrar-area',
+            profile: FeatureProfile.operational,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final back = tester.getRect(find.byIcon(LucideIcons.arrowLeft));
+      final title = tester.getRect(find.text('Áreas'));
+
+      expect(back.right, lessThan(title.left));
+      expect(back.top, lessThan(title.bottom));
+      expect(back.bottom, greaterThan(title.top));
+
+      // O padrão antigo era um botão fantasma rotulado, numa linha acima.
+      expect(find.text('Voltar ao ambiente'), findsNothing);
+    });
+
+    testWidgets('o topo não mostra as chips de perfil e de status', (
+      tester,
+    ) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          const MappedFeatureScreen(
+            featureId: 'cadastrar-area',
+            profile: FeatureProfile.operational,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Operação'), findsNothing);
+      expect(find.text('Funcional no protótipo'), findsNothing);
+      expect(find.text('Áreas'), findsOneWidget);
     });
 
     testWidgets('Áreas percorre lista, validação, sucesso e novo registro', (
