@@ -559,43 +559,61 @@ contrapartida no ERP.
 
 ## Resumo executivo — prioridades de decisão
 
-### Pode trocar mock → dado real com confiança alta (schema + volume batem)
-Financeiro, Dashboard pecuário, Ativos, Análise de uso, Saldo de estoque, 🆕 Produtos,
-Processamentos, logs de auditoria, Áreas (com os 3 campos novos), Lote de animais, Registrar
-animal, Pesagens, Transferência lote/área, Nascimentos, Mortes, Compra de animais, Vendas,
-Nutrições, Desmama, Pastagens, Marcação, Protocolos/estação, Abastecimentos, Manutenção de
-frota, Formulações (com custo), Batida (com previsto×realizado), Sanitário (com controle por
-tempo), Rebanho inicial (com data de entrada), Apontamento agrícola (já reapontado para
-`service_orders`).
+> **Revisão de 19/08/2026**: nova varredura, a pedido do usuário, para separar dois problemas
+> que a primeira passagem tratava com a mesma severidade: "o banco não modela o conceito"
+> (problema real) e "o dump tem poucas linhas nessa tabela" (característica da amostra — o
+> dump é o recorte de **uma fazenda só**; ter 1 confinamento ou 15 ordens de serviço é
+> esperado para essa escala, não uma falha de modelagem). A taxonomia abaixo substitui a
+> anterior. `Apartação` saiu do grupo "gap estrutural" nesta revisão: a tabela `separations`
+> já existe e cobre o essencial — só falta a coluna de critério, mesma severidade de
+> `estacao-monta`/`lotes-reproducao`.
+
+Das 54 funcionalidades, **42 (77,8%) já são cobertas pelo banco real** de algum jeito — o
+resto se divide em 3 genuinamente sem modelo (5,6%) e 9 fora de escopo por design (16,7%,
+hardware simulado + configuração local). Contando só o que deveria ter API (as 45 que não são
+hardware/configuração local), a cobertura sobe para **93,3%** — e a administração está 100%
+coberta; a diferença toda mora em 3 itens do grupo Misturador.
+
+### Pronto, sem ressalva (28) — pode trocar mock → dado real com confiança alta
+Financeiro, Dashboard pecuário, Ativos, Análise de uso, Consultas gerenciais, Áreas
+cadastradas, Saldo de estoque, 🆕 Produtos, Processamentos, logs de auditoria (2), Lote de
+animais, Registrar animal, Rebanho inicial, Pesagens, Transferência lote/área, Nascimentos,
+Mortes, Compra de animais, Nutrições, Sanitário, Desmama, Pastagens, Marcação,
+Protocolos/estação, Abastecimentos, Manutenção de frota, Apontamento agrícola (já reapontado
+para `service_orders`).
 
 ### Resolvido na leva `banco-real` (já não precisa de decisão nova)
 - ~~Transferência animal (hardware): risco de tabela errada~~ — comentário fixado no código.
 - ~~Apontamento agrícola: tabela-fonte ambígua~~ — comentário fixado no código, campos ricos
   de `service_orders` adicionados.
 
-### Precisa de decisão de produto antes de integrar (schema ambíguo ou incompleto)
-- **Carga/Descarga (misturador)**: o dump não modela "carga de misturador" como conceito
-  próprio — é preciso decidir se reaproveita `input_entries`/`stock_writeoffs` genéricos ou
-  se o backend real (fora deste dump) terá tabela dedicada.
-- **Nota de cocho**: vínculo área↔cocho vazio; conceito de "nota" não existe no schema.
-- **Configurações do misturador**: tolerância/alerta são puramente locais — não pertence ao
-  banco.
-- **Apartação**: falta critério e lote-destino explícitos.
+### Cobertas, decisão pequena pendente (8) — não bloqueia o desenho da rota
+- **Áreas, Formulações, Vendas**: enum sem dicionário (`type`, `type`/`objective`,
+  `payment_method`) — já marcados `TODO(banco-real)` no código, ver seção C de
+  [`03-ajustes-ponto-a-ponto.md`](03-ajustes-ponto-a-ponto.md).
+- **Suprimentos**: decidir se compara cotação de fornecedor (`request_quotations`, tem dado)
+  ou preço de mercado (`quotations`, vazia).
 - **Estação de monta / Lotes-reprodução / Material reprodutivo**: faltam campos de método,
   finalidade, raça e fornecedor — hoje "escondidos" em joins não triviais.
+- **Apartação**: falta coluna de critério e distinção clara origem/destino — tabela
+  (`separations`) já existe e cobre o essencial.
 
-### Dicionários de enum pendentes de confirmação (marcados `TODO(banco-real)` no código)
-`areas.type`, `diets.type`/`objective` (usado em Formulações e Batida),
-`sales.payment_method`/`movement_sales.type_payment`, e — preventivamente, para quando o
-campo existir — `service_orders.category`/`status`, `breeding_matings.type`,
-`stocks.type`/`stock_movements.classification`. Ver seção C de
-[`03-ajustes-ponto-a-ponto.md`](03-ajustes-ponto-a-ponto.md) para o detalhe de cada um. **Isso
-vira contrato de API** — resolver antes de codificar os endpoints que os expõem.
+### Cobertas, mas valide com mais dado antes de fechar (6) — não é pendência de modelagem
+Colheita de frutas (1 linha), Batida do misturador (1–3 linhas), Minhas OS (15, mesma tabela
+do Apontamento agrícola), Monta natural (35 monta / 3 touros), Diagnóstico de gestação
+(`ultrasounds` = 0), Lotação de currais (1 confinamento — normal para uma única fazenda). O
+schema já bate; o volume baixo reflete o recorte do dump, não uma lacuna do banco.
 
-### Estrutura pronta, mas dado real insuficiente para demo (populado com poucas linhas)
-Colheita de frutas (1 linha), Batida do misturador (1–3 linhas), Minhas OS (15), Monta
-natural (35 monta / 3 touros), Diagnóstico de gestação (ultrassom = 0), Lotação de currais
-(1 confinamento só), Suprimentos (cotações de mercado = 0).
+### Sem modelo no banco (3) — as únicas que precisam de reunião de modelagem
+- **Carga/Descarga (misturador)**: o dump não modela "carga de misturador vinculada a
+  equipamento" como conceito próprio — reaproveitar `input_entries`/`stock_writeoffs`
+  genéricos não fecha o contrato.
+- **Nota de cocho**: vínculo área↔cocho vazio; conceito de "nota" não existe no schema.
+
+### Fora de escopo por design (9) — não é lacuna de banco
+Todas as `FeatureStatus.hardware` (7: Bluetooth, balança, RFID, scanner) e as 2 sem tabela
+correspondente (Configurações do misturador, Sincronização de dados) — regra de produto do
+protótipo, resolvido independentemente do que o banco tem.
 
 ### Permanece mock/simulado independentemente do dump
 Todas as `FeatureStatus.hardware` (Bluetooth, balança, RFID, scanner) — regra de produto,
@@ -673,7 +691,7 @@ aqui é a lista completa de recursos e as pegadinhas, não o path exato.
 | Nutrições | `POST /nutritions` | `nutritions`, `item_nutritions` | Nenhuma. |
 | Sanitário | `POST /sanitaries` | `sanitaries`, `sanitary_animals`, `item_sanitaries` | Nenhuma — `controle-por-tempo` já adicionado nesta leva. |
 | Desmama | `POST /weanings` | `weanings`, `animals_weanings` | Nenhuma. |
-| Apartação | `POST /separations` | `batches_separations`, `separations` | **Reunião de modelagem necessária** — falta coluna de critério e distinção origem/destino. |
+| Apartação | `POST /separations` | `batches_separations`, `separations` | Coberta, decisão pequena — falta coluna de critério e distinção origem/destino (a tabela já existe). |
 | Localizar animal | — | `traceabilities` (só leitura, se quiser histórico) | Hardware simulado. |
 | Pastagens | `POST /pastures` | `pastures`, `grazings`, `grazing_areas` | Nenhuma. |
 | Estação de monta | `POST /breeding-seasons` | `breeding_seasons` | Falta coluna de método — decidir se cria coluna nova ou infere de `breeding_matings.type`. |
