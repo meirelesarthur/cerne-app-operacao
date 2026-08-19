@@ -174,6 +174,22 @@ const adminFeatures = <FeatureDefinition>[
         'Consulta demonstrativa consolidada por item e local de armazenamento.',
     listMode: true,
   ),
+  // banco-real (onda 2): `products` é a maior tabela do dump gbcerne (543.983
+  // linhas) e não tinha nenhuma tela própria — só aparecia embutida como select
+  // em outras funcionalidades. Ver
+  // docs/ajustes-banco-real/02-oportunidades-banco-real.md, seção 2.6.
+  FeatureDefinition(
+    id: 'consulta-produtos',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Produtos',
+    objective: 'Consultar o catálogo de produtos, categorias e custo médio.',
+    status: FeatureStatus.ready,
+    emptyLabel: 'Nenhum produto encontrado para os filtros atuais.',
+    sourceDetail:
+        'Consulta demonstrativa do catálogo de produtos usado por Estoque, Compras e Vendas.',
+    listMode: true,
+  ),
   FeatureDefinition(
     id: 'processamentos',
     profile: FeatureProfile.administration,

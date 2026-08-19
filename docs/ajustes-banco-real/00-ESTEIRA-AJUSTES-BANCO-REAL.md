@@ -81,17 +81,26 @@ confirmada (isso é onda 3).
 Curadoria deliberada: dos quatro cadastros novos possíveis (Documento 2, Bloco B), **só dois
 entram nesta leva** — os de menor esforço e maior efeito de "app parece vivo":
 
-- [ ] **Consulta de Produtos** (perfil Administração, grupo Consultas e auditoria) — reaproveita
-      o padrão de tela já usado em "Saldo de estoque" (`listMode: true`), sem componente novo.
-      Popular com ~30–50 produtos sintéticos cobrindo as categorias reais mais comuns do dump
-      (insumo, ração, medicamento veterinário, combustível, peça de equipamento).
-- [ ] **Central de notificações** — ícone de sino no shell, lista com badge de não lidas.
-      Popular com notificações sintéticas nos tipos reais mais frequentes do dump (alerta de
-      estoque baixo, pendência de aprovação de compra, vencimento de vacina/protocolo).
+- [x] **Consulta de Produtos** (perfil Administração, grupo Consultas e auditoria) — nova
+      `FeatureDefinition` (`consulta-produtos`), reaproveitando 100% o padrão de "Saldo de
+      estoque" (`listMode: true`, roteamento e menu genéricos por catálogo — nenhum
+      componente novo, nenhuma rota manual). Populada com 8 produtos sintéticos cobrindo
+      4 categorias reais do dump (Nutrição, Sanitário, Combustível, Agrícola/Peça de
+      equipamento) — número reduzido de propósito para não pesar o protótipo.
+- [x] **Central de notificações** — **já existia** no shell (`NotificacoesPage` +
+      `shellStoreProvider`, ícone de sino já implementado); o ajuste real desta onda foi
+      **enriquecer** o mock com 2 tipos de alerta reais do dump (estoque abaixo do mínimo,
+      cotação pendente de aprovação) em vez de construir do zero — corrige a premissa do
+      Documento 2 de que a tela não existia.
 
 Ficam **fora desta leva** (backlog, não implementar agora): Cadastro de Clientes e Linha do
 tempo/evolução do animal — maior esforço relativo, revisitar em leva futura se esta entregar
 valor.
+
+Catálogo passou de 12 para **13 funcionalidades administrativas** (54 no total); ready
+47/47, listMode 33/33. Gates: `dart analyze --fatal-infos` limpo; suíte `quality:functional`
++ `mapped_feature_wave_d_test` + `shell_store_test` + `notificacoes_page_test` verdes
+(43 testes).
 
 Gate da onda: os dois cadastros novos nascem em `apps/mobile/lib/ui/` antes da tela (Lei 1),
 têm caso no Widgetbook, e usam tokens/tipografia gerados — nenhuma cor, espaçamento ou fonte
@@ -132,6 +141,6 @@ dívida técnica dupla.
 | Item | Estado | Commit | Observações |
 |---|---|---|---|
 | Criação da esteira e reorganização dos documentos | Concluído | `6056e63` | Pasta `docs/ajustes-banco-real/` criada; branch `feature/ajustes-banco-real` aberta |
-| Onda 1 | Concluída | _preencher no commit desta onda_ | 7 ajustes de campo aplicados; 11 campos novos (todos opcionais); catálogo 168→179 campos; gates verdes |
-| Onda 2 | Não iniciada | | |
+| Onda 1 | Concluída | `4ed6dad` | 7 ajustes de campo aplicados; 11 campos novos (todos opcionais); catálogo 168→179 campos; gates verdes |
+| Onda 2 | Concluída | _preencher no commit desta onda_ | Consulta de Produtos criada (8 produtos sintéticos); Central de notificações enriquecida (2 alertas reais do dump); catálogo 53→54 funcionalidades |
 | Onda 3 | Não iniciada | | |
