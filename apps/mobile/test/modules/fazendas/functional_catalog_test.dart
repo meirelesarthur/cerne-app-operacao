@@ -56,11 +56,13 @@ void main() {
     test('preserva as invariantes estruturais do catálogo congelado', () {
       final fields = allFeatures.expand((feature) => feature.fields).toList();
 
-      // banco-real (onda 1): +11 campos opcionais adicionados para alinhar o
-      // catálogo ao schema real do dump gbcerne — nenhum novo campo obrigatório.
-      // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
-      expect(fields, hasLength(179));
-      expect(fields.where((field) => field.isRequired), hasLength(156));
+      // banco-real (onda 1): +11 campos opcionais para alinhar o catálogo ao
+      // schema real do dump gbcerne. banco-real (produto-busca): +4 campos em
+      // consulta-produtos (a única criação em campo livre; +3 obrigatórios)
+      // para virar a fonte de busca dos demais campos "produto". Ver
+      // docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
+      expect(fields, hasLength(183));
+      expect(fields.where((field) => field.isRequired), hasLength(159));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(33));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),

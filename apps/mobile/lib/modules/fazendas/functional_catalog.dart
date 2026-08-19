@@ -84,6 +84,22 @@ class FeatureDefinition {
   final AuditExportKind? auditExport;
 }
 
+// banco-real: única fonte de nomes de produto para todo o catálogo — espelha
+// o cadastro real de `consulta-produtos` (fonte: `products`, 543.983 linhas no
+// dump gbcerne). Todo campo "produto"/"matéria-prima" abaixo busca aqui; só a
+// tela Produtos cria um item novo em campo livre. Ver
+// docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+const catalogoProdutos = <String>[
+  'Ração Engorda 18%',
+  'Sal Mineral Proteinado',
+  'Vacina Aftosa',
+  'Vermífugo Injetável',
+  'Diesel S10',
+  'Semente de Braquiária',
+  'Fertilizante NPK 20-05-20',
+  'Filtro de óleo — trator',
+];
+
 const adminFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'painel-financeiro',
@@ -187,12 +203,53 @@ const adminFeatures = <FeatureDefinition>[
     profile: FeatureProfile.administration,
     group: 'Consultas e auditoria',
     title: 'Produtos',
-    objective: 'Consultar o catálogo de produtos, categorias e custo médio.',
+    objective: 'Consultar e cadastrar o catálogo de produtos, categorias e custo médio.',
     status: FeatureStatus.ready,
     emptyLabel: 'Nenhum produto encontrado para os filtros atuais.',
     sourceDetail:
-        'Consulta demonstrativa do catálogo de produtos usado por Estoque, Compras e Vendas.',
+        'Única tela que cria produto em campo livre — Formulações, Batida, Carga e Descarga '
+        'buscam neste catálogo em vez de digitar o nome.',
+    // banco-real: única superfície de criação de produto (campo livre). Todo
+    // outro campo "produto" do catálogo busca em `catalogoProdutos` acima, em
+    // vez de aceitar texto livre — fonte real: `products` (543.983 linhas).
+    fields: [
+      FeatureField(
+        id: 'nome-produto',
+        label: 'Nome do produto',
+        isRequired: true,
+        placeholder: 'Ex.: Ração Engorda 18%',
+      ),
+      FeatureField(
+        id: 'categoria',
+        label: 'Categoria',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: [
+          'Nutrição',
+          'Sanitário',
+          'Combustível',
+          'Agrícola',
+          'Peça de equipamento',
+        ],
+      ),
+      FeatureField(
+        id: 'unidade',
+        label: 'Unidade de medida',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['kg', 't', 'L', 'unidade', 'saca', 'dose', 'frasco'],
+      ),
+      FeatureField(
+        id: 'custo-medio',
+        label: 'Custo médio (R\$)',
+        type: FeatureFieldType.number,
+      ),
+    ],
+    primaryAction: 'Salvar produto',
     listMode: true,
+    createAction: 'Novo produto',
+    recordTitleField: 'nome-produto',
+    recordDescriptionFields: ['categoria', 'unidade'],
   ),
   FeatureDefinition(
     id: 'processamentos',
@@ -336,8 +393,9 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'produto',
         label: 'Produto',
+        type: FeatureFieldType.select,
         isRequired: true,
-        placeholder: 'Selecione ou busque o produto',
+        options: catalogoProdutos,
       ),
       FeatureField(
         id: 'quantidade',
@@ -367,7 +425,9 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'materia-prima',
         label: 'Matéria-prima',
+        type: FeatureFieldType.select,
         isRequired: true,
+        options: catalogoProdutos,
       ),
       FeatureField(
         id: 'porcentagem',
@@ -435,7 +495,13 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['Armazém A', 'Depósito B', 'Farmácia'],
       ),
-      FeatureField(id: 'produto', label: 'Produto', isRequired: true),
+      FeatureField(
+        id: 'produto',
+        label: 'Produto',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoProdutos,
+      ),
       FeatureField(
         id: 'quantidade',
         label: 'Quantidade prevista',
@@ -499,7 +565,9 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'formulacao',
         label: 'Formulação / produto',
+        type: FeatureFieldType.select,
         isRequired: true,
+        options: catalogoProdutos,
       ),
       FeatureField(id: 'origem', label: 'Armazém de origem', isRequired: true),
       FeatureField(
@@ -544,7 +612,13 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
       ),
-      FeatureField(id: 'produto', label: 'Produto carregado', isRequired: true),
+      FeatureField(
+        id: 'produto',
+        label: 'Produto carregado',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoProdutos,
+      ),
       FeatureField(
         id: 'destino',
         label: 'Área / cocho de destino',

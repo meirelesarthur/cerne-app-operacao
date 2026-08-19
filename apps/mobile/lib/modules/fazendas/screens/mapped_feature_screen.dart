@@ -197,7 +197,11 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   records: ref
                       .watch(prototypeRecordsProvider)
                       .recordsFor(dataSourceId),
-                  canCreate: isOperational && feature.fields.isNotEmpty,
+                  // banco-real: administração pode criar quando a própria tela
+                  // declara campos (ex.: Produtos) — deixou de ser exclusivo do
+                  // perfil operacional. Ver
+                  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+                  canCreate: feature.fields.isNotEmpty,
                   onCreate: _startForm,
                 )
               else
