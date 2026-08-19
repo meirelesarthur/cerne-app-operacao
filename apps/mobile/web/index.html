@@ -18,6 +18,7 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A new Flutter project.">
 
   <!-- iOS meta tags & icons -->
@@ -31,14 +32,72 @@
 
   <title>cerne_app</title>
   <link rel="manifest" href="manifest.json">
+
+  <!--
+    Moldura de celular (só em telas largas/desktop): o app é feito para
+    mobile, então acima de ~820px de largura ele passa a rodar dentro de uma
+    "moldura" de telefone centralizada em vez de esticar pela tela inteira.
+    Em telas estreitas (o uso real em campo) nada muda — o app continua
+    ocupando 100% da viewport como sempre.
+
+    Isso é só CSS + host element do bootstrap do Flutter Web, não faz parte
+    do app/tokens em si — por isso os valores aqui são fixos, não vêm de
+    `design/tokens.ts` (aquele pipeline gera só Dart, não CSS solto).
+  -->
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #f5f5f5;
+    }
+
+    #phone-frame {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100%;
+    }
+
+    #flutter-target {
+      width: 100%;
+      height: 100%;
+    }
+
+    @media (min-width: 820px) {
+      #phone-frame {
+        background: #e2e2e2;
+        padding: 32px 0;
+        box-sizing: border-box;
+      }
+
+      #flutter-target {
+        position: relative;
+        width: 430px;
+        height: 932px;
+        max-height: calc(100vh - 64px);
+        border-radius: 44px;
+        overflow: hidden;
+        background: #f5f5f5;
+        box-shadow:
+          0 0 0 10px #1c1c1e,
+          0 0 0 13px #3a3a3c,
+          0 30px 60px rgba(0, 0, 0, 0.35);
+      }
+    }
+  </style>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
+  <div id="phone-frame">
+    <div id="flutter-target"></div>
+  </div>
 
-    For more details:
+  <!--
+    `flutter_bootstrap.js` é customizado (ver `web/flutter_bootstrap.js` neste
+    projeto) só para poder passar `hostElement`: sem isso, o Flutter Web
+    sempre assume a viewport inteira via `position: fixed`, ignorando
+    qualquer container — a moldura de celular acima não teria efeito nenhum.
+
+    Para mais detalhes:
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
   <script src="flutter_bootstrap.js" async></script>
