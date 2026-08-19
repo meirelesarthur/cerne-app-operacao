@@ -16,6 +16,7 @@ export 'card.dart';
 export 'chart_card.dart';
 export 'checkbox.dart';
 export 'chip.dart';
+export 'code_preview.dart';
 export 'dashboard_card.dart';
 export 'donut_chart.dart';
 export 'empty_state.dart';

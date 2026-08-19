@@ -7,6 +7,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'code_preview.dart';
 import 'spinner.dart';
 
 /// Espelha `Button.tsx` do protótipo React (§1.2 do PLANO-MIGRACAO-FLUTTER.md).
@@ -204,87 +205,126 @@ WidgetbookComponent buildButtonWidgetbookComponent() {
     useCases: [
       WidgetbookUseCase(
         name: 'Variantes',
-        builder: (context) => Center(
-          child: Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: [
-              AppButton(onPressed: () {}, child: const Text('Primary')),
-              AppButton(
-                variant: AppButtonVariant.secondary,
-                onPressed: () {},
-                child: const Text('Secondary'),
-              ),
-              AppButton(
-                variant: AppButtonVariant.ghost,
-                onPressed: () {},
-                child: const Text('Ghost'),
-              ),
-              AppButton(
-                variant: AppButtonVariant.danger,
-                onPressed: () {},
-                child: const Text('Danger'),
-              ),
-              AppButton(
-                variant: AppButtonVariant.link,
-                onPressed: () {},
-                child: const Text('Link'),
-              ),
-            ],
+        builder: (context) => Padding(
+          padding: const EdgeInsets.all(AppSpacing.space4),
+          child: AppCodePreview(
+            code: '''
+AppButton(onPressed: () {}, child: Text('Primary'))
+
+AppButton(
+  variant: AppButtonVariant.secondary,
+  onPressed: () {},
+  child: Text('Secondary'),
+)
+
+AppButton(variant: AppButtonVariant.ghost, ...)
+AppButton(variant: AppButtonVariant.danger, ...)
+AppButton(variant: AppButtonVariant.link, ...)''',
+            child: Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              children: [
+                AppButton(onPressed: () {}, child: const Text('Primary')),
+                AppButton(
+                  variant: AppButtonVariant.secondary,
+                  onPressed: () {},
+                  child: const Text('Secondary'),
+                ),
+                AppButton(
+                  variant: AppButtonVariant.ghost,
+                  onPressed: () {},
+                  child: const Text('Ghost'),
+                ),
+                AppButton(
+                  variant: AppButtonVariant.danger,
+                  onPressed: () {},
+                  child: const Text('Danger'),
+                ),
+                AppButton(
+                  variant: AppButtonVariant.link,
+                  onPressed: () {},
+                  child: const Text('Link'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
       WidgetbookUseCase(
         name: 'Tamanhos',
-        builder: (context) => Center(
-          child: Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              AppButton(
-                size: AppButtonSize.sm,
-                onPressed: () {},
-                child: const Text('Small'),
-              ),
-              AppButton(onPressed: () {}, child: const Text('Medium')),
-              AppButton(
-                size: AppButtonSize.lg,
-                onPressed: () {},
-                child: const Text('Large'),
-              ),
-            ],
+        builder: (context) => Padding(
+          padding: const EdgeInsets.all(AppSpacing.space4),
+          child: AppCodePreview(
+            code:
+                "AppButton(size: AppButtonSize.sm, onPressed: () {}, child: Text('Small'))\n"
+                "AppButton(onPressed: () {}, child: Text('Medium')) // padrão: md\n"
+                "AppButton(size: AppButtonSize.lg, onPressed: () {}, child: Text('Large'))",
+            child: Wrap(
+              spacing: 12,
+              runSpacing: 12,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                AppButton(
+                  size: AppButtonSize.sm,
+                  onPressed: () {},
+                  child: const Text('Small'),
+                ),
+                AppButton(onPressed: () {}, child: const Text('Medium')),
+                AppButton(
+                  size: AppButtonSize.lg,
+                  onPressed: () {},
+                  child: const Text('Large'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
       WidgetbookUseCase(
         name: 'Estados',
-        builder: (context) => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children: [
-                  const AppButton(child: Text('Disabled')),
-                  AppButton(
-                    loading: true,
-                    onPressed: () {},
-                    child: const Text('Loading'),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.space3),
-              SizedBox(
-                width: 280,
-                child: AppButton(
-                  fullWidth: true,
-                  onPressed: () {},
-                  child: const Text('Full width'),
+        builder: (context) => Padding(
+          padding: const EdgeInsets.all(AppSpacing.space4),
+          child: AppCodePreview(
+            code: '''
+const AppButton(child: Text('Disabled')) // sem onPressed = desabilitado
+
+AppButton(
+  loading: true,
+  onPressed: () {},
+  child: Text('Loading'),
+)
+
+AppButton(
+  fullWidth: true,
+  onPressed: () {},
+  child: Text('Full width'),
+)''',
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: [
+                    const AppButton(child: Text('Disabled')),
+                    AppButton(
+                      loading: true,
+                      onPressed: () {},
+                      child: const Text('Loading'),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.space3),
+                SizedBox(
+                  width: 280,
+                  child: AppButton(
+                    fullWidth: true,
+                    onPressed: () {},
+                    child: const Text('Full width'),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
