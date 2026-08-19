@@ -145,7 +145,13 @@ class ShellLayout extends ConsumerWidget {
                                 Positioned(
                                   left: 0,
                                   right: 0,
-                                  bottom: AppComponentMetrics.tabbarInset,
+                                  // soma o respiro do token à safe-area inferior real do
+                                  // aparelho (home indicator/gesture bar) — sem isso a
+                                  // cápsula flutuante fica colada/sobreposta pela área do
+                                  // sistema em telas com esse recurso.
+                                  bottom:
+                                      AppComponentMetrics.tabbarInset +
+                                      MediaQuery.of(context).padding.bottom,
                                   child: Center(
                                     child: AppBottomTabBar(
                                       activeId: module.id,
