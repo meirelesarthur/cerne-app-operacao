@@ -31,11 +31,19 @@ class ShellLayout extends ConsumerWidget {
     required this.moduleId,
     required this.activeTab,
     required this.child,
+    this.hideChrome = false,
   });
 
   final String moduleId;
   final String activeTab;
   final Widget child;
+
+  /// Quando `true` (rota mais funda que `/modulo/aba`, ex.: uma
+  /// funcionalidade, grupo ou dashboard específico), o header global e as
+  /// abas de contexto somem — quem mostra navegação/título ali é a própria
+  /// tela (botão "Voltar", `SubPageHeader`, etc.), e o espaço liberado vai
+  /// para o conteúdo da função.
+  final bool hideChrome;
 
   void _go(BuildContext context, WidgetRef ref, String route) {
     ref.read(shellStoreProvider.notifier).closeMenu();
@@ -103,25 +111,40 @@ class ShellLayout extends ConsumerWidget {
                       bottom: false,
                       child: Column(
                         children: [
-                          AppShellHeader(
-                            onOpenProfile: () => _go(context, ref, '/perfil'),
-                            onOpenNotifications: () =>
-                                _go(context, ref, '/notificacoes'),
-                            child: AppCreditoPill(
-                              onTap: () => _go(context, ref, '/credito'),
-                            ),
-                          ),
-                          AppContextTabs(
-                            module: module,
-                            profile: profile,
-                            activePath: activeTab,
-                            onTabSelected: (path) => _go(
-                              context,
-                              ref,
-                              path.isEmpty
-                                  ? '/${module.id}'
-                                  : '/${module.id}/$path',
-                            ),
+                          AnimatedSize(
+                            duration: reduceMotion
+                                ? Duration.zero
+                                : AppMotion.base,
+                            curve: AppMotion.easingOut,
+                            alignment: Alignment.topCenter,
+                            child: hideChrome
+                                ? const SizedBox(width: double.infinity)
+                                : Column(
+                                    children: [
+                                      AppShellHeader(
+                                        onOpenProfile: () =>
+                                            _go(context, ref, '/perfil'),
+                                        onOpenNotifications: () =>
+                                            _go(context, ref, '/notificacoes'),
+                                        child: AppCreditoPill(
+                                          onTap: () =>
+                                              _go(context, ref, '/credito'),
+                                        ),
+                                      ),
+                                      AppContextTabs(
+                                        module: module,
+                                        profile: profile,
+                                        activePath: activeTab,
+                                        onTabSelected: (path) => _go(
+                                          context,
+                                          ref,
+                                          path.isEmpty
+                                              ? '/${module.id}'
+                                              : '/${module.id}/$path',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                           ),
                           if (!state.isOnline)
                             const AppBanner(
