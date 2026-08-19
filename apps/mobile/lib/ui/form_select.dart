@@ -51,49 +51,56 @@ class AppFormSelect extends StatelessWidget {
       color: enabled ? semantic.fgDefault : semantic.fgMuted,
     );
 
-    return DropdownButtonFormField<String>(
-      // `DropdownButtonFormField` não é totalmente "controlado" como `TextFormField`
-      // (ignora mudanças externas de `initialValue` após o primeiro build); a
-      // `ValueKey` força reconstrução completa quando `value` muda de fora,
-      // mantendo o padrão controlado (`value`/`onChanged`) do restante do catálogo.
-      key: ValueKey(value),
-      initialValue: value,
-      isExpanded: true,
-      icon: Icon(LucideIcons.chevronDown, size: 16, color: semantic.fgSubtle),
-      dropdownColor: semantic.bgSurface,
-      style: textStyle,
-      onChanged: enabled ? onChanged : null,
-      decoration: InputDecoration(
-        isDense: true,
-        filled: true,
-        fillColor: semantic.bgSubtle,
-        constraints: const BoxConstraints(minHeight: AppSpacing.space14),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.space5,
+    // Mesma correção do `AppTextInput`: `constraints.minHeight` é só um piso
+    // e `contentPadding` só-horizontal zera o padding vertical, então o
+    // decorator encolhia pelo conteúdo em vez de respeitar os 48px. Trava a
+    // altura de fora com `SizedBox` + `isCollapsed` (sem o cálculo de
+    // padding automático do decorator por cima).
+    return SizedBox(
+      height: AppSpacing.space12,
+      child: DropdownButtonFormField<String>(
+        // `DropdownButtonFormField` não é totalmente "controlado" como `TextFormField`
+        // (ignora mudanças externas de `initialValue` após o primeiro build); a
+        // `ValueKey` força reconstrução completa quando `value` muda de fora,
+        // mantendo o padrão controlado (`value`/`onChanged`) do restante do catálogo.
+        key: ValueKey(value),
+        initialValue: value,
+        isExpanded: true,
+        icon: Icon(LucideIcons.chevronDown, size: 16, color: semantic.fgSubtle),
+        dropdownColor: semantic.bgSurface,
+        style: textStyle,
+        onChanged: enabled ? onChanged : null,
+        decoration: InputDecoration(
+          isCollapsed: true,
+          filled: true,
+          fillColor: semantic.bgSubtle,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space5,
+          ),
+          border: border(AppColors.transparent),
+          enabledBorder: border(AppColors.transparent),
+          disabledBorder: border(AppColors.transparent),
+          focusedBorder: border(semantic.accentDefault),
         ),
-        border: border(AppColors.transparent),
-        enabledBorder: border(AppColors.transparent),
-        disabledBorder: border(AppColors.transparent),
-        focusedBorder: border(semantic.accentDefault),
-      ),
-      items: [
-        if (placeholder != null)
-          DropdownMenuItem<String>(
-            child: Text(
-              placeholder!,
-              style: TextStyle(
-                fontFamily: AppTypography.fontFamily,
-                color: semantic.fgSubtle,
+        items: [
+          if (placeholder != null)
+            DropdownMenuItem<String>(
+              child: Text(
+                placeholder!,
+                style: TextStyle(
+                  fontFamily: AppTypography.fontFamily,
+                  color: semantic.fgSubtle,
+                ),
               ),
             ),
+          ...options.map(
+            (o) => DropdownMenuItem<String>(
+              value: o.value,
+              child: Text(o.label, style: textStyle),
+            ),
           ),
-        ...options.map(
-          (o) => DropdownMenuItem<String>(
-            value: o.value,
-            child: Text(o.label, style: textStyle),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

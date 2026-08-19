@@ -66,44 +66,50 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextField(
-          controller: _queryController,
-          onChanged: (v) => setState(() => _query = v),
-          style: TextStyle(
-            fontFamily: AppTypography.fontFamily,
-            fontSize: AppTypography.md,
-            color: semantic.fgDefault,
-          ),
-          decoration: InputDecoration(
-            isDense: true,
-            filled: true,
-            fillColor: semantic.bgSubtle,
-            hintText: widget.placeholder,
-            hintStyle: TextStyle(
+        // Mesma correção do `AppTextInput`: `constraints.minHeight` sozinho
+        // não fixa a altura real (o decorator calcula pelo conteúdo) — trava
+        // de fora com `SizedBox` (constraints tight) + `isCollapsed`.
+        SizedBox(
+          height: AppSpacing.space12,
+          child: TextField(
+            controller: _queryController,
+            onChanged: (v) => setState(() => _query = v),
+            textAlignVertical: TextAlignVertical.center,
+            style: TextStyle(
               fontFamily: AppTypography.fontFamily,
               fontSize: AppTypography.md,
-              color: semantic.fgSubtle,
+              color: semantic.fgDefault,
             ),
-            prefixIcon: Icon(
-              LucideIcons.search,
-              size: 16,
-              color: semantic.fgSubtle,
-            ),
-            constraints: const BoxConstraints(minHeight: AppSpacing.space14),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.space4,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.full),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.full),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.full),
-              borderSide: BorderSide(color: semantic.accentDefault, width: 2),
+            decoration: InputDecoration(
+              isCollapsed: true,
+              filled: true,
+              fillColor: semantic.bgSubtle,
+              hintText: widget.placeholder,
+              hintStyle: TextStyle(
+                fontFamily: AppTypography.fontFamily,
+                fontSize: AppTypography.md,
+                color: semantic.fgSubtle,
+              ),
+              prefixIcon: Icon(
+                LucideIcons.search,
+                size: 16,
+                color: semantic.fgSubtle,
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.space4,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadius.full),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadius.full),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(AppRadius.full),
+                borderSide: BorderSide(color: semantic.accentDefault, width: 2),
+              ),
             ),
           ),
         ),

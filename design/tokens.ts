@@ -148,10 +148,18 @@ export interface ThemePalette {
 
 export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
   light: {
+    // Nova UI (referência Força Agro): canvas neutro (era um sage-cream mais
+    // quente) e brand alinhado ao primary/pure exato da referência (#047857
+    // = brand[700], não brand[600]) — usado em bordas de foco, links e ícones
+    // de destaque em todo o app.
     fg: { default: '#161b17', muted: '#66716a', subtle: '#99a39c', inverse: primitive.neutral[0] },
-    bg: { canvas: '#f0f1ea', surface: primitive.neutral[0], subtle: '#f5f6f0', raised: primitive.neutral[0], kpi: '#f8fffe' },
+    // `subtle` (fundo de inputs/pills) igual ao canvas: input sobre canvas
+    // continuava com contraste (canvas != surface), mas sobre um AppCard
+    // branco (bg.surface) o preenchimento ficava quase idêntico ao card e o
+    // campo lia como "só borda, sem fundo" — daí usar o mesmo neutral[100].
+    bg: { canvas: primitive.neutral[100], surface: primitive.neutral[0], subtle: primitive.neutral[100], raised: primitive.neutral[0], kpi: '#f8fffe' },
     border: { default: '#e8e9e1', strong: '#d6d8ce', subtle: '#f0f1ea', tint: primitive.brand[100] },
-    accent: { default: primitive.brand[600], hover: primitive.brand[700], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
+    accent: { default: primitive.brand[700], hover: primitive.brand[800], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
     ink: {
       bg: '#131712',
       fg: '#f2f5ee',

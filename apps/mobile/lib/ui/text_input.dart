@@ -60,47 +60,59 @@ class AppTextInput extends StatelessWidget {
           borderSide: BorderSide(color: color, width: width),
         );
 
-    return TextFormField(
-      controller: controller,
-      initialValue: initialValue,
-      onChanged: onChanged,
-      onFieldSubmitted: onSubmitted,
-      enabled: enabled,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      focusNode: focusNode,
-      autofocus: autofocus,
-      cursorColor: semantic.accentDefault,
-      style: TextStyle(
-        fontFamily: AppTypography.fontFamily,
-        fontSize: AppTypography.md,
-        color: enabled ? semantic.fgDefault : semantic.fgMuted,
-      ),
-      decoration: InputDecoration(
-        isDense: true,
-        filled: true,
-        fillColor: semantic.bgSubtle,
-        hintText: placeholder,
-        hintStyle: TextStyle(
+    // `constraints.minHeight` sozinho não garante 48px reais: é só um piso, e
+    // o `InputDecorator` calcula a altura pelo conteúdo (texto + padding
+    // vertical) — com `contentPadding` só horizontal, o padding vertical cai
+    // pra 0 e o campo "encolhe" visualmente por dentro da pílula. A forma
+    // robusta é travar a altura de fora (`SizedBox`, que impõe constraints
+    // tight — o filho É forçado a exatamente 48px) e usar `isCollapsed` pra
+    // desligar o cálculo de padding automático do decorator por cima disso.
+    // (Nada de `expands`/`maxLines: null` aqui: incompatível com
+    // `obscureText` — o `SizedBox` sozinho já basta, testado empiricamente.)
+    return SizedBox(
+      height: AppSpacing.space12,
+      child: TextFormField(
+        controller: controller,
+        initialValue: initialValue,
+        onChanged: onChanged,
+        onFieldSubmitted: onSubmitted,
+        enabled: enabled,
+        obscureText: obscureText,
+        keyboardType: keyboardType,
+        textInputAction: textInputAction,
+        focusNode: focusNode,
+        autofocus: autofocus,
+        textAlignVertical: TextAlignVertical.center,
+        cursorColor: semantic.accentDefault,
+        style: TextStyle(
           fontFamily: AppTypography.fontFamily,
           fontSize: AppTypography.md,
-          color: semantic.fgSubtle,
+          color: enabled ? semantic.fgDefault : semantic.fgMuted,
         ),
-        constraints: const BoxConstraints(minHeight: AppSpacing.space14),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.space5,
-        ),
-        prefixIcon: prefixIcon,
-        suffixIcon: suffixIcon,
-        border: border(AppColors.transparent),
-        enabledBorder: border(
-          invalid ? AppColors.red500 : AppColors.transparent,
-        ),
-        disabledBorder: border(AppColors.transparent),
-        focusedBorder: border(
-          invalid ? AppColors.red500 : semantic.accentDefault,
-          width: 2,
+        decoration: InputDecoration(
+          isCollapsed: true,
+          filled: true,
+          fillColor: semantic.bgSubtle,
+          hintText: placeholder,
+          hintStyle: TextStyle(
+            fontFamily: AppTypography.fontFamily,
+            fontSize: AppTypography.md,
+            color: semantic.fgSubtle,
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.space5,
+          ),
+          prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          border: border(AppColors.transparent),
+          enabledBorder: border(
+            invalid ? AppColors.red500 : AppColors.transparent,
+          ),
+          disabledBorder: border(AppColors.transparent),
+          focusedBorder: border(
+            invalid ? AppColors.red500 : semantic.accentDefault,
+            width: 2,
+          ),
         ),
       ),
     );
