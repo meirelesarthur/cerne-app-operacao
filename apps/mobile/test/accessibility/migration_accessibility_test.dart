@@ -201,7 +201,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Central de gestão'), findsOneWidget);
-      expect(find.text('12 funcionalidades neste ambiente'), findsOneWidget);
+      expect(find.text('13 funcionalidades neste ambiente'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });
