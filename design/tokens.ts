@@ -160,8 +160,11 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       bubble: 'rgba(255,255,255,0.08)',
       line: 'rgba(255,255,255,0.09)',
     },
-    cta: { bg: primitive.brand[400], hover: primitive.brand[500], fg: '#04150b' },
-    nav: { bg: 'rgba(240,241,234,0.88)', fg: '#67716a', active: primitive.brand[400], border: 'rgba(22,27,23,0.08)' },
+    // Nova UI (referência Força Agro): CTA vira verde sólido + texto branco
+    // (era verde-menta + texto quase-preto); nav deixa de depender de blur/
+    // translucidez e vira cápsula opaca, como a referência.
+    cta: { bg: primitive.brand[700], hover: primitive.brand[800], fg: primitive.neutral[0] },
+    nav: { bg: primitive.neutral[0], fg: '#67716a', active: primitive.brand[700], border: '#e8e9e1' },
     shadow: {
       card: '0 1px 2px rgba(16,21,16,0.03), 0 8px 24px rgba(16,21,16,0.05)',
       cardHover: '0 10px 30px rgba(16,21,16,0.10)',
@@ -181,8 +184,10 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       bubble: 'rgba(255,255,255,0.06)',
       line: 'rgba(255,255,255,0.08)',
     },
-    cta: { bg: primitive.brand[400], hover: primitive.brand[500], fg: '#051008' },
-    nav: { bg: 'rgba(8,26,18,0.88)', fg: '#8fb3a2', active: primitive.brand[400], border: 'rgba(255,255,255,0.10)' },
+    // gbMode mantém a identidade escura, mas segue a mesma direção: CTA/ativo
+    // do dock em verde sólido de marca + texto branco, nav em superfície opaca.
+    cta: { bg: '#10b981', hover: '#34d399', fg: primitive.neutral[0] },
+    nav: { bg: '#0e2a1d', fg: '#8fb3a2', active: '#10b981', border: 'rgba(255,255,255,0.10)' },
     shadow: {
       card: '0 1px 3px rgba(0,0,0,0.4)',
       cardHover: '0 6px 16px rgba(0,0,0,0.5)',
@@ -242,7 +247,7 @@ export const size = {
   control: '44px',
   controlSm: '36px',
   controlLg: '52px',
-  btn: { sm: '44px', md: '44px', lg: '52px' },
+  btn: { sm: '44px', md: '44px', lg: '56px' }, // lg alinhado ao botão de CTA da referência (space14)
   iconBtn: { sm: '44px', md: '44px', lg: '48px' },
   toggle: { track: '40px', thumb: '18px' },
   tableRow: '42px',

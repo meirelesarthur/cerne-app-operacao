@@ -108,13 +108,13 @@ class AppColorsLight {
   static const Color inkSubtle = Color(0x66F2F5EE);
   static const Color inkBubble = Color(0x14FFFFFF);
   static const Color inkLine = Color(0x17FFFFFF);
-  static const Color ctaBg = Color(0xFF4ADE80);
-  static const Color ctaHover = Color(0xFF22C55E);
-  static const Color ctaFg = Color(0xFF04150B);
-  static const Color navBg = Color(0xE0F0F1EA);
+  static const Color ctaBg = Color(0xFF047857);
+  static const Color ctaHover = Color(0xFF065F46);
+  static const Color ctaFg = Color(0xFFFFFFFF);
+  static const Color navBg = Color(0xFFFFFFFF);
   static const Color navFg = Color(0xFF67716A);
-  static const Color navActive = Color(0xFF4ADE80);
-  static const Color navBorder = Color(0x14161B17);
+  static const Color navActive = Color(0xFF047857);
+  static const Color navBorder = Color(0xFFE8E9E1);
 }
 
 class AppColorsGbMode {
@@ -143,12 +143,12 @@ class AppColorsGbMode {
   static const Color inkSubtle = Color(0x66E9F4ED);
   static const Color inkBubble = Color(0x0FFFFFFF);
   static const Color inkLine = Color(0x14FFFFFF);
-  static const Color ctaBg = Color(0xFF4ADE80);
-  static const Color ctaHover = Color(0xFF22C55E);
-  static const Color ctaFg = Color(0xFF051008);
-  static const Color navBg = Color(0xE0081A12);
+  static const Color ctaBg = Color(0xFF10B981);
+  static const Color ctaHover = Color(0xFF34D399);
+  static const Color ctaFg = Color(0xFFFFFFFF);
+  static const Color navBg = Color(0xFF0E2A1D);
   static const Color navFg = Color(0xFF8FB3A2);
-  static const Color navActive = Color(0xFF4ADE80);
+  static const Color navActive = Color(0xFF10B981);
   static const Color navBorder = Color(0x1AFFFFFF);
 }
 
