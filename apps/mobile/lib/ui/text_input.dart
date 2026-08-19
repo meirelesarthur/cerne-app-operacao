@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
-import '../design/generated/app_colors.dart';
-import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'field_capsule.dart';
 
 /// Espelha `TextInput.tsx` — campo-cápsula (Nova UI): pílula cheia (`rounded-full`),
 /// fundo sutil, sem borda dura. Encapsula `TextFormField` para cumprir a Lei 1
 /// (telas nunca usam `TextField`/`TextFormField` cru).
-class AppTextInput extends StatelessWidget {
+///
+/// A cápsula (altura de 48px, fundo, raio e anel de foco) vem de
+/// `AppFieldCapsule`; aqui só mora o editor de texto.
+class AppTextInput extends StatefulWidget {
   const AppTextInput({
     super.key,
     this.controller,
@@ -50,68 +52,86 @@ class AppTextInput extends StatelessWidget {
   final Widget? suffixIcon;
 
   @override
+  State<AppTextInput> createState() => _AppTextInputState();
+}
+
+class _AppTextInputState extends State<AppTextInput> {
+  /// O anel de foco agora é pintado pela cápsula (não mais pelo
+  /// `focusedBorder` do decorator), então o campo precisa saber se está focado.
+  FocusNode? _internalFocusNode;
+  bool _focused = false;
+
+  FocusNode get _focusNode =>
+      widget.focusNode ?? (_internalFocusNode ??= FocusNode());
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_handleFocusChange);
+  }
+
+  @override
+  void didUpdateWidget(AppTextInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.focusNode != widget.focusNode) {
+      oldWidget.focusNode?.removeListener(_handleFocusChange);
+      _internalFocusNode?.removeListener(_handleFocusChange);
+      _focusNode.addListener(_handleFocusChange);
+      _handleFocusChange();
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.focusNode?.removeListener(_handleFocusChange);
+    _internalFocusNode?.removeListener(_handleFocusChange);
+    _internalFocusNode?.dispose();
+    super.dispose();
+  }
+
+  void _handleFocusChange() {
+    if (_focused == _focusNode.hasFocus) return;
+    setState(() => _focused = _focusNode.hasFocus);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final radius = BorderRadius.circular(AppRadius.full);
 
-    OutlineInputBorder border(Color color, {double width = 1}) =>
-        OutlineInputBorder(
-          borderRadius: radius,
-          borderSide: BorderSide(color: color, width: width),
-        );
-
-    // `constraints.minHeight` sozinho não garante 48px reais: é só um piso, e
-    // o `InputDecorator` calcula a altura pelo conteúdo (texto + padding
-    // vertical) — com `contentPadding` só horizontal, o padding vertical cai
-    // pra 0 e o campo "encolhe" visualmente por dentro da pílula. A forma
-    // robusta é travar a altura de fora (`SizedBox`, que impõe constraints
-    // tight — o filho É forçado a exatamente 48px) e usar `isCollapsed` pra
-    // desligar o cálculo de padding automático do decorator por cima disso.
-    // (Nada de `expands`/`maxLines: null` aqui: incompatível com
-    // `obscureText` — o `SizedBox` sozinho já basta, testado empiricamente.)
-    return SizedBox(
-      height: AppSpacing.space12,
+    return AppFieldCapsule(
+      focused: _focused,
+      invalid: widget.invalid,
+      leading: widget.prefixIcon,
+      trailing: widget.suffixIcon,
       child: TextFormField(
-        controller: controller,
-        initialValue: initialValue,
-        onChanged: onChanged,
-        onFieldSubmitted: onSubmitted,
-        enabled: enabled,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        textInputAction: textInputAction,
-        focusNode: focusNode,
-        autofocus: autofocus,
-        textAlignVertical: TextAlignVertical.center,
+        controller: widget.controller,
+        initialValue: widget.initialValue,
+        onChanged: widget.onChanged,
+        onFieldSubmitted: widget.onSubmitted,
+        enabled: widget.enabled,
+        obscureText: widget.obscureText,
+        keyboardType: widget.keyboardType,
+        textInputAction: widget.textInputAction,
+        focusNode: _focusNode,
+        autofocus: widget.autofocus,
         cursorColor: semantic.accentDefault,
         style: TextStyle(
           fontFamily: AppTypography.fontFamily,
           fontSize: AppTypography.md,
-          color: enabled ? semantic.fgDefault : semantic.fgMuted,
+          color: widget.enabled ? semantic.fgDefault : semantic.fgMuted,
         ),
         decoration: InputDecoration(
+          // Decorator sem nenhuma decoração: fundo, borda e altura são da
+          // cápsula. Aqui ele é só o editor de texto.
           isCollapsed: true,
-          filled: true,
-          fillColor: semantic.bgSubtle,
-          hintText: placeholder,
+          filled: false,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
+          hintText: widget.placeholder,
           hintStyle: TextStyle(
             fontFamily: AppTypography.fontFamily,
             fontSize: AppTypography.md,
             color: semantic.fgSubtle,
-          ),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space5,
-          ),
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-          border: border(AppColors.transparent),
-          enabledBorder: border(
-            invalid ? AppColors.red500 : AppColors.transparent,
-          ),
-          disabledBorder: border(AppColors.transparent),
-          focusedBorder: border(
-            invalid ? AppColors.red500 : semantic.accentDefault,
-            width: 2,
           ),
         ),
       ),

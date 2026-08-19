@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
-import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
-import 'package:cerne_app/design/generated/app_colors.dart';
+import 'field_capsule.dart';
 
 class AppFormSelectOption {
   const AppFormSelectOption({required this.value, required this.label});
@@ -38,12 +37,6 @@ class AppFormSelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final radius = BorderRadius.circular(AppRadius.full);
-
-    OutlineInputBorder border(Color color) => OutlineInputBorder(
-      borderRadius: radius,
-      borderSide: BorderSide(color: color),
-    );
 
     final textStyle = TextStyle(
       fontFamily: AppTypography.fontFamily,
@@ -51,13 +44,10 @@ class AppFormSelect extends StatelessWidget {
       color: enabled ? semantic.fgDefault : semantic.fgMuted,
     );
 
-    // Mesma correção do `AppTextInput`: `constraints.minHeight` é só um piso
-    // e `contentPadding` só-horizontal zera o padding vertical, então o
-    // decorator encolhia pelo conteúdo em vez de respeitar os 48px. Trava a
-    // altura de fora com `SizedBox` + `isCollapsed` (sem o cálculo de
-    // padding automático do decorator por cima).
-    return SizedBox(
-      height: AppSpacing.space12,
+    // Cápsula (altura de 48px, fundo, raio) vem de `AppFieldCapsule` — o
+    // `InputDecorator` dimensiona `fillColor`/`border` pelo conteúdo, não pelas
+    // constraints, então pintar por ele deixava a pílula com a altura do texto.
+    return AppFieldCapsule(
       child: DropdownButtonFormField<String>(
         // `DropdownButtonFormField` não é totalmente "controlado" como `TextFormField`
         // (ignora mudanças externas de `initialValue` após o primeiro build); a
@@ -70,17 +60,11 @@ class AppFormSelect extends StatelessWidget {
         dropdownColor: semantic.bgSurface,
         style: textStyle,
         onChanged: enabled ? onChanged : null,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           isCollapsed: true,
-          filled: true,
-          fillColor: semantic.bgSubtle,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.space5,
-          ),
-          border: border(AppColors.transparent),
-          enabledBorder: border(AppColors.transparent),
-          disabledBorder: border(AppColors.transparent),
-          focusedBorder: border(semantic.accentDefault),
+          filled: false,
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.zero,
         ),
         items: [
           if (placeholder != null)
