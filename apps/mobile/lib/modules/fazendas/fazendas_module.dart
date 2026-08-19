@@ -9,6 +9,7 @@ import 'operacional/campo_flow.dart';
 import 'screens/atividades_screen.dart';
 import 'screens/farm_list_screen.dart';
 import 'screens/fazendas_home.dart';
+import 'screens/group_features_screen.dart';
 import 'screens/mais_screen.dart';
 import 'screens/mapped_feature_screen.dart';
 import 'screens/responsibility_workspace.dart';
@@ -34,6 +35,15 @@ GoRoute buildFazendasModuleRoute() {
         ),
         routes: [
           GoRoute(
+            path: 'grupo/:group',
+            builder: (context, state) => _FazendasScaffold(
+              child: GroupFeaturesScreen(
+                group: Uri.decodeComponent(state.pathParameters['group']!),
+                profile: FeatureProfile.administration,
+              ),
+            ),
+          ),
+          GoRoute(
             path: ':featureId',
             builder: (context, state) => _FazendasScaffold(
               child: MappedFeatureScreen(
@@ -50,6 +60,15 @@ GoRoute buildFazendasModuleRoute() {
           child: ResponsibilityWorkspace(profile: FeatureProfile.operational),
         ),
         routes: [
+          GoRoute(
+            path: 'grupo/:group',
+            builder: (context, state) => _FazendasScaffold(
+              child: GroupFeaturesScreen(
+                group: Uri.decodeComponent(state.pathParameters['group']!),
+                profile: FeatureProfile.operational,
+              ),
+            ),
+          ),
           GoRoute(
             path: ':featureId',
             builder: (context, state) => _FazendasScaffold(
