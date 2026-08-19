@@ -1,15 +1,24 @@
 # Mapa campo a campo — catálogo funcional Flutter × dump Postgres `gbcerne`
 
-> Documento de apoio à decisão de integração. Compara cada `FeatureField` definido em
+> Documento de apoio à decisão de integração e **handoff para o time de desenvolvimento**.
+> Compara cada `FeatureField` definido em
 > `apps/mobile/lib/modules/fazendas/functional_catalog.dart` com as colunas reais do dump
 > `init_db.sql` (schema `gbcerne`, 415 tabelas, fornecido em `init_db.zip` em 18/08/2026).
-> Não altera código; é insumo para decidir o que troca de mock para dado real.
+>
+> **Revisão de 19/08/2026**: atualizado após a leva `feature/ajustes-banco-real` (ver
+> [`00-ESTEIRA-AJUSTES-BANCO-REAL.md`](00-ESTEIRA-AJUSTES-BANCO-REAL.md)), que já alinhou o
+> protótipo ao schema real — 11 campos novos em 7 telas, a funcionalidade "Produtos" criada,
+> e 7 marcadores `TODO(banco-real)` no código para os enums pendentes de confirmação. O
+> catálogo passou de 53 para **54 funcionalidades** (13 administração + 41 operacional). As
+> seções abaixo já refletem esse estado; o que mudou nesta revisão está marcado com 🆕. A
+> [seção final](#guia-para-o-time-de-desenvolvimento---rotas-de-api) é o guia direto para
+> planejar rotas de API — comece por ali se o objetivo é só a reunião de handoff.
 
 ## Metodologia
 
 1. Extraí as 415 `CREATE TABLE` do dump e a contagem de linhas de cada `COPY` (proxy de
    volume real de dados).
-2. Parseei os 54 `FeatureDefinition` do catálogo Dart (12 administração + 41 operacional +
+2. Parseei os 54 `FeatureDefinition` do catálogo Dart (13 administração + 41 operacional +
    1 duplicidade de id entre `areas` administrativo e `cadastrar-area` operacional, que
    compartilham a mesma fonte de dados via `dataSourceId`).
 3. Para cada `FeatureField`, procurei a coluna equivalente por nome/semântica nas tabelas
@@ -28,7 +37,7 @@ Convenção de tabela: **Campo Dart** | **Coluna(s) candidatas no dump** | **Sit
 
 ---
 
-## Administração (12)
+## Administração (13)
 
 Funcionalidades administrativas são paineis/consultas agregadas, não formulários — a
 checagem aqui é por **tabela-fonte**, não por `FeatureField` (o catálogo não define campos
@@ -45,6 +54,7 @@ para elas).
 | Consultas gerenciais | agrega `batches`/`stocks`/`animal_weighings` | ✅ | Reaproveita fontes de Pecuária/Estoque. |
 | Áreas cadastradas | `areas`(5.779) | ✅ | Mesma fonte do operacional `cadastrar-area`. |
 | Saldo de estoque | `stocks`(31.063), `warehouses`(1.183) | ✅ | |
+| 🆕 Produtos | `products`(543.983) | ✅ | Criada na leva `banco-real` — consulta ao catálogo, mesmo padrão de "Saldo de estoque". Maior tabela do banco inteiro, sem tela própria até então. |
 | Processamentos pecuários | `processings`(587) | ✅ | Tem `is_stock`, `status`, `arroba_value` — cobre "Pendentes/Concluídos". |
 | Exportar log de estoque | `audits`(1.833.695), filtrado por entidade de estoque | ✅ | Volume altíssimo, cobre auditoria real. |
 | Exportar log da pecuária | `audits`(1.833.695), filtrado por entidade pecuária | ✅ | |
@@ -60,8 +70,11 @@ Tabela: `gbcerne.areas`
 | Campo Dart | Coluna candidata | Situação | Nota |
 |---|---|---|---|
 | nome | `description` | ✅ | |
-| tipo | `type` (smallint) | 🟡 | Enum numérico sem tabela de domínio no dump — precisa descobrir de-para (provavelmente 1=Produtiva/2=Reserva etc. via código-fonte legado). |
+| tipo | `type` (smallint) | 🟡 | Enum numérico sem tabela de domínio no dump — marcado `TODO(banco-real)` no código; API precisa confirmar de-para com o time de banco antes de fechar o contrato deste campo. |
 | area-total | `total_area` | ✅ | |
+| 🆕 area-produtiva | `productive_area` | ✅ | Adicionado na leva `banco-real`. |
+| 🆕 area-nao-produtiva | `unproductive_area` | ✅ | Adicionado na leva `banco-real`. |
+| 🆕 carga-animal | `animal_load` | ✅ | Adicionado na leva `banco-real` — mesmo dado que já alimenta o dashboard pecuário real. |
 | unidade | — | ❌ | Não existe seletor de unidade; `total_area` é sempre a mesma unidade (ha) no legado. |
 | localizacao | `coordinates`, `kml` | 🟡 | Existe geodado (texto/KML), não um campo "localização" textual simples. |
 | cultura | `activity_id` (FK) | 🟡 | Precisa join com tabela de atividades/cultivo; não é texto livre. |
@@ -85,6 +98,8 @@ Tabelas: `diets` (cabeçalho) + `ingredients` (matéria-prima)
 | tipo | `diets.objective`, `diets.type` | ✅ | |
 | materia-prima | `ingredients.product_id` | ✅ | |
 | porcentagem | — | 🟡 | `ingredients.dry_matter` é % de matéria seca, não % de participação na formulação; participação teria que ser calculada (`quantity` / soma). |
+| 🆕 custo-por-kg | `diets.cost_per_kg` | ✅ | Adicionado na leva `banco-real`. |
+| 🆕 custo-estimado | `diets.estimated_cost` | ✅ | Adicionado na leva `banco-real`. |
 
 ### `batidas` — Batida
 
@@ -96,7 +111,8 @@ Tabelas: `diet_beats` (1 linha!) + `item_diet_beats` (3 linhas) + `food_beats` (
 | tipo | `item_diet_beats.type` | ✅ | |
 | armazem | — | ❌ | `item_diet_beats`/`diet_beats` não têm `warehouse_id` direto (só `stock_id`, que referencia estoque específico, não o armazém em si — precisa join `stocks.warehouse_id`). |
 | produto | `item_diet_beats.product_id` | ✅ | |
-| quantidade | `item_diet_beats.quantity` / `quantity_realized` | ✅ | Inclusive já separa previsto × realizado. |
+| quantidade | `item_diet_beats.quantity` (renomeado para "Quantidade prevista" na leva `banco-real`) | ✅ | |
+| 🆕 quantidade-realizada | `item_diet_beats.quantity_realized` | ✅ | Adicionado na leva `banco-real` — agora previsto e realizado são dois campos, batendo 1:1 com o banco. |
 | unidade | `item_diet_beats.measurement_id` | ✅ | |
 
 ⚠️ **Prioridade de gap real**: `diet_beats` tem 1 linha e `item_diet_beats` tem 3 — o dump praticamente não usou esse fluxo. Estrutura pronta, dado insuficiente para popular a tela com histórico relevante.
@@ -181,8 +197,14 @@ Tabelas: `planning_activities`(29) + `operation_activities`(729.730, mas é tabe
 | atividade | `activity_id` | ✅ | |
 | area-total / area-utilizada | — | 🟡 | `areas.total_area` existe; "área utilizada" no apontamento pontual não tem coluna própria. |
 | armazem-insumo / armazem-producao | `pastures.inputs_warehouse_id` / `productions_warehouse_id` (padrão similar em outras tabelas de operação) | ✅ | Padrão existe em `pastures`; para agricultura de lavoura teria equivalente em `production_cycles`/`planning_cultivations` (não inspecionado em detalhe). |
+| 🆕 prazo | `service_orders.deadline` | ✅ | Adicionado na leva `banco-real`. |
+| 🆕 resultado-esperado | `service_orders.expected_result_description` | ✅ | Adicionado na leva `banco-real`. |
+| 🆕 criterio-sucesso | `service_orders.success_criteria_description` | ✅ | Adicionado na leva `banco-real`. |
 
-⚠️ Recomendo trocar a tabela-fonte primária desta tela de `planning_activities` para `service_orders`, que é onde o dump de fato guarda responsável, execução e resultado.
+✅ **Resolvido na leva `banco-real`**: o código agora traz um comentário fixando
+`service_orders` como fonte real de responsável/execução/resultado (em vez de
+`planning_activities`) — a recomendação abaixo já está registrada no `functional_catalog.dart`
+para quando a API for implementada.
 
 ### `marcacao` — Marcação
 
@@ -226,6 +248,7 @@ Tabela: `animals` + `inventoried_animals`(0)
 | quantidade | `animals.quantity` | ✅ | |
 | area | — | 🟡 | Não direto em `animals`; via `batch_animals`/`transfer_animal_farms`. |
 | peso-medio | `animals.weight` | ✅ | |
+| 🆕 data-entrada | `animals.entry_date` | ✅ | Adicionado na leva `banco-real`, separado da "Data de referência" do levantamento. |
 
 `inventoried_animals` (inventário formal) está **vazia** — se a tela pretende ser um "inventário de abertura" formal, falta dado; se for só carga inicial de animais, `animals` cobre bem.
 
@@ -273,7 +296,10 @@ Tabela: `transfer_animal_farms`
 | lote-atual | — | ❌ | `transfer_animal_farms` é transferência **entre fazendas**, não entre lotes — para "lote atual/novo lote" o equivalente correto é `transfer_batch_farms`/`batch_animals`. |
 | novo-lote | `transfer_batch_farms.batch_id` | ✅ | Via tabela correta. |
 
-⚠️ Atenção: o nome da funcionalidade sugere troca de lote, mas a tabela mais próxima por nome (`transfer_animal_farms`) é troca de fazenda. A tabela correta para "novo lote" é `transfer_batch_farms`. Vale revisar o `dataSourceId` quando for integrar.
+✅ **Resolvido na leva `banco-real`**: comentário fixado no código (`functional_catalog.dart`)
+apontando `transfer_batch_farms` como fonte real de "novo lote" — o risco de o time web
+implementar o endpoint errado (`transfer_animal_farms`, que é entre fazendas) está
+documentado diretamente na fonte.
 
 ### `scanner-sisbov` (hardware) — ⚪; dado de resultado em `id_animals`(8) / `animal_id_animal`(174.362) já existe caso quisesse mostrar histórico de identificações sem simular o scanner.
 
@@ -346,6 +372,7 @@ Tabela: `sanitaries`(248) + `sanitary_animals`(9.413) + `item_sanitaries`(438) +
 | tipo | `item_sanitaries` + `item_sanitary_vaccines`(1 linha!) | 🟡 | Vacina como tipo específico está quase vazia — reforça uso de "tipo" genérico via `item_sanitaries.product_id`. |
 | produto | `item_sanitaries.product_id` | ✅ | |
 | observacao | `item_sanitaries.note_item` | ✅ | |
+| 🆕 controle-por-tempo | `sanitaries.time_control` | ✅ | Adicionado na leva `banco-real` — dado sensível de rastreabilidade (carência pós-medicamento). |
 
 ### `desmama` — Desmama
 
@@ -533,10 +560,18 @@ contrapartida no ERP.
 ## Resumo executivo — prioridades de decisão
 
 ### Pode trocar mock → dado real com confiança alta (schema + volume batem)
-Financeiro, Dashboard pecuário, Ativos, Análise de uso, Saldo de estoque, Processamentos,
-logs de auditoria, Áreas, Lote de animais, Registrar animal, Pesagens, Transferência
-lote/área, Nascimentos, Mortes, Compra de animais, Vendas, Nutrições, Desmama, Pastagens,
-Marcação, Protocolos/estação, Abastecimentos, Manutenção de frota.
+Financeiro, Dashboard pecuário, Ativos, Análise de uso, Saldo de estoque, 🆕 Produtos,
+Processamentos, logs de auditoria, Áreas (com os 3 campos novos), Lote de animais, Registrar
+animal, Pesagens, Transferência lote/área, Nascimentos, Mortes, Compra de animais, Vendas,
+Nutrições, Desmama, Pastagens, Marcação, Protocolos/estação, Abastecimentos, Manutenção de
+frota, Formulações (com custo), Batida (com previsto×realizado), Sanitário (com controle por
+tempo), Rebanho inicial (com data de entrada), Apontamento agrícola (já reapontado para
+`service_orders`).
+
+### Resolvido na leva `banco-real` (já não precisa de decisão nova)
+- ~~Transferência animal (hardware): risco de tabela errada~~ — comentário fixado no código.
+- ~~Apontamento agrícola: tabela-fonte ambígua~~ — comentário fixado no código, campos ricos
+  de `service_orders` adicionados.
 
 ### Precisa de decisão de produto antes de integrar (schema ambíguo ou incompleto)
 - **Carga/Descarga (misturador)**: o dump não modela "carga de misturador" como conceito
@@ -548,9 +583,14 @@ Marcação, Protocolos/estação, Abastecimentos, Manutenção de frota.
 - **Apartação**: falta critério e lote-destino explícitos.
 - **Estação de monta / Lotes-reprodução / Material reprodutivo**: faltam campos de método,
   finalidade, raça e fornecedor — hoje "escondidos" em joins não triviais.
-- **Transferência animal (hardware)**: o `dataSourceId` correto para "novo lote" é
-  `transfer_batch_farms`, não `transfer_animal_farms` (que é entre fazendas) — checar antes
-  de ligar o fio.
+
+### Dicionários de enum pendentes de confirmação (marcados `TODO(banco-real)` no código)
+`areas.type`, `diets.type`/`objective` (usado em Formulações e Batida),
+`sales.payment_method`/`movement_sales.type_payment`, e — preventivamente, para quando o
+campo existir — `service_orders.category`/`status`, `breeding_matings.type`,
+`stocks.type`/`stock_movements.classification`. Ver seção C de
+[`03-ajustes-ponto-a-ponto.md`](03-ajustes-ponto-a-ponto.md) para o detalhe de cada um. **Isso
+vira contrato de API** — resolver antes de codificar os endpoints que os expõem.
 
 ### Estrutura pronta, mas dado real insuficiente para demo (populado com poucas linhas)
 Colheita de frutas (1 linha), Batida do misturador (1–3 linhas), Minhas OS (15), Monta
@@ -560,6 +600,92 @@ natural (35 monta / 3 touros), Diagnóstico de gestação (ultrassom = 0), Lota�
 ### Permanece mock/simulado independentemente do dump
 Todas as `FeatureStatus.hardware` (Bluetooth, balança, RFID, scanner) — regra de produto,
 não lacuna de dado. Sincronização de dados (conceito de frontend).
+
+---
+
+## Guia para o time de desenvolvimento — rotas de API
+
+Esta seção é o ponto de partida para a reunião de handoff: uma rota REST sugerida por
+funcionalidade, a tabela real que a alimenta, e o que precisa de atenção antes de codar. Nomes
+de recurso seguem o nome da tabela principal (em inglês, como o banco), sob o prefixo
+`/api/v1/fazendas`. Ajustar à convenção que o time de backend já usa é esperado — o valor
+aqui é a lista completa de recursos e as pegadinhas, não o path exato.
+
+### Convenção sugerida
+
+- `GET /api/v1/fazendas/{recurso}` — lista (usada pelas telas com `listMode: true`).
+- `GET /api/v1/fazendas/{recurso}/{id}` — detalhe.
+- `POST /api/v1/fazendas/{recurso}` — criação (telas operacionais com `fields`).
+- Sub-recursos (item de uma lista, ex. matéria-prima de uma formulação) entram como
+  `POST /api/v1/fazendas/{recurso}/{id}/{sub-recurso}`.
+- Perfil de administração e operacional **não são rotas diferentes** — são o mesmo recurso
+  com escopo de permissão diferente (RBAC real do banco, ver
+  [`02-oportunidades-banco-real.md`](02-oportunidades-banco-real.md), seção 2.9), não algo a
+  duplicar na API.
+
+### Administração (13)
+
+| Funcionalidade | Rota sugerida | Tabela(s) principal(is) | Adaptação antes de codar |
+|---|---|---|---|
+| Financeiro e operacional | `GET /dashboards/financeiro` | `financial_categories`, `expenses`, `incomes`, `balances`, `cost_centers` | Painel agregado — provavelmente uma rota de relatório, não CRUD puro. |
+| Dashboard pecuário | `GET /dashboards/pecuaria` | `animals`, `batches`, `stocks` | Idem — agregação. |
+| Lotação de currais | `GET /dashboards/confinamento` | `feedlot_corrals`, `feedlot_corral_batches`, `feedlot_yards`, `feedlot_sectors` | Confirmar se o cliente tem mais de 1 confinamento em produção (dump só tem 1). |
+| Ativos e depreciação | `GET /dashboards/ativos` | `equipments`, `depreciations` | Nenhuma. |
+| Suprimentos | `GET /dashboards/suprimentos` | `request_quotations`, `request_purchases`, `providers` | Decidir se compara cotação de fornecedor (`request_quotations`, tem dado) ou preço de mercado (`quotations`, vazia). |
+| Análise de uso | `GET /dashboards/uso` | `user_activities`, `users`, `farm_user` | Nenhuma. |
+| Consultas gerenciais | `GET /consultas` | agrega `batches`/`stocks`/`animal_weighings` | Provável agregação de 3 chamadas, não endpoint único. |
+| Áreas cadastradas | `GET /areas` | `areas` | Mesmo recurso do operacional `POST /areas` — só muda o escopo de permissão. |
+| Saldo de estoque | `GET /stocks` | `stocks`, `warehouses` | Nenhuma. |
+| 🆕 Produtos | `GET /products` | `products` | Tabela com 543.983 linhas — paginação é obrigatória, não opcional. |
+| Processamentos pecuários | `GET /processings` | `processings` | Nenhuma. |
+| Exportar log de estoque | `GET /audits?entity=estoque` | `audits` | Filtro por entidade — checar se `audits` tem coluna de tipo/entidade discriminando estoque de pecuária. |
+| Exportar log da pecuária | `GET /audits?entity=pecuaria` | `audits` | Idem. |
+
+### Operacional (41)
+
+| Funcionalidade | Rota sugerida | Tabela(s) principal(is) | Adaptação antes de codar |
+|---|---|---|---|
+| Áreas | `POST /areas` | `areas` | Confirmar dicionário de `type` antes de fechar o contrato do campo. |
+| Formulações | `POST /diets` | `diets`, `ingredients` | Confirmar dicionário de `type`/`objective`. |
+| Batida | `POST /diet-beats` | `diet_beats`, `item_diet_beats` | Volume real baixíssimo (1–3 linhas) — validar com dado de produção antes de assumir o contrato como definitivo. |
+| Conexão de aparelhos (misturador) | — | — | Hardware simulado; sem rota de API. |
+| Carga | `POST /mixer-loads` (recurso a criar) | nenhuma tabela dedicada hoje | **Reunião de modelagem necessária** — banco não tem conceito de "carga de misturador" vinculado a equipamento. |
+| Descarga | `POST /mixer-unloads` (recurso a criar) | `stock_writeoffs` (parcial) | Idem — cabeçalho existe, item/quantidade não bate 1:1. |
+| Balança | — | `module_weighings` (só leitura, se quiser histórico) | Hardware simulado; API só se for expor histórico pós-captura. |
+| Nota de cocho | `POST /trough-scores` (recurso a criar) | `troughs` (parcial) | **Reunião de modelagem necessária** — vínculo área↔cocho vazio no dump. |
+| Configurações do misturador | — | nenhuma | Não deveria virar API — configuração local de app. |
+| Apontamento agrícola | `POST /service-orders?category=agricola` | `service_orders` | Já reapontado nesta leva; nenhuma adaptação adicional. |
+| Marcação | `POST /markings` | `markings`, `marking_dones`, `marking_forecasts`, `markers` | Nenhuma. |
+| Colheita de frutas | `POST /harvest-products` | `harvest_products`, `harvest_product_boxes` | Volume real de 1 linha — validar contrato com mais dado antes de travar. |
+| Rebanho inicial | `POST /animals?origin=initial` | `animals` | Nenhuma — `data-entrada` já adicionado nesta leva. |
+| Conexão de aparelhos (pecuária) | — | — | Hardware simulado; sem rota de API. |
+| Lote de animais | `POST /batches` | `batches`, `batch_category_animal` | Nenhuma. |
+| Registrar animal | `POST /animals` | `animals` | Nenhuma. |
+| Pesagens | `POST /animal-weighings` | `animal_weighings`, `weighings`, `module_weighings` | Nenhuma. |
+| Transferência animal/lote | `POST /batch-transfers` | `transfer_batch_farms` | **Já corrigido nesta leva** — não usar `transfer_animal_farms` (é entre fazendas). |
+| Scanner SISBOV | — | `id_animals`, `animal_id_animal` (só leitura) | Hardware simulado; API só se for expor histórico de identificação. |
+| Transferência lote/área | `POST /batch-grazing-transfers` | `transfer_batch_grazing_areas`, `batch_grazing` | Nenhuma. |
+| Nascimentos | `POST /birth-animals` | `birth_animals`, `birth_notes` | Nenhuma. |
+| Mortes | `POST /death-animals` | `death_animals`, `death_losses` | Nenhuma. |
+| Perdas | `POST /loss-animals` | `loss_animals` | Volume real baixo (26 linhas) — validar contrato com mais dado. |
+| Compra de animais | `POST /movement-purchases` | `movement_purchases`, `item_movement_purchases` | Nenhuma. |
+| Vendas | `POST /sales` | `sales`, `sale_items`, `movement_sales`, `sale_contracts` | Confirmar dicionário de `payment_method`. |
+| Nutrições | `POST /nutritions` | `nutritions`, `item_nutritions` | Nenhuma. |
+| Sanitário | `POST /sanitaries` | `sanitaries`, `sanitary_animals`, `item_sanitaries` | Nenhuma — `controle-por-tempo` já adicionado nesta leva. |
+| Desmama | `POST /weanings` | `weanings`, `animals_weanings` | Nenhuma. |
+| Apartação | `POST /separations` | `batches_separations`, `separations` | **Reunião de modelagem necessária** — falta coluna de critério e distinção origem/destino. |
+| Localizar animal | — | `traceabilities` (só leitura, se quiser histórico) | Hardware simulado. |
+| Pastagens | `POST /pastures` | `pastures`, `grazings`, `grazing_areas` | Nenhuma. |
+| Estação de monta | `POST /breeding-seasons` | `breeding_seasons` | Falta coluna de método — decidir se cria coluna nova ou infere de `breeding_matings.type`. |
+| Lotes/reprodução | `POST /breeding-batches` | `breeding_batch`, `batch_breeding_batch` | Falta coluna de finalidade. |
+| Touros/sêmen/embrião | `POST /bull-seed-seasons` | `bull_seed_season`, `bull_seed_season_product` | Falta raça/fornecedor diretos — via join com `animals`/`providers`. |
+| Protocolos/estação | `POST /protocols-season` | `protocols_season`, `mating_protocol_animals` | Nenhuma crítica. |
+| Monta natural | `POST /breeding-matings` | `breeding_matings`, `breeding_mating_cows` | Confirmar dicionário de `type` quando o campo existir na tela. |
+| Diagnóstico de gestação | `POST /pregnancy-diagnosis` | `pregnancy_diagnosis`, `pregnancy_diagnosis_animals` | `ultrasounds` vazia — confirmar se laudo é obrigatório no contrato. |
+| Abastecimentos | `POST /appropriation-supply` | `appropriation_supply` | Nenhuma. |
+| Manutenção de frota | `POST /appropriation-maintenance` | `appropriation_maintenance`, `appropriation_maintenance_preventive` | Nenhuma. |
+| Minhas OS | `GET /service-orders?assignee=me` | `service_orders` | Confirmar dicionário de `category`/`status` quando a tela ganhar esses campos. |
+| Sincronização de dados | — | — | Conceito de frontend; sem rota de API. |
 
 ---
 
