@@ -76,8 +76,13 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
   String _qtd = '';
   String? _causa;
   String _obs = '';
+  bool _attempted = false;
 
-  void _confirmar() {
+  void _confirmar(bool valid) {
+    if (!valid) {
+      setState(() => _attempted = true);
+      return;
+    }
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
     if (queued) {
@@ -132,7 +137,13 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               childAspectRatio: 1.1,
               children: [
                 for (final e in _events)
-                  _EventTile(e: e, onTap: () => setState(() => _type = e.type)),
+                  _EventTile(
+                    e: e,
+                    onTap: () => setState(() {
+                      _type = e.type;
+                      _attempted = false;
+                    }),
+                  ),
               ],
             ),
           ],
@@ -162,9 +173,11 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
     return FlowShell(
       title: label,
       primaryLabel: 'Registrar evento',
-      onPrimary: _confirmar,
-      primaryDisabled: !valid,
-      onBack: () => setState(() => _type = null),
+      onPrimary: () => _confirmar(valid),
+      onBack: () => setState(() {
+        _type = null;
+        _attempted = false;
+      }),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -187,6 +200,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
                       ? 'Animal-mãe / lote'
                       : 'Animal / lote'),
             required: true,
+            error: _attempted && _lote == null ? 'Selecione o lote.' : null,
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
@@ -198,6 +212,9 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             AppFormField(
               label: 'Lote de destino',
               required: true,
+              error: _attempted && _loteDestino == null
+                  ? 'Selecione o lote de destino.'
+                  : null,
               child: AppSearchSelect(
                 options: lotesOpcoes.where((l) => l.value != _lote).toList(),
                 value: _loteDestino,
@@ -209,10 +226,14 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             AppFormField(
               label: 'Quantidade',
               required: true,
+              error: _attempted && _qtd.isEmpty
+                  ? 'Informe a quantidade.'
+                  : null,
               child: AppTextInput(
                 keyboardType: TextInputType.number,
                 onChanged: (v) => setState(() => _qtd = v),
                 placeholder: 'Nº de animais',
+                invalid: _attempted && _qtd.isEmpty,
               ),
             ),
           ],
@@ -221,9 +242,11 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             AppFormField(
               label: 'Data',
               required: true,
+              error: _attempted && _data.isEmpty ? 'Informe a data.' : null,
               child: AppTextInput(
                 onChanged: (v) => setState(() => _data = v),
                 placeholder: 'dd/mm/aaaa',
+                invalid: _attempted && _data.isEmpty,
               ),
             ),
           ],
@@ -246,6 +269,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             AppFormField(
               label: 'Causa',
               required: true,
+              error: _attempted && _causa == null ? 'Selecione a causa.' : null,
               child: AppFormSelect(
                 options: causasMorte,
                 value: _causa,

@@ -12,6 +12,13 @@ import '../components/context_badge.dart';
 /// contexto (fazenda) + conteúdo + rodapé fixo com botão primário. Mostra chip
 /// de fila offline quando sem conexão. Espelha `FlowShell.tsx` — os 6 fluxos de
 /// campo (`PesagemFlow`, `CicloRebanhoFlow`, etc.) usam este wrapper.
+///
+/// Ajuste de usabilidade (ver plano de melhorias de UX): o botão primário não
+/// aceita mais um estado desabilitado — antes, com campo obrigatório em
+/// branco, o botão simplesmente não reagia ao toque, sem explicar por quê
+/// (beco sem saída, especialmente ruim para baixa instrução/uso no campo).
+/// Agora o botão sempre chama [onPrimary]; cada fluxo valida ali dentro e
+/// mostra o que falta preencher (ver `PesagemFlow._confirmar`, por exemplo).
 class FlowShell extends ConsumerWidget {
   const FlowShell({
     super.key,
@@ -19,7 +26,6 @@ class FlowShell extends ConsumerWidget {
     required this.child,
     this.primaryLabel,
     this.onPrimary,
-    this.primaryDisabled = false,
     this.onBack,
   });
 
@@ -29,7 +35,6 @@ class FlowShell extends ConsumerWidget {
   /// Rótulo do botão primário; o rodapé inteiro é ocultado se ausente.
   final String? primaryLabel;
   final VoidCallback? onPrimary;
-  final bool primaryDisabled;
   final VoidCallback? onBack;
 
   @override
@@ -84,7 +89,7 @@ class FlowShell extends ConsumerWidget {
                     AppButton(
                       fullWidth: true,
                       size: AppButtonSize.lg,
-                      onPressed: primaryDisabled ? null : onPrimary,
+                      onPressed: onPrimary,
                       child: Text(primaryLabel!),
                     ),
                   ],

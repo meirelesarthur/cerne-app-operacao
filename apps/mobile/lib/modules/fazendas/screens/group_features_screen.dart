@@ -8,11 +8,17 @@ import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
 import '../group_icons.dart';
 
+/// Acima deste tanto de funções num grupo, a rolagem sozinha vira uma busca
+/// visual — "Pecuária" no perfil operacional tem 19 (ver plano de UX). Abaixo
+/// disso, a lista inteira cabe numa olhada e o campo de busca só ocuparia
+/// espaço sem ajudar.
+const _searchThreshold = 8;
+
 /// Tela fullscreen com as funções de um único grupo (ex.: "Estoque" →
 /// Formulações, Batidas) — destino do acesso rápido e dos cards de módulo em
 /// [ResponsibilityWorkspace]. Tocar numa função navega exatamente como antes
 /// (rota da própria [FeatureDefinition]); nada muda na jornada de cada uma.
-class GroupFeaturesScreen extends StatelessWidget {
+class GroupFeaturesScreen extends StatefulWidget {
   const GroupFeaturesScreen({
     super.key,
     required this.profile,
@@ -27,18 +33,32 @@ class GroupFeaturesScreen extends StatelessWidget {
   final String groupSlug;
 
   @override
+  State<GroupFeaturesScreen> createState() => _GroupFeaturesScreenState();
+}
+
+class _GroupFeaturesScreenState extends State<GroupFeaturesScreen> {
+  String _query = '';
+
+  @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final isAdministration = profile == FeatureProfile.administration;
+    final isAdministration = widget.profile == FeatureProfile.administration;
     final segment = isAdministration ? 'administracao' : 'operacional';
     final centerRoute = '/fazendas/$segment';
-    final group = groupFromSlug(groupSlug);
-    final features = group == null
+    final group = groupFromSlug(widget.groupSlug);
+    final allFeatures = group == null
         ? const <FeatureDefinition>[]
         : (isAdministration ? adminFeatures : operationalFeatures)
               .where((f) => f.group == group)
               .toList();
-    final title = group ?? groupSlug;
+    final showSearch = allFeatures.length > _searchThreshold;
+    final query = _query.trim().toLowerCase();
+    final features = !showSearch || query.isEmpty
+        ? allFeatures
+        : allFeatures
+              .where((f) => f.title.toLowerCase().contains(query))
+              .toList();
+    final title = group ?? widget.groupSlug;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.space4),
@@ -46,7 +66,7 @@ class GroupFeaturesScreen extends StatelessWidget {
         AppScreenHeader(
           title: title,
           description:
-              '${features.length} ${features.length == 1 ? 'função' : 'funções'} neste módulo',
+              '${allFeatures.length} ${allFeatures.length == 1 ? 'função' : 'funções'} neste módulo',
           onBack: () => context.go(centerRoute),
           backLabel: 'Voltar à central',
           leading: Container(
@@ -64,12 +84,26 @@ class GroupFeaturesScreen extends StatelessWidget {
             ),
           ),
         ),
+        if (showSearch) ...[
+          const SizedBox(height: AppSpacing.space4),
+          AppTextInput(
+            placeholder: 'Buscar função...',
+            prefixIcon: const Icon(LucideIcons.search, size: 18),
+            onChanged: (v) => setState(() => _query = v),
+          ),
+        ],
         const SizedBox(height: AppSpacing.space4),
-        if (features.isEmpty)
+        if (allFeatures.isEmpty)
           const AppEmptyState(
             icon: LucideIcons.inbox,
             title: 'Nada por aqui',
             description: 'Este módulo ainda não tem funções mapeadas.',
+          )
+        else if (features.isEmpty)
+          AppEmptyState(
+            icon: LucideIcons.searchX,
+            title: 'Nenhuma função encontrada',
+            description: 'Tente buscar por outro nome.',
           )
         else
           for (final feature in features) ...[

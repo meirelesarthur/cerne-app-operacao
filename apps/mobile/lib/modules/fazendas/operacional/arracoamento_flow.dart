@@ -26,11 +26,16 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
   num _qtd = 500;
   String? _deposito;
   bool? _queued;
+  bool _attempted = false;
 
   bool get _valid =>
       _lote != null && _dieta != null && _deposito != null && _qtd > 0;
 
   void _confirmar() {
+    if (!_valid) {
+      setState(() => _attempted = true);
+      return;
+    }
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
     if (queued) {
@@ -63,7 +68,6 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
       title: 'Arraçoamento',
       primaryLabel: 'Registrar arraçoamento',
       onPrimary: _confirmar,
-      primaryDisabled: !_valid,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -71,6 +75,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
           AppFormField(
             label: 'Lote',
             required: true,
+            error: _attempted && _lote == null ? 'Selecione o lote.' : null,
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
@@ -82,6 +87,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
           AppFormField(
             label: 'Dieta / produto',
             required: true,
+            error: _attempted && _dieta == null ? 'Selecione a dieta.' : null,
             child: AppFormSelect(
               options: dietas,
               value: _dieta,
@@ -94,6 +100,9 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
             label: 'Quantidade fornecida',
             required: true,
             hint: 'Sem cálculo de rateio de custo nesta fase.',
+            error: _attempted && _qtd <= 0
+                ? 'Informe uma quantidade maior que zero.'
+                : null,
             child: AppStepper(
               value: _qtd,
               onChanged: (v) => setState(() => _qtd = v),
@@ -105,6 +114,9 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
           AppFormField(
             label: 'Depósito de origem',
             required: true,
+            error: _attempted && _deposito == null
+                ? 'Selecione o depósito.'
+                : null,
             child: AppFormSelect(
               options: depositos,
               value: _deposito,

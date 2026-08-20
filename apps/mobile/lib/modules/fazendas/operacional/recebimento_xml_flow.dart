@@ -69,7 +69,6 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
       title: 'Entrada por XML (NF-e)',
       primaryLabel: _file != null ? 'Confirmar entrada' : null,
       onPrimary: _confirmar,
-      primaryDisabled: _file == null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

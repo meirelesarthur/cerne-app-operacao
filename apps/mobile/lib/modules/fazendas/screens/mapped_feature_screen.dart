@@ -158,26 +158,11 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                     : 'Voltar ao ambiente',
               ),
               const SizedBox(height: AppSpacing.space4),
-              if (feature.capabilities.isNotEmpty) ...[
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const AppSectionTitle(child: Text('Recursos envolvidos')),
-                      const SizedBox(height: AppSpacing.space3),
-                      Wrap(
-                        spacing: AppSpacing.space2,
-                        runSpacing: AppSpacing.space2,
-                        children: [
-                          for (final capability in feature.capabilities)
-                            AppTag(child: Text(capability)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.space4),
-              ],
+              // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
+              // daqui (ver plano de UX): quando a função usa hardware
+              // simulado, o próprio `AppHardwareSimulator` já mostra isso
+              // mais abaixo, na hora de usar — listar de novo antes, em
+              // termos técnicos, só adiantava jargão sem ajudar a decisão.
               if (feature.auditExport case final auditExport?)
                 _AuditExportJourney(kind: auditExport)
               else if (feature.listMode &&

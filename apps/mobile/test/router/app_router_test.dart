@@ -161,7 +161,7 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Central de rotinas'), findsOneWidget);
+      expect(find.text('O que fazer hoje'), findsOneWidget);
       expect(find.text('Resumo financeiro'), findsNothing);
     });
 

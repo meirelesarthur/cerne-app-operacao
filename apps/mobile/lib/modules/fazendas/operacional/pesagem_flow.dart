@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
+import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -28,12 +29,19 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
   String? _deposito;
   bool? _queued;
 
-  bool get _valid =>
-      _lote != null &&
-      (double.tryParse(_peso.replaceAll(',', '.')) ?? 0) > 0 &&
-      _deposito != null;
+  /// `true` só depois de uma primeira tentativa de confirmar — os campos não
+  /// nascem "errados" antes de a pessoa tentar enviar (ver plano de UX).
+  bool _attempted = false;
+
+  bool get _pesoValido =>
+      (double.tryParse(_peso.replaceAll(',', '.')) ?? 0) > 0;
+  bool get _valid => _lote != null && _pesoValido && _deposito != null;
 
   void _confirmar() {
+    if (!_valid) {
+      setState(() => _attempted = true);
+      return;
+    }
     ref.read(fazendasStoreProvider.notifier).registrarPesagemDoDia();
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
@@ -72,7 +80,6 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
       title: 'Pesagem',
       primaryLabel: 'Registrar pesagem',
       onPrimary: _confirmar,
-      primaryDisabled: !_valid,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -80,6 +87,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
           AppFormField(
             label: 'Lote / carga',
             required: true,
+            error: _attempted && _lote == null ? 'Selecione o lote.' : null,
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
@@ -109,6 +117,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
                     ),
                     onChanged: (v) => setState(() => _peso = v),
                     placeholder: '0',
+                    invalid: _attempted && !_pesoValido,
                   ),
                 ),
               ),
@@ -129,10 +138,35 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
               ),
             ],
           ),
+          if (_attempted && !_pesoValido) ...[
+            const SizedBox(height: AppSpacing.space2),
+            Row(
+              children: [
+                const Icon(
+                  LucideIcons.alertCircle,
+                  size: 12,
+                  color: AppColors.red600,
+                ),
+                const SizedBox(width: AppSpacing.space1),
+                Text(
+                  'Informe um peso maior que zero.',
+                  style: TextStyle(
+                    fontFamily: AppTypography.fontFamily,
+                    fontSize: AppTypography.xs,
+                    fontWeight: AppTypography.weightMedium,
+                    color: AppColors.red600,
+                  ),
+                ),
+              ],
+            ),
+          ],
           const SizedBox(height: AppSpacing.space5),
           AppFormField(
             label: 'Depósito de destino',
             required: true,
+            error: _attempted && _deposito == null
+                ? 'Selecione o depósito.'
+                : null,
             child: AppFormSelect(
               options: depositos,
               value: _deposito,

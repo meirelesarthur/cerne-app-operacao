@@ -34,10 +34,15 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
   String _qtd = '';
   String _descricao = '';
   bool? _queued;
+  bool _attempted = false;
 
   bool get _valid => _talhao != null && _data.isNotEmpty;
 
   void _confirmar() {
+    if (!_valid) {
+      setState(() => _attempted = true);
+      return;
+    }
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
     if (queued) {
@@ -76,7 +81,6 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
       title: 'Insumos / Ocorrências',
       primaryLabel: 'Registrar',
       onPrimary: _confirmar,
-      primaryDisabled: !_valid,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -84,6 +88,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
           AppFormField(
             label: 'Área / talhão',
             required: true,
+            error: _attempted && _talhao == null ? 'Selecione o talhão.' : null,
             child: AppFormSelect(
               options: talhoes,
               value: _talhao,
@@ -131,9 +136,11 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
           AppFormField(
             label: 'Data',
             required: true,
+            error: _attempted && _data.isEmpty ? 'Informe a data.' : null,
             child: AppTextInput(
               onChanged: (v) => setState(() => _data = v),
               placeholder: 'dd/mm/aaaa',
+              invalid: _attempted && _data.isEmpty,
             ),
           ),
           const SizedBox(height: AppSpacing.space5),

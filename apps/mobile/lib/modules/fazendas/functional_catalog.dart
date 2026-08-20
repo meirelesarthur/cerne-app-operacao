@@ -203,7 +203,8 @@ const adminFeatures = <FeatureDefinition>[
     profile: FeatureProfile.administration,
     group: 'Consultas e auditoria',
     title: 'Produtos',
-    objective: 'Consultar e cadastrar o catálogo de produtos, categorias e custo médio.',
+    objective:
+        'Consultar e cadastrar o catálogo de produtos, categorias e custo médio.',
     status: FeatureStatus.ready,
     emptyLabel: 'Nenhum produto encontrado para os filtros atuais.',
     sourceDetail:

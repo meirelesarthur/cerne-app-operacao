@@ -43,6 +43,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
   num _qtd = 0;
   String _total = '';
   bool? _queued;
+  bool _attempted = false;
 
   int get _esperado => _lote != null ? (_loteCabecas[_lote] ?? 0) : 0;
   bool get _contagemBate => _lote == null || _qtd == _esperado;
@@ -57,6 +58,10 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
       _totalValido;
 
   void _confirmar() {
+    if (!_valid) {
+      setState(() => _attempted = true);
+      return;
+    }
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
     if (queued) {
@@ -90,7 +95,6 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
       title: 'Venda de animais',
       primaryLabel: 'Confirmar venda',
       onPrimary: _confirmar,
-      primaryDisabled: !_valid,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -166,6 +170,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
           AppFormField(
             label: 'Lote / animais',
             required: true,
+            error: _attempted && _lote == null ? 'Selecione o lote.' : null,
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
@@ -193,15 +198,18 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
           AppFormField(
             label: 'Cliente',
             required: true,
+            error: _attempted && _cliente.isEmpty ? 'Informe o cliente.' : null,
             child: AppTextInput(
               onChanged: (v) => setState(() => _cliente = v),
               placeholder: 'Nome do comprador',
+              invalid: _attempted && _cliente.isEmpty,
             ),
           ),
           const SizedBox(height: AppSpacing.space5),
           AppFormField(
             label: 'Condição de pagamento',
             required: true,
+            error: _attempted && _cond == null ? 'Selecione a condição.' : null,
             child: AppFormSelect(
               options: condPagamento,
               value: _cond,
@@ -213,9 +221,13 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
           AppFormField(
             label: 'Data de embarque',
             required: true,
+            error: _attempted && _dataEmbarque.isEmpty
+                ? 'Informe a data de embarque.'
+                : null,
             child: AppTextInput(
               onChanged: (v) => setState(() => _dataEmbarque = v),
               placeholder: 'dd/mm/aaaa',
+              invalid: _attempted && _dataEmbarque.isEmpty,
             ),
           ),
           const SizedBox(height: AppSpacing.space5),
