@@ -9,6 +9,12 @@ import '../design/theme/app_theme_extension.dart';
 /// Espelha `QuickAction.tsx` (New-UI hub): círculo de 56px (`AppSpacing.space14`)
 /// com rótulo abaixo — usado nas ações rápidas do hub. Ícone fixo em 21px,
 /// espelhando `<Icon size={21} strokeWidth={1.9} />` do React.
+///
+/// Ajuste de usabilidade (ver plano de melhorias de UX): o círculo era um
+/// verde bem claro (`accentSubtle`) quase da mesma família de cor do ícone —
+/// pouco contraste. Virou `bgSurface` (branco) + sombra de cartão, com o
+/// ícone verde como único acento colorido — o círculo se destaca do canvas
+/// em vez de se misturar com o próprio ícone.
 class AppQuickAction extends StatelessWidget {
   const AppQuickAction({
     super.key,
@@ -40,7 +46,8 @@ class AppQuickAction extends StatelessWidget {
               height: AppSpacing.space14,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: semantic.accentSubtle,
+                color: semantic.bgSurface,
+                boxShadow: semantic.shadowCard,
               ),
               alignment: Alignment.center,
               child: Icon(icon, size: 21, color: semantic.accentDefault),
