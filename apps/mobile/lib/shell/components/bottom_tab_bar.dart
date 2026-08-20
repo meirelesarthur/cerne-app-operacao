@@ -10,8 +10,7 @@ import 'package:cerne_app/design/generated/app_spacing.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Dock de módulos (Nova UI — referência Força Agro): cápsula flutuante
-/// **opaca** (sem blur) — os 6 módulos sempre visíveis (sem rolagem nem corte
-/// em viewports estreitos); o ativo vira pílula expandida (ícone + rótulo) em
+/// **opaca** (sem blur); o ativo vira pílula expandida (ícone + rótulo) em
 /// verde de marca sólido + texto branco, os demais ficam como ícones "ghost".
 /// Espelha `BottomTabBar.tsx`.
 ///
@@ -26,12 +25,18 @@ class AppBottomTabBar extends StatelessWidget {
     super.key,
     required this.activeId,
     required this.onModuleSelected,
+    this.visibleModules = modules,
   });
 
   final String activeId;
 
   /// Recebe o `module.id` do módulo tocado.
   final ValueChanged<String> onModuleSelected;
+
+  /// Módulos exibidos no dock — por padrão, todos ([modules]); quem monta o
+  /// `ShellLayout` filtra por [visibleModulesFor] (ver plano de UX: o perfil
+  /// operacional não precisa ver Bank/Crédito/Marketplace no dock).
+  final List<ModuleDef> visibleModules;
 
   @override
   Widget build(BuildContext context) {
@@ -50,19 +55,29 @@ class AppBottomTabBar extends StatelessWidget {
           border: Border.all(color: semantic.navBorder),
           boxShadow: semantic.shadowModal,
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (final m in modules) ...[
-              _ModuleButton(
-                label: m.label,
-                icon: m.icon,
-                active: m.id == activeId,
-                onTap: () => onModuleSelected(m.id),
-              ),
-              if (m != modules.last) const SizedBox(width: AppSpacing.space1),
+        // `SingleChildScrollView` é uma rede de segurança, não o caminho
+        // esperado: com o dock já filtrado por perfil, a Row deveria caber
+        // sem rolar. Antes, sem isso, 5 ícones + a pílula ativa expandida
+        // estouravam a largura de um Android estreito (360dp) e o layout
+        // quebrava silenciosamente — a `Row` sem limite não avisa disso.
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const ClampingScrollPhysics(),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final m in visibleModules) ...[
+                _ModuleButton(
+                  label: m.label,
+                  icon: m.icon,
+                  active: m.id == activeId,
+                  onTap: () => onModuleSelected(m.id),
+                ),
+                if (m != visibleModules.last)
+                  const SizedBox(width: AppSpacing.space1),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

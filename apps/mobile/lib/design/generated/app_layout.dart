@@ -10,7 +10,7 @@ class AppLayout {
   static const double moduleBarH = 48;
   static const double tabBarH = 68;
   static const double gutter = 16;
-  static const double tabBarClearance = 104;
+  static const double tabBarClearance = 88;
 }
 
 class AppSize {

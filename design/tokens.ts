@@ -337,8 +337,10 @@ export const layout = {
   moduleBarH: '48px',
   tabBarH: '68px',
   gutter: '16px',
-  /** folga inferior dos scrollers para o conteúdo não morrer sob a tab bar flutuante */
-  tabBarClearance: '104px',
+  /** folga inferior dos scrollers para o conteúdo não morrer sob a tab bar flutuante.
+   * Reduzido de 104 (ver plano de melhorias de UX): a folga anterior era maior que o
+   * necessário — dock (68px) + respiro (14px) já cobrem a cápsula flutuante. */
+  tabBarClearance: '88px',
 } as const
 
 // paleta categórica para gráficos SVG próprios

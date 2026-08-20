@@ -8,6 +8,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../mocks/bank_mocks.dart';
 import '../../../shared/rise_in.dart';
 import '../../../shared/simulated_load.dart';
+import '../../../shell/state/prototype_session_store.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../mocks/hub_apps.dart';
@@ -27,6 +28,12 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
   Widget build(BuildContext context) {
     final shell = ref.watch(shellStoreProvider);
     final balanceHidden = shell.balanceHidden;
+    final profile = ref.watch(prototypeSessionProvider).profile;
+    // A pílula de crédito pré-aprovado saiu do header global (ver plano de
+    // UX): irrelevante — e sensível, é uma decisão financeira da fazenda —
+    // para quem está no perfil operacional. Ela permanece só como este card,
+    // e só para administração/sessão sem perfil definido.
+    final showCreditoDestaque = profile != UserAccessProfile.operational;
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.space4),
@@ -102,65 +109,67 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
             ],
           ),
         ),
-        const SizedBox(height: AppSpacing.space6),
+        if (showCreditoDestaque) ...[
+          const SizedBox(height: AppSpacing.space6),
 
-        // Destaque de crédito — deep link entre módulos.
-        RiseIn(
-          index: 2,
-          child: AppCard(
-            interactive: true,
-            onTap: () => context.go('/credito'),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  alignment: Alignment.center,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.brand600,
+          // Destaque de crédito — deep link entre módulos.
+          RiseIn(
+            index: 2,
+            child: AppCard(
+              interactive: true,
+              onTap: () => context.go('/credito'),
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    alignment: Alignment.center,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.brand600,
+                    ),
+                    child: const Icon(
+                      LucideIcons.handCoins,
+                      size: 22,
+                      color: AppColors.neutral0,
+                    ),
                   ),
-                  child: const Icon(
-                    LucideIcons.handCoins,
-                    size: 22,
-                    color: AppColors.neutral0,
+                  const SizedBox(width: AppSpacing.space3),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Crédito Agro'),
+                            SizedBox(width: AppSpacing.space2),
+                            AppChip(
+                              tone: AppChipTone.brand,
+                              child: Text('Pré-aprovado'),
+                            ),
+                          ],
+                        ),
+                        Text(
+                          CreditoPreaprovado.valor,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          CreditoPreaprovado.condicao,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(width: AppSpacing.space3),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('Crédito Agro'),
-                          SizedBox(width: AppSpacing.space2),
-                          AppChip(
-                            tone: AppChipTone.brand,
-                            child: Text('Pré-aprovado'),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        CreditoPreaprovado.valor,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(
-                        CreditoPreaprovado.condicao,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(LucideIcons.arrowRight, size: 18),
-              ],
+                  const Icon(LucideIcons.arrowRight, size: 18),
+                ],
+              ),
             ),
           ),
-        ),
+        ],
         const SizedBox(height: AppSpacing.space6),
 
         // Grid de mini-apps — injeção contínua via catálogo.
