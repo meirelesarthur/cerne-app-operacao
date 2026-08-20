@@ -6,6 +6,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'field_capsule.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 
 class AppSearchSelectOption {
@@ -47,13 +48,27 @@ class AppSearchSelect extends StatefulWidget {
 
 class _AppSearchSelectState extends State<AppSearchSelect> {
   final _queryController = TextEditingController();
+
+  /// O anel de foco é pintado pela cápsula, então o estado de foco precisa ser
+  /// observável aqui.
+  final _queryFocusNode = FocusNode();
   String _query = '';
 
   @override
+  void initState() {
+    super.initState();
+    _queryFocusNode.addListener(_handleFocusChange);
+  }
+
+  @override
   void dispose() {
+    _queryFocusNode.removeListener(_handleFocusChange);
+    _queryFocusNode.dispose();
     _queryController.dispose();
     super.dispose();
   }
+
+  void _handleFocusChange() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -66,44 +81,32 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextField(
-          controller: _queryController,
-          onChanged: (v) => setState(() => _query = v),
-          style: TextStyle(
-            fontFamily: AppTypography.fontFamily,
-            fontSize: AppTypography.md,
-            color: semantic.fgDefault,
-          ),
-          decoration: InputDecoration(
-            isDense: true,
-            filled: true,
-            fillColor: semantic.bgSubtle,
-            hintText: widget.placeholder,
-            hintStyle: TextStyle(
+        // Cápsula compartilhada: garante os 48px reais (o `InputDecorator`
+        // dimensiona a própria decoração pelo conteúdo, não pelas constraints).
+        AppFieldCapsule(
+          focused: _queryFocusNode.hasFocus,
+          horizontalPadding: AppSpacing.space4,
+          leading: Icon(LucideIcons.search, size: 16, color: semantic.fgSubtle),
+          child: TextField(
+            controller: _queryController,
+            focusNode: _queryFocusNode,
+            onChanged: (v) => setState(() => _query = v),
+            style: TextStyle(
               fontFamily: AppTypography.fontFamily,
               fontSize: AppTypography.md,
-              color: semantic.fgSubtle,
+              color: semantic.fgDefault,
             ),
-            prefixIcon: Icon(
-              LucideIcons.search,
-              size: 16,
-              color: semantic.fgSubtle,
-            ),
-            constraints: const BoxConstraints(minHeight: AppSpacing.space12),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.space4,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.full),
-              borderSide: BorderSide.none,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.full),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(AppRadius.full),
-              borderSide: BorderSide(color: semantic.accentDefault, width: 2),
+            decoration: InputDecoration(
+              isCollapsed: true,
+              filled: false,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.zero,
+              hintText: widget.placeholder,
+              hintStyle: TextStyle(
+                fontFamily: AppTypography.fontFamily,
+                fontSize: AppTypography.md,
+                color: semantic.fgSubtle,
+              ),
             ),
           ),
         ),

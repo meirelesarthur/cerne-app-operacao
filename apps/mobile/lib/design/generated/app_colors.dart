@@ -89,17 +89,17 @@ class AppColorsLight {
   static const Color fgMuted = Color(0xFF66716A);
   static const Color fgSubtle = Color(0xFF99A39C);
   static const Color fgInverse = Color(0xFFFFFFFF);
-  static const Color bgCanvas = Color(0xFFF0F1EA);
+  static const Color bgCanvas = Color(0xFFF5F5F5);
   static const Color bgSurface = Color(0xFFFFFFFF);
-  static const Color bgSubtle = Color(0xFFF5F6F0);
+  static const Color bgSubtle = Color(0xFFF5F5F5);
   static const Color bgRaised = Color(0xFFFFFFFF);
   static const Color bgKpi = Color(0xFFF8FFFE);
   static const Color borderDefault = Color(0xFFE8E9E1);
   static const Color borderStrong = Color(0xFFD6D8CE);
   static const Color borderSubtle = Color(0xFFF0F1EA);
   static const Color borderTint = Color(0xFFDCFCE7);
-  static const Color accentDefault = Color(0xFF059669);
-  static const Color accentHover = Color(0xFF047857);
+  static const Color accentDefault = Color(0xFF047857);
+  static const Color accentHover = Color(0xFF065F46);
   static const Color accentSubtle = Color(0xFFF0FDF4);
   static const Color accentContrast = Color(0xFFFFFFFF);
   static const Color inkBg = Color(0xFF131712);
@@ -108,13 +108,13 @@ class AppColorsLight {
   static const Color inkSubtle = Color(0x66F2F5EE);
   static const Color inkBubble = Color(0x14FFFFFF);
   static const Color inkLine = Color(0x17FFFFFF);
-  static const Color ctaBg = Color(0xFF4ADE80);
-  static const Color ctaHover = Color(0xFF22C55E);
-  static const Color ctaFg = Color(0xFF04150B);
-  static const Color navBg = Color(0xE0F0F1EA);
+  static const Color ctaBg = Color(0xFF047857);
+  static const Color ctaHover = Color(0xFF065F46);
+  static const Color ctaFg = Color(0xFFFFFFFF);
+  static const Color navBg = Color(0xFFFFFFFF);
   static const Color navFg = Color(0xFF67716A);
-  static const Color navActive = Color(0xFF4ADE80);
-  static const Color navBorder = Color(0x14161B17);
+  static const Color navActive = Color(0xFF047857);
+  static const Color navBorder = Color(0xFFE8E9E1);
 }
 
 class AppColorsGbMode {
@@ -143,12 +143,12 @@ class AppColorsGbMode {
   static const Color inkSubtle = Color(0x66E9F4ED);
   static const Color inkBubble = Color(0x0FFFFFFF);
   static const Color inkLine = Color(0x14FFFFFF);
-  static const Color ctaBg = Color(0xFF4ADE80);
-  static const Color ctaHover = Color(0xFF22C55E);
-  static const Color ctaFg = Color(0xFF051008);
-  static const Color navBg = Color(0xE0081A12);
+  static const Color ctaBg = Color(0xFF10B981);
+  static const Color ctaHover = Color(0xFF34D399);
+  static const Color ctaFg = Color(0xFFFFFFFF);
+  static const Color navBg = Color(0xFF0E2A1D);
   static const Color navFg = Color(0xFF8FB3A2);
-  static const Color navActive = Color(0xFF4ADE80);
+  static const Color navActive = Color(0xFF10B981);
   static const Color navBorder = Color(0x1AFFFFFF);
 }
 

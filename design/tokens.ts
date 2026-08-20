@@ -148,10 +148,18 @@ export interface ThemePalette {
 
 export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
   light: {
+    // Nova UI (referência Força Agro): canvas neutro (era um sage-cream mais
+    // quente) e brand alinhado ao primary/pure exato da referência (#047857
+    // = brand[700], não brand[600]) — usado em bordas de foco, links e ícones
+    // de destaque em todo o app.
     fg: { default: '#161b17', muted: '#66716a', subtle: '#99a39c', inverse: primitive.neutral[0] },
-    bg: { canvas: '#f0f1ea', surface: primitive.neutral[0], subtle: '#f5f6f0', raised: primitive.neutral[0], kpi: '#f8fffe' },
+    // `subtle` (fundo de inputs/pills) igual ao canvas: input sobre canvas
+    // continuava com contraste (canvas != surface), mas sobre um AppCard
+    // branco (bg.surface) o preenchimento ficava quase idêntico ao card e o
+    // campo lia como "só borda, sem fundo" — daí usar o mesmo neutral[100].
+    bg: { canvas: primitive.neutral[100], surface: primitive.neutral[0], subtle: primitive.neutral[100], raised: primitive.neutral[0], kpi: '#f8fffe' },
     border: { default: '#e8e9e1', strong: '#d6d8ce', subtle: '#f0f1ea', tint: primitive.brand[100] },
-    accent: { default: primitive.brand[600], hover: primitive.brand[700], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
+    accent: { default: primitive.brand[700], hover: primitive.brand[800], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
     ink: {
       bg: '#131712',
       fg: '#f2f5ee',
@@ -160,8 +168,11 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       bubble: 'rgba(255,255,255,0.08)',
       line: 'rgba(255,255,255,0.09)',
     },
-    cta: { bg: primitive.brand[400], hover: primitive.brand[500], fg: '#04150b' },
-    nav: { bg: 'rgba(240,241,234,0.88)', fg: '#67716a', active: primitive.brand[400], border: 'rgba(22,27,23,0.08)' },
+    // Nova UI (referência Força Agro): CTA vira verde sólido + texto branco
+    // (era verde-menta + texto quase-preto); nav deixa de depender de blur/
+    // translucidez e vira cápsula opaca, como a referência.
+    cta: { bg: primitive.brand[700], hover: primitive.brand[800], fg: primitive.neutral[0] },
+    nav: { bg: primitive.neutral[0], fg: '#67716a', active: primitive.brand[700], border: '#e8e9e1' },
     shadow: {
       card: '0 1px 2px rgba(16,21,16,0.03), 0 8px 24px rgba(16,21,16,0.05)',
       cardHover: '0 10px 30px rgba(16,21,16,0.10)',
@@ -181,8 +192,10 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       bubble: 'rgba(255,255,255,0.06)',
       line: 'rgba(255,255,255,0.08)',
     },
-    cta: { bg: primitive.brand[400], hover: primitive.brand[500], fg: '#051008' },
-    nav: { bg: 'rgba(8,26,18,0.88)', fg: '#8fb3a2', active: primitive.brand[400], border: 'rgba(255,255,255,0.10)' },
+    // gbMode mantém a identidade escura, mas segue a mesma direção: CTA/ativo
+    // do dock em verde sólido de marca + texto branco, nav em superfície opaca.
+    cta: { bg: '#10b981', hover: '#34d399', fg: primitive.neutral[0] },
+    nav: { bg: '#0e2a1d', fg: '#8fb3a2', active: '#10b981', border: 'rgba(255,255,255,0.10)' },
     shadow: {
       card: '0 1px 3px rgba(0,0,0,0.4)',
       cardHover: '0 6px 16px rgba(0,0,0,0.5)',
@@ -242,7 +255,7 @@ export const size = {
   control: '44px',
   controlSm: '36px',
   controlLg: '52px',
-  btn: { sm: '44px', md: '44px', lg: '52px' },
+  btn: { sm: '44px', md: '44px', lg: '56px' }, // lg alinhado ao botão de CTA da referência (space14)
   iconBtn: { sm: '44px', md: '44px', lg: '48px' },
   toggle: { track: '40px', thumb: '18px' },
   tableRow: '42px',
@@ -324,8 +337,10 @@ export const layout = {
   moduleBarH: '48px',
   tabBarH: '68px',
   gutter: '16px',
-  /** folga inferior dos scrollers para o conteúdo não morrer sob a tab bar flutuante */
-  tabBarClearance: '104px',
+  /** folga inferior dos scrollers para o conteúdo não morrer sob a tab bar flutuante.
+   * Reduzido de 104 (ver plano de melhorias de UX): a folga anterior era maior que o
+   * necessário — dock (68px) + respiro (14px) já cobrem a cápsula flutuante. */
+  tabBarClearance: '88px',
 } as const
 
 // paleta categórica para gráficos SVG próprios

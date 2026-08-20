@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
-import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../components/context_badge.dart';
 import '../functional_catalog.dart';
@@ -137,6 +136,9 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
       );
     }
 
+    final backToRecords =
+        _journey.mode == FunctionalJourneyMode.form && feature.listMode;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -145,49 +147,22 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.space4),
             children: [
-              AppButton(
-                variant: AppButtonVariant.ghost,
-                leftIcon: const Icon(
-                  LucideIcons.arrowLeft,
-                  size: AppSpacing.space4,
-                ),
-                onPressed:
-                    _journey.mode == FunctionalJourneyMode.form &&
-                        feature.listMode
-                    ? _showList
-                    : () => context.go(widget.centerRoute),
-                child: Text(
-                  _journey.mode == FunctionalJourneyMode.form
-                      ? 'Voltar aos registros'
-                      : 'Voltar ao ambiente',
-                ),
-              ),
-              const SizedBox(height: AppSpacing.space3),
               _FeatureIntroduction(
                 feature: feature,
                 formMode: _journey.mode == FunctionalJourneyMode.form,
+                onBack: backToRecords
+                    ? _showList
+                    : () => context.go(widget.centerRoute),
+                backLabel: backToRecords
+                    ? 'Voltar aos registros'
+                    : 'Voltar ao ambiente',
               ),
               const SizedBox(height: AppSpacing.space4),
-              if (feature.capabilities.isNotEmpty) ...[
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const AppSectionTitle(child: Text('Recursos envolvidos')),
-                      const SizedBox(height: AppSpacing.space3),
-                      Wrap(
-                        spacing: AppSpacing.space2,
-                        runSpacing: AppSpacing.space2,
-                        children: [
-                          for (final capability in feature.capabilities)
-                            AppTag(child: Text(capability)),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.space4),
-              ],
+              // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
+              // daqui (ver plano de UX): quando a função usa hardware
+              // simulado, o próprio `AppHardwareSimulator` já mostra isso
+              // mais abaixo, na hora de usar — listar de novo antes, em
+              // termos técnicos, só adiantava jargão sem ajudar a decisão.
               if (feature.auditExport case final auditExport?)
                 _AuditExportJourney(kind: auditExport)
               else if (feature.listMode &&
@@ -197,7 +172,11 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   records: ref
                       .watch(prototypeRecordsProvider)
                       .recordsFor(dataSourceId),
-                  canCreate: isOperational && feature.fields.isNotEmpty,
+                  // banco-real: administração pode criar quando a própria tela
+                  // declara campos (ex.: Produtos) — deixou de ser exclusivo do
+                  // perfil operacional. Ver
+                  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+                  canCreate: feature.fields.isNotEmpty,
                   onCreate: _startForm,
                 )
               else
@@ -288,46 +267,35 @@ const _livestockAuditRows = <Map<String, String>>[
 ];
 
 class _FeatureIntroduction extends StatelessWidget {
-  const _FeatureIntroduction({required this.feature, required this.formMode});
+  const _FeatureIntroduction({
+    required this.feature,
+    required this.formMode,
+    required this.onBack,
+    required this.backLabel,
+  });
 
   final FeatureDefinition feature;
   final bool formMode;
+  final VoidCallback onBack;
+  final String backLabel;
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final administration = feature.profile == FeatureProfile.administration;
+    // As chips de perfil ("Operação"/"Administração") e de status
+    // ("Funcional no protótipo") saíram do topo: a primeira repetia o ambiente
+    // em que a pessoa já entrou e a segunda é informação de desenvolvimento,
+    // não do usuário em campo. O padrão do topo é título + voltar à esquerda.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Wrap(
-          spacing: AppSpacing.space2,
-          runSpacing: AppSpacing.space2,
-          children: [
-            AppChip(
-              tone: administration ? AppChipTone.blue : AppChipTone.brand,
-              child: Text(administration ? 'Administração' : 'Operação'),
-            ),
-            AppChip(
-              tone: feature.status == FeatureStatus.hardware
-                  ? AppChipTone.amber
-                  : AppChipTone.brand,
-              child: Text(
-                feature.status == FeatureStatus.hardware
-                    ? 'Simulação de hardware'
-                    : 'Funcional no protótipo',
-              ),
-            ),
-          ],
+        AppScreenHeader(
+          title: formMode
+              ? feature.createAction ?? feature.title
+              : feature.title,
+          description: feature.objective,
+          onBack: onBack,
+          backLabel: backLabel,
         ),
-        const SizedBox(height: AppSpacing.space3),
-        AppHeading(
-          child: Text(
-            formMode ? feature.createAction ?? feature.title : feature.title,
-          ),
-        ),
-        const SizedBox(height: AppSpacing.space1),
-        Text(feature.objective, style: TextStyle(color: semantic.fgMuted)),
         if (feature.sourceDetail case final detail?) ...[
           const SizedBox(height: AppSpacing.space3),
           AppBanner(child: Text(detail)),

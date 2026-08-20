@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_spacing.dart';
 import '../../ui/ui.dart';
 
-/// Espelha `SubPageHeader.tsx` — bolha circular de voltar + título centralizado
-/// sobre o canvas, usado pelas páginas secundárias do shell (Perfil, Notificações, Login).
+/// Cabeçalho das páginas secundárias do shell e dos fluxos de módulo (Perfil,
+/// Notificações, Pedidos, fluxos do Bank, etc.).
+///
+/// Hoje é só a moldura de espaçamento em volta de [AppScreenHeader]: o layout do
+/// topo (voltar à esquerda do título) mora no catálogo, para o app ter **um**
+/// padrão de cabeçalho. Antes este widget desenhava o seu próprio topo com o
+/// título centralizado, enquanto outras telas colocavam o voltar numa linha
+/// acima do título — dois padrões diferentes no mesmo app.
 class SubPageHeader extends StatelessWidget {
   const SubPageHeader({
     super.key,
@@ -25,23 +30,10 @@ class SubPageHeader extends StatelessWidget {
         horizontal: AppSpacing.space4,
         vertical: AppSpacing.space3,
       ),
-      child: Row(
-        children: [
-          AppIconButton(
-            label: 'Voltar',
-            variant: AppIconButtonVariant.solid,
-            size: AppIconButtonSize.lg,
-            onPressed: onBack ?? () => Navigator.of(context).maybePop(),
-            icon: const Icon(LucideIcons.arrowLeft, size: 20),
-          ),
-          Expanded(
-            child: AppHeading(
-              level: AppHeadingLevel.h3,
-              child: Text(title, textAlign: TextAlign.center),
-            ),
-          ),
-          action ?? const SizedBox(width: 48, height: 48),
-        ],
+      child: AppScreenHeader(
+        title: title,
+        onBack: onBack ?? () => Navigator.of(context).maybePop(),
+        action: action,
       ),
     );
   }

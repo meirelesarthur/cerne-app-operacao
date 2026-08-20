@@ -183,6 +183,116 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
       },
     ),
   ],
+  // banco-real (onda 2): dado sintético inspirado nas categorias e na ordem de
+  // grandeza reais de `products` (543.983 linhas no dump gbcerne) — nenhum
+  // registro copiado do banco de produção. Ver
+  // docs/ajustes-banco-real/02-oportunidades-banco-real.md, seção 2.6.
+  'consulta-produtos': [
+    PrototypeRecord(
+      id: 'produto-1',
+      title: 'Ração Engorda 18%',
+      description: 'Nutrição · kg · custo médio R\$ 2,38/kg',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Categoria': 'Nutrição',
+        'Unidade': 'kg',
+        'Custo médio': 'R\$ 2,38',
+        'Preço de mercado': 'R\$ 2,55',
+        'Estoque mínimo': '2.000 kg',
+      },
+    ),
+    PrototypeRecord(
+      id: 'produto-2',
+      title: 'Sal Mineral Proteinado',
+      description: 'Nutrição · kg · custo médio R\$ 4,90/kg',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Categoria': 'Nutrição',
+        'Unidade': 'kg',
+        'Custo médio': 'R\$ 4,90',
+        'Preço de mercado': 'R\$ 5,20',
+        'Estoque mínimo': '500 kg',
+      },
+    ),
+    PrototypeRecord(
+      id: 'produto-3',
+      title: 'Vacina Aftosa',
+      description: 'Sanitário · dose · custo médio R\$ 3,10/dose',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Categoria': 'Sanitário',
+        'Unidade': 'dose',
+        'Custo médio': 'R\$ 3,10',
+        'Preço de mercado': 'R\$ 3,40',
+        'Estoque mínimo': '200 doses',
+      },
+    ),
+    PrototypeRecord(
+      id: 'produto-4',
+      title: 'Vermífugo Injetável',
+      description: 'Sanitário · frasco 500ml · custo médio R\$ 68,00',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Categoria': 'Sanitário',
+        'Unidade': 'frasco',
+        'Custo médio': 'R\$ 68,00',
+        'Preço de mercado': 'R\$ 74,90',
+        'Estoque mínimo': '20 frascos',
+      },
+    ),
+    PrototypeRecord(
+      id: 'produto-5',
+      title: 'Diesel S10',
+      description: 'Combustível · L · custo médio R\$ 6,12/L',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Categoria': 'Combustível',
+        'Unidade': 'L',
+        'Custo médio': 'R\$ 6,12',
+        'Preço de mercado': 'R\$ 6,35',
+        'Estoque mínimo': '1.000 L',
+      },
+    ),
+    PrototypeRecord(
+      id: 'produto-6',
+      title: 'Semente de Braquiária',
+      description: 'Agrícola · kg · custo médio R\$ 18,50/kg',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Categoria': 'Agrícola',
+        'Unidade': 'kg',
+        'Custo médio': 'R\$ 18,50',
+        'Preço de mercado': 'R\$ 21,00',
+        'Estoque mínimo': '300 kg',
+      },
+    ),
+    PrototypeRecord(
+      id: 'produto-7',
+      title: 'Fertilizante NPK 20-05-20',
+      description: 'Agrícola · saca 50 kg · custo médio R\$ 189,00',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Categoria': 'Agrícola',
+        'Unidade': 'saca',
+        'Custo médio': 'R\$ 189,00',
+        'Preço de mercado': 'R\$ 205,00',
+        'Estoque mínimo': '100 sacas',
+      },
+    ),
+    PrototypeRecord(
+      id: 'produto-8',
+      title: 'Filtro de óleo — trator',
+      description: 'Peça de equipamento · unidade · custo médio R\$ 42,00',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Categoria': 'Peça de equipamento',
+        'Unidade': 'unidade',
+        'Custo médio': 'R\$ 42,00',
+        'Preço de mercado': 'R\$ 49,90',
+        'Estoque mínimo': '10 unidades',
+      },
+    ),
+  ],
   'minhas-os': [
     PrototypeRecord(
       id: 'os-1',

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/shell/module_config.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
@@ -30,8 +31,44 @@ void main() {
     test(
       'getMenuSections cai no fallback derivado das bottomTabs quando ausente',
       () {
-        final inicio = getModule('inicio')!;
-        final sections = getMenuSections(inicio);
+        // Nenhum dos 6 módulos reais deixa `menuSections` ausente hoje (ver
+        // teste abaixo) — o fallback só existe como rede de segurança para um
+        // módulo futuro sem seção própria. Testado aqui com um `ModuleDef`
+        // sintético, não com um módulo real.
+        const synthetic = ModuleDef(
+          id: 'sintetico',
+          label: 'Sintético',
+          icon: LucideIcons.circle,
+          homeRoute: '/sintetico',
+          bottomTabs: [
+            BottomTab(
+              id: 'home',
+              label: 'Início',
+              icon: LucideIcons.home,
+              path: '',
+            ),
+            BottomTab(
+              id: 'apps',
+              label: 'Apps',
+              icon: LucideIcons.layoutGrid,
+              path: 'apps',
+            ),
+            BottomTab(
+              id: 'carteira',
+              label: 'Carteira',
+              icon: LucideIcons.wallet,
+              path: 'carteira',
+            ),
+            BottomTab(
+              id: 'menu',
+              label: 'Menu',
+              icon: LucideIcons.menu,
+              path: 'menu',
+              action: 'menu',
+            ),
+          ],
+        );
+        final sections = getMenuSections(synthetic);
         expect(sections, hasLength(1));
         expect(sections.first.title, 'Funcionalidades');
         // 'menu' tem action e é excluído; '' (home) também é excluído por path vazio.
@@ -40,6 +77,17 @@ void main() {
           containsAll(['apps', 'carteira']),
         );
         expect(sections.first.items.map((i) => i.id), isNot(contains('menu')));
+      },
+    );
+
+    test(
+      'Início e Fazendas não repetem as próprias abas no menu "Mais" (ver plano de UX)',
+      () {
+        // Ambos declaram `menuSections: []` — o menu "reveal" desses módulos
+        // vira só a seção CONTA (perfil/tema/conexão/sair), sem duplicar as
+        // abas de contexto já visíveis no topo.
+        expect(getMenuSections(getModule('inicio')!), isEmpty);
+        expect(getMenuSections(getModule('fazendas')!), isEmpty);
       },
     );
 

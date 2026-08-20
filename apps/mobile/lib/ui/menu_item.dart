@@ -29,6 +29,7 @@ class AppMenuItem extends StatelessWidget {
     this.active = false,
     this.tone = AppMenuItemTone.standard,
     this.variant = AppMenuItemVariant.light,
+    this.showShadow = true,
     this.onTap,
   });
 
@@ -39,6 +40,11 @@ class AppMenuItem extends StatelessWidget {
   final bool active;
   final AppMenuItemTone tone;
   final AppMenuItemVariant variant;
+
+  /// Sombra do card quando `light`/inativo (`shadowCard`). Telas com muitos
+  /// itens em sequência (ex.: `GroupFeaturesScreen`) podem desligar para uma
+  /// lista mais plana, sem repetir a mesma sombra a cada linha.
+  final bool showShadow;
   final VoidCallback? onTap;
 
   bool get _isDanger => tone == AppMenuItemTone.danger;
@@ -84,7 +90,7 @@ class AppMenuItem extends StatelessWidget {
             horizontal: AppSpacing.space3,
             vertical: AppSpacing.space2,
           ),
-          decoration: !active && !_isOnDark
+          decoration: !active && !_isOnDark && showShadow
               ? BoxDecoration(
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                   boxShadow: semantic.shadowCard,

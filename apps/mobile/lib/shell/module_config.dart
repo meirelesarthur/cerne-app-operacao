@@ -165,6 +165,11 @@ const List<ModuleDef> modules = [
         action: 'menu',
       ),
     ],
+    // Vazio, não omitido (ver plano de UX): sem isso, o menu "reveal" cai no
+    // fallback de `getMenuSections` — que deriva a lista das próprias
+    // `bottomTabs` — e mostra de novo "Apps"/"Carteira" ali dentro, que já são
+    // abas visíveis no topo. O menu "Mais" deste módulo vira só a seção CONTA.
+    menuSections: [],
   ),
   ModuleDef(
     id: 'fazendas',
@@ -213,99 +218,14 @@ const List<ModuleDef> modules = [
         action: 'menu',
       ),
     ],
-    menuSections: [
-      ModuleMenuSection(
-        title: 'Ambiente',
-        items: [
-          ModuleMenuItem(
-            id: 'central-administracao',
-            label: 'Central de gestão',
-            icon: LucideIcons.layoutDashboard,
-            route: '/fazendas/administracao',
-            profiles: {UserAccessProfile.administration},
-          ),
-          ModuleMenuItem(
-            id: 'central-operacional',
-            label: 'Central de rotinas',
-            icon: LucideIcons.clipboardList,
-            route: '/fazendas/operacional',
-            profiles: {UserAccessProfile.operational},
-          ),
-        ],
-      ),
-      ModuleMenuSection(
-        title: 'Dashboards gerenciais',
-        items: [
-          ModuleMenuItem(
-            id: 'financeiro',
-            label: 'Financeiro',
-            icon: LucideIcons.wallet,
-            route: '/fazendas/dashboards/financeiro',
-            profiles: {UserAccessProfile.administration},
-          ),
-          ModuleMenuItem(
-            id: 'pecuaria',
-            label: 'Pecuária de Corte',
-            icon: LucideIcons.beef,
-            route: '/fazendas/dashboards/pecuaria',
-            profiles: {UserAccessProfile.administration},
-          ),
-          ModuleMenuItem(
-            id: 'confinamento',
-            label: 'Lotação de Currais',
-            icon: LucideIcons.warehouse,
-            route: '/fazendas/dashboards/confinamento',
-            profiles: {UserAccessProfile.administration},
-          ),
-          ModuleMenuItem(
-            id: 'ativos',
-            label: 'Ativos / Depreciação',
-            icon: LucideIcons.package,
-            route: '/fazendas/dashboards/ativos',
-            profiles: {UserAccessProfile.administration},
-          ),
-          ModuleMenuItem(
-            id: 'suprimentos',
-            label: 'Suprimentos',
-            icon: LucideIcons.boxes,
-            route: '/fazendas/dashboards/suprimentos',
-            profiles: {UserAccessProfile.administration},
-          ),
-          ModuleMenuItem(
-            id: 'uso',
-            label: 'Análise de Uso',
-            icon: LucideIcons.users,
-            route: '/fazendas/dashboards/uso',
-            profiles: {UserAccessProfile.administration},
-          ),
-          ModuleMenuItem(
-            id: 'consultas',
-            label: 'Consultas Gerenciais',
-            icon: LucideIcons.search,
-            route: '/fazendas/dashboards/consultas',
-            profiles: {UserAccessProfile.administration},
-          ),
-        ],
-      ),
-      ModuleMenuSection(
-        title: 'Operacional',
-        items: [
-          ModuleMenuItem(
-            id: 'sync',
-            label: 'Fila de sincronização',
-            icon: LucideIcons.refreshCw,
-            route: '/fazendas/mais/sync',
-            profiles: {UserAccessProfile.operational},
-          ),
-          ModuleMenuItem(
-            id: 'atividades',
-            label: 'Todas as atividades',
-            icon: LucideIcons.activity,
-            route: '/fazendas/atividades',
-          ),
-        ],
-      ),
-    ],
+    // Vazio, não omitido (ver plano de UX): toda esta lista duplicava algo
+    // que já existe em outro lugar — "Central de gestão/rotinas" é a própria
+    // aba de contexto ativa; os 7 "Dashboards gerenciais" já são o grupo
+    // "Painéis de decisão"/"Consultas e auditoria" da central; "Fila de
+    // sincronização" já é o grupo "Sincronização"; "Todas as atividades" já é
+    // a aba "Atividades". Dois caminhos para o mesmo destino não é
+    // conveniência, é a pessoa não saber se são a mesma coisa.
+    menuSections: [],
   ),
   ModuleDef(
     id: 'bank',
@@ -346,6 +266,9 @@ const List<ModuleDef> modules = [
       ),
     ],
     menuSections: [
+      // Pix não é aba (só Extrato/Pagamentos/Cartões são) — fica. Pagamentos,
+      // Extrato e Cartões saíram daqui: já são abas de contexto visíveis no
+      // topo, repeti-las no menu "Mais" era o mesmo destino duas vezes.
       ModuleMenuSection(
         title: 'Pagamentos e transferências',
         items: [
@@ -355,29 +278,11 @@ const List<ModuleDef> modules = [
             icon: LucideIcons.zap,
             route: '/bank/pix',
           ),
-          ModuleMenuItem(
-            id: 'pagamentos',
-            label: 'Pagamentos',
-            icon: LucideIcons.receipt,
-            route: '/bank/pagamentos',
-          ),
-          ModuleMenuItem(
-            id: 'extrato',
-            label: 'Extrato',
-            icon: LucideIcons.history,
-            route: '/bank/extrato',
-          ),
         ],
       ),
       ModuleMenuSection(
         title: 'Cartão',
         items: [
-          ModuleMenuItem(
-            id: 'cartoes',
-            label: 'Cartões',
-            icon: LucideIcons.creditCard,
-            route: '/bank/cartoes',
-          ),
           ModuleMenuItem(
             id: 'limites',
             label: 'Limites',
@@ -432,21 +337,11 @@ const List<ModuleDef> modules = [
       ),
     ],
     menuSections: [
+      // Simular e Propostas saíram: já são abas de contexto no topo.
+      // Contratos não é aba — fica.
       ModuleMenuSection(
         title: 'Crédito',
         items: [
-          ModuleMenuItem(
-            id: 'simular',
-            label: 'Simular',
-            icon: LucideIcons.calculator,
-            route: '/credito/simular',
-          ),
-          ModuleMenuItem(
-            id: 'propostas',
-            label: 'Propostas',
-            icon: LucideIcons.clipboardList,
-            route: '/credito/propostas',
-          ),
           ModuleMenuItem(
             id: 'contratos',
             label: 'Contratos',
@@ -501,21 +396,11 @@ const List<ModuleDef> modules = [
       ),
     ],
     menuSections: [
+      // Categorias e Pedidos saíram: já são abas de contexto no topo.
+      // Favoritos não é aba — fica.
       ModuleMenuSection(
         title: 'Compras',
         items: [
-          ModuleMenuItem(
-            id: 'categorias',
-            label: 'Categorias',
-            icon: LucideIcons.layoutGrid,
-            route: '/marketplace/categorias',
-          ),
-          ModuleMenuItem(
-            id: 'pedidos',
-            label: 'Pedidos',
-            icon: LucideIcons.package,
-            route: '/marketplace/pedidos',
-          ),
           ModuleMenuItem(
             id: 'favoritos',
             label: 'Favoritos',
@@ -570,21 +455,11 @@ const List<ModuleDef> modules = [
       ),
     ],
     menuSections: [
+      // Estoque e Movimentações saíram: já são abas de contexto no topo.
+      // Unidades não é aba — fica.
       ModuleMenuSection(
         title: 'Operação',
         items: [
-          ModuleMenuItem(
-            id: 'estoque',
-            label: 'Estoque',
-            icon: LucideIcons.boxes,
-            route: '/armazem/estoque',
-          ),
-          ModuleMenuItem(
-            id: 'movimentacoes',
-            label: 'Movimentações',
-            icon: LucideIcons.arrowLeftRight,
-            route: '/armazem/movimentacoes',
-          ),
           ModuleMenuItem(
             id: 'unidades',
             label: 'Unidades',
@@ -611,3 +486,16 @@ const List<ModuleDef> modules = [
 final Map<String, ModuleDef> moduleMap = {for (final m in modules) m.id: m};
 
 ModuleDef? getModule(String? id) => id == null ? null : moduleMap[id];
+
+/// Módulos exibidos no dock global para o perfil da sessão (ver plano de
+/// melhorias de UX): o perfil operacional (mão de obra de campo) só precisa
+/// de Início, Fazendas e Armazém — Bank, Crédito e Marketplace ficam fora do
+/// dock (e, por consequência, também não aparecem como opção de navegação
+/// cruzada para quem não decide sobre eles). Administração continua vendo
+/// todos os módulos, igual a hoje.
+const _operationalDockIds = {'inicio', 'fazendas', 'armazem'};
+
+List<ModuleDef> visibleModulesFor(UserAccessProfile? profile) {
+  if (profile != UserAccessProfile.operational) return modules;
+  return modules.where((m) => _operationalDockIds.contains(m.id)).toList();
+}

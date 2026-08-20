@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'design/generated/app_colors.dart';
@@ -9,6 +11,10 @@ import 'design/theme/app_theme.dart';
 import 'design/theme/app_theme_extension.dart';
 import 'shared/url_strategy.dart';
 import 'ui/ui.dart';
+import 'widgetbook/patterns/crud_pattern.dart';
+import 'widgetbook/patterns/listing_pattern.dart';
+import 'widgetbook/patterns/login_pattern.dart';
+import 'widgetbook/patterns/menu_pattern.dart';
 
 /// Ponto de entrada da galeria de componentes (F2.5) e da auditoria de tema (F1.4).
 /// Rodar: `flutter run -t lib/widgetbook_app.dart -d chrome`.
@@ -54,6 +60,19 @@ class CerneWidgetbook extends StatelessWidget {
               name: 'Tipografia',
               builder: (context) => const _TypographyAuditPage(),
             ),
+          ],
+        ),
+        WidgetbookFolder(
+          name: 'Documentação',
+          children: [buildCodePreviewWidgetbookComponent()],
+        ),
+        WidgetbookFolder(
+          name: 'Padrões',
+          children: [
+            buildLoginPatternWidgetbookComponent(),
+            buildListingPatternWidgetbookComponent(),
+            buildMenuPatternWidgetbookComponent(),
+            buildCrudPatternWidgetbookComponent(),
           ],
         ),
         WidgetbookFolder(
@@ -127,6 +146,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildChipWidgetbookComponent(),
                 buildTagWidgetbookComponent(),
                 buildAvatarWidgetbookComponent(),
+                buildScreenHeaderWidgetbookComponent(),
                 buildHeadingWidgetbookComponent(),
                 buildPageDotsWidgetbookComponent(),
                 buildIllustrationSlotWidgetbookComponent(),
@@ -170,37 +190,96 @@ class _AuditScaffold extends StatelessWidget {
   }
 }
 
-class _Swatch extends StatelessWidget {
-  const _Swatch({required this.label, required this.color});
+/// Amostra de cor no audit do Widgetbook. [code] é a referência Dart
+/// totalmente qualificada (ex.: `AppColors.brand600`) — toque para copiar,
+/// igual ao painel [AppCodePreview] usado nos demais componentes.
+class _Swatch extends StatefulWidget {
+  const _Swatch({required this.label, required this.code, required this.color});
 
   final String label;
+  final String code;
   final Color color;
+
+  @override
+  State<_Swatch> createState() => _SwatchState();
+}
+
+class _SwatchState extends State<_Swatch> {
+  bool _copied = false;
+
+  Future<void> _copy() async {
+    await Clipboard.setData(ClipboardData(text: widget.code));
+    if (!mounted) return;
+    setState(() => _copied = true);
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) setState(() => _copied = false);
+    });
+  }
+
+  String get _hex =>
+      '#${widget.color.toARGB32().toRadixString(16).padLeft(8, '0').substring(2)}';
 
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    return Container(
-      width: 96,
-      padding: const EdgeInsets.all(AppSpacing.space2),
-      decoration: BoxDecoration(
-        color: semantic.bgSurface,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: semantic.borderDefault),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            height: 48,
-            decoration: BoxDecoration(
-              color: color,
-              borderRadius: BorderRadius.circular(AppRadius.sm),
+    return AppPressable(
+      semanticLabel: 'Copiar ${widget.code}',
+      onPressed: _copy,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: Container(
+        width: 128,
+        padding: const EdgeInsets.all(AppSpacing.space2),
+        decoration: BoxDecoration(
+          color: semantic.bgSurface,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          border: Border.all(color: semantic.borderDefault),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Stack(
+              children: [
+                Container(
+                  height: 48,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: widget.color,
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                  ),
+                ),
+                if (_copied)
+                  Positioned(
+                    top: 4,
+                    right: 4,
+                    child: Icon(
+                      LucideIcons.check,
+                      size: 14,
+                      color: semantic.fgDefault,
+                    ),
+                  ),
+              ],
             ),
-          ),
-          const SizedBox(height: AppSpacing.space1),
-          Text(label, style: Theme.of(context).textTheme.bodySmall),
-        ],
+            const SizedBox(height: AppSpacing.space1),
+            Text(widget.label, style: Theme.of(context).textTheme.bodySmall),
+            Text(
+              widget.code,
+              style: TextStyle(
+                fontFamily: kCodeFontFamily,
+                fontSize: AppTypography.xs,
+                color: semantic.fgMuted,
+              ),
+            ),
+            Text(
+              _hex,
+              style: TextStyle(
+                fontFamily: kCodeFontFamily,
+                fontSize: AppTypography.xs,
+                color: semantic.fgSubtle,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -224,7 +303,13 @@ class _ColorAuditPage extends StatelessWidget {
       700,
       800,
       900,
-    ].map((s) => _Swatch(label: 'brand$s', color: _brandShade(s)));
+    ].map(
+      (s) => _Swatch(
+        label: 'brand$s',
+        code: 'AppColors.brand$s',
+        color: _brandShade(s),
+      ),
+    );
 
     final semanticColors = <String, Color>{
       'fgDefault': semantic.fgDefault,
@@ -262,7 +347,13 @@ class _ColorAuditPage extends StatelessWidget {
           spacing: AppSpacing.space2,
           runSpacing: AppSpacing.space2,
           children: semanticColors.entries
-              .map((e) => _Swatch(label: e.key, color: e.value))
+              .map(
+                (e) => _Swatch(
+                  label: e.key,
+                  code: 'semantic.${e.key}',
+                  color: e.value,
+                ),
+              )
               .toList(),
         ),
       ],
@@ -309,8 +400,10 @@ class _SpacingAuditPage extends StatelessWidget {
       'xl2': AppRadius.xl2,
       'xl3': AppRadius.xl3,
       'xl4': AppRadius.xl4,
+      // exibido com raio visual limitado a 32 (o real é 9999 — cápsula/pílula)
       'full': 32,
     };
+    const radiusLabelOverride = {'full': '9999px (cápsula)'};
 
     return _AuditScaffold(
       title: 'Espaçamento e raio',
@@ -322,7 +415,13 @@ class _SpacingAuditPage extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: AppSpacing.space2),
             child: Row(
               children: [
-                SizedBox(width: 80, child: Text(e.key)),
+                SizedBox(
+                  width: 190,
+                  child: Text(
+                    'AppSpacing.${e.key}  (${e.value.toInt()}px)',
+                    style: const TextStyle(fontFamily: kCodeFontFamily, fontSize: AppTypography.sm),
+                  ),
+                ),
                 Container(
                   width: e.value,
                   height: 16,
@@ -341,17 +440,31 @@ class _SpacingAuditPage extends StatelessWidget {
           children: radii.entries
               .map(
                 (e) => Container(
-                  width: 72,
-                  height: 72,
+                  width: 96,
+                  height: 84,
                   alignment: Alignment.center,
+                  padding: const EdgeInsets.all(AppSpacing.space1),
                   decoration: BoxDecoration(
                     color: semantic.bgSurface,
                     border: Border.all(color: semantic.borderDefault),
                     borderRadius: BorderRadius.circular(e.value),
                   ),
-                  child: Text(
-                    e.key,
-                    style: Theme.of(context).textTheme.bodySmall,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'AppRadius.${e.key}',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: kCodeFontFamily,
+                          fontSize: AppTypography.xs,
+                        ),
+                      ),
+                      Text(
+                        radiusLabelOverride[e.key] ?? '${e.value.toInt()}px',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
                   ),
                 ),
               )
@@ -379,11 +492,11 @@ class _TypographyAuditPage extends StatelessWidget {
       'xl4': AppTypography.xl4,
     };
     final weights = <String, FontWeight>{
-      'normal (400)': AppTypography.weightNormal,
-      'medium (500)': AppTypography.weightMedium,
-      'semibold (600)': AppTypography.weightSemibold,
-      'bold (700)': AppTypography.weightBold,
-      'extrabold (800)': AppTypography.weightExtrabold,
+      'weightNormal (400)': AppTypography.weightNormal,
+      'weightMedium (500)': AppTypography.weightMedium,
+      'weightSemibold (600)': AppTypography.weightSemibold,
+      'weightBold (700)': AppTypography.weightBold,
+      'weightExtrabold (800)': AppTypography.weightExtrabold,
     };
 
     return _AuditScaffold(
@@ -394,9 +507,22 @@ class _TypographyAuditPage extends StatelessWidget {
         ...sizes.entries.map(
           (e) => Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.space2),
-            child: Text(
-              '${e.key} (${e.value}px) — GB CERNE',
-              style: TextStyle(fontSize: e.value),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                SizedBox(
+                  width: 150,
+                  child: Text(
+                    'AppTypography.${e.key}',
+                    style: const TextStyle(
+                      fontFamily: kCodeFontFamily,
+                      fontSize: AppTypography.xs,
+                    ),
+                  ),
+                ),
+                Text('GB CERNE (${e.value}px)', style: TextStyle(fontSize: e.value)),
+              ],
             ),
           ),
         ),
@@ -406,9 +532,25 @@ class _TypographyAuditPage extends StatelessWidget {
         ...weights.entries.map(
           (e) => Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.space2),
-            child: Text(
-              '${e.key} — GB CERNE',
-              style: TextStyle(fontSize: AppTypography.xl, fontWeight: e.value),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                SizedBox(
+                  width: 190,
+                  child: Text(
+                    'AppTypography.${e.key.split(' ').first}',
+                    style: const TextStyle(
+                      fontFamily: kCodeFontFamily,
+                      fontSize: AppTypography.xs,
+                    ),
+                  ),
+                ),
+                Text(
+                  'GB CERNE',
+                  style: TextStyle(fontSize: AppTypography.xl, fontWeight: e.value),
+                ),
+              ],
             ),
           ),
         ),

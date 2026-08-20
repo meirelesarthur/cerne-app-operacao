@@ -84,6 +84,22 @@ class FeatureDefinition {
   final AuditExportKind? auditExport;
 }
 
+// banco-real: única fonte de nomes de produto para todo o catálogo — espelha
+// o cadastro real de `consulta-produtos` (fonte: `products`, 543.983 linhas no
+// dump gbcerne). Todo campo "produto"/"matéria-prima" abaixo busca aqui; só a
+// tela Produtos cria um item novo em campo livre. Ver
+// docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+const catalogoProdutos = <String>[
+  'Ração Engorda 18%',
+  'Sal Mineral Proteinado',
+  'Vacina Aftosa',
+  'Vermífugo Injetável',
+  'Diesel S10',
+  'Semente de Braquiária',
+  'Fertilizante NPK 20-05-20',
+  'Filtro de óleo — trator',
+];
+
 const adminFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'painel-financeiro',
@@ -162,6 +178,10 @@ const adminFeatures = <FeatureDefinition>[
     listMode: true,
     dataSourceId: 'cadastrar-area',
   ),
+  // TODO(banco-real): quando esta consulta ganhar filtro por tipo/classificação
+  // de movimento, checar `stocks.type`/`stock_movements.classification` — sem
+  // tabela de domínio no dump; hoje esta tela ainda não expõe esse filtro.
+  // Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
   FeatureDefinition(
     id: 'saldo-estoque',
     profile: FeatureProfile.administration,
@@ -173,6 +193,64 @@ const adminFeatures = <FeatureDefinition>[
     sourceDetail:
         'Consulta demonstrativa consolidada por item e local de armazenamento.',
     listMode: true,
+  ),
+  // banco-real (onda 2): `products` é a maior tabela do dump gbcerne (543.983
+  // linhas) e não tinha nenhuma tela própria — só aparecia embutida como select
+  // em outras funcionalidades. Ver
+  // docs/ajustes-banco-real/02-oportunidades-banco-real.md, seção 2.6.
+  FeatureDefinition(
+    id: 'consulta-produtos',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Produtos',
+    objective:
+        'Consultar e cadastrar o catálogo de produtos, categorias e custo médio.',
+    status: FeatureStatus.ready,
+    emptyLabel: 'Nenhum produto encontrado para os filtros atuais.',
+    sourceDetail:
+        'Única tela que cria produto em campo livre — Formulações, Batida, Carga e Descarga '
+        'buscam neste catálogo em vez de digitar o nome.',
+    // banco-real: única superfície de criação de produto (campo livre). Todo
+    // outro campo "produto" do catálogo busca em `catalogoProdutos` acima, em
+    // vez de aceitar texto livre — fonte real: `products` (543.983 linhas).
+    fields: [
+      FeatureField(
+        id: 'nome-produto',
+        label: 'Nome do produto',
+        isRequired: true,
+        placeholder: 'Ex.: Ração Engorda 18%',
+      ),
+      FeatureField(
+        id: 'categoria',
+        label: 'Categoria',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: [
+          'Nutrição',
+          'Sanitário',
+          'Combustível',
+          'Agrícola',
+          'Peça de equipamento',
+        ],
+      ),
+      FeatureField(
+        id: 'unidade',
+        label: 'Unidade de medida',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['kg', 't', 'L', 'unidade', 'saca', 'dose', 'frasco'],
+      ),
+      FeatureField(
+        id: 'custo-medio',
+        label: 'Custo médio (R\$)',
+        type: FeatureFieldType.number,
+      ),
+    ],
+    primaryAction: 'Salvar produto',
+    listMode: true,
+    createAction: 'Novo produto',
+    recordTitleField: 'nome-produto',
+    recordDescriptionFields: ['categoria', 'unidade'],
   ),
   FeatureDefinition(
     id: 'processamentos',
@@ -224,6 +302,10 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         placeholder: 'Ex.: Talhão 03',
       ),
+      // TODO(banco-real): `areas.type` é smallint no banco real, sem tabela de
+      // domínio no dump — as opções abaixo são placeholder. Confirmar com o
+      // time web os valores válidos antes de travar este select em produção.
+      // Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
       FeatureField(
         id: 'tipo',
         label: 'Tipo de uso',
@@ -236,6 +318,25 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Área total',
         type: FeatureFieldType.number,
         isRequired: true,
+      ),
+      // banco-real: `areas.productive_area`, `areas.unproductive_area` e
+      // `areas.animal_load` já existem no banco e alimentam o dashboard pecuário
+      // real — faltavam no cadastro. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      FeatureField(
+        id: 'area-produtiva',
+        label: 'Área produtiva',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'area-nao-produtiva',
+        label: 'Área não produtiva',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'carga-animal',
+        label: 'Carga animal (UA/ha)',
+        type: FeatureFieldType.number,
       ),
       FeatureField(
         id: 'unidade',
@@ -293,8 +394,9 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'produto',
         label: 'Produto',
+        type: FeatureFieldType.select,
         isRequired: true,
-        placeholder: 'Selecione ou busque o produto',
+        options: catalogoProdutos,
       ),
       FeatureField(
         id: 'quantidade',
@@ -309,6 +411,11 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['kg', 't', 'L'],
       ),
+      // TODO(banco-real): este campo conflate `diets.type` e `diets.objective`
+      // (duas colunas distintas no banco, ambas sem tabela de domínio no dump).
+      // Confirmar com o time web se devem virar dois selects separados e quais
+      // os valores válidos. Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md,
+      // seção C.
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
@@ -319,7 +426,9 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'materia-prima',
         label: 'Matéria-prima',
+        type: FeatureFieldType.select,
         isRequired: true,
+        options: catalogoProdutos,
       ),
       FeatureField(
         id: 'porcentagem',
@@ -327,14 +436,32 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
+      // banco-real: `diets.cost_per_kg` e `diets.estimated_cost` — dado que o
+      // banco real já calcula e o protótipo não mostrava. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      FeatureField(
+        id: 'custo-por-kg',
+        label: 'Custo por kg (R\$)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'custo-estimado',
+        label: 'Custo estimado (R\$)',
+        type: FeatureFieldType.number,
+      ),
     ],
     sections: ['Matérias-primas'],
     primaryAction: 'Salvar formulação',
     listMode: true,
     createAction: 'Nova formulação',
     recordTitleField: 'produto',
-    recordDescriptionFields: ['quantidade', 'unidade', 'ativo'],
+    recordDescriptionFields: ['quantidade', 'unidade', 'custo-estimado'],
   ),
+  // banco-real: `diet_beats.quantity` (previsto) e `item_diet_beats.quantity_realized`
+  // (realizado) já vêm separados no banco — a diferença entre os dois é o dado mais
+  // valioso desta tela (mostra desvio de batida) e antes ficava resumido em um único
+  // campo "quantidade de referência". Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
   FeatureDefinition(
     id: 'batidas',
     profile: FeatureProfile.operational,
@@ -351,6 +478,10 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
       ),
+      // TODO(banco-real): mesmo campo `tipo` de `formulacoes` — conflate
+      // `item_diet_beats.type`/dieta associada, sem tabela de domínio no dump.
+      // Confirmar valores com o time web antes de travar. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
@@ -365,12 +496,23 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['Armazém A', 'Depósito B', 'Farmácia'],
       ),
-      FeatureField(id: 'produto', label: 'Produto', isRequired: true),
+      FeatureField(
+        id: 'produto',
+        label: 'Produto',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoProdutos,
+      ),
       FeatureField(
         id: 'quantidade',
-        label: 'Quantidade de referência',
+        label: 'Quantidade prevista',
         type: FeatureFieldType.number,
         isRequired: true,
+      ),
+      FeatureField(
+        id: 'quantidade-realizada',
+        label: 'Quantidade realizada',
+        type: FeatureFieldType.number,
       ),
       FeatureField(
         id: 'unidade',
@@ -385,7 +527,7 @@ const operationalFeatures = <FeatureDefinition>[
     listMode: true,
     createAction: 'Nova batida',
     recordTitleField: 'produto',
-    recordDescriptionFields: ['quantidade', 'unidade', 'armazem'],
+    recordDescriptionFields: ['quantidade', 'quantidade-realizada', 'armazem'],
   ),
   FeatureDefinition(
     id: 'conexao-aparelhos',
@@ -424,7 +566,9 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'formulacao',
         label: 'Formulação / produto',
+        type: FeatureFieldType.select,
         isRequired: true,
+        options: catalogoProdutos,
       ),
       FeatureField(id: 'origem', label: 'Armazém de origem', isRequired: true),
       FeatureField(
@@ -469,7 +613,13 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
       ),
-      FeatureField(id: 'produto', label: 'Produto carregado', isRequired: true),
+      FeatureField(
+        id: 'produto',
+        label: 'Produto carregado',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoProdutos,
+      ),
       FeatureField(
         id: 'destino',
         label: 'Área / cocho de destino',
@@ -610,6 +760,11 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'nome',
     recordDescriptionFields: ['unidade', 'tolerancia', 'alerta'],
   ),
+  // banco-real: a fonte de verdade real desta funcionalidade é a tabela
+  // `service_orders` (responsável, execução e resultado), não `planning_activities`
+  // (que só liga atividade a operação, sem responsável). Os campos de prazo e
+  // resultado abaixo já seguem o formato de `service_orders`. Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
   FeatureDefinition(
     id: 'apontamento',
     profile: FeatureProfile.operational,
@@ -658,6 +813,21 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.select,
         isRequired: true,
         options: ['Armazém A', 'Depósito B'],
+      ),
+      FeatureField(
+        id: 'prazo',
+        label: 'Prazo de execução',
+        type: FeatureFieldType.date,
+      ),
+      FeatureField(
+        id: 'resultado-esperado',
+        label: 'Resultado esperado',
+        type: FeatureFieldType.textarea,
+      ),
+      FeatureField(
+        id: 'criterio-sucesso',
+        label: 'Critério de sucesso',
+        type: FeatureFieldType.textarea,
       ),
     ],
     sections: [
@@ -758,6 +928,15 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Data de referência',
         type: FeatureFieldType.date,
         isRequired: true,
+      ),
+      // banco-real: `animals.entry_date` é a data de entrada do animal na
+      // fazenda e é distinta da data de referência do levantamento — o banco
+      // guarda as duas separadas. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      FeatureField(
+        id: 'data-entrada',
+        label: 'Data de entrada',
+        type: FeatureFieldType.date,
       ),
       FeatureField(
         id: 'especie',
@@ -892,6 +1071,10 @@ const operationalFeatures = <FeatureDefinition>[
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/campo/pesagem',
   ),
+  // banco-real: ao integrar, o backend real de troca de LOTE é a tabela
+  // `transfer_batch_farms` — `transfer_animal_farms` é troca entre FAZENDAS e não
+  // deve ser usada aqui apesar do nome parecido. Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
   FeatureDefinition(
     id: 'transferencia-animal',
     profile: FeatureProfile.operational,
@@ -1142,6 +1325,16 @@ const operationalFeatures = <FeatureDefinition>[
         id: 'produto',
         label: 'Produto / procedimento',
         isRequired: true,
+      ),
+      // banco-real: `sanitaries.time_control` indica se o manejo tem
+      // carência/intervalo a respeitar — dado sensível de rastreabilidade
+      // (retirada de leite/carne pós-medicamento) ausente no protótipo. Ver
+      // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      FeatureField(
+        id: 'controle-por-tempo',
+        label: 'Controle por tempo (carência)',
+        type: FeatureFieldType.select,
+        options: ['Sim', 'Não'],
       ),
       FeatureField(
         id: 'observacao',
@@ -1488,6 +1681,10 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'nome',
     recordDescriptionFields: ['tipo', 'estacao', 'inicio'],
   ),
+  // TODO(banco-real): quando esta tela ganhar um campo de tipo (natural vs.
+  // IATF vs. outro), checar `breeding_matings.type` — smallint sem tabela de
+  // domínio no dump; hoje esta tela ainda não expõe esse campo. Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
   FeatureDefinition(
     id: 'monta-natural',
     profile: FeatureProfile.operational,
@@ -1715,6 +1912,12 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'descricao',
     recordDescriptionFields: ['tipo', 'equipamento', 'data'],
   ),
+  // TODO(banco-real): quando esta tela ganhar filtro/campo de categoria ou
+  // status, checar `service_orders.category`/`service_orders.status` — sem
+  // tabela de domínio no dump; hoje esta tela ainda não expõe esses campos
+  // (o status mostrado vem de `PrototypeRecordStatus`, genérico do protótipo,
+  // não do banco). Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md,
+  // seção C.
   FeatureDefinition(
     id: 'minhas-os',
     profile: FeatureProfile.operational,

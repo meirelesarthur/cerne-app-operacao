@@ -1,13 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
 import 'package:cerne_app/modules/fazendas/state/prototype_records_store.dart';
+import 'package:cerne_app/ui/ui.dart';
 
 import '../../../support/test_viewport.dart';
+
+/// Localiza o controle (`TextFormField`/`DropdownButtonFormField`) do
+/// [AppFormField] pelo rótulo, não por índice posicional na árvore — um
+/// índice cru quebra silenciosamente sempre que um campo novo é intercalado
+/// no catálogo funcional.
+Finder _fieldByLabel(String label) =>
+    find.ancestor(of: find.text(label), matching: find.byType(AppFormField));
+
+Future<void> _enterFieldText(
+  WidgetTester tester,
+  String label,
+  String value,
+) async {
+  final input = find.descendant(
+    of: _fieldByLabel(label),
+    matching: find.byType(TextFormField),
+  );
+  await tester.enterText(input, value);
+}
+
+Future<void> _selectFieldOption(
+  WidgetTester tester,
+  String label,
+  String option,
+) async {
+  final dropdown = find.descendant(
+    of: _fieldByLabel(label),
+    matching: find.byType(DropdownButtonFormField<String>),
+  );
+  await tester.tap(dropdown);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(option).last);
+  await tester.pumpAndSettle();
+}
 
 Widget _wrap(ProviderContainer container, Widget child) =>
     UncontrolledProviderScope(
@@ -39,6 +75,56 @@ void main() {
         expect(feature?.fields, isNotEmpty, reason: id);
         expect(feature?.createAction, isNotEmpty, reason: id);
       }
+    });
+
+    testWidgets('o topo segue o padrão: voltar à esquerda do título', (
+      tester,
+    ) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          const MappedFeatureScreen(
+            featureId: 'cadastrar-area',
+            profile: FeatureProfile.operational,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final back = tester.getRect(find.byIcon(LucideIcons.arrowLeft));
+      final title = tester.getRect(find.text('Áreas'));
+
+      expect(back.right, lessThan(title.left));
+      expect(back.top, lessThan(title.bottom));
+      expect(back.bottom, greaterThan(title.top));
+
+      // O padrão antigo era um botão fantasma rotulado, numa linha acima.
+      expect(find.text('Voltar ao ambiente'), findsNothing);
+    });
+
+    testWidgets('o topo não mostra as chips de perfil e de status', (
+      tester,
+    ) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          const MappedFeatureScreen(
+            featureId: 'cadastrar-area',
+            profile: FeatureProfile.operational,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Operação'), findsNothing);
+      expect(find.text('Funcional no protótipo'), findsNothing);
+      expect(find.text('Áreas'), findsOneWidget);
     });
 
     testWidgets('Áreas percorre lista, validação, sucesso e novo registro', (
@@ -76,21 +162,15 @@ void main() {
       expect(find.text('Campo obrigatório.'), findsNWidgets(5));
       expect(tester.takeException(), isNull);
 
-      final textFields = find.byType(TextFormField);
-      await tester.enterText(textFields.at(0), 'Talhão 03');
-      await tester.enterText(textFields.at(1), '24');
-      await tester.enterText(textFields.at(2), 'Setor Sul');
-
-      final selects = find.byType(DropdownButtonFormField<String>);
-      await tester.tap(selects.at(0));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Agricultura').last);
-      await tester.pumpAndSettle();
-
-      await tester.tap(selects.at(1));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('ha').last);
-      await tester.pumpAndSettle();
+      // Por rótulo, não por índice posicional: o catálogo funcional ganha
+      // campos com frequência (ex.: onda banco-real acrescentou área
+      // produtiva/não produtiva/carga animal entre "Área total" e "Unidade"),
+      // e um índice cru quebra silenciosamente a cada novo campo intercalado.
+      await _enterFieldText(tester, 'Nome da área', 'Talhão 03');
+      await _enterFieldText(tester, 'Área total', '24');
+      await _enterFieldText(tester, 'Localização', 'Setor Sul');
+      await _selectFieldOption(tester, 'Tipo de uso', 'Agricultura');
+      await _selectFieldOption(tester, 'Unidade', 'ha');
       expect(tester.takeException(), isNull);
 
       await tester.ensureVisible(find.text('Salvar área'));

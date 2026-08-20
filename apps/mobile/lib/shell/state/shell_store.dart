@@ -70,6 +70,28 @@ const _mockNotifications = [
     time: 'ontem',
     read: true,
   ),
+  // banco-real (onda 2): tipos de notificação inspirados nos alertas mais
+  // frequentes do dump gbcerne (estoque abaixo do mínimo, aprovação de compra
+  // pendente, vencimento de protocolo sanitário) — dado sintético, não copiado
+  // do banco de produção. Ambas marcadas como lidas para preservar o
+  // `unreadCount` já coberto por `shell_store_test.dart`. Ver
+  // docs/ajustes-banco-real/02-oportunidades-banco-real.md.
+  AppNotification(
+    id: 'n5',
+    moduleId: 'fazendas',
+    title: 'Estoque abaixo do mínimo',
+    detail: 'Sal Mineral Proteinado · Armazém A',
+    time: 'ontem',
+    read: true,
+  ),
+  AppNotification(
+    id: 'n6',
+    moduleId: 'fazendas',
+    title: 'Cotação pendente de aprovação',
+    detail: 'Solicitação de compra #4821 · Suprimentos',
+    time: 'há 2 dias',
+    read: true,
+  ),
 ];
 
 class ShellState {

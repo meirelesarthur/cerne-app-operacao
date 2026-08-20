@@ -76,6 +76,10 @@ const List<AppFormSelectOption> causasMorte = [
   AppFormSelectOption(value: 'ca4', label: 'Causa desconhecida'),
 ];
 
+// TODO(banco-real): mapeia `sales.payment_method`/`movement_sales.type_payment`,
+// campos char(2) no banco real sem tabela de domínio no dump. Confirmar com o
+// time web os códigos válidos antes de travar estas opções em produção. Ver
+// docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
 const List<AppFormSelectOption> condPagamento = [
   AppFormSelectOption(value: 'p1', label: 'À vista'),
   AppFormSelectOption(value: 'p2', label: '30 dias'),

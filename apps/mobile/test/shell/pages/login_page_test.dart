@@ -76,7 +76,7 @@ void main() {
       await tester.tap(find.text('Login Operacional'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Central de rotinas'), findsOneWidget);
+      expect(find.text('O que fazer hoje'), findsOneWidget);
       expect(
         harness.container.read(prototypeSessionProvider).profile,
         UserAccessProfile.operational,

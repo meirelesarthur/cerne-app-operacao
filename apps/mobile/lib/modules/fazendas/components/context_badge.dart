@@ -5,12 +5,17 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
+import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
 
 /// Badge de contexto fixo no topo de formulários operacionais (spec §3.5):
 /// "Lançando em: {fazenda}" — mantém o tenant sempre visível (mitigação de UX
 /// p/ IDOR). Espelha `ContextBadge.tsx`. Usado por `FlowShell` (fluxos
 /// operacionais) e demais telas do módulo Fazendas.
+///
+/// A faixa é tocável: abre o seletor de fazendas e troca o tenant sem sair da
+/// tela. Antes, trocar de fazenda exigia voltar até a aba "Fazendas" — o
+/// contexto era visível mas não acionável, e o toque na faixa não fazia nada.
 class ContextBadge extends ConsumerWidget {
   const ContextBadge({super.key});
 
@@ -20,31 +25,76 @@ class ContextBadge extends ConsumerWidget {
       fazendasStoreProvider.select((s) => s.activeFarm),
     );
 
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.space4,
-        vertical: AppSpacing.space2,
-      ),
-      decoration: const BoxDecoration(
-        color: AppColors.brand50,
-        border: Border(bottom: BorderSide(color: AppColors.brand200)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(LucideIcons.mapPin, size: 14, color: AppColors.brand700),
-          const SizedBox(width: AppSpacing.space1),
-          Flexible(
-            child: Text(
-              'Lançando em: ${activeFarm.name}',
-              style: const TextStyle(
-                fontSize: AppTypography.sm,
-                fontWeight: AppTypography.weightSemibold,
-                color: AppColors.brand700,
+    return AppPressable(
+      semanticLabel: 'Fazenda ativa: ${activeFarm.name}. Toque para trocar.',
+      onPressed: () => _openFarmPicker(context, ref),
+      // A faixa é full-bleed e retangular: raio zero mantém o feedback de
+      // toque alinhado à borda em vez de arredondar dentro da barra.
+      borderRadius: BorderRadius.zero,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.space4,
+          vertical: AppSpacing.space2,
+        ),
+        decoration: const BoxDecoration(
+          color: AppColors.brand50,
+          border: Border(bottom: BorderSide(color: AppColors.brand200)),
+        ),
+        child: Row(
+          children: [
+            const Icon(LucideIcons.mapPin, size: 14, color: AppColors.brand700),
+            const SizedBox(width: AppSpacing.space1),
+            Flexible(
+              child: Text(
+                'Lançando em: ${activeFarm.name}',
+                style: const TextStyle(
+                  fontSize: AppTypography.sm,
+                  fontWeight: AppTypography.weightSemibold,
+                  color: AppColors.brand700,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
-          ),
+            const SizedBox(width: AppSpacing.space1),
+            // Affordance de "isto troca de contexto": sem a seta a faixa lê
+            // como rótulo estático.
+            const Icon(
+              LucideIcons.chevronDown,
+              size: 14,
+              color: AppColors.brand700,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _openFarmPicker(BuildContext context, WidgetRef ref) {
+    final state = ref.read(fazendasStoreProvider);
+    final notifier = ref.read(fazendasStoreProvider.notifier);
+
+    showAppBottomSheet<void>(
+      context,
+      title: 'Trocar de fazenda',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final farm in state.farms)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.space2),
+              child: AppMenuItem(
+                icon: LucideIcons.mapPin,
+                label: farm.name,
+                description: '${farm.city} · ${farm.uf}',
+                trailing: farm.id == state.activeFarmId
+                    ? const AppChip(child: Text('Ativa'))
+                    : null,
+                onTap: () {
+                  notifier.setActiveFarm(farm.id);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
         ],
       ),
     );

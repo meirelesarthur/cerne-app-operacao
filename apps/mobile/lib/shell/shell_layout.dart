@@ -11,7 +11,6 @@ import '../design/theme/app_theme_extension.dart';
 import '../ui/ui.dart';
 import 'components/bottom_tab_bar.dart';
 import 'components/context_tabs.dart';
-import 'components/credito_pill.dart';
 import 'components/reveal_menu.dart';
 import 'components/shell_header.dart';
 import 'module_config.dart';
@@ -25,17 +24,59 @@ import 'state/prototype_session_store.dart';
 /// Com o menu aberto, o app inteiro encolhe (scale+translateX) revelando o
 /// `AppRevealMenu` à direita — únicas responsabilidades deste widget que os
 /// componentes filhos documentaram como "de quem monta o shell".
-class ShellLayout extends ConsumerWidget {
+class ShellLayout extends ConsumerStatefulWidget {
   const ShellLayout({
     super.key,
     required this.moduleId,
     required this.activeTab,
     required this.child,
+    this.hideChrome = false,
   });
 
   final String moduleId;
   final String activeTab;
   final Widget child;
+
+  /// Quando `true` (rota mais funda que `/modulo/aba`, ex.: uma
+  /// funcionalidade, grupo ou dashboard específico), o header global e as
+  /// abas de contexto somem — quem mostra navegação/título ali é a própria
+  /// tela (botão "Voltar", `SubPageHeader`, etc.), e o espaço liberado vai
+  /// para o conteúdo da função.
+  final bool hideChrome;
+
+  @override
+  ConsumerState<ShellLayout> createState() => _ShellLayoutState();
+}
+
+class _ShellLayoutState extends ConsumerState<ShellLayout> {
+  /// Header global colapsado (ver plano de UX): rolar a tela do módulo para
+  /// baixo esconde avatar/saudação/nome (`AppShellHeader.collapsed`), deixando
+  /// só as bolhas de ação — libera ~74px de tela durante a tarefa. As abas de
+  /// contexto continuam sempre visíveis (só o bloco de identidade colapsa).
+  bool _headerCollapsed = false;
+
+  @override
+  void didUpdateWidget(covariant ShellLayout oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Nova tela/aba: volta a mostrar a identidade completa em vez de manter o
+    // header colapsado de onde a pessoa rolou na tela anterior.
+    if (oldWidget.moduleId != widget.moduleId ||
+        oldWidget.activeTab != widget.activeTab) {
+      _headerCollapsed = false;
+    }
+  }
+
+  bool _handleScrollNotification(ScrollNotification notification) {
+    final metrics = notification.metrics;
+    // Ignora rolagens horizontais (carrosséis dentro da tela) — só a rolagem
+    // vertical do conteúdo principal decide o colapso do header.
+    if (metrics.axis != Axis.vertical) return false;
+    final shouldCollapse = metrics.pixels > 24;
+    if (shouldCollapse != _headerCollapsed) {
+      setState(() => _headerCollapsed = shouldCollapse);
+    }
+    return false;
+  }
 
   void _go(BuildContext context, WidgetRef ref, String route) {
     ref.read(shellStoreProvider.notifier).closeMenu();
@@ -43,7 +84,10 @@ class ShellLayout extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final moduleId = widget.moduleId;
+    final activeTab = widget.activeTab;
+    final hideChrome = widget.hideChrome;
     final module = getModule(moduleId) ?? modules.first;
     final state = ref.watch(shellStoreProvider);
     final profile = ref.watch(prototypeSessionProvider).profile;
@@ -103,25 +147,37 @@ class ShellLayout extends ConsumerWidget {
                       bottom: false,
                       child: Column(
                         children: [
-                          AppShellHeader(
-                            onOpenProfile: () => _go(context, ref, '/perfil'),
-                            onOpenNotifications: () =>
-                                _go(context, ref, '/notificacoes'),
-                            child: AppCreditoPill(
-                              onTap: () => _go(context, ref, '/credito'),
-                            ),
-                          ),
-                          AppContextTabs(
-                            module: module,
-                            profile: profile,
-                            activePath: activeTab,
-                            onTabSelected: (path) => _go(
-                              context,
-                              ref,
-                              path.isEmpty
-                                  ? '/${module.id}'
-                                  : '/${module.id}/$path',
-                            ),
+                          AnimatedSize(
+                            duration: reduceMotion
+                                ? Duration.zero
+                                : AppMotion.base,
+                            curve: AppMotion.easingOut,
+                            alignment: Alignment.topCenter,
+                            child: hideChrome
+                                ? const SizedBox(width: double.infinity)
+                                : Column(
+                                    children: [
+                                      AppShellHeader(
+                                        collapsed: _headerCollapsed,
+                                        onOpenProfile: () =>
+                                            _go(context, ref, '/perfil'),
+                                        onOpenNotifications: () =>
+                                            _go(context, ref, '/notificacoes'),
+                                      ),
+                                      AppContextTabs(
+                                        module: module,
+                                        profile: profile,
+                                        activePath: activeTab,
+                                        onTabSelected: (path) => _go(
+                                          context,
+                                          ref,
+                                          path.isEmpty
+                                              ? '/${module.id}'
+                                              : '/${module.id}/$path',
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                           ),
                           if (!state.isOnline)
                             const AppBanner(
@@ -132,35 +188,47 @@ class ShellLayout extends ConsumerWidget {
                               ),
                             ),
                           Expanded(
-                            child: Stack(
-                              children: [
-                                Positioned.fill(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: AppLayout.tabBarClearance,
+                            child: NotificationListener<ScrollNotification>(
+                              onNotification: _handleScrollNotification,
+                              child: Stack(
+                                children: [
+                                  Positioned.fill(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: AppLayout.tabBarClearance,
+                                      ),
+                                      child: widget.child,
                                     ),
-                                    child: child,
                                   ),
-                                ),
-                                Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  bottom: AppComponentMetrics.tabbarInset,
-                                  child: Center(
-                                    child: AppBottomTabBar(
-                                      activeId: module.id,
-                                      onModuleSelected: (id) => _go(
-                                        context,
-                                        ref,
-                                        moduleHomeRoute(
-                                          getModule(id)!,
+                                  Positioned(
+                                    left: 0,
+                                    right: 0,
+                                    // soma o respiro do token à safe-area inferior real do
+                                    // aparelho (home indicator/gesture bar) — sem isso a
+                                    // cápsula flutuante fica colada/sobreposta pela área do
+                                    // sistema em telas com esse recurso.
+                                    bottom:
+                                        AppComponentMetrics.tabbarInset +
+                                        MediaQuery.of(context).padding.bottom,
+                                    child: Center(
+                                      child: AppBottomTabBar(
+                                        visibleModules: visibleModulesFor(
                                           profile,
+                                        ),
+                                        activeId: module.id,
+                                        onModuleSelected: (id) => _go(
+                                          context,
+                                          ref,
+                                          moduleHomeRoute(
+                                            getModule(id)!,
+                                            profile,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],

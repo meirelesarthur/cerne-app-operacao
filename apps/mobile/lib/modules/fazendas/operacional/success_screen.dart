@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
+import '../state/fazendas_store.dart';
 
 /// Tela de sucesso pós-lançamento, com resumo dos efeitos no sistema web.
 /// Espelha `SuccessScreen.tsx` — usa `AppSuccessPanel` do catálogo (Lei 1).
-class SuccessScreen extends StatelessWidget {
+///
+/// Ajuste de usabilidade (ver plano de melhorias de UX): a mensagem offline
+/// trocou "será processado assim que a conexão voltar" (linguagem de sistema)
+/// por "foi salvo no aparelho, vai subir quando pegar sinal" e mostra quantos
+/// lançamentos estão nessa fila agora — confiar que "sumiu, mas está seguro"
+/// é o ponto de maior ansiedade de quem lança sem conexão em campo.
+class SuccessScreen extends ConsumerWidget {
   const SuccessScreen({
     super.key,
     required this.title,
@@ -24,18 +32,23 @@ class SuccessScreen extends StatelessWidget {
   final bool queued;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final pendentes = ref.watch(
+      fazendasStoreProvider.select((s) => s.syncQueue.length),
+    );
 
     return Scaffold(
       backgroundColor: semantic.bgCanvas,
       body: SafeArea(
         child: AppSuccessPanel(
-          title: queued ? 'Enviado para sincronização' : title,
+          title: queued ? 'Salvo no aparelho' : title,
           icon: queued ? LucideIcons.refreshCw : LucideIcons.checkCircle2,
           description: Text(
             queued
-                ? 'O lançamento será processado assim que a conexão voltar. $effects'
+                ? 'Vai subir sozinho quando o celular pegar sinal de novo — '
+                      '$pendentes ${pendentes == 1 ? 'lançamento está' : 'lançamentos estão'} '
+                      'esperando para sincronizar. $effects'
                 : effects,
           ),
           actions: AppButton(

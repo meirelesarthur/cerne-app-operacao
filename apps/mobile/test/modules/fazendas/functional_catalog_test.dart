@@ -4,10 +4,13 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 53 funcionalidades e a divisão por perfil', () {
-      expect(adminFeatures, hasLength(12));
+    test('preserva as 54 funcionalidades e a divisão por perfil', () {
+      // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
+      // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
+      // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
+      expect(adminFeatures, hasLength(13));
       expect(operationalFeatures, hasLength(41));
-      expect(allFeatures, hasLength(53));
+      expect(allFeatures, hasLength(54));
 
       expect(
         adminFeatures.every(
@@ -33,10 +36,10 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 46 ready, 7 hardware e zero mapped', () {
+    test('preserva a maturidade 47 ready, 7 hardware e zero mapped', () {
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(46),
+        hasLength(47),
       );
       expect(
         allFeatures.where(
@@ -53,9 +56,14 @@ void main() {
     test('preserva as invariantes estruturais do catálogo congelado', () {
       final fields = allFeatures.expand((feature) => feature.fields).toList();
 
-      expect(fields, hasLength(168));
-      expect(fields.where((field) => field.isRequired), hasLength(156));
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(32));
+      // banco-real (onda 1): +11 campos opcionais para alinhar o catálogo ao
+      // schema real do dump gbcerne. banco-real (produto-busca): +4 campos em
+      // consulta-produtos (a única criação em campo livre; +3 obrigatórios)
+      // para virar a fonte de busca dos demais campos "produto". Ver
+      // docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
+      expect(fields, hasLength(183));
+      expect(fields.where((field) => field.isRequired), hasLength(159));
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(33));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
         hasLength(13),

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 import '../../design/generated/app_layout.dart';
@@ -9,28 +7,36 @@ import '../../ui/ui.dart';
 import '../module_config.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_spacing.dart';
+import 'package:cerne_app/design/generated/app_typography.dart';
 
-/// Dock de módulos (Nova UI): cápsula flutuante icon-only — os 6 módulos
-/// sempre visíveis (sem rolagem nem corte em viewports estreitos), o ativo
-/// vira círculo ink com ícone verde vibrante. Espelha `BottomTabBar.tsx`.
+/// Dock de módulos (Nova UI — referência Força Agro): cápsula flutuante
+/// **opaca** (sem blur); o ativo vira pílula expandida (ícone + rótulo) em
+/// verde de marca sólido + texto branco, os demais ficam como ícones "ghost".
+/// Espelha `BottomTabBar.tsx`.
 ///
 /// Autocontido (`Row`/`Container`) — este widget NÃO se posiciona sozinho de
 /// forma absoluta na base da tela (diferente do React, que usa
 /// `absolute inset-x-0 bottom-0`), para ser reutilizável em testes/Widgetbook
-/// sem depender de um `Stack` ancestral. Quem usa (o futuro `ShellLayout`)
-/// deve envolver este widget em `Stack` + `Positioned`/`Align` na base,
-/// somando `MediaQuery.of(context).padding.bottom` (safe area) ao respiro.
+/// sem depender de um `Stack` ancestral. Quem usa (o `ShellLayout`) deve
+/// envolver este widget em `Stack` + `Positioned`/`Align` na base, somando
+/// `MediaQuery.of(context).padding.bottom` (safe area) ao respiro.
 class AppBottomTabBar extends StatelessWidget {
   const AppBottomTabBar({
     super.key,
     required this.activeId,
     required this.onModuleSelected,
+    this.visibleModules = modules,
   });
 
   final String activeId;
 
   /// Recebe o `module.id` do módulo tocado.
   final ValueChanged<String> onModuleSelected;
+
+  /// Módulos exibidos no dock — por padrão, todos ([modules]); quem monta o
+  /// `ShellLayout` filtra por [visibleModulesFor] (ver plano de UX: o perfil
+  /// operacional não precisa ver Bank/Crédito/Marketplace no dock).
+  final List<ModuleDef> visibleModules;
 
   @override
   Widget build(BuildContext context) {
@@ -39,35 +45,38 @@ class AppBottomTabBar extends StatelessWidget {
     return Semantics(
       container: true,
       label: 'Módulos do superapp',
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.full),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: AppComponentMetrics.tabbarBlur,
-            sigmaY: AppComponentMetrics.tabbarBlur,
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(
-              AppComponentMetrics.tabbarInset / AppSpacing.half,
-            ),
-            decoration: BoxDecoration(
-              color: semantic.navBg,
-              borderRadius: BorderRadius.circular(AppRadius.full),
-              border: Border.all(color: semantic.navBorder),
-              boxShadow: semantic.shadowModal,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                for (final m in modules)
-                  _ModuleButton(
-                    label: m.label,
-                    icon: m.icon,
-                    active: m.id == activeId,
-                    onTap: () => onModuleSelected(m.id),
-                  ),
+      child: Container(
+        padding: const EdgeInsets.all(
+          AppComponentMetrics.tabbarInset / AppSpacing.half,
+        ),
+        decoration: BoxDecoration(
+          color: semantic.navBg,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          border: Border.all(color: semantic.navBorder),
+          boxShadow: semantic.shadowModal,
+        ),
+        // `SingleChildScrollView` é uma rede de segurança, não o caminho
+        // esperado: com o dock já filtrado por perfil, a Row deveria caber
+        // sem rolar. Antes, sem isso, 5 ícones + a pílula ativa expandida
+        // estouravam a largura de um Android estreito (360dp) e o layout
+        // quebrava silenciosamente — a `Row` sem limite não avisa disso.
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const ClampingScrollPhysics(),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final m in visibleModules) ...[
+                _ModuleButton(
+                  label: m.label,
+                  icon: m.icon,
+                  active: m.id == activeId,
+                  onTap: () => onModuleSelected(m.id),
+                ),
+                if (m != visibleModules.last)
+                  const SizedBox(width: AppSpacing.space1),
               ],
-            ),
+            ],
           ),
         ),
       ),
@@ -92,26 +101,57 @@ class _ModuleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
+    if (!active) {
+      return Tooltip(
+        message: label,
+        child: Material(
+          color: AppColors.transparent,
+          shape: const CircleBorder(),
+          child: AppPressable(
+            semanticLabel: label,
+            onPressed: onTap,
+            minTouchTarget: false,
+            borderRadius: BorderRadius.circular(AppRadius.full),
+            child: SizedBox(
+              width: AppComponentMetrics.tabbarItemSize,
+              height: AppComponentMetrics.tabbarItemSize,
+              child: Center(child: Icon(icon, size: 20, color: semantic.navFg)),
+            ),
+          ),
+        ),
+      );
+    }
+
+    // Item ativo: pílula expandida (ícone + rótulo) em verde sólido de marca —
+    // mesmo tratamento do CTA primário (`AppSemanticColors.cta*`).
     return Tooltip(
       message: label,
       child: Material(
-        color: active ? semantic.inkBg : AppColors.transparent,
-        shape: const CircleBorder(),
+        color: semantic.ctaBg,
+        borderRadius: BorderRadius.circular(AppRadius.full),
         child: AppPressable(
           semanticLabel: label,
-          selected: active,
+          selected: true,
           onPressed: onTap,
           minTouchTarget: false,
           borderRadius: BorderRadius.circular(AppRadius.full),
-          child: SizedBox(
-            width: AppComponentMetrics.tabbarItemSize,
+          child: Container(
             height: AppComponentMetrics.tabbarItemSize,
-            child: Center(
-              child: Icon(
-                icon,
-                size: 20,
-                color: active ? semantic.navActive : semantic.navFg,
-              ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 20, color: semantic.ctaFg),
+                const SizedBox(width: AppSpacing.space2),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightSemibold,
+                    color: semantic.ctaFg,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
