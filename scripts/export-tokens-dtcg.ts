@@ -163,6 +163,7 @@ const dtcg = {
     hero: { angle: number(component.hero.angle) },
     kpi: mapColors(component.kpi),
     tabbar: mapDimensions(component.tabbar),
+    navigationCard: mapDimensions(component.navigationCard),
   },
 } as const
 
