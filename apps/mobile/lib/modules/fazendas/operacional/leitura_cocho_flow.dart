@@ -178,6 +178,12 @@ class _LeituraCochoFlowState extends ConsumerState<LeituraCochoFlow> {
                 ? 'Adicione ao menos um curral.'
                 : null,
             child: AppFormSelect(
+              // Força recriação do DropdownButtonFormField a cada curral
+              // adicionado: sem isso, seu estado interno mantém o valor
+              // recém-selecionado mesmo depois de sair de `options`
+              // (removido de `disponiveis`), quebrando a invariante do
+              // Flutter de "value só pode ser um item existente na lista".
+              key: ValueKey(_avaliacoes.length),
               options: [
                 for (final c in disponiveis)
                   AppFormSelectOption(value: c.id, label: c.nome),
