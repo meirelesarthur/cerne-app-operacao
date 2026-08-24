@@ -66,12 +66,14 @@ void main() {
       }
     });
 
-    test('todas as 47 funcionalidades Ready têm destino executável', () {
+    test('todas as 52 funcionalidades Ready têm destino executável', () {
       final ready = allFeatures.where(
         (feature) => feature.status == FeatureStatus.ready,
       );
 
-      expect(ready, hasLength(47));
+      // confinamento (onda 1): +5 funcionalidades operacionais Ready — ver
+      // functional_catalog_test.dart.
+      expect(ready, hasLength(52));
       for (final feature in ready) {
         final handledByMappedScreen =
             feature.auditExport != null ||

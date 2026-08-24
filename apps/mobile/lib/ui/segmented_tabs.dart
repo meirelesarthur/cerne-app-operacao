@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -39,47 +40,43 @@ class AppSegmentedTabs extends StatelessWidget {
       ),
       child: Row(
         children: [
-          for (var i = 0; i < labels.length; i++)
+          for (var i = 0; i < labels.length; i++) ...[
+            if (i > 0) const SizedBox(width: AppSpacing.space1),
             Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  left: i == 0 ? 0 : AppSpacing.space1 / 2,
-                  right: i == labels.length - 1 ? 0 : AppSpacing.space1 / 2,
-                ),
-                child: AppPressable(
-                  semanticLabel: labels[i],
-                  selected: i == selectedIndex,
-                  onPressed: () => onChanged(i),
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: AppSpacing.space2,
-                    ),
-                    decoration: BoxDecoration(
+              child: AppPressable(
+                semanticLabel: labels[i],
+                selected: i == selectedIndex,
+                onPressed: () => onChanged(i),
+                borderRadius: BorderRadius.circular(AppRadius.md),
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.space2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: i == selectedIndex
+                        ? semantic.bgSurface
+                        : AppColors.transparent,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                    boxShadow: i == selectedIndex ? semantic.shadowCard : null,
+                  ),
+                  child: Text(
+                    labels[i],
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: AppTypography.sm,
+                      fontWeight: i == selectedIndex
+                          ? AppTypography.weightSemibold
+                          : AppTypography.weightMedium,
                       color: i == selectedIndex
-                          ? semantic.bgSurface
-                          : Colors.transparent,
-                      borderRadius: BorderRadius.circular(AppRadius.md),
-                      boxShadow: i == selectedIndex ? semantic.shadowCard : null,
-                    ),
-                    child: Text(
-                      labels[i],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: AppTypography.sm,
-                        fontWeight: i == selectedIndex
-                            ? AppTypography.weightSemibold
-                            : AppTypography.weightMedium,
-                        color: i == selectedIndex
-                            ? semantic.fgDefault
-                            : semantic.fgMuted,
-                      ),
+                          ? semantic.fgDefault
+                          : semantic.fgMuted,
                     ),
                   ),
                 ),
               ),
             ),
+          ],
         ],
       ),
     );

@@ -4,13 +4,16 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 54 funcionalidades e a divisão por perfil', () {
+    test('preserva as 59 funcionalidades e a divisão por perfil', () {
       // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
       // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
       // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
+      // confinamento (onda 1): +5 funcionalidades operacionais do submódulo de
+      // Confinamento (Meus currais, Produzir batelada, Trato diário, Leitura
+      // de cocho, Ordens pendentes) — ver docs/ESTEIRA-PERFIS-AGRO365.md.
       expect(adminFeatures, hasLength(13));
-      expect(operationalFeatures, hasLength(41));
-      expect(allFeatures, hasLength(54));
+      expect(operationalFeatures, hasLength(46));
+      expect(allFeatures, hasLength(59));
 
       expect(
         adminFeatures.every(
@@ -36,10 +39,10 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 47 ready, 7 hardware e zero mapped', () {
+    test('preserva a maturidade 52 ready, 7 hardware e zero mapped', () {
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(47),
+        hasLength(52),
       );
       expect(
         allFeatures.where(
@@ -66,7 +69,7 @@ void main() {
       expect(allFeatures.where((feature) => feature.listMode), hasLength(33));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(13),
+        hasLength(18),
       );
       expect(allFeatures.expand((feature) => feature.sections), hasLength(15));
       expect(

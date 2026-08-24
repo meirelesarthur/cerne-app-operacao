@@ -1941,6 +1941,62 @@ const operationalFeatures = <FeatureDefinition>[
     existingRoute: '/fazendas/mais/sync',
     capabilities: ['Rebanho', 'Lotes', 'Pesagem', 'Mortes'],
   ),
+  // confinamento (onda 1): submódulo de Confinamento (Cadastro + Nutrição),
+  // separado por perfil a partir de Especificacao_Funcional_Confinamento_AGRO365.docx
+  // (ago/2026). Cadastro/Dieta/Fases são só leitura no dashboard ADM
+  // (`/fazendas/dashboards/confinamento`) — feitos pelo app web, que divide o
+  // banco. As 6 entradas abaixo são as telas dedicadas do Operacional; sem
+  // `fields` porque o formulário real vive na tela, não no motor genérico
+  // (mesmo padrão de `pesagem`/`nutricoes` acima).
+  FeatureDefinition(
+    id: 'meus-currais',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Meus currais',
+    objective:
+        'Consultar a situação dos currais e acionar pesagem, sanitário e óbito.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/meus-currais',
+  ),
+  FeatureDefinition(
+    id: 'producao-batelada',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Produzir batelada',
+    objective:
+        'Registrar a produção física de uma mistura de dieta, ingrediente a ingrediente.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/batelada',
+  ),
+  FeatureDefinition(
+    id: 'trato-diario',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Trato diário',
+    objective: 'Distribuir uma batelada entre os currais elegíveis do dia.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/trato-diario',
+  ),
+  FeatureDefinition(
+    id: 'leitura-cocho-confinamento',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Leitura de cocho',
+    objective:
+        'Avaliar sobras por curral e registrar ocorrências sanitárias, estruturais e ambientais.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/leitura-cocho',
+  ),
+  FeatureDefinition(
+    id: 'ordens-pendentes',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Ordens pendentes',
+    objective:
+        'Confirmar a execução de transferências de lote e trocas de dieta criadas pelo ADM.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/ordens-pendentes',
+  ),
 ];
 
 const allFeatures = <FeatureDefinition>[

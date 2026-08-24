@@ -14,12 +14,16 @@ Widget _wrap(Widget child) => ProviderScope(
 
 void main() {
   group('DashConfinamento', () {
-    testWidgets('renderiza sem exceção', (tester) async {
+    testWidgets('renderiza sem exceção e abre a aba Mapa', (tester) async {
       await tester.pumpWidget(_wrap(const DashConfinamento()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Lotação de Currais'), findsWidgets);
-      expect(find.text('Mapa de currais'), findsOneWidget);
+      expect(find.text('Confinamento'), findsOneWidget);
+      expect(find.text('Visão geral'), findsOneWidget);
+
+      await tester.tap(find.text('Mapa'));
+      await tester.pumpAndSettle();
+
       expect(find.text('Curral 01'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
@@ -28,10 +32,13 @@ void main() {
       await tester.pumpWidget(_wrap(const DashConfinamento()));
       await tester.pumpAndSettle();
 
+      await tester.tap(find.text('Mapa'));
+      await tester.pumpAndSettle();
+
       await tester.tap(find.text('Curral 01'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Setor'), findsOneWidget);
+      expect(find.text('Situação'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });
