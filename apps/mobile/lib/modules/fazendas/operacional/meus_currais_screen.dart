@@ -149,6 +149,13 @@ class _CurralCard extends ConsumerWidget {
                 onPressed: () => _abrirAlterarSituacao(context, ref, curral),
                 child: const Text('Alterar situação'),
               ),
+              // Cada ação rápida reaproveita a rota que a própria funcionalidade
+              // já declara no catálogo (Lei 2 — sem duplicar fluxo existente):
+              // `pesagem` e `mortes` têm `existingRoute` em `campo/:flowId`
+              // (mortes cai em `ciclo`, junto de nascimentos), enquanto
+              // `sanitario` não tem rota dedicada e é resolvido pelo motor
+              // genérico em `operacional/:featureId`. Apontar as três para
+              // `campo/<id>` levava ao fallback vazio de `buildCampoFlow`.
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
@@ -158,13 +165,13 @@ class _CurralCard extends ConsumerWidget {
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
-                onPressed: () => context.go('/fazendas/campo/sanitario'),
+                onPressed: () => context.go('/fazendas/operacional/sanitario'),
                 child: const Text('Sanitário'),
               ),
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
-                onPressed: () => context.go('/fazendas/campo/mortes'),
+                onPressed: () => context.go('/fazendas/campo/ciclo'),
                 child: const Text('Óbito'),
               ),
             ],
