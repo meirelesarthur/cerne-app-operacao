@@ -381,7 +381,7 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'cadastrar-area',
     profile: FeatureProfile.operational,
-    group: 'Cadastros',
+    group: 'Consultas',
     title: 'Áreas',
     objective: 'Cadastrar áreas usadas nos processos da fazenda.',
     status: FeatureStatus.ready,
@@ -466,7 +466,7 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'formulacoes',
     profile: FeatureProfile.operational,
-    group: 'Estoque',
+    group: 'Consultas',
     title: 'Formulações',
     objective: 'Criar formulações compostas por matérias-primas e percentuais.',
     status: FeatureStatus.ready,
@@ -563,7 +563,7 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'batidas',
     profile: FeatureProfile.operational,
-    group: 'Estoque',
+    group: 'Consultas',
     title: 'Batida',
     objective:
         'Registrar a produção de uma formulação para um armazém de destino.',
@@ -996,7 +996,7 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'lote-animais',
     profile: FeatureProfile.operational,
-    group: 'Pecuária',
+    group: 'Consultas',
     title: 'Lote de animais',
     objective: 'Criar um lote em fluxo de múltiplas etapas.',
     status: FeatureStatus.ready,
@@ -1438,7 +1438,7 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'estacao-monta',
     profile: FeatureProfile.operational,
-    group: 'Reprodução',
+    group: 'Consultas',
     title: 'Estação de monta',
     objective: 'Gerenciar períodos e ciclos de reprodução.',
     status: FeatureStatus.ready,
@@ -1535,7 +1535,7 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'material-reprodutivo',
     profile: FeatureProfile.operational,
-    group: 'Reprodução',
+    group: 'Consultas',
     title: 'Touros / sêmen / embrião',
     objective: 'Gerenciar material e recursos reprodutivos.',
     status: FeatureStatus.ready,
@@ -1587,7 +1587,7 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'protocolos-estacao',
     profile: FeatureProfile.operational,
-    group: 'Reprodução',
+    group: 'Consultas',
     title: 'Protocolos / estação',
     objective: 'Gerenciar protocolos associados à estação reprodutiva.',
     status: FeatureStatus.ready,

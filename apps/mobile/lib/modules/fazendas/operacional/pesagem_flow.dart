@@ -140,14 +140,14 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
           ),
           if (_attempted && !_pesoValido) ...[
             const SizedBox(height: AppSpacing.space2),
-            Row(
+            const Row(
               children: [
-                const Icon(
+                Icon(
                   LucideIcons.alertCircle,
                   size: 12,
                   color: AppColors.red600,
                 ),
-                const SizedBox(width: AppSpacing.space1),
+                SizedBox(width: AppSpacing.space1),
                 Text(
                   'Informe um peso maior que zero.',
                   style: TextStyle(

@@ -17,12 +17,45 @@ IconData groupIcon(String group) => switch (group) {
   'Agricultura' => LucideIcons.sprout,
   'Pecuária' => LucideIcons.beef,
   'Confinamento' => LucideIcons.warehouse,
+  'Consultas' => LucideIcons.bookOpen,
   'Reprodução' => LucideIcons.heartPulse,
   'Gestão de frota' => LucideIcons.truck,
   'Ordem de serviço' => LucideIcons.fileText,
   'Sincronização' => LucideIcons.refreshCw,
   _ => LucideIcons.layers,
 };
+
+/// Ordem de exibição dos grupos na central de responsabilidade.
+///
+/// Sem isso, a ordem seria a de inserção no array do catálogo — acidente de
+/// edição, não decisão de produto: era por isso que Confinamento caía por
+/// último, só porque foi o último bloco acrescentado ao arquivo.
+///
+/// Confinamento vem primeiro porque Trato Diário e Leitura de Cocho são o uso
+/// diário mais frequente da equipe de campo; Consultas vem depois de tudo que
+/// é lançamento, porque é material de apoio, não tarefa do dia.
+const List<String> _groupDisplayOrder = [
+  // Operacional — do mais frequente ao mais esporádico.
+  'Confinamento',
+  'Pecuária',
+  'Misturador',
+  'Agricultura',
+  'Reprodução',
+  'Gestão de frota',
+  'Ordem de serviço',
+  'Consultas',
+  'Sincronização',
+  // Administração.
+  'Painéis de decisão',
+  'Consultas e auditoria',
+];
+
+/// Posição do grupo na ordem de exibição. Grupos fora da lista (ex.: um grupo
+/// novo esquecido aqui) vão para o fim, sem quebrar a navegação.
+int groupOrder(String group) {
+  final index = _groupDisplayOrder.indexOf(group);
+  return index == -1 ? _groupDisplayOrder.length : index;
+}
 
 /// Slug estável por grupo, usado no segmento de rota `grupo/:slug`.
 ///
@@ -40,6 +73,7 @@ const Map<String, String> _groupSlugs = {
   'Agricultura': 'agricultura',
   'Pecuária': 'pecuaria',
   'Confinamento': 'confinamento',
+  'Consultas': 'consultas',
   'Reprodução': 'reproducao',
   'Gestão de frota': 'gestao-de-frota',
   'Ordem de serviço': 'ordem-de-servico',
