@@ -48,6 +48,7 @@ class FeatureDefinition {
     this.emptyLabel,
     this.sourceDetail,
     this.listMode = false,
+    this.readOnly = false,
     this.dataSourceId,
     this.createAction,
     this.recordTitleField,
@@ -73,6 +74,13 @@ class FeatureDefinition {
   final String? emptyLabel;
   final String? sourceDetail;
   final bool listMode;
+  // banco-real (onda 1): torna explícito que uma funcionalidade é consulta —
+  // sem virar edição em campo — mesmo mantendo `fields` preenchidos. Antes,
+  // a única forma de virar consulta era esvaziar `fields`, o que jogaria fora
+  // a documentação dos campos reais do sistema mapeados no banco (valiosa
+  // para quando o backend for ligado). Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+  final bool readOnly;
   final String? dataSourceId;
   final String? createAction;
   final String? recordTitleField;
@@ -263,6 +271,88 @@ const adminFeatures = <FeatureDefinition>[
     emptyLabel: 'Nenhum processamento pendente.',
     listMode: true,
   ),
+  // banco-real (onda 1): compra e venda de animais são decisão comercial/
+  // financeira (fornecedor/cliente, valor, documento fiscal) — sobem do
+  // operacional para o ADM, que só visualiza; a decisão desce como ordem
+  // para o Operacional confirmar a execução, igual ao padrão `OrdemPendente`
+  // já implementado em `confinamento/models.dart`. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+  FeatureDefinition(
+    id: 'compras-animais',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Compra de animais',
+    objective: 'Consultar compras de animais registradas.',
+    status: FeatureStatus.ready,
+    readOnly: true,
+    fields: [
+      FeatureField(
+        id: 'responsavel',
+        label: 'Responsável',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
+      ),
+      FeatureField(id: 'fornecedor', label: 'Fornecedor', isRequired: true),
+      FeatureField(
+        id: 'data',
+        label: 'Data da compra',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'especie',
+        label: 'Espécie',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Bovino', 'Bubalino', 'Ovino'],
+      ),
+      FeatureField(id: 'categoria', label: 'Categoria', isRequired: true),
+      FeatureField(
+        id: 'quantidade',
+        label: 'Quantidade de animais',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'valor-total',
+        label: 'Valor total (R\$)',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'documento',
+        label: 'Nota / documento de origem',
+        isRequired: true,
+      ),
+    ],
+    emptyLabel: 'Nenhuma compra de animais registrada.',
+    sourceDetail:
+        'O formulário não foi aberto; os campos são premissas funcionais do protótipo frontend.',
+    listMode: true,
+    recordTitleField: 'fornecedor',
+    recordDescriptionFields: ['quantidade', 'categoria', 'data'],
+  ),
+  // banco-real (onda 1): em Confinamento, "Vender Animais" já é exclusiva do
+  // ADM — o catálogo geral ainda contradizia isso com `existingRoute` para
+  // `/fazendas/campo/venda`, uma rota bloqueada para administração pela
+  // política de acesso (`router/app_router.dart`, `redirectForSession`). A
+  // rota saiu; a tela vira consulta pelo motor genérico, sem `fields`
+  // documentados na fonte original (mesmo padrão de `minhas-os`). Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+  FeatureDefinition(
+    id: 'vendas',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Vendas',
+    objective: 'Consultar vendas de animais registradas.',
+    status: FeatureStatus.ready,
+    readOnly: true,
+    emptyLabel: 'Nenhuma venda registrada.',
+    sourceDetail:
+        'Consulta demonstrativa das vendas de animais registradas nesta sessão.',
+    listMode: true,
+  ),
   FeatureDefinition(
     id: 'exportar-log-estoque',
     profile: FeatureProfile.administration,
@@ -291,10 +381,14 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'cadastrar-area',
     profile: FeatureProfile.operational,
-    group: 'Cadastros',
+    group: 'Consultas',
     title: 'Áreas',
     objective: 'Cadastrar áreas usadas nos processos da fazenda.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): estrutura física da fazenda, não ação diária de
+    // campo — cadastro fica no desktop, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'nome',
@@ -372,10 +466,14 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'formulacoes',
     profile: FeatureProfile.operational,
-    group: 'Estoque',
+    group: 'Consultas',
     title: 'Formulações',
     objective: 'Criar formulações compostas por matérias-primas e percentuais.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): formular dieta é decisão técnica e de custo, não
+    // ação de campo — cadastro fica no desktop, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -465,11 +563,15 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'batidas',
     profile: FeatureProfile.operational,
-    group: 'Estoque',
+    group: 'Consultas',
     title: 'Batida',
     objective:
         'Registrar a produção de uma formulação para um armazém de destino.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): cadastro de produção; a execução real de campo é
+    // `producao-batelada` (Confinamento) — aqui vira consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -548,109 +650,37 @@ const operationalFeatures = <FeatureDefinition>[
     successDescription:
         'A balança e o equipamento externo estão disponíveis para os fluxos simulados desta sessão.',
   ),
+  // banco-real (Onda 3): `carga` grava na mesma tabela real que
+  // `producao-batelada` do Confinamento (`item_diet_beats`) — confirmado em
+  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Não removida do
+  // catálogo (quem já usa o caminho antigo não pode perder o acesso); vira
+  // redirecionamento para a tela nova, no mesmo padrão já usado por
+  // `pesagem`/`nascimentos`/`mortes`/`nutricoes` acima: só `existingRoute`,
+  // sem `fields`/`listMode` próprios. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
   FeatureDefinition(
     id: 'carga',
     profile: FeatureProfile.operational,
     group: 'Misturador',
     title: 'Carga',
-    objective: 'Executar o fluxo operacional de carregamento do misturador.',
+    objective:
+        'Registrar a produção física de uma mistura de dieta, ingrediente a ingrediente.',
     status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(
-        id: 'formulacao',
-        label: 'Formulação / produto',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: catalogoProdutos,
-      ),
-      FeatureField(id: 'origem', label: 'Armazém de origem', isRequired: true),
-      FeatureField(
-        id: 'equipamento',
-        label: 'Misturador / equipamento',
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'quantidade',
-        label: 'Quantidade',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'unidade',
-        label: 'Unidade',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['kg', 't'],
-      ),
-    ],
-    primaryAction: 'Registrar carga',
-    sourceDetail:
-        'A fonte mostrou apenas a entrada; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Nova carga',
-    recordTitleField: 'formulacao',
-    recordDescriptionFields: ['quantidade', 'unidade', 'equipamento'],
+    existingRoute: '/fazendas/campo/batelada',
   ),
+  // banco-real (Onda 3): `descarga` grava na mesma tabela real que
+  // `trato-diario` do Confinamento (`item_nutritions`) — confirmado em
+  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Mesmo tratamento de
+  // `carga` acima: redireciona em vez de excluir. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
   FeatureDefinition(
     id: 'descarga',
     profile: FeatureProfile.operational,
     group: 'Misturador',
     title: 'Descarga',
-    objective: 'Executar o fluxo operacional de descarga do misturador.',
+    objective: 'Distribuir uma batelada entre os currais elegíveis do dia.',
     status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(
-        id: 'produto',
-        label: 'Produto carregado',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: catalogoProdutos,
-      ),
-      FeatureField(
-        id: 'destino',
-        label: 'Área / cocho de destino',
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'equipamento',
-        label: 'Misturador / equipamento',
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'quantidade',
-        label: 'Quantidade descarregada',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'unidade',
-        label: 'Unidade',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['kg', 't'],
-      ),
-    ],
-    primaryAction: 'Registrar descarga',
-    sourceDetail:
-        'A fonte mostrou apenas a entrada; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Nova descarga',
-    recordTitleField: 'destino',
-    recordDescriptionFields: ['produto', 'quantidade', 'unidade'],
+    existingRoute: '/fazendas/campo/trato-diario',
   ),
   FeatureDefinition(
     id: 'balanca',
@@ -666,54 +696,21 @@ const operationalFeatures = <FeatureDefinition>[
     successDescription:
         'O peso simulado foi capturado e pode ser usado na apresentação do fluxo.',
   ),
+  // banco-real (Onda 3): `nota-cocho` grava na mesma tabela real que
+  // `leitura-cocho-confinamento` do Confinamento
+  // (`feedlot_corral_diet_histories`) — confirmado em
+  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Mesmo tratamento de
+  // `carga`/`descarga` acima: redireciona em vez de excluir. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
   FeatureDefinition(
     id: 'nota-cocho',
     profile: FeatureProfile.operational,
     group: 'Misturador',
     title: 'Nota de cocho',
-    objective: 'Registrar e consultar a nota de cocho.',
+    objective:
+        'Avaliar sobras por curral e registrar ocorrências sanitárias, estruturais e ambientais.',
     status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(
-        id: 'data',
-        label: 'Data',
-        type: FeatureFieldType.date,
-        isRequired: true,
-      ),
-      FeatureField(id: 'lote', label: 'Lote / curral', isRequired: true),
-      FeatureField(
-        id: 'nota',
-        label: 'Nota de cocho',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: [
-          '0 — Limpo',
-          '1 — Baixo',
-          '2 — Adequado',
-          '3 — Sobra moderada',
-          '4 — Sobra alta',
-        ],
-      ),
-      FeatureField(
-        id: 'observacao',
-        label: 'Observação',
-        type: FeatureFieldType.textarea,
-      ),
-    ],
-    primaryAction: 'Salvar nota',
-    sourceDetail:
-        'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Nova nota de cocho',
-    recordTitleField: 'lote',
-    recordDescriptionFields: ['nota', 'data'],
+    existingRoute: '/fazendas/campo/leitura-cocho',
   ),
   FeatureDefinition(
     id: 'configuracoes-misturador',
@@ -760,11 +757,14 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'nome',
     recordDescriptionFields: ['unidade', 'tolerancia', 'alerta'],
   ),
-  // banco-real: a fonte de verdade real desta funcionalidade é a tabela
-  // `service_orders` (responsável, execução e resultado), não `planning_activities`
-  // (que só liga atividade a operação, sem responsável). Os campos de prazo e
-  // resultado abaixo já seguem o formato de `service_orders`. Ver
-  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+  // banco-real (onda 2): campos e abas realinhados à especificação real de
+  // Apontamentos do AGRO365 web (não mais a `service_orders`, que não é a
+  // fonte do Apontamento — ver comentário histórico removido desta unidade).
+  // `prazo`, `resultado-esperado` e `criterio-sucesso` saíram por não
+  // existirem no Apontamento real do desktop. `data-apontamento`,
+  // `descricao`, `cultura-variedade` e `safra` entraram para espelhar a
+  // identificação e a classificação agronômica reais. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
   FeatureDefinition(
     id: 'apontamento',
     profile: FeatureProfile.operational,
@@ -773,6 +773,13 @@ const operationalFeatures = <FeatureDefinition>[
     objective: 'Registrar uma operação agrícola e os recursos associados.',
     status: FeatureStatus.ready,
     fields: [
+      // banco-real (onda 2): no desktop, `responsavel` é preenchido
+      // automaticamente com o usuário logado e é somente leitura — o
+      // contrato genérico de `FeatureField` não tem um modo read-only por
+      // campo (só a tela inteira via `readOnly`, que aqui removeria a
+      // criação). Mantido como seleção manual até o motor de formulário
+      // ganhar esse modo por campo. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
       FeatureField(
         id: 'responsavel',
         label: 'Responsável',
@@ -790,6 +797,16 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(id: 'operacao', label: 'Operação', isRequired: true),
       FeatureField(id: 'atividade', label: 'Atividade', isRequired: true),
       FeatureField(
+        id: 'data-apontamento',
+        label: 'Data do apontamento',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      // banco-real (onda 2): no desktop, `area-total` é herdado da área
+      // selecionada e é somente leitura — mesma limitação de campo
+      // read-only descrita acima em `responsavel`. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
+      FeatureField(
         id: 'area-total',
         label: 'Área total',
         type: FeatureFieldType.number,
@@ -800,6 +817,18 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Área utilizada',
         type: FeatureFieldType.number,
         isRequired: true,
+      ),
+      FeatureField(
+        id: 'cultura-variedade',
+        label: 'Cultura / variedade',
+        type: FeatureFieldType.select,
+        options: ['Soja', 'Milho', 'Algodão', 'Cana-de-açúcar', 'Café'],
+      ),
+      FeatureField(
+        id: 'safra',
+        label: 'Safra',
+        type: FeatureFieldType.select,
+        options: ['2024/2025', '2025/2026', '2026/2027'],
       ),
       FeatureField(
         id: 'armazem-insumo',
@@ -815,28 +844,22 @@ const operationalFeatures = <FeatureDefinition>[
         options: ['Armazém A', 'Depósito B'],
       ),
       FeatureField(
-        id: 'prazo',
-        label: 'Prazo de execução',
-        type: FeatureFieldType.date,
-      ),
-      FeatureField(
-        id: 'resultado-esperado',
-        label: 'Resultado esperado',
-        type: FeatureFieldType.textarea,
-      ),
-      FeatureField(
-        id: 'criterio-sucesso',
-        label: 'Critério de sucesso',
+        id: 'descricao',
+        label: 'Descrição / Histórico',
         type: FeatureFieldType.textarea,
       ),
     ],
+    // banco-real (onda 2): 4 abas alinhadas ao Apontamento real do desktop.
+    // `Abastecimentos` saiu por não existir no desktop; `Produção` fica
+    // exclusiva do desktop junto dos 13 parâmetros de classificação de
+    // qualidade (PH, avariados, umidade, quebra técnica…) que exigem
+    // balança e classificador. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md,
+    // Onda 2.
     sections: [
-      'Insumos',
-      'Abastecimentos',
-      'Máquinas / Implementos',
       'Mão de obra / Serviços',
+      'Máquinas / Implementos',
+      'Insumos',
       'Ocorrências',
-      'Produção',
     ],
     primaryAction: 'Salvar apontamento',
     listMode: true,
@@ -886,27 +909,6 @@ const operationalFeatures = <FeatureDefinition>[
     createAction: 'Nova marcação',
     recordTitleField: 'descricao',
     recordDescriptionFields: ['tipo', 'area', 'referencia'],
-  ),
-  FeatureDefinition(
-    id: 'colheita-frutas',
-    profile: FeatureProfile.operational,
-    group: 'Agricultura',
-    title: 'Colheita de frutas',
-    objective: 'Registrar motorista, veículo e caixas da colheita.',
-    status: FeatureStatus.ready,
-    fields: [
-      FeatureField(id: 'placa', label: 'Placa', isRequired: true),
-      FeatureField(id: 'motorista', label: 'Motorista', isRequired: true),
-      FeatureField(id: 'cpf', label: 'CPF do motorista', isRequired: true),
-      FeatureField(
-        id: 'caixas',
-        label: 'Caixas (kg)',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-    ],
-    sections: ['Caixas da colheita'],
-    primaryAction: 'Registrar colheita',
   ),
   FeatureDefinition(
     id: 'rebanho-inicial',
@@ -994,10 +996,14 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'lote-animais',
     profile: FeatureProfile.operational,
-    group: 'Pecuária',
+    group: 'Consultas',
     title: 'Lote de animais',
     objective: 'Criar um lote em fluxo de múltiplas etapas.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): montar lote é organização de rebanho, não evento
+    // de campo — cadastro fica no desktop, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -1218,72 +1224,6 @@ const operationalFeatures = <FeatureDefinition>[
     simulationTargetField: 'identificacao',
   ),
   FeatureDefinition(
-    id: 'compras-animais',
-    profile: FeatureProfile.operational,
-    group: 'Pecuária',
-    title: 'Compra de animais',
-    objective: 'Consultar e registrar compras de animais.',
-    status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(id: 'fornecedor', label: 'Fornecedor', isRequired: true),
-      FeatureField(
-        id: 'data',
-        label: 'Data da compra',
-        type: FeatureFieldType.date,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'especie',
-        label: 'Espécie',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Bovino', 'Bubalino', 'Ovino'],
-      ),
-      FeatureField(id: 'categoria', label: 'Categoria', isRequired: true),
-      FeatureField(
-        id: 'quantidade',
-        label: 'Quantidade de animais',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'valor-total',
-        label: 'Valor total (R\$)',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'documento',
-        label: 'Nota / documento de origem',
-        isRequired: true,
-      ),
-    ],
-    primaryAction: 'Registrar compra',
-    emptyLabel: 'Nenhuma compra de animais registrada.',
-    sourceDetail:
-        'O formulário não foi aberto; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Nova compra',
-    recordTitleField: 'fornecedor',
-    recordDescriptionFields: ['quantidade', 'categoria', 'data'],
-  ),
-  FeatureDefinition(
-    id: 'vendas',
-    profile: FeatureProfile.operational,
-    group: 'Pecuária',
-    title: 'Vendas',
-    objective: 'Registrar vendas de animais com documentos e frete.',
-    status: FeatureStatus.ready,
-    existingRoute: '/fazendas/campo/venda',
-  ),
-  FeatureDefinition(
     id: 'nutricoes',
     profile: FeatureProfile.operational,
     group: 'Pecuária',
@@ -1498,10 +1438,14 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'estacao-monta',
     profile: FeatureProfile.operational,
-    group: 'Reprodução',
+    group: 'Consultas',
     title: 'Estação de monta',
     objective: 'Gerenciar períodos e ciclos de reprodução.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): planejamento sazonal (nome, datas, método) — não
+    // é ação diária de campo, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -1591,10 +1535,14 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'material-reprodutivo',
     profile: FeatureProfile.operational,
-    group: 'Reprodução',
+    group: 'Consultas',
     title: 'Touros / sêmen / embrião',
     objective: 'Gerenciar material e recursos reprodutivos.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): estoque de material genético é cadastro de
+    // insumo, não ação de campo — o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -1639,10 +1587,14 @@ const operationalFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'protocolos-estacao',
     profile: FeatureProfile.operational,
-    group: 'Reprodução',
+    group: 'Consultas',
     title: 'Protocolos / estação',
     objective: 'Gerenciar protocolos associados à estação reprodutiva.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): configuração de regra reprodutiva — não é ação
+    // diária de campo, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -1940,6 +1892,62 @@ const operationalFeatures = <FeatureDefinition>[
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/mais/sync',
     capabilities: ['Rebanho', 'Lotes', 'Pesagem', 'Mortes'],
+  ),
+  // confinamento (onda 1): submódulo de Confinamento (Cadastro + Nutrição),
+  // separado por perfil a partir de Especificacao_Funcional_Confinamento_AGRO365.docx
+  // (ago/2026). Cadastro/Dieta/Fases são só leitura no dashboard ADM
+  // (`/fazendas/dashboards/confinamento`) — feitos pelo app web, que divide o
+  // banco. As 6 entradas abaixo são as telas dedicadas do Operacional; sem
+  // `fields` porque o formulário real vive na tela, não no motor genérico
+  // (mesmo padrão de `pesagem`/`nutricoes` acima).
+  FeatureDefinition(
+    id: 'meus-currais',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Meus currais',
+    objective:
+        'Consultar a situação dos currais e acionar pesagem, sanitário e óbito.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/meus-currais',
+  ),
+  FeatureDefinition(
+    id: 'producao-batelada',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Produzir batelada',
+    objective:
+        'Registrar a produção física de uma mistura de dieta, ingrediente a ingrediente.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/batelada',
+  ),
+  FeatureDefinition(
+    id: 'trato-diario',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Trato diário',
+    objective: 'Distribuir uma batelada entre os currais elegíveis do dia.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/trato-diario',
+  ),
+  FeatureDefinition(
+    id: 'leitura-cocho-confinamento',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Leitura de cocho',
+    objective:
+        'Avaliar sobras por curral e registrar ocorrências sanitárias, estruturais e ambientais.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/leitura-cocho',
+  ),
+  FeatureDefinition(
+    id: 'ordens-pendentes',
+    profile: FeatureProfile.operational,
+    group: 'Confinamento',
+    title: 'Ordens pendentes',
+    objective:
+        'Confirmar a execução de transferências de lote e trocas de dieta criadas pelo ADM.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/ordens-pendentes',
   ),
 ];
 

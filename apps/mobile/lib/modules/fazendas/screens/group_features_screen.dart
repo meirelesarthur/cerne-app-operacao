@@ -100,7 +100,7 @@ class _GroupFeaturesScreenState extends State<GroupFeaturesScreen> {
             description: 'Este módulo ainda não tem funções mapeadas.',
           )
         else if (features.isEmpty)
-          AppEmptyState(
+          const AppEmptyState(
             icon: LucideIcons.searchX,
             title: 'Nenhuma função encontrada',
             description: 'Tente buscar por outro nome.',

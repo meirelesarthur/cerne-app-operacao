@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -39,7 +38,6 @@ class ResponsibilityWorkspace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final features = profile == FeatureProfile.administration
         ? adminFeatures
         : operationalFeatures;
@@ -47,6 +45,17 @@ class ResponsibilityWorkspace extends StatelessWidget {
     for (final feature in features) {
       groups.putIfAbsent(feature.group, () => []).add(feature);
     }
+    // A ordem do grid é decisão de produto (`groupOrder`), não a ordem de
+    // inserção no catálogo. O desempate pela posição original mantém o
+    // resultado determinístico: `List.sort` não é estável em Dart, então
+    // grupos ainda não listados em `_groupDisplayOrder` embaralhariam entre si.
+    final insertionOrder = groups.keys.toList();
+    final orderedGroups = [...insertionOrder]
+      ..sort((a, b) {
+        final byOrder = groupOrder(a).compareTo(groupOrder(b));
+        if (byOrder != 0) return byOrder;
+        return insertionOrder.indexOf(a).compareTo(insertionOrder.indexOf(b));
+      });
     final isAdministration = profile == FeatureProfile.administration;
     final segment = isAdministration ? 'administracao' : 'operacional';
 
@@ -67,7 +76,7 @@ class ResponsibilityWorkspace extends StatelessWidget {
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: groups.length,
+          itemCount: orderedGroups.length,
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: AppSpacing.space3,
@@ -75,7 +84,7 @@ class ResponsibilityWorkspace extends StatelessWidget {
             childAspectRatio: 1.3,
           ),
           itemBuilder: (context, index) {
-            final group = groups.keys.elementAt(index);
+            final group = orderedGroups[index];
             return _ModuleGridCard(
               group: group,
               onTap: () =>

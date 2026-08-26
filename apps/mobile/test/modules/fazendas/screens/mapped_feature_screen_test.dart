@@ -127,7 +127,14 @@ void main() {
       expect(find.text('Áreas'), findsOneWidget);
     });
 
-    testWidgets('Áreas percorre lista, validação, sucesso e novo registro', (
+    // banco-real (onda 1 — fronteira operação/gestão): `cadastrar-area` virou
+    // consulta (`readOnly: true`) — estrutura física da fazenda é cadastro
+    // estruturante, não ação diária de campo. O round-trip completo de
+    // criação (validação → sucesso → lista) que este teste cobria para
+    // "Áreas" passou para `abastecimentos`, que continua criável; este teste
+    // agora garante que a consulta somente leitura não oferece caminho para
+    // o formulário. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    testWidgets('Áreas é consulta somente leitura, sem ação de criação', (
       tester,
     ) async {
       await setTallSurface(tester);
@@ -146,47 +153,119 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Registros'), findsOneWidget);
-      expect(find.text('Adicionar área'), findsOneWidget);
-
-      await tester.tap(find.text('Adicionar área'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Dados do registro'), findsOneWidget);
-      expect(find.text('Nome da área'), findsOneWidget);
-      expect(find.text('Área total'), findsOneWidget);
-
-      await tester.ensureVisible(find.text('Salvar área'));
-      await tester.tap(find.text('Salvar área'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Campo obrigatório.'), findsNWidgets(5));
-      expect(tester.takeException(), isNull);
-
-      // Por rótulo, não por índice posicional: o catálogo funcional ganha
-      // campos com frequência (ex.: onda banco-real acrescentou área
-      // produtiva/não produtiva/carga animal entre "Área total" e "Unidade"),
-      // e um índice cru quebra silenciosamente a cada novo campo intercalado.
-      await _enterFieldText(tester, 'Nome da área', 'Talhão 03');
-      await _enterFieldText(tester, 'Área total', '24');
-      await _enterFieldText(tester, 'Localização', 'Setor Sul');
-      await _selectFieldOption(tester, 'Tipo de uso', 'Agricultura');
-      await _selectFieldOption(tester, 'Unidade', 'ha');
-      expect(tester.takeException(), isNull);
-
-      await tester.ensureVisible(find.text('Salvar área'));
-      await tester.tap(find.text('Salvar área'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Talhão 03 salvo'), findsOneWidget);
-      expect(find.text('Ver registros'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-
-      await tester.tap(find.text('Ver registros'));
-      await tester.pumpAndSettle();
-
+      expect(find.text('Adicionar área'), findsNothing);
+      // banco-real (correção de demonstrabilidade): `cadastrar-area` tem
+      // amostra semeada em `prototype_records_store.dart` — a consulta não
+      // pode ficar vazia para sempre só porque o app não cria mais registro
+      // para esta rotina. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md.
       expect(find.text('Talhão 03'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets(
+      'Áreas mostra estado vazio honesto quando não há amostra sincronizada',
+      (tester) async {
+        await setTallSurface(tester);
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        container.read(prototypeRecordsProvider.notifier).seed(const {});
+
+        await tester.pumpWidget(
+          _wrap(
+            container,
+            const MappedFeatureScreen(
+              featureId: 'cadastrar-area',
+              profile: FeatureProfile.operational,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text(
+            'O cadastro desta rotina é feito no sistema web. Assim que '
+            'sincronizar, os registros aparecem aqui.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Os registros operacionais desta sessão aparecerão aqui.'),
+          findsNothing,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'Abastecimentos percorre lista, validação, sucesso e novo registro',
+      (tester) async {
+        await setTallSurface(tester);
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+
+        await tester.pumpWidget(
+          _wrap(
+            container,
+            const MappedFeatureScreen(
+              featureId: 'abastecimentos',
+              profile: FeatureProfile.operational,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Registros'), findsOneWidget);
+        expect(find.text('Novo abastecimento'), findsOneWidget);
+
+        await tester.tap(find.text('Novo abastecimento'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Dados do registro'), findsOneWidget);
+        expect(find.text('Veículo / equipamento'), findsOneWidget);
+        expect(find.text('Quantidade (L)'), findsOneWidget);
+
+        await tester.ensureVisible(find.text('Registrar abastecimento'));
+        await tester.tap(find.text('Registrar abastecimento'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Campo obrigatório.'), findsNWidgets(7));
+        expect(tester.takeException(), isNull);
+
+        await _selectFieldOption(
+          tester,
+          'Responsável',
+          'João Oliveira',
+        );
+        await _enterFieldText(tester, 'Data', '2026-08-16');
+        await _selectFieldOption(
+          tester,
+          'Veículo / equipamento',
+          'Trator John Deere 6110',
+        );
+        await _selectFieldOption(tester, 'Combustível', 'Diesel S10');
+        await _enterFieldText(tester, 'Quantidade (L)', '120');
+        await _enterFieldText(tester, 'Hodômetro / horímetro', '5400');
+        await _enterFieldText(tester, 'Posto / tanque de origem', 'Posto A');
+        expect(tester.takeException(), isNull);
+
+        await tester.ensureVisible(find.text('Registrar abastecimento'));
+        await tester.tap(find.text('Registrar abastecimento'));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text('Trator John Deere 6110 salvo'),
+          findsOneWidget,
+        );
+        expect(find.text('Ver registros'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+
+        await tester.tap(find.text('Ver registros'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Trator John Deere 6110'), findsWidgets);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('consulta administrativa lê registro criado no operacional', (
       tester,

@@ -6,7 +6,9 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/functional_journey_engine.dart';
 import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
+import 'package:cerne_app/shell/state/prototype_session_store.dart';
 
+import '../../../support/router_test_harness.dart';
 import '../../../support/test_viewport.dart';
 
 Widget _wrap(
@@ -43,17 +45,24 @@ void _fillRequiredFields(
 
 void main() {
   group('MappedFeatureScreen — Onda D', () {
-    test('os oito formulários finais percorrem validação e sucesso', () {
-      const ids = {
-        'carga',
-        'descarga',
-        'nota-cocho',
-        'configuracoes-misturador',
-        'marcacao',
-        'colheita-frutas',
-        'compras-animais',
-        'apartacao',
-      };
+    // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas` saiu
+    // do catálogo (fora de escopo) e `compras-animais` virou consulta
+    // administrativa somente leitura (`readOnly: true`) — nenhuma das duas
+    // tem mais caminho de UI até este formulário (`canCreate` em
+    // `mapped_feature_screen.dart` já bloqueia `compras-animais`; a outra nem
+    // existe mais). Sobram seis formulários. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    // banco-real (onda 3 — duplicações): `carga`, `descarga` e `nota-cocho`
+    // gravam na mesma tabela real que `producao-batelada`, `trato-diario` e
+    // `leitura-cocho-confinamento` do Confinamento (ver
+    // docs/ajustes-banco-real/01-mapa-catalogo-banco.md) — viraram
+    // redirecionamento (`existingRoute`) para a tela nova, sem `fields`
+    // próprios. 6-3=3 formulários. A cobertura de validação que as três
+    // tinham aqui não se perde: ela já existe nos testes das telas de
+    // Confinamento equivalentes (batelada/trato-diário/leitura de cocho). Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
+    test('os três formulários finais percorrem validação e sucesso', () {
+      const ids = {'configuracoes-misturador', 'marcacao', 'apartacao'};
 
       for (final id in ids) {
         final feature = featureById(id)!;
@@ -66,12 +75,17 @@ void main() {
       }
     });
 
-    test('todas as 47 funcionalidades Ready têm destino executável', () {
+    test('todas as 51 funcionalidades Ready têm destino executável', () {
       final ready = allFeatures.where(
         (feature) => feature.status == FeatureStatus.ready,
       );
 
-      expect(ready, hasLength(47));
+      // confinamento (onda 1): +5 funcionalidades operacionais Ready — ver
+      // functional_catalog_test.dart.
+      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
+      // (ready) saiu do escopo — 52-1=51. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+      expect(ready, hasLength(51));
       for (final feature in ready) {
         final handledByMappedScreen =
             feature.auditExport != null ||
@@ -146,28 +160,44 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('Carga parte da amostra e abre formulário validável', (
+    // banco-real (onda 3 — duplicações): `carga`, `descarga` e `nota-cocho`
+    // não abrem mais formulário próprio — o menu do grupo "Misturador" leva
+    // direto para a tela nova equivalente do Confinamento
+    // (`group_features_screen.dart`, `_destination` prioriza
+    // `existingRoute`). Substitui o teste anterior de formulário ("Carga
+    // parte da amostra e abre formulário validável"), que perdeu sentido: a
+    // tela antiga não é mais alcançável por navegação normal. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
+    testWidgets('Carga, Descarga e Nota de cocho redirecionam para o Confinamento', (
       tester,
     ) async {
       await setTallSurface(tester);
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      await tester.pumpWidget(
-        _wrap(
-          container,
-          featureId: 'carga',
-          profile: FeatureProfile.operational,
-        ),
+      final harness = RouterTestHarness(
+        profile: UserAccessProfile.operational,
       );
+      addTearDown(harness.dispose);
+      harness.router.go('/fazendas/operacional/grupo/misturador');
+
+      await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Ração de engorda 18%'), findsOneWidget);
-      await tester.tap(find.text('Nova carga'));
+      await tester.tap(find.text('Carga'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Registrar carga'));
-      await tester.pump();
+      expect(find.text('Produzir batelada'), findsOneWidget);
+      expect(tester.takeException(), isNull);
 
-      expect(find.text('Campo obrigatório.'), findsNWidgets(6));
+      harness.router.go('/fazendas/operacional/grupo/misturador');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Descarga'));
+      await tester.pumpAndSettle();
+      expect(find.text('Trato diário'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      harness.router.go('/fazendas/operacional/grupo/misturador');
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Nota de cocho'));
+      await tester.pumpAndSettle();
+      expect(find.text('Leitura de cocho'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

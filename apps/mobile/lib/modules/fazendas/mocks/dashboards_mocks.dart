@@ -1,7 +1,11 @@
 /// Mocks dos dashboards administrativos de Fazendas (spec §4) — espelha
-/// `src/modules/fazendas/mocks/dashboards.ts`. Porta apenas os dados usados
-/// pelos 7 dashboards administrativos (financeiro, pecuária, confinamento,
-/// ativos, suprimentos, uso, consultas). Determinístico, sem `DateTime.now`.
+/// `src/modules/fazendas/mocks/dashboards.ts`. Porta os dados usados pelos
+/// dashboards administrativos financeiro, pecuária, ativos, suprimentos, uso
+/// e consultas. Determinístico, sem `DateTime.now`.
+///
+/// Confinamento tem mocks próprios, mais ricos (hierarquia Pátio → Setor →
+/// Curral, Dieta, Fases, Batelada, Trato Diário, Leitura de Cocho): ver
+/// `../confinamento/mocks.dart`.
 library;
 
 /* ---- Financeiro (§4.3) ---- */
@@ -68,35 +72,6 @@ const List<PecuariaFinanceiroItem> pecuariaFinanceiro = [
     delta: 9,
     spark: [4, 6, 5, 7, 8, 9, 11],
   ),
-];
-
-/* ---- Lotação de Currais / Confinamento (§4.2) ---- */
-
-class Curral {
-  const Curral({
-    required this.id,
-    required this.nome,
-    required this.setor,
-    required this.atual,
-    required this.max,
-  });
-
-  final String id;
-  final String nome;
-  final String setor;
-  final int atual;
-  final int max;
-}
-
-const List<Curral> currais = [
-  Curral(id: 'c1', nome: 'Curral 01', setor: 'Setor A', atual: 78, max: 100),
-  Curral(id: 'c2', nome: 'Curral 02', setor: 'Setor A', atual: 95, max: 100),
-  Curral(id: 'c3', nome: 'Curral 03', setor: 'Setor B', atual: 100, max: 100),
-  Curral(id: 'c4', nome: 'Curral 04', setor: 'Setor B', atual: 42, max: 100),
-  Curral(id: 'c5', nome: 'Curral 05', setor: 'Setor C', atual: 88, max: 100),
-  Curral(id: 'c6', nome: 'Curral 06', setor: 'Setor C', atual: 60, max: 100),
-  Curral(id: 'c7', nome: 'Curral 07', setor: 'Setor D', atual: 110, max: 100),
-  Curral(id: 'c8', nome: 'Curral 08', setor: 'Setor D', atual: 25, max: 100),
 ];
 
 /* ---- Ativos / Depreciação (§4.5) ---- */

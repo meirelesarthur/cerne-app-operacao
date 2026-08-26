@@ -4,13 +4,21 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 54 funcionalidades e a divisão por perfil', () {
+    test('preserva as 58 funcionalidades e a divisão por perfil', () {
       // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
       // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
       // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
-      expect(adminFeatures, hasLength(13));
-      expect(operationalFeatures, hasLength(41));
-      expect(allFeatures, hasLength(54));
+      // confinamento (onda 1): +5 funcionalidades operacionais do submódulo de
+      // Confinamento (Meus currais, Produzir batelada, Trato diário, Leitura
+      // de cocho, Ordens pendentes) — ver docs/ESTEIRA-PERFIS-AGRO365.md.
+      // banco-real (onda 1 — fronteira operação/gestão): `vendas` e
+      // `compras-animais` sobem do operacional para o administrativo (decisão
+      // comercial/financeira, o ADM só visualiza) e `colheita-frutas` sai do
+      // escopo — 13+2=15 administrativas, 46-2-1=43 operacionais, 15+43=58
+      // no total. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+      expect(adminFeatures, hasLength(15));
+      expect(operationalFeatures, hasLength(43));
+      expect(allFeatures, hasLength(58));
 
       expect(
         adminFeatures.every(
@@ -36,10 +44,13 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 47 ready, 7 hardware e zero mapped', () {
+    test('preserva a maturidade 51 ready, 7 hardware e zero mapped', () {
+      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
+      // (ready) saiu do escopo — 52-1=51. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(47),
+        hasLength(51),
       );
       expect(
         allFeatures.where(
@@ -61,14 +72,36 @@ void main() {
       // consulta-produtos (a única criação em campo livre; +3 obrigatórios)
       // para virar a fonte de busca dos demais campos "produto". Ver
       // docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
-      expect(fields, hasLength(183));
-      expect(fields.where((field) => field.isRequired), hasLength(159));
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(33));
+      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
+      // saiu do catálogo com seus 4 campos (todos obrigatórios) — 183-4=179
+      // campos; 159-4=155 obrigatórios. `vendas` ganhou `listMode` ao virar
+      // consulta pelo motor genérico sem `existingRoute` (que saiu por
+      // apontar para uma rota `/fazendas/campo/*` bloqueada para
+      // administração) — 33+1=34 com `listMode`, 18-1=17 com
+      // `existingRoute`. `colheita-frutas` saiu com sua 1 seção — 15-1=14.
+      // Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+      // banco-real (onda 2 — apontamento): -3 campos (`prazo`,
+      // `resultado-esperado`, `criterio-sucesso`, nenhum obrigatório) e +4
+      // campos (`data-apontamento` obrigatório, `descricao`,
+      // `cultura-variedade`, `safra` opcionais) — 179-3+4=180 campos;
+      // 155+1=156 obrigatórios. `apontamento` perdeu 2 seções
+      // (`Abastecimentos` e `Produção`) — 14-2=12. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
+      // banco-real (onda 3 — duplicações): `carga` (6 campos, 6
+      // obrigatórios), `descarga` (6 campos, 6 obrigatórios) e `nota-cocho`
+      // (5 campos, 4 obrigatórios) viraram redirecionamento —
+      // 180-17=163 campos; 156-16=140 obrigatórios. As três ganharam
+      // `existingRoute` e perderam `listMode` — 34-3=31 com `listMode`;
+      // 17+3=20 com `existingRoute`. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
+      expect(fields, hasLength(163));
+      expect(fields.where((field) => field.isRequired), hasLength(140));
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(31));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(13),
+        hasLength(20),
       );
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(15));
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(12));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(25),
@@ -146,6 +179,20 @@ void main() {
 
     test('preserva consultas compartilhadas e exportações de auditoria', () {
       expect(featureById('areas')?.dataSourceId, 'cadastrar-area');
+      // banco-real (Onda 3 — duplicações): `carga`, `descarga` e
+      // `nota-cocho` gravam na mesma tabela real que as telas novas do
+      // Confinamento (ver docs/ajustes-banco-real/01-mapa-catalogo-banco.md)
+      // — não foram removidas do catálogo, viram redirecionamento. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
+      expect(featureById('carga')?.existingRoute, '/fazendas/campo/batelada');
+      expect(
+        featureById('descarga')?.existingRoute,
+        '/fazendas/campo/trato-diario',
+      );
+      expect(
+        featureById('nota-cocho')?.existingRoute,
+        '/fazendas/campo/leitura-cocho',
+      );
       expect(
         featureById('exportar-log-estoque')?.auditExport,
         AuditExportKind.estoque,

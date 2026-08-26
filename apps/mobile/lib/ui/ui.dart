@@ -38,6 +38,7 @@ export 'pressable.dart';
 export 'quick_action.dart';
 export 'screen_header.dart';
 export 'search_select.dart';
+export 'segmented_tabs.dart';
 export 'skeleton.dart';
 export 'sparkline_area.dart';
 export 'spinner.dart';
