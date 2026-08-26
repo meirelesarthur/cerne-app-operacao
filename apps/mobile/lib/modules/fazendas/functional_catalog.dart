@@ -862,11 +862,14 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'nome',
     recordDescriptionFields: ['unidade', 'tolerancia', 'alerta'],
   ),
-  // banco-real: a fonte de verdade real desta funcionalidade é a tabela
-  // `service_orders` (responsável, execução e resultado), não `planning_activities`
-  // (que só liga atividade a operação, sem responsável). Os campos de prazo e
-  // resultado abaixo já seguem o formato de `service_orders`. Ver
-  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+  // banco-real (onda 2): campos e abas realinhados à especificação real de
+  // Apontamentos do AGRO365 web (não mais a `service_orders`, que não é a
+  // fonte do Apontamento — ver comentário histórico removido desta unidade).
+  // `prazo`, `resultado-esperado` e `criterio-sucesso` saíram por não
+  // existirem no Apontamento real do desktop. `data-apontamento`,
+  // `descricao`, `cultura-variedade` e `safra` entraram para espelhar a
+  // identificação e a classificação agronômica reais. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
   FeatureDefinition(
     id: 'apontamento',
     profile: FeatureProfile.operational,
@@ -875,6 +878,13 @@ const operationalFeatures = <FeatureDefinition>[
     objective: 'Registrar uma operação agrícola e os recursos associados.',
     status: FeatureStatus.ready,
     fields: [
+      // banco-real (onda 2): no desktop, `responsavel` é preenchido
+      // automaticamente com o usuário logado e é somente leitura — o
+      // contrato genérico de `FeatureField` não tem um modo read-only por
+      // campo (só a tela inteira via `readOnly`, que aqui removeria a
+      // criação). Mantido como seleção manual até o motor de formulário
+      // ganhar esse modo por campo. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
       FeatureField(
         id: 'responsavel',
         label: 'Responsável',
@@ -892,6 +902,16 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(id: 'operacao', label: 'Operação', isRequired: true),
       FeatureField(id: 'atividade', label: 'Atividade', isRequired: true),
       FeatureField(
+        id: 'data-apontamento',
+        label: 'Data do apontamento',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      // banco-real (onda 2): no desktop, `area-total` é herdado da área
+      // selecionada e é somente leitura — mesma limitação de campo
+      // read-only descrita acima em `responsavel`. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
+      FeatureField(
         id: 'area-total',
         label: 'Área total',
         type: FeatureFieldType.number,
@@ -902,6 +922,18 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Área utilizada',
         type: FeatureFieldType.number,
         isRequired: true,
+      ),
+      FeatureField(
+        id: 'cultura-variedade',
+        label: 'Cultura / variedade',
+        type: FeatureFieldType.select,
+        options: ['Soja', 'Milho', 'Algodão', 'Cana-de-açúcar', 'Café'],
+      ),
+      FeatureField(
+        id: 'safra',
+        label: 'Safra',
+        type: FeatureFieldType.select,
+        options: ['2024/2025', '2025/2026', '2026/2027'],
       ),
       FeatureField(
         id: 'armazem-insumo',
@@ -917,28 +949,22 @@ const operationalFeatures = <FeatureDefinition>[
         options: ['Armazém A', 'Depósito B'],
       ),
       FeatureField(
-        id: 'prazo',
-        label: 'Prazo de execução',
-        type: FeatureFieldType.date,
-      ),
-      FeatureField(
-        id: 'resultado-esperado',
-        label: 'Resultado esperado',
-        type: FeatureFieldType.textarea,
-      ),
-      FeatureField(
-        id: 'criterio-sucesso',
-        label: 'Critério de sucesso',
+        id: 'descricao',
+        label: 'Descrição / Histórico',
         type: FeatureFieldType.textarea,
       ),
     ],
+    // banco-real (onda 2): 4 abas alinhadas ao Apontamento real do desktop.
+    // `Abastecimentos` saiu por não existir no desktop; `Produção` fica
+    // exclusiva do desktop junto dos 13 parâmetros de classificação de
+    // qualidade (PH, avariados, umidade, quebra técnica…) que exigem
+    // balança e classificador. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md,
+    // Onda 2.
     sections: [
-      'Insumos',
-      'Abastecimentos',
-      'Máquinas / Implementos',
       'Mão de obra / Serviços',
+      'Máquinas / Implementos',
+      'Insumos',
       'Ocorrências',
-      'Produção',
     ],
     primaryAction: 'Salvar apontamento',
     listMode: true,

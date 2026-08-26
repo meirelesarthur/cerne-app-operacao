@@ -80,14 +80,21 @@ void main() {
       // administração) — 33+1=34 com `listMode`, 18-1=17 com
       // `existingRoute`. `colheita-frutas` saiu com sua 1 seção — 15-1=14.
       // Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-      expect(fields, hasLength(179));
-      expect(fields.where((field) => field.isRequired), hasLength(155));
+      // banco-real (onda 2 — apontamento): -3 campos (`prazo`,
+      // `resultado-esperado`, `criterio-sucesso`, nenhum obrigatório) e +4
+      // campos (`data-apontamento` obrigatório, `descricao`,
+      // `cultura-variedade`, `safra` opcionais) — 179-3+4=180 campos;
+      // 155+1=156 obrigatórios. `apontamento` perdeu 2 seções
+      // (`Abastecimentos` e `Produção`) — 14-2=12. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
+      expect(fields, hasLength(180));
+      expect(fields.where((field) => field.isRequired), hasLength(156));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(34));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
         hasLength(17),
       );
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(14));
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(12));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(25),
