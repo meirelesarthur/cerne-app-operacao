@@ -112,7 +112,14 @@ class _GroupFeaturesScreenState extends State<GroupFeaturesScreen> {
               label: feature.title,
               description: feature.objective,
               showShadow: false,
-              onTap: () => context.go(_destination(feature, segment)),
+              // `push`, não `go`: `_destination` pode apontar tanto para uma
+              // rota irmã fora desta linhagem (`existingRoute`, ex.
+              // `/fazendas/campo/pesagem`) quanto para uma rota-irmã do
+              // próprio `:featureId` (`/fazendas/$segment/<id>`) — em ambos
+              // os casos `go` reconstrói a pilha sem esta tela de grupo, e o
+              // voltar do sistema pula direto para a central em vez de
+              // retornar à listagem do grupo.
+              onTap: () => context.push(_destination(feature, segment)),
             ),
             const SizedBox(height: AppSpacing.space2),
           ],

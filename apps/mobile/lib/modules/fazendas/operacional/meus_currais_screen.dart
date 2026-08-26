@@ -131,7 +131,8 @@ class _CurralCard extends ConsumerWidget {
                   AppButton(
                     size: AppButtonSize.sm,
                     variant: AppButtonVariant.secondary,
-                    onPressed: () => context.go('/fazendas/campo/ordens-pendentes'),
+                    onPressed: () =>
+                        context.push('/fazendas/campo/ordens-pendentes'),
                     child: const Text('Ver'),
                   ),
                 ],
@@ -156,22 +157,31 @@ class _CurralCard extends ConsumerWidget {
               // `sanitario` não tem rota dedicada e é resolvido pelo motor
               // genérico em `operacional/:featureId`. Apontar as três para
               // `campo/<id>` levava ao fallback vazio de `buildCampoFlow`.
+              //
+              // `push`, não `go`: essas rotas são irmãs de `campo/meus-currais`
+              // (linhagem desta própria tela), não filhas dela — `go` troca a
+              // página na pilha em vez de empilhar, então o voltar do sistema
+              // pulava direto para `/fazendas` (redirecionado para a home do
+              // perfil) em vez de retornar para Meus Currais, perdendo o
+              // curral selecionado. `push` mantém esta tela na pilha; o botão
+              // voltar (`SubPageHeader`/`maybePop`) já resolve o resto.
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
-                onPressed: () => context.go('/fazendas/campo/pesagem'),
+                onPressed: () => context.push('/fazendas/campo/pesagem'),
                 child: const Text('Pesagem'),
               ),
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
-                onPressed: () => context.go('/fazendas/operacional/sanitario'),
+                onPressed: () =>
+                    context.push('/fazendas/operacional/sanitario'),
                 child: const Text('Sanitário'),
               ),
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
-                onPressed: () => context.go('/fazendas/campo/ciclo'),
+                onPressed: () => context.push('/fazendas/campo/ciclo'),
                 child: const Text('Óbito'),
               ),
             ],

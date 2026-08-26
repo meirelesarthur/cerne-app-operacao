@@ -88,5 +88,35 @@ void main() {
     testWidgets('ação rápida "Óbito" abre uma tela real', (tester) async {
       await _esperaDestinoReal(tester, 'Óbito');
     });
+
+    testWidgets(
+      'voltar a partir de "Pesagem" retorna para Meus currais (não pula para Rotinas)',
+      (tester) async {
+        // Regressão do bug relatado: as ações rápidas usavam `context.go()`
+        // para uma rota-irmã fora da própria linhagem — o botão voltar do
+        // sistema pulava direto para a home do perfil ("Rotinas"), perdendo
+        // o contexto de Meus Currais. `context.push()` mantém esta tela na
+        // pilha, então o voltar (`Navigator.pop`) retorna corretamente aqui.
+        await setTallSurface(tester, height: 2400);
+        final harness = RouterTestHarness(
+          profile: UserAccessProfile.operational,
+        );
+        addTearDown(harness.dispose);
+
+        harness.router.go('/fazendas/campo/meus-currais');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Pesagem').first);
+        await tester.pumpAndSettle();
+        expect(harness.router.canPop(), isTrue);
+
+        harness.router.pop();
+        await tester.pumpAndSettle();
+
+        expect(find.text('Meus currais'), findsOneWidget);
+        expect(find.text('O que fazer hoje'), findsNothing);
+      },
+    );
   });
 }
