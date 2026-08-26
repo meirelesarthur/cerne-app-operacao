@@ -87,12 +87,19 @@ void main() {
       // 155+1=156 obrigatórios. `apontamento` perdeu 2 seções
       // (`Abastecimentos` e `Produção`) — 14-2=12. Ver
       // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
-      expect(fields, hasLength(180));
-      expect(fields.where((field) => field.isRequired), hasLength(156));
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(34));
+      // banco-real (onda 3 — duplicações): `carga` (6 campos, 6
+      // obrigatórios), `descarga` (6 campos, 6 obrigatórios) e `nota-cocho`
+      // (5 campos, 4 obrigatórios) viraram redirecionamento —
+      // 180-17=163 campos; 156-16=140 obrigatórios. As três ganharam
+      // `existingRoute` e perderam `listMode` — 34-3=31 com `listMode`;
+      // 17+3=20 com `existingRoute`. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
+      expect(fields, hasLength(163));
+      expect(fields.where((field) => field.isRequired), hasLength(140));
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(31));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(17),
+        hasLength(20),
       );
       expect(allFeatures.expand((feature) => feature.sections), hasLength(12));
       expect(
@@ -172,6 +179,20 @@ void main() {
 
     test('preserva consultas compartilhadas e exportações de auditoria', () {
       expect(featureById('areas')?.dataSourceId, 'cadastrar-area');
+      // banco-real (Onda 3 — duplicações): `carga`, `descarga` e
+      // `nota-cocho` gravam na mesma tabela real que as telas novas do
+      // Confinamento (ver docs/ajustes-banco-real/01-mapa-catalogo-banco.md)
+      // — não foram removidas do catálogo, viram redirecionamento. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
+      expect(featureById('carga')?.existingRoute, '/fazendas/campo/batelada');
+      expect(
+        featureById('descarga')?.existingRoute,
+        '/fazendas/campo/trato-diario',
+      );
+      expect(
+        featureById('nota-cocho')?.existingRoute,
+        '/fazendas/campo/leitura-cocho',
+      );
       expect(
         featureById('exportar-log-estoque')?.auditExport,
         AuditExportKind.estoque,

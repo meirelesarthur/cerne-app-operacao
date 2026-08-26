@@ -650,109 +650,37 @@ const operationalFeatures = <FeatureDefinition>[
     successDescription:
         'A balança e o equipamento externo estão disponíveis para os fluxos simulados desta sessão.',
   ),
+  // banco-real (Onda 3): `carga` grava na mesma tabela real que
+  // `producao-batelada` do Confinamento (`item_diet_beats`) — confirmado em
+  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Não removida do
+  // catálogo (quem já usa o caminho antigo não pode perder o acesso); vira
+  // redirecionamento para a tela nova, no mesmo padrão já usado por
+  // `pesagem`/`nascimentos`/`mortes`/`nutricoes` acima: só `existingRoute`,
+  // sem `fields`/`listMode` próprios. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
   FeatureDefinition(
     id: 'carga',
     profile: FeatureProfile.operational,
     group: 'Misturador',
     title: 'Carga',
-    objective: 'Executar o fluxo operacional de carregamento do misturador.',
+    objective:
+        'Registrar a produção física de uma mistura de dieta, ingrediente a ingrediente.',
     status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(
-        id: 'formulacao',
-        label: 'Formulação / produto',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: catalogoProdutos,
-      ),
-      FeatureField(id: 'origem', label: 'Armazém de origem', isRequired: true),
-      FeatureField(
-        id: 'equipamento',
-        label: 'Misturador / equipamento',
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'quantidade',
-        label: 'Quantidade',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'unidade',
-        label: 'Unidade',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['kg', 't'],
-      ),
-    ],
-    primaryAction: 'Registrar carga',
-    sourceDetail:
-        'A fonte mostrou apenas a entrada; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Nova carga',
-    recordTitleField: 'formulacao',
-    recordDescriptionFields: ['quantidade', 'unidade', 'equipamento'],
+    existingRoute: '/fazendas/campo/batelada',
   ),
+  // banco-real (Onda 3): `descarga` grava na mesma tabela real que
+  // `trato-diario` do Confinamento (`item_nutritions`) — confirmado em
+  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Mesmo tratamento de
+  // `carga` acima: redireciona em vez de excluir. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
   FeatureDefinition(
     id: 'descarga',
     profile: FeatureProfile.operational,
     group: 'Misturador',
     title: 'Descarga',
-    objective: 'Executar o fluxo operacional de descarga do misturador.',
+    objective: 'Distribuir uma batelada entre os currais elegíveis do dia.',
     status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(
-        id: 'produto',
-        label: 'Produto carregado',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: catalogoProdutos,
-      ),
-      FeatureField(
-        id: 'destino',
-        label: 'Área / cocho de destino',
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'equipamento',
-        label: 'Misturador / equipamento',
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'quantidade',
-        label: 'Quantidade descarregada',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'unidade',
-        label: 'Unidade',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['kg', 't'],
-      ),
-    ],
-    primaryAction: 'Registrar descarga',
-    sourceDetail:
-        'A fonte mostrou apenas a entrada; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Nova descarga',
-    recordTitleField: 'destino',
-    recordDescriptionFields: ['produto', 'quantidade', 'unidade'],
+    existingRoute: '/fazendas/campo/trato-diario',
   ),
   FeatureDefinition(
     id: 'balanca',
@@ -768,54 +696,21 @@ const operationalFeatures = <FeatureDefinition>[
     successDescription:
         'O peso simulado foi capturado e pode ser usado na apresentação do fluxo.',
   ),
+  // banco-real (Onda 3): `nota-cocho` grava na mesma tabela real que
+  // `leitura-cocho-confinamento` do Confinamento
+  // (`feedlot_corral_diet_histories`) — confirmado em
+  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Mesmo tratamento de
+  // `carga`/`descarga` acima: redireciona em vez de excluir. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
   FeatureDefinition(
     id: 'nota-cocho',
     profile: FeatureProfile.operational,
     group: 'Misturador',
     title: 'Nota de cocho',
-    objective: 'Registrar e consultar a nota de cocho.',
+    objective:
+        'Avaliar sobras por curral e registrar ocorrências sanitárias, estruturais e ambientais.',
     status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(
-        id: 'data',
-        label: 'Data',
-        type: FeatureFieldType.date,
-        isRequired: true,
-      ),
-      FeatureField(id: 'lote', label: 'Lote / curral', isRequired: true),
-      FeatureField(
-        id: 'nota',
-        label: 'Nota de cocho',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: [
-          '0 — Limpo',
-          '1 — Baixo',
-          '2 — Adequado',
-          '3 — Sobra moderada',
-          '4 — Sobra alta',
-        ],
-      ),
-      FeatureField(
-        id: 'observacao',
-        label: 'Observação',
-        type: FeatureFieldType.textarea,
-      ),
-    ],
-    primaryAction: 'Salvar nota',
-    sourceDetail:
-        'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Nova nota de cocho',
-    recordTitleField: 'lote',
-    recordDescriptionFields: ['nota', 'data'],
+    existingRoute: '/fazendas/campo/leitura-cocho',
   ),
   FeatureDefinition(
     id: 'configuracoes-misturador',
