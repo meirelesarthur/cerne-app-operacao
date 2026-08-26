@@ -19,14 +19,14 @@ As 46 funcionalidades operacionais, classificadas:
 
 | Destino | Qtde | Significado |
 |---|---|---|
-| Fica no operacional | 35 | Ação de campo legítima — nada muda |
+| Fica no operacional | 36 | Ação de campo legítima — nada muda |
 | Vira visualização | 7 | Consulta no app; cadastro só no desktop |
 | Sobe para o ADM | 2 | Decisão comercial/financeira |
-| Revisar caso a caso | 1 | Depende de decisão de negócio |
 | Sai do escopo | 1 | Não é prioridade nesta fase |
 
-Dois dos três itens que estavam em "revisar" já foram decididos: `apontamento` foi alinhado ao
-desktop na Onda 2 e `nutricoes` foi mantida como está (ver Onda 3). Resta `configuracoes-misturador`.
+Os três itens que entraram como "revisar caso a caso" foram todos decididos: `apontamento` foi
+alinhado ao desktop na Onda 2; `nutricoes` e `configuracoes-misturador` ficam como estão (ver
+Onda 3). Não há pendência de classificação em aberto.
 
 ### Duplicações confirmadas
 
@@ -128,9 +128,10 @@ confinamento como atividade principal: com gado a pasto, Nutrições é o regist
 faz sentido, e `trato-diario` é que seria inaplicável. Os dois convivem, cada um no seu regime de
 criação. Não mexer.
 
-`configuracoes-misturador` também entra aqui como revisão: é parâmetro de equipamento (tolerância
-de pesagem, unidade padrão, alerta sonoro), configurado uma vez — candidato natural a virar
-consulta, mas depende de quem opera o misturador na prática.
+**`configuracoes-misturador` fica como está — decidido, segue operacional com criação.** É
+parâmetro da própria máquina (tolerância de pesagem, unidade padrão, alerta sonoro), não decisão
+técnica ou de custo como uma dieta: quem opera o misturador é quem percebe que a tolerância está
+apertada demais e ajusta na hora. Não mexer.
 
 ---
 
