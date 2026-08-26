@@ -48,6 +48,7 @@ class FeatureDefinition {
     this.emptyLabel,
     this.sourceDetail,
     this.listMode = false,
+    this.readOnly = false,
     this.dataSourceId,
     this.createAction,
     this.recordTitleField,
@@ -73,6 +74,13 @@ class FeatureDefinition {
   final String? emptyLabel;
   final String? sourceDetail;
   final bool listMode;
+  // banco-real (onda 1): torna explícito que uma funcionalidade é consulta —
+  // sem virar edição em campo — mesmo mantendo `fields` preenchidos. Antes,
+  // a única forma de virar consulta era esvaziar `fields`, o que jogaria fora
+  // a documentação dos campos reais do sistema mapeados no banco (valiosa
+  // para quando o backend for ligado). Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+  final bool readOnly;
   final String? dataSourceId;
   final String? createAction;
   final String? recordTitleField;
@@ -263,6 +271,88 @@ const adminFeatures = <FeatureDefinition>[
     emptyLabel: 'Nenhum processamento pendente.',
     listMode: true,
   ),
+  // banco-real (onda 1): compra e venda de animais são decisão comercial/
+  // financeira (fornecedor/cliente, valor, documento fiscal) — sobem do
+  // operacional para o ADM, que só visualiza; a decisão desce como ordem
+  // para o Operacional confirmar a execução, igual ao padrão `OrdemPendente`
+  // já implementado em `confinamento/models.dart`. Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+  FeatureDefinition(
+    id: 'compras-animais',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Compra de animais',
+    objective: 'Consultar compras de animais registradas.',
+    status: FeatureStatus.ready,
+    readOnly: true,
+    fields: [
+      FeatureField(
+        id: 'responsavel',
+        label: 'Responsável',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
+      ),
+      FeatureField(id: 'fornecedor', label: 'Fornecedor', isRequired: true),
+      FeatureField(
+        id: 'data',
+        label: 'Data da compra',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'especie',
+        label: 'Espécie',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Bovino', 'Bubalino', 'Ovino'],
+      ),
+      FeatureField(id: 'categoria', label: 'Categoria', isRequired: true),
+      FeatureField(
+        id: 'quantidade',
+        label: 'Quantidade de animais',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'valor-total',
+        label: 'Valor total (R\$)',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'documento',
+        label: 'Nota / documento de origem',
+        isRequired: true,
+      ),
+    ],
+    emptyLabel: 'Nenhuma compra de animais registrada.',
+    sourceDetail:
+        'O formulário não foi aberto; os campos são premissas funcionais do protótipo frontend.',
+    listMode: true,
+    recordTitleField: 'fornecedor',
+    recordDescriptionFields: ['quantidade', 'categoria', 'data'],
+  ),
+  // banco-real (onda 1): em Confinamento, "Vender Animais" já é exclusiva do
+  // ADM — o catálogo geral ainda contradizia isso com `existingRoute` para
+  // `/fazendas/campo/venda`, uma rota bloqueada para administração pela
+  // política de acesso (`router/app_router.dart`, `redirectForSession`). A
+  // rota saiu; a tela vira consulta pelo motor genérico, sem `fields`
+  // documentados na fonte original (mesmo padrão de `minhas-os`). Ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+  FeatureDefinition(
+    id: 'vendas',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Vendas',
+    objective: 'Consultar vendas de animais registradas.',
+    status: FeatureStatus.ready,
+    readOnly: true,
+    emptyLabel: 'Nenhuma venda registrada.',
+    sourceDetail:
+        'Consulta demonstrativa das vendas de animais registradas nesta sessão.',
+    listMode: true,
+  ),
   FeatureDefinition(
     id: 'exportar-log-estoque',
     profile: FeatureProfile.administration,
@@ -295,6 +385,10 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Áreas',
     objective: 'Cadastrar áreas usadas nos processos da fazenda.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): estrutura física da fazenda, não ação diária de
+    // campo — cadastro fica no desktop, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'nome',
@@ -376,6 +470,10 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Formulações',
     objective: 'Criar formulações compostas por matérias-primas e percentuais.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): formular dieta é decisão técnica e de custo, não
+    // ação de campo — cadastro fica no desktop, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -470,6 +568,10 @@ const operationalFeatures = <FeatureDefinition>[
     objective:
         'Registrar a produção de uma formulação para um armazém de destino.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): cadastro de produção; a execução real de campo é
+    // `producao-batelada` (Confinamento) — aqui vira consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -888,27 +990,6 @@ const operationalFeatures = <FeatureDefinition>[
     recordDescriptionFields: ['tipo', 'area', 'referencia'],
   ),
   FeatureDefinition(
-    id: 'colheita-frutas',
-    profile: FeatureProfile.operational,
-    group: 'Agricultura',
-    title: 'Colheita de frutas',
-    objective: 'Registrar motorista, veículo e caixas da colheita.',
-    status: FeatureStatus.ready,
-    fields: [
-      FeatureField(id: 'placa', label: 'Placa', isRequired: true),
-      FeatureField(id: 'motorista', label: 'Motorista', isRequired: true),
-      FeatureField(id: 'cpf', label: 'CPF do motorista', isRequired: true),
-      FeatureField(
-        id: 'caixas',
-        label: 'Caixas (kg)',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-    ],
-    sections: ['Caixas da colheita'],
-    primaryAction: 'Registrar colheita',
-  ),
-  FeatureDefinition(
     id: 'rebanho-inicial',
     profile: FeatureProfile.operational,
     group: 'Pecuária',
@@ -998,6 +1079,10 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Lote de animais',
     objective: 'Criar um lote em fluxo de múltiplas etapas.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): montar lote é organização de rebanho, não evento
+    // de campo — cadastro fica no desktop, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -1218,72 +1303,6 @@ const operationalFeatures = <FeatureDefinition>[
     simulationTargetField: 'identificacao',
   ),
   FeatureDefinition(
-    id: 'compras-animais',
-    profile: FeatureProfile.operational,
-    group: 'Pecuária',
-    title: 'Compra de animais',
-    objective: 'Consultar e registrar compras de animais.',
-    status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(id: 'fornecedor', label: 'Fornecedor', isRequired: true),
-      FeatureField(
-        id: 'data',
-        label: 'Data da compra',
-        type: FeatureFieldType.date,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'especie',
-        label: 'Espécie',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Bovino', 'Bubalino', 'Ovino'],
-      ),
-      FeatureField(id: 'categoria', label: 'Categoria', isRequired: true),
-      FeatureField(
-        id: 'quantidade',
-        label: 'Quantidade de animais',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'valor-total',
-        label: 'Valor total (R\$)',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'documento',
-        label: 'Nota / documento de origem',
-        isRequired: true,
-      ),
-    ],
-    primaryAction: 'Registrar compra',
-    emptyLabel: 'Nenhuma compra de animais registrada.',
-    sourceDetail:
-        'O formulário não foi aberto; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Nova compra',
-    recordTitleField: 'fornecedor',
-    recordDescriptionFields: ['quantidade', 'categoria', 'data'],
-  ),
-  FeatureDefinition(
-    id: 'vendas',
-    profile: FeatureProfile.operational,
-    group: 'Pecuária',
-    title: 'Vendas',
-    objective: 'Registrar vendas de animais com documentos e frete.',
-    status: FeatureStatus.ready,
-    existingRoute: '/fazendas/campo/venda',
-  ),
-  FeatureDefinition(
     id: 'nutricoes',
     profile: FeatureProfile.operational,
     group: 'Pecuária',
@@ -1502,6 +1521,10 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Estação de monta',
     objective: 'Gerenciar períodos e ciclos de reprodução.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): planejamento sazonal (nome, datas, método) — não
+    // é ação diária de campo, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -1595,6 +1618,10 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Touros / sêmen / embrião',
     objective: 'Gerenciar material e recursos reprodutivos.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): estoque de material genético é cadastro de
+    // insumo, não ação de campo — o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',
@@ -1643,6 +1670,10 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Protocolos / estação',
     objective: 'Gerenciar protocolos associados à estação reprodutiva.',
     status: FeatureStatus.ready,
+    // banco-real (onda 1): configuração de regra reprodutiva — não é ação
+    // diária de campo, o app só consulta. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    readOnly: true,
     fields: [
       FeatureField(
         id: 'responsavel',

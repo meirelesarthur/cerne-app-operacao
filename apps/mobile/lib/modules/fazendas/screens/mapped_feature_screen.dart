@@ -176,7 +176,11 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   // declara campos (ex.: Produtos) — deixou de ser exclusivo do
                   // perfil operacional. Ver
                   // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
-                  canCreate: feature.fields.isNotEmpty,
+                  // banco-real (onda 1): `readOnly` bloqueia a criação mesmo com
+                  // `fields` preenchidos — cadastro estruturante ou decisão que
+                  // pertence ao desktop, o app só consulta. Ver
+                  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+                  canCreate: feature.fields.isNotEmpty && !feature.readOnly,
                   onCreate: _startForm,
                 )
               else

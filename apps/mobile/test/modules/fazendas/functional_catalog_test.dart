@@ -4,16 +4,21 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 59 funcionalidades e a divisão por perfil', () {
+    test('preserva as 58 funcionalidades e a divisão por perfil', () {
       // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
       // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
       // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
       // confinamento (onda 1): +5 funcionalidades operacionais do submódulo de
       // Confinamento (Meus currais, Produzir batelada, Trato diário, Leitura
       // de cocho, Ordens pendentes) — ver docs/ESTEIRA-PERFIS-AGRO365.md.
-      expect(adminFeatures, hasLength(13));
-      expect(operationalFeatures, hasLength(46));
-      expect(allFeatures, hasLength(59));
+      // banco-real (onda 1 — fronteira operação/gestão): `vendas` e
+      // `compras-animais` sobem do operacional para o administrativo (decisão
+      // comercial/financeira, o ADM só visualiza) e `colheita-frutas` sai do
+      // escopo — 13+2=15 administrativas, 46-2-1=43 operacionais, 15+43=58
+      // no total. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+      expect(adminFeatures, hasLength(15));
+      expect(operationalFeatures, hasLength(43));
+      expect(allFeatures, hasLength(58));
 
       expect(
         adminFeatures.every(
@@ -39,10 +44,13 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 52 ready, 7 hardware e zero mapped', () {
+    test('preserva a maturidade 51 ready, 7 hardware e zero mapped', () {
+      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
+      // (ready) saiu do escopo — 52-1=51. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(52),
+        hasLength(51),
       );
       expect(
         allFeatures.where(
@@ -64,14 +72,22 @@ void main() {
       // consulta-produtos (a única criação em campo livre; +3 obrigatórios)
       // para virar a fonte de busca dos demais campos "produto". Ver
       // docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
-      expect(fields, hasLength(183));
-      expect(fields.where((field) => field.isRequired), hasLength(159));
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(33));
+      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
+      // saiu do catálogo com seus 4 campos (todos obrigatórios) — 183-4=179
+      // campos; 159-4=155 obrigatórios. `vendas` ganhou `listMode` ao virar
+      // consulta pelo motor genérico sem `existingRoute` (que saiu por
+      // apontar para uma rota `/fazendas/campo/*` bloqueada para
+      // administração) — 33+1=34 com `listMode`, 18-1=17 com
+      // `existingRoute`. `colheita-frutas` saiu com sua 1 seção — 15-1=14.
+      // Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+      expect(fields, hasLength(179));
+      expect(fields.where((field) => field.isRequired), hasLength(155));
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(34));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(18),
+        hasLength(17),
       );
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(15));
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(14));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(25),

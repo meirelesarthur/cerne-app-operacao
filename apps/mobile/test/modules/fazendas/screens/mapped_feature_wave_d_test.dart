@@ -43,15 +43,20 @@ void _fillRequiredFields(
 
 void main() {
   group('MappedFeatureScreen — Onda D', () {
-    test('os oito formulários finais percorrem validação e sucesso', () {
+    // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas` saiu
+    // do catálogo (fora de escopo) e `compras-animais` virou consulta
+    // administrativa somente leitura (`readOnly: true`) — nenhuma das duas
+    // tem mais caminho de UI até este formulário (`canCreate` em
+    // `mapped_feature_screen.dart` já bloqueia `compras-animais`; a outra nem
+    // existe mais). Sobram seis formulários. Ver
+    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    test('os seis formulários finais percorrem validação e sucesso', () {
       const ids = {
         'carga',
         'descarga',
         'nota-cocho',
         'configuracoes-misturador',
         'marcacao',
-        'colheita-frutas',
-        'compras-animais',
         'apartacao',
       };
 
@@ -66,14 +71,17 @@ void main() {
       }
     });
 
-    test('todas as 52 funcionalidades Ready têm destino executável', () {
+    test('todas as 51 funcionalidades Ready têm destino executável', () {
       final ready = allFeatures.where(
         (feature) => feature.status == FeatureStatus.ready,
       );
 
       // confinamento (onda 1): +5 funcionalidades operacionais Ready — ver
       // functional_catalog_test.dart.
-      expect(ready, hasLength(52));
+      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
+      // (ready) saiu do escopo — 52-1=51. Ver
+      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+      expect(ready, hasLength(51));
       for (final feature in ready) {
         final handledByMappedScreen =
             feature.auditExport != null ||
