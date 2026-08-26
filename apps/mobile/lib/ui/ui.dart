@@ -3,6 +3,7 @@
 library;
 
 export 'addable_group_list.dart';
+export 'app_icon_tile.dart';
 export 'audit_export_panel.dart';
 export 'avatar.dart';
 export 'badge.dart';

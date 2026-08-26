@@ -9,6 +9,8 @@ import '../modules/fazendas/fazendas_module.dart';
 import '../modules/hub/hub_module.dart';
 import '../modules/marketplace/marketplace_module.dart';
 import '../shell/module_config.dart';
+import '../shell/pages/android_home_page.dart';
+import '../shell/pages/crn_app_folder_page.dart';
 import '../shell/pages/login_page.dart';
 import '../shell/pages/module_placeholder_screen.dart';
 import '../shell/pages/notificacoes_page.dart';
@@ -32,7 +34,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   });
 
   final router = GoRouter(
-    initialLocation: '/login',
+    initialLocation: '/desktop',
     refreshListenable: refresh,
     redirect: (context, state) {
       final session = ref.read(prototypeSessionProvider);
@@ -101,6 +103,21 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/onboarding',
         builder: (context, state) => const OnboardingPage(),
       ),
+      // Simulação da tela inicial Android — porta de entrada real do
+      // protótipo (ver `initialLocation` acima). `crn-app` é filho literal de
+      // `desktop`, então `context.go` entre as duas mantém a pilha correta
+      // (mesma linhagem) — só o salto para `/login` (rota irmã fora da
+      // linhagem) usa `push` em `CrnAppFolderPage`.
+      GoRoute(
+        path: '/desktop',
+        builder: (context, state) => const AndroidHomePage(),
+        routes: [
+          GoRoute(
+            path: 'crn-app',
+            builder: (context, state) => const CrnAppFolderPage(),
+          ),
+        ],
+      ),
     ],
   );
 
@@ -114,14 +131,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 /// Política única de acesso do protótipo, separada do roteador para permitir
 /// testes determinísticos de deep links e perfis cruzados.
 String? redirectForSession(String path, PrototypeSessionState session) {
-  final isPublic = path == '/login' || path == '/onboarding';
+  final isPublic =
+      path == '/login' ||
+      path == '/onboarding' ||
+      path == '/desktop' ||
+      path == '/desktop/crn-app';
   final profile = session.profile;
 
   if (profile == null) {
-    return isPublic ? null : '/login';
+    // A home Android é a porta de entrada real do protótipo (ver
+    // `initialLocation`) — sem sessão, qualquer rota protegida cai lá, não
+    // direto no formulário de login.
+    return isPublic ? null : '/desktop';
   }
 
-  if (path == '/' || path == '/fazendas' || path == '/login') {
+  if (path == '/' ||
+      path == '/fazendas' ||
+      path == '/login' ||
+      path == '/desktop' ||
+      path == '/desktop/crn-app') {
     return profile.homeRoute;
   }
   if (path == '/fazendas/mais') return profile.homeRoute;

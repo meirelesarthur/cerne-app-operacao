@@ -82,5 +82,27 @@ void main() {
         UserAccessProfile.operational,
       );
     });
+
+    testWidgets(
+      '?ambiente=administracao (vindo da pasta CRN App) destaca o login correspondente',
+      (tester) async {
+        harness.router.go('/login?ambiente=administracao');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        expect(find.text('Abrindo CRN ADM.'), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      '?ambiente=operacional (vindo da pasta CRN App) destaca o login correspondente',
+      (tester) async {
+        harness.router.go('/login?ambiente=operacional');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        expect(find.text('Abrindo CRN Operação.'), findsOneWidget);
+      },
+    );
   });
 }

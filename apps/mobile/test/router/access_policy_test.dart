@@ -13,22 +13,31 @@ void main() {
       UserAccessProfile.operational,
     );
 
-    test('sem sessão só login e onboarding permanecem públicos', () {
-      expect(redirectForSession('/login', signedOut), isNull);
-      expect(redirectForSession('/onboarding', signedOut), isNull);
+    test(
+      'sem sessão só login, onboarding e a home Android permanecem públicos',
+      () {
+        expect(redirectForSession('/login', signedOut), isNull);
+        expect(redirectForSession('/onboarding', signedOut), isNull);
+        expect(redirectForSession('/desktop', signedOut), isNull);
+        expect(redirectForSession('/desktop/crn-app', signedOut), isNull);
 
-      for (final path in [
-        '/',
-        '/inicio',
-        '/bank/extrato',
-        '/perfil',
-        '/notificacoes',
-        '/fazendas/administracao',
-        '/fazendas/operacional/carga',
-      ]) {
-        expect(redirectForSession(path, signedOut), '/login', reason: path);
-      }
-    });
+        for (final path in [
+          '/',
+          '/inicio',
+          '/bank/extrato',
+          '/perfil',
+          '/notificacoes',
+          '/fazendas/administracao',
+          '/fazendas/operacional/carga',
+        ]) {
+          expect(
+            redirectForSession(path, signedOut),
+            '/desktop',
+            reason: path,
+          );
+        }
+      },
+    );
 
     test('administração bloqueia todas as famílias de entrada operacional', () {
       for (final path in [
@@ -78,7 +87,14 @@ void main() {
     test('raiz, login e atalhos neutros retornam à central do perfil', () {
       for (final profile in UserAccessProfile.values) {
         final session = PrototypeSessionState.signedIn(profile);
-        for (final path in ['/', '/login', '/fazendas', '/fazendas/mais']) {
+        for (final path in [
+          '/',
+          '/login',
+          '/fazendas',
+          '/fazendas/mais',
+          '/desktop',
+          '/desktop/crn-app',
+        ]) {
           expect(
             redirectForSession(path, session),
             profile.homeRoute,

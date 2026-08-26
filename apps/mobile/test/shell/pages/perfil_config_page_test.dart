@@ -46,14 +46,16 @@ void main() {
       );
     });
 
-    testWidgets('tocar em "Sair" navega para o login', (tester) async {
+    testWidgets('tocar em "Sair" navega para a home Android', (tester) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Sair'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Bem-vindo!'), findsOneWidget);
+      // Logout volta para a home Android (simula "fechar o app"), não direto
+      // para o formulário de login — reforça a separação CRN ADM/Operação.
+      expect(find.text('CRN App'), findsOneWidget);
       expect(
         harness.container.read(prototypeSessionProvider).isAuthenticated,
         isFalse,

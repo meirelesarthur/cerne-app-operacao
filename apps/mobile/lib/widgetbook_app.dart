@@ -84,6 +84,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildButtonWidgetbookComponent(),
                 buildIconButtonWidgetbookComponent(),
                 buildQuickActionWidgetbookComponent(),
+                buildAppIconTileWidgetbookComponent(),
                 buildPressableWidgetbookComponent(),
                 buildSegmentedTabsWidgetbookComponent(),
               ],

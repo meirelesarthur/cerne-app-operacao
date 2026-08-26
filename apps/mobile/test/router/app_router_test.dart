@@ -141,7 +141,12 @@ void main() {
       },
     );
 
-    testWidgets('deep link sem sessão retorna ao login', (tester) async {
+    testWidgets('deep link sem sessão retorna à home Android (não ao login)', (
+      tester,
+    ) async {
+      // Regressão: a home Android (`/desktop`) é a porta de entrada real do
+      // protótipo — sem sessão, qualquer rota protegida cai lá, não direto no
+      // formulário de login (ver `redirectForSession`).
       harness.dispose();
       harness = RouterTestHarness();
       harness.router.go('/fazendas/dashboards/financeiro');
@@ -149,9 +154,32 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Login Administração'), findsOneWidget);
-      expect(find.text('Login Operacional'), findsOneWidget);
+      expect(find.text('CRN App'), findsOneWidget);
+      expect(find.text('Login Administração'), findsNothing);
     });
+
+    testWidgets('rota inicial sem navegação explícita é a home Android', (
+      tester,
+    ) async {
+      harness.dispose();
+      harness = RouterTestHarness();
+
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('CRN App'), findsOneWidget);
+    });
+
+    testWidgets(
+      'sessão autenticada em "/desktop" é redirecionada para a central do perfil',
+      (tester) async {
+        harness.router.go('/desktop');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        expect(find.text('Central de gestão'), findsOneWidget);
+      },
+    );
 
     testWidgets('operador não acessa dashboard administrativo', (tester) async {
       harness.dispose();

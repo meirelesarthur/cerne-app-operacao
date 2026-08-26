@@ -72,7 +72,9 @@ void main() {
         await tester.tap(find.text('Sair'));
         await tester.pump();
 
-        expect(navigatedTo, '/login');
+        // Logout volta para a home Android (simula "fechar o app"), não
+        // direto para o login.
+        expect(navigatedTo, '/desktop');
       },
     );
 
