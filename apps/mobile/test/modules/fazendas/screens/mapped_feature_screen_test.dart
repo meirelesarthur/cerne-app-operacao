@@ -154,8 +154,47 @@ void main() {
 
       expect(find.text('Registros'), findsOneWidget);
       expect(find.text('Adicionar área'), findsNothing);
+      // banco-real (correção de demonstrabilidade): `cadastrar-area` tem
+      // amostra semeada em `prototype_records_store.dart` — a consulta não
+      // pode ficar vazia para sempre só porque o app não cria mais registro
+      // para esta rotina. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md.
+      expect(find.text('Talhão 03'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets(
+      'Áreas mostra estado vazio honesto quando não há amostra sincronizada',
+      (tester) async {
+        await setTallSurface(tester);
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        container.read(prototypeRecordsProvider.notifier).seed(const {});
+
+        await tester.pumpWidget(
+          _wrap(
+            container,
+            const MappedFeatureScreen(
+              featureId: 'cadastrar-area',
+              profile: FeatureProfile.operational,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text(
+            'O cadastro desta rotina é feito no sistema web. Assim que '
+            'sincronizar, os registros aparecem aqui.',
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.text('Os registros operacionais desta sessão aparecerão aqui.'),
+          findsNothing,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets(
       'Abastecimentos percorre lista, validação, sucesso e novo registro',

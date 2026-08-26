@@ -181,6 +181,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   // pertence ao desktop, o app só consulta. Ver
                   // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
                   canCreate: feature.fields.isNotEmpty && !feature.readOnly,
+                  readOnly: feature.readOnly,
                   onCreate: _startForm,
                 )
               else
@@ -314,12 +315,14 @@ class _RecordsList extends StatelessWidget {
     required this.feature,
     required this.records,
     required this.canCreate,
+    required this.readOnly,
     required this.onCreate,
   });
 
   final FeatureDefinition feature;
   final List<PrototypeRecord> records;
   final bool canCreate;
+  final bool readOnly;
   final VoidCallback onCreate;
 
   @override
@@ -346,6 +349,8 @@ class _RecordsList extends StatelessWidget {
                   title: feature.emptyLabel ?? 'Nenhum registro encontrado',
                   description: canCreate
                       ? 'Use a ação abaixo para criar o primeiro registro desta rotina.'
+                      : readOnly
+                      ? 'O cadastro desta rotina é feito no sistema web. Assim que sincronizar, os registros aparecem aqui.'
                       : 'Os registros operacionais desta sessão aparecerão aqui.',
                 )
               else

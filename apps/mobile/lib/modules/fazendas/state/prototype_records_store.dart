@@ -293,6 +293,217 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
       },
     ),
   ],
+  // banco-real (correção de demonstrabilidade): estas 8 features viraram
+  // `readOnly: true` nas Ondas 1/2 (ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md)
+  // mas não tinham amostra semeada — como o app não cria mais registros para
+  // elas, a lista ficava vazia para sempre. Dados sintéticos, coerentes com
+  // os campos do catálogo e com os mocks já usados no módulo (nenhum copiado
+  // de banco de produção).
+  'cadastrar-area': [
+    PrototypeRecord(
+      id: 'area-1',
+      title: 'Talhão 03',
+      description: 'Agricultura · 42 ha',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Tipo de uso': 'Agricultura',
+        'Área total': '42 ha',
+        'Área produtiva': '38 ha',
+        'Área não produtiva': '4 ha',
+        'Unidade': 'ha',
+        'Localização': 'Setor Norte',
+        'Cultura / cobertura': 'Braquiária',
+      },
+    ),
+    PrototypeRecord(
+      id: 'area-2',
+      title: 'Piquete 07',
+      description: 'Pecuária · 18 ha',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Tipo de uso': 'Pecuária',
+        'Área total': '18 ha',
+        'Carga animal (UA/ha)': '1,8',
+        'Unidade': 'ha',
+        'Localização': 'Setor Leste',
+      },
+    ),
+  ],
+  'formulacoes': [
+    PrototypeRecord(
+      id: 'formulacao-1',
+      title: 'Ração Engorda 18%',
+      description: '1.000 kg · R\$ 2.380,00',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'João Oliveira',
+        'Ativo': 'Sim',
+        'Quantidade de referência': '1.000',
+        'Unidade de medida': 'kg',
+        'Tipo': 'Formulação',
+        'Custo por kg (R\$)': '2,38',
+        'Custo estimado (R\$)': '2.380,00',
+      },
+    ),
+    PrototypeRecord(
+      id: 'formulacao-2',
+      title: 'Sal Mineral Proteinado',
+      description: '500 kg · R\$ 2.450,00',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'Maria Souza',
+        'Ativo': 'Sim',
+        'Quantidade de referência': '500',
+        'Unidade de medida': 'kg',
+        'Tipo': 'Estoque',
+        'Custo por kg (R\$)': '4,90',
+        'Custo estimado (R\$)': '2.450,00',
+      },
+    ),
+  ],
+  'batidas': [
+    PrototypeRecord(
+      id: 'batida-1',
+      title: 'Ração Engorda 18%',
+      description: '1.000 kg previsto · 985 kg realizado',
+      status: PrototypeRecordStatus.completed,
+      details: {
+        'Responsável': 'João Oliveira',
+        'Tipo': 'Formulação',
+        'Armazém de destino': 'Armazém A',
+        'Quantidade prevista': '1.000',
+        'Quantidade realizada': '985',
+        'Unidade de medida': 'kg',
+      },
+    ),
+    PrototypeRecord(
+      id: 'batida-2',
+      title: 'Sal Mineral Proteinado',
+      description: '500 kg previsto · 500 kg realizado',
+      status: PrototypeRecordStatus.completed,
+      details: {
+        'Responsável': 'Carlos Dias',
+        'Tipo': 'Estoque',
+        'Armazém de destino': 'Depósito B',
+        'Quantidade prevista': '500',
+        'Quantidade realizada': '500',
+        'Unidade de medida': 'kg',
+      },
+    ),
+  ],
+  'lote-animais': [
+    PrototypeRecord(
+      id: 'lote-animais-1',
+      title: 'Lote Recria 02',
+      description: 'Bovino · Novilha',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'Carlos Dias',
+        'Espécie': 'Bovino',
+        'Categoria': 'Novilha',
+      },
+    ),
+    PrototypeRecord(
+      id: 'lote-animais-2',
+      title: 'Lote Engorda 05',
+      description: 'Bovino · Boi',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'João Oliveira',
+        'Espécie': 'Bovino',
+        'Categoria': 'Boi',
+      },
+    ),
+  ],
+  'estacao-monta': [
+    PrototypeRecord(
+      id: 'estacao-monta-1',
+      title: 'Estação Primavera 2026',
+      description: 'IATF · 01/09/2026 a 30/11/2026',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'Maria Souza',
+        'Data de início': '01/09/2026',
+        'Data de término': '30/11/2026',
+        'Método principal': 'IATF',
+      },
+    ),
+  ],
+  'material-reprodutivo': [
+    PrototypeRecord(
+      id: 'material-reprodutivo-1',
+      title: 'SEM-4471',
+      description: 'Sêmen · Nelore · 120 doses',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'Maria Souza',
+        'Tipo de recurso': 'Sêmen',
+        'Raça': 'Nelore',
+        'Fornecedor / origem': 'Central de Genética Boa Vista',
+        'Quantidade disponível': '120',
+      },
+    ),
+    PrototypeRecord(
+      id: 'material-reprodutivo-2',
+      title: 'TOU-018',
+      description: 'Touro · Angus · 1 unidade',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'João Oliveira',
+        'Tipo de recurso': 'Touro',
+        'Raça': 'Angus',
+        'Fornecedor / origem': 'Fazenda São Pedro',
+        'Quantidade disponível': '1',
+      },
+    ),
+  ],
+  'protocolos-estacao': [
+    PrototypeRecord(
+      id: 'protocolo-estacao-1',
+      title: 'Protocolo IATF Primavera',
+      description: 'IATF · Estação Primavera 2026 · 01/09/2026',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'Maria Souza',
+        'Estação de monta': 'Estação Primavera 2026',
+        'Tipo': 'IATF',
+        'Data de início': '01/09/2026',
+      },
+    ),
+  ],
+  // banco-real (Onda 1): "Vendas" subiu para decisão ADM — cliente, valor e
+  // condição de pagamento são decisão comercial (ver
+  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1). A tela não declara
+  // `fields` (mesmo padrão de `minhas-os`), então a amostra usa apenas
+  // `details` livres.
+  'vendas': [
+    PrototypeRecord(
+      id: 'venda-1',
+      title: 'Frigorífico Vale Verde',
+      description: '42 bois · R\$ 210.000,00 · 10/08/2026',
+      status: PrototypeRecordStatus.completed,
+      details: {
+        'Cliente': 'Frigorífico Vale Verde',
+        'Quantidade': '42 bois',
+        'Valor total': 'R\$ 210.000,00',
+        'Condição de pagamento': '28 dias',
+        'Data': '10/08/2026',
+      },
+    ),
+    PrototypeRecord(
+      id: 'venda-2',
+      title: 'Pecuária Santa Fé',
+      description: '15 novilhas · R\$ 67.500,00 · 22/08/2026',
+      status: PrototypeRecordStatus.completed,
+      details: {
+        'Cliente': 'Pecuária Santa Fé',
+        'Quantidade': '15 novilhas',
+        'Valor total': 'R\$ 67.500,00',
+        'Condição de pagamento': 'À vista',
+        'Data': '22/08/2026',
+      },
+    ),
+  ],
   'minhas-os': [
     PrototypeRecord(
       id: 'os-1',
