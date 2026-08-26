@@ -19,11 +19,14 @@ As 46 funcionalidades operacionais, classificadas:
 
 | Destino | Qtde | Significado |
 |---|---|---|
-| Fica no operacional | 33 | Ação de campo legítima — nada muda |
+| Fica no operacional | 35 | Ação de campo legítima — nada muda |
 | Vira visualização | 7 | Consulta no app; cadastro só no desktop |
 | Sobe para o ADM | 2 | Decisão comercial/financeira |
-| Revisar caso a caso | 3 | Depende de decisão de negócio ou de recorte |
+| Revisar caso a caso | 1 | Depende de decisão de negócio |
 | Sai do escopo | 1 | Não é prioridade nesta fase |
+
+Dois dos três itens que estavam em "revisar" já foram decididos: `apontamento` foi alinhado ao
+desktop na Onda 2 e `nutricoes` foi mantida como está (ver Onda 3). Resta `configuracoes-misturador`.
 
 ### Duplicações confirmadas
 
@@ -36,8 +39,8 @@ Três pares gravam **na mesma tabela real**, conforme
 | `descarga` (Misturador) | `trato-diario` | `item_nutritions` |
 | `nota-cocho` (Misturador) | `leitura-cocho-confinamento` | `feedlot_corral_diet_histories` |
 
-Um quarto par (`nutricoes` × `trato-diario`) é sobreposição de conceito, não de tabela — fica como
-decisão de negócio na Onda 3.
+Um quarto par (`nutricoes` × `trato-diario`) era sobreposição de conceito, não de tabela — e foi
+**descartado como duplicação** (ver Onda 3).
 
 ---
 
@@ -120,8 +123,10 @@ Para os três pares confirmados, **não excluir a tela antiga de imediato** — 
 antigo perderia o acesso. Manter `carga`, `descarga` e `nota-cocho` como redirecionamento para a
 tela nova equivalente, e retirar do catálogo só depois que o uso migrar.
 
-`nutricoes` (Arraçoamento) fica pendente de decisão de negócio: só é redundante com `trato-diario`
-se a fazenda for 100% confinamento. Com gado a pasto, continua fazendo sentido como está.
+**`nutricoes` (Arraçoamento) fica como está — decidido, não é duplicação.** Nem toda fazenda tem o
+confinamento como atividade principal: com gado a pasto, Nutrições é o registro de alimentação que
+faz sentido, e `trato-diario` é que seria inaplicável. Os dois convivem, cada um no seu regime de
+criação. Não mexer.
 
 `configuracoes-misturador` também entra aqui como revisão: é parâmetro de equipamento (tolerância
 de pesagem, unidade padrão, alerta sonoro), configurado uma vez — candidato natural a virar
