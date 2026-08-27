@@ -118,10 +118,7 @@ WidgetbookComponent buildAppIconTileWidgetbookComponent() {
             children: [
               AppAppIconTile(icon: LucideIcons.layoutGrid, label: 'CRN App'),
               AppAppIconTile(icon: LucideIcons.shieldCheck, label: 'CRN ADM'),
-              AppAppIconTile(
-                icon: LucideIcons.tractor,
-                label: 'CRN Operação',
-              ),
+              AppAppIconTile(icon: LucideIcons.tractor, label: 'CRN Operação'),
             ],
           ),
         ),

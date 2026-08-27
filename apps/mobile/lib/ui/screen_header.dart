@@ -96,8 +96,7 @@ WidgetbookComponent buildScreenHeaderWidgetbookComponent() {
           children: [
             AppScreenHeader(
               title: 'Áreas',
-              description:
-                  'Cadastrar áreas usadas nos processos da fazenda.',
+              description: 'Cadastrar áreas usadas nos processos da fazenda.',
               onBack: () {},
             ),
             const SizedBox(height: AppSpacing.space8),

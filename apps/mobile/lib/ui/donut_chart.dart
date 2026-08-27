@@ -3,10 +3,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
-import '../design/generated/app_colors.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'chart_legend.dart';
+import 'empty_state.dart';
 
 /// Uma fatia do [AppDonutChart] — espelha `DonutSlice` de `DonutChart.tsx`.
 class AppDonutSlice {
@@ -15,13 +16,16 @@ class AppDonutSlice {
   final String label;
   final double value;
 
-  /// Cor da fatia; sem valor, usa `AppColors.chartSeries[i % length]` (mesmo fallback do React).
+  /// Cor da fatia; sem valor, usa `AppSemanticColors.chartSeries` do tema ativo.
   final Color? color;
 }
 
-/// Espelha `DonutChart.tsx` — donut SVG próprio com legenda.
-/// Pintado via [CustomPainter] (ADR do projeto): os arcos reproduzem os
-/// `<circle stroke-dasharray>` do SVG original usando `canvas.drawArc`.
+/// Donut com legenda, pintado via [CustomPainter] (ADR do projeto): os arcos
+/// reproduzem os `<circle stroke-dasharray>` do SVG original com `drawArc`.
+///
+/// A legenda passou a ser o [AppChartLegend] compartilhado e a trazer o
+/// percentual de cada fatia — sem ele o donut informa a ordem das categorias,
+/// mas não o peso de cada uma, que é justamente a decisão.
 class AppDonutChart extends StatelessWidget {
   const AppDonutChart({
     super.key,
@@ -30,6 +34,8 @@ class AppDonutChart extends StatelessWidget {
     this.thickness = 20,
     this.centerLabel,
     this.centerValue,
+    this.showPercent = true,
+    this.emptyLabel = 'Sem dados no período',
   });
 
   final List<AppDonutSlice> data;
@@ -38,13 +44,24 @@ class AppDonutChart extends StatelessWidget {
   final String? centerLabel;
   final String? centerValue;
 
-  // h-2.5 w-2.5 (10px) no React não tem token exato (space2=8, space3=12);
-  // usamos space2 para permanecer 100% tokenizado (desvio documentado no relatório).
-  static const double _dotSize = AppSpacing.space2;
+  /// Exibe o percentual de cada fatia ao lado do rótulo na legenda.
+  final bool showPercent;
+
+  /// Texto do estado vazio — um donut sem fatias, antes, desenhava nada e
+  /// deixava um buraco silencioso no card.
+  final String emptyLabel;
 
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final palette = semantic.chartSeries;
+    final total = data.fold<double>(0, (sum, d) => sum + d.value);
+
+    if (data.isEmpty || total <= 0) {
+      return AppEmptyState(title: emptyLabel);
+    }
+
+    Color colorOf(int i) => data[i].color ?? palette[i % palette.length];
 
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -55,6 +72,7 @@ class AppDonutChart extends StatelessWidget {
           child: CustomPaint(
             painter: _DonutChartPainter(
               data: data,
+              colorOf: colorOf,
               thickness: thickness,
               centerLabel: centerLabel,
               centerValue: centerValue,
@@ -65,41 +83,16 @@ class AppDonutChart extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacing.space4),
         Flexible(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          child: AppChartLegend(
+            direction: Axis.vertical,
+            items: [
               for (var i = 0; i < data.length; i++)
-                Padding(
-                  padding: EdgeInsets.only(
-                    bottom: i == data.length - AppSpacing.quarter
-                        ? AppSpacing.space0
-                        : AppSpacing.space1,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: _dotSize,
-                        height: _dotSize,
-                        decoration: BoxDecoration(
-                          color:
-                              data[i].color ??
-                              AppColors.chartSeries[i %
-                                  AppColors.chartSeries.length],
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: AppSpacing.space2),
-                      Text(
-                        data[i].label,
-                        style: TextStyle(
-                          fontSize: AppTypography.md,
-                          color: semantic.fgMuted,
-                        ),
-                      ),
-                    ],
-                  ),
+                AppChartLegendItem(
+                  label: data[i].label,
+                  color: colorOf(i),
+                  value: showPercent
+                      ? '${((data[i].value / total) * 100).round()}%'
+                      : null,
                 ),
             ],
           ),
@@ -112,6 +105,7 @@ class AppDonutChart extends StatelessWidget {
 class _DonutChartPainter extends CustomPainter {
   _DonutChartPainter({
     required this.data,
+    required this.colorOf,
     required this.thickness,
     required this.centerLabel,
     required this.centerValue,
@@ -120,6 +114,7 @@ class _DonutChartPainter extends CustomPainter {
   });
 
   final List<AppDonutSlice> data;
+  final Color Function(int index) colorOf;
   final double thickness;
   final String? centerLabel;
   final String? centerValue;
@@ -141,8 +136,7 @@ class _DonutChartPainter extends CustomPainter {
       final d = data[i];
       final sweep = (d.value / safeTotal) * 2 * math.pi;
       final paint = Paint()
-        ..color =
-            d.color ?? AppColors.chartSeries[i % AppColors.chartSeries.length]
+        ..color = colorOf(i)
         ..style = PaintingStyle.stroke
         ..strokeWidth = thickness;
       canvas.drawArc(rect, startAngle, sweep, false, paint);
@@ -221,6 +215,10 @@ WidgetbookComponent buildDonutChartWidgetbookComponent() {
             centerLabel: 'total',
           ),
         ),
+      ),
+      WidgetbookUseCase(
+        name: 'Vazio',
+        builder: (context) => const Center(child: AppDonutChart(data: [])),
       ),
     ],
   );

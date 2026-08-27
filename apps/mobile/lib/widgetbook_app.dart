@@ -159,6 +159,11 @@ class CerneWidgetbook extends StatelessWidget {
               children: [
                 buildBarChartWidgetbookComponent(),
                 buildDonutChartWidgetbookComponent(),
+                buildLineChartWidgetbookComponent(),
+                buildStackedBarWidgetbookComponent(),
+                buildGaugeWidgetbookComponent(),
+                buildBulletChartWidgetbookComponent(),
+                buildChartLegendWidgetbookComponent(),
                 buildSparklineAreaWidgetbookComponent(),
               ],
             ),
