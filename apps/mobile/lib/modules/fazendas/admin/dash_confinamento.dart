@@ -10,8 +10,13 @@ import '../confinamento/models.dart';
 import '../confinamento/state/confinamento_store.dart';
 import 'dashboard_screen.dart';
 
-/// Dashboard único de Confinamento (spec de Confinamento — Cadastro +
+/// Painel **Rebanho & Confinamento** (spec de Confinamento — Cadastro +
 /// Nutrição), lido pelo perfil ADM.
+///
+/// Absorveu o bloco produtivo que o painel de Pecuária de Corte declarava como
+/// LACUNA: GMD observado × previsto, desempenho do lote e ocupação já existiam
+/// em `IndicadoresLote`, calculados a partir do lote e do histórico de
+/// pesagens. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
 ///
 /// Decisão de perfil confirmada com o time: o ADM só **visualiza** — todo
 /// cadastro (Pátio/Setor/Curral, Dieta, Fases) é feito pelo app web, que
@@ -34,7 +39,7 @@ class _DashConfinamentoState extends ConsumerState<DashConfinamento> {
     final confinamento = ref.watch(confinamentoStoreProvider);
 
     return DashboardScreen(
-      title: 'Confinamento',
+      title: 'Rebanho & Confinamento',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -84,13 +89,18 @@ class _VisaoGeral extends StatelessWidget {
         ? 0.0
         : custosPorKg.reduce((a, b) => a + b) / custosPorKg.length;
 
-    final gmds = ocupados
-        .map((c) => c.indicadores?.gmdKg)
-        .whereType<double>()
+    final indicadores = ocupados
+        .map((c) => c.indicadores)
+        .whereType<IndicadoresLote>()
         .toList();
-    final gmdMedio = gmds.isEmpty
+    final gmdMedio = indicadores.isEmpty
         ? 0.0
-        : gmds.reduce((a, b) => a + b) / gmds.length;
+        : indicadores.map((i) => i.gmdKg).reduce((a, b) => a + b) /
+              indicadores.length;
+    final gmdPrevistoMedio = indicadores.isEmpty
+        ? 0.0
+        : indicadores.map((i) => i.gmdPrevistoKg).reduce((a, b) => a + b) /
+              indicadores.length;
 
     final ocorrenciasAbertas = confinamento_mocks.leituraCochoRecente.avaliacoes
         .expand((a) => a.ocorrencias)
@@ -99,20 +109,12 @@ class _VisaoGeral extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: AppSpacing.space2,
-          crossAxisSpacing: AppSpacing.space2,
-          childAspectRatio: 1.5,
+        AppMetricGrid(
           children: [
             AppKpiStatCard(
-              label: 'Ocupação',
-              value: '$ocupacaoPct%',
-              tone: ocupacaoPct >= 80
-                  ? AppKpiStatTone.warning
-                  : AppKpiStatTone.positive,
+              label: 'Cabeças confinadas',
+              value: '$totalAtual',
+              caption: 'de $totalCap de capacidade',
             ),
             AppKpiStatCard(
               label: 'Custo médio/kg',
@@ -121,6 +123,10 @@ class _VisaoGeral extends StatelessWidget {
             AppKpiStatCard(
               label: 'GMD médio',
               value: '${gmdMedio.toStringAsFixed(2)} kg/dia',
+              tone: gmdMedio >= gmdPrevistoMedio
+                  ? AppKpiStatTone.positive
+                  : AppKpiStatTone.warning,
+              caption: 'previsto ${gmdPrevistoMedio.toStringAsFixed(2)}',
             ),
             AppKpiStatCard(
               label: 'Ocorrências abertas',
@@ -131,8 +137,87 @@ class _VisaoGeral extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: AppSpacing.space4),
+        // O painel de Pecuária de Corte exibia "Taxa de prenhez" e "Desmame"
+        // como "—", desativados por falta de dado. O desempenho que o ADM de
+        // fato acompanha — GMD observado contra o previsto — sempre existiu
+        // aqui, em `IndicadoresLote`. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, §2.
+        AppChartCard(
+          title: 'Ocupação e desempenho',
+          footnote:
+              'GMD observado × previsto do lote; o traço no medidor é a meta.',
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              AppGauge(
+                value: ocupacaoPct.toDouble(),
+                label: 'ocupação dos currais',
+              ),
+              AppGauge(
+                value: gmdMedio,
+                max: gmdPrevistoMedio == 0 ? 1 : gmdPrevistoMedio * 1.2,
+                target: gmdPrevistoMedio,
+                valueLabel: gmdMedio.toStringAsFixed(2),
+                label: 'GMD kg/dia',
+                tone: gmdMedio >= gmdPrevistoMedio
+                    ? AppGaugeTone.positive
+                    : AppGaugeTone.warning,
+              ),
+            ],
+          ),
+        ),
+        if (indicadores.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.space4),
+          AppChartCard(
+            title: 'GMD por curral',
+            subtitle: 'Observado contra o previsto de cada lote',
+            child: AppBulletChart(
+              targetLabel: 'previsto',
+              formatValue: (v) =>
+                  '${v.toStringAsFixed(2).replaceAll('.', ',')} kg',
+              data: [
+                for (final c in ocupados)
+                  if (c.indicadores != null)
+                    AppBulletDatum(
+                      label: c.nome,
+                      value: c.indicadores!.gmdKg,
+                      target: c.indicadores!.gmdPrevistoKg,
+                    ),
+              ],
+            ),
+          ),
+        ],
+        const SizedBox(height: AppSpacing.space4),
+        AppChartCard(
+          title: 'Situação dos currais',
+          child: Center(
+            child: AppDonutChart(
+              centerValue: '${currais.length}',
+              centerLabel: 'currais',
+              data: [
+                for (final entry in _porSituacao(currais).entries)
+                  AppDonutSlice(
+                    label: entry.key.label,
+                    value: entry.value.toDouble(),
+                  ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
+  }
+
+  /// Quantidade de currais por situação, do mais frequente para o menos —
+  /// fatias minúsculas no fim do donut em vez de espalhadas pelo anel.
+  Map<CurralSituacao, int> _porSituacao(List<CurralInfo> currais) {
+    final contagem = <CurralSituacao, int>{};
+    for (final c in currais) {
+      contagem[c.situacao] = (contagem[c.situacao] ?? 0) + 1;
+    }
+    final ordenado = contagem.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    return Map.fromEntries(ordenado);
   }
 }
 

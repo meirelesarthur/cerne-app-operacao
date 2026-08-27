@@ -300,18 +300,7 @@ class _ColorAuditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    final brandScale = [
-      50,
-      100,
-      200,
-      300,
-      400,
-      500,
-      600,
-      700,
-      800,
-      900,
-    ].map(
+    final brandScale = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map(
       (s) => _Swatch(
         label: 'brand$s',
         code: 'AppColors.brand$s',
@@ -427,7 +416,10 @@ class _SpacingAuditPage extends StatelessWidget {
                   width: 190,
                   child: Text(
                     'AppSpacing.${e.key}  (${e.value.toInt()}px)',
-                    style: const TextStyle(fontFamily: kCodeFontFamily, fontSize: AppTypography.sm),
+                    style: const TextStyle(
+                      fontFamily: kCodeFontFamily,
+                      fontSize: AppTypography.sm,
+                    ),
                   ),
                 ),
                 Container(
@@ -529,7 +521,10 @@ class _TypographyAuditPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text('GB CERNE (${e.value}px)', style: TextStyle(fontSize: e.value)),
+                Text(
+                  'GB CERNE (${e.value}px)',
+                  style: TextStyle(fontSize: e.value),
+                ),
               ],
             ),
           ),
@@ -556,7 +551,10 @@ class _TypographyAuditPage extends StatelessWidget {
                 ),
                 Text(
                   'GB CERNE',
-                  style: TextStyle(fontSize: AppTypography.xl, fontWeight: e.value),
+                  style: TextStyle(
+                    fontSize: AppTypography.xl,
+                    fontWeight: e.value,
+                  ),
                 ),
               ],
             ),

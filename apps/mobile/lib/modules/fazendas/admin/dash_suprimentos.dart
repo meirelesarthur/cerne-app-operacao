@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
+import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -36,9 +37,14 @@ const Map<CotacaoStatus, ({String label, AppChipTone tone})> _statusMeta = {
 String _formatPreco(double v) =>
     'R\$ ${v.toStringAsFixed(2).replaceAll('.', ',')}';
 
-/// Dashboard de Suprimentos (spec §4.4) — status PARCIAL: UI completa com
-/// mock, mas com selo "Dados de exemplo" sinalizando fonte a confirmar.
-/// Espelha `DashSuprimentos.tsx`.
+/// Painel **Suprimentos** (spec §4.4) — status PARCIAL: UI completa com mock,
+/// fonte a confirmar.
+///
+/// Era uma lista filtrável sem nenhum indicador: para saber quanto estava em
+/// jogo, o administrador tinha de somar os cartões de cabeça. Ganhou o topo de
+/// KPI e as duas leituras que sustentam a decisão de compra — onde o dinheiro
+/// está e como o preço unitário se moveu contra a cotação anterior.
+/// Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
 class DashSuprimentos extends StatefulWidget {
   const DashSuprimentos({super.key});
 
@@ -49,6 +55,17 @@ class DashSuprimentos extends StatefulWidget {
 class _DashSuprimentosState extends State<DashSuprimentos> {
   CotacaoTipo? _filtro;
 
+  /// Valor cotado por tipo, do maior para o menor.
+  Map<CotacaoTipo, double> get _porTipo {
+    final total = <CotacaoTipo, double>{};
+    for (final c in cotacoes) {
+      total[c.tipo] = (total[c.tipo] ?? 0) + c.totalValor;
+    }
+    final ordenado = total.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    return Map.fromEntries(ordenado);
+  }
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
@@ -56,13 +73,85 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
         .where((c) => _filtro == null || c.tipo == _filtro)
         .toList();
 
+    final emCotacao = cotacoes.where((c) => c.status == CotacaoStatus.cotacao);
+    final aprovadas = cotacoes.where((c) => c.status == CotacaoStatus.aprovada);
+    final totalAberto = emCotacao.fold<double>(0, (s, c) => s + c.totalValor);
+    final totalAprovado = aprovadas.fold<double>(0, (s, c) => s + c.totalValor);
+    final quedas = cotacoes.where((c) => c.variacao < 0).length;
+
     return DashboardScreen(
       title: 'Suprimentos',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          AppMetricGrid(
+            children: [
+              AppKpiStatCard(
+                label: 'Aguardando decisão',
+                value: formatMilhares(totalAberto / 1000),
+                caption: '${emCotacao.length} aguardando decisão',
+                tone: AppKpiStatTone.warning,
+              ),
+              AppKpiStatCard(
+                label: 'Aprovado',
+                value: formatMilhares(totalAprovado / 1000),
+                caption: '${aprovadas.length} cotações',
+                tone: AppKpiStatTone.positive,
+              ),
+              AppKpiStatCard(
+                label: 'Preços em queda',
+                value: '$quedas',
+                caption: 'de ${cotacoes.length} itens cotados',
+              ),
+              AppKpiStatCard(
+                label: 'Fornecedores',
+                value: '${cotacoes.map((c) => c.fornecedor).toSet().length}',
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.space4),
+          AppChartCard(
+            title: 'Valor cotado por tipo',
+            footnote: 'Inclui cotações abertas, aprovadas e recusadas.',
+            child: Center(
+              child: AppDonutChart(
+                data: [
+                  for (final entry in _porTipo.entries)
+                    AppDonutSlice(
+                      label: _tipoLabel[entry.key]!,
+                      value: entry.value,
+                    ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space4),
+          AppChartCard(
+            title: 'Preço unitário × cotação anterior',
+            subtitle: 'Abaixo do traço é economia',
+            child: AppBulletChart(
+              targetLabel: 'anterior',
+              formatValue: _formatPreco,
+              data: [
+                for (final c in cotacoes)
+                  AppBulletDatum(
+                    label: c.produto,
+                    value: c.historico.last,
+                    target: c.historico[c.historico.length - 2],
+                    // A cor não pode vir do padrão do componente: em preço,
+                    // ficar ABAIXO da referência é o resultado bom.
+                    color: c.variacao <= 0
+                        ? semantic.chartPositive
+                        : semantic.chartNegative,
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space5),
+          const AppSectionTitle(child: Text('Cotações')),
+          const SizedBox(height: AppSpacing.space2),
           SizedBox(
-            height: 36,
+            height: AppSize.controlSm,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [

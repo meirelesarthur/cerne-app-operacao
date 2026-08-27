@@ -37,16 +37,36 @@ const _groups = [
   _MenuGroup(
     title: 'Painéis',
     items: [
-      _MenuLink(icon: LucideIcons.wallet, label: 'Financeiro', description: 'Fluxo de caixa e contas'),
-      _MenuLink(icon: LucideIcons.beef, label: 'Pecuária', description: 'Rebanho e ciclos'),
-      _MenuLink(icon: LucideIcons.boxes, label: 'Suprimentos', description: 'Estoque e insumos'),
+      _MenuLink(
+        icon: LucideIcons.wallet,
+        label: 'Financeiro',
+        description: 'Fluxo de caixa e contas',
+      ),
+      _MenuLink(
+        icon: LucideIcons.beef,
+        label: 'Pecuária',
+        description: 'Rebanho e ciclos',
+      ),
+      _MenuLink(
+        icon: LucideIcons.boxes,
+        label: 'Suprimentos',
+        description: 'Estoque e insumos',
+      ),
     ],
   ),
   _MenuGroup(
     title: 'Conta',
     items: [
-      _MenuLink(icon: LucideIcons.user, label: 'Perfil', description: 'Dados pessoais e documentos'),
-      _MenuLink(icon: LucideIcons.logOut, label: 'Sair', tone: AppMenuItemTone.danger),
+      _MenuLink(
+        icon: LucideIcons.user,
+        label: 'Perfil',
+        description: 'Dados pessoais e documentos',
+      ),
+      _MenuLink(
+        icon: LucideIcons.logOut,
+        label: 'Sair',
+        tone: AppMenuItemTone.danger,
+      ),
     ],
   ),
 ];

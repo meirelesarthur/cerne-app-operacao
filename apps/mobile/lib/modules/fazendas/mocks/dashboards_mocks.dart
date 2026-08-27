@@ -222,9 +222,8 @@ class Ativo {
     required this.nome,
     required this.categoria,
     required this.ano,
-    required this.aquisicao,
+    required this.aquisicaoMil,
     required this.depreciado,
-    required this.valorResidual,
     required this.proximaManutencao,
     required this.estado,
   });
@@ -235,13 +234,25 @@ class Ativo {
 
   /// Ano de aquisição do ativo.
   final int ano;
-  final String aquisicao;
-  final int depreciado;
 
-  /// Valor residual estimado (aquisição − depreciação acumulada).
-  final String valorResidual;
+  /// Valor de aquisição em milhares de reais — a fonte numérica do ativo.
+  /// `aquisicao` e `valorResidual` são derivados dele; antes eram três strings
+  /// escritas à mão que podiam (e podem) divergir entre si.
+  final double aquisicaoMil;
+
+  final int depreciado;
   final String proximaManutencao;
   final AtivoEstado estado;
+
+  String get aquisicao => formatMilhares(aquisicaoMil);
+
+  /// Depreciação acumulada, em milhares.
+  double get depreciacaoMil => aquisicaoMil * (depreciado / 100);
+
+  /// Valor residual estimado (aquisição − depreciação acumulada).
+  double get residualMil => aquisicaoMil - depreciacaoMil;
+
+  String get valorResidual => formatMilhares(residualMil);
 }
 
 const List<Ativo> ativos = [
@@ -250,9 +261,8 @@ const List<Ativo> ativos = [
     nome: 'Trator John Deere 6110',
     categoria: 'Máquinas',
     ano: 2021,
-    aquisicao: 'R\$ 380 mil',
+    aquisicaoMil: 380,
     depreciado: 45,
-    valorResidual: 'R\$ 209 mil',
     proximaManutencao: '15/07',
     estado: AtivoEstado.ativo,
   ),
@@ -261,9 +271,8 @@ const List<Ativo> ativos = [
     nome: 'Colheitadeira CR7',
     categoria: 'Máquinas',
     ano: 2022,
-    aquisicao: 'R\$ 620 mil',
+    aquisicaoMil: 620,
     depreciado: 30,
-    valorResidual: 'R\$ 434 mil',
     proximaManutencao: '02/08',
     estado: AtivoEstado.ativo,
   ),
@@ -272,9 +281,8 @@ const List<Ativo> ativos = [
     nome: 'Caminhão Boiadeiro',
     categoria: 'Veículos',
     ano: 2020,
-    aquisicao: 'R\$ 240 mil',
+    aquisicaoMil: 240,
     depreciado: 68,
-    valorResidual: 'R\$ 77 mil',
     proximaManutencao: '20/07',
     estado: AtivoEstado.manutencao,
   ),
@@ -283,9 +291,8 @@ const List<Ativo> ativos = [
     nome: 'Balança de Curral',
     categoria: 'Equipamentos',
     ano: 2023,
-    aquisicao: 'R\$ 45 mil',
+    aquisicaoMil: 45,
     depreciado: 20,
-    valorResidual: 'R\$ 36 mil',
     proximaManutencao: '10/09',
     estado: AtivoEstado.ativo,
   ),
@@ -294,9 +301,8 @@ const List<Ativo> ativos = [
     nome: 'Pivô de Irrigação',
     categoria: 'Infraestrutura',
     ano: 2019,
-    aquisicao: 'R\$ 310 mil',
+    aquisicaoMil: 310,
     depreciado: 55,
-    valorResidual: 'R\$ 140 mil',
     proximaManutencao: '28/08',
     estado: AtivoEstado.manutencao,
   ),
@@ -305,20 +311,30 @@ const List<Ativo> ativos = [
     nome: 'Pulverizador Autopropelido',
     categoria: 'Máquinas',
     ano: 2022,
-    aquisicao: 'R\$ 290 mil',
+    aquisicaoMil: 290,
     depreciado: 38,
-    valorResidual: 'R\$ 180 mil',
     proximaManutencao: '05/08',
     estado: AtivoEstado.ativo,
   ),
 ];
 
+/// Resumo do patrimônio — **derivado** de [ativos]. Os três valores eram
+/// literais e não fechavam com a lista: a soma das aquisições dá 1,88 mi, mas a
+/// depreciação acumulada real é ~810 mil, não os 720 mil que estavam escritos.
 class AtivosResumo {
   AtivosResumo._();
 
-  static const total = 'R\$ 1,88 mi';
-  static const depreciacao = 'R\$ 720 mil';
-  static const liquido = 'R\$ 1,16 mi';
+  static double get totalMil =>
+      ativos.fold<double>(0, (sum, a) => sum + a.aquisicaoMil);
+
+  static double get depreciacaoMil =>
+      ativos.fold<double>(0, (sum, a) => sum + a.depreciacaoMil);
+
+  static double get liquidoMil => totalMil - depreciacaoMil;
+
+  static String get total => formatMilhares(totalMil);
+  static String get depreciacao => formatMilhares(depreciacaoMil);
+  static String get liquido => formatMilhares(liquidoMil);
 }
 
 /* ---- Suprimentos (§4.4) — status PARCIAL: selo "Dados de exemplo" ---- */
@@ -333,7 +349,7 @@ class Cotacao {
     required this.fornecedor,
     required this.produto,
     required this.tipo,
-    required this.total,
+    required this.totalValor,
     required this.itens,
     required this.status,
     required this.unidade,
@@ -349,7 +365,10 @@ class Cotacao {
   /// Produto/serviço cotado — usado no cabeçalho do detalhe.
   final String produto;
   final CotacaoTipo tipo;
-  final String total;
+
+  /// Valor total cotado, em reais — fonte numérica; `total` é derivado dele.
+  final double totalValor;
+
   final int itens;
   final CotacaoStatus status;
 
@@ -365,6 +384,17 @@ class Cotacao {
 
   /// Mini-histórico de preço unitário (3 pontos, mais recente por último).
   final List<double> historico;
+
+  /// "48900" → "R\$ 48.900". Aproximação manual: o projeto não tem `intl`.
+  String get total {
+    final inteiro = totalValor.toStringAsFixed(0);
+    final buffer = StringBuffer();
+    for (var i = 0; i < inteiro.length; i++) {
+      if (i > 0 && (inteiro.length - i) % 3 == 0) buffer.write('.');
+      buffer.write(inteiro[i]);
+    }
+    return 'R\$ $buffer';
+  }
 }
 
 const List<Cotacao> cotacoes = [
@@ -373,7 +403,7 @@ const List<Cotacao> cotacoes = [
     fornecedor: 'Agropecuária Vale',
     produto: 'Ração Confinamento',
     tipo: CotacaoTipo.produto,
-    total: 'R\$ 48.900',
+    totalValor: 48900,
     itens: 12,
     status: CotacaoStatus.aprovada,
     unidade: 'saca 40kg',
@@ -387,7 +417,7 @@ const List<Cotacao> cotacoes = [
     fornecedor: 'Nutrição Total',
     produto: 'Sal Mineral',
     tipo: CotacaoTipo.produto,
-    total: 'R\$ 132.400',
+    totalValor: 132400,
     itens: 8,
     status: CotacaoStatus.cotacao,
     unidade: 'saca 25kg',
@@ -401,7 +431,7 @@ const List<Cotacao> cotacoes = [
     fornecedor: 'TransBoi Logística',
     produto: 'Frete Rodoviário',
     tipo: CotacaoTipo.frete,
-    total: 'R\$ 22.100',
+    totalValor: 22100,
     itens: 3,
     status: CotacaoStatus.cotacao,
     unidade: 'km rodado',
@@ -415,7 +445,7 @@ const List<Cotacao> cotacoes = [
     fornecedor: 'MecAgro Serviços',
     produto: 'Revisão Hidráulica',
     tipo: CotacaoTipo.manutencao,
-    total: 'R\$ 15.700',
+    totalValor: 15700,
     itens: 5,
     status: CotacaoStatus.recusada,
     unidade: 'hora técnica',
@@ -429,7 +459,7 @@ const List<Cotacao> cotacoes = [
     fornecedor: 'Veterinária Campo',
     produto: 'Vacina Aftosa (aplicação)',
     tipo: CotacaoTipo.servico,
-    total: 'R\$ 9.300',
+    totalValor: 9300,
     itens: 4,
     status: CotacaoStatus.aprovada,
     unidade: 'dose',
@@ -443,7 +473,7 @@ const List<Cotacao> cotacoes = [
     fornecedor: 'Sementes Sul',
     produto: 'Semente Braquiária',
     tipo: CotacaoTipo.produto,
-    total: 'R\$ 61.200',
+    totalValor: 61200,
     itens: 15,
     status: CotacaoStatus.cotacao,
     unidade: 'kg',

@@ -51,7 +51,9 @@ void main() {
       final atual = resultadoMeses.last;
       final anterior = resultadoMeses[resultadoMeses.length - 2];
 
-      final receita = pecuariaFinanceiro.firstWhere((c) => c.label == 'Receita');
+      final receita = pecuariaFinanceiro.firstWhere(
+        (c) => c.label == 'Receita',
+      );
       final margem = pecuariaFinanceiro.firstWhere((c) => c.label == 'Margem');
 
       expect(receita.value, formatMilhares(atual.receita));

@@ -108,7 +108,11 @@ class _ListingRow extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.accentDefault,
               ),
-              child: const Icon(LucideIcons.leaf, size: 18, color: AppColors.neutral0),
+              child: const Icon(
+                LucideIcons.leaf,
+                size: 18,
+                color: AppColors.neutral0,
+              ),
             ),
             const SizedBox(width: AppSpacing.space3),
             Expanded(
@@ -156,7 +160,8 @@ WidgetbookComponent buildListingPatternWidgetbookComponent() {
             child: AppEmptyState(
               icon: LucideIcons.tractor,
               title: 'Nenhuma fazenda cadastrada',
-              description: 'Cadastre a primeira fazenda para começar a operar por aqui.',
+              description:
+                  'Cadastre a primeira fazenda para começar a operar por aqui.',
             ),
           ),
         ),

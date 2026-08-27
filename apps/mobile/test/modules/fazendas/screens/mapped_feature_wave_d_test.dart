@@ -170,38 +170,39 @@ void main() {
     // parte da amostra e abre formulário validável"), que perdeu sentido: a
     // tela antiga não é mais alcançável por navegação normal. Ver
     // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
-    testWidgets('Carga, Descarga e Nota de cocho redirecionam para o Confinamento', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      final harness = RouterTestHarness(
-        profile: UserAccessProfile.operational,
-      );
-      addTearDown(harness.dispose);
-      harness.router.go('/fazendas/operacional/grupo/misturador');
+    testWidgets(
+      'Carga, Descarga e Nota de cocho redirecionam para o Confinamento',
+      (tester) async {
+        await setTallSurface(tester);
+        final harness = RouterTestHarness(
+          profile: UserAccessProfile.operational,
+        );
+        addTearDown(harness.dispose);
+        harness.router.go('/fazendas/operacional/grupo/misturador');
 
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Carga'));
-      await tester.pumpAndSettle();
-      expect(find.text('Produzir batelada'), findsOneWidget);
-      expect(tester.takeException(), isNull);
+        await tester.tap(find.text('Carga'));
+        await tester.pumpAndSettle();
+        expect(find.text('Produzir batelada'), findsOneWidget);
+        expect(tester.takeException(), isNull);
 
-      harness.router.go('/fazendas/operacional/grupo/misturador');
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Descarga'));
-      await tester.pumpAndSettle();
-      expect(find.text('Trato diário'), findsOneWidget);
-      expect(tester.takeException(), isNull);
+        harness.router.go('/fazendas/operacional/grupo/misturador');
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Descarga'));
+        await tester.pumpAndSettle();
+        expect(find.text('Trato diário'), findsOneWidget);
+        expect(tester.takeException(), isNull);
 
-      harness.router.go('/fazendas/operacional/grupo/misturador');
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Nota de cocho'));
-      await tester.pumpAndSettle();
-      expect(find.text('Leitura de cocho'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        harness.router.go('/fazendas/operacional/grupo/misturador');
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Nota de cocho'));
+        await tester.pumpAndSettle();
+        expect(find.text('Leitura de cocho'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('Minhas OS é consulta operacional sem ação de criação', (
       tester,

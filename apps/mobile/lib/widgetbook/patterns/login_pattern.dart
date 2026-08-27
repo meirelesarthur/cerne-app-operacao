@@ -37,7 +37,9 @@ class _LoginPatternExampleState extends State<_LoginPatternExample> {
   void _submit(BuildContext context) {
     FocusScope.of(context).unfocus();
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Exemplo de padrão — sem autenticação real.')),
+      const SnackBar(
+        content: Text('Exemplo de padrão — sem autenticação real.'),
+      ),
     );
   }
 
@@ -63,7 +65,11 @@ class _LoginPatternExampleState extends State<_LoginPatternExample> {
                   color: semantic.accentSubtle,
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                 ),
-                child: Icon(LucideIcons.sprout, size: 32, color: semantic.accentDefault),
+                child: Icon(
+                  LucideIcons.sprout,
+                  size: 32,
+                  color: semantic.accentDefault,
+                ),
               ),
               const SizedBox(height: AppSpacing.space3),
               const AppHeading(child: Text('Bem-vindo!')),

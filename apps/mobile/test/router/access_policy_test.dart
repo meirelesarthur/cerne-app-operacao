@@ -30,11 +30,7 @@ void main() {
           '/fazendas/administracao',
           '/fazendas/operacional/carga',
         ]) {
-          expect(
-            redirectForSession(path, signedOut),
-            '/desktop',
-            reason: path,
-          );
+          expect(redirectForSession(path, signedOut), '/desktop', reason: path);
         }
       },
     );

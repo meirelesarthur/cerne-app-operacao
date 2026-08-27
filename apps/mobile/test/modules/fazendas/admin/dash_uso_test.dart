@@ -24,9 +24,12 @@ void main() {
         await tester.pumpWidget(_wrap(const DashUso()));
         await tester.pumpAndSettle();
 
-        expect(find.text('Análise de Uso'), findsWidgets);
+        expect(find.text('Adoção & Governança'), findsWidgets);
+        expect(find.text('Adoção por fazenda'), findsOneWidget);
+        expect(find.text('Trilha de auditoria'), findsOneWidget);
         expect(find.text('Acesso restrito'), findsOneWidget);
-        expect(find.text('Fazenda São Pedro'), findsOneWidget);
+        // O nome aparece duas vezes: na barra de adoção e no tile expansível.
+        expect(find.text('Fazenda São Pedro'), findsWidgets);
         expect(find.text('João Silva'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },

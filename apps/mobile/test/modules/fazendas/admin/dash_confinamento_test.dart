@@ -5,6 +5,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/admin/dash_confinamento.dart';
 
+import '../../../support/test_viewport.dart';
+
 Widget _wrap(Widget child) => ProviderScope(
   child: MaterialApp(
     theme: buildAppTheme(AppThemeVariant.light),
@@ -15,10 +17,11 @@ Widget _wrap(Widget child) => ProviderScope(
 void main() {
   group('DashConfinamento', () {
     testWidgets('renderiza sem exceção e abre a aba Mapa', (tester) async {
+      await setTallSurface(tester);
       await tester.pumpWidget(_wrap(const DashConfinamento()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Confinamento'), findsOneWidget);
+      expect(find.text('Rebanho & Confinamento'), findsOneWidget);
       expect(find.text('Visão geral'), findsOneWidget);
 
       await tester.tap(find.text('Mapa'));
@@ -28,7 +31,25 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('a visão geral traz o desempenho que a Pecuária não tinha', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(_wrap(const DashConfinamento()));
+      await tester.pumpAndSettle();
+
+      // O painel de Pecuária mostrava "—" em produtivo/reprodutivo; aqui o GMD
+      // observado × previsto vem de IndicadoresLote.
+      expect(find.text('GMD médio'), findsOneWidget);
+      expect(find.text('Ocupação e desempenho'), findsOneWidget);
+      expect(find.text('GMD por curral'), findsOneWidget);
+      expect(find.text('Situação dos currais'), findsOneWidget);
+      expect(find.text('—'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('abre o detalhe de um curral ao tocar', (tester) async {
+      await setTallSurface(tester);
       await tester.pumpWidget(_wrap(const DashConfinamento()));
       await tester.pumpAndSettle();
 

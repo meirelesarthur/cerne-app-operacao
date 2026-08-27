@@ -231,11 +231,7 @@ void main() {
         expect(find.text('Campo obrigatório.'), findsNWidgets(7));
         expect(tester.takeException(), isNull);
 
-        await _selectFieldOption(
-          tester,
-          'Responsável',
-          'João Oliveira',
-        );
+        await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
         await _enterFieldText(tester, 'Data', '2026-08-16');
         await _selectFieldOption(
           tester,
@@ -252,10 +248,7 @@ void main() {
         await tester.tap(find.text('Registrar abastecimento'));
         await tester.pumpAndSettle();
 
-        expect(
-          find.text('Trator John Deere 6110 salvo'),
-          findsOneWidget,
-        );
+        expect(find.text('Trator John Deere 6110 salvo'), findsOneWidget);
         expect(find.text('Ver registros'), findsOneWidget);
         expect(tester.takeException(), isNull);
 
