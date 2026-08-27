@@ -115,6 +115,21 @@ class AppColorsLight {
   static const Color navFg = Color(0xFF67716A);
   static const Color navActive = Color(0xFF047857);
   static const Color navBorder = Color(0xFFE8E9E1);
+  static const List<Color> chartSeries = [
+    Color(0xFF059669),
+    Color(0xFF2563EB),
+    Color(0xFFF59E0B),
+    Color(0xFF7C3AED),
+    Color(0xFF0891B2),
+    Color(0xFFDC2626),
+    Color(0xFF14532D),
+    Color(0xFF9CA3AF),
+  ];
+  static const Color chartGrid = Color(0xFFE5E7EB);
+  static const Color chartAxis = Color(0xFF9CA3AF);
+  static const Color chartTrack = Color(0xFFF5F5F5);
+  static const Color chartPositive = Color(0xFF059669);
+  static const Color chartNegative = Color(0xFFDC2626);
 }
 
 class AppColorsGbMode {
@@ -150,6 +165,21 @@ class AppColorsGbMode {
   static const Color navFg = Color(0xFF8FB3A2);
   static const Color navActive = Color(0xFF10B981);
   static const Color navBorder = Color(0x1AFFFFFF);
+  static const List<Color> chartSeries = [
+    Color(0xFF34D399),
+    Color(0xFF60A5FA),
+    Color(0xFFFBBF24),
+    Color(0xFFA78BFA),
+    Color(0xFF22D3EE),
+    Color(0xFFF87171),
+    Color(0xFF86EFAC),
+    Color(0xFF94A3B8),
+  ];
+  static const Color chartGrid = Color(0x14FFFFFF);
+  static const Color chartAxis = Color(0x52FFFFFF);
+  static const Color chartTrack = Color(0x12FFFFFF);
+  static const Color chartPositive = Color(0xFF34D399);
+  static const Color chartNegative = Color(0xFFF87171);
 }
 
 class AppComponentColors {

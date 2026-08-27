@@ -43,6 +43,12 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     required this.shadowCard,
     required this.shadowCardHover,
     required this.shadowModal,
+    required this.chartSeries,
+    required this.chartGrid,
+    required this.chartAxis,
+    required this.chartTrack,
+    required this.chartPositive,
+    required this.chartNegative,
   });
 
   final Color fgDefault;
@@ -79,6 +85,16 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
   final List<BoxShadow> shadowCardHover;
   final List<BoxShadow> shadowModal;
 
+  /// Paleta categórica de gráfico do tema — o índice da série escolhe a cor.
+  /// Substitui a leitura direta de `AppColors.chartSeries`, que é fixa e não
+  /// sobrevive ao gbMode.
+  final List<Color> chartSeries;
+  final Color chartGrid;
+  final Color chartAxis;
+  final Color chartTrack;
+  final Color chartPositive;
+  final Color chartNegative;
+
   static const light = AppSemanticColors(
     fgDefault: AppColorsLight.fgDefault,
     fgMuted: AppColorsLight.fgMuted,
@@ -113,6 +129,12 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     shadowCard: AppShadowsLight.card,
     shadowCardHover: AppShadowsLight.cardHover,
     shadowModal: AppShadowsLight.modal,
+    chartSeries: AppColorsLight.chartSeries,
+    chartGrid: AppColorsLight.chartGrid,
+    chartAxis: AppColorsLight.chartAxis,
+    chartTrack: AppColorsLight.chartTrack,
+    chartPositive: AppColorsLight.chartPositive,
+    chartNegative: AppColorsLight.chartNegative,
   );
 
   static const gbMode = AppSemanticColors(
@@ -149,6 +171,12 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     shadowCard: AppShadowsGbMode.card,
     shadowCardHover: AppShadowsGbMode.cardHover,
     shadowModal: AppShadowsGbMode.modal,
+    chartSeries: AppColorsGbMode.chartSeries,
+    chartGrid: AppColorsGbMode.chartGrid,
+    chartAxis: AppColorsGbMode.chartAxis,
+    chartTrack: AppColorsGbMode.chartTrack,
+    chartPositive: AppColorsGbMode.chartPositive,
+    chartNegative: AppColorsGbMode.chartNegative,
   );
 
   @override
@@ -186,6 +214,12 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     List<BoxShadow>? shadowCard,
     List<BoxShadow>? shadowCardHover,
     List<BoxShadow>? shadowModal,
+    List<Color>? chartSeries,
+    Color? chartGrid,
+    Color? chartAxis,
+    Color? chartTrack,
+    Color? chartPositive,
+    Color? chartNegative,
   }) {
     return AppSemanticColors(
       fgDefault: fgDefault ?? this.fgDefault,
@@ -221,6 +255,12 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
       shadowCard: shadowCard ?? this.shadowCard,
       shadowCardHover: shadowCardHover ?? this.shadowCardHover,
       shadowModal: shadowModal ?? this.shadowModal,
+      chartSeries: chartSeries ?? this.chartSeries,
+      chartGrid: chartGrid ?? this.chartGrid,
+      chartAxis: chartAxis ?? this.chartAxis,
+      chartTrack: chartTrack ?? this.chartTrack,
+      chartPositive: chartPositive ?? this.chartPositive,
+      chartNegative: chartNegative ?? this.chartNegative,
     );
   }
 
@@ -263,6 +303,19 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
       shadowCard: t < 0.5 ? shadowCard : other.shadowCard,
       shadowCardHover: t < 0.5 ? shadowCardHover : other.shadowCardHover,
       shadowModal: t < 0.5 ? shadowModal : other.shadowModal,
+      // A série é uma lista ordenada de tamanho fixo: interpola par a par para
+      // a troca de tema não piscar a cor de nenhuma categoria.
+      chartSeries: [
+        for (var i = 0; i < chartSeries.length; i++)
+          i < other.chartSeries.length
+              ? c(chartSeries[i], other.chartSeries[i])
+              : chartSeries[i],
+      ],
+      chartGrid: c(chartGrid, other.chartGrid),
+      chartAxis: c(chartAxis, other.chartAxis),
+      chartTrack: c(chartTrack, other.chartTrack),
+      chartPositive: c(chartPositive, other.chartPositive),
+      chartNegative: c(chartNegative, other.chartNegative),
     );
   }
 }

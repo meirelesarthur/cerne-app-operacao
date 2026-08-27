@@ -144,6 +144,25 @@ export interface ThemePalette {
   /** tab bar flutuante em cápsula translúcida */
   nav: { bg: string; fg: string; active: string; border: string }
   shadow: { card: string; cardHover: string; modal: string }
+  /**
+   * Superfície de gráfico, theme-aware. A paleta categórica de `chart.series`
+   * (seção 3) é fixa e nasceu no tema claro; em gbMode ela colide com o fundo
+   * escuro. Aqui cada tema declara a sua série e o seu cromo (grade, eixo,
+   * trilho) — nenhum gráfico deve mais ler `AppColors.chartSeries` direto.
+   */
+  chart: {
+    /** paleta categórica ordenada; o índice da série escolhe a cor */
+    series: string[]
+    /** linhas de grade horizontais — o mais apagado que ainda se enxerga */
+    grid: string
+    /** eixo e seus rótulos */
+    axis: string
+    /** trilho de fundo de barra/gauge (100% da escala) */
+    track: string
+    /** leitura financeira: entrou dinheiro / saiu dinheiro */
+    positive: string
+    negative: string
+  }
 }
 
 export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
@@ -178,6 +197,16 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       cardHover: '0 10px 30px rgba(16,21,16,0.10)',
       modal: '0 20px 48px rgba(0,0,0,0.24)',
     },
+    // série do tema claro = a paleta categórica histórica de `chart.series`,
+    // mantida para não mudar a leitura dos painéis já publicados.
+    chart: {
+      series: ['#059669', '#2563eb', '#f59e0b', '#7c3aed', '#0891b2', '#dc2626', '#14532d', '#9ca3af'],
+      grid: primitive.neutral[200],
+      axis: primitive.neutral[400],
+      track: primitive.neutral[100],
+      positive: primitive.brand[600],
+      negative: primitive.red[600],
+    },
   },
   gbMode: {
     fg: { default: '#e2f0e8', muted: '#8fb3a2', subtle: '#5f7d6e', inverse: '#051008' },
@@ -200,6 +229,18 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       card: '0 1px 3px rgba(0,0,0,0.4)',
       cardHover: '0 6px 16px rgba(0,0,0,0.5)',
       modal: '0 20px 48px rgba(0,0,0,0.6)',
+    },
+    // gbMode sobe a luminosidade de cada matiz da série (tom 400/300 em vez de
+    // 600/700): sobre `bg.surface` #0e2a1d o verde #059669 e o verde-floresta
+    // #14532d praticamente desaparecem. Grade e trilho viram branco translúcido,
+    // como o resto do cromo escuro do app.
+    chart: {
+      series: ['#34d399', '#60a5fa', '#fbbf24', '#a78bfa', '#22d3ee', '#f87171', '#86efac', '#94a3b8'],
+      grid: 'rgba(255,255,255,0.08)',
+      axis: 'rgba(255,255,255,0.32)',
+      track: 'rgba(255,255,255,0.07)',
+      positive: '#34d399',
+      negative: '#f87171',
     },
   },
 }
