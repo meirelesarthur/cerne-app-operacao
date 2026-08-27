@@ -35,6 +35,7 @@ export 'illustration_slot.dart';
 export 'line_chart.dart';
 export 'kpi_stat_card.dart';
 export 'menu_item.dart';
+export 'metric_grid.dart';
 export 'mini_app_tile.dart';
 export 'modal.dart';
 export 'page_dots.dart';

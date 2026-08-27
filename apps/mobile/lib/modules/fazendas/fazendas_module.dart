@@ -92,11 +92,10 @@ GoRoute buildFazendasModuleRoute() {
       ),
       GoRoute(
         path: 'financeiro',
-        // `DashFinanceiro` real vem do processo dos dashboards administrativos
-        // (F3); por ora, delega ao dispatcher `AdminDashboard`, igual ao dashId
-        // homônimo em `/fazendas/dashboards/financeiro`.
+        // Atalho legado; hoje resolve no painel Resultado, mesma tela do dashId
+        // `resultado` (e dos aliases `financeiro`/`pecuaria`).
         builder: (context, state) =>
-            _FazendasScaffold(child: buildAdminDashboard('financeiro')),
+            _FazendasScaffold(child: buildAdminDashboard('resultado')),
       ),
       GoRoute(
         path: 'mais',
@@ -107,6 +106,16 @@ GoRoute buildFazendasModuleRoute() {
         path: 'mais/sync',
         builder: (context, state) =>
             const _FazendasScaffold(child: SyncQueueScreen()),
+      ),
+      // Consultas Gerenciais e 100% leitura, sem indicador e sem acao: e um
+      // console de consulta, nao um painel de decisao. Fica fora de
+      // `dashboards/` para o menu nao ensinar errado o que e painel — o dashId
+      // antigo continua resolvendo pelo dispatcher, para links salvos.
+      // Ver docs/ESTEIRA-DASHBOARDS-ADM.md, secao 2.
+      GoRoute(
+        path: 'consultas',
+        builder: (context, state) =>
+            _FazendasScaffold(child: buildAdminDashboard('consultas')),
       ),
       GoRoute(
         path: 'dashboards/:dashId',

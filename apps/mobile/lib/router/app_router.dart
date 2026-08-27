@@ -158,6 +158,7 @@ String? redirectForSession(String path, PrototypeSessionState session) {
   final isAdministrationRoute =
       path.startsWith('/fazendas/administracao') ||
       path.startsWith('/fazendas/dashboards') ||
+      path == '/fazendas/consultas' ||
       path == '/fazendas/financeiro';
   final isOperationalRoute =
       path.startsWith('/fazendas/operacional') ||

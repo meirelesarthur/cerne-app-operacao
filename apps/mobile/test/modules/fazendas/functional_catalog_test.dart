@@ -16,9 +16,13 @@ void main() {
       // comercial/financeira, o ADM só visualiza) e `colheita-frutas` sai do
       // escopo — 13+2=15 administrativas, 46-2-1=43 operacionais, 15+43=58
       // no total. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-      expect(adminFeatures, hasLength(15));
+      // Auditoria dos painéis administrativos: `painel-pecuario` fundiu em
+      // `painel-financeiro` (mesmo P&L; o bloco produtivo passou a ser servido
+      // por `lotacao-currais`, onde há dado real) — 15-1=14 administrativas,
+      // 14+43=57 no total. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
+      expect(adminFeatures, hasLength(14));
       expect(operationalFeatures, hasLength(43));
-      expect(allFeatures, hasLength(58));
+      expect(allFeatures, hasLength(57));
 
       expect(
         adminFeatures.every(
@@ -44,13 +48,13 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 51 ready, 7 hardware e zero mapped', () {
+    test('preserva a maturidade 50 ready, 7 hardware e zero mapped', () {
       // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
-      // (ready) saiu do escopo — 52-1=51. Ver
-      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+      // (ready) saiu do escopo — 52-1=51. Auditoria dos painéis:
+      // `painel-pecuario` (ready) fundiu em `painel-financeiro` — 51-1=50.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(51),
+        hasLength(50),
       );
       expect(
         allFeatures.where(
@@ -97,9 +101,10 @@ void main() {
       expect(fields, hasLength(163));
       expect(fields.where((field) => field.isRequired), hasLength(140));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(31));
+      // `painel-pecuario` levou junto o seu `existingRoute` — 20-1=19.
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(20),
+        hasLength(19),
       );
       expect(allFeatures.expand((feature) => feature.sections), hasLength(12));
       expect(

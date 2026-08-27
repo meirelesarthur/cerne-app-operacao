@@ -98,6 +98,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildMiniAppTileWidgetbookComponent(),
                 buildChartCardWidgetbookComponent(),
                 buildKpiStatCardWidgetbookComponent(),
+                buildMetricGridWidgetbookComponent(),
                 buildBalanceCardWidgetbookComponent(),
               ],
             ),

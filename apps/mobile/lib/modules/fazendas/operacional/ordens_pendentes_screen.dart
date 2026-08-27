@@ -43,8 +43,10 @@ class OrdensPendentesScreen extends ConsumerWidget {
                   itemCount: ordens.length,
                   separatorBuilder: (context, _) =>
                       const SizedBox(height: AppSpacing.space3),
-                  itemBuilder: (context, index) =>
-                      _OrdemCard(ordem: ordens[index], onConfirmar: notifier.confirmarOrdemPendente),
+                  itemBuilder: (context, index) => _OrdemCard(
+                    ordem: ordens[index],
+                    onConfirmar: notifier.confirmarOrdemPendente,
+                  ),
                 ),
         ),
       ],
@@ -105,7 +107,10 @@ class _OrdemCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.space1),
             Text(
               ordem.observacao!,
-              style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgMuted,
+              ),
             ),
           ],
           if (!confirmada) ...[

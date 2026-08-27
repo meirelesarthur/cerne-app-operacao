@@ -92,8 +92,7 @@ class _VisaoGeral extends StatelessWidget {
         ? 0.0
         : gmds.reduce((a, b) => a + b) / gmds.length;
 
-    final ocorrenciasAbertas = confinamento_mocks.leituraCochoRecente
-        .avaliacoes
+    final ocorrenciasAbertas = confinamento_mocks.leituraCochoRecente.avaliacoes
         .expand((a) => a.ocorrencias)
         .length;
 
@@ -311,7 +310,10 @@ void _showCurralDetail(BuildContext context, CurralInfo curral) {
             row('Situação', curral.situacao.label),
             if (ind != null) ...[
               row('Cabeças', '${ind.totalAnimais}/${curral.capacidade}'),
-              row('Peso médio', '${ind.pesoMedioAtualKg.toStringAsFixed(0)} kg'),
+              row(
+                'Peso médio',
+                '${ind.pesoMedioAtualKg.toStringAsFixed(0)} kg',
+              ),
               row('Dias de confinamento', '${ind.diasConfinamento}'),
               row('GMD', '${ind.gmdKg.toStringAsFixed(2)} kg/dia'),
               row(
@@ -380,7 +382,9 @@ class _Nutricao extends StatelessWidget {
             ),
           ),
         const SizedBox(height: AppSpacing.space5),
-        AppSectionTitle(child: Text('Plano de fases — ${confinamento_mocks.planoFases.nome}')),
+        AppSectionTitle(
+          child: Text('Plano de fases — ${confinamento_mocks.planoFases.nome}'),
+        ),
         const SizedBox(height: AppSpacing.space2),
         AppCard(
           child: Column(
@@ -467,7 +471,9 @@ class _Relatorios extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('${t.currentConcluidos}/${t.lancamentos.length} currais concluídos'),
+                  Text(
+                    '${t.currentConcluidos}/${t.lancamentos.length} currais concluídos',
+                  ),
                   Text(
                     '${t.totalFornecido.toStringAsFixed(0)} kg fornecidos',
                     style: TextStyle(color: semantic.fgMuted),

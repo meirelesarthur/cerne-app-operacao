@@ -109,31 +109,27 @@ const catalogoProdutos = <String>[
 ];
 
 const adminFeatures = <FeatureDefinition>[
+  // Auditoria dos painéis (docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2):
+  // `painel-pecuario` fundiu aqui. Os dois painéis mostravam o mesmo P&L e o
+  // bloco produtivo da Pecuária estava desativado por falta de dado — dado que
+  // existe em Confinamento e passou a ser servido por `lotacao-currais`.
   FeatureDefinition(
     id: 'painel-financeiro',
     profile: FeatureProfile.administration,
     group: 'Painéis de decisão',
-    title: 'Financeiro e operacional',
+    title: 'Resultado',
     objective:
-        'Consolidar resultados financeiros, custos e produção por período.',
+        'Consolidar receita, custo, margem e posição financeira por período.',
     status: FeatureStatus.ready,
-    existingRoute: '/fazendas/dashboards/financeiro',
-  ),
-  FeatureDefinition(
-    id: 'painel-pecuario',
-    profile: FeatureProfile.administration,
-    group: 'Painéis de decisão',
-    title: 'Dashboard pecuário',
-    objective: 'Acompanhar estoque atual e desempenho do rebanho.',
-    status: FeatureStatus.ready,
-    existingRoute: '/fazendas/dashboards/pecuaria',
+    existingRoute: '/fazendas/dashboards/resultado',
   ),
   FeatureDefinition(
     id: 'lotacao-currais',
     profile: FeatureProfile.administration,
     group: 'Painéis de decisão',
-    title: 'Lotação de currais',
-    objective: 'Supervisionar ocupação, capacidade e alertas dos currais.',
+    title: 'Rebanho e confinamento',
+    objective:
+        'Supervisionar ocupação, desempenho do lote (GMD) e alertas dos currais.',
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/dashboards/confinamento',
   ),
@@ -159,8 +155,9 @@ const adminFeatures = <FeatureDefinition>[
     id: 'analise-uso',
     profile: FeatureProfile.administration,
     group: 'Painéis de decisão',
-    title: 'Análise de uso',
-    objective: 'Supervisionar usuários ativos e utilização por fazenda.',
+    title: 'Adoção e governança',
+    objective:
+        'Supervisionar usuários ativos, utilização por fazenda e trilha de auditoria.',
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/dashboards/uso',
   ),
@@ -171,7 +168,7 @@ const adminFeatures = <FeatureDefinition>[
     title: 'Consultas gerenciais',
     objective: 'Consultar lotes, estoque e pesagens sem permitir alterações.',
     status: FeatureStatus.ready,
-    existingRoute: '/fazendas/dashboards/consultas',
+    existingRoute: '/fazendas/consultas',
   ),
   FeatureDefinition(
     id: 'areas',

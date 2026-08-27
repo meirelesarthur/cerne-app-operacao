@@ -36,7 +36,10 @@ const _comportamentos = <AppFormSelectOption>[
   AppFormSelectOption(value: 'esperandoNoCocho', label: 'Esperando no cocho'),
   AppFormSelectOption(value: 'indiferentes', label: 'Indiferentes'),
   AppFormSelectOption(value: 'apaticos', label: 'Apáticos'),
-  AppFormSelectOption(value: 'sinaisDesconforto', label: 'Sinais de desconforto'),
+  AppFormSelectOption(
+    value: 'sinaisDesconforto',
+    label: 'Sinais de desconforto',
+  ),
 ];
 
 const _tiposOcorrencia = <AppFormSelectOption>[
@@ -327,7 +330,9 @@ class _AvaliacaoCard extends StatelessWidget {
               value: draft.aspecto?.name,
               placeholder: 'Selecione',
               onChanged: (v) {
-                draft.aspecto = v == null ? null : _byValue(AspectoSobras.values, v);
+                draft.aspecto = v == null
+                    ? null
+                    : _byValue(AspectoSobras.values, v);
                 onChanged();
               },
             ),
@@ -340,8 +345,9 @@ class _AvaliacaoCard extends StatelessWidget {
               value: draft.comportamento?.name,
               placeholder: 'Selecione',
               onChanged: (v) {
-                draft.comportamento =
-                    v == null ? null : _byValue(ComportamentoAnimal.values, v);
+                draft.comportamento = v == null
+                    ? null
+                    : _byValue(ComportamentoAnimal.values, v);
                 onChanged();
               },
             ),
@@ -422,8 +428,9 @@ void _adicionarOcorrencia(
               child: AppFormSelect(
                 options: _tiposOcorrencia,
                 value: tipo.name,
-                onChanged: (v) =>
-                    setSheetState(() => tipo = _byValue(OcorrenciaTipo.values, v!)),
+                onChanged: (v) => setSheetState(
+                  () => tipo = _byValue(OcorrenciaTipo.values, v!),
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.space3),

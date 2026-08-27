@@ -23,28 +23,21 @@ class _Group {
 }
 
 const _groups = [
+  // Cinco paineis de decisao, na ordem em que o administrador pergunta:
+  // dinheiro, rebanho, compra, patrimonio, governanca. Ver
+  // docs/ESTEIRA-DASHBOARDS-ADM.md, secao 2.
   _Group(
-    title: 'Dashboards gerenciais',
+    title: 'Painéis de decisão',
     items: [
       _LinkItem(
-        label: 'Financeiro',
+        label: 'Resultado',
         icon: LucideIcons.wallet,
-        to: '/fazendas/dashboards/financeiro',
+        to: '/fazendas/dashboards/resultado',
       ),
       _LinkItem(
-        label: 'Pecuária de Corte',
-        icon: LucideIcons.beef,
-        to: '/fazendas/dashboards/pecuaria',
-      ),
-      _LinkItem(
-        label: 'Lotação de Currais',
+        label: 'Rebanho & Confinamento',
         icon: LucideIcons.warehouse,
         to: '/fazendas/dashboards/confinamento',
-      ),
-      _LinkItem(
-        label: 'Ativos / Depreciação',
-        icon: LucideIcons.package,
-        to: '/fazendas/dashboards/ativos',
       ),
       _LinkItem(
         label: 'Suprimentos',
@@ -52,14 +45,29 @@ const _groups = [
         to: '/fazendas/dashboards/suprimentos',
       ),
       _LinkItem(
-        label: 'Análise de Uso',
+        label: 'Ativos & Manutenção',
+        icon: LucideIcons.package,
+        to: '/fazendas/dashboards/ativos',
+      ),
+      _LinkItem(
+        label: 'Adoção & Governança',
         icon: LucideIcons.users,
         to: '/fazendas/dashboards/uso',
       ),
+    ],
+  ),
+  _Group(
+    title: 'Consultas e auditoria',
+    items: [
       _LinkItem(
-        label: 'Consultas Gerenciais',
+        label: 'Consultas gerenciais',
         icon: LucideIcons.search,
-        to: '/fazendas/dashboards/consultas',
+        to: '/fazendas/consultas',
+      ),
+      _LinkItem(
+        label: 'Todas as atividades',
+        icon: LucideIcons.activity,
+        to: '/fazendas/atividades',
       ),
     ],
   ),
@@ -70,11 +78,6 @@ const _groups = [
         label: 'Fila de sincronização',
         icon: LucideIcons.refreshCw,
         to: '/fazendas/mais/sync',
-      ),
-      _LinkItem(
-        label: 'Todas as atividades',
-        icon: LucideIcons.activity,
-        to: '/fazendas/atividades',
       ),
     ],
   ),

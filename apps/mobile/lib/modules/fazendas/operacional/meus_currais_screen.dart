@@ -50,7 +50,10 @@ class MeusCurraisScreen extends ConsumerWidget {
                         o.curralOrigemId == curral.id,
                   )
                   .toList();
-              return _CurralCard(curral: curral, ordensPendentes: ordemPendente);
+              return _CurralCard(
+                curral: curral,
+                ordensPendentes: ordemPendente,
+              );
             },
           ),
         ),
@@ -102,7 +105,10 @@ class _CurralCard extends ConsumerWidget {
             const SizedBox(height: AppSpacing.space1),
             Text(
               '${curral.indicadores!.totalAnimais}/${curral.capacidade} cabeças',
-              style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgMuted,
+              ),
             ),
           ],
           if (ordensPendentes.isNotEmpty) ...[

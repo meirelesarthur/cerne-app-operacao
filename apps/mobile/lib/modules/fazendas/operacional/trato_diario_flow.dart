@@ -73,7 +73,9 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
     return FlowShell(
       title: 'Trato diário',
       primaryLabel: elegiveis.isEmpty ? null : 'Finalizar fornecimento',
-      onPrimary: elegiveis.isEmpty ? null : () => _finalizar(elegiveis, batelada!),
+      onPrimary: elegiveis.isEmpty
+          ? null
+          : () => _finalizar(elegiveis, batelada!),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -86,7 +88,8 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
                 for (final b in confinamento.bateladas)
                   AppFormSelectOption(
                     value: b.id,
-                    label: '${b.vagaoDestino} · ${b.quantidadeProduzida.toStringAsFixed(0)} kg',
+                    label:
+                        '${b.vagaoDestino} · ${b.quantidadeProduzida.toStringAsFixed(0)} kg',
                   ),
               ],
               value: _bateladaId,
@@ -108,10 +111,7 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
               crossAxisSpacing: AppSpacing.space2,
               childAspectRatio: 1.2,
               children: [
-                AppKpiStatCard(
-                  label: 'Progresso',
-                  value: '$progresso%',
-                ),
+                AppKpiStatCard(label: 'Progresso', value: '$progresso%'),
                 AppKpiStatCard(
                   label: 'Fornecido',
                   value: '${totalFornecido.toStringAsFixed(0)} kg',
@@ -203,7 +203,8 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
         for (final c in elegiveis)
           LancamentoCurral(
             curralId: c.id,
-            quantidadePlanejada: batelada.quantidadeProduzida / elegiveis.length,
+            quantidadePlanejada:
+                batelada.quantidadeProduzida / elegiveis.length,
             quantidadeFornecida: (_fornecida[c.id] ?? 0).toDouble(),
             concluido: _concluido[c.id] ?? false,
           ),

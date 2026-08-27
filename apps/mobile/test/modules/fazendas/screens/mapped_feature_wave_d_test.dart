@@ -75,7 +75,7 @@ void main() {
       }
     });
 
-    test('todas as 51 funcionalidades Ready têm destino executável', () {
+    test('todas as 50 funcionalidades Ready têm destino executável', () {
       final ready = allFeatures.where(
         (feature) => feature.status == FeatureStatus.ready,
       );
@@ -85,7 +85,9 @@ void main() {
       // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
       // (ready) saiu do escopo — 52-1=51. Ver
       // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-      expect(ready, hasLength(51));
+      // Auditoria dos painéis: `painel-pecuario` (ready) fundiu em
+      // `painel-financeiro` — 51-1=50. Ver docs/ESTEIRA-DASHBOARDS-ADM.md.
+      expect(ready, hasLength(50));
       for (final feature in ready) {
         final handledByMappedScreen =
             feature.auditExport != null ||

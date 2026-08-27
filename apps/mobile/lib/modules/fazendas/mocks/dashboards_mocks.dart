@@ -19,6 +19,113 @@ class FinanceiroKpis {
   static const investimentos = 'R\$ 350 mil';
 }
 
+/// Um mês do resultado (§4.3). Receita e a composição do custo por centro
+/// vivem juntas aqui para nada divergir: o custo total do mês, a barra por
+/// centro de custo e a coluna empilhada saem todos desta mesma linha.
+///
+/// Valores em milhares de reais.
+class ResultadoMes {
+  const ResultadoMes({
+    required this.label,
+    required this.receita,
+    required this.nutricao,
+    required this.sanidade,
+    required this.maoDeObra,
+    required this.manutencao,
+    required this.administrativo,
+    required this.logistica,
+  });
+
+  final String label;
+  final double receita;
+  final double nutricao;
+  final double sanidade;
+  final double maoDeObra;
+  final double manutencao;
+  final double administrativo;
+  final double logistica;
+
+  double get custo =>
+      nutricao + sanidade + maoDeObra + manutencao + administrativo + logistica;
+
+  double get margem => receita - custo;
+
+  /// Manutenção + administrativo + logística — a cauda que, separada, deixa a
+  /// coluna empilhada ilegível.
+  double get outros => manutencao + administrativo + logistica;
+}
+
+const List<ResultadoMes> resultadoMeses = [
+  ResultadoMes(
+    label: 'Jan',
+    receita: 1820,
+    nutricao: 496,
+    sanidade: 160,
+    maoDeObra: 300,
+    manutencao: 103,
+    administrativo: 47,
+    logistica: 74,
+  ),
+  ResultadoMes(
+    label: 'Fev',
+    receita: 1960,
+    nutricao: 521,
+    sanidade: 168,
+    maoDeObra: 315,
+    manutencao: 108,
+    administrativo: 50,
+    logistica: 78,
+  ),
+  ResultadoMes(
+    label: 'Mar',
+    receita: 1740,
+    nutricao: 458,
+    sanidade: 148,
+    maoDeObra: 277,
+    manutencao: 95,
+    administrativo: 43,
+    logistica: 69,
+  ),
+  ResultadoMes(
+    label: 'Abr',
+    receita: 2280,
+    nutricao: 487,
+    sanidade: 157,
+    maoDeObra: 295,
+    manutencao: 101,
+    administrativo: 46,
+    logistica: 74,
+  ),
+  ResultadoMes(
+    label: 'Mai',
+    receita: 2143,
+    nutricao: 481,
+    sanidade: 155,
+    maoDeObra: 291,
+    manutencao: 100,
+    administrativo: 45,
+    logistica: 74,
+  ),
+  ResultadoMes(
+    label: 'Jun',
+    receita: 2400,
+    nutricao: 462,
+    sanidade: 149,
+    maoDeObra: 279,
+    manutencao: 96,
+    administrativo: 44,
+    logistica: 70,
+  ),
+];
+
+/// Categorias da coluna empilhada, na ordem de baixo para cima.
+const List<String> resultadoCategorias = [
+  'Nutrição',
+  'Sanidade',
+  'Mão de obra',
+  'Outros',
+];
+
 /// Item de despesa por centro de custo — consumido por `AppBarChart` (`AppBarDatum`).
 class CentroCusto {
   const CentroCusto({required this.label, required this.value});
@@ -27,18 +134,25 @@ class CentroCusto {
   final double value;
 }
 
-const List<CentroCusto> centrosCusto = [
-  CentroCusto(label: 'Nutrição', value: 420),
-  CentroCusto(label: 'Sanidade', value: 180),
-  CentroCusto(label: 'Mão de obra', value: 260),
-  CentroCusto(label: 'Manutenção', value: 130),
-  CentroCusto(label: 'Administrativo', value: 90),
-  CentroCusto(label: 'Logística', value: 150),
-];
+/// Despesa do mês corrente por centro de custo, derivada do último
+/// [ResultadoMes] — não é uma segunda tabela de números, é o mesmo mês aberto
+/// por centro. Ordenada do maior para o menor, que é como se lê a decisão.
+final List<CentroCusto> centrosCusto = () {
+  final mes = resultadoMeses.last;
+  final itens = [
+    CentroCusto(label: 'Nutrição', value: mes.nutricao),
+    CentroCusto(label: 'Sanidade', value: mes.sanidade),
+    CentroCusto(label: 'Mão de obra', value: mes.maoDeObra),
+    CentroCusto(label: 'Manutenção', value: mes.manutencao),
+    CentroCusto(label: 'Administrativo', value: mes.administrativo),
+    CentroCusto(label: 'Logística', value: mes.logistica),
+  ]..sort((a, b) => b.value.compareTo(a.value));
+  return List<CentroCusto>.unmodifiable(itens);
+}();
 
-/* ---- Pecuária de Corte (§4.1) ---- */
+/* ---- Cartões de resultado (§4.3) ---- */
 
-/// Bloco financeiro do dashboard de Pecuária — consumido por `AppDashboardCard`.
+/// Cartão do topo do painel Resultado — consumido por `AppDashboardCard`.
 class PecuariaFinanceiroItem {
   const PecuariaFinanceiroItem({
     required this.label,
@@ -49,30 +163,54 @@ class PecuariaFinanceiroItem {
 
   final String label;
   final String value;
+
+  /// Variação percentual contra o mês anterior.
   final double delta;
   final List<double> spark;
 }
 
-const List<PecuariaFinanceiroItem> pecuariaFinanceiro = [
-  PecuariaFinanceiroItem(
-    label: 'Receita',
-    value: 'R\$ 2,4 mi',
-    delta: 12,
-    spark: [8, 10, 9, 12, 14, 13, 16],
-  ),
-  PecuariaFinanceiroItem(
-    label: 'Custo',
-    value: 'R\$ 1,1 mi',
-    delta: -4,
-    spark: [9, 8, 8, 7, 6, 7, 6],
-  ),
-  PecuariaFinanceiroItem(
-    label: 'Margem',
-    value: 'R\$ 1,3 mi',
-    delta: 9,
-    spark: [4, 6, 5, 7, 8, 9, 11],
-  ),
-];
+/// "1100" → "R$ 1,1 mi"; "940" → "R$ 940 mil". Aproximação manual: o projeto
+/// não tem `intl` instalado (mesmo padrão já usado em Suprimentos).
+String formatMilhares(double milhares) {
+  if (milhares.abs() >= 1000) {
+    final mi = (milhares / 1000).toStringAsFixed(1).replaceAll('.', ',');
+    return 'R\$ $mi mi';
+  }
+  return 'R\$ ${milhares.toStringAsFixed(0)} mil';
+}
+
+double _deltaPct(double atual, double anterior) =>
+    anterior == 0 ? 0 : ((atual / anterior) - 1) * 100;
+
+/// Receita, custo e margem do mês corrente — **derivados** de [resultadoMeses].
+///
+/// Antes eram três literais escritos à mão aqui e repetidos, com os mesmos
+/// valores, na Home gerencial. Agora saem da série: o gráfico do painel e os
+/// cartões não têm como divergir.
+final List<PecuariaFinanceiroItem> pecuariaFinanceiro = () {
+  final atual = resultadoMeses.last;
+  final anterior = resultadoMeses[resultadoMeses.length - 2];
+  return List<PecuariaFinanceiroItem>.unmodifiable([
+    PecuariaFinanceiroItem(
+      label: 'Receita',
+      value: formatMilhares(atual.receita),
+      delta: _deltaPct(atual.receita, anterior.receita),
+      spark: [for (final m in resultadoMeses) m.receita],
+    ),
+    PecuariaFinanceiroItem(
+      label: 'Custo',
+      value: formatMilhares(atual.custo),
+      delta: _deltaPct(atual.custo, anterior.custo),
+      spark: [for (final m in resultadoMeses) m.custo],
+    ),
+    PecuariaFinanceiroItem(
+      label: 'Margem',
+      value: formatMilhares(atual.margem),
+      delta: _deltaPct(atual.margem, anterior.margem),
+      spark: [for (final m in resultadoMeses) m.margem],
+    ),
+  ]);
+}();
 
 /* ---- Ativos / Depreciação (§4.5) ---- */
 
