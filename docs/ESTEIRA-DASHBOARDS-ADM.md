@@ -13,6 +13,10 @@ consulta, e deve ser tratada como tal.
 
 Esta esteira aplica esse teste às 7 telas de `admin/` e define a Home ADM como torre de controle.
 
+**Status: implementada.** Auditoria, tokens, componentes, os cinco painéis e a Home foram entregues
+nos commits de `feat(tokens)` a `test(ui)`. As seções abaixo descrevem o que foi decidido **e** o que
+está no código; onde a implementação divergiu da proposta original, a divergência está anotada.
+
 ---
 
 ## 1. Estado atual — o que cada tela realmente entrega
@@ -137,34 +141,60 @@ segunda implementação (Lei 2). Se o gráfico mudar no painel, muda na Home.
 
 ---
 
-## 4. Lacunas de catálogo (Lei 1 — nascem em `lib/ui/`)
+## 4. Catálogo (Lei 1 — nascem em `lib/ui/`)
 
-| Componente | Por que | Prioridade |
-|---|---|---|
-| `AppLineChart` | série temporal com eixo, grade e 2+ séries — achado E | **Alta** |
-| `AppGauge` | ocupação %, GMD × meta, precisão de batelada | Alta |
-| `AppChartCard` (extensão) | `period`, `footnote`, `compact`, `onExpand` — por props, não por cópia | Alta |
-| `AppBulletChart` | realizado × meta num traço só (economia, GMD, precisão) | Média |
-| `AppStackedBar` | composição de custo por período | Média |
-| `AppChartLegend` | legenda reutilizável; hoje só o donut tem, embutida | Média |
+Sete componentes entraram no barrel `ui.dart` e no `widgetbook_app.dart`:
+
+| Componente | Papel |
+|---|---|
+| `AppLineChart` | série temporal com eixo, grade, área e múltiplas séries — a lacuna do achado E |
+| `AppStackedBar` | composição de um total ao longo do tempo |
+| `AppGauge` | arco de 270° com marca de meta: ocupação, GMD × previsto |
+| `AppBulletChart` | realizado × meta em um traço, uma linha por indicador |
+| `AppChartLegend` | legenda compartilhada (antes só o donut tinha, embutida) |
+| `AppMetricGrid` | grade de métrica responsiva — substitui `GridView.count` de coluna fixa |
+| `AppAlertStrip` | faixa de alertas acionáveis do topo da Home |
+
+Os três primeiros compartilham `ui/chart_scale.dart`, que escolhe o eixo redondo. É um arquivo
+interno: não é exportado por `ui.dart`, logo não precisa de caso de Widgetbook — é matemática, não
+widget.
 
 Correções nos existentes:
 
-- `AppBarChart`: remover o piso de 14% (achado F); grade, eixo de valor e rótulo fora da barra quando
-  ela for curta demais para contê-lo.
-- `AppDonutChart`: percentual na legenda e estado vazio.
-- `AppSparklineArea`: permanece decorativa — documentar que não substitui `AppLineChart`.
+- `AppBarChart`: caiu o piso de 14% (achado F) — a largura é estritamente proporcional e o rótulo
+  sai para fora da barra quando ela é curta demais para contê-lo. Ganhou grade e escala redonda.
+- `AppDonutChart`: percentual na legenda, estado vazio e legenda compartilhada.
+- `AppChartCard`: ganhou `period`, `footnote`, `compact` e `onExpand` — por props, não por cópia.
+- `AppSparklineArea`: permanece decorativa; não substitui `AppLineChart`.
 
-Cada componente novo entra no barrel `ui.dart` **e** no `widgetbook_app.dart` na mesma unidade
-lógica — o gate `component_first_test.dart` reprova exportação sem caso.
+**Divergência da proposta.** `AppMetricGrid` e `AppAlertStrip` não estavam na lista original e
+entraram por necessidade: o primeiro porque a grade responsiva aparece nos cinco painéis, o segundo
+porque a faixa de alertas da Home precisava de um controle acionável reutilizável.
+
+### Verificação de render
+
+`test/golden/charts_golden_test.dart` desenha cada gráfico em **light e gbMode**. Dois defeitos que
+só apareceram ali:
+
+- `chart.track` no tema claro era `neutral[100]`, o mesmo tom do canvas — o trilho do gauge e da
+  barra sumia. Passou a `neutral[200]`, com a grade descendo para `neutral[150]`.
+- `ChartScale` arredondava um único passo a partir da média e desperdiçava altura: com valores até
+  1004 o eixo subia a 1500 e um terço do gráfico ficava em branco. Passou a testar os passos
+  redondos plausíveis e escolher o menor topo com contagem de marcas legível.
 
 ## 5. Tokens (Lei 5 — `design/tokens.ts` primeiro)
 
-Adicionar em `design/tokens.ts` e regenerar DTCG + Dart na mesma unidade lógica:
+`ThemePalette` ganhou um grupo `chart` por tema, exportado por DTCG e consumido via
+`AppSemanticColors`:
 
-- série de gráfico com par claro/escuro (achado H), consumida por `AppSemanticColors`;
-- `chart.grid`, `chart.axis`, `chart.track` — hoje improvisados com `bgSubtle`/`borderDefault`;
-- `chart.positive` / `chart.negative` semânticos para leitura financeira.
+- `series` — paleta categórica com par claro/escuro (achado H). Em gbMode cada matiz sobe de tom
+  (400/300 em vez de 600/700): sobre `bg.surface` #0e2a1d o verde #059669 e o verde-floresta
+  #14532d praticamente desapareciam;
+- `grid`, `axis`, `track` — antes improvisados com `bgSubtle`/`borderDefault`;
+- `positive` / `negative` — leitura financeira.
+
+O exportador DTCG passou a aceitar valor de array dentro da paleta de tema (o exportador Dart já
+materializava esse caso como `List<Color>`). Nenhum gráfico lê mais `AppColors.chartSeries` direto.
 
 ## 6. Responsividade
 
@@ -174,22 +204,42 @@ ADM — sem tela nova, mesmo widget.
 
 ---
 
-## 7. Impacto de código
+## 7. O que mudou no código
 
-| Arquivo | Ação |
+| Arquivo | O que aconteceu |
 |---|---|
-| `admin/dash_financeiro.dart` + `admin/dash_pecuaria.dart` | fundem em `admin/dash_resultado.dart` |
-| `admin/dash_confinamento.dart` | ganha bloco de desempenho produtivo e gráficos |
-| `admin/dash_suprimentos.dart`, `dash_ativos.dart`, `dash_uso.dart` | ganham topo de KPI + gráfico |
-| `admin/admin_dashboard.dart` | switch de `dashId`, com alias das rotas antigas para não quebrar link |
-| `router/app_router.dart` | rota de Consultas sai de `dashboards/` |
-| `screens/mais_screen.dart` | grupos "Painéis de decisão" × "Consultas e auditoria" |
-| `screens/fazendas_home.dart` | `_HomeGerencial` vira torre de controle |
-| `functional_catalog.dart` | `painel-pecuario` funde em `painel-financeiro`; rotas atualizadas |
-| `lib/ui/` + `widgetbook_app.dart` | 6 componentes (5 novos + extensão) e 3 correções |
-| `design/tokens.ts` → DTCG → Dart | tokens de gráfico |
-| `test/modules/fazendas/admin/` | `dash_financeiro_test` + `dash_pecuaria_test` → `dash_resultado_test` |
-| `test/modules/fazendas/functional_catalog_test.dart` | contagens congeladas: 15 → 14 admin, 58 → 57 total |
+| `admin/dash_financeiro.dart` + `admin/dash_pecuaria.dart` | removidos; fundiram em `admin/dash_resultado.dart` |
+| `admin/dash_confinamento.dart` | ganhou GMD observado × previsto, GMD por curral, situação dos currais |
+| `admin/dash_suprimentos.dart`, `dash_ativos.dart`, `dash_uso.dart` | topo de KPI + gráficos; Uso absorveu a trilha de auditoria |
+| `admin/admin_dashboard.dart` | `resultado` \|\| `financeiro` \|\| `pecuaria` resolvem no mesmo painel — links antigos não caem em tela vazia |
+| `fazendas_module.dart`, `router/app_router.dart` | Consultas saiu de `dashboards/` para `/fazendas/consultas`, com a política de acesso ajustada |
+| `screens/mais_screen.dart` | "Painéis de decisão" × "Consultas e auditoria" × "Operacional" |
+| `screens/fazendas_home.dart` | `_HomeGerencial` virou torre de controle |
+| `functional_catalog.dart` | `painel-pecuario` fundiu em `painel-financeiro`; títulos e rotas atualizados |
+| `mocks/dashboards_mocks.dart` | ver abaixo |
+| `lib/ui/` + `widgetbook_app.dart` | 7 componentes novos, 3 corrigidos |
+| `design/tokens.ts` → DTCG → Dart | grupo `chart` por tema |
+| `test/` | `dash_resultado_test`, `charts_golden_test` e contagens congeladas atualizadas |
 
-Os números do catálogo são congelados de propósito; esta alteração é deliberada e fica registrada
-aqui.
+### Números que passaram a ser derivados
+
+Três conjuntos de literais escritos à mão não fechavam entre si e agora saem de uma fonte só:
+
+| Antes | Depois |
+|---|---|
+| Receita/custo/margem literais na Home **e** em Pecuária | derivados de `resultadoMeses` |
+| `centrosCusto` somava 1.230, mas o custo do mês era 1.100 | derivado do último `ResultadoMes`, fecha com o custo |
+| `AtivosResumo` dizia depreciação de 720 mil; a lista dá ~810 mil | derivado de `ativos` via `aquisicaoMil` |
+| `Cotacao.total` era string | derivado de `totalValor` |
+
+### Contagens congeladas
+
+`adminFeatures` 15 → 14, `allFeatures` 58 → 57, `ready` 51 → 50, `existingRoute` 20 → 19. Os números
+são congelados de propósito; esta alteração é deliberada e fica registrada aqui.
+
+## 8. O que não foi feito
+
+- A responsividade entrou via `AppMetricGrid` nos topos de KPI. As grades internas de Confinamento
+  (mapa de currais) continuam com `GridView.count` de coluna fixa — não foram tocadas nesta rodada.
+- Os painéis seguem sobre mock: o produto continua exclusivamente frontend.
+- O filtro de período da Home e dos painéis é decorativo, como já era em Análise de Uso.
