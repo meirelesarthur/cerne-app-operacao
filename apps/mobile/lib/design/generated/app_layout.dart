@@ -3,6 +3,7 @@
 // Pipeline: `npm run tokens:export` seguido de `npm run tokens:export:flutter`.
 // Qualquer ajuste de valor deve entrar em design/tokens.ts (Lei 3/5 do CLAUDE.md).
 
+
 class AppLayout {
   AppLayout._();
 

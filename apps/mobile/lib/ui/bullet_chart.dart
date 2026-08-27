@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -21,8 +22,10 @@ class AppBulletDatum {
   final double value;
   final double target;
 
-  /// Sem valor, a barra é pintada por desempenho: verde ao bater a meta,
-  /// âmbar entre 80% e 100% dela, vermelho abaixo disso.
+  /// Sem valor, a barra é pintada por desempenho: verde ao bater a meta, âmbar
+  /// entre 80% e 100% dela, vermelho abaixo disso. Indicadores em que **menor é
+  /// melhor** (preço, prazo) precisam passar a cor explicitamente — o padrão
+  /// assume "maior é melhor".
   final Color? color;
 }
 
@@ -97,7 +100,7 @@ class _BulletRow extends StatelessWidget {
         (ratio >= 1
             ? semantic.chartPositive
             : ratio >= 0.8
-            ? semantic.chartAxis
+            ? AppColors.amber600
             : semantic.chartNegative);
 
     return Column(

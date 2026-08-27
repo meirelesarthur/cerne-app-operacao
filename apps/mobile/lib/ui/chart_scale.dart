@@ -58,10 +58,52 @@ class ChartScale {
       hi = math.max(0, hi);
     }
 
-    final step = _niceStep((hi - lo) / targetTicks);
+    final step = _bestStep(lo, hi, targetTicks);
     final niceMin = (lo / step).floorToDouble() * step;
     final niceMax = (hi / step).ceilToDouble() * step;
     return ChartScale(min: niceMin, max: niceMax, step: step);
+  }
+
+  /// Escolhe o passo redondo que menos desperdiça altura.
+  ///
+  /// Arredondar um único passo a partir da média deixa buracos: com valores até
+  /// 1004 e 4 marcas, o passo cai em 500 e o eixo sobe até 1500 — mais de um
+  /// terço do gráfico em branco. Aqui todos os passos redondos plausíveis são
+  /// testados e vence o menor topo que ainda mantenha uma contagem de marcas
+  /// legível.
+  static double _bestStep(double lo, double hi, int targetTicks) {
+    const factors = [1.0, 2.0, 2.5, 5.0, 10.0];
+    final span = hi - lo;
+    if (span <= 0) return 1;
+
+    final baseExp = (math.log(span / targetTicks) / math.ln10).floor();
+    final minTicks = math.max(2, targetTicks - 2);
+    // Teto de marcas: dobrar o alvo aperta bem o topo, mas enche um cartao
+    // pequeno de linha de grade. +2 e o meio-termo.
+    final maxTicks = targetTicks + 2;
+
+    double? melhorPasso;
+    double? melhorTopo;
+
+    for (var exp = baseExp - 1; exp <= baseExp + 1; exp++) {
+      final magnitude = math.pow(10, exp).toDouble();
+      for (final factor in factors) {
+        final step = factor * magnitude;
+        if (step <= 0) continue;
+        final niceMin = (lo / step).floorToDouble() * step;
+        final niceMax = (hi / step).ceilToDouble() * step;
+        final ticks = ((niceMax - niceMin) / step).round();
+        if (ticks < minTicks || ticks > maxTicks) continue;
+        if (melhorTopo == null || niceMax < melhorTopo) {
+          melhorTopo = niceMax;
+          melhorPasso = step;
+        }
+      }
+    }
+
+    // Nenhum candidato coube na faixa de marcas (série muito plana): cai no
+    // arredondamento simples, que sempre produz um passo válido.
+    return melhorPasso ?? _niceStep(span / targetTicks);
   }
 
   static double _niceStep(double rough) {

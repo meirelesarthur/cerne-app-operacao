@@ -201,9 +201,13 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
     // mantida para não mudar a leitura dos painéis já publicados.
     chart: {
       series: ['#059669', '#2563eb', '#f59e0b', '#7c3aed', '#0891b2', '#dc2626', '#14532d', '#9ca3af'],
-      grid: primitive.neutral[200],
+      // grid mais claro que track de proposito: a linha de grade e referencia
+      // de fundo, o trilho e a escala cheia de uma barra/gauge e precisa ser
+      // visivel sobre a superficie branca do card (o neutral[100] anterior era
+      // o mesmo tom do canvas e sumia).
+      grid: primitive.neutral[150],
       axis: primitive.neutral[400],
-      track: primitive.neutral[100],
+      track: primitive.neutral[200],
       positive: primitive.brand[600],
       negative: primitive.red[600],
     },
