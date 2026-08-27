@@ -120,6 +120,7 @@ class CerneWidgetbook extends StatelessWidget {
             WidgetbookFolder(
               name: 'Feedback',
               children: [
+                buildAlertStripWidgetbookComponent(),
                 buildBannerWidgetbookComponent(),
                 buildEmptyStateWidgetbookComponent(),
                 buildErrorStateWidgetbookComponent(),
