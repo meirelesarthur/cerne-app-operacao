@@ -121,6 +121,9 @@ class CerneWidgetbook extends StatelessWidget {
               children: [
                 buildAlertStripWidgetbookComponent(),
                 buildAppIconWidgetbookComponent(),
+                buildFarmSelectorWidgetbookComponent(),
+                buildModuleTileWidgetbookComponent(),
+                buildSearchFieldWidgetbookComponent(),
                 buildBannerWidgetbookComponent(),
                 buildEmptyStateWidgetbookComponent(),
                 buildErrorStateWidgetbookComponent(),
