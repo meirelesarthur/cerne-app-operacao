@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_radius.dart';
@@ -170,12 +169,12 @@ class _AuditoriaLinks extends StatelessWidget {
   static const _itens = [
     (
       label: 'Exportar log de estoque',
-      icon: LucideIcons.boxes,
+      icon: AppIcons.boxes,
       to: '/fazendas/administracao/exportar-log-estoque',
     ),
     (
       label: 'Exportar log da pecuária',
-      icon: LucideIcons.beef,
+      icon: AppIcons.beef,
       to: '/fazendas/administracao/exportar-log-pecuaria',
     ),
   ];
@@ -286,7 +285,7 @@ class _FazendaTile extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacing.space3),
               child: Row(
                 children: [
-                  Icon(LucideIcons.circle, size: 10, color: onlineColor),
+                  AppIcon(AppIcons.circle, size: 10, color: onlineColor),
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: Column(
@@ -313,8 +312,8 @@ class _FazendaTile extends StatelessWidget {
                   AnimatedRotation(
                     turns: open ? 0.5 : 0,
                     duration: AppMotion.fast,
-                    child: Icon(
-                      LucideIcons.chevronDown,
+                    child: AppIcon(
+                      AppIcons.chevronDown,
                       size: 18,
                       color: semantic.fgSubtle,
                     ),
@@ -335,8 +334,8 @@ class _FazendaTile extends StatelessWidget {
                     ),
                     child: Row(
                       children: [
-                        Icon(
-                          LucideIcons.circle,
+                        AppIcon(
+                          AppIcons.circle,
                           size: 8,
                           color: u.ativo
                               ? semantic.accentDefault

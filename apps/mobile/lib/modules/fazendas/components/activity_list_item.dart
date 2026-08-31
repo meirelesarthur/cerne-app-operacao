@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -9,13 +8,13 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Ícone por tipo de atividade — fonte única, reutilizado no
 /// `ActivityDetailSheet` (Lei 2). Espelha `KIND_ICON` de `ActivityListItem.tsx`.
-const Map<ActivityKind, IconData> kindIcon = {
-  ActivityKind.pesagem: LucideIcons.scale,
-  ActivityKind.evento: LucideIcons.arrowLeftRight,
-  ActivityKind.nfe: LucideIcons.fileText,
-  ActivityKind.venda: LucideIcons.truck,
-  ActivityKind.insumo: LucideIcons.sprout,
-  ActivityKind.arracoamento: LucideIcons.wheat,
+const Map<ActivityKind, AppIconData> kindIcon = {
+  ActivityKind.pesagem: AppIcons.scale,
+  ActivityKind.evento: AppIcons.arrowLeftRight,
+  ActivityKind.nfe: AppIcons.fileText,
+  ActivityKind.venda: AppIcons.truck,
+  ActivityKind.insumo: AppIcons.sprout,
+  ActivityKind.arracoamento: AppIcons.wheat,
 };
 
 /// Rótulo + tom de status — fonte única, reutilizado no `ActivityDetailSheet`
@@ -78,7 +77,7 @@ class ActivityListItem extends StatelessWidget {
               shape: BoxShape.circle,
               color: semantic.bgSubtle,
             ),
-            child: Icon(icon, size: 18, color: semantic.fgMuted),
+            child: AppIcon(icon, size: 18, color: semantic.fgMuted),
           ),
           const SizedBox(width: AppSpacing.space3),
           Expanded(
@@ -121,7 +120,7 @@ class ActivityListItem extends StatelessWidget {
             ],
           ),
           const SizedBox(width: AppSpacing.space1),
-          Icon(LucideIcons.chevronRight, size: 16, color: semantic.fgSubtle),
+          AppIcon(AppIcons.chevronRight, size: 16, color: semantic.fgSubtle),
         ],
       ),
     );

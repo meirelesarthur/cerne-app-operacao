@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_colors.dart';
 import '../../design/generated/app_layout.dart';
@@ -229,8 +228,8 @@ class _MenuContent extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(
-                  LucideIcons.chevronRight,
+                AppIcon(
+                  AppIcons.chevronRight,
                   size: 18,
                   color: semantic.inkMuted,
                 ),
@@ -256,7 +255,7 @@ class _MenuContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 alignment: Alignment.center,
-                child: Icon(module.icon, size: 15, color: semantic.inkFg),
+                child: AppIcon(module.icon, size: 15, color: semantic.inkFg),
               ),
               const SizedBox(width: AppSpacing.space2),
               Text(
@@ -344,7 +343,7 @@ class _MenuContent extends StatelessWidget {
         next(),
         AppMenuItem(
           variant: AppMenuItemVariant.onDark,
-          icon: LucideIcons.bell,
+          icon: AppIcons.bell,
           label: 'Notificações',
           trailing: unread > 0 ? AppBadge(child: Text('$unread')) : null,
           onTap: () => onNavigate('/notificacoes'),
@@ -355,7 +354,7 @@ class _MenuContent extends StatelessWidget {
         next(),
         AppMenuItem(
           variant: AppMenuItemVariant.onDark,
-          icon: LucideIcons.settings,
+          icon: AppIcons.settings,
           label: 'Configurações',
           onTap: () => onNavigate('/perfil'),
         ),
@@ -365,7 +364,7 @@ class _MenuContent extends StatelessWidget {
         next(),
         AppMenuItem(
           variant: AppMenuItemVariant.onDark,
-          icon: LucideIcons.moon,
+          icon: AppIcons.moon,
           label: 'Modo GB',
           description: 'Tema escuro para campo e baixa luz',
           trailing: Text(
@@ -384,7 +383,7 @@ class _MenuContent extends StatelessWidget {
         next(),
         AppMenuItem(
           variant: AppMenuItemVariant.onDark,
-          icon: isOnline ? LucideIcons.wifi : LucideIcons.wifiOff,
+          icon: isOnline ? AppIcons.wifi : AppIcons.wifiOff,
           label: 'Conexão',
           description: 'Simula a sincronização em campo sem sinal',
           trailing: Text(
@@ -423,7 +422,7 @@ class _MenuContent extends StatelessWidget {
             AppMenuItem(
               variant: AppMenuItemVariant.onDark,
               tone: AppMenuItemTone.danger,
-              icon: LucideIcons.logOut,
+              icon: AppIcons.logOut,
               label: 'Sair',
               onTap: onLogout,
             ),

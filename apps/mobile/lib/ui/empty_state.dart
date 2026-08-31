@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -19,7 +19,7 @@ class AppEmptyState extends StatelessWidget {
     this.action,
   });
 
-  final IconData? icon;
+  final AppIconData? icon;
   final String title;
   final String? description;
   final Widget? action;
@@ -47,7 +47,7 @@ class AppEmptyState extends StatelessWidget {
                   color: semantic.bgSubtle,
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                 ),
-                child: Icon(icon, size: 26, color: semantic.fgSubtle),
+                child: AppIcon(icon, size: 26, color: semantic.fgSubtle),
               ),
             ),
           AppHeading(
@@ -88,7 +88,7 @@ WidgetbookComponent buildEmptyStateWidgetbookComponent() {
         name: 'Padrão',
         builder: (context) => const Center(
           child: AppEmptyState(
-            icon: LucideIcons.inbox,
+            icon: AppIcons.inbox,
             title: 'Nenhum lançamento encontrado',
             description: 'Ajuste os filtros ou tente novamente mais tarde.',
           ),

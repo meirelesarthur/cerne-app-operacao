@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -85,7 +85,7 @@ class AppModal extends StatelessWidget {
                         ),
                       ),
                       AppIconButton(
-                        icon: const Icon(LucideIcons.x, size: 18),
+                        icon: const AppIcon(AppIcons.x, size: 18),
                         label: 'Fechar',
                         onPressed: () => Navigator.of(context).pop(),
                       ),

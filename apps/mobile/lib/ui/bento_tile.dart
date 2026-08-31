@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
@@ -30,7 +30,7 @@ class AppBentoTile extends StatelessWidget {
     this.onTap,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final String? caption;
   final AppBentoTileVariant variant;
@@ -90,7 +90,7 @@ class AppBentoTile extends StatelessWidget {
                       : Border.all(color: semantic.borderTint),
                 ),
                 alignment: Alignment.center,
-                child: Icon(
+                child: AppIcon(
                   icon,
                   size: _iconGlyph,
                   color: _isAccent
@@ -147,8 +147,8 @@ class AppBentoTile extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
-                child: const Icon(
-                  LucideIcons.arrowRight,
+                child: const AppIcon(
+                  AppIcons.arrowRight,
                   size: 16,
                   color: AppColors.neutral0,
                 ),
@@ -181,7 +181,7 @@ WidgetbookComponent buildBentoTileWidgetbookComponent() {
           child: SizedBox(
             width: 160,
             child: AppBentoTile(
-              icon: LucideIcons.landmark,
+              icon: AppIcons.landmark,
               label: 'Fazendas',
               caption: 'Gestão de talhões',
               onTap: () {},
@@ -196,7 +196,7 @@ WidgetbookComponent buildBentoTileWidgetbookComponent() {
           child: SizedBox(
             width: 160,
             child: AppBentoTile(
-              icon: LucideIcons.wallet,
+              icon: AppIcons.wallet,
               label: 'Banking',
               caption: 'Conta digital CERNE',
               variant: AppBentoTileVariant.accent,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/components/shortcut_grid.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
@@ -21,13 +21,13 @@ void main() {
               Shortcut(
                 id: 'a',
                 label: 'Financeiro',
-                icon: LucideIcons.wallet,
+                icon: AppIcons.wallet,
                 onTap: () => tapped = 'a',
               ),
               Shortcut(
                 id: 'b',
                 label: 'Pecuária',
-                icon: LucideIcons.beef,
+                icon: AppIcons.beef,
                 onTap: () => tapped = 'b',
               ),
             ],

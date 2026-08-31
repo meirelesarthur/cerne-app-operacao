@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
@@ -43,7 +42,7 @@ class SuccessScreen extends ConsumerWidget {
       body: SafeArea(
         child: AppSuccessPanel(
           title: queued ? 'Salvo no aparelho' : title,
-          icon: queued ? LucideIcons.refreshCw : LucideIcons.checkCircle2,
+          icon: queued ? AppIcons.refreshCw : AppIcons.checkCircle2,
           description: Text(
             queued
                 ? 'Vai subir sozinho quando o celular pegar sinal de novo — '

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
@@ -46,8 +45,8 @@ class AppCreditoPill extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(
-                  LucideIcons.creditCard,
+                AppIcon(
+                  AppIcons.creditCard,
                   size: 14,
                   color: semantic.accentDefault,
                 ),

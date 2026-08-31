@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../design/generated/app_spacing.dart';
 import '../../../../design/generated/app_typography.dart';
@@ -209,7 +208,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             AppButton(
               variant: AppButtonVariant.secondary,
               fullWidth: true,
-              rightIcon: const Icon(LucideIcons.arrowRight, size: 16),
+              rightIcon: const AppIcon(AppIcons.arrowRight, size: 16),
               onPressed: _chaveManualController.text.trim().isEmpty
                   ? null
                   : _continuarManual,
@@ -253,8 +252,8 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                         ],
                       ),
                     ),
-                    Icon(
-                      LucideIcons.arrowRight,
+                    AppIcon(
+                      AppIcons.arrowRight,
                       size: 18,
                       color: semantic.accentDefault,
                     ),
@@ -413,8 +412,8 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                     shape: BoxShape.circle,
                     color: semantic.accentSubtle,
                   ),
-                  child: Icon(
-                    LucideIcons.zap,
+                  child: AppIcon(
+                    AppIcons.zap,
                     size: 22,
                     color: semantic.accentDefault,
                   ),
@@ -465,7 +464,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             ),
             const SizedBox(height: AppSpacing.space5),
             const AppBanner(
-              icon: Icon(LucideIcons.info, size: 14),
+              icon: AppIcon(AppIcons.info, size: 14),
               child: Text(
                 'O Pix é processado na hora, 24/7. Confira os dados antes de confirmar.',
               ),

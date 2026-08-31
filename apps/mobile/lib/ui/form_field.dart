@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -74,8 +74,8 @@ class AppFormField extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(
-                    LucideIcons.alertCircle,
+                  const AppIcon(
+                    AppIcons.alertCircle,
                     size: 12,
                     color: AppColors.red600,
                   ),

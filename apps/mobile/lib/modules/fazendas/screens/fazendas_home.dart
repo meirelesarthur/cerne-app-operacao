@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -83,7 +82,7 @@ class _HomeGerencial extends StatelessWidget {
       AppAlertItem(
         label: 'vencidos',
         value: FinanceiroKpis.atrasados,
-        icon: LucideIcons.circleAlert,
+        icon: AppIcons.circleAlert,
         tone: AppAlertTone.critical,
         onTap: () => context.go(_resultado),
       ),
@@ -91,21 +90,21 @@ class _HomeGerencial extends StatelessWidget {
         AppAlertItem(
           label: 'ocorrências no cocho',
           value: '$ocorrencias',
-          icon: LucideIcons.triangleAlert,
+          icon: AppIcons.triangleAlert,
           onTap: () => context.go(_confinamento),
         ),
       if (lotados > 0)
         AppAlertItem(
           label: 'currais acima de 90%',
           value: '$lotados',
-          icon: LucideIcons.warehouse,
+          icon: AppIcons.warehouse,
           onTap: () => context.go(_confinamento),
         ),
       if (aguardando > 0)
         AppAlertItem(
           label: 'cotações a decidir',
           value: '$aguardando',
-          icon: LucideIcons.receipt,
+          icon: AppIcons.receipt,
           tone: AppAlertTone.info,
           onTap: () => context.go(_suprimentos),
         ),
@@ -113,7 +112,7 @@ class _HomeGerencial extends StatelessWidget {
         AppAlertItem(
           label: 'ativos em manutenção',
           value: '$emManutencao',
-          icon: LucideIcons.wrench,
+          icon: AppIcons.wrench,
           tone: AppAlertTone.info,
           onTap: () => context.go(_ativos),
         ),
@@ -126,31 +125,31 @@ class _HomeGerencial extends StatelessWidget {
       Shortcut(
         id: 'resultado',
         label: 'Resultado',
-        icon: LucideIcons.wallet,
+        icon: AppIcons.wallet,
         onTap: () => context.go(_resultado),
       ),
       Shortcut(
         id: 'confinamento',
         label: 'Rebanho',
-        icon: LucideIcons.warehouse,
+        icon: AppIcons.warehouse,
         onTap: () => context.go(_confinamento),
       ),
       Shortcut(
         id: 'suprimentos',
         label: 'Compras',
-        icon: LucideIcons.boxes,
+        icon: AppIcons.boxes,
         onTap: () => context.go(_suprimentos),
       ),
       Shortcut(
         id: 'ativos',
         label: 'Ativos',
-        icon: LucideIcons.package,
+        icon: AppIcons.package,
         onTap: () => context.go(_ativos),
       ),
       Shortcut(
         id: 'mais',
         label: 'Mais',
-        icon: LucideIcons.moreHorizontal,
+        icon: AppIcons.moreHorizontal,
         onTap: () => context.go('/fazendas/mais'),
       ),
     ];
@@ -324,7 +323,7 @@ class _HomeGerencial extends StatelessWidget {
                     AppButton(
                       variant: AppButtonVariant.ghost,
                       size: AppButtonSize.sm,
-                      rightIcon: const Icon(LucideIcons.arrowRight, size: 13),
+                      rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
                       onPressed: () => context.go('/fazendas/atividades'),
                       child: const Text('Ver todas'),
                     ),
@@ -417,7 +416,7 @@ class _SafraPill extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.space1),
-          Icon(LucideIcons.chevronDown, size: 14, color: semantic.fgDefault),
+          AppIcon(AppIcons.chevronDown, size: 14, color: semantic.fgDefault),
         ],
       ),
     );
@@ -473,7 +472,7 @@ class _HomeCampo extends ConsumerWidget {
                 children: [
                   RiseIn(
                     child: AppBentoTile(
-                      icon: LucideIcons.scale,
+                      icon: AppIcons.scale,
                       label: 'Pesagem',
                       caption: 'Balança conectada',
                       onTap: () => context.go('/fazendas/campo/pesagem'),
@@ -482,7 +481,7 @@ class _HomeCampo extends ConsumerWidget {
                   RiseIn(
                     index: 1,
                     child: AppBentoTile(
-                      icon: LucideIcons.arrowLeftRight,
+                      icon: AppIcons.arrowLeftRight,
                       label: 'Ciclo rebanho',
                       caption: 'Entradas e saídas',
                       onTap: () => context.go('/fazendas/campo/ciclo'),
@@ -491,7 +490,7 @@ class _HomeCampo extends ConsumerWidget {
                   RiseIn(
                     index: 2,
                     child: AppBentoTile(
-                      icon: LucideIcons.wheat,
+                      icon: AppIcons.wheat,
                       label: 'Arraçoamento',
                       caption: 'Trato do dia',
                       onTap: () => context.go('/fazendas/campo/arracoamento'),
@@ -512,7 +511,7 @@ class _HomeCampo extends ConsumerWidget {
                     child: RiseIn(
                       index: 3,
                       child: AppBentoTile(
-                        icon: LucideIcons.truck,
+                        icon: AppIcons.truck,
                         label: 'Venda',
                         caption: 'GTA, romaneio e frete',
                         iconSize: AppBentoTileIconSize.lg,
@@ -525,7 +524,7 @@ class _HomeCampo extends ConsumerWidget {
                     child: RiseIn(
                       index: 4,
                       child: AppBentoTile(
-                        icon: LucideIcons.fileText,
+                        icon: AppIcons.fileText,
                         label: 'Entrada NF-e',
                         caption: 'Importar XML',
                         variant: AppBentoTileVariant.accent,
@@ -543,7 +542,7 @@ class _HomeCampo extends ConsumerWidget {
                     child: RiseIn(
                       index: 5,
                       child: AppBentoTile(
-                        icon: LucideIcons.sprout,
+                        icon: AppIcons.sprout,
                         label: 'Insumos',
                         caption: 'Aplicações e retiradas',
                         onTap: () => context.go('/fazendas/campo/insumos'),

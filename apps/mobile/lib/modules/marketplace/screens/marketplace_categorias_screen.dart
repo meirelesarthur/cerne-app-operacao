@@ -57,7 +57,7 @@ class MarketplaceCategoriasScreen extends StatelessWidget {
                           color: semantic.accentSubtle,
                           borderRadius: BorderRadius.circular(AppRadius.xl),
                         ),
-                        child: Icon(
+                        child: AppIcon(
                           entry.categoria.icon,
                           size: 26,
                           color: semantic.accentDefault,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_colors.dart';
 import '../../design/generated/app_motion.dart';
@@ -82,7 +81,7 @@ class AppShellHeader extends ConsumerWidget {
       children: [
         if (onConsultMode != null) ...[
           _headerBubble(
-            icon: const Icon(LucideIcons.eye, size: 19),
+            icon: const AppIcon(AppIcons.eye, size: 19),
             label: consultActive ? 'Sair do modo consulta' : 'Modo consulta',
             active: consultActive,
             onPressed: onConsultMode,
@@ -93,7 +92,7 @@ class AppShellHeader extends ConsumerWidget {
           clipBehavior: Clip.none,
           children: [
             AppIconButton(
-              icon: const Icon(LucideIcons.bell, size: 19),
+              icon: const AppIcon(AppIcons.bell, size: 19),
               label: 'Notificações',
               variant: AppIconButtonVariant.solid,
               size: AppIconButtonSize.lg,
@@ -119,7 +118,7 @@ class AppShellHeader extends ConsumerWidget {
         ),
         const SizedBox(width: AppSpacing.space2),
         _headerBubble(
-          icon: const Icon(LucideIcons.menu, size: 19),
+          icon: const AppIcon(AppIcons.menu, size: 19),
           label: 'Mais',
           active: menuOpen,
           onPressed: () => ref.read(shellStoreProvider.notifier).openMenu(),

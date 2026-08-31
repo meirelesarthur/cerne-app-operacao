@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_colors.dart';
 import '../../design/generated/app_radius.dart';
@@ -60,7 +59,7 @@ class CrnAppFolderPage extends StatelessWidget {
                   child: Row(
                     children: [
                       AppIconButton(
-                        icon: const Icon(LucideIcons.chevronLeft),
+                        icon: const AppIcon(AppIcons.chevronLeft),
                         label: 'Voltar',
                         variant: AppIconButtonVariant.onDark,
                         onPressed: () => Navigator.of(context).maybePop(),
@@ -106,13 +105,13 @@ class CrnAppFolderPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           AppAppIconTile(
-                            icon: LucideIcons.shieldCheck,
+                            icon: AppIcons.shieldCheck,
                             label: 'CRN ADM',
                             onTap: () =>
                                 context.push('/login?ambiente=administracao'),
                           ),
                           AppAppIconTile(
-                            icon: LucideIcons.tractor,
+                            icon: AppIcons.tractor,
                             label: 'CRN Operação',
                             onTap: () =>
                                 context.push('/login?ambiente=operacional'),

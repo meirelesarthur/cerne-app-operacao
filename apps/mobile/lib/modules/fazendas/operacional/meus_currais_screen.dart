@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -121,7 +120,7 @@ class _CurralCard extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  Icon(LucideIcons.bellRing, size: 14, color: semantic.fgMuted),
+                  AppIcon(AppIcons.bellRing, size: 14, color: semantic.fgMuted),
                   const SizedBox(width: AppSpacing.space2),
                   Expanded(
                     child: Text(

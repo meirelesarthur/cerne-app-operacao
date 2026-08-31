@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_layout.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
@@ -23,7 +23,7 @@ class AppIconButton extends StatelessWidget {
     this.variant = AppIconButtonVariant.ghost,
   });
 
-  /// Conteúdo do botão — tipicamente `Icon(LucideIcons.xxx)`.
+  /// Conteúdo do botão — tipicamente `AppIcon(AppIcons.xxx)`.
   final Widget icon;
 
   /// Rótulo acessível obrigatório (equivalente a `aria-label`/`title` no React).
@@ -106,12 +106,12 @@ WidgetbookComponent buildIconButtonWidgetbookComponent() {
             spacing: 12,
             children: [
               AppIconButton(
-                icon: const Icon(LucideIcons.menu),
+                icon: const AppIcon(AppIcons.menu),
                 label: 'Menu',
                 onPressed: () {},
               ),
               AppIconButton(
-                icon: const Icon(LucideIcons.bell),
+                icon: const AppIcon(AppIcons.bell),
                 label: 'Notificações',
                 variant: AppIconButtonVariant.solid,
                 onPressed: () {},
@@ -120,7 +120,7 @@ WidgetbookComponent buildIconButtonWidgetbookComponent() {
                 padding: const EdgeInsets.all(AppSpacing.space3),
                 color: AppColors.black,
                 child: AppIconButton(
-                  icon: const Icon(LucideIcons.x),
+                  icon: const AppIcon(AppIcons.x),
                   label: 'Fechar',
                   variant: AppIconButtonVariant.onDark,
                   onPressed: () {},
@@ -138,18 +138,18 @@ WidgetbookComponent buildIconButtonWidgetbookComponent() {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               AppIconButton(
-                icon: const Icon(LucideIcons.plus),
+                icon: const AppIcon(AppIcons.plus),
                 label: 'Pequeno',
                 size: AppIconButtonSize.sm,
                 onPressed: () {},
               ),
               AppIconButton(
-                icon: const Icon(LucideIcons.plus),
+                icon: const AppIcon(AppIcons.plus),
                 label: 'Médio',
                 onPressed: () {},
               ),
               AppIconButton(
-                icon: const Icon(LucideIcons.plus),
+                icon: const AppIcon(AppIcons.plus),
                 label: 'Grande',
                 size: AppIconButtonSize.lg,
                 onPressed: () {},

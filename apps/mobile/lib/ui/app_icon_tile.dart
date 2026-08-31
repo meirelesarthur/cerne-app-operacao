@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -31,8 +31,8 @@ class AppAppIconTile extends StatelessWidget {
     this.onTap,
   });
 
-  /// Ícone do app — tipicamente `LucideIcons.xxx`.
-  final IconData icon;
+  /// Ícone do app — sempre uma entrada de `AppIcons`.
+  final AppIconData icon;
   final String label;
   final AppAppIconTileSize size;
 
@@ -76,7 +76,7 @@ class AppAppIconTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppRadius.xl2),
                 boxShadow: semantic.shadowCard,
               ),
-              child: Icon(
+              child: AppIcon(
                 icon,
                 size: _iconSize,
                 color: iconColor ?? semantic.accentDefault,
@@ -116,9 +116,9 @@ WidgetbookComponent buildAppIconTileWidgetbookComponent() {
             spacing: AppSpacing.space6,
             runSpacing: AppSpacing.space6,
             children: [
-              AppAppIconTile(icon: LucideIcons.layoutGrid, label: 'CRN App'),
-              AppAppIconTile(icon: LucideIcons.shieldCheck, label: 'CRN ADM'),
-              AppAppIconTile(icon: LucideIcons.tractor, label: 'CRN Operação'),
+              AppAppIconTile(icon: AppIcons.layoutGrid, label: 'CRN App'),
+              AppAppIconTile(icon: AppIcons.shieldCheck, label: 'CRN ADM'),
+              AppAppIconTile(icon: AppIcons.tractor, label: 'CRN Operação'),
             ],
           ),
         ),
@@ -132,25 +132,25 @@ WidgetbookComponent buildAppIconTileWidgetbookComponent() {
             spacing: AppSpacing.space4,
             children: [
               AppAppIconTile(
-                icon: LucideIcons.phone,
+                icon: AppIcons.phone,
                 label: 'Telefone',
                 size: AppAppIconTileSize.small,
                 showLabel: false,
               ),
               AppAppIconTile(
-                icon: LucideIcons.camera,
+                icon: AppIcons.camera,
                 label: 'Câmera',
                 size: AppAppIconTileSize.small,
                 showLabel: false,
               ),
               AppAppIconTile(
-                icon: LucideIcons.messageCircle,
+                icon: AppIcons.messageCircle,
                 label: 'Mensagens',
                 size: AppAppIconTileSize.small,
                 showLabel: false,
               ),
               AppAppIconTile(
-                icon: LucideIcons.globe,
+                icon: AppIcons.globe,
                 label: 'Navegador',
                 size: AppAppIconTileSize.small,
                 showLabel: false,

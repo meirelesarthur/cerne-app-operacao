@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -51,7 +50,7 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                 children: [
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const Icon(LucideIcons.arrowDownLeft, size: 14),
+                      icon: const AppIcon(AppIcons.arrowDownLeft, size: 14),
                       label: 'Entradas no mês',
                       value: ResumoMes.entradas,
                       hidden: balanceHidden,
@@ -60,7 +59,7 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const Icon(LucideIcons.arrowUpRight, size: 14),
+                      icon: const AppIcon(AppIcons.arrowUpRight, size: 14),
                       label: 'Saídas no mês',
                       value: ResumoMes.saidas,
                       hidden: balanceHidden,
@@ -80,28 +79,28 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
             children: [
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.zap,
+                  icon: AppIcons.zap,
                   label: 'Pix',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.scanLine,
+                  icon: AppIcons.scanLine,
                   label: 'Pagar',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.arrowLeftRight,
+                  icon: AppIcons.arrowLeftRight,
                   label: 'Transferir',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.receipt,
+                  icon: AppIcons.receipt,
                   label: 'Extrato',
                   onPressed: () => context.go('/bank/extrato'),
                 ),
@@ -128,8 +127,8 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                       shape: BoxShape.circle,
                       color: AppColors.brand600,
                     ),
-                    child: const Icon(
-                      LucideIcons.handCoins,
+                    child: const AppIcon(
+                      AppIcons.handCoins,
                       size: 22,
                       color: AppColors.neutral0,
                     ),
@@ -164,7 +163,7 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                       ],
                     ),
                   ),
-                  const Icon(LucideIcons.arrowRight, size: 18),
+                  const AppIcon(AppIcons.arrowRight, size: 18),
                 ],
               ),
             ),
@@ -185,7 +184,7 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                   AppButton(
                     variant: AppButtonVariant.ghost,
                     size: AppButtonSize.sm,
-                    rightIcon: const Icon(LucideIcons.arrowRight, size: 13),
+                    rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
                     onPressed: () => context.go('/inicio/apps'),
                     child: const Text('Ver todos'),
                   ),
@@ -230,7 +229,7 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                   AppButton(
                     variant: AppButtonVariant.ghost,
                     size: AppButtonSize.sm,
-                    rightIcon: const Icon(LucideIcons.arrowRight, size: 13),
+                    rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
                     onPressed: () => context.go('/bank/extrato'),
                     child: const Text('Extrato'),
                   ),

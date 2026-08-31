@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -42,7 +41,7 @@ class ContextBadge extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            const Icon(LucideIcons.mapPin, size: 14, color: AppColors.brand700),
+            const AppIcon(AppIcons.mapPin, size: 14, color: AppColors.brand700),
             const SizedBox(width: AppSpacing.space1),
             Flexible(
               child: Text(
@@ -58,8 +57,8 @@ class ContextBadge extends ConsumerWidget {
             const SizedBox(width: AppSpacing.space1),
             // Affordance de "isto troca de contexto": sem a seta a faixa lê
             // como rótulo estático.
-            const Icon(
-              LucideIcons.chevronDown,
+            const AppIcon(
+              AppIcons.chevronDown,
               size: 14,
               color: AppColors.brand700,
             ),
@@ -83,7 +82,7 @@ class ContextBadge extends ConsumerWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.space2),
               child: AppMenuItem(
-                icon: LucideIcons.mapPin,
+                icon: AppIcons.mapPin,
                 label: farm.name,
                 description: '${farm.city} · ${farm.uf}',
                 trailing: farm.id == state.activeFarmId

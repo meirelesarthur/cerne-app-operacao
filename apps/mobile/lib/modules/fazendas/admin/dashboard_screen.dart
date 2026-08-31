@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../shared/simulated_load.dart';
@@ -44,7 +43,7 @@ class DashboardScreen extends ConsumerWidget {
                   padding: EdgeInsets.only(right: AppSpacing.space1),
                   child: AppChip(
                     tone: AppChipTone.amber,
-                    icon: Icon(LucideIcons.shieldAlert, size: 12),
+                    icon: AppIcon(AppIcons.shieldAlert, size: 12),
                     child: Text('Acesso restrito'),
                   ),
                 )
@@ -54,7 +53,7 @@ class DashboardScreen extends ConsumerWidget {
           const Padding(
             padding: EdgeInsets.only(bottom: AppSpacing.space2),
             child: AppBanner(
-              icon: Icon(LucideIcons.cloudOff, size: 14),
+              icon: AppIcon(AppIcons.cloudOff, size: 14),
               child: Text('Dados de 01/07 às 08:00 — última sincronização.'),
             ),
           ),

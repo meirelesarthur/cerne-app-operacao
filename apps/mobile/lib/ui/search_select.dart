@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -86,7 +86,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
         AppFieldCapsule(
           focused: _queryFocusNode.hasFocus,
           horizontalPadding: AppSpacing.space4,
-          leading: Icon(LucideIcons.search, size: 16, color: semantic.fgSubtle),
+          leading: AppIcon(AppIcons.search, size: 16, color: semantic.fgSubtle),
           child: TextField(
             controller: _queryController,
             focusNode: _queryFocusNode,
@@ -186,8 +186,8 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
                               ),
                             ),
                             if (selected)
-                              Icon(
-                                LucideIcons.check,
+                              AppIcon(
+                                AppIcons.check,
                                 size: 16,
                                 color: semantic.accentDefault,
                               ),

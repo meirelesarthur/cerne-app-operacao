@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
@@ -24,8 +23,8 @@ class SyncBanner extends ConsumerWidget {
 
     return AppBanner(
       tone: AppBannerTone.warning,
-      icon: Icon(
-        isOnline ? LucideIcons.refreshCw : LucideIcons.cloudOff,
+      icon: AppIcon(
+        isOnline ? AppIcons.refreshCw : AppIcons.cloudOff,
         size: 14,
       ),
       action: isOnline

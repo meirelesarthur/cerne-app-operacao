@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/shell/module_config.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 
 void main() {
   group('module_config', () {
@@ -38,31 +38,31 @@ void main() {
         const synthetic = ModuleDef(
           id: 'sintetico',
           label: 'Sintético',
-          icon: LucideIcons.circle,
+          icon: AppIcons.circle,
           homeRoute: '/sintetico',
           bottomTabs: [
             BottomTab(
               id: 'home',
               label: 'Início',
-              icon: LucideIcons.home,
+              icon: AppIcons.home,
               path: '',
             ),
             BottomTab(
               id: 'apps',
               label: 'Apps',
-              icon: LucideIcons.layoutGrid,
+              icon: AppIcons.layoutGrid,
               path: 'apps',
             ),
             BottomTab(
               id: 'carteira',
               label: 'Carteira',
-              icon: LucideIcons.wallet,
+              icon: AppIcons.wallet,
               path: 'carteira',
             ),
             BottomTab(
               id: 'menu',
               label: 'Menu',
-              icon: LucideIcons.menu,
+              icon: AppIcons.menu,
               path: 'menu',
               action: 'menu',
             ),

@@ -4,7 +4,6 @@ import 'package:hugeicons/hugeicons.dart';
 
 import 'package:cerne_app/design/generated/app_layout.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
-import 'package:cerne_app/design/theme/app_theme_extension.dart';
 import 'package:cerne_app/ui/app_icon.dart';
 
 Widget _wrap(Widget child, {AppThemeVariant variant = AppThemeVariant.light}) =>

@@ -1,6 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-
+import '../../ui/ui.dart';
 /// Ícone por grupo de `FeatureDefinition.group` — usado no acesso rápido e nos
 /// cards de módulo da central de rotinas/gestão (`ResponsibilityWorkspace`) e
 /// na tela fullscreen de funções de um grupo (`GroupFeaturesScreen`).
@@ -8,21 +6,21 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 /// `FeatureDefinition` não carrega ícone próprio (é um contrato de dados puro
 /// — `functional_catalog.dart` não deve depender de UI), então o mapeamento
 /// fica aqui, isolado do catálogo.
-IconData groupIcon(String group) => switch (group) {
-  'Painéis de decisão' => LucideIcons.layoutDashboard,
-  'Consultas e auditoria' => LucideIcons.search,
-  'Cadastros' => LucideIcons.clipboardList,
-  'Estoque' => LucideIcons.boxes,
-  'Misturador' => LucideIcons.wrench,
-  'Agricultura' => LucideIcons.sprout,
-  'Pecuária' => LucideIcons.beef,
-  'Confinamento' => LucideIcons.warehouse,
-  'Consultas' => LucideIcons.bookOpen,
-  'Reprodução' => LucideIcons.heartPulse,
-  'Gestão de frota' => LucideIcons.truck,
-  'Ordem de serviço' => LucideIcons.fileText,
-  'Sincronização' => LucideIcons.refreshCw,
-  _ => LucideIcons.layers,
+AppIconData groupIcon(String group) => switch (group) {
+  'Painéis de decisão' => AppIcons.layoutDashboard,
+  'Consultas e auditoria' => AppIcons.search,
+  'Cadastros' => AppIcons.clipboardList,
+  'Estoque' => AppIcons.boxes,
+  'Misturador' => AppIcons.wrench,
+  'Agricultura' => AppIcons.sprout,
+  'Pecuária' => AppIcons.beef,
+  'Confinamento' => AppIcons.warehouse,
+  'Consultas' => AppIcons.bookOpen,
+  'Reprodução' => AppIcons.heartPulse,
+  'Gestão de frota' => AppIcons.truck,
+  'Ordem de serviço' => AppIcons.fileText,
+  'Sincronização' => AppIcons.refreshCw,
+  _ => AppIcons.layers,
 };
 
 /// Ordem de exibição dos grupos na central de responsabilidade.

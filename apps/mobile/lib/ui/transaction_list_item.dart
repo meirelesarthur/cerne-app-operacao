@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -69,8 +69,8 @@ class AppTransactionListItem extends StatelessWidget {
             shape: BoxShape.circle,
             color: isIn ? semantic.accentSubtle : semantic.bgSubtle,
           ),
-          child: Icon(
-            isIn ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight,
+          child: AppIcon(
+            isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
             size: 18,
             color: isIn ? semantic.accentDefault : semantic.fgMuted,
           ),

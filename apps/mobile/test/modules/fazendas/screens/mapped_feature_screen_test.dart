@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
@@ -10,6 +9,8 @@ import 'package:cerne_app/modules/fazendas/state/prototype_records_store.dart';
 import 'package:cerne_app/ui/ui.dart';
 
 import '../../../support/test_viewport.dart';
+
+import '../../../helpers/app_icon_finder.dart';
 
 /// Localiza o controle (`TextFormField`/`DropdownButtonFormField`) do
 /// [AppFormField] pelo rótulo, não por índice posicional na árvore — um
@@ -94,7 +95,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      final back = tester.getRect(find.byIcon(LucideIcons.arrowLeft));
+      final back = tester.getRect(findAppIcon(AppIcons.arrowLeft));
       final title = tester.getRect(find.text('Áreas'));
 
       expect(back.right, lessThan(title.left));

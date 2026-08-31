@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -12,7 +11,7 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 class _LinkItem {
   const _LinkItem({required this.label, required this.icon, required this.to});
   final String label;
-  final IconData icon;
+  final AppIconData icon;
   final String to;
 }
 
@@ -31,27 +30,27 @@ const _groups = [
     items: [
       _LinkItem(
         label: 'Resultado',
-        icon: LucideIcons.wallet,
+        icon: AppIcons.wallet,
         to: '/fazendas/dashboards/resultado',
       ),
       _LinkItem(
         label: 'Rebanho & Confinamento',
-        icon: LucideIcons.warehouse,
+        icon: AppIcons.warehouse,
         to: '/fazendas/dashboards/confinamento',
       ),
       _LinkItem(
         label: 'Suprimentos',
-        icon: LucideIcons.boxes,
+        icon: AppIcons.boxes,
         to: '/fazendas/dashboards/suprimentos',
       ),
       _LinkItem(
         label: 'Ativos & Manutenção',
-        icon: LucideIcons.package,
+        icon: AppIcons.package,
         to: '/fazendas/dashboards/ativos',
       ),
       _LinkItem(
         label: 'Adoção & Governança',
-        icon: LucideIcons.users,
+        icon: AppIcons.users,
         to: '/fazendas/dashboards/uso',
       ),
     ],
@@ -61,12 +60,12 @@ const _groups = [
     items: [
       _LinkItem(
         label: 'Consultas gerenciais',
-        icon: LucideIcons.search,
+        icon: AppIcons.search,
         to: '/fazendas/consultas',
       ),
       _LinkItem(
         label: 'Todas as atividades',
-        icon: LucideIcons.activity,
+        icon: AppIcons.activity,
         to: '/fazendas/atividades',
       ),
     ],
@@ -76,7 +75,7 @@ const _groups = [
     items: [
       _LinkItem(
         label: 'Fila de sincronização',
-        icon: LucideIcons.refreshCw,
+        icon: AppIcons.refreshCw,
         to: '/fazendas/mais/sync',
       ),
     ],
@@ -176,7 +175,7 @@ class _MaisRow extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.accentSubtle,
               ),
-              child: Icon(item.icon, size: 18, color: semantic.accentDefault),
+              child: AppIcon(item.icon, size: 18, color: semantic.accentDefault),
             ),
             const SizedBox(width: AppSpacing.space3),
             Expanded(
@@ -188,7 +187,7 @@ class _MaisRow extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(LucideIcons.chevronRight, size: 16, color: semantic.fgSubtle),
+            AppIcon(AppIcons.chevronRight, size: 16, color: semantic.fgSubtle),
           ],
         ),
       ),

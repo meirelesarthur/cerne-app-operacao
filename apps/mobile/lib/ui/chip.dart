@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -119,7 +119,7 @@ WidgetbookComponent buildChipWidgetbookComponent() {
         builder: (context) => const Center(
           child: AppChip(
             tone: AppChipTone.brand,
-            icon: Icon(LucideIcons.check),
+            icon: AppIcon(AppIcons.check),
             child: Text('Concluído'),
           ),
         ),

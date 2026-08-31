@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -97,8 +96,8 @@ class _FarmRow extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: semantic.accentDefault,
                 ),
-                child: const Icon(
-                  LucideIcons.leaf,
+                child: const AppIcon(
+                  AppIcons.leaf,
                   size: 20,
                   color: AppColors.neutral0,
                 ),
@@ -129,7 +128,7 @@ class _FarmRow extends StatelessWidget {
               if (active)
                 const AppChip(
                   tone: AppChipTone.brand,
-                  icon: Icon(LucideIcons.check),
+                  icon: AppIcon(AppIcons.check),
                   child: Text('Ativa'),
                 ),
             ],

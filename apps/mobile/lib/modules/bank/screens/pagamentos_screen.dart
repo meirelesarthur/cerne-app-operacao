@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -21,7 +20,7 @@ class _Acao {
   });
 
   final PagamentosFlow flow;
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final String description;
 }
@@ -29,25 +28,25 @@ class _Acao {
 const _acoes = [
   _Acao(
     flow: PagamentosFlow.pix,
-    icon: LucideIcons.zap,
+    icon: AppIcons.zap,
     label: 'Pix',
     description: 'Envie na hora por chave ou contato',
   ),
   _Acao(
     flow: PagamentosFlow.boleto,
-    icon: LucideIcons.scanLine,
+    icon: AppIcons.scanLine,
     label: 'Pagar boleto',
     description: 'Pague contas e boletos por código',
   ),
   _Acao(
     flow: PagamentosFlow.transferir,
-    icon: LucideIcons.arrowLeftRight,
+    icon: AppIcons.arrowLeftRight,
     label: 'Transferir',
     description: 'TED/entre contas para outro banco',
   ),
   _Acao(
     flow: PagamentosFlow.cobrar,
-    icon: LucideIcons.handCoins,
+    icon: AppIcons.handCoins,
     label: 'Cobrar',
     description: 'Gere uma cobrança Pix para receber',
   ),
@@ -132,7 +131,7 @@ class _PagamentosScreenState extends ConsumerState<PagamentosScreen> {
                     shape: BoxShape.circle,
                     color: semantic.accentSubtle,
                   ),
-                  child: Icon(a.icon, size: 22, color: semantic.accentDefault),
+                  child: AppIcon(a.icon, size: 22, color: semantic.accentDefault),
                 ),
                 const SizedBox(width: AppSpacing.space3),
                 Expanded(
@@ -162,8 +161,8 @@ class _PagamentosScreenState extends ConsumerState<PagamentosScreen> {
                     ],
                   ),
                 ),
-                Icon(
-                  LucideIcons.chevronRight,
+                AppIcon(
+                  AppIcons.chevronRight,
                   size: 18,
                   color: semantic.fgSubtle,
                 ),

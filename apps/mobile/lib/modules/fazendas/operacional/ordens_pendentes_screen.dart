@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -32,7 +31,7 @@ class OrdensPendentesScreen extends ConsumerWidget {
           child: ordens.isEmpty
               ? const Center(
                   child: AppEmptyState(
-                    icon: LucideIcons.inbox,
+                    icon: AppIcons.inbox,
                     title: 'Nenhuma ordem pendente',
                     description:
                         'Transferências de lote e trocas de dieta criadas pelo ADM aparecem aqui.',

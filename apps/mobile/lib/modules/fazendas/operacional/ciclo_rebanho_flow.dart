@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -26,7 +25,7 @@ class _EventDef {
 
   final _EventType type;
   final String label;
-  final IconData icon;
+  final AppIconData icon;
   final String desc;
 }
 
@@ -34,25 +33,25 @@ const _events = <_EventDef>[
   _EventDef(
     type: _EventType.nascimento,
     label: 'Nascimento',
-    icon: LucideIcons.baby,
+    icon: AppIcons.baby,
     desc: 'Registrar bezerro',
   ),
   _EventDef(
     type: _EventType.desmame,
     label: 'Desmame',
-    icon: LucideIcons.milk,
+    icon: AppIcons.milk,
     desc: 'Desmame de animal',
   ),
   _EventDef(
     type: _EventType.transferencia,
     label: 'Transferência',
-    icon: LucideIcons.arrowLeftRight,
+    icon: AppIcons.arrowLeftRight,
     desc: 'Entre lotes',
   ),
   _EventDef(
     type: _EventType.morte,
     label: 'Morte / Perda',
-    icon: LucideIcons.heartCrack,
+    icon: AppIcons.heartCrack,
     desc: 'Baixa de animal',
   ),
 ];
@@ -187,7 +186,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               padding: EdgeInsets.only(bottom: AppSpacing.space5),
               child: AppBanner(
                 tone: AppBannerTone.error,
-                icon: Icon(LucideIcons.alertTriangle, size: 14),
+                icon: AppIcon(AppIcons.alertTriangle, size: 14),
                 child: Text(
                   'Transferência bloqueada: é necessário registrar a pesagem do dia antes de transferir o lote (DUV-179).',
                 ),
@@ -326,7 +325,7 @@ class _EventTile extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.accentSubtle,
               ),
-              child: Icon(e.icon, size: 22, color: semantic.accentDefault),
+              child: AppIcon(e.icon, size: 22, color: semantic.accentDefault),
             ),
             const SizedBox(height: AppSpacing.space2),
             Text(

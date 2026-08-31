@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -77,7 +76,7 @@ class _GroupFeaturesScreenState extends State<GroupFeaturesScreen> {
               color: semantic.accentSubtle,
             ),
             alignment: Alignment.center,
-            child: Icon(
+            child: AppIcon(
               groupIcon(title),
               size: 22,
               color: semantic.accentDefault,
@@ -88,20 +87,20 @@ class _GroupFeaturesScreenState extends State<GroupFeaturesScreen> {
           const SizedBox(height: AppSpacing.space4),
           AppTextInput(
             placeholder: 'Buscar função...',
-            prefixIcon: const Icon(LucideIcons.search, size: 18),
+            prefixIcon: const AppIcon(AppIcons.search, size: 18),
             onChanged: (v) => setState(() => _query = v),
           ),
         ],
         const SizedBox(height: AppSpacing.space4),
         if (allFeatures.isEmpty)
           const AppEmptyState(
-            icon: LucideIcons.inbox,
+            icon: AppIcons.inbox,
             title: 'Nada por aqui',
             description: 'Este módulo ainda não tem funções mapeadas.',
           )
         else if (features.isEmpty)
           const AppEmptyState(
-            icon: LucideIcons.searchX,
+            icon: AppIcons.searchX,
             title: 'Nenhuma função encontrada',
             description: 'Tente buscar por outro nome.',
           )

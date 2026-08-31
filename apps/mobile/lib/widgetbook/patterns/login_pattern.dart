@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../../design/generated/app_radius.dart';
@@ -65,8 +64,8 @@ class _LoginPatternExampleState extends State<_LoginPatternExample> {
                   color: semantic.accentSubtle,
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                 ),
-                child: Icon(
-                  LucideIcons.sprout,
+                child: AppIcon(
+                  AppIcons.sprout,
                   size: 32,
                   color: semantic.accentDefault,
                 ),

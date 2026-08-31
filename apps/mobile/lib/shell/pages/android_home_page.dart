@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_colors.dart';
 import '../../design/generated/app_radius.dart';
@@ -50,7 +49,7 @@ class AndroidHomePage extends StatelessWidget {
                 const _AndroidStatusBar(),
                 const Spacer(flex: 2),
                 AppAppIconTile(
-                  icon: LucideIcons.layoutGrid,
+                  icon: AppIcons.layoutGrid,
                   label: 'CRN App',
                   onTap: () => context.go('/desktop/crn-app'),
                 ),
@@ -96,11 +95,11 @@ class _AndroidStatusBar extends StatelessWidget {
           ),
           Row(
             children: [
-              Icon(LucideIcons.signal, size: 14, color: iconColor),
+              AppIcon(AppIcons.signal, size: 14, color: iconColor),
               const SizedBox(width: AppSpacing.space2),
-              Icon(LucideIcons.wifi, size: 14, color: iconColor),
+              AppIcon(AppIcons.wifi, size: 14, color: iconColor),
               const SizedBox(width: AppSpacing.space2),
-              Icon(LucideIcons.battery, size: 14, color: iconColor),
+              AppIcon(AppIcons.battery, size: 14, color: iconColor),
             ],
           ),
         ],
@@ -134,25 +133,25 @@ class _AndroidDock extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             AppAppIconTile(
-              icon: LucideIcons.phone,
+              icon: AppIcons.phone,
               label: 'Telefone',
               size: AppAppIconTileSize.small,
               showLabel: false,
             ),
             AppAppIconTile(
-              icon: LucideIcons.camera,
+              icon: AppIcons.camera,
               label: 'Câmera',
               size: AppAppIconTileSize.small,
               showLabel: false,
             ),
             AppAppIconTile(
-              icon: LucideIcons.messageCircle,
+              icon: AppIcons.messageCircle,
               label: 'Mensagens',
               size: AppAppIconTileSize.small,
               showLabel: false,
             ),
             AppAppIconTile(
-              icon: LucideIcons.globe,
+              icon: AppIcons.globe,
               label: 'Navegador',
               size: AppAppIconTileSize.small,
               showLabel: false,

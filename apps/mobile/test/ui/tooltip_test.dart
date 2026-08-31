@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/tooltip.dart';
+
+import '../helpers/app_icon_finder.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
@@ -16,7 +19,7 @@ void main() {
         _wrap(
           const AppTooltip(
             content: 'Texto do tooltip',
-            child: Icon(Icons.info_outline),
+            child: AppIcon(AppIcons.info),
           ),
         ),
       );
@@ -31,16 +34,16 @@ void main() {
         _wrap(
           const AppTooltip(
             content: 'Texto do tooltip',
-            child: Icon(Icons.info_outline),
+            child: AppIcon(AppIcons.info),
           ),
         ),
       );
 
-      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.tap(findAppIcon(AppIcons.info));
       await tester.pump();
       expect(find.text('Texto do tooltip'), findsOneWidget);
 
-      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.tap(findAppIcon(AppIcons.info));
       await tester.pump();
       expect(find.text('Texto do tooltip'), findsNothing);
     });

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -29,7 +28,7 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
         Expanded(
           child: favoritos.isEmpty
               ? const AppEmptyState(
-                  icon: LucideIcons.heart,
+                  icon: AppIcons.heart,
                   title: 'Nenhum favorito ainda',
                   description:
                       'Toque no coração de um produto para guardá-lo aqui e encontrar mais rápido na próxima vez.',
@@ -67,7 +66,7 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(AppRadius.xl),
                             ),
                             child: categoria != null
-                                ? Icon(
+                                ? AppIcon(
                                     categoria.icon,
                                     size: 24,
                                     color: semantic.accentDefault,
@@ -108,8 +107,8 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Icon(
-                            LucideIcons.heart,
+                          AppIcon(
+                            AppIcons.heart,
                             size: 18,
                             color: semantic.accentDefault,
                           ),

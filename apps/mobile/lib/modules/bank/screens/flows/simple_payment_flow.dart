@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../design/generated/app_spacing.dart';
 import '../../../../design/generated/app_typography.dart';
@@ -24,7 +23,7 @@ class _Meta {
   });
 
   final String title;
-  final IconData icon;
+  final AppIconData icon;
   final String confirm;
   final String successTitle;
 }
@@ -32,19 +31,19 @@ class _Meta {
 const Map<PaymentKind, _Meta> _meta = {
   PaymentKind.boleto: _Meta(
     title: 'Pagar boleto',
-    icon: LucideIcons.scanLine,
+    icon: AppIcons.scanLine,
     confirm: 'Confirmar pagamento',
     successTitle: 'Pagamento agendado',
   ),
   PaymentKind.transferir: _Meta(
     title: 'Transferir',
-    icon: LucideIcons.arrowLeftRight,
+    icon: AppIcons.arrowLeftRight,
     confirm: 'Confirmar transferência',
     successTitle: 'Transferência enviada',
   ),
   PaymentKind.cobrar: _Meta(
     title: 'Cobrar via Pix',
-    icon: LucideIcons.handCoins,
+    icon: AppIcons.handCoins,
     confirm: 'Gerar cobrança',
     successTitle: 'Cobrança criada',
   ),
@@ -249,7 +248,7 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
                     shape: BoxShape.circle,
                     color: semantic.accentSubtle,
                   ),
-                  child: Icon(
+                  child: AppIcon(
                     meta.icon,
                     size: 22,
                     color: semantic.accentDefault,
@@ -305,7 +304,7 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
             ),
             const SizedBox(height: AppSpacing.space5),
             const AppBanner(
-              icon: Icon(LucideIcons.info, size: 14),
+              icon: AppIcon(AppIcons.info, size: 14),
               child: Text(
                 'Confira os dados antes de confirmar. Esta é uma operação simulada do protótipo.',
               ),

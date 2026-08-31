@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -12,10 +11,10 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 enum _Secao { lotes, estoque, pesagens, localizacao }
 
 const _hub = [
-  (id: _Secao.lotes, label: 'Lotes', icon: LucideIcons.layers),
-  (id: _Secao.estoque, label: 'Estoque', icon: LucideIcons.boxes),
-  (id: _Secao.pesagens, label: 'Pesagens do dia', icon: LucideIcons.scale),
-  (id: _Secao.localizacao, label: 'Localização', icon: LucideIcons.mapPin),
+  (id: _Secao.lotes, label: 'Lotes', icon: AppIcons.layers),
+  (id: _Secao.estoque, label: 'Estoque', icon: AppIcons.boxes),
+  (id: _Secao.pesagens, label: 'Pesagens do dia', icon: AppIcons.scale),
+  (id: _Secao.localizacao, label: 'Localização', icon: AppIcons.mapPin),
 ];
 
 /// Consultas Gerenciais read-only (spec §4.7). 100% leitura: nenhum botão de
@@ -43,7 +42,7 @@ class _DashConsultasState extends State<DashConsultas> {
         children: [
           Row(
             children: [
-              Icon(LucideIcons.lock, size: 12, color: semantic.fgSubtle),
+              AppIcon(AppIcons.lock, size: 12, color: semantic.fgSubtle),
               const SizedBox(width: AppSpacing.oneHalf),
               Text(
                 'Somente leitura — dados espelhados do web.',
@@ -87,7 +86,7 @@ class _DashConsultasState extends State<DashConsultas> {
                 color: semantic.bgSubtle,
               ),
               child: const AppEmptyState(
-                icon: LucideIcons.mapPinned,
+                icon: AppIcons.mapPinned,
                 title: 'Mapa de localização',
                 description:
                     'Carregamento otimizado em desenvolvimento. O mapa de localização de animais será habilitado em uma próxima fase.',
@@ -108,7 +107,7 @@ class _HubTile extends StatelessWidget {
   });
 
   final String label;
-  final IconData icon;
+  final AppIconData icon;
   final bool selected;
   final VoidCallback onTap;
 
@@ -133,7 +132,7 @@ class _HubTile extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            AppIcon(
               icon,
               size: 20,
               color: selected ? semantic.accentDefault : semantic.fgMuted,

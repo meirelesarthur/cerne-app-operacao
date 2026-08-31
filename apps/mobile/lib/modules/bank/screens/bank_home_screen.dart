@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../mocks/bank_mocks.dart';
@@ -43,7 +42,7 @@ class BankHomeScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const Icon(LucideIcons.arrowDownLeft, size: 14),
+                      icon: const AppIcon(AppIcons.arrowDownLeft, size: 14),
                       label: 'Entradas no mês',
                       value: ResumoMes.entradas,
                       hidden: balanceHidden,
@@ -52,7 +51,7 @@ class BankHomeScreen extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const Icon(LucideIcons.arrowUpRight, size: 14),
+                      icon: const AppIcon(AppIcons.arrowUpRight, size: 14),
                       label: 'Saídas no mês',
                       value: ResumoMes.saidas,
                       hidden: balanceHidden,
@@ -72,28 +71,28 @@ class BankHomeScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.zap,
+                  icon: AppIcons.zap,
                   label: 'Pix',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.scanLine,
+                  icon: AppIcons.scanLine,
                   label: 'Pagar',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.arrowLeftRight,
+                  icon: AppIcons.arrowLeftRight,
                   label: 'Transferir',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.handCoins,
+                  icon: AppIcons.handCoins,
                   label: 'Cobrar',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
@@ -164,8 +163,8 @@ class BankHomeScreen extends ConsumerWidget {
                     shape: BoxShape.circle,
                     color: semantic.accentDefault,
                   ),
-                  child: const Icon(
-                    LucideIcons.trendingUp,
+                  child: const AppIcon(
+                    AppIcons.trendingUp,
                     size: 22,
                     color: AppColors.neutral0,
                   ),
@@ -189,8 +188,8 @@ class BankHomeScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Icon(
-                  LucideIcons.arrowRight,
+                AppIcon(
+                  AppIcons.arrowRight,
                   size: 18,
                   color: semantic.accentDefault,
                 ),

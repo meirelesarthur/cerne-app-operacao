@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -250,7 +249,7 @@ class _AvaliacaoCard extends StatelessWidget {
                 ),
               ),
               AppIconButton(
-                icon: const Icon(LucideIcons.x, size: 16),
+                icon: const AppIcon(AppIcons.x, size: 16),
                 label: 'Remover $curralNome desta leitura',
                 onPressed: onRemover,
               ),

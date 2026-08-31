@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
@@ -51,7 +50,7 @@ void main() {
                   child: const Text('Link acessível'),
                 ),
                 AppIconButton(
-                  icon: const Icon(LucideIcons.plus),
+                  icon: const AppIcon(AppIcons.plus),
                   label: 'Adicionar item',
                   size: AppIconButtonSize.sm,
                   onPressed: () {},

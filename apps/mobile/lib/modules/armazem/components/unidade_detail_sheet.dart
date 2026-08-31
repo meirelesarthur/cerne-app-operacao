@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -147,7 +146,7 @@ class _SheetBody extends StatelessWidget {
         const SizedBox(height: AppSpacing.space4),
         Row(
           children: [
-            Icon(LucideIcons.mapPin, size: 14, color: semantic.fgMuted),
+            AppIcon(AppIcons.mapPin, size: 14, color: semantic.fgMuted),
             const SizedBox(width: AppSpacing.oneHalf),
             Expanded(
               child: Text(

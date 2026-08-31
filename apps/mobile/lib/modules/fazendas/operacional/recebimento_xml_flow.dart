@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -92,8 +91,8 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                       shape: BoxShape.circle,
                       color: semantic.accentSubtle,
                     ),
-                    child: Icon(
-                      LucideIcons.fileText,
+                    child: AppIcon(
+                      AppIcons.fileText,
                       size: 20,
                       color: semantic.accentDefault,
                     ),

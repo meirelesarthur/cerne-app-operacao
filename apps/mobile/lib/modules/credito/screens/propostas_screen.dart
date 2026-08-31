@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -105,8 +104,8 @@ class PropostasScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(width: AppSpacing.space2),
-                  Icon(
-                    LucideIcons.arrowRight,
+                  AppIcon(
+                    AppIcons.arrowRight,
                     size: 16,
                     color: semantic.fgSubtle,
                   ),

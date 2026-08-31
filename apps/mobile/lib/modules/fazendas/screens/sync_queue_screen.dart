@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -32,7 +31,7 @@ class SyncQueueScreen extends ConsumerWidget {
             padding: EdgeInsets.only(bottom: AppSpacing.space2),
             child: AppBanner(
               tone: AppBannerTone.offline,
-              icon: Icon(LucideIcons.cloudOff, size: 14),
+              icon: AppIcon(AppIcons.cloudOff, size: 14),
               child: Text(
                 'Sem conexão — os itens serão enviados automaticamente assim que a internet voltar.',
               ),
@@ -42,7 +41,7 @@ class SyncQueueScreen extends ConsumerWidget {
           child: queue.isEmpty
               ? const Center(
                   child: AppEmptyState(
-                    icon: LucideIcons.inbox,
+                    icon: AppIcons.inbox,
                     title: 'Nenhum lançamento pendente',
                     description:
                         'Tudo o que foi registrado em campo já está sincronizado com o servidor.',
@@ -86,7 +85,7 @@ class SyncQueueScreen extends ConsumerWidget {
                                       shape: BoxShape.circle,
                                       color: semantic.bgSubtle,
                                     ),
-                                    child: Icon(
+                                    child: AppIcon(
                                       kindIcon[item.kind],
                                       size: 18,
                                       color: semantic.fgMuted,

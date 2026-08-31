@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -121,8 +120,8 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
                       shape: BoxShape.circle,
                       color: semantic.bgSurface,
                     ),
-                    child: Icon(
-                      LucideIcons.lock,
+                    child: AppIcon(
+                      AppIcons.lock,
                       size: 16,
                       color: semantic.fgSubtle,
                     ),
@@ -154,8 +153,8 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
                   ),
                   AppTooltip(
                     content: 'Mês congelado — edição bloqueada',
-                    child: Icon(
-                      LucideIcons.lock,
+                    child: AppIcon(
+                      AppIcons.lock,
                       size: 16,
                       color: semantic.fgSubtle,
                     ),

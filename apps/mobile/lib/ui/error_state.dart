@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -47,8 +47,8 @@ class AppErrorState extends StatelessWidget {
                 color: AppColors.red50,
                 borderRadius: BorderRadius.circular(AppRadius.xl2),
               ),
-              child: const Icon(
-                LucideIcons.triangleAlert,
+              child: const AppIcon(
+                AppIcons.triangleAlert,
                 size: 26,
                 color: AppColors.red600,
               ),

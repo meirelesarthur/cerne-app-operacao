@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/app_icon_tile.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
@@ -15,7 +15,7 @@ void main() {
     testWidgets('renderiza ícone e rótulo sem exceção', (tester) async {
       await tester.pumpWidget(
         _wrap(
-          const AppAppIconTile(icon: LucideIcons.layoutGrid, label: 'CRN App'),
+          const AppAppIconTile(icon: AppIcons.layoutGrid, label: 'CRN App'),
         ),
       );
 
@@ -28,7 +28,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppAppIconTile(
-            icon: LucideIcons.shieldCheck,
+            icon: AppIcons.shieldCheck,
             label: 'CRN ADM',
             onTap: () => tapped = true,
           ),
@@ -47,7 +47,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           const AppAppIconTile(
-            icon: LucideIcons.phone,
+            icon: AppIcons.phone,
             label: 'Telefone',
             showLabel: false,
           ),

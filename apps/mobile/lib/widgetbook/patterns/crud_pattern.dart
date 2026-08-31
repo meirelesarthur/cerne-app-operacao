@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../../design/generated/app_radius.dart';
@@ -125,7 +124,7 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
               const AppHeading(child: Text('Estoque')),
               AppButton(
                 size: AppButtonSize.sm,
-                leftIcon: const Icon(LucideIcons.plus, size: 16),
+                leftIcon: const AppIcon(AppIcons.plus, size: 16),
                 onPressed: () => _openForm(),
                 child: const Text('Novo item'),
               ),
@@ -134,7 +133,7 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
           const SizedBox(height: AppSpacing.space4),
           if (_items.isEmpty)
             AppEmptyState(
-              icon: LucideIcons.boxes,
+              icon: AppIcons.boxes,
               title: 'Nenhum item cadastrado',
               description: 'Adicione o primeiro item ao estoque.',
               action: AppButton(
@@ -182,12 +181,12 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
                         ),
                       ),
                       AppIconButton(
-                        icon: const Icon(LucideIcons.pencil, size: 16),
+                        icon: const AppIcon(AppIcons.pencil, size: 16),
                         label: 'Editar ${item.nome}',
                         onPressed: () => _openForm(editing: item),
                       ),
                       AppIconButton(
-                        icon: const Icon(LucideIcons.trash2, size: 16),
+                        icon: const AppIcon(AppIcons.trash2, size: 16),
                         label: 'Excluir ${item.nome}',
                         onPressed: () => _confirmDelete(item),
                       ),

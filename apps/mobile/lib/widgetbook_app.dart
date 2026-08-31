@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'design/generated/app_colors.dart';
@@ -262,8 +261,8 @@ class _SwatchState extends State<_Swatch> {
                   Positioned(
                     top: 4,
                     right: 4,
-                    child: Icon(
-                      LucideIcons.check,
+                    child: AppIcon(
+                      AppIcons.check,
                       size: 14,
                       color: semantic.fgDefault,
                     ),

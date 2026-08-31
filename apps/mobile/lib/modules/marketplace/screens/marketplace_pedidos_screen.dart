@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -21,10 +20,10 @@ const Map<PedidoStatus, AppChipTone> _statusTone = {
   PedidoStatus.processando: AppChipTone.amber,
 };
 
-const Map<PedidoStatus, IconData> _statusIcon = {
-  PedidoStatus.entregue: LucideIcons.packageCheck,
-  PedidoStatus.emTransporte: LucideIcons.truck,
-  PedidoStatus.processando: LucideIcons.clock,
+const Map<PedidoStatus, AppIconData> _statusIcon = {
+  PedidoStatus.entregue: AppIcons.packageCheck,
+  PedidoStatus.emTransporte: AppIcons.truck,
+  PedidoStatus.processando: AppIcons.clock,
 };
 
 /// Lista de pedidos do Marketplace (dados mockados) — item abre detalhe em
@@ -48,7 +47,7 @@ class MarketplacePedidosScreen extends StatelessWidget {
         Expanded(
           child: pedidos.isEmpty
               ? const AppEmptyState(
-                  icon: LucideIcons.inbox,
+                  icon: AppIcons.inbox,
                   title: 'Nenhum pedido ainda',
                   description:
                       'Seus pedidos de insumos e máquinas aparecerão aqui assim que você comprar no Marketplace.',
@@ -98,7 +97,7 @@ class MarketplacePedidosScreen extends StatelessWidget {
                               ),
                               AppChip(
                                 tone: _statusTone[pedido.status]!,
-                                icon: Icon(
+                                icon: AppIcon(
                                   _statusIcon[pedido.status],
                                   size: 12,
                                 ),
@@ -169,7 +168,7 @@ class _PedidoDetalheBody extends StatelessWidget {
             Text('Status', style: TextStyle(color: semantic.fgMuted)),
             AppChip(
               tone: _statusTone[pedido.status]!,
-              icon: Icon(_statusIcon[pedido.status], size: 12),
+              icon: AppIcon(_statusIcon[pedido.status], size: 12),
               child: Text(_statusLabel[pedido.status]!),
             ),
           ],

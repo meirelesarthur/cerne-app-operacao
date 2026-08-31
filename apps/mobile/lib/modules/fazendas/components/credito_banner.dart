@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_radius.dart';
@@ -43,8 +42,8 @@ class CreditoBanner extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: semantic.accentDefault,
                 ),
-                child: const Icon(
-                  LucideIcons.handCoins,
+                child: const AppIcon(
+                  AppIcons.handCoins,
                   size: 22,
                   color: AppColors.neutral0,
                 ),
@@ -81,8 +80,8 @@ class CreditoBanner extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
-                LucideIcons.arrowRight,
+              AppIcon(
+                AppIcons.arrowRight,
                 size: 18,
                 color: semantic.accentDefault,
               ),

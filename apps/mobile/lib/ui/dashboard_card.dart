@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -36,7 +36,7 @@ class AppDashboardCard extends StatelessWidget {
     this.onTap,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final String value;
 
@@ -92,7 +92,7 @@ class AppDashboardCard extends StatelessWidget {
                       color: AppColors.neutral200,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icon, size: 18, color: AppColors.neutral500),
+                    child: AppIcon(icon, size: 18, color: AppColors.neutral500),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpacing.space3),
@@ -123,7 +123,7 @@ class AppDashboardCard extends StatelessWidget {
           Positioned(
             right: AppSpacing.space3,
             top: AppSpacing.space3,
-            child: Icon(LucideIcons.lock, size: 14, color: semantic.fgSubtle),
+            child: AppIcon(AppIcons.lock, size: 14, color: semantic.fgSubtle),
           ),
           Positioned(
             left: AppSpacing.space4,
@@ -169,7 +169,7 @@ class AppDashboardCard extends StatelessWidget {
                       : semantic.accentSubtle,
                   border: _dark ? null : Border.all(color: semantic.borderTint),
                 ),
-                child: Icon(
+                child: AppIcon(
                   icon,
                   size: 18,
                   color: _dark ? AppColors.neutral0 : semantic.accentDefault,
@@ -179,10 +179,10 @@ class AppDashboardCard extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    AppIcon(
                       delta! >= 0
-                          ? LucideIcons.trendingUp
-                          : LucideIcons.trendingDown,
+                          ? AppIcons.trendingUp
+                          : AppIcons.trendingDown,
                       size: 13,
                       color: _dark
                           ? AppColors.neutral0.withValues(alpha: 0.9)
@@ -274,7 +274,7 @@ WidgetbookComponent buildDashboardCardWidgetbookComponent() {
           child: SizedBox(
             width: 200,
             child: AppDashboardCard(
-              icon: LucideIcons.wallet,
+              icon: AppIcons.wallet,
               label: 'Receita do mês',
               value: 'R\$ 24.500',
               delta: 8.4,
@@ -294,7 +294,7 @@ WidgetbookComponent buildDashboardCardWidgetbookComponent() {
               SizedBox(
                 width: 200,
                 child: AppDashboardCard(
-                  icon: LucideIcons.trendingUp,
+                  icon: AppIcons.trendingUp,
                   label: 'Receitas',
                   value: 'R\$ 24.500',
                   delta: 8.4,
@@ -305,7 +305,7 @@ WidgetbookComponent buildDashboardCardWidgetbookComponent() {
               SizedBox(
                 width: 200,
                 child: AppDashboardCard(
-                  icon: LucideIcons.trendingDown,
+                  icon: AppIcons.trendingDown,
                   label: 'Despesas',
                   value: 'R\$ 9.200',
                   delta: -3.1,
@@ -323,7 +323,7 @@ WidgetbookComponent buildDashboardCardWidgetbookComponent() {
           child: SizedBox(
             width: 200,
             child: AppDashboardCard(
-              icon: LucideIcons.egg,
+              icon: AppIcons.egg,
               label: 'Reprodutivo',
               value: '0',
               disabled: true,

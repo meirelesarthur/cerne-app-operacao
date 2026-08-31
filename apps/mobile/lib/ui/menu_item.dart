@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -33,7 +33,7 @@ class AppMenuItem extends StatelessWidget {
     this.onTap,
   });
 
-  final IconData? icon;
+  final AppIconData? icon;
   final String label;
   final String? description;
   final Widget? trailing;
@@ -107,7 +107,7 @@ class AppMenuItem extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: Icon(icon, size: 19, color: iconColor),
+                  child: AppIcon(icon, size: 19, color: iconColor),
                 ),
                 const SizedBox(width: AppSpacing.space3),
               ],
@@ -154,8 +154,8 @@ class AppMenuItem extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: Icon(
-                    LucideIcons.chevronRight,
+                  child: AppIcon(
+                    AppIcons.chevronRight,
                     size: 15,
                     color: chevronColor,
                   ),
@@ -180,21 +180,21 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
             mainAxisSize: MainAxisSize.min,
             children: [
               AppMenuItem(
-                icon: LucideIcons.user,
+                icon: AppIcons.user,
                 label: 'Perfil',
                 description: 'Dados pessoais e documentos',
                 onTap: () {},
               ),
               const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
-                icon: LucideIcons.bell,
+                icon: AppIcons.bell,
                 label: 'Notificações',
                 active: true,
                 onTap: () {},
               ),
               const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
-                icon: LucideIcons.logOut,
+                icon: AppIcons.logOut,
                 label: 'Sair',
                 tone: AppMenuItemTone.danger,
                 onTap: () {},
@@ -212,14 +212,14 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
             mainAxisSize: MainAxisSize.min,
             children: [
               AppMenuItem(
-                icon: LucideIcons.settings,
+                icon: AppIcons.settings,
                 label: 'Configurações',
                 variant: AppMenuItemVariant.onDark,
                 onTap: () {},
               ),
               const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
-                icon: LucideIcons.shield,
+                icon: AppIcons.shield,
                 label: 'Segurança',
                 active: true,
                 variant: AppMenuItemVariant.onDark,

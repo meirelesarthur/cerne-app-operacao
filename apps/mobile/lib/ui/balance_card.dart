@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
@@ -87,8 +87,8 @@ class AppBalanceCard extends StatelessWidget {
                         color: semantic.inkBubble,
                       ),
                       alignment: Alignment.center,
-                      child: Icon(
-                        LucideIcons.landmark,
+                      child: AppIcon(
+                        AppIcons.landmark,
                         size: 17,
                         color: semantic.inkFg,
                       ),
@@ -133,8 +133,8 @@ class AppBalanceCard extends StatelessWidget {
                             child: SizedBox(
                               width: AppSize.control,
                               height: AppSize.control,
-                              child: Icon(
-                                hidden ? LucideIcons.eyeOff : LucideIcons.eye,
+                              child: AppIcon(
+                                hidden ? AppIcons.eyeOff : AppIcons.eye,
                                 size: 20,
                                 color: semantic.inkFg,
                               ),
@@ -279,14 +279,14 @@ WidgetbookComponent buildBalanceCardWidgetbookComponent() {
                 children: [
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: Icon(LucideIcons.arrowDownLeft),
+                      icon: AppIcon(AppIcons.arrowDownLeft),
                       label: 'Entradas',
                       value: 'R\$ 32.100,00',
                     ),
                   ),
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: Icon(LucideIcons.arrowUpRight),
+                      icon: AppIcon(AppIcons.arrowUpRight),
                       label: 'Saídas',
                       value: 'R\$ 11.240,00',
                     ),

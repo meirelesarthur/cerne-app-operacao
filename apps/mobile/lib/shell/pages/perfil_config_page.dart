@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
@@ -59,21 +58,21 @@ class PerfilConfigPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.space3),
                   AppMenuItem(
-                    icon: LucideIcons.user,
+                    icon: AppIcons.user,
                     label: 'Editar perfil',
                     description: 'Atualize seus dados',
                     onTap: () => context.go('/perfil'),
                   ),
                   const SizedBox(height: AppSpacing.space2),
                   AppMenuItem(
-                    icon: LucideIcons.bell,
+                    icon: AppIcons.bell,
                     label: 'Notificações',
                     description: 'Gerencie seus avisos',
                     onTap: () => context.go('/notificacoes'),
                   ),
                   const SizedBox(height: AppSpacing.space2),
                   AppMenuItem(
-                    icon: isGbMode ? LucideIcons.moon : LucideIcons.sun,
+                    icon: isGbMode ? AppIcons.moon : AppIcons.sun,
                     label: 'Tema',
                     description: isGbMode
                         ? 'GB Mode (escuro)'
@@ -83,7 +82,7 @@ class PerfilConfigPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppSpacing.space6),
                   AppMenuItem(
-                    icon: LucideIcons.logOut,
+                    icon: AppIcons.logOut,
                     label: 'Sair',
                     tone: AppMenuItemTone.danger,
                     onTap: () {

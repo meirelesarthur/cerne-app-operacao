@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/theme/app_theme_extension.dart';
 
@@ -25,7 +25,7 @@ class AppIllustrationSlot extends StatelessWidget {
   final String alt;
 
   /// Ícone de fallback enquanto a arte final não existe.
-  final IconData? icon;
+  final AppIconData? icon;
 
   final double maxSize;
 
@@ -63,9 +63,9 @@ class AppIllustrationSlot extends StatelessWidget {
                       boxShadow: semantic.shadowCard,
                     ),
                     alignment: Alignment.center,
-                    // React usa strokeWidth={1.6}; lucide_icons não expõe stroke por
-                    // instância (glifo de fonte), então o traço segue o peso padrão do pacote.
-                    child: Icon(icon, size: 44, color: semantic.ctaBg),
+                    // O traço vem de `AppSize.iconStroke` (1.2) como em todo o app —
+                    // `AppIcon` o aplica; nenhuma tela ou componente define o seu.
+                    child: AppIcon(icon, size: 44, color: semantic.ctaBg),
                   ),
           ),
         ),
@@ -83,7 +83,7 @@ WidgetbookComponent buildIllustrationSlotWidgetbookComponent() {
         builder: (context) => const Center(
           child: AppIllustrationSlot(
             alt: 'Onboarding — boas-vindas',
-            icon: LucideIcons.sprout,
+            icon: AppIcons.sprout,
           ),
         ),
       ),

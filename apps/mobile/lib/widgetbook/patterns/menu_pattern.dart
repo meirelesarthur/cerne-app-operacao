@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../../design/generated/app_spacing.dart';
@@ -27,7 +26,7 @@ class _MenuLink {
     this.tone = AppMenuItemTone.standard,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final String? description;
   final AppMenuItemTone tone;
@@ -38,17 +37,17 @@ const _groups = [
     title: 'Painéis',
     items: [
       _MenuLink(
-        icon: LucideIcons.wallet,
+        icon: AppIcons.wallet,
         label: 'Financeiro',
         description: 'Fluxo de caixa e contas',
       ),
       _MenuLink(
-        icon: LucideIcons.beef,
+        icon: AppIcons.beef,
         label: 'Pecuária',
         description: 'Rebanho e ciclos',
       ),
       _MenuLink(
-        icon: LucideIcons.boxes,
+        icon: AppIcons.boxes,
         label: 'Suprimentos',
         description: 'Estoque e insumos',
       ),
@@ -58,12 +57,12 @@ const _groups = [
     title: 'Conta',
     items: [
       _MenuLink(
-        icon: LucideIcons.user,
+        icon: AppIcons.user,
         label: 'Perfil',
         description: 'Dados pessoais e documentos',
       ),
       _MenuLink(
-        icon: LucideIcons.logOut,
+        icon: AppIcons.logOut,
         label: 'Sair',
         tone: AppMenuItemTone.danger,
       ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../ui/ui.dart';
@@ -29,7 +28,7 @@ class MappedFeatureScreen extends StatelessWidget {
 
     if (feature == null || feature.profile != profile) {
       return AppEmptyState(
-        icon: LucideIcons.shieldAlert,
+        icon: AppIcons.shieldAlert,
         title: 'Funcionalidade fora deste perfil',
         description:
             'Volte ao ambiente correspondente para acessar esta responsabilidade.',
@@ -345,7 +344,7 @@ class _RecordsList extends StatelessWidget {
               const SizedBox(height: AppSpacing.space3),
               if (records.isEmpty)
                 AppEmptyState(
-                  icon: LucideIcons.clipboardCheck,
+                  icon: AppIcons.clipboardCheck,
                   title: feature.emptyLabel ?? 'Nenhum registro encontrado',
                   description: canCreate
                       ? 'Use a ação abaixo para criar o primeiro registro desta rotina.'
@@ -356,7 +355,7 @@ class _RecordsList extends StatelessWidget {
               else
                 for (var index = 0; index < records.length; index++) ...[
                   AppMenuItem(
-                    icon: LucideIcons.fileCheck2,
+                    icon: AppIcons.fileCheck2,
                     label: records[index].title,
                     description: records[index].description,
                     trailing: AppChip(
@@ -380,7 +379,7 @@ class _RecordsList extends StatelessWidget {
           AppButton(
             fullWidth: true,
             size: AppButtonSize.lg,
-            leftIcon: const Icon(LucideIcons.plus, size: AppSpacing.space5),
+            leftIcon: const AppIcon(AppIcons.plus, size: AppSpacing.space5),
             onPressed: onCreate,
             child: Text(feature.createAction ?? 'Novo registro'),
           ),

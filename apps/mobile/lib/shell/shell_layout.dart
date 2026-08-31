@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
@@ -182,7 +181,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                           if (!state.isOnline)
                             const AppBanner(
                               tone: AppBannerTone.offline,
-                              icon: Icon(LucideIcons.cloudOff, size: 14),
+                              icon: AppIcon(AppIcons.cloudOff, size: 14),
                               child: Text(
                                 'Você está offline — os lançamentos serão sincronizados quando a conexão voltar.',
                               ),

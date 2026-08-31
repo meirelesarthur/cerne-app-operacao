@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -119,7 +119,7 @@ class AppChartCard extends StatelessWidget {
                 child: AppButton(
                   variant: AppButtonVariant.ghost,
                   size: AppButtonSize.sm,
-                  rightIcon: const Icon(LucideIcons.arrowRight, size: 13),
+                  rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
                   onPressed: onExpand,
                   child: Text(expandLabel),
                 ),
@@ -158,7 +158,7 @@ WidgetbookComponent buildChartCardWidgetbookComponent() {
             width: 320,
             child: AppChartCard(
               title: 'Produção mensal',
-              action: Icon(LucideIcons.ellipsis, size: 18),
+              action: AppIcon(AppIcons.ellipsis, size: 18),
               child: SizedBox(
                 height: 120,
                 child: Center(child: Text('Gráfico aqui')),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -148,14 +147,14 @@ class _Timeline extends StatelessWidget {
                           ),
                         ),
                         child: step.state == _StepState.done
-                            ? Icon(
-                                LucideIcons.check,
+                            ? AppIcon(
+                                AppIcons.check,
                                 size: 14,
                                 color: markerColors.fg,
                               )
                             : step.state == _StepState.rejected
-                            ? Icon(
-                                LucideIcons.x,
+                            ? AppIcon(
+                                AppIcons.x,
                                 size: 14,
                                 color: markerColors.fg,
                               )
@@ -302,7 +301,7 @@ class PropostaDetalheScreen extends StatelessWidget {
             Expanded(
               child: Center(
                 child: AppEmptyState(
-                  icon: LucideIcons.frown,
+                  icon: AppIcons.frown,
                   title: 'Proposta não encontrada',
                   description:
                       'Essa proposta pode ter sido removida ou o link está incorreto.',
@@ -415,8 +414,8 @@ class PropostaDetalheScreen extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   color: semantic.bgSubtle,
                                 ),
-                                child: Icon(
-                                  LucideIcons.fileText,
+                                child: AppIcon(
+                                  AppIcons.fileText,
                                   size: 18,
                                   color: semantic.fgMuted,
                                 ),

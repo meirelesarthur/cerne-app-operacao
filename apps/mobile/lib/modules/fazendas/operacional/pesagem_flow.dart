@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -99,7 +98,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
           const AppSectionTitle(child: Text('Peso')),
           const SizedBox(height: AppSpacing.space2),
           const AppBanner(
-            icon: Icon(LucideIcons.info, size: 14),
+            icon: AppIcon(AppIcons.info, size: 14),
             child: Text(
               'Leitura da balança não disponível neste app — informe o peso manualmente ou use um leitor Bluetooth quando integrado.',
             ),
@@ -142,8 +141,8 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
             const SizedBox(height: AppSpacing.space2),
             const Row(
               children: [
-                Icon(
-                  LucideIcons.alertCircle,
+                AppIcon(
+                  AppIcons.alertCircle,
                   size: 12,
                   color: AppColors.red600,
                 ),

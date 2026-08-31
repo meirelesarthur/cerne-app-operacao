@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -79,7 +78,7 @@ class AjudaScreen extends StatelessWidget {
             ),
           ),
         const AppBanner(
-          icon: Icon(LucideIcons.messageCircle, size: 14),
+          icon: AppIcon(AppIcons.messageCircle, size: 14),
           child: Text(
             'Não encontrou o que precisava? Fale com seu gerente de relacionamento.',
           ),

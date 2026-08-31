@@ -1,5 +1,4 @@
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../ui/ui.dart';
 import 'screens/marketplace_categorias_screen.dart';
@@ -39,7 +38,7 @@ GoRoute buildMarketplaceModuleRoute() {
       GoRoute(
         path: 'ajuda',
         builder: (context, state) => const AppEmptyState(
-          icon: LucideIcons.construction,
+          icon: AppIcons.construction,
           title: 'Marketplace · Ajuda',
           description:
               'Conteúdo em desenvolvimento. Esta área será detalhada em uma próxima fase.',

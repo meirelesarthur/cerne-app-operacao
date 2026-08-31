@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -46,8 +46,8 @@ class AppFileUpload extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              LucideIcons.fileCheck2,
+            AppIcon(
+              AppIcons.fileCheck2,
               size: 20,
               color: semantic.accentDefault,
             ),
@@ -69,7 +69,7 @@ class AppFileUpload extends StatelessWidget {
               label: 'Remover arquivo',
               child: InkWell(
                 onTap: () => onChanged(null),
-                child: Icon(LucideIcons.x, size: 18, color: semantic.fgSubtle),
+                child: AppIcon(AppIcons.x, size: 18, color: semantic.fgSubtle),
               ),
             ),
           ],
@@ -94,7 +94,7 @@ class AppFileUpload extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(LucideIcons.uploadCloud, size: 28, color: semantic.fgSubtle),
+            AppIcon(AppIcons.uploadCloud, size: 28, color: semantic.fgSubtle),
             const SizedBox(height: AppSpacing.space2),
             Text(
               'Selecionar arquivo ${accept.replaceFirst('.', '').toUpperCase()}',

@@ -127,7 +127,7 @@ class _ModuleGridCard extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(groupIcon(group), size: 32, color: semantic.accentDefault),
+              AppIcon(groupIcon(group), size: 32, color: semantic.accentDefault),
               const SizedBox(height: AppSpacing.space2),
               Text(
                 group,

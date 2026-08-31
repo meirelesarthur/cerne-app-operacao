@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/components/sub_page_header.dart';
@@ -25,7 +24,7 @@ class EmSection extends StatelessWidget {
           const Expanded(
             child: Center(
               child: AppEmptyState(
-                icon: LucideIcons.construction,
+                icon: AppIcons.construction,
                 title: 'Em desenvolvimento',
                 description:
                     'Esta tela será construída na próxima fase da esteira.',

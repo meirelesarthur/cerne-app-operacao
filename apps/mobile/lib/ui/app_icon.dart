@@ -240,6 +240,10 @@ class AppIcons {
 ///    ícones por lá), caindo em 24 px e na cor de texto padrão do tema.
 /// 3. **Semântica.** [semanticLabel] chega ao leitor de tela; ícone sem rótulo
 ///    permanece decorativo, como em `Icon`.
+///
+/// [icon] é nulo-aceitável pelo mesmo motivo que em `Icon`: um slot opcional
+/// (`AppEmptyState`, `AppMenuItem`, `AppIllustrationSlot`) reserva a caixa do
+/// ícone sem desenhar nada, em vez de obrigar cada chamador a ramificar.
 class AppIcon extends StatelessWidget {
   const AppIcon(
     this.icon, {
@@ -249,8 +253,9 @@ class AppIcon extends StatelessWidget {
     this.semanticLabel,
   });
 
-  /// Entrada do catálogo — sempre `AppIcons.xxx`.
-  final AppIconData icon;
+  /// Entrada do catálogo — sempre `AppIcons.xxx`. Nulo reserva a caixa sem
+  /// desenhar, como `Icon(null)`.
+  final AppIconData? icon;
 
   /// Aresta do ícone em pixels lógicos. Prefira a escala gerada
   /// (`AppSize.iconXs` … `AppSize.iconXl`). Quando nulo, herda o `IconTheme`.
@@ -276,12 +281,14 @@ class AppIcon extends StatelessWidget {
     final glyph = SizedBox(
       width: resolvedSize,
       height: resolvedSize,
-      child: HugeIcon(
-        icon: icon,
-        size: resolvedSize,
-        color: resolvedColor,
-        strokeWidth: AppSize.iconStroke,
-      ),
+      child: icon == null
+          ? null
+          : HugeIcon(
+              icon: icon!,
+              size: resolvedSize,
+              color: resolvedColor,
+              strokeWidth: AppSize.iconStroke,
+            ),
     );
 
     if (semanticLabel == null) return glyph;

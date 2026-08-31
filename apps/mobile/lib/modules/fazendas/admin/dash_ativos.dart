@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -9,17 +8,17 @@ import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 
-const Map<AtivoEstado, ({String label, AppChipTone tone, IconData icon})>
+const Map<AtivoEstado, ({String label, AppChipTone tone, AppIconData icon})>
 _estadoMeta = {
   AtivoEstado.ativo: (
     label: 'Ativo',
     tone: AppChipTone.brand,
-    icon: LucideIcons.checkCircle2,
+    icon: AppIcons.checkCircle2,
   ),
   AtivoEstado.manutencao: (
     label: 'Em manutenção',
     tone: AppChipTone.amber,
-    icon: LucideIcons.wrench,
+    icon: AppIcons.wrench,
   ),
 };
 
@@ -179,8 +178,8 @@ class _AtivoCard extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          LucideIcons.wrench,
+                        AppIcon(
+                          AppIcons.wrench,
                           size: 11,
                           color: semantic.fgSubtle,
                         ),
@@ -263,7 +262,7 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
                 ),
                 AppChip(
                   tone: estado.tone,
-                  icon: Icon(estado.icon, size: 12),
+                  icon: AppIcon(estado.icon, size: 12),
                   child: Text(estado.label),
                 ),
               ],

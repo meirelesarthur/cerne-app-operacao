@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -105,8 +104,8 @@ class ArmazemHomeScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: AppColors.amber50,
                       ),
-                      child: const Icon(
-                        LucideIcons.triangleAlert,
+                      child: const AppIcon(
+                        AppIcons.triangleAlert,
                         size: 16,
                         color: AppColors.amber600,
                       ),
@@ -229,8 +228,8 @@ class ArmazemHomeScreen extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: semantic.accentDefault,
                   ),
-                  child: const Icon(
-                    LucideIcons.shoppingBag,
+                  child: const AppIcon(
+                    AppIcons.shoppingBag,
                     size: 22,
                     color: AppColors.neutral0,
                   ),
@@ -260,8 +259,8 @@ class ArmazemHomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(
-                  LucideIcons.arrowRight,
+                AppIcon(
+                  AppIcons.arrowRight,
                   size: 18,
                   color: semantic.accentDefault,
                 ),

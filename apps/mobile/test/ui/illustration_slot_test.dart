@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/illustration_slot.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
@@ -17,7 +17,7 @@ void main() {
         _wrap(
           const AppIllustrationSlot(
             alt: 'Onboarding',
-            icon: LucideIcons.sprout,
+            icon: AppIcons.sprout,
           ),
         ),
       );

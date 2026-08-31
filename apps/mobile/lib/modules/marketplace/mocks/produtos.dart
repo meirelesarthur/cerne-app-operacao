@@ -1,6 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-
+import '../../../ui/ui.dart';
 /// Mocks determinísticos do catálogo do Marketplace — espelha
 /// `src/modules/marketplace/mocks/produtos.ts`.
 
@@ -10,7 +8,7 @@ class Categoria {
 
   final String id;
   final String label;
-  final IconData icon;
+  final AppIconData icon;
 }
 
 /// Par chave-valor de especificação técnica, exibido na página do produto (PDP).
@@ -59,24 +57,24 @@ class Produto {
 }
 
 const List<Categoria> categorias = [
-  Categoria(id: 'sementes', label: 'Sementes', icon: LucideIcons.sprout),
+  Categoria(id: 'sementes', label: 'Sementes', icon: AppIcons.sprout),
   Categoria(
     id: 'fertilizantes',
     label: 'Fertilizantes',
-    icon: LucideIcons.flaskConical,
+    icon: AppIcons.flaskConical,
   ),
   Categoria(
     id: 'defensivos',
     label: 'Defensivos',
-    icon: LucideIcons.shieldCheck,
+    icon: AppIcons.shieldCheck,
   ),
   Categoria(
     id: 'nutricao-animal',
     label: 'Nutrição animal',
-    icon: LucideIcons.beef,
+    icon: AppIcons.beef,
   ),
-  Categoria(id: 'maquinas', label: 'Máquinas', icon: LucideIcons.tractor),
-  Categoria(id: 'pecas', label: 'Peças', icon: LucideIcons.wrench),
+  Categoria(id: 'maquinas', label: 'Máquinas', icon: AppIcons.tractor),
+  Categoria(id: 'pecas', label: 'Peças', icon: AppIcons.wrench),
 ];
 
 const List<Produto> produtos = [

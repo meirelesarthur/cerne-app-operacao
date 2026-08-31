@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -40,7 +39,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
           SubPageHeader(title: 'Produto'),
           Expanded(
             child: AppEmptyState(
-              icon: LucideIcons.packageSearch,
+              icon: AppIcons.packageSearch,
               title: 'Produto não encontrado',
               description:
                   'Este produto pode ter sido removido do catálogo. Volte e tente outro item.',
@@ -76,7 +75,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                 ),
                 child: categoria != null
-                    ? Icon(
+                    ? AppIcon(
                         categoria.icon,
                         size: 48,
                         color: semantic.accentDefault,
@@ -121,7 +120,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(LucideIcons.truck, size: 11),
+                              AppIcon(AppIcons.truck, size: 11),
                               SizedBox(width: AppSpacing.space1),
                               Text('Frete grátis'),
                             ],
@@ -236,7 +235,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
               if (_adicionado) ...[
                 const AppBanner(
                   tone: AppBannerTone.success,
-                  icon: Icon(LucideIcons.check, size: 14),
+                  icon: AppIcon(AppIcons.check, size: 14),
                   child: Text('Produto adicionado ao pedido (protótipo).'),
                 ),
                 const SizedBox(height: AppSpacing.space5),
@@ -248,8 +247,8 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                 onPressed: _adicionado
                     ? null
                     : () => setState(() => _adicionado = true),
-                leftIcon: Icon(
-                  _adicionado ? LucideIcons.check : LucideIcons.shoppingCart,
+                leftIcon: AppIcon(
+                  _adicionado ? AppIcons.check : AppIcons.shoppingCart,
                   size: 18,
                 ),
                 child: Text(

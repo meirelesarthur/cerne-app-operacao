@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../../design/generated/app_colors.dart';
@@ -108,8 +107,8 @@ class _ListingRow extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.accentDefault,
               ),
-              child: const Icon(
-                LucideIcons.leaf,
+              child: const AppIcon(
+                AppIcons.leaf,
                 size: 18,
                 color: AppColors.neutral0,
               ),
@@ -134,7 +133,7 @@ class _ListingRow extends StatelessWidget {
             if (active)
               const AppChip(
                 tone: AppChipTone.brand,
-                icon: Icon(LucideIcons.check),
+                icon: AppIcon(AppIcons.check),
                 child: Text('Ativa'),
               ),
           ],
@@ -158,7 +157,7 @@ WidgetbookComponent buildListingPatternWidgetbookComponent() {
           color: Theme.of(context).extension<AppSemanticColors>()!.bgCanvas,
           child: const Center(
             child: AppEmptyState(
-              icon: LucideIcons.tractor,
+              icon: AppIcons.tractor,
               title: 'Nenhuma fazenda cadastrada',
               description:
                   'Cadastre a primeira fazenda para começar a operar por aqui.',

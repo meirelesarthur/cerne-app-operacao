@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/icon_button.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
@@ -16,7 +17,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppIconButton(
-            icon: const Icon(Icons.add),
+            icon: const AppIcon(AppIcons.plus),
             label: 'Adicionar',
             onPressed: () => tapped = true,
           ),
@@ -34,7 +35,7 @@ void main() {
     ) async {
       var tapped = false;
       await tester.pumpWidget(
-        _wrap(const AppIconButton(icon: Icon(Icons.add), label: 'Adicionar')),
+        _wrap(const AppIconButton(icon: AppIcon(AppIcons.plus), label: 'Adicionar')),
       );
 
       await tester.tap(find.byType(AppIconButton), warnIfMissed: false);
@@ -51,7 +52,7 @@ void main() {
           await tester.pumpWidget(
             _wrap(
               AppIconButton(
-                icon: const Icon(Icons.star),
+                icon: const AppIcon(AppIcons.heart),
                 label: 'X',
                 variant: variant,
                 size: size,
@@ -71,7 +72,7 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             AppIconButton(
-              icon: const Icon(Icons.star),
+              icon: const AppIcon(AppIcons.heart),
               label: 'Favoritar',
               size: size,
               onPressed: () {},

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -28,7 +28,7 @@ class AppAlertItem {
   /// O número em si, já formatado.
   final String value;
 
-  final IconData icon;
+  final AppIconData icon;
   final AppAlertTone tone;
 
   /// Painel de origem, idealmente já no recorte que explica o alerta.
@@ -115,7 +115,7 @@ class _AlertPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(item.icon, size: 16, color: palette.fg),
+          AppIcon(item.icon, size: 16, color: palette.fg),
           const SizedBox(width: AppSpacing.space2),
           Column(
             mainAxisSize: MainAxisSize.min,
@@ -162,26 +162,26 @@ WidgetbookComponent buildAlertStripWidgetbookComponent() {
     AppAlertItem(
       label: 'vencidos',
       value: 'R\$ 128 mil',
-      icon: LucideIcons.circleAlert,
+      icon: AppIcons.circleAlert,
       tone: AppAlertTone.critical,
       onTap: () {},
     ),
     AppAlertItem(
       label: 'ocorrências abertas',
       value: '3',
-      icon: LucideIcons.triangleAlert,
+      icon: AppIcons.triangleAlert,
       onTap: () {},
     ),
     AppAlertItem(
       label: 'currais acima de 90%',
       value: '2',
-      icon: LucideIcons.warehouse,
+      icon: AppIcons.warehouse,
       onTap: () {},
     ),
     AppAlertItem(
       label: 'ativos em manutenção',
       value: '2',
-      icon: LucideIcons.wrench,
+      icon: AppIcons.wrench,
       tone: AppAlertTone.info,
       onTap: () {},
     ),

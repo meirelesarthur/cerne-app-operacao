@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -95,7 +94,7 @@ class _ExtratoScreenState extends ConsumerState<ExtratoScreen> {
         const SizedBox(height: AppSpacing.space5),
         if (transacoesFiltradas.isEmpty)
           const AppEmptyState(
-            icon: LucideIcons.inbox,
+            icon: AppIcons.inbox,
             title: 'Nada por aqui',
             description: 'Não há movimentações para este filtro.',
           )

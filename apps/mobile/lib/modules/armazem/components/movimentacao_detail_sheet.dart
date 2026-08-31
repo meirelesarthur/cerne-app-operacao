@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -47,10 +46,10 @@ class _SheetBody extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isEntrada ? semantic.accentSubtle : semantic.bgSubtle,
               ),
-              child: Icon(
+              child: AppIcon(
                 isEntrada
-                    ? LucideIcons.arrowDownLeft
-                    : LucideIcons.arrowUpRight,
+                    ? AppIcons.arrowDownLeft
+                    : AppIcons.arrowUpRight,
                 size: 22,
                 color: isEntrada ? semantic.accentDefault : semantic.fgMuted,
               ),
@@ -58,10 +57,10 @@ class _SheetBody extends StatelessWidget {
             const SizedBox(height: AppSpacing.space2),
             AppChip(
               tone: isEntrada ? AppChipTone.brand : AppChipTone.neutral,
-              icon: Icon(
+              icon: AppIcon(
                 isEntrada
-                    ? LucideIcons.arrowDownLeft
-                    : LucideIcons.arrowUpRight,
+                    ? AppIcons.arrowDownLeft
+                    : AppIcons.arrowUpRight,
                 size: 12,
               ),
               child: Text(isEntrada ? 'Entrada' : 'Saída'),

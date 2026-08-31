@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/screen_header.dart';
+
+import '../helpers/app_icon_finder.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
@@ -19,7 +21,7 @@ void main() {
         _wrap(AppScreenHeader(title: 'Áreas', onBack: () {})),
       );
 
-      final back = tester.getRect(find.byIcon(LucideIcons.arrowLeft));
+      final back = tester.getRect(findAppIcon(AppIcons.arrowLeft));
       final title = tester.getRect(find.text('Áreas'));
 
       expect(back.right, lessThan(title.left));
@@ -32,7 +34,7 @@ void main() {
     testWidgets('sem onBack não renderiza o voltar', (tester) async {
       await tester.pumpWidget(_wrap(const AppScreenHeader(title: 'Cartões')));
 
-      expect(find.byIcon(LucideIcons.arrowLeft), findsNothing);
+      expect(findAppIcon(AppIcons.arrowLeft), findsNothing);
       expect(find.text('Cartões'), findsOneWidget);
     });
 
@@ -60,7 +62,7 @@ void main() {
         _wrap(AppScreenHeader(title: 'Áreas', onBack: () => pressed++)),
       );
 
-      await tester.tap(find.byIcon(LucideIcons.arrowLeft));
+      await tester.tap(findAppIcon(AppIcons.arrowLeft));
       await tester.pump();
 
       expect(pressed, 1);
@@ -89,13 +91,13 @@ void main() {
           AppScreenHeader(
             title: 'Fila',
             onBack: () {},
-            action: const Icon(LucideIcons.refreshCw),
+            action: const AppIcon(AppIcons.refreshCw),
           ),
         ),
       );
 
       final title = tester.getRect(find.text('Fila'));
-      final action = tester.getRect(find.byIcon(LucideIcons.refreshCw));
+      final action = tester.getRect(findAppIcon(AppIcons.refreshCw));
 
       expect(action.left, greaterThan(title.left));
     });

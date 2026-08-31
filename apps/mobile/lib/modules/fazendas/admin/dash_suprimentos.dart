@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_layout.dart';
@@ -401,10 +400,10 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(
+                      AppIcon(
                         alta
-                            ? LucideIcons.trendingUp
-                            : LucideIcons.trendingDown,
+                            ? AppIcons.trendingUp
+                            : AppIcons.trendingDown,
                         size: 14,
                         color: variacaoColor,
                       ),

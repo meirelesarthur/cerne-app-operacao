@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -56,7 +56,7 @@ class AppFormSelect extends StatelessWidget {
         key: ValueKey(value),
         initialValue: value,
         isExpanded: true,
-        icon: Icon(LucideIcons.chevronDown, size: 16, color: semantic.fgSubtle),
+        icon: AppIcon(AppIcons.chevronDown, size: 16, color: semantic.fgSubtle),
         dropdownColor: semantic.bgSurface,
         style: textStyle,
         onChanged: enabled ? onChanged : null,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../ui/ui.dart';
@@ -11,9 +10,9 @@ import 'dashboard_screen.dart';
 /// existiam no catálogo e nunca tinham sido usadas nos painéis — é exatamente
 /// aqui que elas fazem sentido: verde entra, vermelho sai, azul é o resultado.
 const _cardStyle = [
-  (icon: LucideIcons.wallet, variant: AppDashboardCardVariant.revenue),
-  (icon: LucideIcons.package, variant: AppDashboardCardVariant.expense),
-  (icon: LucideIcons.beef, variant: AppDashboardCardVariant.finance),
+  (icon: AppIcons.wallet, variant: AppDashboardCardVariant.revenue),
+  (icon: AppIcons.package, variant: AppDashboardCardVariant.expense),
+  (icon: AppIcons.beef, variant: AppDashboardCardVariant.finance),
 ];
 
 /// Painel **Resultado** — fusão de "Financeiro" (§4.3) com o bloco financeiro

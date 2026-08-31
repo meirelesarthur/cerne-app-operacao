@@ -1,8 +1,8 @@
+import 'app_icon.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_radius.dart';
@@ -97,8 +97,8 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
                   shape: BoxShape.circle,
                   color: isIn ? semantic.accentSubtle : semantic.bgSubtle,
                 ),
-                child: Icon(
-                  isIn ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight,
+                child: AppIcon(
+                  isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
                   size: 22,
                   color: isIn ? semantic.accentDefault : semantic.fgMuted,
                 ),
@@ -106,8 +106,8 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
               const SizedBox(height: AppSpacing.space2),
               AppChip(
                 tone: isIn ? AppChipTone.brand : AppChipTone.neutral,
-                icon: Icon(
-                  isIn ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight,
+                icon: AppIcon(
+                  isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
                   size: 12,
                 ),
                 child: Text(isIn ? 'Entrada' : 'Saída'),
@@ -212,8 +212,8 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
               ),
               const SizedBox(width: AppSpacing.space3),
               AppIconButton(
-                icon: Icon(
-                  _copied ? LucideIcons.check : LucideIcons.copy,
+                icon: AppIcon(
+                  _copied ? AppIcons.check : AppIcons.copy,
                   size: 16,
                   color: _copied ? semantic.accentDefault : null,
                 ),

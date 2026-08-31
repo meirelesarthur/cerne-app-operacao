@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
@@ -15,7 +14,7 @@ class _OnboardingSlide {
     required this.desc,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String image;
   final String title;
   final String desc;
@@ -24,21 +23,21 @@ class _OnboardingSlide {
 /// Slides do onboarding — ilustrações em `assets/images/` (ícones ficam como fallback).
 const _slides = [
   _OnboardingSlide(
-    icon: LucideIcons.sprout,
+    icon: AppIcons.sprout,
     image: 'assets/images/onboard1.png',
     title: 'Sua fazenda na palma da mão',
     desc:
         'Dashboards gerenciais e lançamentos de campo, mesmo sem sinal — tudo sincroniza quando a conexão volta.',
   ),
   _OnboardingSlide(
-    icon: LucideIcons.landmark,
+    icon: AppIcons.landmark,
     image: 'assets/images/onboard2.png',
     title: 'Banco e crédito do produtor',
     desc:
         'Conta digital, Pix, pagamentos e crédito pré-aprovado para a safra, direto no app.',
   ),
   _OnboardingSlide(
-    icon: LucideIcons.shoppingBag,
+    icon: AppIcons.shoppingBag,
     image: 'assets/images/onboard3.png',
     title: 'Compre, venda e armazene',
     desc:

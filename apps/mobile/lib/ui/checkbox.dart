@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_spacing.dart';
@@ -67,8 +67,8 @@ class AppCheckbox extends StatelessWidget {
                     ),
                   ),
                   child: checked
-                      ? const Icon(
-                          LucideIcons.check,
+                      ? const AppIcon(
+                          AppIcons.check,
                           size: 13,
                           color: AppColors.neutral0,
                         )

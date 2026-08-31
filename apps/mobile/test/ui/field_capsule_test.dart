@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/generated/app_spacing.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/field_capsule.dart';
 import 'package:cerne_app/ui/form_select.dart';
 import 'package:cerne_app/ui/search_select.dart';
@@ -51,8 +52,8 @@ void main() {
         _wrap(
           const AppTextInput(
             placeholder: 'Buscar',
-            prefixIcon: Icon(Icons.search, size: 16),
-            suffixIcon: Icon(Icons.close, size: 16),
+            prefixIcon: AppIcon(AppIcons.search, size: 16),
+            suffixIcon: AppIcon(AppIcons.x, size: 16),
           ),
         ),
       );

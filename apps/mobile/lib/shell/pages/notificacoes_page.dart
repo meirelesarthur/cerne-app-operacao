@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
@@ -12,10 +11,10 @@ import '../module_config.dart';
 import '../state/shell_store.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 
-const Map<String, IconData> _moduleIcon = {
-  'fazendas': LucideIcons.sprout,
-  'credito': LucideIcons.handCoins,
-  'bank': LucideIcons.landmark,
+const Map<String, AppIconData> _moduleIcon = {
+  'fazendas': AppIcons.sprout,
+  'credito': AppIcons.handCoins,
+  'bank': AppIcons.landmark,
 };
 
 /// Notificações agregadas de todos os módulos (spec §3.1) — espelha `Notificacoes.tsx`.
@@ -49,7 +48,7 @@ class NotificacoesPage extends ConsumerWidget {
               child: notifications.isEmpty
                   ? const Center(
                       child: AppEmptyState(
-                        icon: LucideIcons.bellOff,
+                        icon: AppIcons.bellOff,
                         title: 'Sem notificações',
                         description: 'Você está em dia.',
                       ),
@@ -62,7 +61,7 @@ class NotificacoesPage extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final n = notifications[index];
                         final icon =
-                            _moduleIcon[n.moduleId] ?? LucideIcons.sprout;
+                            _moduleIcon[n.moduleId] ?? AppIcons.sprout;
                         final destination =
                             getModule(n.moduleId)?.homeRoute ?? '/inicio';
 
@@ -95,7 +94,7 @@ class NotificacoesPage extends ConsumerWidget {
                                     color: semantic.accentSubtle,
                                     shape: BoxShape.circle,
                                   ),
-                                  child: Icon(
+                                  child: AppIcon(
                                     icon,
                                     size: 18,
                                     color: semantic.accentDefault,
