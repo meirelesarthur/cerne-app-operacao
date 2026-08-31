@@ -4,6 +4,7 @@ library;
 
 export 'addable_group_list.dart';
 export 'alert_strip.dart';
+export 'app_icon.dart';
 export 'app_icon_tile.dart';
 export 'audit_export_panel.dart';
 export 'avatar.dart';

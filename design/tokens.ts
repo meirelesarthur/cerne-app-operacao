@@ -307,6 +307,13 @@ export const size = {
   drawer: '320px',
   tabBar: '64px', // altura do bottom tab bar (mobile)
   phone: '420px', // largura máxima do frame de telefone
+  // Iconografia (Hugeicons stroke-rounded). A escala cobre as medidas do Figma
+  // (node 54300-2458): 14 nos indicadores de resumo, 20 no seletor de fazenda,
+  // 24 no ladrilho de módulo, 28 na bolha de notificação.
+  icon: { xs: '14px', sm: '16px', md: '20px', lg: '24px', xl: '28px' },
+  // Espessura do traço do ícone. Único valor do sistema — `AppIcon` o aplica a
+  // todo ícone renderizado; nenhuma tela passa espessura própria.
+  iconStroke: '1.2px',
 } as const
 
 // Nova UI: geometria cápsula — raios generosos em toda a hierarquia (referência)
@@ -322,6 +329,10 @@ export const radius = {
   '3xl': '28px',
   '4xl': '32px',
   modal: '28px',
+  // Geometria do padrão global do Figma (node 54300-2458): ladrilho de módulo e
+  // campo de busca em 20; superfície de conteúdo sobre o canvas em 24.
+  tile: '20px',
+  surface: '24px',
   full: '9999px',
 } as const
 

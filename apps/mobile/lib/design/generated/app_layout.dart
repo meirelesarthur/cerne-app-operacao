@@ -31,6 +31,12 @@ class AppSize {
   static const double drawer = 320;
   static const double tabBar = 64;
   static const double phone = 420;
+  static const double iconXs = 14;
+  static const double iconSm = 16;
+  static const double iconMd = 20;
+  static const double iconLg = 24;
+  static const double iconXl = 28;
+  static const double iconStroke = 1.2;
 }
 
 /// Métricas não coloridas de componentes específicos (revealMenu, hub, tabbar…).
