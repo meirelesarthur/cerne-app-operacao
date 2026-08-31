@@ -192,9 +192,15 @@ void main() {
 
     testWidgets('centrais usam layout largo sem overflow', (tester) async {
       await _setViewport(tester, const Size(1024, 844));
+      // A central lê a fazenda ativa para o seletor de contexto do padrão
+      // global (E7), então precisa do escopo do Riverpod.
       await tester.pumpWidget(
-        _app(
-          const ResponsibilityWorkspace(profile: FeatureProfile.administration),
+        ProviderScope(
+          child: _app(
+            const ResponsibilityWorkspace(
+              profile: FeatureProfile.administration,
+            ),
+          ),
         ),
       );
       await tester.pumpAndSettle();

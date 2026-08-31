@@ -6,6 +6,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
 import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
+import 'farm_picker.dart';
 
 /// Badge de contexto fixo no topo de formulários operacionais (spec §3.5):
 /// "Lançando em: {fazenda}" — mantém o tenant sempre visível (mitigação de UX
@@ -26,7 +27,7 @@ class ContextBadge extends ConsumerWidget {
 
     return AppPressable(
       semanticLabel: 'Fazenda ativa: ${activeFarm.name}. Toque para trocar.',
-      onPressed: () => _openFarmPicker(context, ref),
+      onPressed: () => openFarmPicker(context, ref),
       // A faixa é full-bleed e retangular: raio zero mantém o feedback de
       // toque alinhado à borda em vez de arredondar dentro da barra.
       borderRadius: BorderRadius.zero,
@@ -64,37 +65,6 @@ class ContextBadge extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _openFarmPicker(BuildContext context, WidgetRef ref) {
-    final state = ref.read(fazendasStoreProvider);
-    final notifier = ref.read(fazendasStoreProvider.notifier);
-
-    showAppBottomSheet<void>(
-      context,
-      title: 'Trocar de fazenda',
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          for (final farm in state.farms)
-            Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.space2),
-              child: AppMenuItem(
-                icon: AppIcons.mapPin,
-                label: farm.name,
-                description: '${farm.city} · ${farm.uf}',
-                trailing: farm.id == state.activeFarmId
-                    ? const AppChip(child: Text('Ativa'))
-                    : null,
-                onTap: () {
-                  notifier.setActiveFarm(farm.id);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-        ],
       ),
     );
   }

@@ -16,8 +16,8 @@ Duas entregas acopladas, na ordem em que se sustentam:
    busca, ladrilho de módulo, barra de ação fixa e passos. E fixar a separação **ADM × Operação**
    como dois arquétipos de home distintos, não como uma home com `if`.
 
-**Status: em execução.** As seções 1–4 são auditoria e decisão (fechadas). A seção 5 é a esteira de
-execução, com o estado de cada etapa anotado.
+**Status: E1–E7 entregues.** As seções 1–4 são auditoria e decisão (fechadas). A seção 5 traz o
+estado real de cada etapa; a seção 6 registra o que ficou de fora e por quê.
 
 ---
 
@@ -135,10 +135,10 @@ por `Cow`/`Cattle`/`Bull` retorna vazio). Duas saídas, e a escolha é por etapa
 
 - **E1–E5 (migração):** mapear para o equivalente semântico mais próximo do set (`Barns` e `Steak`),
   mantendo a app inteira numa família só.
-- **E6 (fidelidade):** exportar os dois SVGs do Figma para `assets/icons/`, normalizados a traço
+- **Etapa de fidelidade (aberta):** exportar os dois SVGs do Figma para `assets/icons/`, normalizados a traço
   1.2, e servi-los pela **mesma** API `AppIcon` — o consumidor não sabe a origem.
 
-Registrado como divergência aberta até E6.
+Registrado como divergência aberta — ver §6-C.
 
 ### 3.4 Mapa Lucide → Hugeicons
 
@@ -185,24 +185,70 @@ comum sobe para o cabeçalho global; o que for específico fica no arquétipo.
 
 | Etapa | Escopo | Critério de aceite | Estado |
 |---|---|---|---|
-| **E1** | Fundação: `hugeicons` no pubspec; tokens de ícone (`iconStroke`, escala de tamanho, `radius.tile/surface`) em `design/tokens.ts` → DTCG → Dart; `AppIcon` + `AppIconData` + `AppIcons` em `lib/ui/`; caso no Widgetbook | `npm run tokens:verify` limpo; `AppIcon` registrado no Widgetbook | a fazer |
-| **E2** | Catálogo `lib/ui/`: 12 assinaturas `IconData` → `AppIconData`; todos os `Icon(` internos → `AppIcon` | `flutter analyze --fatal-infos` limpo; goldens revisados | a fazer |
-| **E3** | `lib/shell/`: header, tab bar, reveal menu, `module_config.dart` | shell sem `lucide` | a fazer |
-| **E4** | 6 módulos (`fazendas`, `bank`, `credito`, `marketplace`, `armazem`, `hub`) | módulos sem `lucide` | a fazer |
-| **E5** | Remoção da dependência `lucide_icons_flutter`; gate anti-regressão no teste de arquitetura | `npm test` verde; `npm run quality:functional` 53/53 | a fazer |
-| **E6** | Padrão global: `AppModuleTile`, cabeçalho com seletor de fazenda, campo de busca, barra de ação fixa, passos; SVGs autorais de §3.3 | casos no Widgetbook; goldens dos dois temas | a fazer |
-| **E7** | Homes ADM e Operação reescritas nos arquétipos da §4 | nenhum bloco de conteúdo compartilhado entre as duas | a fazer |
+| **E1** | Fundação: `hugeicons` no pubspec; tokens de ícone e `radius.tile/surface` em `design/tokens.ts` → DTCG → Dart; `AppIcon` + `AppIconData` + `AppIcons` em `lib/ui/` | `tokens:verify` limpo; `AppIcon` no Widgetbook | **feito** |
+| **E2–E5** | Catálogo, shell, 6 módulos e suíte; remoção do `lucide_icons_flutter`; gate anti-regressão | `analyze --fatal-infos` limpo; suíte verde; `quality:functional` 34/34 | **feito** |
+| **E6** | `AppModuleTile`/`AppModuleTileGrid`, `AppFarmSelector`, `AppSearchField` | casos no Widgetbook; 18 testes novos | **feito** |
+| **E7** | Home de Operação no arquétipo: `ResponsibilityWorkspace` adota a grade do padrão e o seletor de fazenda | nenhum cartão de módulo reimplementado na tela | **feito** |
+| **E8** | Destino da busca global; barra de ação fixa e passos dos frames de cadastro; SVGs autorais de §3.3 | — | **aberto (§6)** |
+
+### Números da entrega
+
+| Medida | Antes | Depois |
+|---|---|---|
+| Referências de ícone | 384 `LucideIcons.*` | 384 `AppIcons.*` |
+| Famílias de ícone no app | 2 (Lucide + 1 Material) | **1** (Hugeicons 1.2) |
+| Espessura de traço | do glifo do pacote, não controlável | `AppSize.iconStroke` = **1.2** |
+| Testes | 447 | **465** |
+| `main.dart.js` (release) | 3 116 932 B | 3 383 979 B (**+8,6 %**) |
+
+O crescimento de 267 KB responde ao risco de bundle levantado abaixo: os 8 MB de dados do pacote
+**não** vão para o binário — o *tree-shaking* leva apenas os ~132 ícones referenciados, mais o
+renderizador SVG. Medido com `flutter build web --release` nos dois lados do commit.
 
 ### Gates permanentes adicionados
 
-- `component_first_test.dart` passa a proibir `import 'package:lucide_icons_flutter/...'` e
-  `import 'package:hugeicons/...'` fora de `lib/ui/`.
-- `token_integrity_test.dart` passa a proibir `strokeWidth:` literal em `AppIcon`.
+- `component_first_test.dart` proíbe `import 'package:lucide_icons_flutter/...'` em qualquer lugar e
+  `import 'package:hugeicons/...'` fora de `lib/ui/app_icon.dart`.
+- O gate de espessura previsto foi **descartado**: seria redundante. `AppIcon` não expõe
+  `strokeWidth`, então o compilador já impede um consumidor de definir a sua; e chamar `HugeIcon`
+  direto já esbarra no gate de import. A regex ampla que restaria só acertava `Paint..strokeWidth`
+  dos gráficos, que nada tem a ver com iconografia.
+- `test/helpers/app_icon_finder.dart` é o substituto de `find.byIcon` na suíte.
 
 ### Riscos
 
 | Risco | Mitigação |
 |---|---|
-| `HugeIcon` é `StatefulWidget` + `flutter_svg`; custo por ícone maior que uma glifo de fonte | o widget cacheia o SVG montado por (ícone, cor, traço); medir em listas longas antes de E7 |
-| Tamanho do bundle web (8 MB de fonte Dart no pacote) | os ícones são `static const` por campo — medir `flutter build web` antes e depois em E5 |
-| Goldens quebram em massa | E2 revisa e regrava em bloco único, com inspeção visual dos dois temas |
+| `HugeIcon` é `StatefulWidget` + `flutter_svg`; custo por ícone maior que um glifo de fonte | **aberto.** O widget cacheia o SVG montado por (ícone, cor, traço), e nada foi observado no protótipo; falta medir em lista longa real |
+| Tamanho do bundle web (8 MB de dados no pacote) | **fechado: +8,6 %** (267 KB) no `main.dart.js`, medido nos dois lados do commit — o *tree-shaking* funciona |
+| Goldens quebram em massa | **fechado:** um único golden dependia de ícone (`AppTransactionListItem`), regravado após inspeção nos dois temas |
+
+---
+
+## 6. O que ficou aberto — e por quê
+
+**A. A busca global não tem destino.** `AppSearchField` está no catálogo e no Widgetbook, mas não
+foi colocada nas homes: não existe tela de busca no protótipo. Um campo que não leva a lugar nenhum
+é pior que a ausência dele. O destino natural é uma busca sobre as 53 funcionalidades do
+`functional_catalog.dart` — é decisão de produto, não de implementação.
+
+**B. Os frames de cadastro não foram tocados.** `Cadastro bottom fixed` e `Cadastro steps` descrevem
+a barra de ação fixa e a régua de passos. Os fluxos operacionais já têm `FlowShell` e `AppStepper`
+próprios; alinhá-los ao Figma é uma auditoria de fluxo por fluxo, com escopo próprio.
+
+**C. Os dois vetores autorais de §3.3 continuam mapeados por aproximação.** `Confinamento` usa
+`Barns` e `Pecuária` usa `Steak`. Exportá-los do Figma como SVG normalizado a 1.2 e servi-los pela
+mesma API `AppIcon` continua sendo o caminho — §3.3 descreve como.
+
+**D. `ContextBadge` e `AppFarmSelector` mostram a mesma informação.** São dois componentes de
+propósito diferente: a faixa dentro dos fluxos é mitigação de IDOR ("você está lançando *nesta*
+fazenda"), o seletor do cabeçalho é contexto de leitura. A folha de troca, que era duplicável,
+virou `openFarmPicker` e hoje é única. Fundir os dois visuais é decisão de design, não de código.
+
+**E. Divergências deliberadas do Figma, já no código:**
+
+| Figma | GB CERNE | Motivo |
+|---|---|---|
+| Montserrat em rótulos e placeholders | Outfit | Lei 3 — família única de apresentação |
+| Ladrilho cinza sobre cartão branco | Ladrilho `bgSurface` sobre o canvas | Não existe o cartão branco intermediário; no tema claro `bgSubtle` **é** a cor do canvas, e as fileiras sumiriam |
+| Home de Operação com 9 módulos fixos | Grupos do `functional_catalog.dart` | Os grupos do catálogo já são, um a um e na mesma ordem, os ladrilhos do Figma — e cada um tem destino real |

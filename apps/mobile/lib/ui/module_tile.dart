@@ -66,8 +66,14 @@ class AppModuleTile extends StatelessWidget {
           horizontal: AppSpacing.space3,
           vertical: AppSpacing.space4,
         ),
+        // Divergência deliberada do Figma, registrada na esteira: lá o ladrilho
+        // é cinza (#f0f0f0) sobre um cartão branco. Aqui não existe esse cartão
+        // — o ladrilho assenta direto no canvas, e no tema claro `bgSubtle` é a
+        // mesma cor do canvas: as fileiras sumiriam, separadas só pela sombra.
+        // `bgSurface` inverte a relação figura/fundo e mantém o mesmo contraste
+        // com uma camada a menos.
         decoration: BoxDecoration(
-          color: semantic.bgSubtle,
+          color: semantic.bgSurface,
           borderRadius: BorderRadius.circular(AppRadius.tile),
           boxShadow: semantic.shadowCard,
         ),
