@@ -64,6 +64,23 @@ class AppColors {
   static const Color blue700 = Color(0xFF1D4ED8);
   static const Color blue800 = Color(0xFF1E40AF);
   static const Color blue900 = Color(0xFF1E3A8A);
+  static const Color feedbackSuccessBg = Color(0xFFF0FDF4);
+  static const Color feedbackSuccessBorder = Color(0xFFBBF7D0);
+  static const Color feedbackSuccessText = Color(0xFF047857);
+  static const Color feedbackSuccessSolid = Color(0xFF059669);
+  static const Color feedbackErrorBg = Color(0xFFFEF2F2);
+  static const Color feedbackErrorBorder = Color(0xFFFECACA);
+  static const Color feedbackErrorText = Color(0xFFED3437);
+  static const Color feedbackErrorSolid = Color(0xFFED3437);
+  static const Color feedbackWarningBg = Color(0xFFFFFBEB);
+  static const Color feedbackWarningBorder = Color(0xFFFDE68A);
+  static const Color feedbackWarningText = Color(0xFFBE9304);
+  static const Color feedbackWarningSolid = Color(0xFFBE9304);
+  static const Color feedbackInfoBg = Color(0xFFEFF6FF);
+  static const Color feedbackInfoBorder = Color(0xFFBFDBFE);
+  static const Color feedbackInfoText = Color(0xFF2563EB);
+  static const Color feedbackInfoSolid = Color(0xFF3B82F6);
+  static const Color feedbackNotice = Color(0xFFF59E0B);
   static const Color chartRevenue = Color(0xFF059669);
   static const Color chartExpense = Color(0xFFDC2626);
   static const Color chartFinance = Color(0xFF2563EB);
@@ -85,14 +102,21 @@ class AppColors {
 class AppColorsLight {
   AppColorsLight._();
 
-  static const Color fgDefault = Color(0xFF161B17);
-  static const Color fgMuted = Color(0xFF66716A);
-  static const Color fgSubtle = Color(0xFF99A39C);
+  static const Color fgDefault = Color(0xFF141414);
+  static const Color fgHeading = Color(0xFF262626);
+  static const Color fgSection = Color(0xFF1F1A19);
+  static const Color fgMuted = Color(0xFF6B7280);
+  static const Color fgSecondary = Color(0xFF615B58);
+  static const Color fgSubtle = Color(0xFF9B9B9A);
+  static const Color fgQuiet = Color(0xFF80807F);
+  static const Color fgPlaceholder = Color(0x8A023535);
   static const Color fgInverse = Color(0xFFFFFFFF);
-  static const Color bgCanvas = Color(0xFFF5F5F5);
+  static const Color bgCanvas = Color(0xFFF0F0F0);
+  static const Color bgSheet = Color(0xFFFCFCFC);
   static const Color bgSurface = Color(0xFFFFFFFF);
-  static const Color bgSubtle = Color(0xFFF5F5F5);
+  static const Color bgSubtle = Color(0xFFF0F0F0);
   static const Color bgRaised = Color(0xFFFFFFFF);
+  static const Color bgTrack = Color(0xFFE6E6E6);
   static const Color bgKpi = Color(0xFFF8FFFE);
   static const Color borderDefault = Color(0xFFE8E9E1);
   static const Color borderStrong = Color(0xFFD6D8CE);
@@ -108,6 +132,13 @@ class AppColorsLight {
   static const Color inkSubtle = Color(0x66F2F5EE);
   static const Color inkBubble = Color(0x14FFFFFF);
   static const Color inkLine = Color(0x17FFFFFF);
+  static const Color heroFrom = Color(0xFF011E15);
+  static const Color heroTo = Color(0xFF04845F);
+  static const Color heroFg = Color(0xFFFFFFFF);
+  static const Color heroFgMuted = Color(0xCCFFFFFF);
+  static const Color heroFgSubtle = Color(0x99FFFFFF);
+  static const Color heroOverlay = Color(0x33FFFFFF);
+  static const Color heroLine = Color(0x29FFFFFF);
   static const Color ctaBg = Color(0xFF047857);
   static const Color ctaHover = Color(0xFF065F46);
   static const Color ctaFg = Color(0xFFFFFFFF);
@@ -115,19 +146,41 @@ class AppColorsLight {
   static const Color navFg = Color(0xFF67716A);
   static const Color navActive = Color(0xFF047857);
   static const Color navBorder = Color(0xFFE8E9E1);
+  static const List<Color> chartSeries = [
+    Color(0xFF059669),
+    Color(0xFF2563EB),
+    Color(0xFFF59E0B),
+    Color(0xFF7C3AED),
+    Color(0xFF0891B2),
+    Color(0xFFDC2626),
+    Color(0xFF14532D),
+    Color(0xFF9CA3AF),
+  ];
+  static const Color chartGrid = Color(0xFFF3F4F6);
+  static const Color chartAxis = Color(0xFF9CA3AF);
+  static const Color chartTrack = Color(0xFFE5E7EB);
+  static const Color chartPositive = Color(0xFF059669);
+  static const Color chartNegative = Color(0xFFDC2626);
 }
 
 class AppColorsGbMode {
   AppColorsGbMode._();
 
   static const Color fgDefault = Color(0xFFE2F0E8);
+  static const Color fgHeading = Color(0xFFE2F0E8);
+  static const Color fgSection = Color(0xFFE2F0E8);
   static const Color fgMuted = Color(0xFF8FB3A2);
+  static const Color fgSecondary = Color(0xFF8FB3A2);
   static const Color fgSubtle = Color(0xFF5F7D6E);
+  static const Color fgQuiet = Color(0xFF8FB3A2);
+  static const Color fgPlaceholder = Color(0x8AE2F0E8);
   static const Color fgInverse = Color(0xFF051008);
   static const Color bgCanvas = Color(0xFF051008);
+  static const Color bgSheet = Color(0xFF0E2A1D);
   static const Color bgSurface = Color(0xFF0E2A1D);
   static const Color bgSubtle = Color(0xFF0A2016);
   static const Color bgRaised = Color(0xFF123A28);
+  static const Color bgTrack = Color(0x1AFFFFFF);
   static const Color bgKpi = Color(0xFF0E2A1D);
   static const Color borderDefault = Color(0x1AFFFFFF);
   static const Color borderStrong = Color(0x2EFFFFFF);
@@ -143,6 +196,13 @@ class AppColorsGbMode {
   static const Color inkSubtle = Color(0x66E9F4ED);
   static const Color inkBubble = Color(0x0FFFFFFF);
   static const Color inkLine = Color(0x14FFFFFF);
+  static const Color heroFrom = Color(0xFF051008);
+  static const Color heroTo = Color(0xFF102B1E);
+  static const Color heroFg = Color(0xFFE9F4ED);
+  static const Color heroFgMuted = Color(0x9EE9F4ED);
+  static const Color heroFgSubtle = Color(0x66E9F4ED);
+  static const Color heroOverlay = Color(0x0FFFFFFF);
+  static const Color heroLine = Color(0x14FFFFFF);
   static const Color ctaBg = Color(0xFF10B981);
   static const Color ctaHover = Color(0xFF34D399);
   static const Color ctaFg = Color(0xFFFFFFFF);
@@ -150,6 +210,21 @@ class AppColorsGbMode {
   static const Color navFg = Color(0xFF8FB3A2);
   static const Color navActive = Color(0xFF10B981);
   static const Color navBorder = Color(0x1AFFFFFF);
+  static const List<Color> chartSeries = [
+    Color(0xFF34D399),
+    Color(0xFF60A5FA),
+    Color(0xFFFBBF24),
+    Color(0xFFA78BFA),
+    Color(0xFF22D3EE),
+    Color(0xFFF87171),
+    Color(0xFF86EFAC),
+    Color(0xFF94A3B8),
+  ];
+  static const Color chartGrid = Color(0x14FFFFFF);
+  static const Color chartAxis = Color(0x52FFFFFF);
+  static const Color chartTrack = Color(0x12FFFFFF);
+  static const Color chartPositive = Color(0xFF34D399);
+  static const Color chartNegative = Color(0xFFF87171);
 }
 
 class AppComponentColors {

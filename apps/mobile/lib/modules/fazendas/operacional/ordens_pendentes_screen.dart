@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -29,23 +28,28 @@ class OrdensPendentesScreen extends ConsumerWidget {
       children: [
         const SubPageHeader(title: 'Ordens pendentes'),
         Expanded(
-          child: ordens.isEmpty
-              ? const Center(
-                  child: AppEmptyState(
-                    icon: LucideIcons.inbox,
-                    title: 'Nenhuma ordem pendente',
-                    description:
-                        'Transferências de lote e trocas de dieta criadas pelo ADM aparecem aqui.',
+          child: AppContentSheet(
+            padded: false,
+            child: ordens.isEmpty
+                ? const Center(
+                    child: AppEmptyState(
+                      icon: AppIcons.inbox,
+                      title: 'Nenhuma ordem pendente',
+                      description:
+                          'Transferências de lote e trocas de dieta criadas pelo ADM aparecem aqui.',
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.all(AppSpacing.space4),
+                    itemCount: ordens.length,
+                    separatorBuilder: (context, _) =>
+                        const SizedBox(height: AppSpacing.space3),
+                    itemBuilder: (context, index) => _OrdemCard(
+                      ordem: ordens[index],
+                      onConfirmar: notifier.confirmarOrdemPendente,
+                    ),
                   ),
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.all(AppSpacing.space4),
-                  itemCount: ordens.length,
-                  separatorBuilder: (context, _) =>
-                      const SizedBox(height: AppSpacing.space3),
-                  itemBuilder: (context, index) =>
-                      _OrdemCard(ordem: ordens[index], onConfirmar: notifier.confirmarOrdemPendente),
-                ),
+          ),
         ),
       ],
     );
@@ -105,7 +109,10 @@ class _OrdemCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.space1),
             Text(
               ordem.observacao!,
-              style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgMuted,
+              ),
             ),
           ],
           if (!confirmada) ...[

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -9,6 +9,7 @@ import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'button.dart';
 import 'heading.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `ErrorState.tsx` — estado de erro de carregamento com retry
 /// (spec §7.1). Compõe `AppHeading` (nível 3) + `AppButton` (variant
@@ -47,9 +48,9 @@ class AppErrorState extends StatelessWidget {
                 color: AppColors.red50,
                 borderRadius: BorderRadius.circular(AppRadius.xl2),
               ),
-              child: const Icon(
-                LucideIcons.triangleAlert,
-                size: 26,
+              child: const AppIcon(
+                AppIcons.triangleAlert,
+                size: AppSize.iconLg,
                 color: AppColors.red600,
               ),
             ),

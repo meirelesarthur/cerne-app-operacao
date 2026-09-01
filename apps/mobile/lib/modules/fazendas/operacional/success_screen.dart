@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
@@ -41,20 +40,23 @@ class SuccessScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: semantic.bgCanvas,
       body: SafeArea(
-        child: AppSuccessPanel(
-          title: queued ? 'Salvo no aparelho' : title,
-          icon: queued ? LucideIcons.refreshCw : LucideIcons.checkCircle2,
-          description: Text(
-            queued
-                ? 'Vai subir sozinho quando o celular pegar sinal de novo — '
-                      '$pendentes ${pendentes == 1 ? 'lançamento está' : 'lançamentos estão'} '
-                      'esperando para sincronizar. $effects'
-                : effects,
-          ),
-          actions: AppButton(
-            fullWidth: true,
-            onPressed: () => context.go('/fazendas'),
-            child: const Text('Voltar ao início'),
+        child: AppContentSheet(
+          child: AppSuccessPanel(
+            title: queued ? 'Salvo no aparelho' : title,
+            icon: queued ? AppIcons.refreshCw : AppIcons.checkCircle2,
+            description: Text(
+              queued
+                  ? 'Vai subir sozinho quando o celular pegar sinal de novo — '
+                        '$pendentes ${pendentes == 1 ? 'lançamento está' : 'lançamentos estão'} '
+                        'esperando para sincronizar. $effects'
+                  : effects,
+            ),
+            actions: AppButton(
+              fullWidth: true,
+              size: AppButtonSize.lg,
+              onPressed: () => context.go('/fazendas'),
+              child: const Text('Voltar ao início'),
+            ),
           ),
         ),
       ),

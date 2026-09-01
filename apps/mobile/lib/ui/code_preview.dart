@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -110,8 +110,8 @@ class _AppCodePreviewState extends State<AppCodePreview> {
                       ),
                     ),
                     AppIconButton(
-                      icon: Icon(
-                        _copied ? LucideIcons.check : LucideIcons.copy,
+                      icon: AppIcon(
+                        _copied ? AppIcons.check : AppIcons.copy,
                         color: semantic.inkFg,
                       ),
                       label: 'Copiar código',

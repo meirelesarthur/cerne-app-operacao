@@ -3,6 +3,7 @@ import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_motion.dart';
 import '../design/generated/app_radius.dart';
+import '../design/generated/app_shadows.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
 
@@ -82,7 +83,14 @@ class _AppSkeletonState extends State<AppSkeleton>
   }
 }
 
-/// Skeleton pré-montado no formato de um card de dashboard (`CardSkeleton` no React).
+/// Skeleton pré-montado no formato de um card do padrão global: mesma
+/// superfície, mesmo raio [AppRadius.tile] e mesma sombra `AppShadows.tile` do
+/// card que ele substitui enquanto os dados chegam — se o esqueleto tivesse
+/// geometria própria, a tela saltaria ao trocar de estado.
+///
+/// Os respiros são distribuídos com `spaceBetween` em vez de `SizedBox` fixo:
+/// o esqueleto entra em células de grade com proporção fixa, e uma altura
+/// intrínseca somada estourava a célula por alguns pixels.
 class AppCardSkeleton extends StatelessWidget {
   const AppCardSkeleton({super.key});
 
@@ -93,25 +101,23 @@ class AppCardSkeleton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.space4),
       decoration: BoxDecoration(
-        color: semantic.bgSurface,
-        border: Border.all(color: semantic.borderDefault),
-        borderRadius: BorderRadius.circular(AppRadius.xl2),
+        color: semantic.bgRaised,
+        borderRadius: BorderRadius.circular(AppRadius.tile),
+        boxShadow: AppShadows.tile,
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           AppSkeleton(width: AppSpacing.space8, height: AppSpacing.space8),
-          SizedBox(height: AppSpacing.space3),
           FractionallySizedBox(
             widthFactor: 2 / 3,
             child: AppSkeleton(height: AppSpacing.space3),
           ),
-          SizedBox(height: AppSpacing.space2),
           FractionallySizedBox(
             widthFactor: 1 / 2,
             child: AppSkeleton(height: AppSpacing.space6),
           ),
-          SizedBox(height: AppSpacing.space3),
           AppSkeleton(height: AppSpacing.space8),
         ],
       ),

@@ -6,6 +6,7 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/operacional/trato_diario_flow.dart';
 
 import '../../../support/test_viewport.dart';
+import '../../../helpers/cta_finder.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
   child: MaterialApp(
@@ -39,7 +40,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Currais elegíveis'), findsOneWidget);
-      expect(find.text('Finalizar fornecimento'), findsOneWidget);
+      expect(findCta('Finalizar fornecimento'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

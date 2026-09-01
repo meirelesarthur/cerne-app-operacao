@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -68,7 +68,7 @@ class _AppStepperState extends State<AppStepper> {
     const height = AppSize.iconBtnMd;
 
     Widget stepButton({
-      required IconData icon,
+      required AppIconData icon,
       required String label,
       required VoidCallback? onTap,
     }) {
@@ -80,9 +80,9 @@ class _AppStepperState extends State<AppStepper> {
           child: SizedBox(
             width: AppSize.iconBtnMd,
             height: height,
-            child: Icon(
+            child: AppIcon(
               icon,
-              size: 16,
+              size: AppSize.iconSm,
               color: onTap == null ? semantic.fgSubtle : semantic.fgMuted,
             ),
           ),
@@ -102,7 +102,7 @@ class _AppStepperState extends State<AppStepper> {
         mainAxisSize: MainAxisSize.min,
         children: [
           stepButton(
-            icon: LucideIcons.minus,
+            icon: AppIcons.minus,
             label: 'Diminuir',
             onTap: widget.value <= widget.min
                 ? null
@@ -160,7 +160,7 @@ class _AppStepperState extends State<AppStepper> {
             ),
           ),
           stepButton(
-            icon: LucideIcons.plus,
+            icon: AppIcons.plus,
             label: 'Aumentar',
             onTap: widget.value >= widget.max
                 ? null

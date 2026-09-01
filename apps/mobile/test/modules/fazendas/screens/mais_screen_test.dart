@@ -18,7 +18,12 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Mais'), findsOneWidget);
-      expect(find.text('Dashboards gerenciais'), findsOneWidget);
+      // Auditoria dos painéis: "Dashboards gerenciais" virou "Painéis de
+      // decisão" e Consultas Gerenciais saiu do grupo — é console de consulta,
+      // não painel. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
+      expect(find.text('Painéis de decisão'), findsOneWidget);
+      expect(find.text('Consultas e auditoria'), findsOneWidget);
+      expect(find.text('Resultado'), findsOneWidget);
       expect(find.text('Fila de sincronização'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });

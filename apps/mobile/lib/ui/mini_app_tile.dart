@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'chip.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha o selo de estado opcional de `MiniAppTile.tsx`
 /// (`badge?: 'novo' | 'breve'`).
@@ -26,8 +27,8 @@ class AppMiniAppTile extends StatelessWidget {
     this.onTap,
   });
 
-  /// Ícone do mini-app — tipicamente `LucideIcons.xxx`.
-  final IconData icon;
+  /// Ícone do mini-app — sempre uma entrada de `AppIcons`.
+  final AppIconData icon;
   final String name;
   final String? description;
   final AppMiniAppTileBadge? badge;
@@ -73,11 +74,11 @@ class AppMiniAppTile extends StatelessWidget {
                           color: semantic.accentSubtle,
                           border: Border.all(color: semantic.borderTint),
                         ),
-                        // strokeWidth: 1.8 do React não tem equivalente direto
-                        // em `Icon` (glifo já vetorizado); size preservado.
-                        child: Icon(
+                        // O traço é o do sistema (`AppSize.iconStroke`),
+                        // aplicado por `AppIcon`; aqui só o tamanho é local.
+                        child: AppIcon(
                           icon,
-                          size: 20,
+                          size: AppSize.iconMd,
                           color: semantic.accentDefault,
                         ),
                       ),
@@ -152,7 +153,7 @@ WidgetbookComponent buildMiniAppTileWidgetbookComponent() {
               SizedBox(
                 width: 160,
                 child: AppMiniAppTile(
-                  icon: LucideIcons.landmark,
+                  icon: AppIcons.landmark,
                   name: 'GB Bank',
                   description: 'Conta digital do produtor rural',
                   onTap: () {},
@@ -161,7 +162,7 @@ WidgetbookComponent buildMiniAppTileWidgetbookComponent() {
               SizedBox(
                 width: 160,
                 child: AppMiniAppTile(
-                  icon: LucideIcons.handshake,
+                  icon: AppIcons.handshake,
                   name: 'Crédito',
                   description: 'Linhas de crédito sob medida',
                   badge: AppMiniAppTileBadge.novo,
@@ -171,7 +172,7 @@ WidgetbookComponent buildMiniAppTileWidgetbookComponent() {
               const SizedBox(
                 width: 160,
                 child: AppMiniAppTile(
-                  icon: LucideIcons.store,
+                  icon: AppIcons.store,
                   name: 'Marketplace',
                   description: 'Compra e venda de insumos',
                   badge: AppMiniAppTileBadge.breve,

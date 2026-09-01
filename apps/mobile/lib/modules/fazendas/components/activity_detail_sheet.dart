@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -8,6 +7,7 @@ import '../types.dart';
 import 'activity_list_item.dart';
 import 'package:cerne_app/design/generated/app_radius.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Nome legível do tipo de atividade (spec §6.7) — espelha `KIND_LABEL`.
 const Map<ActivityKind, String> _kindLabel = {
@@ -90,7 +90,11 @@ class _ActivityDetailBody extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.bgSubtle,
               ),
-              child: Icon(icon, size: 22, color: semantic.fgMuted),
+              child: AppIcon(
+                icon,
+                size: AppSize.iconMd,
+                color: semantic.fgMuted,
+              ),
             ),
             const SizedBox(width: AppSpacing.space3),
             Expanded(
@@ -151,7 +155,11 @@ class _ActivityDetailBody extends StatelessWidget {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(LucideIcons.smartphone, size: 13, color: semantic.fgMuted),
+              AppIcon(
+                AppIcons.smartphone,
+                size: AppSize.iconXs,
+                color: semantic.fgMuted,
+              ),
               const SizedBox(width: AppSpacing.space1),
               Text(
                 'Registrado no campo',
@@ -163,9 +171,9 @@ class _ActivityDetailBody extends StatelessWidget {
               const SizedBox(width: AppSpacing.space1),
               Text('·', style: TextStyle(color: semantic.fgMuted)),
               const SizedBox(width: AppSpacing.space1),
-              Icon(
-                LucideIcons.checkCircle2,
-                size: 13,
+              AppIcon(
+                AppIcons.checkCircle2,
+                size: AppSize.iconXs,
                 color: semantic.accentDefault,
               ),
               const SizedBox(width: AppSpacing.space1),

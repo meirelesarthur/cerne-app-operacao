@@ -73,6 +73,42 @@ void main() {
       );
     });
 
+    test('a iconografia entra pelo catálogo, nunca pelo pacote', () {
+      // A migração para Hugeicons (docs/ESTEIRA-PADRAO-GLOBAL-HUGEICONS.md) só se
+      // sustenta se o pacote ficar atrás de `AppIcon`: é ele que aplica o traço
+      // 1.2 e o único ponto onde trocar de família custaria uma linha.
+      final lucide = RegExp(r'''package:lucide_icons_flutter/''');
+      final hugeicons = RegExp(r'''package:hugeicons/''');
+      final residual = <String>[];
+      final leaked = <String>[];
+
+      for (final file in _dartFiles(Directory('lib'))) {
+        final relative = _relative(file);
+        final source = file.readAsStringSync();
+        for (final match in lucide.allMatches(source)) {
+          residual.add('$relative:${_lineAt(source, match.start)}');
+        }
+        if (relative == 'lib/ui/app_icon.dart') continue;
+        for (final match in hugeicons.allMatches(source)) {
+          leaked.add('$relative:${_lineAt(source, match.start)}');
+        }
+      }
+
+      expect(
+        residual,
+        isEmpty,
+        reason:
+            'lucide_icons_flutter saiu do projeto na E5: ${residual.join(', ')}',
+      );
+      expect(
+        leaked,
+        isEmpty,
+        reason:
+            'Só lib/ui/app_icon.dart importa package:hugeicons; o resto consome '
+            'AppIcon/AppIcons: ${leaked.join(', ')}',
+      );
+    });
+
     test('todo widget público possui caso registrado no Widgetbook', () {
       final barrel = File('lib/ui/ui.dart').readAsStringSync();
       final widgetbook = File('lib/widgetbook_app.dart').readAsStringSync();

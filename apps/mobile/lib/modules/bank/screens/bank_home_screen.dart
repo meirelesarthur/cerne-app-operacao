@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../mocks/bank_mocks.dart';
@@ -12,6 +11,7 @@ import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../components/bank_card_visual.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Home do módulo GB Bank (New-UI): saldo, ações rápidas, cartão corporativo,
 /// deep-link para Crédito e últimas movimentações — experiência completa do
@@ -43,7 +43,10 @@ class BankHomeScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const Icon(LucideIcons.arrowDownLeft, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowDownLeft,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Entradas no mês',
                       value: ResumoMes.entradas,
                       hidden: balanceHidden,
@@ -52,7 +55,10 @@ class BankHomeScreen extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const Icon(LucideIcons.arrowUpRight, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowUpRight,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Saídas no mês',
                       value: ResumoMes.saidas,
                       hidden: balanceHidden,
@@ -72,28 +78,28 @@ class BankHomeScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.zap,
+                  icon: AppIcons.zap,
                   label: 'Pix',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.scanLine,
+                  icon: AppIcons.scanLine,
                   label: 'Pagar',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.arrowLeftRight,
+                  icon: AppIcons.arrowLeftRight,
                   label: 'Transferir',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
               ),
               Expanded(
                 child: AppQuickAction(
-                  icon: LucideIcons.handCoins,
+                  icon: AppIcons.handCoins,
                   label: 'Cobrar',
                   onPressed: () => context.go('/bank/pagamentos'),
                 ),
@@ -126,9 +132,24 @@ class BankHomeScreen extends ConsumerWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('Limite disponível'),
-                              Text(
-                                '${balanceHidden ? '••••' : Cartao.limiteDisponivel} / ${balanceHidden ? '••••' : Cartao.limiteTotal}',
+                              const Flexible(
+                                child: Text(
+                                  'Limite disponível',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.space2),
+                              // Dois valores monetários numa linha só: sem
+                              // `Flexible` a linha estoura assim que o limite
+                              // passa da casa dos milhões.
+                              Flexible(
+                                child: Text(
+                                  '${balanceHidden ? '••••' : Cartao.limiteDisponivel} / ${balanceHidden ? '••••' : Cartao.limiteTotal}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.end,
+                                ),
                               ),
                             ],
                           ),
@@ -164,9 +185,9 @@ class BankHomeScreen extends ConsumerWidget {
                     shape: BoxShape.circle,
                     color: semantic.accentDefault,
                   ),
-                  child: const Icon(
-                    LucideIcons.trendingUp,
-                    size: 22,
+                  child: const AppIcon(
+                    AppIcons.trendingUp,
+                    size: AppSize.iconMd,
                     color: AppColors.neutral0,
                   ),
                 ),
@@ -189,9 +210,9 @@ class BankHomeScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                Icon(
-                  LucideIcons.arrowRight,
-                  size: 18,
+                AppIcon(
+                  AppIcons.arrowRight,
+                  size: AppSize.iconSmPlus,
                   color: semantic.accentDefault,
                 ),
               ],

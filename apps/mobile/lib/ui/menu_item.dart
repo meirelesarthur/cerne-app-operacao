@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
+import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
+import '../design/generated/app_shadows.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -16,9 +18,13 @@ enum AppMenuItemTone { standard, danger }
 /// Espelha `MenuItemVariant` (`'light' | 'onDark'`) de `MenuItem.tsx`.
 enum AppMenuItemVariant { light, onDark }
 
-/// Item de menu/navegação (Nova UI): linha-cápsula com bolha de ícone à
-/// esquerda, título + descrição e chevron em círculo à direita.
+/// Item de menu/navegação: linha-cápsula com bolha de ícone à esquerda,
+/// título + descrição e chevron em círculo à direita.
 /// Touch target ≥ 56px (`AppSpacing.space14`), espelhando `min-h-14` do React.
+///
+/// Geometria do padrão global: raio [AppRadius.tile] (20), sombra
+/// `AppShadows.row`, rótulo de 16 px e ícones na escala do sistema — as linhas
+/// de `Menu-rapido-admin` do Figma (`54349:2948`).
 class AppMenuItem extends StatelessWidget {
   const AppMenuItem({
     super.key,
@@ -33,7 +39,7 @@ class AppMenuItem extends StatelessWidget {
     this.onTap,
   });
 
-  final IconData? icon;
+  final AppIconData? icon;
   final String label;
   final String? description;
   final Widget? trailing;
@@ -61,7 +67,7 @@ class AppMenuItem extends StatelessWidget {
         : (_isOnDark ? semantic.inkBubble : semantic.bgSurface);
 
     final labelColor = _isDanger
-        ? (_isOnDark ? AppColors.red400 : AppColors.red600)
+        ? (_isOnDark ? AppColors.red400 : AppColors.feedbackErrorText)
         : active
         ? (_isOnDark ? semantic.inkFg : semantic.accentDefault)
         : (_isOnDark ? semantic.inkFg : semantic.fgDefault);
@@ -80,10 +86,10 @@ class AppMenuItem extends StatelessWidget {
 
     return Material(
       color: containerColor,
-      borderRadius: BorderRadius.circular(AppRadius.xl2),
+      borderRadius: BorderRadius.circular(AppRadius.tile),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.xl2),
+        borderRadius: BorderRadius.circular(AppRadius.tile),
         child: Container(
           constraints: const BoxConstraints(minHeight: AppSpacing.space14),
           padding: const EdgeInsets.symmetric(
@@ -92,8 +98,8 @@ class AppMenuItem extends StatelessWidget {
           ),
           decoration: !active && !_isOnDark && showShadow
               ? BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppRadius.xl2),
-                  boxShadow: semantic.shadowCard,
+                  borderRadius: BorderRadius.circular(AppRadius.tile),
+                  boxShadow: AppShadows.row,
                 )
               : null,
           child: Row(
@@ -107,7 +113,7 @@ class AppMenuItem extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: Icon(icon, size: 19, color: iconColor),
+                  child: AppIcon(icon, size: AppSize.iconMd, color: iconColor),
                 ),
                 const SizedBox(width: AppSpacing.space3),
               ],
@@ -121,8 +127,8 @@ class AppMenuItem extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: AppTypography.md,
-                        fontWeight: AppTypography.weightSemibold,
+                        fontSize: AppTypography.xl,
+                        fontWeight: AppTypography.weightMedium,
                         color: labelColor,
                       ),
                     ),
@@ -132,7 +138,7 @@ class AppMenuItem extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: AppTypography.xs,
+                          fontSize: AppTypography.sm,
                           color: descriptionColor,
                         ),
                       ),
@@ -154,9 +160,9 @@ class AppMenuItem extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                   alignment: Alignment.center,
-                  child: Icon(
-                    LucideIcons.chevronRight,
-                    size: 15,
+                  child: AppIcon(
+                    AppIcons.chevronRight,
+                    size: AppSize.iconSm,
                     color: chevronColor,
                   ),
                 ),
@@ -180,21 +186,21 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
             mainAxisSize: MainAxisSize.min,
             children: [
               AppMenuItem(
-                icon: LucideIcons.user,
+                icon: AppIcons.user,
                 label: 'Perfil',
                 description: 'Dados pessoais e documentos',
                 onTap: () {},
               ),
               const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
-                icon: LucideIcons.bell,
+                icon: AppIcons.bell,
                 label: 'Notificações',
                 active: true,
                 onTap: () {},
               ),
               const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
-                icon: LucideIcons.logOut,
+                icon: AppIcons.logOut,
                 label: 'Sair',
                 tone: AppMenuItemTone.danger,
                 onTap: () {},
@@ -212,14 +218,14 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
             mainAxisSize: MainAxisSize.min,
             children: [
               AppMenuItem(
-                icon: LucideIcons.settings,
+                icon: AppIcons.settings,
                 label: 'Configurações',
                 variant: AppMenuItemVariant.onDark,
                 onTap: () {},
               ),
               const SizedBox(height: AppSpacing.space2),
               AppMenuItem(
-                icon: LucideIcons.shield,
+                icon: AppIcons.shield,
                 label: 'Segurança',
                 active: true,
                 variant: AppMenuItemVariant.onDark,

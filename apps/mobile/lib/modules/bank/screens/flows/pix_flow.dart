@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../design/generated/app_spacing.dart';
 import '../../../../design/generated/app_typography.dart';
@@ -12,6 +11,7 @@ import '../../../../ui/ui.dart';
 import '../../components/bank_flow_shell.dart';
 import 'package:cerne_app/modules/bank/lib/currency.dart';
 import 'package:cerne_app/design/generated/app_radius.dart';
+import '../../../../design/generated/app_layout.dart';
 
 class _Destino {
   const _Destino({
@@ -209,7 +209,10 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             AppButton(
               variant: AppButtonVariant.secondary,
               fullWidth: true,
-              rightIcon: const Icon(LucideIcons.arrowRight, size: 16),
+              rightIcon: const AppIcon(
+                AppIcons.arrowRight,
+                size: AppSize.iconSm,
+              ),
               onPressed: _chaveManualController.text.trim().isEmpty
                   ? null
                   : _continuarManual,
@@ -253,9 +256,9 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                         ],
                       ),
                     ),
-                    Icon(
-                      LucideIcons.arrowRight,
-                      size: 18,
+                    AppIcon(
+                      AppIcons.arrowRight,
+                      size: AppSize.iconSmPlus,
                       color: semantic.accentDefault,
                     ),
                   ],
@@ -413,9 +416,9 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                     shape: BoxShape.circle,
                     color: semantic.accentSubtle,
                   ),
-                  child: Icon(
-                    LucideIcons.zap,
-                    size: 22,
+                  child: AppIcon(
+                    AppIcons.zap,
+                    size: AppSize.iconMd,
                     color: semantic.accentDefault,
                   ),
                 ),
@@ -465,7 +468,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             ),
             const SizedBox(height: AppSpacing.space5),
             const AppBanner(
-              icon: Icon(LucideIcons.info, size: 14),
+              icon: AppIcon(AppIcons.info, size: AppSize.iconXs),
               child: Text(
                 'O Pix é processado na hora, 24/7. Confira os dados antes de confirmar.',
               ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../../design/generated/app_spacing.dart';
@@ -27,7 +26,7 @@ class _MenuLink {
     this.tone = AppMenuItemTone.standard,
   });
 
-  final IconData icon;
+  final AppIconData icon;
   final String label;
   final String? description;
   final AppMenuItemTone tone;
@@ -37,16 +36,36 @@ const _groups = [
   _MenuGroup(
     title: 'Painéis',
     items: [
-      _MenuLink(icon: LucideIcons.wallet, label: 'Financeiro', description: 'Fluxo de caixa e contas'),
-      _MenuLink(icon: LucideIcons.beef, label: 'Pecuária', description: 'Rebanho e ciclos'),
-      _MenuLink(icon: LucideIcons.boxes, label: 'Suprimentos', description: 'Estoque e insumos'),
+      _MenuLink(
+        icon: AppIcons.wallet,
+        label: 'Financeiro',
+        description: 'Fluxo de caixa e contas',
+      ),
+      _MenuLink(
+        icon: AppIcons.beef,
+        label: 'Pecuária',
+        description: 'Rebanho e ciclos',
+      ),
+      _MenuLink(
+        icon: AppIcons.boxes,
+        label: 'Suprimentos',
+        description: 'Estoque e insumos',
+      ),
     ],
   ),
   _MenuGroup(
     title: 'Conta',
     items: [
-      _MenuLink(icon: LucideIcons.user, label: 'Perfil', description: 'Dados pessoais e documentos'),
-      _MenuLink(icon: LucideIcons.logOut, label: 'Sair', tone: AppMenuItemTone.danger),
+      _MenuLink(
+        icon: AppIcons.user,
+        label: 'Perfil',
+        description: 'Dados pessoais e documentos',
+      ),
+      _MenuLink(
+        icon: AppIcons.logOut,
+        label: 'Sair',
+        tone: AppMenuItemTone.danger,
+      ),
     ],
   ),
 ];

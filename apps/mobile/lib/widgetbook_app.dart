@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'design/generated/app_colors.dart';
@@ -15,6 +14,7 @@ import 'widgetbook/patterns/crud_pattern.dart';
 import 'widgetbook/patterns/listing_pattern.dart';
 import 'widgetbook/patterns/login_pattern.dart';
 import 'widgetbook/patterns/menu_pattern.dart';
+import 'design/generated/app_layout.dart';
 
 /// Ponto de entrada da galeria de componentes (F2.5) e da auditoria de tema (F1.4).
 /// Rodar: `flutter run -t lib/widgetbook_app.dart -d chrome`.
@@ -84,6 +84,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildButtonWidgetbookComponent(),
                 buildIconButtonWidgetbookComponent(),
                 buildQuickActionWidgetbookComponent(),
+                buildAppIconTileWidgetbookComponent(),
                 buildPressableWidgetbookComponent(),
                 buildSegmentedTabsWidgetbookComponent(),
               ],
@@ -97,6 +98,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildMiniAppTileWidgetbookComponent(),
                 buildChartCardWidgetbookComponent(),
                 buildKpiStatCardWidgetbookComponent(),
+                buildMetricGridWidgetbookComponent(),
                 buildBalanceCardWidgetbookComponent(),
               ],
             ),
@@ -116,8 +118,24 @@ class CerneWidgetbook extends StatelessWidget {
               ],
             ),
             WidgetbookFolder(
+              name: 'Padrão global',
+              children: [
+                buildContentSheetWidgetbookComponent(),
+                buildTopBarWidgetbookComponent(),
+                buildGreetingHeaderWidgetbookComponent(),
+                buildFarmSelectorWidgetbookComponent(),
+                buildSearchFieldWidgetbookComponent(),
+                buildModuleTileWidgetbookComponent(),
+                buildEntityRowWidgetbookComponent(),
+                buildActionBarWidgetbookComponent(),
+                buildStepProgressWidgetbookComponent(),
+              ],
+            ),
+            WidgetbookFolder(
               name: 'Feedback',
               children: [
+                buildAlertStripWidgetbookComponent(),
+                buildAppIconWidgetbookComponent(),
                 buildBannerWidgetbookComponent(),
                 buildEmptyStateWidgetbookComponent(),
                 buildErrorStateWidgetbookComponent(),
@@ -158,6 +176,11 @@ class CerneWidgetbook extends StatelessWidget {
               children: [
                 buildBarChartWidgetbookComponent(),
                 buildDonutChartWidgetbookComponent(),
+                buildLineChartWidgetbookComponent(),
+                buildStackedBarWidgetbookComponent(),
+                buildGaugeWidgetbookComponent(),
+                buildBulletChartWidgetbookComponent(),
+                buildChartLegendWidgetbookComponent(),
                 buildSparklineAreaWidgetbookComponent(),
               ],
             ),
@@ -253,9 +276,9 @@ class _SwatchState extends State<_Swatch> {
                   Positioned(
                     top: 4,
                     right: 4,
-                    child: Icon(
-                      LucideIcons.check,
-                      size: 14,
+                    child: AppIcon(
+                      AppIcons.check,
+                      size: AppSize.iconXs,
                       color: semantic.fgDefault,
                     ),
                   ),
@@ -293,18 +316,7 @@ class _ColorAuditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    final brandScale = [
-      50,
-      100,
-      200,
-      300,
-      400,
-      500,
-      600,
-      700,
-      800,
-      900,
-    ].map(
+    final brandScale = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900].map(
       (s) => _Swatch(
         label: 'brand$s',
         code: 'AppColors.brand$s',
@@ -420,7 +432,10 @@ class _SpacingAuditPage extends StatelessWidget {
                   width: 190,
                   child: Text(
                     'AppSpacing.${e.key}  (${e.value.toInt()}px)',
-                    style: const TextStyle(fontFamily: kCodeFontFamily, fontSize: AppTypography.sm),
+                    style: const TextStyle(
+                      fontFamily: kCodeFontFamily,
+                      fontSize: AppTypography.sm,
+                    ),
                   ),
                 ),
                 Container(
@@ -522,7 +537,10 @@ class _TypographyAuditPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text('GB CERNE (${e.value}px)', style: TextStyle(fontSize: e.value)),
+                Text(
+                  'GB CERNE (${e.value}px)',
+                  style: TextStyle(fontSize: e.value),
+                ),
               ],
             ),
           ),
@@ -549,7 +567,10 @@ class _TypographyAuditPage extends StatelessWidget {
                 ),
                 Text(
                   'GB CERNE',
-                  style: TextStyle(fontSize: AppTypography.xl, fontWeight: e.value),
+                  style: TextStyle(
+                    fontSize: AppTypography.xl,
+                    fontWeight: e.value,
+                  ),
                 ),
               ],
             ),

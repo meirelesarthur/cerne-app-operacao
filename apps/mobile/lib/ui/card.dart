@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_radius.dart';
+import '../design/generated/app_shadows.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 
 /// Espelha `Card.tsx` do protótipo React. `variant: ink` é a superfície escura
 /// de destaque (hero da referência) — permanece escura nos dois temas.
+///
+/// Geometria do padrão global: raio [AppRadius.surface] (24), sem borda e com
+/// a sombra quase imperceptível `AppShadows.tile`. A borda de 1px saiu porque
+/// no Figma nenhuma superfície de conteúdo tem contorno — a separação vem só
+/// da diferença entre a folha e o cartão.
 /// Quando `interactive` e `onTap` estão presentes, o toque dispara ripple e o
 /// widget é focável/ativável via teclado (Enter/Espaço), espelhando o
 /// `role="button"` + `onKeyDown` do React.
@@ -33,8 +39,7 @@ class AppCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final isInk = variant == AppCardVariant.ink;
-    final bg = isInk ? semantic.inkBg : semantic.bgSurface;
-    final borderColor = isInk ? semantic.inkLine : semantic.borderSubtle;
+    final bg = isInk ? semantic.inkBg : semantic.bgRaised;
     final fg = isInk ? semantic.inkFg : null;
 
     Widget content = Padding(
@@ -51,14 +56,13 @@ class AppCard extends StatelessWidget {
       );
     }
 
-    final radius = BorderRadius.circular(AppRadius.xl3);
+    final radius = BorderRadius.circular(AppRadius.surface);
 
     return Container(
       decoration: BoxDecoration(
         color: bg,
         borderRadius: radius,
-        border: Border.all(color: borderColor),
-        boxShadow: semantic.shadowCard,
+        boxShadow: AppShadows.tile,
       ),
       child: ClipRRect(
         borderRadius: radius,

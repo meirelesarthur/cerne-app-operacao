@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -9,6 +8,7 @@ import '../../../ui/ui.dart';
 import '../mocks/estoque_mocks.dart';
 import 'unidade_card.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Detalhe de Unidade de armazenagem: BottomSheet acionado pelo `UnidadeCard`
 /// na Home e na aba Unidades — capacidade, ocupação, produtos armazenados,
@@ -147,7 +147,11 @@ class _SheetBody extends StatelessWidget {
         const SizedBox(height: AppSpacing.space4),
         Row(
           children: [
-            Icon(LucideIcons.mapPin, size: 14, color: semantic.fgMuted),
+            AppIcon(
+              AppIcons.mapPin,
+              size: AppSize.iconXs,
+              color: semantic.fgMuted,
+            ),
             const SizedBox(width: AppSpacing.oneHalf),
             Expanded(
               child: Text(

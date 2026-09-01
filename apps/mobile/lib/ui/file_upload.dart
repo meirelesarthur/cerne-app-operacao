@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `FileUpload.tsx` — dropzone/seletor de arquivo (ex.: XML da NF-e).
 ///
@@ -46,9 +47,9 @@ class AppFileUpload extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(
-              LucideIcons.fileCheck2,
-              size: 20,
+            AppIcon(
+              AppIcons.fileCheck2,
+              size: AppSize.iconMd,
               color: semantic.accentDefault,
             ),
             const SizedBox(width: AppSpacing.space3),
@@ -69,7 +70,11 @@ class AppFileUpload extends StatelessWidget {
               label: 'Remover arquivo',
               child: InkWell(
                 onTap: () => onChanged(null),
-                child: Icon(LucideIcons.x, size: 18, color: semantic.fgSubtle),
+                child: AppIcon(
+                  AppIcons.x,
+                  size: AppSize.iconSmPlus,
+                  color: semantic.fgSubtle,
+                ),
               ),
             ),
           ],
@@ -94,7 +99,11 @@ class AppFileUpload extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(LucideIcons.uploadCloud, size: 28, color: semantic.fgSubtle),
+            AppIcon(
+              AppIcons.uploadCloud,
+              size: AppSize.iconXl,
+              color: semantic.fgSubtle,
+            ),
             const SizedBox(height: AppSpacing.space2),
             Text(
               'Selecionar arquivo ${accept.replaceFirst('.', '').toUpperCase()}',

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `QuickAction.tsx` (New-UI hub): círculo de 56px (`AppSpacing.space14`)
-/// com rótulo abaixo — usado nas ações rápidas do hub. Ícone fixo em 21px,
-/// espelhando `<Icon size={21} strokeWidth={1.9} />` do React.
+/// com rótulo abaixo — usado nas ações rápidas do hub. Ícone fixo em 21px; o
+/// traço é o do sistema, aplicado por `AppIcon`.
 ///
 /// Ajuste de usabilidade (ver plano de melhorias de UX): o círculo era um
 /// verde bem claro (`accentSubtle`) quase da mesma família de cor do ícone —
@@ -23,8 +24,8 @@ class AppQuickAction extends StatelessWidget {
     this.onPressed,
   });
 
-  /// Ícone fixo — equivalente ao `icon: LucideIcon` do React (ex.: `LucideIcons.wallet`).
-  final IconData icon;
+  /// Ícone fixo — equivalente ao `icon: LucideIcon` do React (ex.: `AppIcons.wallet`).
+  final AppIconData icon;
   final String label;
   final VoidCallback? onPressed;
 
@@ -50,7 +51,11 @@ class AppQuickAction extends StatelessWidget {
                 boxShadow: semantic.shadowCard,
               ),
               alignment: Alignment.center,
-              child: Icon(icon, size: 21, color: semantic.accentDefault),
+              child: AppIcon(
+                icon,
+                size: AppSize.iconMd,
+                color: semantic.accentDefault,
+              ),
             ),
             const SizedBox(height: AppSpacing.space2),
             Text(
@@ -83,17 +88,17 @@ WidgetbookComponent buildQuickActionWidgetbookComponent() {
             spacing: 20,
             children: [
               AppQuickAction(
-                icon: LucideIcons.wallet,
+                icon: AppIcons.wallet,
                 label: 'Carteira',
                 onPressed: () {},
               ),
               AppQuickAction(
-                icon: LucideIcons.send,
+                icon: AppIcons.send,
                 label: 'Transferir',
                 onPressed: () {},
               ),
               AppQuickAction(
-                icon: LucideIcons.qrCode,
+                icon: AppIcons.qrCode,
                 label: 'Pagar com QR Code',
                 onPressed: () {},
               ),

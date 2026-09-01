@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/shell/components/shell_header.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
+import 'package:cerne_app/ui/app_icon.dart';
+
+import '../helpers/app_icon_finder.dart';
 
 Widget _wrap(Widget child) {
   return ProviderScope(
@@ -33,7 +35,7 @@ void main() {
     ) async {
       await tester.pumpWidget(_wrap(const AppShellHeader()));
 
-      expect(find.byIcon(LucideIcons.eye), findsNothing);
+      expect(findAppIcon(AppIcons.eye), findsNothing);
     });
 
     testWidgets('com onConsultMode mostra e dispara o callback ao tocar', (
@@ -44,8 +46,8 @@ void main() {
         _wrap(AppShellHeader(onConsultMode: () => tapped = true)),
       );
 
-      expect(find.byIcon(LucideIcons.eye), findsOneWidget);
-      await tester.tap(find.byIcon(LucideIcons.eye));
+      expect(findAppIcon(AppIcons.eye), findsOneWidget);
+      await tester.tap(findAppIcon(AppIcons.eye));
       await tester.pump();
 
       expect(tapped, isTrue);
@@ -71,7 +73,7 @@ void main() {
         _wrap(AppShellHeader(onOpenNotifications: () => tapped = true)),
       );
 
-      await tester.tap(find.byIcon(LucideIcons.bell));
+      await tester.tap(findAppIcon(AppIcons.bell));
       await tester.pump();
 
       expect(tapped, isTrue);
@@ -95,7 +97,7 @@ void main() {
 
       expect(container.read(shellStoreProvider).menuOpen, isFalse);
 
-      await tester.tap(find.byIcon(LucideIcons.menu));
+      await tester.tap(findAppIcon(AppIcons.menu));
       await tester.pump();
 
       expect(container.read(shellStoreProvider).menuOpen, isTrue);

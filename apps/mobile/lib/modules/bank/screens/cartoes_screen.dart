@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -10,6 +9,7 @@ import '../../../mocks/bank_mocks.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../components/bank_card_visual.dart';
+import '../../../design/generated/app_layout.dart';
 
 enum _Sheet { segundaVia, ajustarLimite }
 
@@ -49,7 +49,7 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
         children: [
           const AppChip(
             tone: AppChipTone.amber,
-            icon: Icon(LucideIcons.construction, size: 12),
+            icon: AppIcon(AppIcons.construction, size: AppSize.iconXs),
             child: Text('Em desenvolvimento'),
           ),
           const SizedBox(height: AppSpacing.space4),
@@ -141,7 +141,7 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
           const SizedBox(height: AppSpacing.space5),
           const AppBanner(
             tone: AppBannerTone.warning,
-            icon: Icon(LucideIcons.lock, size: 14),
+            icon: AppIcon(AppIcons.lock, size: AppSize.iconXs),
             child: Text(
               'Cartão bloqueado temporariamente. Compras e saques estão suspensos até você reativar.',
             ),
@@ -161,9 +161,9 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
                   shape: BoxShape.circle,
                   color: semantic.accentSubtle,
                 ),
-                child: Icon(
-                  _blocked ? LucideIcons.lock : LucideIcons.shieldCheck,
-                  size: 20,
+                child: AppIcon(
+                  _blocked ? AppIcons.lock : AppIcons.shieldCheck,
+                  size: AppSize.iconMd,
                   color: semantic.accentDefault,
                 ),
               ),
@@ -211,19 +211,19 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
           child: Column(
             children: [
               AppMenuItem(
-                icon: LucideIcons.refreshCw,
+                icon: AppIcons.refreshCw,
                 label: 'Segunda via',
                 description: 'Solicitar novo cartão físico ou virtual',
                 onTap: () => _openSheet(_Sheet.segundaVia),
               ),
               AppMenuItem(
-                icon: LucideIcons.slidersHorizontal,
+                icon: AppIcons.slidersHorizontal,
                 label: 'Ajustar limite',
                 description: 'Pedir aumento ou redução do limite',
                 onTap: () => _openSheet(_Sheet.ajustarLimite),
               ),
               AppMenuItem(
-                icon: LucideIcons.slidersHorizontal,
+                icon: AppIcons.slidersHorizontal,
                 label: 'Ver limites e faixas',
                 description: 'Crédito, Pix e saque',
                 onTap: () => context.go('/bank/limites'),

@@ -289,8 +289,7 @@ class Batelada {
   final double quantidadeProduzida;
   final List<ItemBatelada> itens;
 
-  double get pesoPrevisto =>
-      itens.fold(0, (s, i) => s + i.quantidadePrevista);
+  double get pesoPrevisto => itens.fold(0, (s, i) => s + i.quantidadePrevista);
 
   double get pesoRealizado =>
       itens.fold(0, (s, i) => s + (i.quantidadeRealizada ?? 0));
@@ -346,7 +345,14 @@ class TratoDiario {
 
 /// Escala de escore de cocho (spec §4.5) — cada valor sugere um % de ajuste
 /// automático para o próximo trato, editável pelo avaliador.
-enum EscoreCocho { vazio, sobrasMinimas, ideal, sobrasModeradas, sobrasExcessivas, alimentoIntacto }
+enum EscoreCocho {
+  vazio,
+  sobrasMinimas,
+  ideal,
+  sobrasModeradas,
+  sobrasExcessivas,
+  alimentoIntacto,
+}
 
 extension EscoreCochoInfo on EscoreCocho {
   double get valor => switch (this) {
@@ -380,7 +386,14 @@ extension EscoreCochoInfo on EscoreCocho {
   };
 }
 
-enum AspectoSobras { fresco, umido, ressecado, mofado, selecionado, contaminado }
+enum AspectoSobras {
+  fresco,
+  umido,
+  ressecado,
+  mofado,
+  selecionado,
+  contaminado,
+}
 
 enum ComportamentoAnimal {
   calmos,

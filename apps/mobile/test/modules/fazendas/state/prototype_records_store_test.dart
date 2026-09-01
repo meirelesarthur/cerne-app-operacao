@@ -29,10 +29,10 @@ void main() {
 
     expect(first.id, '$featureId-100');
     expect(second.id, '$featureId-101');
-    expect(
-      container.read(prototypeRecordsProvider).recordsFor(featureId),
-      [second, first],
-    );
+    expect(container.read(prototypeRecordsProvider).recordsFor(featureId), [
+      second,
+      first,
+    ]);
 
     notifier.clear();
     expect(container.read(prototypeRecordsProvider).recordsByFeature, isEmpty);

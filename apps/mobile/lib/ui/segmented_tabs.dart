@@ -13,6 +13,13 @@ import 'pressable.dart';
 /// usado quando várias visões somente-leitura precisam conviver numa única
 /// tela em vez de fragmentar em N rotas.
 ///
+/// Anatomia do padrão global (Figma `54333:417`): trilho
+/// [AppSemanticColors.bgTrack] com raio [AppRadius.surface] e `p 4`, gap 4;
+/// cada segmento com 40 px de altura e o mesmo raio; o ativo em
+/// [AppSemanticColors.accentDefault] com rótulo na cor de contraste, os demais
+/// transparentes com rótulo abafado. Rótulo de 14 px SemiBold nos dois estados
+/// — a referência não muda o peso ao selecionar, só a cor.
+///
 /// Usa `AppPressable` para o alvo de toque/foco/semântica de cada segmento
 /// (Lei 1 — nenhuma superfície interativa nova fora do catálogo).
 class AppSegmentedTabs extends StatelessWidget {
@@ -27,6 +34,9 @@ class AppSegmentedTabs extends StatelessWidget {
   final int selectedIndex;
   final ValueChanged<int> onChanged;
 
+  /// Altura do segmento no Figma.
+  static const double _itemHeight = AppSpacing.space10;
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
@@ -34,9 +44,8 @@ class AppSegmentedTabs extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppSpacing.space1),
       decoration: BoxDecoration(
-        color: semantic.bgSubtle,
-        borderRadius: BorderRadius.circular(AppRadius.lg),
-        border: Border.all(color: semantic.borderSubtle),
+        color: semantic.bgTrack,
+        borderRadius: BorderRadius.circular(AppRadius.surface),
       ),
       child: Row(
         children: [
@@ -47,29 +56,26 @@ class AppSegmentedTabs extends StatelessWidget {
                 semanticLabel: labels[i],
                 selected: i == selectedIndex,
                 onPressed: () => onChanged(i),
-                borderRadius: BorderRadius.circular(AppRadius.md),
+                borderRadius: BorderRadius.circular(AppRadius.surface),
                 child: Container(
+                  height: _itemHeight,
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.space2,
-                  ),
                   decoration: BoxDecoration(
                     color: i == selectedIndex
-                        ? semantic.bgSurface
+                        ? semantic.accentDefault
                         : AppColors.transparent,
-                    borderRadius: BorderRadius.circular(AppRadius.md),
-                    boxShadow: i == selectedIndex ? semantic.shadowCard : null,
+                    borderRadius: BorderRadius.circular(AppRadius.surface),
                   ),
                   child: Text(
                     labels[i],
                     textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
-                      fontSize: AppTypography.sm,
-                      fontWeight: i == selectedIndex
-                          ? AppTypography.weightSemibold
-                          : AppTypography.weightMedium,
+                      fontSize: AppTypography.md,
+                      fontWeight: AppTypography.weightSemibold,
                       color: i == selectedIndex
-                          ? semantic.fgDefault
+                          ? semantic.accentContrast
                           : semantic.fgMuted,
                     ),
                   ),
@@ -92,6 +98,11 @@ WidgetbookComponent buildSegmentedTabsWidgetbookComponent() {
         builder: (context) => const _SegmentedTabsPreview(
           labels: ['Visão geral', 'Mapa', 'Nutrição', 'Relatórios'],
         ),
+      ),
+      WidgetbookUseCase(
+        name: 'Abas da home ADM',
+        builder: (context) =>
+            const _SegmentedTabsPreview(labels: ['Início', 'Carteira', 'Apps']),
       ),
     ],
   );

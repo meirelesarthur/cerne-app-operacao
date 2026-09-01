@@ -8,6 +8,7 @@ import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Categorias do Marketplace — grade derivada das categorias com produtos no
 /// catálogo mockado. Tocar numa categoria leva à Home já filtrada por ela.
@@ -57,9 +58,9 @@ class MarketplaceCategoriasScreen extends StatelessWidget {
                           color: semantic.accentSubtle,
                           borderRadius: BorderRadius.circular(AppRadius.xl),
                         ),
-                        child: Icon(
+                        child: AppIcon(
                           entry.categoria.icon,
-                          size: 26,
+                          size: AppSize.iconLg,
                           color: semantic.accentDefault,
                         ),
                       ),

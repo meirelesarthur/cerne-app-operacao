@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../../design/generated/app_radius.dart';
@@ -7,6 +6,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import '../../design/generated/app_layout.dart';
 
 /// Padrão de tela "CRUD" (Widgetbook → Padrões) — referência nova: nenhuma
 /// tela real do app tem hoje um fluxo completo de criar/editar/excluir um
@@ -49,8 +49,18 @@ class _CrudPatternExample extends StatefulWidget {
 class _CrudPatternExampleState extends State<_CrudPatternExample> {
   int _nextId = 3;
   final List<_StockItem> _items = const [
-    _StockItem(id: 1, nome: 'Ração bovina 40kg', categoria: 'racao', quantidade: '120'),
-    _StockItem(id: 2, nome: 'Semente de soja', categoria: 'sementes', quantidade: '48'),
+    _StockItem(
+      id: 1,
+      nome: 'Ração bovina 40kg',
+      categoria: 'racao',
+      quantidade: '120',
+    ),
+    _StockItem(
+      id: 2,
+      nome: 'Semente de soja',
+      categoria: 'sementes',
+      quantidade: '48',
+    ),
   ];
 
   Future<void> _openForm({_StockItem? editing}) async {
@@ -62,12 +72,14 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
     if (result == null) return;
     setState(() {
       if (editing == null) {
-        _items.add(_StockItem(
-          id: _nextId++,
-          nome: result.nome,
-          categoria: result.categoria,
-          quantidade: result.quantidade,
-        ));
+        _items.add(
+          _StockItem(
+            id: _nextId++,
+            nome: result.nome,
+            categoria: result.categoria,
+            quantidade: result.quantidade,
+          ),
+        );
       } else {
         final index = _items.indexWhere((i) => i.id == editing.id);
         _items[index] = _StockItem(
@@ -113,7 +125,7 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
               const AppHeading(child: Text('Estoque')),
               AppButton(
                 size: AppButtonSize.sm,
-                leftIcon: const Icon(LucideIcons.plus, size: 16),
+                leftIcon: const AppIcon(AppIcons.plus, size: AppSize.iconSm),
                 onPressed: () => _openForm(),
                 child: const Text('Novo item'),
               ),
@@ -122,7 +134,7 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
           const SizedBox(height: AppSpacing.space4),
           if (_items.isEmpty)
             AppEmptyState(
-              icon: LucideIcons.boxes,
+              icon: AppIcons.boxes,
               title: 'Nenhum item cadastrado',
               description: 'Adicione o primeiro item ao estoque.',
               action: AppButton(
@@ -170,12 +182,18 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
                         ),
                       ),
                       AppIconButton(
-                        icon: const Icon(LucideIcons.pencil, size: 16),
+                        icon: const AppIcon(
+                          AppIcons.pencil,
+                          size: AppSize.iconSm,
+                        ),
                         label: 'Editar ${item.nome}',
                         onPressed: () => _openForm(editing: item),
                       ),
                       AppIconButton(
-                        icon: const Icon(LucideIcons.trash2, size: 16),
+                        icon: const AppIcon(
+                          AppIcons.trash2,
+                          size: AppSize.iconSm,
+                        ),
                         label: 'Excluir ${item.nome}',
                         onPressed: () => _confirmDelete(item),
                       ),
@@ -202,9 +220,12 @@ class _CrudFormBody extends StatefulWidget {
 }
 
 class _CrudFormBodyState extends State<_CrudFormBody> {
-  late final _nomeController = TextEditingController(text: widget.editing?.nome);
-  late final _quantidadeController =
-      TextEditingController(text: widget.editing?.quantidade);
+  late final _nomeController = TextEditingController(
+    text: widget.editing?.nome,
+  );
+  late final _quantidadeController = TextEditingController(
+    text: widget.editing?.quantidade,
+  );
   String? _categoria;
 
   @override
@@ -241,7 +262,10 @@ class _CrudFormBodyState extends State<_CrudFormBody> {
         AppFormField(
           label: 'Nome',
           required: true,
-          child: AppTextInput(controller: _nomeController, placeholder: 'Ex.: Ração bovina 40kg'),
+          child: AppTextInput(
+            controller: _nomeController,
+            placeholder: 'Ex.: Ração bovina 40kg',
+          ),
         ),
         const SizedBox(height: AppSpacing.space3),
         AppFormField(
@@ -264,7 +288,11 @@ class _CrudFormBodyState extends State<_CrudFormBody> {
           ),
         ),
         const SizedBox(height: AppSpacing.space5),
-        AppButton(fullWidth: true, onPressed: _save, child: const Text('Salvar')),
+        AppButton(
+          fullWidth: true,
+          onPressed: _save,
+          child: const Text('Salvar'),
+        ),
       ],
     );
   }

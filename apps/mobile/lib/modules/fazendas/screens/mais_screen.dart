@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -8,11 +7,12 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shared/rise_in.dart';
 import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 class _LinkItem {
   const _LinkItem({required this.label, required this.icon, required this.to});
   final String label;
-  final IconData icon;
+  final AppIconData icon;
   final String to;
 }
 
@@ -23,43 +23,51 @@ class _Group {
 }
 
 const _groups = [
+  // Cinco paineis de decisao, na ordem em que o administrador pergunta:
+  // dinheiro, rebanho, compra, patrimonio, governanca. Ver
+  // docs/ESTEIRA-DASHBOARDS-ADM.md, secao 2.
   _Group(
-    title: 'Dashboards gerenciais',
+    title: 'Painéis de decisão',
     items: [
       _LinkItem(
-        label: 'Financeiro',
-        icon: LucideIcons.wallet,
-        to: '/fazendas/dashboards/financeiro',
+        label: 'Resultado',
+        icon: AppIcons.wallet,
+        to: '/fazendas/dashboards/resultado',
       ),
       _LinkItem(
-        label: 'Pecuária de Corte',
-        icon: LucideIcons.beef,
-        to: '/fazendas/dashboards/pecuaria',
-      ),
-      _LinkItem(
-        label: 'Lotação de Currais',
-        icon: LucideIcons.warehouse,
+        label: 'Rebanho & Confinamento',
+        icon: AppIcons.warehouse,
         to: '/fazendas/dashboards/confinamento',
       ),
       _LinkItem(
-        label: 'Ativos / Depreciação',
-        icon: LucideIcons.package,
-        to: '/fazendas/dashboards/ativos',
-      ),
-      _LinkItem(
         label: 'Suprimentos',
-        icon: LucideIcons.boxes,
+        icon: AppIcons.boxes,
         to: '/fazendas/dashboards/suprimentos',
       ),
       _LinkItem(
-        label: 'Análise de Uso',
-        icon: LucideIcons.users,
-        to: '/fazendas/dashboards/uso',
+        label: 'Ativos & Manutenção',
+        icon: AppIcons.package,
+        to: '/fazendas/dashboards/ativos',
       ),
       _LinkItem(
-        label: 'Consultas Gerenciais',
-        icon: LucideIcons.search,
-        to: '/fazendas/dashboards/consultas',
+        label: 'Adoção & Governança',
+        icon: AppIcons.users,
+        to: '/fazendas/dashboards/uso',
+      ),
+    ],
+  ),
+  _Group(
+    title: 'Consultas e auditoria',
+    items: [
+      _LinkItem(
+        label: 'Consultas gerenciais',
+        icon: AppIcons.search,
+        to: '/fazendas/consultas',
+      ),
+      _LinkItem(
+        label: 'Todas as atividades',
+        icon: AppIcons.activity,
+        to: '/fazendas/atividades',
       ),
     ],
   ),
@@ -68,13 +76,8 @@ const _groups = [
     items: [
       _LinkItem(
         label: 'Fila de sincronização',
-        icon: LucideIcons.refreshCw,
+        icon: AppIcons.refreshCw,
         to: '/fazendas/mais/sync',
-      ),
-      _LinkItem(
-        label: 'Todas as atividades',
-        icon: LucideIcons.activity,
-        to: '/fazendas/atividades',
       ),
     ],
   ),
@@ -173,7 +176,11 @@ class _MaisRow extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.accentSubtle,
               ),
-              child: Icon(item.icon, size: 18, color: semantic.accentDefault),
+              child: AppIcon(
+                item.icon,
+                size: AppSize.iconSmPlus,
+                color: semantic.accentDefault,
+              ),
             ),
             const SizedBox(width: AppSpacing.space3),
             Expanded(
@@ -185,7 +192,11 @@ class _MaisRow extends StatelessWidget {
                 ),
               ),
             ),
-            Icon(LucideIcons.chevronRight, size: 16, color: semantic.fgSubtle),
+            AppIcon(
+              AppIcons.chevronRight,
+              size: AppSize.iconSm,
+              color: semantic.fgSubtle,
+            ),
           ],
         ),
       ),

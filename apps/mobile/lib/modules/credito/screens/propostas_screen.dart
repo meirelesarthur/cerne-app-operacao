@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -8,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../credito_status.dart';
 import '../mocks/credito_mocks.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Total solicitado somado das propostas — pré-computado (sem matemática
 /// financeira em runtime).
@@ -105,9 +105,9 @@ class PropostasScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(width: AppSpacing.space2),
-                  Icon(
-                    LucideIcons.arrowRight,
-                    size: 16,
+                  AppIcon(
+                    AppIcons.arrowRight,
+                    size: AppSize.iconSm,
                     color: semantic.fgSubtle,
                   ),
                 ],

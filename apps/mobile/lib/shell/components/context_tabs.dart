@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../design/generated/app_colors.dart';
 import '../../design/generated/app_radius.dart';
-import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
@@ -9,8 +9,19 @@ import '../../ui/ui.dart';
 import '../module_config.dart';
 import '../state/prototype_session_store.dart';
 
-/// Abas de contexto do módulo ativo (Nova UI): chips-pílula roláveis no topo —
-/// espelha `ContextTabs.tsx`. A ativa vira cápsula ink com texto verde vibrante.
+/// Abas de contexto do módulo ativo: o segmented control do padrão global
+/// (Figma `54333:417`) — trilho [AppSemanticColors.bgTrack] com raio
+/// [AppRadius.surface] e `p 4`, aba ativa em cápsula verde com rótulo de
+/// contraste, inativas transparentes com rótulo abafado, 14 px SemiBold nos
+/// dois estados.
+///
+/// **Extensão do padrão:** a referência mostra três abas de largura igual num
+/// trilho fixo. Aqui um módulo chega a seis (Fazendas: Gestão, Rotinas,
+/// Fazendas, Atividades, Financeiro, Mais), e dividir a largura por seis
+/// deixaria cada rótulo ilegível. O trilho vira rolável e cada aba se dimensiona
+/// pelo conteúdo — o vocabulário visual é o mesmo, só a regra de largura muda.
+/// Por isso não reusa `AppSegmentedTabs`, que é o controle de largura fixa.
+///
 /// A ação "Mais" não entra (vira bolha no header, ver `AppShellHeader`).
 ///
 /// Sem `useLocation()`/go_router acoplado: quem chama calcula [activePath] a
@@ -30,6 +41,9 @@ class AppContextTabs extends StatelessWidget {
   final ValueChanged<String> onTabSelected;
   final UserAccessProfile? profile;
 
+  /// Aba de 40 px do Figma mais os 4 px de respiro do trilho em cima e embaixo.
+  static const double _trackHeight = AppSpacing.space12;
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
@@ -41,58 +55,49 @@ class AppContextTabs extends StatelessWidget {
     return Semantics(
       container: true,
       label: 'Navegação do módulo ${module.label}',
-      child: ColoredBox(
-        color: semantic.bgCanvas,
-        child: SizedBox(
-          height: AppSpacing.space10 + AppSpacing.space6,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.space2),
+        child: Container(
+          height: _trackHeight,
+          decoration: BoxDecoration(
+            color: semantic.bgTrack,
+            borderRadius: BorderRadius.circular(AppRadius.surface),
+          ),
+          padding: const EdgeInsets.all(AppSpacing.space1),
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.space4,
-              vertical: AppSpacing.space3,
-            ),
             itemCount: tabs.length,
             separatorBuilder: (context, i) =>
-                const SizedBox(width: AppSpacing.space2),
+                const SizedBox(width: AppSpacing.space1),
             itemBuilder: (context, i) {
               final tab = tabs[i];
               final active = tab.path == activePath;
 
-              return Container(
-                decoration: !active
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(AppRadius.full),
-                        boxShadow: semantic.shadowCard,
-                      )
-                    : null,
-                child: Material(
-                  color: active ? semantic.inkBg : semantic.bgSurface,
-                  borderRadius: BorderRadius.circular(AppRadius.full),
-                  child: AppPressable(
-                    semanticLabel: tab.label,
-                    selected: active,
-                    onPressed: () => onTabSelected(tab.path),
-                    borderRadius: BorderRadius.circular(AppRadius.full),
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minHeight: AppSize.control,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.space4,
-                          vertical: AppSpacing.space2,
-                        ),
-                        child: Center(
-                          child: Text(
-                            tab.label,
-                            style: TextStyle(
-                              fontSize: AppTypography.md,
-                              fontWeight: AppTypography.weightSemibold,
-                              color: active ? semantic.ctaBg : semantic.fgMuted,
-                            ),
-                          ),
-                        ),
-                      ),
+              return AppPressable(
+                semanticLabel: tab.label,
+                selected: active,
+                onPressed: () => onTabSelected(tab.path),
+                minTouchTarget: false,
+                borderRadius: BorderRadius.circular(AppRadius.surface),
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: active
+                        ? semantic.accentDefault
+                        : AppColors.transparent,
+                    borderRadius: BorderRadius.circular(AppRadius.surface),
+                  ),
+                  child: Text(
+                    tab.label,
+                    style: TextStyle(
+                      fontSize: AppTypography.md,
+                      fontWeight: AppTypography.weightSemibold,
+                      color: active
+                          ? semantic.accentContrast
+                          : semantic.fgMuted,
                     ),
                   ),
                 ),

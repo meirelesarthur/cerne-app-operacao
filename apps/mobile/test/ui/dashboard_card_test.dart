@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/dashboard_card.dart';
+
+import '../helpers/app_icon_finder.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
@@ -17,7 +19,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppDashboardCard(
-            icon: LucideIcons.wallet,
+            icon: AppIcons.wallet,
             label: 'Receita do mês',
             value: 'R\$ 24.500',
             onTap: () => tapped = true,
@@ -38,7 +40,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           const AppDashboardCard(
-            icon: LucideIcons.trendingUp,
+            icon: AppIcons.trendingUp,
             label: 'Receitas',
             value: 'R\$ 1.000',
             delta: 8.4,
@@ -50,7 +52,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           const AppDashboardCard(
-            icon: LucideIcons.trendingDown,
+            icon: AppIcons.trendingDown,
             label: 'Despesas',
             value: 'R\$ 500',
             delta: -3.1,
@@ -67,7 +69,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppDashboardCard(
-            icon: LucideIcons.egg,
+            icon: AppIcons.egg,
             label: 'Reprodutivo',
             value: '0',
             disabled: true,
@@ -76,7 +78,7 @@ void main() {
         ),
       );
 
-      expect(find.byIcon(LucideIcons.lock), findsOneWidget);
+      expect(findAppIcon(AppIcons.lock), findsOneWidget);
       expect(find.text('Indisponível no momento'), findsOneWidget);
 
       await tester.tap(find.byType(AppDashboardCard), warnIfMissed: false);
@@ -90,7 +92,7 @@ void main() {
         await tester.pumpWidget(
           _wrap(
             AppDashboardCard(
-              icon: LucideIcons.wallet,
+              icon: AppIcons.wallet,
               label: 'Label',
               value: '1',
               variant: variant,

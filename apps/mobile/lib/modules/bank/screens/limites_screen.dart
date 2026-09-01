@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -8,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../mocks/bank_mocks.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Bank › Limites — faixas de limite (crédito, Pix, saque) com ocupação por
 /// `AppProgressBar`. Espelha `LimitesScreen.tsx`.
@@ -77,7 +77,7 @@ class LimitesScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.space3),
         ],
         const AppBanner(
-          icon: Icon(LucideIcons.info, size: 14),
+          icon: AppIcon(AppIcons.info, size: AppSize.iconXs),
           child: Text(
             'Ajustes de limite passam por análise de crédito e são solicitados na tela de Cartões.',
           ),

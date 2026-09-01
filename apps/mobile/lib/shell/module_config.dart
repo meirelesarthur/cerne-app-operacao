@@ -1,6 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-
+import '../ui/ui.dart';
 import 'state/prototype_session_store.dart';
 
 /// Registro central de módulos do superapp — espelha `moduleConfig.ts` (spec §3.4/§7.3).
@@ -21,7 +19,7 @@ class BottomTab {
 
   final String id;
   final String label;
-  final IconData icon;
+  final AppIconData icon;
 
   /// Rota relativa dentro do módulo (ex.: '' = home, 'atividades').
   final String path;
@@ -49,7 +47,7 @@ class ModuleMenuItem {
 
   final String id;
   final String label;
-  final IconData icon;
+  final AppIconData icon;
 
   /// Rota absoluta do destino.
   final String route;
@@ -79,7 +77,7 @@ class ModuleDef {
 
   final String id;
   final String label;
-  final IconData icon;
+  final AppIconData icon;
 
   /// Rota inicial absoluta do módulo.
   final String homeRoute;
@@ -141,26 +139,26 @@ const List<ModuleDef> modules = [
   ModuleDef(
     id: 'inicio',
     label: 'Início',
-    icon: LucideIcons.home,
+    icon: AppIcons.home,
     homeRoute: '/inicio',
     bottomTabs: [
-      BottomTab(id: 'home', label: 'Início', icon: LucideIcons.home, path: ''),
+      BottomTab(id: 'home', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'apps',
         label: 'Apps',
-        icon: LucideIcons.layoutGrid,
+        icon: AppIcons.layoutGrid,
         path: 'apps',
       ),
       BottomTab(
         id: 'carteira',
         label: 'Carteira',
-        icon: LucideIcons.wallet,
+        icon: AppIcons.wallet,
         path: 'carteira',
       ),
       BottomTab(
         id: 'menu',
         label: 'Menu',
-        icon: LucideIcons.menu,
+        icon: AppIcons.menu,
         path: 'menu',
         action: 'menu',
       ),
@@ -174,46 +172,46 @@ const List<ModuleDef> modules = [
   ModuleDef(
     id: 'fazendas',
     label: 'Fazendas',
-    icon: LucideIcons.sprout,
+    icon: AppIcons.sprout,
     homeRoute: '/fazendas',
     bottomTabs: [
       BottomTab(
         id: 'dashboard',
         label: 'Gestão',
-        icon: LucideIcons.layoutDashboard,
+        icon: AppIcons.layoutDashboard,
         path: 'administracao',
         profiles: {UserAccessProfile.administration},
       ),
       BottomTab(
         id: 'rotinas',
         label: 'Rotinas',
-        icon: LucideIcons.clipboardList,
+        icon: AppIcons.clipboardList,
         path: 'operacional',
         profiles: {UserAccessProfile.operational},
       ),
       BottomTab(
         id: 'fazendas',
         label: 'Fazendas',
-        icon: LucideIcons.sprout,
+        icon: AppIcons.sprout,
         path: 'fazendas',
       ),
       BottomTab(
         id: 'atividades',
         label: 'Atividades',
-        icon: LucideIcons.activity,
+        icon: AppIcons.activity,
         path: 'atividades',
       ),
       BottomTab(
         id: 'financeiro',
         label: 'Financeiro',
-        icon: LucideIcons.wallet,
+        icon: AppIcons.wallet,
         path: 'financeiro',
         profiles: {UserAccessProfile.administration},
       ),
       BottomTab(
         id: 'mais',
         label: 'Mais',
-        icon: LucideIcons.moreHorizontal,
+        icon: AppIcons.moreHorizontal,
         path: 'mais',
         action: 'menu',
       ),
@@ -230,37 +228,32 @@ const List<ModuleDef> modules = [
   ModuleDef(
     id: 'bank',
     label: 'Bank',
-    icon: LucideIcons.landmark,
+    icon: AppIcons.landmark,
     homeRoute: '/bank',
     bottomTabs: [
-      BottomTab(
-        id: 'inicio',
-        label: 'Início',
-        icon: LucideIcons.home,
-        path: '',
-      ),
+      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'extrato',
         label: 'Extrato',
-        icon: LucideIcons.receipt,
+        icon: AppIcons.receipt,
         path: 'extrato',
       ),
       BottomTab(
         id: 'pagamentos',
         label: 'Pagamentos',
-        icon: LucideIcons.arrowLeftRight,
+        icon: AppIcons.arrowLeftRight,
         path: 'pagamentos',
       ),
       BottomTab(
         id: 'cartoes',
         label: 'Cartões',
-        icon: LucideIcons.creditCard,
+        icon: AppIcons.creditCard,
         path: 'cartoes',
       ),
       BottomTab(
         id: 'mais',
         label: 'Mais',
-        icon: LucideIcons.moreHorizontal,
+        icon: AppIcons.moreHorizontal,
         path: 'mais',
         action: 'menu',
       ),
@@ -275,7 +268,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'pix',
             label: 'Pix',
-            icon: LucideIcons.zap,
+            icon: AppIcons.zap,
             route: '/bank/pix',
           ),
         ],
@@ -286,7 +279,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'limites',
             label: 'Limites',
-            icon: LucideIcons.slidersHorizontal,
+            icon: AppIcons.slidersHorizontal,
             route: '/bank/limites',
           ),
         ],
@@ -297,7 +290,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'ajuda',
             label: 'Ajuda',
-            icon: LucideIcons.helpCircle,
+            icon: AppIcons.helpCircle,
             route: '/bank/ajuda',
           ),
         ],
@@ -307,31 +300,26 @@ const List<ModuleDef> modules = [
   ModuleDef(
     id: 'credito',
     label: 'Crédito',
-    icon: LucideIcons.handCoins,
+    icon: AppIcons.handCoins,
     homeRoute: '/credito',
     bottomTabs: [
-      BottomTab(
-        id: 'inicio',
-        label: 'Início',
-        icon: LucideIcons.home,
-        path: '',
-      ),
+      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'propostas',
         label: 'Minhas Propostas',
-        icon: LucideIcons.fileText,
+        icon: AppIcons.fileText,
         path: 'propostas',
       ),
       BottomTab(
         id: 'simular',
         label: 'Simular',
-        icon: LucideIcons.calculator,
+        icon: AppIcons.calculator,
         path: 'simular',
       ),
       BottomTab(
         id: 'mais',
         label: 'Mais',
-        icon: LucideIcons.moreHorizontal,
+        icon: AppIcons.moreHorizontal,
         path: 'mais',
         action: 'menu',
       ),
@@ -345,7 +333,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'contratos',
             label: 'Contratos',
-            icon: LucideIcons.fileSignature,
+            icon: AppIcons.fileSignature,
             route: '/credito/contratos',
           ),
         ],
@@ -356,7 +344,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'ajuda',
             label: 'Ajuda',
-            icon: LucideIcons.helpCircle,
+            icon: AppIcons.helpCircle,
             route: '/credito/ajuda',
           ),
         ],
@@ -366,31 +354,26 @@ const List<ModuleDef> modules = [
   ModuleDef(
     id: 'marketplace',
     label: 'Marketplace',
-    icon: LucideIcons.shoppingBag,
+    icon: AppIcons.shoppingBag,
     homeRoute: '/marketplace',
     bottomTabs: [
-      BottomTab(
-        id: 'inicio',
-        label: 'Início',
-        icon: LucideIcons.home,
-        path: '',
-      ),
+      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'categorias',
         label: 'Categorias',
-        icon: LucideIcons.listOrdered,
+        icon: AppIcons.listOrdered,
         path: 'categorias',
       ),
       BottomTab(
         id: 'pedidos',
         label: 'Pedidos',
-        icon: LucideIcons.receipt,
+        icon: AppIcons.receipt,
         path: 'pedidos',
       ),
       BottomTab(
         id: 'mais',
         label: 'Mais',
-        icon: LucideIcons.moreHorizontal,
+        icon: AppIcons.moreHorizontal,
         path: 'mais',
         action: 'menu',
       ),
@@ -404,7 +387,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'favoritos',
             label: 'Favoritos',
-            icon: LucideIcons.heart,
+            icon: AppIcons.heart,
             route: '/marketplace/favoritos',
           ),
         ],
@@ -415,7 +398,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'ajuda',
             label: 'Ajuda',
-            icon: LucideIcons.helpCircle,
+            icon: AppIcons.helpCircle,
             route: '/marketplace/ajuda',
           ),
         ],
@@ -425,31 +408,26 @@ const List<ModuleDef> modules = [
   ModuleDef(
     id: 'armazem',
     label: 'Armazém',
-    icon: LucideIcons.warehouse,
+    icon: AppIcons.warehouse,
     homeRoute: '/armazem',
     bottomTabs: [
-      BottomTab(
-        id: 'inicio',
-        label: 'Início',
-        icon: LucideIcons.home,
-        path: '',
-      ),
+      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'estoque',
         label: 'Estoque',
-        icon: LucideIcons.boxes,
+        icon: AppIcons.boxes,
         path: 'estoque',
       ),
       BottomTab(
         id: 'movimentacoes',
         label: 'Movimentações',
-        icon: LucideIcons.arrowLeftRight,
+        icon: AppIcons.arrowLeftRight,
         path: 'movimentacoes',
       ),
       BottomTab(
         id: 'mais',
         label: 'Mais',
-        icon: LucideIcons.moreHorizontal,
+        icon: AppIcons.moreHorizontal,
         path: 'mais',
         action: 'menu',
       ),
@@ -463,7 +441,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'unidades',
             label: 'Unidades',
-            icon: LucideIcons.warehouse,
+            icon: AppIcons.warehouse,
             route: '/armazem/unidades',
           ),
         ],
@@ -474,7 +452,7 @@ const List<ModuleDef> modules = [
           ModuleMenuItem(
             id: 'relatorios',
             label: 'Relatórios',
-            icon: LucideIcons.barChart3,
+            icon: AppIcons.barChart3,
             route: '/armazem/relatorios',
           ),
         ],

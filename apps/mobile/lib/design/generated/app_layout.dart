@@ -21,7 +21,7 @@ class AppSize {
   static const double controlLg = 52;
   static const double btnSm = 44;
   static const double btnMd = 44;
-  static const double btnLg = 56;
+  static const double btnLg = 48;
   static const double iconBtnSm = 44;
   static const double iconBtnMd = 44;
   static const double iconBtnLg = 48;
@@ -31,6 +31,14 @@ class AppSize {
   static const double drawer = 320;
   static const double tabBar = 64;
   static const double phone = 420;
+  static const double iconXs = 14;
+  static const double iconSm = 16;
+  static const double iconSmPlus = 18;
+  static const double iconMd = 20;
+  static const double iconLg = 24;
+  static const double iconXl = 28;
+  static const double iconXxl = 32;
+  static const double iconStroke = 1.2;
 }
 
 /// Métricas não coloridas de componentes específicos (revealMenu, hub, tabbar…).
@@ -43,6 +51,7 @@ class AppComponentMetrics {
   static const double revealMenuAppScale = 0.78;
   static const double revealMenuAppShiftX = -58; // valor percentual original
   static const double revealMenuMenuWidth = 78; // valor percentual original
+  static const double heroAngle = 233.92;
   static const double tabbarBlur = 20;
   static const double tabbarHeight = 68;
   static const double tabbarInset = 14;

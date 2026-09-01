@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -11,6 +10,7 @@ import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 import '../confinamento/models.dart';
 import '../confinamento/state/confinamento_store.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// "Meus currais" (spec §4.6/§5) — o que o Operacional lança curral a curral:
 /// alterar situação, pesagem, sanitário, óbito, e confirmar ordens que o ADM
@@ -36,22 +36,28 @@ class MeusCurraisScreen extends ConsumerWidget {
       children: [
         const SubPageHeader(title: 'Meus currais'),
         Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.all(AppSpacing.space4),
-            itemCount: currais.length,
-            separatorBuilder: (context, _) =>
-                const SizedBox(height: AppSpacing.space3),
-            itemBuilder: (context, index) {
-              final curral = currais[index];
-              final ordemPendente = ordens
-                  .where(
-                    (o) =>
-                        o.status == OrdemStatus.pendente &&
-                        o.curralOrigemId == curral.id,
-                  )
-                  .toList();
-              return _CurralCard(curral: curral, ordensPendentes: ordemPendente);
-            },
+          child: AppContentSheet(
+            padded: false,
+            child: ListView.separated(
+              padding: const EdgeInsets.all(AppSpacing.space4),
+              itemCount: currais.length,
+              separatorBuilder: (context, _) =>
+                  const SizedBox(height: AppSpacing.space3),
+              itemBuilder: (context, index) {
+                final curral = currais[index];
+                final ordemPendente = ordens
+                    .where(
+                      (o) =>
+                          o.status == OrdemStatus.pendente &&
+                          o.curralOrigemId == curral.id,
+                    )
+                    .toList();
+                return _CurralCard(
+                  curral: curral,
+                  ordensPendentes: ordemPendente,
+                );
+              },
+            ),
           ),
         ),
       ],
@@ -102,7 +108,10 @@ class _CurralCard extends ConsumerWidget {
             const SizedBox(height: AppSpacing.space1),
             Text(
               '${curral.indicadores!.totalAnimais}/${curral.capacidade} cabeças',
-              style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgMuted,
+              ),
             ),
           ],
           if (ordensPendentes.isNotEmpty) ...[
@@ -115,7 +124,11 @@ class _CurralCard extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  Icon(LucideIcons.bellRing, size: 14, color: semantic.fgMuted),
+                  AppIcon(
+                    AppIcons.bellRing,
+                    size: AppSize.iconXs,
+                    color: semantic.fgMuted,
+                  ),
                   const SizedBox(width: AppSpacing.space2),
                   Expanded(
                     child: Text(
@@ -131,7 +144,8 @@ class _CurralCard extends ConsumerWidget {
                   AppButton(
                     size: AppButtonSize.sm,
                     variant: AppButtonVariant.secondary,
-                    onPressed: () => context.go('/fazendas/campo/ordens-pendentes'),
+                    onPressed: () =>
+                        context.push('/fazendas/campo/ordens-pendentes'),
                     child: const Text('Ver'),
                   ),
                 ],
@@ -156,22 +170,31 @@ class _CurralCard extends ConsumerWidget {
               // `sanitario` não tem rota dedicada e é resolvido pelo motor
               // genérico em `operacional/:featureId`. Apontar as três para
               // `campo/<id>` levava ao fallback vazio de `buildCampoFlow`.
+              //
+              // `push`, não `go`: essas rotas são irmãs de `campo/meus-currais`
+              // (linhagem desta própria tela), não filhas dela — `go` troca a
+              // página na pilha em vez de empilhar, então o voltar do sistema
+              // pulava direto para `/fazendas` (redirecionado para a home do
+              // perfil) em vez de retornar para Meus Currais, perdendo o
+              // curral selecionado. `push` mantém esta tela na pilha; o botão
+              // voltar (`SubPageHeader`/`maybePop`) já resolve o resto.
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
-                onPressed: () => context.go('/fazendas/campo/pesagem'),
+                onPressed: () => context.push('/fazendas/campo/pesagem'),
                 child: const Text('Pesagem'),
               ),
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
-                onPressed: () => context.go('/fazendas/operacional/sanitario'),
+                onPressed: () =>
+                    context.push('/fazendas/operacional/sanitario'),
                 child: const Text('Sanitário'),
               ),
               AppButton(
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
-                onPressed: () => context.go('/fazendas/campo/ciclo'),
+                onPressed: () => context.push('/fazendas/campo/ciclo'),
                 child: const Text('Óbito'),
               ),
             ],

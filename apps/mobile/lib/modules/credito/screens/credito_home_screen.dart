@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_motion.dart';
@@ -12,13 +11,14 @@ import '../../../shared/rise_in.dart';
 import '../../../ui/ui.dart';
 import '../credito_status.dart';
 import '../mocks/credito_mocks.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Ícone por linha de crédito — espelha `LINHA_ICONS` de `CreditoHome.tsx`.
-final Map<String, IconData> _linhaIcons = {
-  'custeio-safra': LucideIcons.sprout,
-  'investimento-maquinas': LucideIcons.tractor,
-  'cpr-financeira': LucideIcons.fileText,
-  'consorcio-agro': LucideIcons.users,
+final Map<String, AppIconData> _linhaIcons = {
+  'custeio-safra': AppIcons.sprout,
+  'investimento-maquinas': AppIcons.tractor,
+  'cpr-financeira': AppIcons.fileText,
+  'consorcio-agro': AppIcons.users,
 };
 
 /// Home do módulo Crédito: oferta pré-aprovada em destaque, simulador rápido
@@ -236,9 +236,9 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                                 shape: BoxShape.circle,
                                 color: semantic.accentDefault,
                               ),
-                              child: Icon(
-                                _linhaIcons[linha.id] ?? LucideIcons.fileText,
-                                size: 22,
+                              child: AppIcon(
+                                _linhaIcons[linha.id] ?? AppIcons.fileText,
+                                size: AppSize.iconMd,
                                 color: AppColors.neutral0,
                               ),
                             ),
@@ -284,9 +284,9 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                                 ],
                               ),
                             ),
-                            Icon(
-                              LucideIcons.arrowRight,
-                              size: 18,
+                            AppIcon(
+                              AppIcons.arrowRight,
+                              size: AppSize.iconSmPlus,
                               color: semantic.accentDefault,
                             ),
                           ],
@@ -313,7 +313,10 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                   AppButton(
                     variant: AppButtonVariant.ghost,
                     size: AppButtonSize.sm,
-                    rightIcon: const Icon(LucideIcons.arrowRight, size: 13),
+                    rightIcon: const AppIcon(
+                      AppIcons.arrowRight,
+                      size: AppSize.iconXs,
+                    ),
                     onPressed: () => context.go('/credito/propostas'),
                     child: const Text('Ver todas'),
                   ),
@@ -470,9 +473,9 @@ class _CreditoHero extends StatelessWidget {
                       color: AppColors.neutral0.withValues(alpha: 0.1),
                     ),
                     alignment: Alignment.center,
-                    child: const Icon(
-                      LucideIcons.handCoins,
-                      size: 16,
+                    child: const AppIcon(
+                      AppIcons.handCoins,
+                      size: AppSize.iconSm,
                       color: AppColors.neutral0,
                     ),
                   ),

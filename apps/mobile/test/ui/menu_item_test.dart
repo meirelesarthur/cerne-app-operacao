@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/menu_item.dart';
+
+import '../helpers/app_icon_finder.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
@@ -17,7 +19,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppMenuItem(
-            icon: LucideIcons.user,
+            icon: AppIcons.user,
             label: 'Perfil',
             onTap: () => tapped = true,
           ),
@@ -33,7 +35,7 @@ void main() {
     testWidgets('sem onTap não mostra chevron e ignora toque', (tester) async {
       await tester.pumpWidget(_wrap(const AppMenuItem(label: 'Sem ação')));
 
-      expect(find.byIcon(LucideIcons.chevronRight), findsNothing);
+      expect(findAppIcon(AppIcons.chevronRight), findsNothing);
       expect(tester.takeException(), isNull);
     });
 
@@ -45,7 +47,7 @@ void main() {
           await tester.pumpWidget(
             _wrap(
               AppMenuItem(
-                icon: LucideIcons.bell,
+                icon: AppIcons.bell,
                 label: 'Item',
                 description: 'Descrição',
                 tone: tone,

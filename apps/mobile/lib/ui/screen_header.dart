@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'heading.dart';
 import 'icon_button.dart';
+import '../design/generated/app_layout.dart';
 
 /// Cabeçalho padrão de toda tela do app: título no topo, voltar **à esquerda do
 /// título** (não numa linha própria acima dele) e descrição opcional abaixo.
@@ -61,7 +62,7 @@ class AppScreenHeader extends StatelessWidget {
                 variant: AppIconButtonVariant.solid,
                 size: AppIconButtonSize.lg,
                 onPressed: onBack,
-                icon: const Icon(LucideIcons.arrowLeft, size: 20),
+                icon: const AppIcon(AppIcons.arrowLeft, size: AppSize.iconMd),
               ),
               const SizedBox(width: AppSpacing.space3),
             ],
@@ -96,8 +97,7 @@ WidgetbookComponent buildScreenHeaderWidgetbookComponent() {
           children: [
             AppScreenHeader(
               title: 'Áreas',
-              description:
-                  'Cadastrar áreas usadas nos processos da fazenda.',
+              description: 'Cadastrar áreas usadas nos processos da fazenda.',
               onBack: () {},
             ),
             const SizedBox(height: AppSpacing.space8),
@@ -106,7 +106,7 @@ WidgetbookComponent buildScreenHeaderWidgetbookComponent() {
               onBack: () {},
               action: AppIconButton(
                 label: 'Atualizar',
-                icon: const Icon(LucideIcons.refreshCw, size: 20),
+                icon: const AppIcon(AppIcons.refreshCw, size: AppSize.iconMd),
                 onPressed: () {},
               ),
             ),

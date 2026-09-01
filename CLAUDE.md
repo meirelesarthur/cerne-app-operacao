@@ -8,7 +8,7 @@ removido na M13 e existe apenas na tag de rollback `react-rollback-final-2026-08
 - Flutter `3.44.6` e Dart 3.
 - Riverpod para estado e `go_router` para navegação e política de acesso.
 - Widgetbook em `apps/mobile/lib/widgetbook_app.dart`.
-- Outfit self-hosted, Lucide Icons Flutter e design tokens gerados.
+- Outfit self-hosted, Hugeicons 1.2 e design tokens gerados.
 - Cloudflare Workers Static Assets com app em `/` e Widgetbook em `/storybook/`.
 
 ## Comandos principais
@@ -17,7 +17,7 @@ removido na M13 e existe apenas na tag de rollback `react-rollback-final-2026-08
 npm run dev                # Flutter Web no Chrome
 npm run lint               # flutter analyze --fatal-infos
 npm test                   # suíte Flutter completa
-npm run quality:functional # gates de arquitetura, acesso e catálogo 53/53
+npm run quality:functional # gates de arquitetura, acesso e catálogo 57/57
 npm run tokens:verify      # design/tokens.ts → DTCG → Dart
 npm run build              # app + Widgetbook em apps/mobile/build/site
 npm run smoke:deploy       # rotas e fallbacks do Worker

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -14,6 +13,7 @@ import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
+import '../../../design/generated/app_layout.dart';
 
 const _responsaveis = <AppFormSelectOption>[
   AppFormSelectOption(value: 'João Oliveira', label: 'João Oliveira'),
@@ -36,7 +36,10 @@ const _comportamentos = <AppFormSelectOption>[
   AppFormSelectOption(value: 'esperandoNoCocho', label: 'Esperando no cocho'),
   AppFormSelectOption(value: 'indiferentes', label: 'Indiferentes'),
   AppFormSelectOption(value: 'apaticos', label: 'Apáticos'),
-  AppFormSelectOption(value: 'sinaisDesconforto', label: 'Sinais de desconforto'),
+  AppFormSelectOption(
+    value: 'sinaisDesconforto',
+    label: 'Sinais de desconforto',
+  ),
 ];
 
 const _tiposOcorrencia = <AppFormSelectOption>[
@@ -247,7 +250,7 @@ class _AvaliacaoCard extends StatelessWidget {
                 ),
               ),
               AppIconButton(
-                icon: const Icon(LucideIcons.x, size: 16),
+                icon: const AppIcon(AppIcons.x, size: AppSize.iconSm),
                 label: 'Remover $curralNome desta leitura',
                 onPressed: onRemover,
               ),
@@ -327,7 +330,9 @@ class _AvaliacaoCard extends StatelessWidget {
               value: draft.aspecto?.name,
               placeholder: 'Selecione',
               onChanged: (v) {
-                draft.aspecto = v == null ? null : _byValue(AspectoSobras.values, v);
+                draft.aspecto = v == null
+                    ? null
+                    : _byValue(AspectoSobras.values, v);
                 onChanged();
               },
             ),
@@ -340,8 +345,9 @@ class _AvaliacaoCard extends StatelessWidget {
               value: draft.comportamento?.name,
               placeholder: 'Selecione',
               onChanged: (v) {
-                draft.comportamento =
-                    v == null ? null : _byValue(ComportamentoAnimal.values, v);
+                draft.comportamento = v == null
+                    ? null
+                    : _byValue(ComportamentoAnimal.values, v);
                 onChanged();
               },
             ),
@@ -422,8 +428,9 @@ void _adicionarOcorrencia(
               child: AppFormSelect(
                 options: _tiposOcorrencia,
                 value: tipo.name,
-                onChanged: (v) =>
-                    setSheetState(() => tipo = _byValue(OcorrenciaTipo.values, v!)),
+                onChanged: (v) => setSheetState(
+                  () => tipo = _byValue(OcorrenciaTipo.values, v!),
+                ),
               ),
             ),
             const SizedBox(height: AppSpacing.space3),

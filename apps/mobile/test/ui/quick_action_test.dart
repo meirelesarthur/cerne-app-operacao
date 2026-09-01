@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/quick_action.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
@@ -16,7 +16,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppQuickAction(
-            icon: LucideIcons.wallet,
+            icon: AppIcons.wallet,
             label: 'Carteira',
             onPressed: () {},
           ),
@@ -32,7 +32,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppQuickAction(
-            icon: LucideIcons.wallet,
+            icon: AppIcons.wallet,
             label: 'Carteira',
             onPressed: () => tapped = true,
           ),

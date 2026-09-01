@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -23,7 +22,7 @@ class RelatoriosScreen extends StatelessWidget {
         const SizedBox(height: AppSpacing.space3),
         if (relatorios.isEmpty)
           const AppEmptyState(
-            icon: LucideIcons.fileBarChart,
+            icon: AppIcons.fileBarChart,
             title: 'Nenhum relatório',
             description: 'Ainda não há relatórios gerados para o armazém.',
           )

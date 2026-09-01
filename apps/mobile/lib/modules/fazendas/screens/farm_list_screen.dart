@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -10,6 +9,7 @@ import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Aba "Fazendas" — espelha `FarmListScreen.tsx`: lista de fazendas vinculadas;
 /// toque troca o tenant ativo.
@@ -97,9 +97,9 @@ class _FarmRow extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: semantic.accentDefault,
                 ),
-                child: const Icon(
-                  LucideIcons.leaf,
-                  size: 20,
+                child: const AppIcon(
+                  AppIcons.leaf,
+                  size: AppSize.iconMd,
                   color: AppColors.neutral0,
                 ),
               ),
@@ -129,7 +129,7 @@ class _FarmRow extends StatelessWidget {
               if (active)
                 const AppChip(
                   tone: AppChipTone.brand,
-                  icon: Icon(LucideIcons.check),
+                  icon: AppIcon(AppIcons.check),
                   child: Text('Ativa'),
                 ),
             ],

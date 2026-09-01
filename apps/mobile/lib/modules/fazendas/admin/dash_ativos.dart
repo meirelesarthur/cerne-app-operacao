@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -8,41 +7,58 @@ import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
-const Map<AtivoEstado, ({String label, AppChipTone tone, IconData icon})>
+const Map<AtivoEstado, ({String label, AppChipTone tone, AppIconData icon})>
 _estadoMeta = {
   AtivoEstado.ativo: (
     label: 'Ativo',
     tone: AppChipTone.brand,
-    icon: LucideIcons.checkCircle2,
+    icon: AppIcons.checkCircle2,
   ),
   AtivoEstado.manutencao: (
     label: 'Em manutenção',
     tone: AppChipTone.amber,
-    icon: LucideIcons.wrench,
+    icon: AppIcons.wrench,
   ),
 };
 
-/// Dashboard de Ativos / Depreciação (spec §4.5). Espelha `DashAtivos.tsx`.
+/// Painel **Ativos & Manutenção** (spec §4.5).
+///
+/// Era uma lista de equipamentos com três KPIs no topo e nenhum gráfico. Ganhou
+/// a leitura que sustenta a decisão: onde o patrimônio está concentrado
+/// (categoria) e quais máquinas já consumiram a maior parte da própria vida
+/// útil. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
 class DashAtivos extends StatelessWidget {
   const DashAtivos({super.key});
 
+  /// Valor de aquisição somado por categoria, do maior para o menor.
+  Map<String, double> get _porCategoria {
+    final total = <String, double>{};
+    for (final a in ativos) {
+      total[a.categoria] = (total[a.categoria] ?? 0) + a.aquisicaoMil;
+    }
+    final ordenado = total.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    return Map.fromEntries(ordenado);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final emManutencao = ativos
+        .where((a) => a.estado == AtivoEstado.manutencao)
+        .length;
+    final maisDepreciados = [...ativos]
+      ..sort((a, b) => b.depreciado.compareTo(a.depreciado));
+
     return DashboardScreen(
-      title: 'Ativos / Depreciação',
+      title: 'Ativos & Manutenção',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          GridView.count(
-            crossAxisCount: 3,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: AppSpacing.space2,
-            crossAxisSpacing: AppSpacing.space2,
-            childAspectRatio: 1.1,
-            children: const [
-              AppKpiStatCard(label: 'Total', value: AtivosResumo.total),
+          AppMetricGrid(
+            children: [
+              AppKpiStatCard(label: 'Aquisição', value: AtivosResumo.total),
               AppKpiStatCard(
                 label: 'Depreciação',
                 value: AtivosResumo.depreciacao,
@@ -53,7 +69,43 @@ class DashAtivos extends StatelessWidget {
                 value: AtivosResumo.liquido,
                 tone: AppKpiStatTone.positive,
               ),
+              AppKpiStatCard(
+                label: 'Em manutenção',
+                value: '$emManutencao',
+                tone: emManutencao > 0
+                    ? AppKpiStatTone.warning
+                    : AppKpiStatTone.neutral,
+                caption: 'de ${ativos.length} ativos',
+              ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.space4),
+          AppChartCard(
+            title: 'Patrimônio por categoria',
+            footnote:
+                'Valor de aquisição; o líquido desconta a depreciação acumulada.',
+            child: Center(
+              child: AppDonutChart(
+                centerValue: AtivosResumo.total,
+                centerLabel: 'aquisição',
+                data: [
+                  for (final entry in _porCategoria.entries)
+                    AppDonutSlice(label: entry.key, value: entry.value),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space4),
+          AppChartCard(
+            title: 'Vida útil consumida',
+            subtitle: 'Depreciação acumulada por ativo',
+            child: AppBarChart(
+              data: [
+                for (final a in maisDepreciados)
+                  AppBarDatum(label: a.nome, value: a.depreciado.toDouble()),
+              ],
+              formatValue: (v) => '${v.toStringAsFixed(0)}%',
+            ),
           ),
           const SizedBox(height: AppSpacing.space5),
           const AppSectionTitle(child: Text('Equipamentos')),
@@ -127,9 +179,9 @@ class _AtivoCard extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          LucideIcons.wrench,
-                          size: 11,
+                        AppIcon(
+                          AppIcons.wrench,
+                          size: AppSize.iconXs,
                           color: semantic.fgSubtle,
                         ),
                         const SizedBox(width: AppSpacing.space1),
@@ -211,7 +263,7 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
                 ),
                 AppChip(
                   tone: estado.tone,
-                  icon: Icon(estado.icon, size: 12),
+                  icon: AppIcon(estado.icon, size: AppSize.iconXs),
                   child: Text(estado.label),
                 ),
               ],

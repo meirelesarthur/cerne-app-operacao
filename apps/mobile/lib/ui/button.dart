@@ -13,7 +13,10 @@ import 'spinner.dart';
 /// Espelha `Button.tsx` do protótipo React (§1.2 do PLANO-MIGRACAO-FLUTTER.md).
 /// Mesmos nomes/variantes — screens compõem este widget, nunca `ElevatedButton`/`TextButton`
 /// direto (Lei 1 do CLAUDE.md, espelhada aqui: catálogo primeiro).
-enum AppButtonVariant { primary, secondary, ghost, danger, link }
+/// `dangerOutline` é o "Cancelar" do padrão global (Figma 54349:2089):
+/// contorno e rótulo vermelhos sobre superfície transparente. Distinto de
+/// `danger`, que é o vermelho sólido de uma ação destrutiva confirmada.
+enum AppButtonVariant { primary, secondary, ghost, danger, dangerOutline, link }
 
 enum AppButtonSize { sm, md, lg }
 
@@ -53,13 +56,18 @@ class AppButton extends StatelessWidget {
     AppButtonSize.lg => AppSpacing.space6,
   };
 
+  /// `lg` é o CTA do padrão global (Figma 54349:2068): 48 px de altura e
+  /// rótulo de 14 px SemiBold — não um `md` ampliado. Quem quiser o rótulo em
+  /// caixa alta da referência passa o texto já em caixa alta; o widget não
+  /// transforma conteúdo (`child` é `Widget`, não `String`).
   double get _fontSize => switch (size) {
     AppButtonSize.sm => AppTypography.sm,
     AppButtonSize.md => AppTypography.md,
-    AppButtonSize.lg => AppTypography.lg,
+    AppButtonSize.lg => AppTypography.md,
   };
 
-  double get _spinnerSize => size == AppButtonSize.lg ? 20 : 16;
+  double get _spinnerSize =>
+      size == AppButtonSize.lg ? AppSize.iconMd : AppSize.iconSm;
 
   ({Color bg, Color fg, Color? border}) _colors(AppSemanticColors s) =>
       switch (variant) {
@@ -78,6 +86,11 @@ class AppButton extends StatelessWidget {
           bg: AppColors.red600,
           fg: AppColors.neutral0,
           border: null,
+        ),
+        AppButtonVariant.dangerOutline => (
+          bg: AppColors.transparent,
+          fg: AppColors.feedbackErrorText,
+          border: AppColors.feedbackErrorText,
         ),
         AppButtonVariant.link => (
           bg: AppColors.transparent,

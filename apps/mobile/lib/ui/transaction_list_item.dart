@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import '../design/generated/app_layout.dart';
 
 /// Direção do lançamento — espelha `'in' | 'out'` de `TransactionItem` (React).
 enum AppTransactionDirection { income, expense }
@@ -69,9 +70,9 @@ class AppTransactionListItem extends StatelessWidget {
             shape: BoxShape.circle,
             color: isIn ? semantic.accentSubtle : semantic.bgSubtle,
           ),
-          child: Icon(
-            isIn ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight,
-            size: 18,
+          child: AppIcon(
+            isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
+            size: AppSize.iconSmPlus,
             color: isIn ? semantic.accentDefault : semantic.fgMuted,
           ),
         ),

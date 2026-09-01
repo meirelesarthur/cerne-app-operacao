@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -91,7 +91,7 @@ class _GroupRow extends StatelessWidget {
           final action = AppButton(
             size: AppButtonSize.sm,
             variant: AppButtonVariant.secondary,
-            leftIcon: const Icon(LucideIcons.plus, size: AppSpacing.space4),
+            leftIcon: const AppIcon(AppIcons.plus, size: AppSpacing.space4),
             onPressed: onAdd,
             child: const Text('Adicionar'),
           );

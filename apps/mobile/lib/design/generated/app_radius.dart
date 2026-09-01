@@ -17,5 +17,7 @@ class AppRadius {
   static const double xl3 = 28;
   static const double xl4 = 32;
   static const double modal = 28;
+  static const double tile = 20;
+  static const double surface = 24;
   static const double full = 9999;
 }

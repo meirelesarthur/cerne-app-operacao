@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/chip.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
@@ -27,7 +27,7 @@ void main() {
           _wrap(
             AppChip(
               tone: tone,
-              icon: const Icon(LucideIcons.check),
+              icon: const AppIcon(AppIcons.check),
               child: const Text('Status'),
             ),
           ),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
@@ -11,6 +10,7 @@ import '../../../shared/rise_in.dart';
 import '../../../shared/simulated_load.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Carteira do hub — espelha `CarteiraScreen.tsx`: visão condensada do Banking
 /// sem sair do Início. A experiência completa vive no módulo GB Bank.
@@ -60,7 +60,10 @@ class CarteiraScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const Icon(LucideIcons.arrowDownLeft, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowDownLeft,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Entradas no mês',
                       value: ResumoMes.entradas,
                       hidden: balanceHidden,
@@ -69,7 +72,10 @@ class CarteiraScreen extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const Icon(LucideIcons.arrowUpRight, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowUpRight,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Saídas no mês',
                       value: ResumoMes.saidas,
                       hidden: balanceHidden,
@@ -143,7 +149,10 @@ class CarteiraScreen extends ConsumerWidget {
           child: AppButton(
             fullWidth: true,
             size: AppButtonSize.lg,
-            leftIcon: const Icon(LucideIcons.landmark, size: 18),
+            leftIcon: const AppIcon(
+              AppIcons.landmark,
+              size: AppSize.iconSmPlus,
+            ),
             onPressed: () => context.go('/bank'),
             child: const Text('Abrir GB Bank completo'),
           ),

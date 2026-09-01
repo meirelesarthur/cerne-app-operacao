@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -14,10 +13,14 @@ import '../components/activity_list_item.dart';
 import '../components/context_badge.dart';
 import '../components/credito_banner.dart';
 import '../components/shortcut_grid.dart';
+import '../confinamento/mocks.dart' as confinamento_mocks;
+import '../confinamento/models.dart';
 import '../mocks/atividades.dart';
+import '../mocks/dashboards_mocks.dart';
 import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Home do módulo Fazendas (aba Dashboard) — espelha `FazendasHome.tsx`:
 /// O conteúdo é definido exclusivamente pelo perfil da sessão demonstrativa.
@@ -33,43 +36,147 @@ class FazendasHome extends ConsumerWidget {
   }
 }
 
+/// Home do perfil administrativo — torre de controle.
+///
+/// Era: título, cinco atalhos, banner de crédito, três cartões (receita, custo
+/// e margem com **os mesmos valores** do painel de Pecuária) e uma lista de
+/// atividades. Passou a ser a leitura de decisão do dia, na ordem em que ela é
+/// feita: primeiro o que está fora do lugar (faixa de alertas), depois o mapa
+/// dos painéis, depois o melhor gráfico de cada um.
+///
+/// Regra desta tela: cada bloco reusa o **mesmo widget** do painel de origem —
+/// `AppChartCard(compact: true)` sobre o mesmo gráfico. Nenhum gráfico é
+/// reimplementado aqui (Lei 2). Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 3.
 class _HomeGerencial extends StatelessWidget {
   const _HomeGerencial();
+
+  static const _resultado = '/fazendas/dashboards/resultado';
+  static const _confinamento = '/fazendas/dashboards/confinamento';
+  static const _suprimentos = '/fazendas/dashboards/suprimentos';
+  static const _ativos = '/fazendas/dashboards/ativos';
+  static const _uso = '/fazendas/dashboards/uso';
+
+  /// Só entra na faixa o que pede decisão hoje — e cada cápsula leva ao painel
+  /// que explica o número. Indicador dentro do esperado não vira alerta: vira
+  /// gráfico mais abaixo.
+  List<AppAlertItem> _alertas(BuildContext context) {
+    final currais = confinamento_mocks.currais;
+    final lotados = currais
+        .where(
+          (c) =>
+              c.ocupado &&
+              c.capacidade > 0 &&
+              c.ocupacaoAtual / c.capacidade >= 0.9,
+        )
+        .length;
+    final ocorrencias = confinamento_mocks.leituraCochoRecente.avaliacoes
+        .expand((a) => a.ocorrencias)
+        .length;
+    final emManutencao = ativos
+        .where((a) => a.estado == AtivoEstado.manutencao)
+        .length;
+    final aguardando = cotacoes
+        .where((c) => c.status == CotacaoStatus.cotacao)
+        .length;
+
+    return [
+      AppAlertItem(
+        label: 'vencidos',
+        value: FinanceiroKpis.atrasados,
+        icon: AppIcons.circleAlert,
+        tone: AppAlertTone.critical,
+        onTap: () => context.go(_resultado),
+      ),
+      if (ocorrencias > 0)
+        AppAlertItem(
+          label: 'ocorrências no cocho',
+          value: '$ocorrencias',
+          icon: AppIcons.triangleAlert,
+          onTap: () => context.go(_confinamento),
+        ),
+      if (lotados > 0)
+        AppAlertItem(
+          label: 'currais acima de 90%',
+          value: '$lotados',
+          icon: AppIcons.warehouse,
+          onTap: () => context.go(_confinamento),
+        ),
+      if (aguardando > 0)
+        AppAlertItem(
+          label: 'cotações a decidir',
+          value: '$aguardando',
+          icon: AppIcons.receipt,
+          tone: AppAlertTone.info,
+          onTap: () => context.go(_suprimentos),
+        ),
+      if (emManutencao > 0)
+        AppAlertItem(
+          label: 'ativos em manutenção',
+          value: '$emManutencao',
+          icon: AppIcons.wrench,
+          tone: AppAlertTone.info,
+          onTap: () => context.go(_ativos),
+        ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     final adminShortcuts = [
       Shortcut(
-        id: 'financeiro',
-        label: 'Financeiro',
-        icon: LucideIcons.wallet,
-        onTap: () => context.go('/fazendas/dashboards/financeiro'),
-      ),
-      Shortcut(
-        id: 'pecuaria',
-        label: 'Pecuária',
-        icon: LucideIcons.beef,
-        onTap: () => context.go('/fazendas/dashboards/pecuaria'),
+        id: 'resultado',
+        label: 'Resultado',
+        icon: AppIcons.wallet,
+        onTap: () => context.go(_resultado),
       ),
       Shortcut(
         id: 'confinamento',
-        label: 'Currais',
-        icon: LucideIcons.warehouse,
-        onTap: () => context.go('/fazendas/dashboards/confinamento'),
+        label: 'Rebanho',
+        icon: AppIcons.warehouse,
+        onTap: () => context.go(_confinamento),
+      ),
+      Shortcut(
+        id: 'suprimentos',
+        label: 'Compras',
+        icon: AppIcons.boxes,
+        onTap: () => context.go(_suprimentos),
       ),
       Shortcut(
         id: 'ativos',
         label: 'Ativos',
-        icon: LucideIcons.package,
-        onTap: () => context.go('/fazendas/dashboards/ativos'),
+        icon: AppIcons.package,
+        onTap: () => context.go(_ativos),
       ),
       Shortcut(
         id: 'mais',
         label: 'Mais',
-        icon: LucideIcons.moreHorizontal,
+        icon: AppIcons.moreHorizontal,
         onTap: () => context.go('/fazendas/mais'),
       ),
     ];
+
+    final currais = confinamento_mocks.currais;
+    final ocupados = currais.where((c) => c.ocupado).toList();
+    final capacidade = currais.fold<int>(0, (s, c) => s + c.capacidade);
+    final alojados = ocupados.fold<int>(0, (s, c) => s + c.ocupacaoAtual);
+    final ocupacaoPct = capacidade == 0 ? 0.0 : (alojados / capacidade) * 100;
+    final indicadores = ocupados
+        .map((c) => c.indicadores)
+        .whereType<IndicadoresLote>()
+        .toList();
+    final gmd = indicadores.isEmpty
+        ? 0.0
+        : indicadores.map((i) => i.gmdKg).reduce((a, b) => a + b) /
+              indicadores.length;
+    final gmdPrevisto = indicadores.isEmpty
+        ? 0.0
+        : indicadores.map((i) => i.gmdPrevistoKg).reduce((a, b) => a + b) /
+              indicadores.length;
+
+    final patrimonio = <String, double>{};
+    for (final a in ativos) {
+      patrimonio[a.categoria] = (patrimonio[a.categoria] ?? 0) + a.aquisicaoMil;
+    }
 
     return _ActivityAwareList(
       builder: (context, onActivityTap) => ListView(
@@ -87,55 +194,126 @@ class _HomeGerencial extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(height: AppSpacing.space3),
+          RiseIn(index: 1, child: AppAlertStrip(items: _alertas(context))),
           const SizedBox(height: AppSpacing.space4),
           RiseIn(
-            index: 1,
+            index: 2,
             child: ShortcutGrid(items: adminShortcuts, columns: 5),
           ),
           const SizedBox(height: AppSpacing.space4),
-          const RiseIn(index: 2, child: CreditoBanner()),
+          const RiseIn(index: 3, child: CreditoBanner()),
           const SizedBox(height: AppSpacing.space4),
-          const RiseIn(
-            index: 3,
-            child: Row(
-              children: [
-                Expanded(
-                  child: AppDashboardCard(
-                    icon: LucideIcons.wallet,
+          RiseIn(
+            index: 4,
+            child: AppChartCard(
+              title: 'Resultado',
+              period: '6 meses',
+              compact: true,
+              onExpand: () => context.go(_resultado),
+              footnote:
+                  'Margem do mês: ${formatMilhares(resultadoMeses.last.margem)}.',
+              child: AppLineChart(
+                compact: true,
+                labels: [for (final m in resultadoMeses) m.label],
+                series: [
+                  AppLineSeries(
                     label: 'Receita',
-                    value: 'R\$ 2,4 mi',
-                    delta: 12,
-                    spark: [8, 10, 9, 12, 14, 13, 16],
+                    points: [for (final m in resultadoMeses) m.receita],
+                    filled: true,
                   ),
-                ),
-                SizedBox(width: AppSpacing.space3),
-                Expanded(
-                  child: AppDashboardCard(
-                    icon: LucideIcons.package,
+                  AppLineSeries(
                     label: 'Custo',
-                    value: 'R\$ 1,1 mi',
-                    delta: -4,
-                    spark: [9, 8, 8, 7, 6, 7, 6],
+                    points: [for (final m in resultadoMeses) m.custo],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.space3),
-          const RiseIn(
-            index: 4,
-            child: AppDashboardCard(
-              icon: LucideIcons.beef,
-              label: 'Margem operacional',
-              value: 'R\$ 1,3 mi',
-              delta: 9,
-              spark: [4, 6, 5, 7, 8, 9, 11],
-              variant: AppDashboardCardVariant.finance,
+          RiseIn(
+            index: 5,
+            child: AppChartCard(
+              title: 'Ocupação e GMD',
+              compact: true,
+              onExpand: () => context.go(_confinamento),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  AppGauge(value: ocupacaoPct, label: 'ocupação'),
+                  AppGauge(
+                    value: gmd,
+                    max: gmdPrevisto == 0 ? 1 : gmdPrevisto * 1.2,
+                    target: gmdPrevisto,
+                    valueLabel: gmd.toStringAsFixed(2),
+                    label: 'GMD kg/dia',
+                    tone: gmd >= gmdPrevisto
+                        ? AppGaugeTone.positive
+                        : AppGaugeTone.warning,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space3),
+          RiseIn(
+            index: 6,
+            child: AppChartCard(
+              title: 'Despesa por centro de custo',
+              compact: true,
+              onExpand: () => context.go(_resultado),
+              child: AppBarChart(
+                showGrid: false,
+                data: [
+                  for (final c in centrosCusto.take(4))
+                    AppBarDatum(label: c.label, value: c.value),
+                ],
+                formatValue: (v) => '${v.toStringAsFixed(0)}k',
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space3),
+          RiseIn(
+            index: 7,
+            child: AppChartCard(
+              title: 'Patrimônio por categoria',
+              compact: true,
+              onExpand: () => context.go(_ativos),
+              child: Center(
+                child: AppDonutChart(
+                  centerValue: AtivosResumo.total,
+                  centerLabel: 'aquisição',
+                  data: [
+                    for (final entry in patrimonio.entries)
+                      AppDonutSlice(label: entry.key, value: entry.value),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space3),
+          RiseIn(
+            index: 8,
+            child: AppChartCard(
+              title: 'Adoção por fazenda',
+              compact: true,
+              onExpand: () => context.go(_uso),
+              child: AppBulletChart(
+                targetLabel: 'cadastrados',
+                data: [
+                  for (final f in usoFazendas)
+                    AppBulletDatum(
+                      label: f.nome,
+                      value: f.online.toDouble(),
+                      target: f.usuarios.length.toDouble(),
+                    ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: AppSpacing.space4),
           RiseIn(
-            index: 5,
+            index: 9,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -146,7 +324,10 @@ class _HomeGerencial extends StatelessWidget {
                     AppButton(
                       variant: AppButtonVariant.ghost,
                       size: AppButtonSize.sm,
-                      rightIcon: const Icon(LucideIcons.arrowRight, size: 13),
+                      rightIcon: const AppIcon(
+                        AppIcons.arrowRight,
+                        size: AppSize.iconXs,
+                      ),
                       onPressed: () => context.go('/fazendas/atividades'),
                       child: const Text('Ver todas'),
                     ),
@@ -239,7 +420,11 @@ class _SafraPill extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.space1),
-          Icon(LucideIcons.chevronDown, size: 14, color: semantic.fgDefault),
+          AppIcon(
+            AppIcons.chevronDown,
+            size: AppSize.iconXs,
+            color: semantic.fgDefault,
+          ),
         ],
       ),
     );
@@ -295,7 +480,7 @@ class _HomeCampo extends ConsumerWidget {
                 children: [
                   RiseIn(
                     child: AppBentoTile(
-                      icon: LucideIcons.scale,
+                      icon: AppIcons.scale,
                       label: 'Pesagem',
                       caption: 'Balança conectada',
                       onTap: () => context.go('/fazendas/campo/pesagem'),
@@ -304,7 +489,7 @@ class _HomeCampo extends ConsumerWidget {
                   RiseIn(
                     index: 1,
                     child: AppBentoTile(
-                      icon: LucideIcons.arrowLeftRight,
+                      icon: AppIcons.arrowLeftRight,
                       label: 'Ciclo rebanho',
                       caption: 'Entradas e saídas',
                       onTap: () => context.go('/fazendas/campo/ciclo'),
@@ -313,7 +498,7 @@ class _HomeCampo extends ConsumerWidget {
                   RiseIn(
                     index: 2,
                     child: AppBentoTile(
-                      icon: LucideIcons.wheat,
+                      icon: AppIcons.wheat,
                       label: 'Arraçoamento',
                       caption: 'Trato do dia',
                       onTap: () => context.go('/fazendas/campo/arracoamento'),
@@ -334,7 +519,7 @@ class _HomeCampo extends ConsumerWidget {
                     child: RiseIn(
                       index: 3,
                       child: AppBentoTile(
-                        icon: LucideIcons.truck,
+                        icon: AppIcons.truck,
                         label: 'Venda',
                         caption: 'GTA, romaneio e frete',
                         iconSize: AppBentoTileIconSize.lg,
@@ -347,7 +532,7 @@ class _HomeCampo extends ConsumerWidget {
                     child: RiseIn(
                       index: 4,
                       child: AppBentoTile(
-                        icon: LucideIcons.fileText,
+                        icon: AppIcons.fileText,
                         label: 'Entrada NF-e',
                         caption: 'Importar XML',
                         variant: AppBentoTileVariant.accent,
@@ -365,7 +550,7 @@ class _HomeCampo extends ConsumerWidget {
                     child: RiseIn(
                       index: 5,
                       child: AppBentoTile(
-                        icon: LucideIcons.sprout,
+                        icon: AppIcons.sprout,
                         label: 'Insumos',
                         caption: 'Aplicações e retiradas',
                         onTap: () => context.go('/fazendas/campo/insumos'),

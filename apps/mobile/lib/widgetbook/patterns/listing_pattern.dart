@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../../design/generated/app_colors.dart';
@@ -8,6 +7,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import '../../design/generated/app_layout.dart';
 
 /// Padrão de tela "Listagem" (Widgetbook → Padrões).
 ///
@@ -108,7 +108,11 @@ class _ListingRow extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.accentDefault,
               ),
-              child: const Icon(LucideIcons.leaf, size: 18, color: AppColors.neutral0),
+              child: const AppIcon(
+                AppIcons.leaf,
+                size: AppSize.iconSmPlus,
+                color: AppColors.neutral0,
+              ),
             ),
             const SizedBox(width: AppSpacing.space3),
             Expanded(
@@ -130,7 +134,7 @@ class _ListingRow extends StatelessWidget {
             if (active)
               const AppChip(
                 tone: AppChipTone.brand,
-                icon: Icon(LucideIcons.check),
+                icon: AppIcon(AppIcons.check),
                 child: Text('Ativa'),
               ),
           ],
@@ -154,9 +158,10 @@ WidgetbookComponent buildListingPatternWidgetbookComponent() {
           color: Theme.of(context).extension<AppSemanticColors>()!.bgCanvas,
           child: const Center(
             child: AppEmptyState(
-              icon: LucideIcons.tractor,
+              icon: AppIcons.tractor,
               title: 'Nenhuma fazenda cadastrada',
-              description: 'Cadastre a primeira fazenda para começar a operar por aqui.',
+              description:
+                  'Cadastre a primeira fazenda para começar a operar por aqui.',
             ),
           ),
         ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -10,6 +9,7 @@ import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../credito_status.dart';
 import '../mocks/credito_mocks.dart';
+import '../../../design/generated/app_layout.dart';
 
 enum _StepState { done, current, pending, rejected }
 
@@ -148,15 +148,15 @@ class _Timeline extends StatelessWidget {
                           ),
                         ),
                         child: step.state == _StepState.done
-                            ? Icon(
-                                LucideIcons.check,
-                                size: 14,
+                            ? AppIcon(
+                                AppIcons.check,
+                                size: AppSize.iconXs,
                                 color: markerColors.fg,
                               )
                             : step.state == _StepState.rejected
-                            ? Icon(
-                                LucideIcons.x,
-                                size: 14,
+                            ? AppIcon(
+                                AppIcons.x,
+                                size: AppSize.iconXs,
                                 color: markerColors.fg,
                               )
                             : null,
@@ -302,7 +302,7 @@ class PropostaDetalheScreen extends StatelessWidget {
             Expanded(
               child: Center(
                 child: AppEmptyState(
-                  icon: LucideIcons.frown,
+                  icon: AppIcons.frown,
                   title: 'Proposta não encontrada',
                   description:
                       'Essa proposta pode ter sido removida ou o link está incorreto.',
@@ -415,9 +415,9 @@ class PropostaDetalheScreen extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   color: semantic.bgSubtle,
                                 ),
-                                child: Icon(
-                                  LucideIcons.fileText,
-                                  size: 18,
+                                child: AppIcon(
+                                  AppIcons.fileText,
+                                  size: AppSize.iconSmPlus,
                                   color: semantic.fgMuted,
                                 ),
                               ),

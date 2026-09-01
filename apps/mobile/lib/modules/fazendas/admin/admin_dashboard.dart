@@ -4,8 +4,7 @@ import '../screens/em_section.dart';
 import 'dash_ativos.dart';
 import 'dash_confinamento.dart';
 import 'dash_consultas.dart';
-import 'dash_financeiro.dart';
-import 'dash_pecuaria.dart';
+import 'dash_resultado.dart';
 import 'dash_suprimentos.dart';
 import 'dash_uso.dart';
 
@@ -13,8 +12,10 @@ import 'dash_uso.dart';
 /// `/fazendas/dashboards/:dashId` (spec §4). Espelha `AdminDashboard.tsx`.
 Widget buildAdminDashboard(String dashId) {
   return switch (dashId) {
-    'financeiro' => const DashFinanceiro(),
-    'pecuaria' => const DashPecuaria(),
+    // `financeiro` e `pecuaria` continuam resolvendo: os dois painéis fundiram
+    // em Resultado, e links antigos (favoritos, prints, docs) não podem cair
+    // numa tela vazia. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
+    'resultado' || 'financeiro' || 'pecuaria' => const DashResultado(),
     'confinamento' => const DashConfinamento(),
     'ativos' => const DashAtivos(),
     'suprimentos' => const DashSuprimentos(),

@@ -38,10 +38,18 @@ dependencies:
   # Navegação 2 níveis (equivalente ao react-router-dom)
   go_router: ^14.6.2
 
-  # Ícones (equivalente ao lucide-react).
-  # `lucide_icons` (0.257.0) estende `IconData`, que virou `final class` em versões recentes do
-  # Flutter — quebra a compilação de testes (ver ADR 0003). `lucide_icons_flutter` é o fork mantido.
-  lucide_icons_flutter: ^3.1.15
+  # Iconografia oficial: Hugeicons *stroke-rounded* com traço 1.2
+  # (docs/ESTEIRA-PADRAO-GLOBAL-HUGEICONS.md). Os ícones do pacote não são `IconData`: são
+  # estruturas JSON de SVG que `HugeIcon` monta em runtime, e é isso que permite sobrescrever a
+  # espessura do traço — o set nasce em 1.5 e o app inteiro renderiza em `AppSize.iconStroke`.
+  # Consumido exclusivamente por `lib/ui/app_icon.dart` (Lei 1/2); nenhuma tela importa o pacote —
+  # `component_first_test.dart` guarda essa fronteira. Substituiu `lucide_icons_flutter` na E5.
+  hugeicons: ^1.1.7
+
+  # Desenha os vetores autorais de `assets/icons/` (§3.3 da esteira) — os dois
+  # ícones agro que o set gratuito não tem. Já chega transitivamente pelo
+  # `hugeicons`, mas `lib/ui/app_icon.dart` o importa direto.
+  flutter_svg: ^2.0.9
 
   # Ícones e assets
   cupertino_icons: ^1.0.8
@@ -94,6 +102,8 @@ flutter:
 
   assets:
     - assets/images/
+    # Vetores autorais do GB CERNE, servidos por `AppIcons` (§3.3 da esteira).
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

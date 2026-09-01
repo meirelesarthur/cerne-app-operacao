@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -13,6 +12,7 @@ import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Contagem de cabeças por lote (mock) — usado para validar que a contagem
 /// bate com o lote selecionado (spec §5.5). Local a este fluxo (não faz parte
@@ -121,9 +121,9 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
                       shape: BoxShape.circle,
                       color: semantic.bgSurface,
                     ),
-                    child: Icon(
-                      LucideIcons.lock,
-                      size: 16,
+                    child: AppIcon(
+                      AppIcons.lock,
+                      size: AppSize.iconSm,
                       color: semantic.fgSubtle,
                     ),
                   ),
@@ -154,9 +154,9 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
                   ),
                   AppTooltip(
                     content: 'Mês congelado — edição bloqueada',
-                    child: Icon(
-                      LucideIcons.lock,
-                      size: 16,
+                    child: AppIcon(
+                      AppIcons.lock,
+                      size: AppSize.iconSm,
                       color: semantic.fgSubtle,
                     ),
                   ),

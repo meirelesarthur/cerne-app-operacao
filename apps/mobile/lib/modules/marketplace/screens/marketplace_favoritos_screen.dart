@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -9,6 +8,7 @@ import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Favoritos do Marketplace — lista mockada de produtos marcados como
 /// favoritos. Espelha `MarketplaceFavoritos.tsx`.
@@ -29,7 +29,7 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
         Expanded(
           child: favoritos.isEmpty
               ? const AppEmptyState(
-                  icon: LucideIcons.heart,
+                  icon: AppIcons.heart,
                   title: 'Nenhum favorito ainda',
                   description:
                       'Toque no coração de um produto para guardá-lo aqui e encontrar mais rápido na próxima vez.',
@@ -67,9 +67,9 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(AppRadius.xl),
                             ),
                             child: categoria != null
-                                ? Icon(
+                                ? AppIcon(
                                     categoria.icon,
-                                    size: 24,
+                                    size: AppSize.iconLg,
                                     color: semantic.accentDefault,
                                   )
                                 : null,
@@ -108,9 +108,9 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-                          Icon(
-                            LucideIcons.heart,
-                            size: 18,
+                          AppIcon(
+                            AppIcons.heart,
+                            size: AppSize.iconSmPlus,
                             color: semantic.accentDefault,
                           ),
                         ],

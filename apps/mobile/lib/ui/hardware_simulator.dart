@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -67,31 +67,31 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
 
   bool get _ready => widget.value?.isNotEmpty ?? false;
 
-  ({String title, String description, String action, IconData icon})
+  ({String title, String description, String action, AppIconData icon})
   get _copy => switch (widget.kind) {
     AppHardwareSimulationKind.devices => (
       title: 'Dispositivos próximos',
       description: 'Busca Bluetooth simulada durante o uso do app.',
       action: 'Buscar dispositivos',
-      icon: LucideIcons.bluetooth,
+      icon: AppIcons.bluetooth,
     ),
     AppHardwareSimulationKind.scale => (
       title: 'Leitura da balança',
       description: 'Peso estável simulado do equipamento conectado.',
       action: 'Simular leitura',
-      icon: LucideIcons.scale,
+      icon: AppIcons.scale,
     ),
     AppHardwareSimulationKind.rfid => (
       title: 'Identificação por RFID',
       description: 'Aproxime o brinco ou informe o código manualmente.',
       action: 'Simular leitura RFID',
-      icon: LucideIcons.radio,
+      icon: AppIcons.radio,
     ),
     AppHardwareSimulationKind.scanner => (
       title: 'Scanner SISBOV',
       description: 'Posicione a identificação na área de enquadramento.',
       action: 'Simular captura',
-      icon: LucideIcons.scanLine,
+      icon: AppIcons.scanLine,
     ),
   };
 
@@ -135,7 +135,7 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
                   color: AppColors.amber50,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
+                child: AppIcon(
                   copy.icon,
                   size: AppSpacing.space5,
                   color: AppColors.amber600,
@@ -190,8 +190,8 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                   border: Border.all(color: AppColors.amber300),
                 ),
-                child: const Icon(
-                  LucideIcons.scanLine,
+                child: const AppIcon(
+                  AppIcons.scanLine,
                   size: AppSpacing.space10,
                   color: AppColors.amber600,
                 ),
@@ -246,8 +246,8 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
             variant: _ready
                 ? AppButtonVariant.secondary
                 : AppButtonVariant.primary,
-            leftIcon: Icon(
-              _ready ? LucideIcons.rotateCw : copy.icon,
+            leftIcon: AppIcon(
+              _ready ? AppIcons.rotateCw : copy.icon,
               size: AppSpacing.space4,
             ),
             onPressed: _run,

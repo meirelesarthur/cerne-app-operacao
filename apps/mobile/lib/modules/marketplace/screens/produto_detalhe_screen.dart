@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -8,6 +7,7 @@ import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Página do Produto (PDP) do Marketplace — acessada a partir do card na Home.
 /// Espelha `ProdutoDetalhe.tsx`.
@@ -40,7 +40,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
           SubPageHeader(title: 'Produto'),
           Expanded(
             child: AppEmptyState(
-              icon: LucideIcons.packageSearch,
+              icon: AppIcons.packageSearch,
               title: 'Produto não encontrado',
               description:
                   'Este produto pode ter sido removido do catálogo. Volte e tente outro item.',
@@ -76,9 +76,9 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                 ),
                 child: categoria != null
-                    ? Icon(
+                    ? AppIcon(
                         categoria.icon,
-                        size: 48,
+                        size: AppSize.iconXxl,
                         color: semantic.accentDefault,
                       )
                     : null,
@@ -121,7 +121,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(LucideIcons.truck, size: 11),
+                              AppIcon(AppIcons.truck, size: AppSize.iconXs),
                               SizedBox(width: AppSpacing.space1),
                               Text('Frete grátis'),
                             ],
@@ -236,7 +236,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
               if (_adicionado) ...[
                 const AppBanner(
                   tone: AppBannerTone.success,
-                  icon: Icon(LucideIcons.check, size: 14),
+                  icon: AppIcon(AppIcons.check, size: AppSize.iconXs),
                   child: Text('Produto adicionado ao pedido (protótipo).'),
                 ),
                 const SizedBox(height: AppSpacing.space5),
@@ -248,9 +248,9 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                 onPressed: _adicionado
                     ? null
                     : () => setState(() => _adicionado = true),
-                leftIcon: Icon(
-                  _adicionado ? LucideIcons.check : LucideIcons.shoppingCart,
-                  size: 18,
+                leftIcon: AppIcon(
+                  _adicionado ? AppIcons.check : AppIcons.shoppingCart,
+                  size: AppSize.iconSmPlus,
                 ),
                 child: Text(
                   _adicionado ? 'Adicionado ao pedido' : 'Adicionar ao pedido',

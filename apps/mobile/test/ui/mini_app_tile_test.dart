@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/mini_app_tile.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
@@ -17,7 +17,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppMiniAppTile(
-            icon: LucideIcons.landmark,
+            icon: AppIcons.landmark,
             name: 'GB Bank',
             description: 'Conta digital',
             onTap: () => tapped = true,
@@ -36,7 +36,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppMiniAppTile(
-            icon: LucideIcons.landmark,
+            icon: AppIcons.landmark,
             name: 'GB Bank',
             disabled: true,
             onTap: () => tapped = true,
@@ -54,7 +54,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           const AppMiniAppTile(
-            icon: LucideIcons.handshake,
+            icon: AppIcons.handshake,
             name: 'Crédito',
             badge: AppMiniAppTileBadge.novo,
           ),
@@ -65,7 +65,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           const AppMiniAppTile(
-            icon: LucideIcons.store,
+            icon: AppIcons.store,
             name: 'Marketplace',
             badge: AppMiniAppTileBadge.breve,
           ),

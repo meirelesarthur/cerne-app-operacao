@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../design/theme/app_theme_extension.dart';
 import 'admin/admin_dashboard.dart';
 import 'components/sync_banner.dart';
 import 'functional_catalog.dart';
@@ -92,11 +91,10 @@ GoRoute buildFazendasModuleRoute() {
       ),
       GoRoute(
         path: 'financeiro',
-        // `DashFinanceiro` real vem do processo dos dashboards administrativos
-        // (F3); por ora, delega ao dispatcher `AdminDashboard`, igual ao dashId
-        // homônimo em `/fazendas/dashboards/financeiro`.
+        // Atalho legado; hoje resolve no painel Resultado, mesma tela do dashId
+        // `resultado` (e dos aliases `financeiro`/`pecuaria`).
         builder: (context, state) =>
-            _FazendasScaffold(child: buildAdminDashboard('financeiro')),
+            _FazendasScaffold(child: buildAdminDashboard('resultado')),
       ),
       GoRoute(
         path: 'mais',
@@ -107,6 +105,16 @@ GoRoute buildFazendasModuleRoute() {
         path: 'mais/sync',
         builder: (context, state) =>
             const _FazendasScaffold(child: SyncQueueScreen()),
+      ),
+      // Consultas Gerenciais e 100% leitura, sem indicador e sem acao: e um
+      // console de consulta, nao um painel de decisao. Fica fora de
+      // `dashboards/` para o menu nao ensinar errado o que e painel — o dashId
+      // antigo continua resolvendo pelo dispatcher, para links salvos.
+      // Ver docs/ESTEIRA-DASHBOARDS-ADM.md, secao 2.
+      GoRoute(
+        path: 'consultas',
+        builder: (context, state) =>
+            _FazendasScaffold(child: buildAdminDashboard('consultas')),
       ),
       GoRoute(
         path: 'dashboards/:dashId',
@@ -143,15 +151,15 @@ class _FazendasScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    return ColoredBox(
-      color: semantic.bgCanvas,
-      child: Column(
-        children: [
-          const SyncBanner(),
-          Expanded(child: child),
-        ],
-      ),
+    // Sem `ColoredBox` de canvas: quem pinta o fundo é a folha de conteúdo do
+    // shell (`AppContentSheet`), e repintar o canvas aqui cobria a folha —
+    // deixava o cabeçalho sobre a superfície clara e o resto da tela sobre o
+    // cinza, com uma emenda visível logo abaixo das abas.
+    return Column(
+      children: [
+        const SyncBanner(),
+        Expanded(child: child),
+      ],
     );
   }
 }

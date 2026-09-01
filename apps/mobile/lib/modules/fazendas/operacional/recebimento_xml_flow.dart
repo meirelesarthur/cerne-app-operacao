@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -13,6 +12,7 @@ import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Recebimento / Entrada por XML (NF-e) (spec §5.4): upload + conferência de
 /// itens. Espelha `RecebimentoXmlFlow.tsx`.
@@ -92,9 +92,9 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                       shape: BoxShape.circle,
                       color: semantic.accentSubtle,
                     ),
-                    child: Icon(
-                      LucideIcons.fileText,
-                      size: 20,
+                    child: AppIcon(
+                      AppIcons.fileText,
+                      size: AppSize.iconMd,
                       color: semantic.accentDefault,
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_shadows.dart';
@@ -108,7 +109,7 @@ WidgetbookComponent buildTooltipWidgetbookComponent() {
             padding: EdgeInsets.only(top: AppSpacing.space15),
             child: AppTooltip(
               content: 'Informação adicional sobre este item.',
-              child: Icon(Icons.info_outline),
+              child: AppIcon(AppIcons.info),
             ),
           ),
         ),

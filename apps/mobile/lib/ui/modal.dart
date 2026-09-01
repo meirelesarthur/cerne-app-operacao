@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'icon_button.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `Modal.tsx` (spec §6.10).
 ///
@@ -85,7 +86,10 @@ class AppModal extends StatelessWidget {
                         ),
                       ),
                       AppIconButton(
-                        icon: const Icon(LucideIcons.x, size: 18),
+                        icon: const AppIcon(
+                          AppIcons.x,
+                          size: AppSize.iconSmPlus,
+                        ),
                         label: 'Fechar',
                         onPressed: () => Navigator.of(context).pop(),
                       ),

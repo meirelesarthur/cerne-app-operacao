@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -13,6 +12,7 @@ import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Pesagem (spec §5.1): leitura manual do peso (app não lê a balança) +
 /// registra pesagem do dia. Espelha `PesagemFlow.tsx`.
@@ -99,7 +99,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
           const AppSectionTitle(child: Text('Peso')),
           const SizedBox(height: AppSpacing.space2),
           const AppBanner(
-            icon: Icon(LucideIcons.info, size: 14),
+            icon: AppIcon(AppIcons.info, size: AppSize.iconXs),
             child: Text(
               'Leitura da balança não disponível neste app — informe o peso manualmente ou use um leitor Bluetooth quando integrado.',
             ),
@@ -142,9 +142,9 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
             const SizedBox(height: AppSpacing.space2),
             const Row(
               children: [
-                Icon(
-                  LucideIcons.alertCircle,
-                  size: 12,
+                AppIcon(
+                  AppIcons.alertCircle,
+                  size: AppSize.iconXs,
                   color: AppColors.red600,
                 ),
                 SizedBox(width: AppSpacing.space1),

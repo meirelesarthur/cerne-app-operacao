@@ -131,9 +131,7 @@ class ConfinamentoStoreNotifier extends Notifier<ConfinamentoState> {
   /// Leitura de Cocho (spec §4.5) — grava a leitura completa (todos os
   /// currais e ocorrências incluídos na sessão de leitura).
   void registrarLeituraCocho(LeituraCocho leitura) {
-    state = state.copyWith(
-      leiturasCocho: [...state.leiturasCocho, leitura],
-    );
+    state = state.copyWith(leiturasCocho: [...state.leiturasCocho, leitura]);
   }
 
   /// Confirma a execução de uma ordem criada pelo ADM (transferência de lote
@@ -177,7 +175,10 @@ class ConfinamentoStoreNotifier extends Notifier<ConfinamentoState> {
       currais: currais,
       ordensPendentes: [
         for (final o in state.ordensPendentes)
-          if (o.id == ordemId) o.copyWith(status: OrdemStatus.confirmada) else o,
+          if (o.id == ordemId)
+            o.copyWith(status: OrdemStatus.confirmada)
+          else
+            o,
       ],
     );
   }

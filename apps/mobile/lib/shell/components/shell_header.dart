@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-import '../../design/generated/app_colors.dart';
+import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_motion.dart';
 import '../../design/generated/app_spacing.dart';
-import '../../design/generated/app_typography.dart';
-import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
 import '../state/shell_store.dart';
 import '../state/prototype_session_store.dart';
 
-/// Header global do Shell (Nova UI): zona clara sobre o canvas — avatar +
-/// saudação à esquerda, bolhas de ação circulares à direita. Persiste ao
-/// trocar de módulo; espelha `ShellHeader.tsx`.
+/// Header global do Shell: o cabeçalho de saudação do padrão global
+/// (`AppGreetingHeader`) mais as bolhas de ação que só existem no app.
+/// Persiste ao trocar de módulo.
+///
+/// O bloco de identidade — avatar, saudação, nome e sino — deixou de ser
+/// desenhado aqui: é o único bloco que as duas homes do Figma compartilham
+/// (§4 da esteira do padrão global) e por isso mora no catálogo. O que sobrou
+/// neste widget é o que a referência não tem: o menu "reveal", o modo consulta
+/// e o rótulo do ambiente da sessão.
 ///
 /// Decisão de porte: as rotas `/perfil` e `/notificacoes` ainda não existem no
 /// `go_router` (isso é F3.1, feito por outro processo depois). Por isso este
@@ -62,7 +65,6 @@ class AppShellHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final state = ref.watch(shellStoreProvider);
     final profile = ref.watch(prototypeSessionProvider).profile;
     final user = state.user;
@@ -82,44 +84,15 @@ class AppShellHeader extends ConsumerWidget {
       children: [
         if (onConsultMode != null) ...[
           _headerBubble(
-            icon: const Icon(LucideIcons.eye, size: 19),
+            icon: const AppIcon(AppIcons.eye, size: AppSize.iconMd),
             label: consultActive ? 'Sair do modo consulta' : 'Modo consulta',
             active: consultActive,
             onPressed: onConsultMode,
           ),
           const SizedBox(width: AppSpacing.space2),
         ],
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            AppIconButton(
-              icon: const Icon(LucideIcons.bell, size: 19),
-              label: 'Notificações',
-              variant: AppIconButtonVariant.solid,
-              size: AppIconButtonSize.lg,
-              onPressed: onOpenNotifications,
-            ),
-            if (unread > 0)
-              Positioned(
-                right: 10,
-                top: 8,
-                child: IgnorePointer(
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.red500,
-                      border: Border.all(color: semantic.bgSurface, width: 2),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-        const SizedBox(width: AppSpacing.space2),
         _headerBubble(
-          icon: const Icon(LucideIcons.menu, size: 19),
+          icon: const AppIcon(AppIcons.menu, size: AppSize.iconMd),
           label: 'Mais',
           active: menuOpen,
           onPressed: () => ref.read(shellStoreProvider.notifier).openMenu(),
@@ -150,67 +123,17 @@ class AppShellHeader extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: AppPressable(
-                        semanticLabel: 'Abrir perfil',
-                        onPressed: onOpenProfile,
-                        minTouchTarget: false,
-                        child: Row(
-                          children: [
-                            AppAvatar(
-                              name: user.name,
-                              initials: user.initials,
-                              size: AppAvatarSize.lg,
-                            ),
-                            const SizedBox(width: AppSpacing.space3),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    '$greeting,',
-                                    style: TextStyle(
-                                      fontSize: AppTypography.md,
-                                      fontWeight: AppTypography.weightMedium,
-                                      height: AppTypography.lineHeightTight,
-                                      color: semantic.fgMuted,
-                                    ),
-                                  ),
-                                  Text(
-                                    user.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: AppTypography.xl2,
-                                      fontWeight: AppTypography.weightBold,
-                                      height: AppTypography.lineHeightTight,
-                                      color: semantic.fgDefault,
-                                    ),
-                                  ),
-                                  if (profile != null)
-                                    Text(
-                                      'Ambiente ${profile.label}',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: AppTypography.xs,
-                                        fontWeight:
-                                            AppTypography.weightSemibold,
-                                        color: semantic.accentDefault,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    actions,
-                  ],
+                AppGreetingHeader(
+                  greeting: '$greeting,',
+                  name: user.name,
+                  initials: user.initials,
+                  subtitle: profile == null
+                      ? null
+                      : 'Ambiente ${profile.label}',
+                  hasUnread: unread > 0,
+                  onNotifications: onOpenNotifications,
+                  onProfile: onOpenProfile,
+                  trailing: actions,
                 ),
                 if (child != null)
                   Padding(
@@ -224,14 +147,14 @@ class AppShellHeader extends ConsumerWidget {
             ),
           );
 
-    return ColoredBox(
-      color: semantic.bgCanvas,
-      child: AnimatedSize(
-        duration: reduceMotion ? Duration.zero : AppMotion.base,
-        curve: AppMotion.easingOut,
-        alignment: Alignment.topCenter,
-        child: content,
-      ),
+    // Sem `ColoredBox` próprio: o header agora fica dentro da folha de conteúdo
+    // (`AppContentSheet`), como no Figma, e pintar o canvas aqui abriria um
+    // retângulo cinza dentro dela.
+    return AnimatedSize(
+      duration: reduceMotion ? Duration.zero : AppMotion.base,
+      curve: AppMotion.easingOut,
+      alignment: Alignment.topCenter,
+      child: content,
     );
   }
 

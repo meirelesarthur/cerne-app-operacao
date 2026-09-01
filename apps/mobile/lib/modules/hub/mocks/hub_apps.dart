@@ -1,7 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
-
-import '../../../ui/ui.dart' show AppMiniAppTileBadge;
+import '../../../ui/ui.dart' show AppIconData, AppIcons, AppMiniAppTileBadge;
 
 /// Catálogo de mini-apps do hub — espelha `src/modules/hub/mocks/apps.ts`. O contrato
 /// (ícone, nome, descrição, rota, selo) permite injetar novos apps sem alterar as telas do hub.
@@ -17,7 +14,7 @@ class HubApp {
   });
 
   final String id;
-  final IconData icon;
+  final AppIconData icon;
   final String name;
   final String description;
   final String? route;
@@ -27,14 +24,14 @@ class HubApp {
 const List<HubApp> hubApps = [
   HubApp(
     id: 'fazendas',
-    icon: LucideIcons.sprout,
+    icon: AppIcons.sprout,
     name: 'Fazendas',
     description: 'Gestão da operação e lançamentos de campo',
     route: '/fazendas',
   ),
   HubApp(
     id: 'bank',
-    icon: LucideIcons.landmark,
+    icon: AppIcons.landmark,
     name: 'GB Bank',
     description: 'Conta, Pix, pagamentos e cartões',
     route: '/bank',
@@ -42,21 +39,21 @@ const List<HubApp> hubApps = [
   ),
   HubApp(
     id: 'credito',
-    icon: LucideIcons.handCoins,
+    icon: AppIcons.handCoins,
     name: 'Crédito',
     description: 'Simule e contrate crédito para a safra',
     route: '/credito',
   ),
   HubApp(
     id: 'marketplace',
-    icon: LucideIcons.shoppingBag,
+    icon: AppIcons.shoppingBag,
     name: 'Marketplace',
     description: 'Insumos, máquinas e serviços',
     route: '/marketplace',
   ),
   HubApp(
     id: 'armazem',
-    icon: LucideIcons.warehouse,
+    icon: AppIcons.warehouse,
     name: 'Armazém',
     description: 'Estoque, movimentações e logística',
     route: '/armazem',
@@ -66,28 +63,28 @@ const List<HubApp> hubApps = [
 const List<HubApp> appsEmBreve = [
   HubApp(
     id: 'clima',
-    icon: LucideIcons.cloudSun,
+    icon: AppIcons.cloudSun,
     name: 'Clima',
     description: 'Previsão hiperlocal por talhão',
     badge: AppMiniAppTileBadge.breve,
   ),
   HubApp(
     id: 'cotacoes',
-    icon: LucideIcons.lineChart,
+    icon: AppIcons.lineChart,
     name: 'Cotações',
     description: 'Boi gordo, soja e milho em tempo real',
     badge: AppMiniAppTileBadge.breve,
   ),
   HubApp(
     id: 'consultoria',
-    icon: LucideIcons.headset,
+    icon: AppIcons.headset,
     name: 'Consultoria',
     description: 'Especialistas GB a um toque',
     badge: AppMiniAppTileBadge.breve,
   ),
   HubApp(
     id: 'seguros',
-    icon: LucideIcons.shieldCheck,
+    icon: AppIcons.shieldCheck,
     name: 'Seguros',
     description: 'Proteção de safra e patrimônio',
     badge: AppMiniAppTileBadge.breve,

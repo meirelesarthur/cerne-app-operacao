@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'heading.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `EmptyState.tsx` — estado vazio (lista/dado ausente), com ícone
 /// opcional, título (`AppHeading` nível 3), descrição e ação opcionais.
@@ -19,7 +20,7 @@ class AppEmptyState extends StatelessWidget {
     this.action,
   });
 
-  final IconData? icon;
+  final AppIconData? icon;
   final String title;
   final String? description;
   final Widget? action;
@@ -47,7 +48,11 @@ class AppEmptyState extends StatelessWidget {
                   color: semantic.bgSubtle,
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                 ),
-                child: Icon(icon, size: 26, color: semantic.fgSubtle),
+                child: AppIcon(
+                  icon,
+                  size: AppSize.iconLg,
+                  color: semantic.fgSubtle,
+                ),
               ),
             ),
           AppHeading(
@@ -88,7 +93,7 @@ WidgetbookComponent buildEmptyStateWidgetbookComponent() {
         name: 'Padrão',
         builder: (context) => const Center(
           child: AppEmptyState(
-            icon: LucideIcons.inbox,
+            icon: AppIcons.inbox,
             title: 'Nenhum lançamento encontrado',
             description: 'Ajuste os filtros ou tente novamente mais tarde.',
           ),

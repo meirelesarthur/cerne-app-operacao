@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import 'app_icon.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'button.dart';
 import 'heading.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `SuccessPanel.tsx` — painel de sucesso genérico pós-operação, no
 /// padrão da SuccessScreen de Fazendas (NEW_UI_SUPERAPP.md). A navegação de
@@ -18,15 +19,13 @@ class AppSuccessPanel extends StatelessWidget {
     super.key,
     required this.title,
     this.description,
-    // Ícone padrão: `CheckCircle2` do lucide-react → `LucideIcons.checkCircle2`
-    // (existe 1:1 no lucide_icons_flutter, sem necessidade de substituto).
-    this.icon = LucideIcons.checkCircle2,
+    this.icon = AppIcons.checkCircle2,
     this.actions,
   });
 
   final String title;
   final Widget? description;
-  final IconData icon;
+  final AppIconData icon;
   final Widget? actions;
 
   @override
@@ -48,7 +47,11 @@ class AppSuccessPanel extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: AppColors.brand50,
               ),
-              child: Icon(icon, size: 32, color: semantic.accentDefault),
+              child: AppIcon(
+                icon,
+                size: AppSize.iconXxl,
+                color: semantic.accentDefault,
+              ),
             ),
             const SizedBox(height: AppSpacing.space4),
             AppHeading(child: Text(title, textAlign: TextAlign.center)),

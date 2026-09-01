@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -14,6 +13,7 @@ import '../components/unidade_detail_sheet.dart';
 import 'package:cerne_app/modules/armazem/lib/movimentacoes.dart';
 import '../mocks/estoque_mocks.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Home do módulo Armazém: ocupação e alertas em destaque, unidades de
 /// armazenagem (cards interativos com detalhe) e últimas movimentações
@@ -105,9 +105,9 @@ class ArmazemHomeScreen extends StatelessWidget {
                         shape: BoxShape.circle,
                         color: AppColors.amber50,
                       ),
-                      child: const Icon(
-                        LucideIcons.triangleAlert,
-                        size: 16,
+                      child: const AppIcon(
+                        AppIcons.triangleAlert,
+                        size: AppSize.iconSm,
                         color: AppColors.amber600,
                       ),
                     ),
@@ -229,9 +229,9 @@ class ArmazemHomeScreen extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: semantic.accentDefault,
                   ),
-                  child: const Icon(
-                    LucideIcons.shoppingBag,
-                    size: 22,
+                  child: const AppIcon(
+                    AppIcons.shoppingBag,
+                    size: AppSize.iconMd,
                     color: AppColors.neutral0,
                   ),
                 ),
@@ -260,9 +260,9 @@ class ArmazemHomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(
-                  LucideIcons.arrowRight,
-                  size: 18,
+                AppIcon(
+                  AppIcons.arrowRight,
+                  size: AppSize.iconSmPlus,
                   color: semantic.accentDefault,
                 ),
               ],

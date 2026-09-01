@@ -1,8 +1,8 @@
+import 'app_icon.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_radius.dart';
@@ -13,6 +13,7 @@ import 'bottom_sheet.dart';
 import 'chip.dart';
 import 'icon_button.dart';
 import 'transaction_list_item.dart';
+import '../design/generated/app_layout.dart';
 
 /// ID de operação mockado e determinístico (sem `DateTime.now()`) — protótipo,
 /// espelha `operationId` de `TransactionDetailSheet.tsx`.
@@ -97,18 +98,18 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
                   shape: BoxShape.circle,
                   color: isIn ? semantic.accentSubtle : semantic.bgSubtle,
                 ),
-                child: Icon(
-                  isIn ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight,
-                  size: 22,
+                child: AppIcon(
+                  isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
+                  size: AppSize.iconMd,
                   color: isIn ? semantic.accentDefault : semantic.fgMuted,
                 ),
               ),
               const SizedBox(height: AppSpacing.space2),
               AppChip(
                 tone: isIn ? AppChipTone.brand : AppChipTone.neutral,
-                icon: Icon(
-                  isIn ? LucideIcons.arrowDownLeft : LucideIcons.arrowUpRight,
-                  size: 12,
+                icon: AppIcon(
+                  isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
+                  size: AppSize.iconXs,
                 ),
                 child: Text(isIn ? 'Entrada' : 'Saída'),
               ),
@@ -212,9 +213,9 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
               ),
               const SizedBox(width: AppSpacing.space3),
               AppIconButton(
-                icon: Icon(
-                  _copied ? LucideIcons.check : LucideIcons.copy,
-                  size: 16,
+                icon: AppIcon(
+                  _copied ? AppIcons.check : AppIcons.copy,
+                  size: AppSize.iconSm,
                   color: _copied ? semantic.accentDefault : null,
                 ),
                 label: _copied ? 'ID copiado' : 'Copiar ID da operação',

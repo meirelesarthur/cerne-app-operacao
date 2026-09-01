@@ -24,6 +24,7 @@ class AppSpacing {
   static const double space20 = 80;
   static const double quarter = 1;
   static const double half = 2;
+  static const double threeQuarter = 3;
   static const double oneHalf = 6;
   static const double twoHalf = 10;
 }

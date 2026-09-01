@@ -60,7 +60,8 @@ void main() {
         ),
       );
 
-      expect(find.text(' *'), findsOneWidget);
+      // Sem espaço antes: no Figma o marcador cola no rótulo ("Batida de dieta*").
+      expect(find.text('*'), findsOneWidget);
     });
   });
 }

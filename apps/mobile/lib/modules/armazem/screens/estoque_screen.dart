@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -66,7 +65,7 @@ class _EstoqueScreenState extends State<EstoqueScreen> {
         const SizedBox(height: AppSpacing.space4),
         if (itens.isEmpty)
           const AppEmptyState(
-            icon: LucideIcons.boxes,
+            icon: AppIcons.boxes,
             title: 'Nenhum item',
             description: 'Não há itens de estoque para esta unidade.',
           )

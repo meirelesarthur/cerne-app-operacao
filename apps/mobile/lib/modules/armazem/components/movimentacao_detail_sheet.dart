@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -7,6 +6,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/estoque_mocks.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Detalhe de Movimentação do Armazém: BottomSheet acionado pelo item de
 /// lista (`AppTransactionListItem`) tanto na Home quanto em Movimentações — o
@@ -47,22 +47,18 @@ class _SheetBody extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: isEntrada ? semantic.accentSubtle : semantic.bgSubtle,
               ),
-              child: Icon(
-                isEntrada
-                    ? LucideIcons.arrowDownLeft
-                    : LucideIcons.arrowUpRight,
-                size: 22,
+              child: AppIcon(
+                isEntrada ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
+                size: AppSize.iconMd,
                 color: isEntrada ? semantic.accentDefault : semantic.fgMuted,
               ),
             ),
             const SizedBox(height: AppSpacing.space2),
             AppChip(
               tone: isEntrada ? AppChipTone.brand : AppChipTone.neutral,
-              icon: Icon(
-                isEntrada
-                    ? LucideIcons.arrowDownLeft
-                    : LucideIcons.arrowUpRight,
-                size: 12,
+              icon: AppIcon(
+                isEntrada ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
+                size: AppSize.iconXs,
               ),
               child: Text(isEntrada ? 'Entrada' : 'Saída'),
             ),

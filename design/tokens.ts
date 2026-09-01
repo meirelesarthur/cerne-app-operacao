@@ -93,8 +93,10 @@ export const primitive = {
 // 2a. theme-agnostic — papéis que não mudam entre light/gbMode
 const feedback = {
   success: { bg: primitive.brand[50], border: primitive.brand[200], text: primitive.brand[700], solid: primitive.brand[600] },
-  error: { bg: primitive.red[50], border: primitive.red[200], text: primitive.red[600], solid: primitive.red[500] },
-  warning: { bg: primitive.amber[50], border: primitive.amber[200], text: primitive.amber[600], solid: primitive.amber[500] },
+  // Figma 54300-2458: o vermelho de "Cancelar" (borda + rótulo do botão outline) e o
+  // âmbar do badge "Em análise" são hexes próprios da referência, não tons da escala.
+  error: { bg: primitive.red[50], border: primitive.red[200], text: '#ed3437', solid: '#ed3437' },
+  warning: { bg: primitive.amber[50], border: primitive.amber[200], text: '#be9304', solid: '#be9304' },
   info: { bg: primitive.blue[50], border: primitive.blue[200], text: primitive.blue[600], solid: primitive.blue[500] },
   notice: primitive.amber[500],
 } as const
@@ -133,17 +135,66 @@ export const color = {
 // Nova UI: canvas suave, cartões-cápsula, superfície "ink" (carvão-verde que permanece
 // escura nos dois temas — cartões-herói da referência) e CTA vibrante com texto escuro.
 export interface ThemePalette {
-  fg: { default: string; muted: string; subtle: string; inverse: string }
-  bg: { canvas: string; surface: string; subtle: string; raised: string; kpi: string }
+  /**
+   * Escala de texto do padrão global (Figma 54300-2458). Cada papel existe porque a
+   * referência usa um tom distinto para ele — não são sinônimos:
+   * `default` título de card/ladrilho · `heading` título de top bar e de grupo de
+   * formulário · `section` cabeçalho de seção com seta · `muted` rótulo de campo e aba
+   * inativa · `secondary` subtítulo de card · `subtle` metadado · `quiet` nome de
+   * parceiro na linha de oferta · `placeholder` texto fantasma de input (o rgba já
+   * embute a opacidade 60% aplicada no Figma sobre rgba(2,53,53,.9)).
+   */
+  fg: {
+    default: string
+    heading: string
+    section: string
+    muted: string
+    secondary: string
+    subtle: string
+    quiet: string
+    placeholder: string
+    inverse: string
+  }
+  /**
+   * `sheet` é a folha de conteúdo do Figma (`action-card`): superfície levemente
+   * distinta do branco puro, com raio 24 no topo, que cobre o canvas em toda tela.
+   * `track` é o trilho do segmented control.
+   */
+  bg: { canvas: string; sheet: string; surface: string; subtle: string; raised: string; track: string; kpi: string }
   border: { default: string; strong: string; subtle: string; tint: string }
   accent: { default: string; hover: string; subtle: string; contrast: string }
   /** superfície escura de destaque (hero cards / canvas invertido da referência) */
   ink: { bg: string; fg: string; muted: string; subtle: string; bubble: string; line: string }
+  /**
+   * Cartão-herói do Figma (Dashboard Hero, nó 54300:16089): gradiente diagonal com
+   * texto e caixas de ícone translúcidas por cima. O ângulo não é cor e vive em
+   * `component.hero.angle`.
+   */
+  hero: { from: string; to: string; fg: string; fgMuted: string; fgSubtle: string; overlay: string; line: string }
   /** CTA de alto impacto: verde vibrante + texto quase-preto (referência) */
   cta: { bg: string; hover: string; fg: string }
   /** tab bar flutuante em cápsula translúcida */
   nav: { bg: string; fg: string; active: string; border: string }
   shadow: { card: string; cardHover: string; modal: string }
+  /**
+   * Superfície de gráfico, theme-aware. A paleta categórica de `chart.series`
+   * (seção 3) é fixa e nasceu no tema claro; em gbMode ela colide com o fundo
+   * escuro. Aqui cada tema declara a sua série e o seu cromo (grade, eixo,
+   * trilho) — nenhum gráfico deve mais ler `AppColors.chartSeries` direto.
+   */
+  chart: {
+    /** paleta categórica ordenada; o índice da série escolhe a cor */
+    series: string[]
+    /** linhas de grade horizontais — o mais apagado que ainda se enxerga */
+    grid: string
+    /** eixo e seus rótulos */
+    axis: string
+    /** trilho de fundo de barra/gauge (100% da escala) */
+    track: string
+    /** leitura financeira: entrou dinheiro / saiu dinheiro */
+    positive: string
+    negative: string
+  }
 }
 
 export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
@@ -152,12 +203,33 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
     // quente) e brand alinhado ao primary/pure exato da referência (#047857
     // = brand[700], não brand[600]) — usado em bordas de foco, links e ícones
     // de destaque em todo o app.
-    fg: { default: '#161b17', muted: '#66716a', subtle: '#99a39c', inverse: primitive.neutral[0] },
-    // `subtle` (fundo de inputs/pills) igual ao canvas: input sobre canvas
-    // continuava com contraste (canvas != surface), mas sobre um AppCard
-    // branco (bg.surface) o preenchimento ficava quase idêntico ao card e o
-    // campo lia como "só borda, sem fundo" — daí usar o mesmo neutral[100].
-    bg: { canvas: primitive.neutral[100], surface: primitive.neutral[0], subtle: primitive.neutral[100], raised: primitive.neutral[0], kpi: '#f8fffe' },
+    // Padrão global do Figma (54300-2458): a escala de texto deixa de ser o
+    // trio verde-acinzentado da referência anterior e passa aos neutros exatos
+    // medidos nos seis frames. Cada papel tem um tom próprio na referência.
+    fg: {
+      default: '#141414',
+      heading: '#262626',
+      section: '#1f1a19',
+      muted: '#6b7280',
+      secondary: '#615b58',
+      subtle: '#9b9b9a',
+      quiet: '#80807f',
+      // rgba(2,53,53,.9) renderizado a 60% de opacidade no Figma = alpha .54
+      placeholder: 'rgba(2,53,53,0.54)',
+      inverse: primitive.neutral[0],
+    },
+    // `subtle` (fundo de inputs/ladrilhos) é o mesmo tom do canvas: é assim no
+    // Figma — o campo só se separa porque repousa sobre a folha `sheet`, que é
+    // mais clara que o canvas. `sheet` é a folha de conteúdo (`action-card`).
+    bg: {
+      canvas: '#f0f0f0',
+      sheet: '#fcfcfc',
+      surface: primitive.neutral[0],
+      subtle: '#f0f0f0',
+      raised: primitive.neutral[0],
+      track: '#e6e6e6',
+      kpi: '#f8fffe',
+    },
     border: { default: '#e8e9e1', strong: '#d6d8ce', subtle: '#f0f1ea', tint: primitive.brand[100] },
     accent: { default: primitive.brand[700], hover: primitive.brand[800], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
     ink: {
@@ -167,6 +239,15 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       subtle: 'rgba(242,245,238,0.40)',
       bubble: 'rgba(255,255,255,0.08)',
       line: 'rgba(255,255,255,0.09)',
+    },
+    hero: {
+      from: '#011e15',
+      to: '#04845f',
+      fg: primitive.neutral[0],
+      fgMuted: 'rgba(255,255,255,0.8)',
+      fgSubtle: 'rgba(255,255,255,0.6)',
+      overlay: 'rgba(255,255,255,0.2)',
+      line: 'rgba(255,255,255,0.16)',
     },
     // Nova UI (referência Força Agro): CTA vira verde sólido + texto branco
     // (era verde-menta + texto quase-preto); nav deixa de depender de blur/
@@ -178,10 +259,37 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       cardHover: '0 10px 30px rgba(16,21,16,0.10)',
       modal: '0 20px 48px rgba(0,0,0,0.24)',
     },
+    // série do tema claro = a paleta categórica histórica de `chart.series`,
+    // mantida para não mudar a leitura dos painéis já publicados.
+    chart: {
+      series: ['#059669', '#2563eb', '#f59e0b', '#7c3aed', '#0891b2', '#dc2626', '#14532d', '#9ca3af'],
+      // grid mais claro que track de proposito: a linha de grade e referencia
+      // de fundo, o trilho e a escala cheia de uma barra/gauge e precisa ser
+      // visivel sobre a superficie branca do card (o neutral[100] anterior era
+      // o mesmo tom do canvas e sumia).
+      grid: primitive.neutral[150],
+      axis: primitive.neutral[400],
+      track: primitive.neutral[200],
+      positive: primitive.brand[600],
+      negative: primitive.red[600],
+    },
   },
   gbMode: {
-    fg: { default: '#e2f0e8', muted: '#8fb3a2', subtle: '#5f7d6e', inverse: '#051008' },
-    bg: { canvas: '#051008', surface: '#0e2a1d', subtle: '#0a2016', raised: '#123a28', kpi: '#0e2a1d' },
+    // Congelado por decisão: o Figma só define o tema claro. Os papéis novos
+    // apontam para o equivalente escuro mais próximo já existente, sem
+    // refinamento próprio — gbMode continua funcional, não ganha identidade nova.
+    fg: {
+      default: '#e2f0e8',
+      heading: '#e2f0e8',
+      section: '#e2f0e8',
+      muted: '#8fb3a2',
+      secondary: '#8fb3a2',
+      subtle: '#5f7d6e',
+      quiet: '#8fb3a2',
+      placeholder: 'rgba(226,240,232,0.54)',
+      inverse: '#051008',
+    },
+    bg: { canvas: '#051008', sheet: '#0e2a1d', surface: '#0e2a1d', subtle: '#0a2016', raised: '#123a28', track: 'rgba(255,255,255,0.10)', kpi: '#0e2a1d' },
     border: { default: 'rgba(255,255,255,0.10)', strong: 'rgba(255,255,255,0.18)', subtle: 'rgba(255,255,255,0.06)', tint: 'rgba(255,255,255,0.10)' },
     accent: { default: '#10b981', hover: '#34d399', subtle: 'rgba(16,185,129,0.14)', contrast: '#051008' },
     ink: {
@@ -190,6 +298,15 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       muted: 'rgba(233,244,237,0.62)',
       subtle: 'rgba(233,244,237,0.40)',
       bubble: 'rgba(255,255,255,0.06)',
+      line: 'rgba(255,255,255,0.08)',
+    },
+    hero: {
+      from: '#051008',
+      to: '#102b1e',
+      fg: '#e9f4ed',
+      fgMuted: 'rgba(233,244,237,0.62)',
+      fgSubtle: 'rgba(233,244,237,0.40)',
+      overlay: 'rgba(255,255,255,0.06)',
       line: 'rgba(255,255,255,0.08)',
     },
     // gbMode mantém a identidade escura, mas segue a mesma direção: CTA/ativo
@@ -201,6 +318,18 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       cardHover: '0 6px 16px rgba(0,0,0,0.5)',
       modal: '0 20px 48px rgba(0,0,0,0.6)',
     },
+    // gbMode sobe a luminosidade de cada matiz da série (tom 400/300 em vez de
+    // 600/700): sobre `bg.surface` #0e2a1d o verde #059669 e o verde-floresta
+    // #14532d praticamente desaparecem. Grade e trilho viram branco translúcido,
+    // como o resto do cromo escuro do app.
+    chart: {
+      series: ['#34d399', '#60a5fa', '#fbbf24', '#a78bfa', '#22d3ee', '#f87171', '#86efac', '#94a3b8'],
+      grid: 'rgba(255,255,255,0.08)',
+      axis: 'rgba(255,255,255,0.32)',
+      track: 'rgba(255,255,255,0.07)',
+      positive: '#34d399',
+      negative: '#f87171',
+    },
   },
 }
 
@@ -211,6 +340,9 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
 export const font = {
   family: { sans: "'Outfit', sans-serif" },
   size: {
+    // Figma 54300-2458: 10 é o badge de status; 20 é o título de tela do
+    // cabeçalho de saudação (entre xlPlus 18 e 2xl 22).
+    '2xs': '10px',
     xs: '11px',
     sm: '12px',
     base: '13px',
@@ -218,13 +350,16 @@ export const font = {
     lg: '15px',
     xl: '16px',
     xlPlus: '18px',
+    xlPlus2: '20px',
     '2xl': '22px',
     '3xl': '26px',
     display: '30px',
     '4xl': '32px',
   },
   weight: { normal: 400, medium: 500, semibold: 600, bold: 700, extrabold: 800 },
-  lineHeight: { tight: 1.2, snug: 1.35, normal: 1.5, relaxed: 1.625 },
+  // `heading` e `section` são as alturas medidas no Figma (1.4 em títulos de tela
+  // e de grupo; 1.42 no cabeçalho de seção).
+  lineHeight: { tight: 1.2, snug: 1.35, heading: 1.4, section: 1.42, normal: 1.5, relaxed: 1.625 },
 } as const
 
 // escala de espaço base 4px (keys alinhadas ao Tailwind)
@@ -232,6 +367,9 @@ export const space = {
   0: '0px',
   quarter: '1px',
   half: '2px',
+  // 3px é fora da grade base-4 de propósito: é a altura de respiro do badge de
+  // status do Figma (54300:16147, `py 3`), que não cabe em 2 nem em 4.
+  threeQuarter: '3px',
   1: '4px',
   oneHalf: '6px',
   2: '8px',
@@ -255,13 +393,22 @@ export const size = {
   control: '44px',
   controlSm: '36px',
   controlLg: '52px',
-  btn: { sm: '44px', md: '44px', lg: '56px' }, // lg alinhado ao botão de CTA da referência (space14)
+  btn: { sm: '44px', md: '44px', lg: '48px' }, // lg = altura do CTA pill do Figma (54349:2068)
   iconBtn: { sm: '44px', md: '44px', lg: '48px' },
   toggle: { track: '40px', thumb: '18px' },
   tableRow: '42px',
   drawer: '320px',
   tabBar: '64px', // altura do bottom tab bar (mobile)
   phone: '420px', // largura máxima do frame de telefone
+  // Iconografia (Hugeicons stroke-rounded). A escala cobre as medidas do Figma
+  // (node 54300-2458): 14 nos indicadores de resumo, 20 no seletor de fazenda,
+  // 24 no ladrilho de módulo, 28 na bolha de notificação.
+  // `smPlus` (18) é o ícone de meta inline do hero; `xxl` (32) é o par voltar/overflow
+  // da top bar e o ícone de topo da folha de conteúdo.
+  icon: { xs: '14px', sm: '16px', smPlus: '18px', md: '20px', lg: '24px', xl: '28px', xxl: '32px' },
+  // Espessura do traço do ícone. Único valor do sistema — `AppIcon` o aplica a
+  // todo ícone renderizado; nenhuma tela passa espessura própria.
+  iconStroke: '1.2px',
 } as const
 
 // Nova UI: geometria cápsula — raios generosos em toda a hierarquia (referência)
@@ -277,6 +424,10 @@ export const radius = {
   '3xl': '28px',
   '4xl': '32px',
   modal: '28px',
+  // Geometria do padrão global do Figma (node 54300-2458): ladrilho de módulo e
+  // campo de busca em 20; superfície de conteúdo sobre o canvas em 24.
+  tile: '20px',
+  surface: '24px',
   full: '9999px',
 } as const
 
@@ -290,6 +441,14 @@ export const shadow = {
   modal: '0 20px 48px rgba(0,0,0,0.24)',
   card: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
   cardHover: '0 4px 12px rgba(0,0,0,0.08)',
+  // Padrão global do Figma (54300-2458) — sombras quase imperceptíveis, que
+  // separam superfícies sem desenhar borda. São theme-agnostic de propósito:
+  // o preto a 2–12% funciona sobre a folha clara e sobre o canvas escuro.
+  tile: '0 4px 12px rgba(0,0,0,0.02)',
+  row: '0 4px 6px rgba(0,0,0,0.02)',
+  hero: '0 4px 8px rgba(0,0,0,0.12)',
+  actionBar: '0 -1px 8.8px rgba(0,0,0,0.05)',
+  bubble: '0 2px 4px rgba(0,0,0,0.04)',
 } as const
 
 export const border = {
@@ -415,6 +574,10 @@ export const component = {
     pillBorder: 'rgba(255,255,255,0.16)',
     creditBg: 'rgba(74,222,128,0.10)',
     creditBorder: 'rgba(74,222,128,0.25)',
+  },
+  /** cartão-herói do padrão global: só o ângulo do gradiente (as cores vivem em themePalette.hero) */
+  hero: {
+    angle: 233.92,
   },
   /** fundo levemente tintado para KPIs em cards claros */
   kpi: {

@@ -1,7 +1,7 @@
+import 'app_icon.dart';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_spacing.dart';
@@ -155,8 +155,8 @@ class _AppAuditExportPanelState extends State<AppAuditExportPanel> {
               AppButton(
                 fullWidth: true,
                 size: AppButtonSize.lg,
-                leftIcon: const Icon(
-                  LucideIcons.download,
+                leftIcon: const AppIcon(
+                  AppIcons.download,
                   size: AppSpacing.space4,
                 ),
                 onPressed: _export,
@@ -171,7 +171,7 @@ class _AppAuditExportPanelState extends State<AppAuditExportPanel> {
         if (_lastExport != null)
           AppBanner(
             tone: AppBannerTone.success,
-            icon: const Icon(LucideIcons.fileCheck2, size: AppSpacing.space4),
+            icon: const AppIcon(AppIcons.fileCheck2, size: AppSpacing.space4),
             child: Text(
               '${_lastExport!.filename} '
               '${_downloaded ? 'baixado' : 'preparado'} com '

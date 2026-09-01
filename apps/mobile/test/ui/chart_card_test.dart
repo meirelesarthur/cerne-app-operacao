@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/chart_card.dart';
+
+import '../helpers/app_icon_finder.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
@@ -31,14 +34,14 @@ void main() {
           const AppChartCard(
             title: 'Produção mensal',
             subtitle: 'Últimos 6 meses',
-            action: Icon(Icons.more_horiz),
+            action: AppIcon(AppIcons.moreHorizontal),
             child: Text('conteúdo'),
           ),
         ),
       );
 
       expect(find.text('Últimos 6 meses'), findsOneWidget);
-      expect(find.byIcon(Icons.more_horiz), findsOneWidget);
+      expect(findAppIcon(AppIcons.moreHorizontal), findsOneWidget);
     });
   });
 }

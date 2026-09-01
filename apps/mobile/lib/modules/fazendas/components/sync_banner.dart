@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Banner de status de sincronização (spec §6.9) — espelha `SyncBanner.tsx`:
 /// mostra a contagem de lançamentos pendentes. Online → permite "Sincronizar
@@ -24,9 +24,9 @@ class SyncBanner extends ConsumerWidget {
 
     return AppBanner(
       tone: AppBannerTone.warning,
-      icon: Icon(
-        isOnline ? LucideIcons.refreshCw : LucideIcons.cloudOff,
-        size: 14,
+      icon: AppIcon(
+        isOnline ? AppIcons.refreshCw : AppIcons.cloudOff,
+        size: AppSize.iconXs,
       ),
       action: isOnline
           ? AppButton(
