@@ -41,7 +41,7 @@ void main() {
       expect(find.text('Conta GB Banking'), findsOneWidget);
       expect(find.text('Acesso rápido'), findsOneWidget);
       expect(find.byType(AppContextTabs), findsOneWidget);
-      expect(find.byType(AppBottomTabBar), findsNothing);
+      expect(find.byType(AppBottomTabBar), findsOneWidget);
     });
 
     testWidgets('tocar a busca da home administrativa abre a descoberta otimizada', (
@@ -186,7 +186,7 @@ void main() {
 
         expect(find.text('Silvio Ventura'), findsOneWidget);
         expect(find.text('Resumo da sua conta GB Bank.'), findsOneWidget);
-        expect(find.byType(AppBottomTabBar), findsNothing);
+        expect(find.byType(AppBottomTabBar), findsOneWidget);
       },
     );
 

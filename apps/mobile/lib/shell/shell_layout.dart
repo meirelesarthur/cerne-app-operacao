@@ -273,14 +273,14 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                       Expanded(
                                         child: _content(
                                           state,
-                                          reserveTabBar: isOperationalModule,
+                                          reserveTabBar: !hideChrome,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
                         ),
-                        if (!hideChrome && isOperationalModule)
+                        if (!hideChrome)
                           Positioned(
                             left: 0,
                             right: 0,
