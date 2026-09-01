@@ -16,8 +16,8 @@ import '../state/fazendas_store.dart';
 /// trocou de "Central de rotinas" (vocabulário de sistema) para "O que fazer
 /// hoje" — mais concreto para quem chega para executar uma tarefa, não para
 /// administrar um "ambiente". A aba de contexto acima continua dizendo
-/// "Rotinas" (rótulo curto de navegação); administração mantém "Central de
-/// gestão", que já é direto o suficiente para esse perfil.
+/// "Rotinas" (rótulo curto de navegação). Administração entra direto nos
+/// painéis e nas consultas, sem repetir um título de contexto.
 ///
 /// Nova UI (referência Força Agro): em vez de expandir cada funcionalidade
 /// como um card solto (lia como uma lista longa e poluída), a home agrupa por
@@ -103,12 +103,8 @@ class ResponsibilityWorkspace extends ConsumerWidget {
         AppSearchField(onTap: () => context.push('/busca')),
         const SizedBox(height: AppSpacing.space4),
       ],
-      if (isAdministration || showLocalContext) ...[
-        AppHeading(
-          child: Text(
-            isAdministration ? 'Central de gestão' : 'O que fazer hoje',
-          ),
-        ),
+      if (showLocalContext && !isAdministration) ...[
+        const AppHeading(child: Text('O que fazer hoje')),
         const SizedBox(height: AppSpacing.space4),
       ],
       if (isFocusedGroup) ...[

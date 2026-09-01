@@ -54,7 +54,7 @@ void main() {
       await tester.tap(find.text('Pesagem registrada'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Central de gestão'), findsOneWidget);
+      expect(find.text('Central de gestão'), findsNothing);
     });
   });
 }

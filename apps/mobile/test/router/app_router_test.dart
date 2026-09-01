@@ -8,6 +8,7 @@ import 'package:cerne_app/shell/components/context_tabs.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
 import 'package:cerne_app/ui/module_tile.dart';
+import 'package:cerne_app/ui/pressable.dart';
 import 'package:cerne_app/ui/search_field.dart';
 
 import '../support/router_test_harness.dart';
@@ -45,20 +46,21 @@ void main() {
       expect(find.byType(AppBottomTabBar), findsOneWidget);
     });
 
-    testWidgets('tocar a busca da home administrativa abre a descoberta otimizada', (
-      tester,
-    ) async {
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'tocar a busca da home administrativa abre a descoberta otimizada',
+      (tester) async {
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.byType(AppSearchField));
-      await tester.pumpAndSettle();
+        await tester.tap(find.byType(AppSearchField));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Seus Produtos'), findsOneWidget);
-      expect(find.text('Mais acessados'), findsOneWidget);
-      expect(find.text('Histórico'), findsOneWidget);
-      expect(find.text('Boa tarde,'), findsNothing);
-    });
+        expect(find.text('Seus Produtos'), findsOneWidget);
+        expect(find.text('Mais acessados'), findsOneWidget);
+        expect(find.text('Histórico'), findsOneWidget);
+        expect(find.text('Boa tarde,'), findsNothing);
+      },
+    );
 
     testWidgets('deep-link "/bank/extrato" abre o módulo Bank na aba Extrato', (
       tester,
@@ -110,7 +112,27 @@ void main() {
           find.descendant(of: contextTabs, matching: find.text('Financeiro')),
           findsNothing,
         );
-        expect(find.text('Central de gestão'), findsOneWidget);
+        expect(find.text('Central de gestão'), findsNothing);
+        final managementTab = tester.getRect(
+          find.ancestor(
+            of: find.text('Gestão'),
+            matching: find.byType(AppPressable),
+          ),
+        );
+        final consultsTab = tester.getRect(
+          find.ancestor(
+            of: find.text('Consultas'),
+            matching: find.byType(AppPressable),
+          ),
+        );
+        final activitiesTab = tester.getRect(
+          find.ancestor(
+            of: find.text('Atividades'),
+            matching: find.byType(AppPressable),
+          ),
+        );
+        expect(managementTab.width, closeTo(consultsTab.width, 0.1));
+        expect(managementTab.width, closeTo(activitiesTab.width, 0.1));
         expect(find.text('Painéis de decisão'), findsOneWidget);
         expect(find.text('Resultado'), findsOneWidget);
         // Abas do Início não devem aparecer.
@@ -134,6 +156,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Consultas e auditoria'), findsOneWidget);
+        expect(find.text('Central de gestão'), findsNothing);
         expect(find.text('Consultas gerenciais'), findsOneWidget);
         expect(find.text('Exportar log de estoque'), findsOneWidget);
         expect(find.byType(AppModuleTile), findsNWidgets(9));
@@ -143,6 +166,20 @@ void main() {
 
         expect(find.text('Consultas Gerenciais'), findsOneWidget);
         expect(find.byType(AppContextTabs), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'aba Atividades não repete o título da central administrativa',
+      (tester) async {
+        await setTallSurface(tester);
+        harness.router.go('/fazendas/atividades');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        expect(find.text('Atividades'), findsWidgets);
+        expect(find.text('Central de gestão'), findsNothing);
         expect(tester.takeException(), isNull);
       },
     );
@@ -290,36 +327,38 @@ void main() {
       },
     );
 
-    testWidgets('deep link sem sessão retorna à seleção de ambiente (não ao login)', (
-      tester,
-    ) async {
-      // Regressão: a seleção de ambiente (`/desktop/crn-app`) é a porta de
-      // entrada real do protótipo — sem sessão, qualquer rota protegida cai
-      // nela, não direto no formulário de login.
-      harness.dispose();
-      harness = RouterTestHarness();
-      harness.router.go('/fazendas/dashboards/financeiro');
+    testWidgets(
+      'deep link sem sessão retorna à seleção de ambiente (não ao login)',
+      (tester) async {
+        // Regressão: a seleção de ambiente (`/desktop/crn-app`) é a porta de
+        // entrada real do protótipo — sem sessão, qualquer rota protegida cai
+        // nela, não direto no formulário de login.
+        harness.dispose();
+        harness = RouterTestHarness();
+        harness.router.go('/fazendas/dashboards/financeiro');
 
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      expect(find.text('CRN ADM'), findsOneWidget);
-      expect(find.text('CRN Operação'), findsOneWidget);
-      expect(find.text('Login Administração'), findsNothing);
-    });
+        expect(find.text('CRN ADM'), findsOneWidget);
+        expect(find.text('CRN Operação'), findsOneWidget);
+        expect(find.text('Login Administração'), findsNothing);
+      },
+    );
 
-    testWidgets('rota inicial sem navegação explícita é a seleção de ambiente', (
-      tester,
-    ) async {
-      harness.dispose();
-      harness = RouterTestHarness();
+    testWidgets(
+      'rota inicial sem navegação explícita é a seleção de ambiente',
+      (tester) async {
+        harness.dispose();
+        harness = RouterTestHarness();
 
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      expect(find.text('CRN ADM'), findsOneWidget);
-      expect(find.text('CRN Operação'), findsOneWidget);
-    });
+        expect(find.text('CRN ADM'), findsOneWidget);
+        expect(find.text('CRN Operação'), findsOneWidget);
+      },
+    );
 
     testWidgets(
       'sessão autenticada em "/desktop" é redirecionada para a central do perfil',

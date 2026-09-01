@@ -206,7 +206,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Central de gestão'), findsOneWidget);
+      expect(find.text('Central de gestão'), findsNothing);
       expect(tester.takeException(), isNull);
     });
   });

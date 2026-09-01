@@ -15,12 +15,10 @@ import '../state/prototype_session_store.dart';
 /// rótulo de contraste, inativas transparentes com rótulo abafado, 14 px
 /// SemiBold nos dois estados.
 ///
-/// **Extensão do padrão:** a referência mostra três abas de largura igual num
-/// trilho fixo. Os módulos com mais opções continuam podendo rolar e cada aba
-/// se dimensiona pelo conteúdo — o vocabulário visual é o mesmo, só a regra de
-/// largura muda. Por isso não reusa `AppSegmentedTabs`, que é o controle de
-/// largura fixa. Em Fazendas/Administração, o conjunto foi mantido em três
-/// abas: Gestão, Consultas e Atividades.
+/// **Extensão do padrão:** em Fazendas/Administração, as três abas ocupam a
+/// mesma largura no trilho fixo. Os demais módulos continuam podendo rolar e
+/// cada aba se dimensiona pelo conteúdo — o vocabulário visual é o mesmo, só
+/// a regra de largura muda.
 ///
 /// A ação "Mais" não entra (vira bolha no header, ver `AppShellHeader`).
 ///
@@ -51,6 +49,10 @@ class AppContextTabs extends StatelessWidget {
       module,
       profile,
     ).where((tab) => tab.action == null).toList();
+    final equalWidthTabs =
+        module.id == 'fazendas' &&
+        profile == UserAccessProfile.administration &&
+        tabs.length == 3;
 
     return Semantics(
       container: true,
@@ -64,45 +66,78 @@ class AppContextTabs extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.tile),
           ),
           padding: const EdgeInsets.all(AppSpacing.space1),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: tabs.length,
-            separatorBuilder: (context, i) =>
-                const SizedBox(width: AppSpacing.space1),
-            itemBuilder: (context, i) {
-              final tab = tabs[i];
-              final active = tab.path == activePath;
-
-              return AppPressable(
-                semanticLabel: tab.label,
-                selected: active,
-                onPressed: () => onTabSelected(tab.path),
-                minTouchTarget: false,
-                borderRadius: BorderRadius.circular(AppRadius.lgPlus),
-                child: Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.space5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: active
-                        ? semantic.accentDefault
-                        : AppColors.transparent,
-                    borderRadius: BorderRadius.circular(AppRadius.lgPlus),
-                  ),
-                  child: Text(
-                    tab.label,
-                    style: TextStyle(
-                      fontSize: AppTypography.md,
-                      fontWeight: AppTypography.weightSemibold,
-                      color: active
-                          ? semantic.accentContrast
-                          : semantic.fgMuted,
-                    ),
+          child: equalWidthTabs
+              ? Row(
+                  children: [
+                    for (var i = 0; i < tabs.length; i++) ...[
+                      if (i > 0) const SizedBox(width: AppSpacing.space1),
+                      Expanded(
+                        child: _ContextTab(
+                          tab: tabs[i],
+                          activePath: activePath,
+                          onTabSelected: onTabSelected,
+                        ),
+                      ),
+                    ],
+                  ],
+                )
+              : ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: tabs.length,
+                  separatorBuilder: (context, i) =>
+                      const SizedBox(width: AppSpacing.space1),
+                  itemBuilder: (context, i) => _ContextTab(
+                    tab: tabs[i],
+                    activePath: activePath,
+                    onTabSelected: onTabSelected,
+                    horizontalPadding: AppSpacing.space5,
                   ),
                 ),
-              );
-            },
+        ),
+      ),
+    );
+  }
+}
+
+class _ContextTab extends StatelessWidget {
+  const _ContextTab({
+    required this.tab,
+    required this.activePath,
+    required this.onTabSelected,
+    this.horizontalPadding,
+  });
+
+  final BottomTab tab;
+  final String activePath;
+  final ValueChanged<String> onTabSelected;
+  final double? horizontalPadding;
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final active = tab.path == activePath;
+
+    return AppPressable(
+      semanticLabel: tab.label,
+      selected: active,
+      onPressed: () => onTabSelected(tab.path),
+      minTouchTarget: false,
+      borderRadius: BorderRadius.circular(AppRadius.lgPlus),
+      child: Container(
+        alignment: Alignment.center,
+        padding: horizontalPadding == null
+            ? null
+            : EdgeInsets.symmetric(horizontal: horizontalPadding!),
+        decoration: BoxDecoration(
+          color: active ? semantic.accentDefault : AppColors.transparent,
+          borderRadius: BorderRadius.circular(AppRadius.lgPlus),
+        ),
+        child: Text(
+          tab.label,
+          style: TextStyle(
+            fontSize: AppTypography.md,
+            fontWeight: AppTypography.weightSemibold,
+            color: active ? semantic.accentContrast : semantic.fgMuted,
           ),
         ),
       ),
