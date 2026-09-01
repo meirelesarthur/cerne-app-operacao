@@ -2,7 +2,7 @@
   "$comment": "Mapa Lucide -> Hugeicons stroke-rounded (pacote hugeicons 1.1.7). Fonte: docs/ESTEIRA-PADRAO-GLOBAL-HUGEICONS.md secao 3.4. Chave = nome Lucide/semantico; valor = sufixo de HugeIcons.strokeRounded<Valor>.",
   "map": {
     "activity": "Activity01",
-    "aiSearch": "AiSearch",
+    "aiSearch": "AiSearch02",
     "alertCircle": "AlertCircle",
     "alertTriangle": "Alert02",
     "arrowDownLeft": "ArrowDownLeft01",

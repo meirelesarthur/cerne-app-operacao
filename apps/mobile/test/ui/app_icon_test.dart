@@ -164,7 +164,7 @@ void main() {
       expect(AppIcons.bookSearch.glyph, HugeIcons.strokeRoundedBookSearch);
       expect(AppIcons.landmark.glyph, HugeIcons.strokeRoundedBank);
       expect(AppIcons.eyeOff.glyph, HugeIcons.strokeRoundedViewOff);
-      expect(AppIcons.aiSearch.glyph, HugeIcons.strokeRoundedAiSearch);
+      expect(AppIcons.aiSearch.glyph, HugeIcons.strokeRoundedAiSearch02);
       expect(AppIcons.filter.glyph, HugeIcons.strokeRoundedFilterHorizontal);
       expect(AppIcons.arrowRight.glyph, HugeIcons.strokeRoundedArrowRight01);
       expect(AppIcons.store02.glyph, HugeIcons.strokeRoundedStore02);
