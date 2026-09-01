@@ -331,27 +331,36 @@ class AppBalanceSummaryItem extends StatelessWidget {
           ),
           const SizedBox(width: AppSpacing.oneHalf),
         ],
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: AppTypography.xs,
-                color: semantic.heroFgSubtle,
+        // `Flexible` + reticências: os dois resumos dividem a largura do herói,
+        // e um valor longo ("-R$ 214.349,68") estoura a coluna se ela puder
+        // crescer pelo conteúdo.
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: AppTypography.xs,
+                  color: semantic.heroFgSubtle,
+                ),
               ),
-            ),
-            Text(
-              hidden ? '•••••' : value,
-              style: TextStyle(
-                fontSize: AppTypography.md,
-                fontWeight: AppTypography.weightBold,
-                color: semantic.heroFg,
-                fontFeatures: const [FontFeature.tabularFigures()],
+              Text(
+                hidden ? '•••••' : value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: AppTypography.md,
+                  fontWeight: AppTypography.weightBold,
+                  color: semantic.heroFg,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
@@ -375,17 +384,21 @@ WidgetbookComponent buildBalanceCardWidgetbookComponent() {
             noteIcon: AppIcons.creditCardAccept,
             onToggleHidden: () {},
             footer: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AppBalanceSummaryItem(
-                  icon: AppIcon(AppIcons.arrowDownLeft),
-                  label: 'Entradas no mês',
-                  value: r'+R$ 342.800,00',
+                Expanded(
+                  child: AppBalanceSummaryItem(
+                    icon: AppIcon(AppIcons.arrowDownLeft),
+                    label: 'Entradas no mês',
+                    value: r'+R$ 342.800,00',
+                  ),
                 ),
-                AppBalanceSummaryItem(
-                  icon: AppIcon(AppIcons.arrowUpRight),
-                  label: 'Saídas no mês',
-                  value: r'-R$ 214.349,68',
+                SizedBox(width: AppSpacing.space3),
+                Expanded(
+                  child: AppBalanceSummaryItem(
+                    icon: AppIcon(AppIcons.arrowUpRight),
+                    label: 'Saídas no mês',
+                    value: r'-R$ 214.349,68',
+                  ),
                 ),
               ],
             ),

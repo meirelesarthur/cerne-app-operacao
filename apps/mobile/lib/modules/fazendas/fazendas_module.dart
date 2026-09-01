@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../design/theme/app_theme_extension.dart';
 import 'admin/admin_dashboard.dart';
 import 'components/sync_banner.dart';
 import 'functional_catalog.dart';
@@ -152,15 +151,15 @@ class _FazendasScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    return ColoredBox(
-      color: semantic.bgCanvas,
-      child: Column(
-        children: [
-          const SyncBanner(),
-          Expanded(child: child),
-        ],
-      ),
+    // Sem `ColoredBox` de canvas: quem pinta o fundo é a folha de conteúdo do
+    // shell (`AppContentSheet`), e repintar o canvas aqui cobria a folha —
+    // deixava o cabeçalho sobre a superfície clara e o resto da tela sobre o
+    // cinza, com uma emenda visível logo abaixo das abas.
+    return Column(
+      children: [
+        const SyncBanner(),
+        Expanded(child: child),
+      ],
     );
   }
 }

@@ -5,6 +5,7 @@ import 'app_icon.dart';
 import 'pressable.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
+import '../design/generated/app_shadows.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -66,16 +67,15 @@ class AppModuleTile extends StatelessWidget {
           horizontal: AppSpacing.space3,
           vertical: AppSpacing.space4,
         ),
-        // Divergência deliberada do Figma, registrada na esteira: lá o ladrilho
-        // é cinza (#f0f0f0) sobre um cartão branco. Aqui não existe esse cartão
-        // — o ladrilho assenta direto no canvas, e no tema claro `bgSubtle` é a
-        // mesma cor do canvas: as fileiras sumiriam, separadas só pela sombra.
-        // `bgSurface` inverte a relação figura/fundo e mantém o mesmo contraste
-        // com uma camada a menos.
+        // Cinza do Figma sobre a folha de conteúdo. A divergência registrada na
+        // esteira (§6-E, "ladrilho `bgSurface` sobre o canvas") caiu quando
+        // `AppContentSheet` trouxe a camada que faltava: com a folha `bgSheet`
+        // por baixo, `bgSubtle` volta a se destacar como na referência, sem
+        // depender só da sombra.
         decoration: BoxDecoration(
-          color: semantic.bgSurface,
+          color: semantic.bgSubtle,
           borderRadius: BorderRadius.circular(AppRadius.tile),
-          boxShadow: semantic.shadowCard,
+          boxShadow: AppShadows.row,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

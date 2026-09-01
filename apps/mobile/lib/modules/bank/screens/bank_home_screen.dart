@@ -125,9 +125,24 @@ class BankHomeScreen extends ConsumerWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text('Limite disponível'),
-                              Text(
-                                '${balanceHidden ? '••••' : Cartao.limiteDisponivel} / ${balanceHidden ? '••••' : Cartao.limiteTotal}',
+                              const Flexible(
+                                child: Text(
+                                  'Limite disponível',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              const SizedBox(width: AppSpacing.space2),
+                              // Dois valores monetários numa linha só: sem
+                              // `Flexible` a linha estoura assim que o limite
+                              // passa da casa dos milhões.
+                              Flexible(
+                                child: Text(
+                                  '${balanceHidden ? '••••' : Cartao.limiteDisponivel} / ${balanceHidden ? '••••' : Cartao.limiteTotal}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.end,
+                                ),
                               ),
                             ],
                           ),

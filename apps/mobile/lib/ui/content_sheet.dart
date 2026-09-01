@@ -50,6 +50,10 @@ class AppContentSheet extends StatelessWidget {
 
     final sheet = Container(
       width: double.infinity,
+      // Recorta o conteúdo no raio: blocos que sangram nas laterais (a faixa de
+      // contexto de fazenda, um banner, um trilho horizontal) desenham por cima
+      // das quinas e apagam o arredondamento que define a folha.
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: semantic.bgSheet,
         borderRadius: const BorderRadius.vertical(
