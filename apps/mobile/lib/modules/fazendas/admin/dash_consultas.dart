@@ -18,6 +18,11 @@ const _hub = [
   (id: _Secao.localizacao, label: 'Localização', icon: AppIcons.mapPin),
 ];
 
+/// Registros por página das listas de consulta — pequeno de propósito: são
+/// telas de celular, e a amostra do protótipo é curta o bastante para que uma
+/// página maior nunca pagine de verdade.
+const _pageSize = 3;
+
 /// Consultas Gerenciais read-only (spec §4.7). 100% leitura: nenhum botão de
 /// ação/edição. Localização de animais = placeholder de mapa (PESADO/diferido
 /// no recorte). Espelha `DashConsultas.tsx`.
@@ -30,6 +35,39 @@ class DashConsultas extends StatefulWidget {
 
 class _DashConsultasState extends State<DashConsultas> {
   _Secao _secao = _Secao.lotes;
+  final _searchController = TextEditingController();
+  var _query = '';
+  var _page = 0;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<LinhaConsulta> get _linhas => switch (_secao) {
+    _Secao.lotes => lotes,
+    _Secao.estoque => estoque,
+    _Secao.pesagens => pesagensDia,
+    _Secao.localizacao => const [],
+  };
+
+  void _selecionarSecao(_Secao secao) {
+    if (secao == _secao) return;
+    setState(() {
+      _secao = secao;
+      _query = '';
+      _page = 0;
+      _searchController.clear();
+    });
+  }
+
+  void _setQuery(String value) => setState(() {
+    _query = value;
+    _page = 0;
+  });
+
+  void _setPage(int page) => setState(() => _page = page);
 
   @override
   Widget build(BuildContext context) {
@@ -60,29 +98,30 @@ class _DashConsultasState extends State<DashConsultas> {
             ],
           ),
           const SizedBox(height: AppSpacing.space4),
-          GridView.count(
-            crossAxisCount: 4,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: AppSpacing.space2,
-            crossAxisSpacing: AppSpacing.space2,
-            childAspectRatio: 0.85,
-            children: [
-              for (final h in _hub)
-                _HubTile(
-                  label: h.label,
+          // Trilho seletor de seção com a mesma anatomia do `AppDiscoveryTile`
+          // da busca global (Lei 2 — fonte única): ícone em destaque, rótulo
+          // na base e rolagem horizontal, em vez de um grid com borda própria.
+          SizedBox(
+            height: 132,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: _hub.length,
+              separatorBuilder: (context, index) =>
+                  const SizedBox(width: AppSpacing.space2),
+              itemBuilder: (context, index) {
+                final h = _hub[index];
+                return AppDiscoveryTile(
                   icon: h.icon,
+                  label: h.label,
                   selected: _secao == h.id,
-                  onTap: () => setState(() => _secao = h.id),
-                ),
-            ],
+                  onTap: () => _selecionarSecao(h.id),
+                );
+              },
+            ),
           ),
           const SizedBox(height: AppSpacing.space5),
           AppSectionTitle(child: Text(ativo.label)),
           const SizedBox(height: AppSpacing.space2),
-          if (_secao == _Secao.lotes) const _ReadOnlyList(rows: lotes),
-          if (_secao == _Secao.estoque) const _ReadOnlyList(rows: estoque),
-          if (_secao == _Secao.pesagens) const _ReadOnlyList(rows: pesagensDia),
           if (_secao == _Secao.localizacao)
             Container(
               decoration: BoxDecoration(
@@ -96,6 +135,15 @@ class _DashConsultasState extends State<DashConsultas> {
                 description:
                     'Carregamento otimizado em desenvolvimento. O mapa de localização de animais será habilitado em uma próxima fase.',
               ),
+            )
+          else
+            _ConsultaLista(
+              rows: _linhas,
+              query: _query,
+              page: _page,
+              searchController: _searchController,
+              onQueryChanged: _setQuery,
+              onPageChanged: _setPage,
             ),
         ],
       ),
@@ -103,60 +151,75 @@ class _DashConsultasState extends State<DashConsultas> {
   }
 }
 
-class _HubTile extends StatelessWidget {
-  const _HubTile({
-    required this.label,
-    required this.icon,
-    required this.selected,
-    required this.onTap,
+/// Busca e paginação de uma seção de consulta — mesmo padrão de
+/// `_RecordsList` (`mapped_feature_screen.dart`): campo de busca com
+/// `AppTextInput`, lista filtrada e `AppPagination` no rodapé (Lei 2).
+class _ConsultaLista extends StatelessWidget {
+  const _ConsultaLista({
+    required this.rows,
+    required this.query,
+    required this.page,
+    required this.searchController,
+    required this.onQueryChanged,
+    required this.onPageChanged,
   });
 
-  final String label;
-  final AppIconData icon;
-  final bool selected;
-  final VoidCallback onTap;
+  final List<LinhaConsulta> rows;
+  final String query;
+  final int page;
+  final TextEditingController searchController;
+  final ValueChanged<String> onQueryChanged;
+  final ValueChanged<int> onPageChanged;
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final termo = query.trim().toLowerCase();
+    final filtradas = termo.isEmpty
+        ? rows
+        : rows
+              .where(
+                (r) => '${r.titulo} ${r.subtitulo} ${r.meta}'
+                    .toLowerCase()
+                    .contains(termo),
+              )
+              .toList(growable: false);
+    final pageCount = (filtradas.length / _pageSize).ceil().clamp(1, 999);
+    final currentPage = page.clamp(0, pageCount - 1);
+    final start = currentPage * _pageSize;
+    final end = (start + _pageSize).clamp(0, filtradas.length);
+    final visiveis = filtradas.sublist(start, end);
 
-    return AppPressable(
-      semanticLabel: label,
-      selected: selected,
-      onPressed: onTap,
-      borderRadius: BorderRadius.circular(AppRadius.xl2),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.space3),
-        decoration: BoxDecoration(
-          color: selected ? semantic.accentSubtle : semantic.bgSurface,
-          border: Border.all(
-            color: selected ? semantic.accentDefault : semantic.borderDefault,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppFormField(
+          label: 'Buscar registros',
+          child: AppTextInput(
+            controller: searchController,
+            placeholder: 'Nome, curral ou detalhe',
+            prefixIcon: const AppIcon(AppIcons.aiSearch),
+            onChanged: onQueryChanged,
           ),
-          borderRadius: BorderRadius.circular(AppRadius.xl2),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppIcon(
-              icon,
-              size: AppSize.iconMd,
-              color: selected ? semantic.accentDefault : semantic.fgMuted,
-            ),
-            const SizedBox(height: AppSpacing.oneHalf),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: AppTypography.xs,
-                fontWeight: AppTypography.weightMedium,
-                color: semantic.fgMuted,
-              ),
-            ),
-          ],
-        ),
-      ),
+        const SizedBox(height: AppSpacing.space3),
+        if (filtradas.isEmpty)
+          const AppEmptyState(
+            icon: AppIcons.searchX,
+            title: 'Nenhum registro encontrado',
+            description: 'Ajuste a busca para encontrar outro item.',
+          )
+        else
+          _ReadOnlyList(rows: visiveis),
+        if (filtradas.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.space3),
+          AppPagination(
+            page: currentPage,
+            totalItems: filtradas.length,
+            pageSize: _pageSize,
+            onPageChanged: onPageChanged,
+          ),
+        ],
+      ],
     );
   }
 }

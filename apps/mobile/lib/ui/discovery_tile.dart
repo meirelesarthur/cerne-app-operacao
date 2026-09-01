@@ -12,6 +12,11 @@ import '../design/theme/app_theme_extension.dart';
 /// Card de descoberta usado nos trilhos de acesso rápido e busca otimizada.
 /// A mesma anatomia aparece na home administrativa e nas seções de produtos
 /// da busca: ícone de 32 px no topo, nome na base e rolagem horizontal.
+///
+/// [selected] tinge ícone e rótulo com a cor de destaque e troca o fundo para
+/// [AppSemanticColors.accentSubtle] — usado quando o trilho também funciona
+/// como seletor de seção (ex.: as abas de Consultas Gerenciais), sem duplicar
+/// a anatomia do cartão em um widget próprio (Lei 2).
 class AppDiscoveryTile extends StatelessWidget {
   const AppDiscoveryTile({
     super.key,
@@ -20,6 +25,7 @@ class AppDiscoveryTile extends StatelessWidget {
     this.onTap,
     this.width = 128,
     this.height = 132,
+    this.selected = false,
   });
 
   final AppIconData icon;
@@ -27,13 +33,17 @@ class AppDiscoveryTile extends StatelessWidget {
   final VoidCallback? onTap;
   final double width;
   final double height;
+  final bool selected;
 
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final iconColor = selected ? semantic.accentDefault : semantic.fgSecondary;
+    final labelColor = selected ? semantic.accentDefault : semantic.fgDefault;
 
     return AppPressable(
       semanticLabel: label,
+      selected: selected,
       onPressed: onTap,
       minTouchTarget: false,
       borderRadius: BorderRadius.circular(AppRadius.tile),
@@ -42,13 +52,13 @@ class AppDiscoveryTile extends StatelessWidget {
         height: height,
         padding: const EdgeInsets.all(AppSpacing.space4),
         decoration: BoxDecoration(
-          color: semantic.bgSubtle,
+          color: selected ? semantic.accentSubtle : semantic.bgSubtle,
           borderRadius: BorderRadius.circular(AppRadius.tile),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            AppIcon(icon, size: AppSize.iconXxl, color: semantic.fgSecondary),
+            AppIcon(icon, size: AppSize.iconXxl, color: iconColor),
             const Spacer(),
             Text(
               label,
@@ -58,7 +68,7 @@ class AppDiscoveryTile extends StatelessWidget {
                 fontSize: AppTypography.xl,
                 fontWeight: AppTypography.weightMedium,
                 height: AppTypography.lineHeightTight,
-                color: semantic.fgDefault,
+                color: labelColor,
               ),
             ),
           ],
@@ -94,6 +104,34 @@ WidgetbookComponent buildDiscoveryTileWidgetbookComponent() {
                 'Marketplace',
                 'Open Finance',
               ][index],
+              onTap: () {},
+            ),
+          ),
+        ),
+      ),
+      WidgetbookUseCase(
+        name: 'Trilho seletor (uma seção ativa)',
+        builder: (context) => SizedBox(
+          height: 132,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: 4,
+            separatorBuilder: (context, index) =>
+                const SizedBox(width: AppSpacing.space2),
+            itemBuilder: (context, index) => AppDiscoveryTile(
+              icon: [
+                AppIcons.layers,
+                AppIcons.boxes,
+                AppIcons.scale,
+                AppIcons.mapPin,
+              ][index],
+              label: [
+                'Lotes',
+                'Estoque',
+                'Pesagens do dia',
+                'Localização',
+              ][index],
+              selected: index == 0,
               onTap: () {},
             ),
           ),
