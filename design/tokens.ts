@@ -212,7 +212,7 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       section: '#1f1a19',
       muted: '#6b7280',
       secondary: '#615b58',
-      subtle: '#9b9b9a',
+      subtle: '#80807f',
       quiet: '#80807f',
       // rgba(2,53,53,.9) renderizado a 60% de opacidade no Figma = alpha .54
       placeholder: 'rgba(2,53,53,0.54)',

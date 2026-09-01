@@ -107,7 +107,7 @@ class AppColorsLight {
   static const Color fgSection = Color(0xFF1F1A19);
   static const Color fgMuted = Color(0xFF6B7280);
   static const Color fgSecondary = Color(0xFF615B58);
-  static const Color fgSubtle = Color(0xFF9B9B9A);
+  static const Color fgSubtle = Color(0xFF80807F);
   static const Color fgQuiet = Color(0xFF80807F);
   static const Color fgPlaceholder = Color(0x8A023535);
   static const Color fgInverse = Color(0xFFFFFFFF);
