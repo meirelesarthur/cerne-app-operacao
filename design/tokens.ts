@@ -218,15 +218,14 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       placeholder: 'rgba(2,53,53,0.54)',
       inverse: primitive.neutral[0],
     },
-    // `subtle` (fundo de inputs/ladrilhos) é o mesmo tom do canvas: é assim no
-    // Figma — o campo só se separa porque repousa sobre a folha `sheet`, que é
-    // mais clara que o canvas. `sheet` é a folha de conteúdo (`action-card`).
+    // `subtle` (fundo de inputs/ladrilhos) acompanha o canvas azul-neutro. As
+    // superfícies de cartão ficam no cinza neutro mais escuro da nova paleta.
     bg: {
-      canvas: '#f0f0f0',
-      sheet: '#fcfcfc',
-      surface: primitive.neutral[0],
-      subtle: '#f0f0f0',
-      raised: primitive.neutral[0],
+      canvas: '#f0f0f2',
+      sheet: '#f0f0f0',
+      surface: '#f0f0f0',
+      subtle: '#f0f0f2',
+      raised: '#f0f0f0',
       track: '#e6e6e6',
       kpi: '#f8fffe',
     },
@@ -253,7 +252,7 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
     // (era verde-menta + texto quase-preto); nav deixa de depender de blur/
     // translucidez e vira cápsula opaca, como a referência.
     cta: { bg: primitive.brand[700], hover: primitive.brand[800], fg: primitive.neutral[0] },
-    nav: { bg: primitive.neutral[0], fg: '#67716a', active: primitive.brand[700], border: '#e8e9e1' },
+    nav: { bg: '#f0f0f0', fg: '#67716a', active: primitive.brand[700], border: '#e8e9e1' },
     shadow: {
       card: '0 1px 2px rgba(16,21,16,0.03), 0 8px 24px rgba(16,21,16,0.05)',
       cardHover: '0 10px 30px rgba(16,21,16,0.10)',

@@ -14,6 +14,7 @@ export 'balance_card.dart';
 export 'banner.dart';
 export 'bar_chart.dart';
 export 'bento_tile.dart';
+export 'brand_logo.dart';
 export 'bottom_sheet.dart';
 export 'bullet_chart.dart';
 export 'button.dart';

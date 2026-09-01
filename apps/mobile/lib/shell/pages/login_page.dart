@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../design/generated/app_colors.dart';
-import '../../design/generated/app_layout.dart';
-import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
@@ -18,10 +16,6 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 /// ambiente enviado pela pasta `CRN App`: Administração abre o hub Banking e
 /// Operação abre a central de campo. Não há duas ações de login nesta tela.
 ///
-/// Desvio do React: `logo-min-white.svg` não é renderizável sem `flutter_svg`
-/// (fora do escopo desta mudança — ver relatório da tarefa). No lugar da marca
-/// SVG, usa-se o fallback tokenizado já adotado por `AppIllustrationSlot`
-/// (bolha `ink` + ícone do catálogo).
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
@@ -98,26 +92,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                     child: Column(
                       children: [
-                        Container(
-                          width: AppSpacing.space16,
-                          height: AppSpacing.space16,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: semantic.inkBg,
-                            borderRadius: BorderRadius.circular(AppRadius.xl2),
-                            boxShadow: semantic.shadowModal,
-                          ),
-                          child: AppIcon(
-                            AppIcons.sprout,
-                            size: AppSize.iconXxl,
-                            color: semantic.ctaBg,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpacing.space3),
-                        AppHeading(
-                          level: AppHeadingLevel.h1,
-                          style: TextStyle(color: semantic.fgInverse),
-                          child: const Text('GB CERNE'),
+                        const AppBrandLogo(
+                          variant: AppBrandLogoVariant.onDark,
+                          height: AppSpacing.space10,
                         ),
                         const SizedBox(height: AppSpacing.space1),
                         ConstrainedBox(

@@ -19,7 +19,7 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('GB CERNE'), findsOneWidget);
+      expect(find.bySemanticsLabel('GB CERNE'), findsOneWidget);
       expect(find.text('Bem-vindo!'), findsOneWidget);
       expect(find.text('Entrar'), findsOneWidget);
       expect(find.text('Login Administração'), findsNothing);
