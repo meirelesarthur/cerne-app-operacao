@@ -10,13 +10,7 @@ import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
 
-const List<CotacaoTipo?> _filtros = [
-  null,
-  CotacaoTipo.produto,
-  CotacaoTipo.servico,
-  CotacaoTipo.frete,
-  CotacaoTipo.manutencao,
-];
+const _todosTipos = '__todos_tipos__';
 
 const Map<CotacaoTipo, String> _tipoLabel = {
   CotacaoTipo.produto: 'Produto',
@@ -55,9 +49,9 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
   CotacaoTipo? _filtro;
 
   /// Valor cotado por tipo, do maior para o menor.
-  Map<CotacaoTipo, double> get _porTipo {
+  Map<CotacaoTipo, double> _porTipo(Iterable<Cotacao> itens) {
     final total = <CotacaoTipo, double>{};
-    for (final c in cotacoes) {
+    for (final c in itens) {
       total[c.tipo] = (total[c.tipo] ?? 0) + c.totalValor;
     }
     final ordenado = total.entries.toList()
@@ -72,17 +66,44 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
         .where((c) => _filtro == null || c.tipo == _filtro)
         .toList();
 
-    final emCotacao = cotacoes.where((c) => c.status == CotacaoStatus.cotacao);
-    final aprovadas = cotacoes.where((c) => c.status == CotacaoStatus.aprovada);
+    final emCotacao = lista.where((c) => c.status == CotacaoStatus.cotacao);
+    final aprovadas = lista.where((c) => c.status == CotacaoStatus.aprovada);
     final totalAberto = emCotacao.fold<double>(0, (s, c) => s + c.totalValor);
     final totalAprovado = aprovadas.fold<double>(0, (s, c) => s + c.totalValor);
-    final quedas = cotacoes.where((c) => c.variacao < 0).length;
+    final quedas = lista.where((c) => c.variacao < 0).length;
+    final fornecedores = lista.map((c) => c.fornecedor).toSet().length;
 
     return DashboardScreen(
       title: 'Suprimentos',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          AppFormField(
+            label: 'Tipo de cotação',
+            hint: _filtro == null
+                ? 'Visão consolidada de todos os tipos.'
+                : 'KPIs e gráficos filtrados por ${_tipoLabel[_filtro]}',
+            child: AppFormSelect(
+              options: [
+                const AppFormSelectOption(
+                  value: _todosTipos,
+                  label: 'Todos os tipos',
+                ),
+                for (final tipo in CotacaoTipo.values)
+                  AppFormSelectOption(
+                    value: tipo.name,
+                    label: _tipoLabel[tipo]!,
+                  ),
+              ],
+              value: _filtro?.name ?? _todosTipos,
+              onChanged: (value) => setState(
+                () => _filtro = value == _todosTipos || value == null
+                    ? null
+                    : CotacaoTipo.values.byName(value),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space4),
           AppMetricGrid(
             children: [
               AppKpiStatCard(
@@ -100,12 +121,9 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
               AppKpiStatCard(
                 label: 'Preços em queda',
                 value: '$quedas',
-                caption: 'de ${cotacoes.length} itens cotados',
+                caption: 'de ${lista.length} itens cotados',
               ),
-              AppKpiStatCard(
-                label: 'Fornecedores',
-                value: '${cotacoes.map((c) => c.fornecedor).toSet().length}',
-              ),
+              AppKpiStatCard(label: 'Fornecedores', value: '$fornecedores'),
             ],
           ),
           const SizedBox(height: AppSpacing.space4),
@@ -115,7 +133,7 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
             child: Center(
               child: AppDonutChart(
                 data: [
-                  for (final entry in _porTipo.entries)
+                  for (final entry in _porTipo(lista).entries)
                     AppDonutSlice(
                       label: _tipoLabel[entry.key]!,
                       value: entry.value,
@@ -132,7 +150,7 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
               targetLabel: 'anterior',
               formatValue: _formatPreco,
               data: [
-                for (final c in cotacoes)
+                for (final c in lista)
                   AppBulletDatum(
                     label: c.produto,
                     value: c.historico.last,
@@ -149,23 +167,6 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
           const SizedBox(height: AppSpacing.space5),
           const AppSectionTitle(child: Text('Cotações')),
           const SizedBox(height: AppSpacing.space2),
-          SizedBox(
-            height: AppSize.controlSm,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                for (final tipo in _filtros) ...[
-                  _FiltroPill(
-                    label: tipo == null ? 'Todos' : _tipoLabel[tipo]!,
-                    selected: _filtro == tipo,
-                    onTap: () => setState(() => _filtro = tipo),
-                  ),
-                  const SizedBox(width: AppSpacing.space2),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.space3),
           Column(
             children: [
               for (final c in lista) ...[
@@ -185,52 +186,6 @@ class _DashSuprimentosState extends State<DashSuprimentos> {
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-class _FiltroPill extends StatelessWidget {
-  const _FiltroPill({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-
-    return AppPressable(
-      semanticLabel: 'Filtrar por $label',
-      selected: selected,
-      onPressed: onTap,
-      borderRadius: BorderRadius.circular(AppRadius.full),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.space3,
-          vertical: AppSpacing.space1,
-        ),
-        decoration: BoxDecoration(
-          color: selected ? semantic.accentDefault : semantic.bgSurface,
-          border: Border.all(
-            color: selected ? semantic.accentDefault : semantic.borderDefault,
-          ),
-          borderRadius: BorderRadius.circular(AppRadius.full),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          label,
-          style: TextStyle(
-            fontSize: AppTypography.base,
-            fontWeight: AppTypography.weightSemibold,
-            color: selected ? AppColors.neutral0 : semantic.fgMuted,
-          ),
-        ),
       ),
     );
   }

@@ -8,6 +8,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'chart_legend.dart';
+import 'chart_sampling.dart';
 import 'chart_scale.dart';
 
 /// Uma série do [AppLineChart]. [points] tem um valor por rótulo do eixo X.
@@ -47,6 +48,7 @@ class AppLineChart extends StatelessWidget {
     this.formatValue,
     this.showLegend = true,
     this.compact = false,
+    this.maxPoints = 120,
   });
 
   final List<AppLineSeries> series;
@@ -65,23 +67,46 @@ class AppLineChart extends StatelessWidget {
   /// curva. Mesmo widget, densidade menor — nunca uma segunda implementação.
   final bool compact;
 
+  /// Limite de pontos pintados. Séries maiores são amostradas uniformemente,
+  /// mantendo o primeiro e o último ponto para preservar o contexto temporal.
+  final int maxPoints;
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final palette = semantic.chartSeries;
     final fmt = formatValue ?? formatAxisValue;
 
-    Color colorOf(int i) => series[i].color ?? palette[i % palette.length];
+    var pointCount = series.isEmpty
+        ? 0
+        : series.map((s) => s.points.length).reduce(math.min);
+    if (labels.isNotEmpty) pointCount = math.min(pointCount, labels.length);
+    final indexes = sampleChartIndexes(pointCount, maxPoints);
+    final visibleSeries = [
+      for (final item in series)
+        AppLineSeries(
+          label: item.label,
+          points: [for (final index in indexes) item.points[index]],
+          color: item.color,
+          filled: item.filled,
+        ),
+    ];
+    final visibleLabels = labels.isEmpty
+        ? <String>[]
+        : [for (final index in indexes) labels[index]];
 
-    final scale = ChartScale.forValues(series.expand((s) => s.points));
+    Color colorOf(int i) =>
+        visibleSeries[i].color ?? palette[i % palette.length];
+
+    final scale = ChartScale.forValues(visibleSeries.expand((s) => s.points));
 
     final chart = SizedBox(
       height: height,
       width: double.infinity,
       child: CustomPaint(
         painter: _LineChartPainter(
-          series: series,
-          labels: labels,
+          series: visibleSeries,
+          labels: visibleLabels,
           scale: scale,
           colorOf: colorOf,
           formatValue: fmt,
@@ -93,7 +118,7 @@ class AppLineChart extends StatelessWidget {
       ),
     );
 
-    if (compact || !showLegend || series.isEmpty) return chart;
+    if (compact || !showLegend || visibleSeries.isEmpty) return chart;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,13 +129,13 @@ class AppLineChart extends StatelessWidget {
         AppChartLegend(
           marker: AppChartLegendMarker.line,
           items: [
-            for (var i = 0; i < series.length; i++)
+            for (var i = 0; i < visibleSeries.length; i++)
               AppChartLegendItem(
-                label: series[i].label,
+                label: visibleSeries[i].label,
                 color: colorOf(i),
-                value: series[i].points.isEmpty
+                value: visibleSeries[i].points.isEmpty
                     ? null
-                    : fmt(series[i].points.last),
+                    : fmt(visibleSeries[i].points.last),
               ),
           ],
         ),

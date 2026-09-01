@@ -48,6 +48,25 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('permite detalhar a visão geral por curral', (tester) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(_wrap(const DashConfinamento()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Curral 01').last);
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Indicadores e gráficos filtrados por este curral.'),
+        findsOneWidget,
+      );
+      expect(find.text('Curral 01'), findsWidgets);
+      expect(find.text('Curral 02'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('abre o detalhe de um curral ao tocar', (tester) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap(const DashConfinamento()));

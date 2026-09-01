@@ -58,5 +58,27 @@ void main() {
       expect(find.text('Tentar novamente'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('recorta os indicadores para um usuário específico', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(_wrap(const DashUso()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('João Silva').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('João Silva'), findsWidgets);
+      expect(find.text('Fazenda São Pedro'), findsWidgets);
+      expect(find.text('Fazenda Santa Rita'), findsNothing);
+      expect(
+        find.text('As métricas mostram apenas a atividade deste usuário.'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
   });
 }

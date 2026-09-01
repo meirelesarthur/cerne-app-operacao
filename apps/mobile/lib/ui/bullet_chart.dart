@@ -41,6 +41,7 @@ class AppBulletChart extends StatelessWidget {
     required this.data,
     this.formatValue,
     this.targetLabel = 'meta',
+    this.maxItems = 12,
   });
 
   final List<AppBulletDatum> data;
@@ -51,19 +52,25 @@ class AppBulletChart extends StatelessWidget {
   /// Palavra usada no texto de meta ("meta 1,55").
   final String targetLabel;
 
+  /// Limite de indicadores pintados para manter a leitura estável em bases
+  /// grandes. O filtro da tela pode ser usado para detalhar um item específico.
+  final int maxItems;
+
   @override
   Widget build(BuildContext context) {
     if (data.isEmpty) return const SizedBox.shrink();
     final fmt = formatValue ?? (double v) => v.toStringAsFixed(0);
+    final limit = maxItems < 1 ? 1 : maxItems;
+    final visibleData = data.take(limit).toList();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final datum in data)
+        for (final datum in visibleData)
           Padding(
             padding: EdgeInsets.only(
-              bottom: datum == data.last
+              bottom: datum == visibleData.last
                   ? AppSpacing.space0
                   : AppSpacing.space4,
             ),
@@ -73,6 +80,16 @@ class AppBulletChart extends StatelessWidget {
               targetLabel: targetLabel,
             ),
           ),
+        if (visibleData.length < data.length) ...[
+          const SizedBox(height: AppSpacing.space3),
+          Text(
+            'Exibindo ${visibleData.length} de ${data.length}. Use os filtros para detalhar.',
+            style: TextStyle(
+              fontSize: AppTypography.xs,
+              color: Theme.of(context).extension<AppSemanticColors>()!.fgSubtle,
+            ),
+          ),
+        ],
       ],
     );
   }

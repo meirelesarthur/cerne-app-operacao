@@ -23,50 +23,95 @@ _estadoMeta = {
   ),
 };
 
+const _todosAtivos = '__todos_ativos__';
+
+Map<String, double> _valorPorCategoria(Iterable<Ativo> itens) {
+  final total = <String, double>{};
+  for (final ativo in itens) {
+    total[ativo.categoria] = (total[ativo.categoria] ?? 0) + ativo.aquisicaoMil;
+  }
+  final ordenado = total.entries.toList()
+    ..sort((a, b) => b.value.compareTo(a.value));
+  return Map.fromEntries(ordenado);
+}
+
 /// Painel **Ativos & Manutenção** (spec §4.5).
 ///
 /// Era uma lista de equipamentos com três KPIs no topo e nenhum gráfico. Ganhou
 /// a leitura que sustenta a decisão: onde o patrimônio está concentrado
 /// (categoria) e quais máquinas já consumiram a maior parte da própria vida
 /// útil. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
-class DashAtivos extends StatelessWidget {
+class DashAtivos extends StatefulWidget {
   const DashAtivos({super.key});
 
-  /// Valor de aquisição somado por categoria, do maior para o menor.
-  Map<String, double> get _porCategoria {
-    final total = <String, double>{};
-    for (final a in ativos) {
-      total[a.categoria] = (total[a.categoria] ?? 0) + a.aquisicaoMil;
-    }
-    final ordenado = total.entries.toList()
-      ..sort((a, b) => b.value.compareTo(a.value));
-    return Map.fromEntries(ordenado);
-  }
+  @override
+  State<DashAtivos> createState() => _DashAtivosState();
+}
+
+class _DashAtivosState extends State<DashAtivos> {
+  String? _ativoId;
 
   @override
   Widget build(BuildContext context) {
-    final emManutencao = ativos
+    final selecionados = _ativoId == null
+        ? ativos
+        : ativos.where((a) => a.id == _ativoId).toList();
+    final totalMil = selecionados.fold<double>(
+      0,
+      (sum, ativo) => sum + ativo.aquisicaoMil,
+    );
+    final depreciacaoMil = selecionados.fold<double>(
+      0,
+      (sum, ativo) => sum + ativo.depreciacaoMil,
+    );
+    final emManutencao = selecionados
         .where((a) => a.estado == AtivoEstado.manutencao)
         .length;
-    final maisDepreciados = [...ativos]
+    final maisDepreciados = [...selecionados]
       ..sort((a, b) => b.depreciado.compareTo(a.depreciado));
+    final porCategoria = _valorPorCategoria(selecionados);
+    final todosSelecionados = _ativoId == null;
 
     return DashboardScreen(
       title: 'Ativos & Manutenção',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          AppFormField(
+            label: 'Ativo',
+            hint: todosSelecionados
+                ? 'Visão consolidada de todo o patrimônio.'
+                : 'Os indicadores e gráficos mostram apenas este ativo.',
+            child: AppFormSelect(
+              options: [
+                const AppFormSelectOption(
+                  value: _todosAtivos,
+                  label: 'Todos os ativos',
+                ),
+                for (final ativo in ativos)
+                  AppFormSelectOption(value: ativo.id, label: ativo.nome),
+              ],
+              value: _ativoId ?? _todosAtivos,
+              onChanged: (value) => setState(
+                () => _ativoId = value == _todosAtivos ? null : value,
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space4),
           AppMetricGrid(
             children: [
-              AppKpiStatCard(label: 'Aquisição', value: AtivosResumo.total),
+              AppKpiStatCard(
+                label: 'Aquisição',
+                value: formatMilhares(totalMil),
+              ),
               AppKpiStatCard(
                 label: 'Depreciação',
-                value: AtivosResumo.depreciacao,
+                value: formatMilhares(depreciacaoMil),
                 tone: AppKpiStatTone.negative,
               ),
               AppKpiStatCard(
                 label: 'Líquido',
-                value: AtivosResumo.liquido,
+                value: formatMilhares(totalMil - depreciacaoMil),
                 tone: AppKpiStatTone.positive,
               ),
               AppKpiStatCard(
@@ -75,7 +120,7 @@ class DashAtivos extends StatelessWidget {
                 tone: emManutencao > 0
                     ? AppKpiStatTone.warning
                     : AppKpiStatTone.neutral,
-                caption: 'de ${ativos.length} ativos',
+                caption: 'de ${selecionados.length} ativos',
               ),
             ],
           ),
@@ -86,10 +131,10 @@ class DashAtivos extends StatelessWidget {
                 'Valor de aquisição; o líquido desconta a depreciação acumulada.',
             child: Center(
               child: AppDonutChart(
-                centerValue: AtivosResumo.total,
+                centerValue: formatMilhares(totalMil),
                 centerLabel: 'aquisição',
                 data: [
-                  for (final entry in _porCategoria.entries)
+                  for (final entry in porCategoria.entries)
                     AppDonutSlice(label: entry.key, value: entry.value),
                 ],
               ),
@@ -108,13 +153,18 @@ class DashAtivos extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.space5),
-          const AppSectionTitle(child: Text('Equipamentos')),
+          AppSectionTitle(
+            child: Text(
+              todosSelecionados ? 'Equipamentos' : 'Equipamento selecionado',
+            ),
+          ),
           const SizedBox(height: AppSpacing.space2),
           Column(
             children: [
-              for (final a in ativos) ...[
+              for (final a in selecionados) ...[
                 _AtivoCard(ativo: a),
-                if (a != ativos.last) const SizedBox(height: AppSpacing.space2),
+                if (a != selecionados.last)
+                  const SizedBox(height: AppSpacing.space2),
               ],
             ],
           ),

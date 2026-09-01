@@ -6,6 +6,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'chart_legend.dart';
+import 'chart_sampling.dart';
 import 'chart_scale.dart';
 
 /// Uma coluna do [AppStackedBar] — um período, com um valor por categoria.
@@ -33,6 +34,7 @@ class AppStackedBar extends StatelessWidget {
     this.height = 190,
     this.formatValue,
     this.showLegend = true,
+    this.maxPoints = 120,
   });
 
   final List<AppStackedDatum> data;
@@ -47,19 +49,25 @@ class AppStackedBar extends StatelessWidget {
   final String Function(double value)? formatValue;
   final bool showLegend;
 
+  /// Limite de períodos pintados; séries maiores são amostradas de forma
+  /// uniforme para preservar desempenho e rótulos legíveis.
+  final int maxPoints;
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final palette = colors ?? semantic.chartSeries;
     final fmt = formatValue ?? formatAxisValue;
-    final scale = ChartScale.forValues(data.map((d) => d.total));
+    final indexes = sampleChartIndexes(data.length, maxPoints);
+    final visibleData = [for (final index in indexes) data[index]];
+    final scale = ChartScale.forValues(visibleData.map((d) => d.total));
 
     final chart = SizedBox(
       height: height,
       width: double.infinity,
       child: CustomPaint(
         painter: _StackedBarPainter(
-          data: data,
+          data: visibleData,
           palette: palette,
           scale: scale,
           formatValue: fmt,

@@ -36,6 +36,7 @@ class AppBarChart extends StatelessWidget {
     this.height = 160,
     this.formatValue,
     this.showGrid = true,
+    this.maxItems = 12,
   });
 
   final List<AppBarDatum> data;
@@ -48,6 +49,10 @@ class AppBarChart extends StatelessWidget {
   /// compactos, onde a grade compete com a barra.
   final bool showGrid;
 
+  /// Limite de categorias pintadas. Categorias excedentes são somadas em
+  /// "Outros" para evitar uma lista vertical interminável em bases grandes.
+  final int maxItems;
+
   // w-24 (96px) do React, expresso como múltiplo de token de espaçamento.
   static const double _labelWidth = AppSpacing.space4 * 6;
   static const double _rowHeight = AppSpacing.space6; // h-6 (24px)
@@ -57,17 +62,18 @@ class AppBarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final fmt = formatValue ?? (double v) => v.toStringAsFixed(0);
+    final chartData = _compactData(data, maxItems);
     final rowTotal = _rowHeight + _rowGap;
-    final minHeight = data.isEmpty
+    final minHeight = chartData.isEmpty
         ? height
-        : (data.length * rowTotal - _rowGap);
+        : (chartData.length * rowTotal - _rowGap);
 
     return SizedBox(
       height: minHeight > height ? minHeight : height,
       width: double.infinity,
       child: CustomPaint(
         painter: _BarChartPainter(
-          data: data,
+          data: chartData,
           formatValue: fmt,
           palette: semantic.chartSeries,
           trackColor: semantic.chartTrack,
@@ -78,6 +84,23 @@ class AppBarChart extends StatelessWidget {
       ),
     );
   }
+}
+
+List<AppBarDatum> _compactData(List<AppBarDatum> data, int maxItems) {
+  final limit = maxItems < 2 ? 2 : maxItems;
+  if (data.length <= limit) return data;
+
+  final visibleCount = limit - 1;
+  final remainingValue = data
+      .skip(visibleCount)
+      .fold<double>(0, (sum, datum) => sum + datum.value);
+  return [
+    ...data.take(visibleCount),
+    AppBarDatum(
+      label: 'Outros (${data.length - visibleCount})',
+      value: remainingValue,
+    ),
+  ];
 }
 
 class _BarChartPainter extends CustomPainter {

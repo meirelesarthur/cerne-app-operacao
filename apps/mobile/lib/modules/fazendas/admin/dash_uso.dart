@@ -15,6 +15,22 @@ import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_motion.dart';
 
 const _periodos = ['Hoje', '7 dias', '30 dias'];
+const _todosUsuarios = '__todos_usuarios__';
+
+List<AppFormSelectOption> _opcoesUsuarios() {
+  final nomes = {
+    for (final fazenda in usoFazendas)
+      for (final usuario in fazenda.usuarios) usuario.nome,
+  }.toList()..sort();
+
+  return [
+    const AppFormSelectOption(
+      value: _todosUsuarios,
+      label: 'Todos os usuários',
+    ),
+    for (final nome in nomes) AppFormSelectOption(value: nome, label: nome),
+  ];
+}
 
 /// Painel **Adoção & Governança** (spec §4.6) — observabilidade multi-tenant.
 ///
@@ -33,6 +49,7 @@ class DashUso extends ConsumerStatefulWidget {
 
 class _DashUsoState extends ConsumerState<DashUso> {
   String _periodo = _periodos.first;
+  String? _usuario;
   String? _expandido = usoFazendas.first.id;
   int _tentativa = 0;
 
@@ -57,15 +74,41 @@ class _DashUsoState extends ConsumerState<DashUso> {
       );
     }
 
-    final totalOnline = usoFazendas.fold<int>(0, (s, f) => s + f.online);
-    final totalUsuarios = usoFazendas.fold<int>(
+    final fazendas = [
+      for (final fazenda in usoFazendas)
+        if (_usuario == null ||
+            fazenda.usuarios.any((usuario) => usuario.nome == _usuario))
+          FazendaAtividade(
+            id: fazenda.id,
+            nome: fazenda.nome,
+            online: fazenda.usuarios
+                .where(
+                  (usuario) =>
+                      (_usuario == null || usuario.nome == _usuario) &&
+                      usuario.ativo,
+                )
+                .length,
+            usuarios: [
+              for (final usuario in fazenda.usuarios)
+                if (_usuario == null || usuario.nome == _usuario) usuario,
+            ],
+          ),
+    ];
+    final totalOnline = fazendas.fold<int>(0, (s, f) => s + f.online);
+    final totalUsuarios = fazendas.fold<int>(
       0,
       (s, f) => s + f.usuarios.length,
     );
-    final fazendasAtivas = usoFazendas.where((f) => f.online > 0).length;
+    final fazendasAtivas = fazendas.where((f) => f.online > 0).length;
     final adocaoPct = totalUsuarios == 0
         ? 0
         : ((totalOnline / totalUsuarios) * 100).round();
+    final expanded = fazendas.any((f) => f.id == _expandido)
+        ? _expandido
+        : fazendas.isEmpty
+        ? null
+        : fazendas.first.id;
+    final todosUsuarios = _usuario == null;
 
     return DashboardScreen(
       title: 'Adoção & Governança',
@@ -73,6 +116,20 @@ class _DashUsoState extends ConsumerState<DashUso> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          AppFormField(
+            label: 'Usuário',
+            hint: todosUsuarios
+                ? 'Visão consolidada de todos os usuários.'
+                : 'As métricas mostram apenas a atividade deste usuário.',
+            child: AppFormSelect(
+              options: _opcoesUsuarios(),
+              value: _usuario ?? _todosUsuarios,
+              onChanged: (value) => setState(
+                () => _usuario = value == _todosUsuarios ? null : value,
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space4),
           SizedBox(
             height: AppSize.controlSm,
             child: ListView(
@@ -118,12 +175,13 @@ class _DashUsoState extends ConsumerState<DashUso> {
           AppChartCard(
             title: 'Adoção por fazenda',
             period: _periodo,
-            footnote:
-                'Usuários online contra o total cadastrado de cada fazenda.',
+            footnote: todosUsuarios
+                ? 'Usuários online contra o total cadastrado de cada fazenda.'
+                : 'Atividade de $_usuario nas fazendas vinculadas.',
             child: AppBulletChart(
               targetLabel: 'cadastrados',
               data: [
-                for (final f in usoFazendas)
+                for (final f in fazendas)
                   AppBulletDatum(
                     label: f.nome,
                     value: f.online.toDouble(),
@@ -137,15 +195,15 @@ class _DashUsoState extends ConsumerState<DashUso> {
           const SizedBox(height: AppSpacing.space2),
           Column(
             children: [
-              for (final f in usoFazendas) ...[
+              for (final f in fazendas) ...[
                 _FazendaTile(
                   fazenda: f,
-                  open: _expandido == f.id,
+                  open: expanded == f.id,
                   onTap: () => setState(
-                    () => _expandido = _expandido == f.id ? null : f.id,
+                    () => _expandido = expanded == f.id ? null : f.id,
                   ),
                 ),
-                if (f != usoFazendas.last)
+                if (f != fazendas.last)
                   const SizedBox(height: AppSpacing.space2),
               ],
             ],

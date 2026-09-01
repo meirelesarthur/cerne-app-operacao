@@ -10,6 +10,8 @@ import '../confinamento/models.dart';
 import '../confinamento/state/confinamento_store.dart';
 import 'dashboard_screen.dart';
 
+const _todosCurrais = '__todos_currais__';
+
 /// Painel **Rebanho & Confinamento** (spec de Confinamento — Cadastro +
 /// Nutrição), lido pelo perfil ADM.
 ///
@@ -31,18 +33,45 @@ class DashConfinamento extends ConsumerStatefulWidget {
 
 class _DashConfinamentoState extends ConsumerState<DashConfinamento> {
   int _tab = 0;
+  String? _curralId;
 
   static const _labels = ['Visão geral', 'Mapa', 'Nutrição', 'Relatórios'];
 
   @override
   Widget build(BuildContext context) {
     final confinamento = ref.watch(confinamentoStoreProvider);
+    final currais = _curralId == null
+        ? confinamento.currais
+        : confinamento.currais.where((c) => c.id == _curralId).toList();
 
     return DashboardScreen(
       title: 'Rebanho & Confinamento',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (_tab == 0) ...[
+            AppFormField(
+              label: 'Curral',
+              hint: _curralId == null
+                  ? 'Visão consolidada de todos os currais.'
+                  : 'Indicadores e gráficos filtrados por este curral.',
+              child: AppFormSelect(
+                options: [
+                  const AppFormSelectOption(
+                    value: _todosCurrais,
+                    label: 'Todos os currais',
+                  ),
+                  for (final curral in confinamento.currais)
+                    AppFormSelectOption(value: curral.id, label: curral.nome),
+                ],
+                value: _curralId ?? _todosCurrais,
+                onChanged: (value) => setState(
+                  () => _curralId = value == _todosCurrais ? null : value,
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.space4),
+          ],
           AppSegmentedTabs(
             labels: _labels,
             selectedIndex: _tab,
@@ -50,7 +79,7 @@ class _DashConfinamentoState extends ConsumerState<DashConfinamento> {
           ),
           const SizedBox(height: AppSpacing.space5),
           switch (_tab) {
-            0 => _VisaoGeral(currais: confinamento.currais),
+            0 => _VisaoGeral(currais: currais),
             1 => _Mapa(currais: confinamento.currais),
             2 => const _Nutricao(),
             _ => _Relatorios(

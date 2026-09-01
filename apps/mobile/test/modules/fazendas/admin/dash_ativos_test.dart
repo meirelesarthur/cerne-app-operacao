@@ -43,5 +43,24 @@ void main() {
       expect(find.text('Valor de aquisição'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('aplica o ativo escolhido aos indicadores e à lista', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(_wrap(const DashAtivos()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Trator John Deere 6110').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Equipamento selecionado'), findsOneWidget);
+      expect(find.text('Trator John Deere 6110'), findsWidgets);
+      expect(find.text('Colheitadeira CR7'), findsNothing);
+      expect(find.text('R\$ 380 mil'), findsWidgets);
+      expect(tester.takeException(), isNull);
+    });
   });
 }

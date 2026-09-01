@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
-import 'package:cerne_app/ui/ui.dart';
 
 import '../../../support/test_viewport.dart';
 import 'package:cerne_app/modules/fazendas/admin/dash_suprimentos.dart';
@@ -35,12 +34,9 @@ void main() {
       await tester.pumpWidget(_wrap(const DashSuprimentos()));
       await tester.pumpAndSettle();
 
-      // "Frete" agora aparece duas vezes na tela: na pílula de filtro e na
-      // legenda do donut por tipo. Só a pílula é pressionável.
-      final pilula = find.widgetWithText(AppPressable, 'Frete');
-      await tester.ensureVisible(pilula);
+      await tester.tap(find.byType(DropdownButtonFormField<String>));
       await tester.pumpAndSettle();
-      await tester.tap(pilula);
+      await tester.tap(find.text('Frete').last);
       await tester.pumpAndSettle();
 
       expect(find.text('TransBoi Logística'), findsOneWidget);
