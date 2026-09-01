@@ -48,15 +48,19 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           final segments = state.uri.pathSegments;
           final moduleId = segments.isNotEmpty ? segments.first : 'inicio';
           final tab = segments.length > 1 ? segments[1] : '';
-          // Além da aba de contexto (`/modulo/aba`), qualquer segmento extra
-          // significa que o usuário entrou numa funcionalidade/módulo
-          // específico (feature, grupo, dashboard, fluxo) — o header global
-          // e as abas somem para dar espaço de tela à função em si.
-          final isDeep = segments.length > 2;
+          // A central de um grupo é um estado intermediário: mantém o
+          // seletor de fazenda e o dock operacional, mas remove a saudação e
+          // as abas para a própria tela renderizar busca + cards.
+          // Funcionalidades, dashboards e fluxos continuam sendo telas
+          // fundas, sem chrome.
+          final isGroup =
+              segments.length > 2 && segments[2] == 'grupo';
+          final isDeep = segments.length > 2 && !isGroup;
           return ShellLayout(
             moduleId: moduleId,
             activeTab: tab,
             hideChrome: isDeep,
+            compactChrome: isGroup,
             child: child,
           );
         },

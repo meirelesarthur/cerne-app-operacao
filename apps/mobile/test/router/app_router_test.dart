@@ -7,6 +7,8 @@ import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
 import 'package:cerne_app/shell/components/context_tabs.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
+import 'package:cerne_app/ui/module_tile.dart';
+import 'package:cerne_app/ui/search_field.dart';
 
 import '../support/router_test_harness.dart';
 import '../support/test_viewport.dart';
@@ -117,6 +119,24 @@ void main() {
       expect(find.text('Armazém'), findsOneWidget);
       expect(find.text('CONTA'), findsOneWidget);
     });
+
+    testWidgets(
+      'central interna mantém fazenda e navbar, mas remove o perfil e as abas',
+      (tester) async {
+        harness.dispose();
+        harness = RouterTestHarness(profile: UserAccessProfile.operational);
+        harness.router.go('/fazendas/operacional/grupo/confinamento');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppBottomTabBar), findsOneWidget);
+        expect(find.text('Fazenda São Pedro'), findsOneWidget);
+        expect(find.byType(AppSearchField), findsOneWidget);
+        expect(find.byType(AppModuleTile), findsNWidgets(5));
+        expect(find.text('Boa tarde,'), findsNothing);
+        expect(find.byType(AppContextTabs), findsNothing);
+      },
+    );
 
     testWidgets('cadastro profundo remove navbar e contexto da fazenda', (
       tester,

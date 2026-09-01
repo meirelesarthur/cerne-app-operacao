@@ -24,6 +24,18 @@ AppIconData groupIcon(String group) => switch (group) {
   _ => AppIcons.layers,
 };
 
+/// Ícone específico de uma função dentro do módulo. O catálogo funcional
+/// guarda a regra e o texto, não componentes visuais; este mapa mantém a
+/// grade interna expressiva sem espalhar decisões de UI pelo catálogo.
+AppIconData featureIcon(String featureId, String group) => switch (featureId) {
+  'meus-currais' => AppIcons.warehouse,
+  'producao-batelada' => AppIcons.misturador,
+  'trato-diario' => AppIcons.heartPulse,
+  'leitura-cocho-confinamento' => AppIcons.scanLine,
+  'ordens-pendentes' => AppIcons.clock,
+  _ => groupIcon(group),
+};
+
 /// Rótulo de apresentação dos módulos na entrada operacional. O catálogo
 /// mantém o nome de domínio para chaves, slugs e auditoria; a home usa o
 /// vocabulário curto que aparece no layout de referência.

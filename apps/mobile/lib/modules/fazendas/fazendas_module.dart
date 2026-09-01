@@ -40,6 +40,7 @@ GoRoute buildFazendasModuleRoute() {
               child: GroupFeaturesScreen(
                 groupSlug: state.pathParameters['group']!,
                 profile: FeatureProfile.administration,
+                embedded: true,
               ),
             ),
           ),
@@ -69,6 +70,7 @@ GoRoute buildFazendasModuleRoute() {
               child: GroupFeaturesScreen(
                 groupSlug: state.pathParameters['group']!,
                 profile: FeatureProfile.operational,
+                embedded: true,
               ),
             ),
           ),

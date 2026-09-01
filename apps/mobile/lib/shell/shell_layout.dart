@@ -33,6 +33,7 @@ class ShellLayout extends ConsumerStatefulWidget {
     required this.activeTab,
     required this.child,
     this.hideChrome = false,
+    this.compactChrome = false,
   });
 
   final String moduleId;
@@ -40,11 +41,17 @@ class ShellLayout extends ConsumerStatefulWidget {
   final Widget child;
 
   /// Quando `true` (rota mais funda que `/modulo/aba`, ex.: uma
-  /// funcionalidade, grupo ou dashboard específico), o header global e as
-  /// abas de contexto somem — quem mostra navegação/título ali é a própria
-  /// tela (botão "Voltar", `SubPageHeader`, etc.), e o espaço liberado vai
-  /// para o conteúdo da função.
+  /// funcionalidade ou dashboard específico), o header global e as abas de
+  /// contexto somem — quem mostra navegação/título ali é a própria tela
+  /// (botão "Voltar", `SubPageHeader`, etc.), e o espaço liberado vai para o
+  /// conteúdo da função.
   final bool hideChrome;
+
+  /// Central de um módulo (`/fazendas/operacional/grupo/...`): mantém o
+  /// contexto da fazenda e o dock operacional, mas entrega a saudação, o
+  /// perfil e as abas para a tela interna ganhar espaço para sua própria
+  /// busca e grade de funções.
+  final bool compactChrome;
 
   @override
   ConsumerState<ShellLayout> createState() => _ShellLayoutState();
@@ -53,8 +60,9 @@ class ShellLayout extends ConsumerStatefulWidget {
 class _ShellLayoutState extends ConsumerState<ShellLayout> {
   /// Header global colapsado (ver plano de UX): rolar a tela do módulo para
   /// baixo esconde avatar/saudação/nome (`AppShellHeader.collapsed`), deixando
-  /// só as bolhas de ação — libera ~74px de tela durante a tarefa. As abas de
-  /// contexto continuam sempre visíveis (só o bloco de identidade colapsa).
+  /// só as bolhas de ação — libera ~74px de tela durante a tarefa. Nas rotas
+  /// completas, as abas de contexto continuam visíveis (só o bloco de
+  /// identidade colapsa).
   bool _headerCollapsed = false;
 
   @override
@@ -63,7 +71,8 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     // Nova tela/aba: volta a mostrar a identidade completa em vez de manter o
     // header colapsado de onde a pessoa rolou na tela anterior.
     if (oldWidget.moduleId != widget.moduleId ||
-        oldWidget.activeTab != widget.activeTab) {
+        oldWidget.activeTab != widget.activeTab ||
+        oldWidget.compactChrome != widget.compactChrome) {
       _headerCollapsed = false;
     }
   }
@@ -119,6 +128,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     final moduleId = widget.moduleId;
     final activeTab = widget.activeTab;
     final hideChrome = widget.hideChrome;
+    final compactChrome = widget.compactChrome;
     final module = getModule(moduleId) ?? modules.first;
     final state = ref.watch(shellStoreProvider);
     final profile = ref.watch(prototypeSessionProvider).profile;
@@ -202,59 +212,60 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                       : null,
                                   child: Column(
                                     children: [
-                                      AnimatedSize(
-                                        duration: reduceMotion
-                                            ? Duration.zero
-                                            : AppMotion.base,
-                                        curve: AppMotion.easingOut,
-                                        alignment: Alignment.topCenter,
-                                        child: Column(
-                                          children: [
-                                            AppShellHeader(
-                                              collapsed: _headerCollapsed,
-                                              showMenu: !isOperationalModule,
-                                              showProfileSubtitle:
-                                                  !isOperationalModule,
-                                              onOpenProfile: () =>
-                                                  _go(context, ref, '/perfil'),
-                                              onOpenNotifications: () => _go(
-                                                context,
-                                                ref,
-                                                '/notificacoes',
+                                      if (!compactChrome)
+                                        AnimatedSize(
+                                          duration: reduceMotion
+                                              ? Duration.zero
+                                              : AppMotion.base,
+                                          curve: AppMotion.easingOut,
+                                          alignment: Alignment.topCenter,
+                                          child: Column(
+                                            children: [
+                                              AppShellHeader(
+                                                collapsed: _headerCollapsed,
+                                                showMenu: !isOperationalModule,
+                                                showProfileSubtitle:
+                                                    !isOperationalModule,
+                                                onOpenProfile: () =>
+                                                    _go(context, ref, '/perfil'),
+                                                onOpenNotifications: () => _go(
+                                                  context,
+                                                  ref,
+                                                  '/notificacoes',
+                                                ),
+                                                child: showGlobalContext
+                                                    ? AppSearchField(
+                                                        onTap: () => _go(
+                                                          context,
+                                                          ref,
+                                                          '/busca',
+                                                        ),
+                                                      )
+                                                    : null,
                                               ),
-                                              child: showGlobalContext
-                                                  ? AppSearchField(
-                                                      onTap: () => _go(
-                                                        context,
-                                                        ref,
-                                                        '/busca',
+                                              if (!isOperationalModule)
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal:
+                                                            AppSpacing.space4,
                                                       ),
-                                                    )
-                                                  : null,
-                                            ),
-                                            if (!isOperationalModule)
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal:
-                                                          AppSpacing.space4,
+                                                  child: AppContextTabs(
+                                                    module: module,
+                                                    profile: profile,
+                                                    activePath: activeTab,
+                                                    onTabSelected: (path) => _go(
+                                                      context,
+                                                      ref,
+                                                      path.isEmpty
+                                                          ? '/${module.id}'
+                                                          : '/${module.id}/$path',
                                                     ),
-                                                child: AppContextTabs(
-                                                  module: module,
-                                                  profile: profile,
-                                                  activePath: activeTab,
-                                                  onTabSelected: (path) => _go(
-                                                    context,
-                                                    ref,
-                                                    path.isEmpty
-                                                        ? '/${module.id}'
-                                                        : '/${module.id}/$path',
                                                   ),
                                                 ),
-                                              ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
                                       Expanded(
                                         child: _content(
                                           state,
