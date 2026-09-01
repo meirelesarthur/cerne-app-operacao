@@ -15,10 +15,11 @@ import '../state/prototype_session_store.dart';
 /// rótulo de contraste, inativas transparentes com rótulo abafado, 14 px
 /// SemiBold nos dois estados.
 ///
-/// **Extensão do padrão:** em Fazendas/Administração, as três abas ocupam a
-/// mesma largura no trilho fixo. Os demais módulos continuam podendo rolar e
-/// cada aba se dimensiona pelo conteúdo — o vocabulário visual é o mesmo, só
-/// a regra de largura muda.
+/// As abas sempre dividem a largura do trilho em partes iguais (`Expanded`),
+/// em todos os módulos — nunca ficam encolhidas pelo conteúdo deixando trilho
+/// vazio de um lado. Antes essa regra valia só para Fazendas/Administração; a
+/// contagem de abas por módulo (2 a 4, sempre nomes curtos) nunca justificou a
+/// exceção, e o trilho parcialmente vazio lia como estado quebrado.
 ///
 /// A ação "Mais" não entra (vira bolha no header, ver `AppShellHeader`).
 ///
@@ -49,10 +50,6 @@ class AppContextTabs extends StatelessWidget {
       module,
       profile,
     ).where((tab) => tab.action == null).toList();
-    final equalWidthTabs =
-        module.id == 'fazendas' &&
-        profile == UserAccessProfile.administration &&
-        tabs.length == 3;
 
     return Semantics(
       container: true,
@@ -66,33 +63,20 @@ class AppContextTabs extends StatelessWidget {
             borderRadius: BorderRadius.circular(AppRadius.tile),
           ),
           padding: const EdgeInsets.all(AppSpacing.space1),
-          child: equalWidthTabs
-              ? Row(
-                  children: [
-                    for (var i = 0; i < tabs.length; i++) ...[
-                      if (i > 0) const SizedBox(width: AppSpacing.space1),
-                      Expanded(
-                        child: _ContextTab(
-                          tab: tabs[i],
-                          activePath: activePath,
-                          onTabSelected: onTabSelected,
-                        ),
-                      ),
-                    ],
-                  ],
-                )
-              : ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: tabs.length,
-                  separatorBuilder: (context, i) =>
-                      const SizedBox(width: AppSpacing.space1),
-                  itemBuilder: (context, i) => _ContextTab(
+          child: Row(
+            children: [
+              for (var i = 0; i < tabs.length; i++) ...[
+                if (i > 0) const SizedBox(width: AppSpacing.space1),
+                Expanded(
+                  child: _ContextTab(
                     tab: tabs[i],
                     activePath: activePath,
                     onTabSelected: onTabSelected,
-                    horizontalPadding: AppSpacing.space5,
                   ),
                 ),
+              ],
+            ],
+          ),
         ),
       ),
     );
@@ -104,13 +88,11 @@ class _ContextTab extends StatelessWidget {
     required this.tab,
     required this.activePath,
     required this.onTabSelected,
-    this.horizontalPadding,
   });
 
   final BottomTab tab;
   final String activePath;
   final ValueChanged<String> onTabSelected;
-  final double? horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -125,9 +107,6 @@ class _ContextTab extends StatelessWidget {
       borderRadius: BorderRadius.circular(AppRadius.lgPlus),
       child: Container(
         alignment: Alignment.center,
-        padding: horizontalPadding == null
-            ? null
-            : EdgeInsets.symmetric(horizontal: horizontalPadding!),
         decoration: BoxDecoration(
           color: active ? semantic.accentDefault : AppColors.transparent,
           borderRadius: BorderRadius.circular(AppRadius.lgPlus),
