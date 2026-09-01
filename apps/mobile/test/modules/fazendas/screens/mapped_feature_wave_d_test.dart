@@ -102,6 +102,34 @@ void main() {
       }
     });
 
+    testWidgets('não expõe premissas internas na abertura do Sanitário', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          featureId: 'sanitario',
+          profile: FeatureProfile.operational,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('Criar um manejo sanitário por responsável e lote.'),
+        findsOneWidget,
+      );
+      expect(
+        find.text(
+          'A fonte mostrou apenas a primeira etapa; os campos complementares são premissas do protótipo frontend.',
+        ),
+        findsNothing,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('saldo de estoque abre dados demonstrativos e detalhe', (
       tester,
     ) async {

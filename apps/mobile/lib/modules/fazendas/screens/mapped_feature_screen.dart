@@ -305,14 +305,14 @@ const _livestockAuditRows = <Map<String, String>>[
   },
 ];
 
-/// Abertura da função dentro da folha: o objetivo em uma linha e, quando
-/// existe, o aviso de origem do dado.
+/// Abertura da função dentro da folha: o objetivo em uma linha.
 ///
 /// As chips de perfil ("Operação"/"Administração") e de status ("Funcional no
 /// protótipo") já tinham saído daqui — a primeira repetia o ambiente em que a
-/// pessoa entrou, a segunda é informação de desenvolvimento. Agora o título e o
-/// voltar também saíram: viraram a barra superior fixa do padrão global, acima
-/// da folha.
+/// pessoa entrou, a segunda é informação de desenvolvimento. Os detalhes de
+/// fonte/premissa também são internos e não aparecem na jornada. Agora o título
+/// e o voltar também saíram: viraram a barra superior fixa do padrão global,
+/// acima da folha.
 class _FeatureIntroduction extends StatelessWidget {
   const _FeatureIntroduction({required this.feature});
 
@@ -324,10 +324,6 @@ class _FeatureIntroduction extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(feature.objective, style: Theme.of(context).textTheme.bodyMedium),
-        if (feature.sourceDetail case final detail?) ...[
-          const SizedBox(height: AppSpacing.space3),
-          AppBanner(child: Text(detail)),
-        ],
       ],
     );
   }
