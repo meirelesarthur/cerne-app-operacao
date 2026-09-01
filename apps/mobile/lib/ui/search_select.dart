@@ -74,6 +74,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final inputColors = appInputColors(context);
     final filtered = widget.options
         .where((o) => o.label.toLowerCase().contains(_query.toLowerCase()))
         .toList();
@@ -90,7 +91,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
           leading: AppIcon(
             AppIcons.search,
             size: AppSize.iconSm,
-            color: semantic.fgSubtle,
+            color: inputColors.placeholder,
           ),
           child: TextField(
             controller: _queryController,
@@ -99,7 +100,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
             style: TextStyle(
               fontFamily: AppTypography.fontFamily,
               fontSize: AppTypography.xl,
-              color: semantic.fgDefault,
+              color: inputColors.foreground,
             ),
             decoration: InputDecoration(
               isCollapsed: true,
@@ -110,7 +111,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
               hintStyle: TextStyle(
                 fontFamily: AppTypography.fontFamily,
                 fontSize: AppTypography.xl,
-                color: semantic.fgSubtle,
+                color: inputColors.placeholder,
               ),
             ),
           ),

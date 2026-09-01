@@ -6,6 +6,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'field_capsule.dart';
 
 /// Espelha `BottomSheet.tsx` (spec §6.11).
 ///
@@ -116,7 +117,10 @@ class AppBottomSheet extends StatelessWidget {
                       AppSpacing.space5,
                       AppSpacing.space5,
                     ),
-                    child: child,
+                    child: AppInputSurface(
+                      backgroundColor: semantic.bgSurface,
+                      child: child,
+                    ),
                   ),
                 ),
               ],

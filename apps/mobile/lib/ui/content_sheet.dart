@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'farm_selector.dart';
+import 'field_capsule.dart';
 import 'search_field.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -63,7 +64,7 @@ class AppContentSheet extends StatelessWidget {
       padding: padded
           ? const EdgeInsets.symmetric(horizontal: contentInset)
           : EdgeInsets.zero,
-      child: child,
+      child: AppInputSurface(backgroundColor: semantic.bgSheet, child: child),
     );
 
     if (header == null) return sheet;
@@ -74,14 +75,17 @@ class AppContentSheet extends StatelessWidget {
       children: [
         ColoredBox(
           color: semantic.bgSurface,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(
-              contentInset,
-              AppSpacing.space2,
-              contentInset,
-              AppSpacing.space3,
+          child: AppInputSurface(
+            backgroundColor: semantic.bgSurface,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                contentInset,
+                AppSpacing.space2,
+                contentInset,
+                AppSpacing.space3,
+              ),
+              child: header!,
             ),
-            child: header!,
           ),
         ),
         Flexible(child: sheet),

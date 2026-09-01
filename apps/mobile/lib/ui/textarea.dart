@@ -4,8 +4,8 @@ import 'package:widgetbook/widgetbook.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
-import '../design/theme/app_theme_extension.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import 'field_capsule.dart';
 
 /// Espelha `Textarea.tsx` — campo multilinha (`rounded-2xl`), fundo sutil.
 /// A altura mínima do React (`min-h-[96px]`) não tem token DTCG equivalente;
@@ -36,7 +36,7 @@ class AppTextarea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final inputColors = appInputColors(context);
     final radius = BorderRadius.circular(AppRadius.xl2);
 
     OutlineInputBorder border(Color color, {double width = 1}) =>
@@ -55,17 +55,17 @@ class AppTextarea extends StatelessWidget {
       style: TextStyle(
         fontFamily: AppTypography.fontFamily,
         fontSize: AppTypography.xl,
-        color: enabled ? semantic.fgDefault : semantic.fgMuted,
+        color: enabled ? inputColors.foreground : inputColors.muted,
       ),
-      cursorColor: semantic.accentDefault,
+      cursorColor: inputColors.focus,
       decoration: InputDecoration(
         filled: true,
-        fillColor: semantic.bgSubtle,
+        fillColor: inputColors.fill,
         hintText: placeholder,
         hintStyle: TextStyle(
           fontFamily: AppTypography.fontFamily,
           fontSize: AppTypography.xl,
-          color: semantic.fgSubtle,
+          color: inputColors.placeholder,
         ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.space5,
@@ -74,7 +74,7 @@ class AppTextarea extends StatelessWidget {
         border: border(AppColors.transparent),
         enabledBorder: border(AppColors.transparent),
         disabledBorder: border(AppColors.transparent),
-        focusedBorder: border(semantic.accentDefault, width: 2),
+        focusedBorder: border(inputColors.focus, width: 2),
       ),
     );
   }

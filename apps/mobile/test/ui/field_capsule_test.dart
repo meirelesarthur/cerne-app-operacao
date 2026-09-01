@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_layout.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/app_icon.dart';
+import 'package:cerne_app/ui/card.dart';
+import 'package:cerne_app/ui/content_sheet.dart';
 import 'package:cerne_app/ui/field_capsule.dart';
 import 'package:cerne_app/ui/form_select.dart';
 import 'package:cerne_app/ui/search_select.dart';
 import 'package:cerne_app/ui/text_input.dart';
 
-Widget _wrap(Widget child) => MaterialApp(
-  theme: buildAppTheme(AppThemeVariant.light),
-  home: Scaffold(
-    body: Center(child: SizedBox(width: 320, child: child)),
-  ),
-);
+Widget _wrap(Widget child, {AppThemeVariant variant = AppThemeVariant.light}) =>
+    MaterialApp(
+      theme: buildAppTheme(variant),
+      home: Scaffold(
+        body: Center(child: SizedBox(width: 320, child: child)),
+      ),
+    );
 
 /// Altura da cápsula **pintada**, não do widget externo. A distinção é o ponto
 /// do teste: com a decoração no `InputDecoration`, o `SizedBox` externo media a
@@ -31,6 +35,22 @@ double _paintedHeight(WidgetTester tester) => tester
           .first,
     )
     .height;
+
+Color _fillColor(WidgetTester tester) {
+  final decoration =
+      tester
+              .widget<DecoratedBox>(
+                find
+                    .descendant(
+                      of: find.byType(AppFieldCapsule),
+                      matching: find.byType(DecoratedBox),
+                    )
+                    .first,
+              )
+              .decoration
+          as BoxDecoration;
+  return decoration.color!;
+}
 
 void main() {
   group('Cápsula de campo — 52px reais e visíveis', () {
@@ -100,6 +120,35 @@ void main() {
 
       expect(_paintedHeight(tester), AppSize.controlLg);
       expect(tester.getRect(find.byType(EditableText)), editorAntes);
+    });
+
+    testWidgets('usa branco sobre a folha cinza e no GB Mode', (tester) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppContentSheet(child: AppTextInput(placeholder: 'E-mail')),
+        ),
+      );
+      expect(_fillColor(tester), AppColors.neutral0);
+
+      await tester.pumpWidget(
+        _wrap(
+          const AppTextInput(placeholder: 'E-mail'),
+          variant: AppThemeVariant.gbMode,
+        ),
+      );
+      expect(_fillColor(tester), AppColors.neutral0);
+      expect(
+        tester.widget<EditableText>(find.byType(EditableText)).style.color,
+        AppColors.neutral800,
+      );
+    });
+
+    testWidgets('usa cinza dentro de uma superfície branca', (tester) async {
+      await tester.pumpWidget(
+        _wrap(const AppCard(child: AppTextInput(placeholder: 'E-mail'))),
+      );
+
+      expect(_fillColor(tester), AppColors.neutral100);
     });
   });
 }

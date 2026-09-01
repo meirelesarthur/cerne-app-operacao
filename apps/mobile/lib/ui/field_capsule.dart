@@ -6,6 +6,65 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
 
+/// Contexto de superfície para campos de entrada.
+///
+/// O Flutter não expõe a cor já composta atrás de um widget. Os contêineres
+/// compartilhados do catálogo informam sua própria cor por este contexto, para
+/// que todo campo aplique a mesma regra de contraste: sobre branco, cinza; em
+/// qualquer outra superfície (cinza ou escura), branco.
+class AppInputSurface extends InheritedWidget {
+  const AppInputSurface({
+    super.key,
+    required this.backgroundColor,
+    required super.child,
+  });
+
+  final Color backgroundColor;
+
+  static Color? maybeOf(BuildContext context) => context
+      .dependOnInheritedWidgetOfExactType<AppInputSurface>()
+      ?.backgroundColor;
+
+  @override
+  bool updateShouldNotify(AppInputSurface oldWidget) =>
+      oldWidget.backgroundColor != backgroundColor;
+}
+
+/// Cores adaptadas da entrada para a superfície em que ela aparece.
+@immutable
+class AppInputColors {
+  const AppInputColors({
+    required this.fill,
+    required this.foreground,
+    required this.muted,
+    required this.placeholder,
+    required this.focus,
+  });
+
+  final Color fill;
+  final Color foreground;
+  final Color muted;
+  final Color placeholder;
+  final Color focus;
+}
+
+/// Resolve o preenchimento e a legibilidade do campo a partir da superfície
+/// mais próxima. Sem um [AppInputSurface] ancestral, o canvas do tema é a
+/// referência segura — nele os campos continuam brancos.
+AppInputColors appInputColors(BuildContext context) {
+  final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+  final background = AppInputSurface.maybeOf(context) ?? semantic.bgCanvas;
+  final isWhiteSurface = background.computeLuminance() >= 0.98;
+
+  return AppInputColors(
+    fill: isWhiteSurface ? AppColors.neutral100 : AppColors.neutral0,
+    foreground: AppColors.neutral800,
+    muted: AppColors.neutral600,
+    placeholder: AppColors.neutral500,
+    focus: AppColors.brand700,
+  );
+}
+
 /// Cápsula visual compartilhada de todos os campos de formulário do catálogo
 /// (`AppTextInput`, `AppFormSelect`, `AppSearchSelect`). Fonte única da altura,
 /// do fundo, do raio e do anel de foco — os campos só entregam o conteúdo.
@@ -50,13 +109,13 @@ class AppFieldCapsule extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final inputColors = appInputColors(context);
 
     final Color borderColor;
     if (invalid) {
       borderColor = AppColors.red500;
     } else if (focused) {
-      borderColor = semantic.accentDefault;
+      borderColor = inputColors.focus;
     } else {
       borderColor = AppColors.transparent;
     }
@@ -64,7 +123,7 @@ class AppFieldCapsule extends StatelessWidget {
     return Container(
       height: height,
       decoration: BoxDecoration(
-        color: semantic.bgSubtle,
+        color: inputColors.fill,
         // Raio 20 do Figma, não pílula: o campo do padrão global é um
         // retângulo arredondado, e a pílula anterior encurtava visualmente o
         // texto nas duas pontas em campos de conteúdo longo.

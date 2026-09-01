@@ -3,7 +3,6 @@ import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
-import '../design/theme/app_theme_extension.dart';
 import 'field_capsule.dart';
 
 /// Espelha `TextInput.tsx` — campo-cápsula (Nova UI): pílula cheia (`rounded-full`),
@@ -96,7 +95,7 @@ class _AppTextInputState extends State<AppTextInput> {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final inputColors = appInputColors(context);
 
     return AppFieldCapsule(
       focused: _focused,
@@ -114,11 +113,11 @@ class _AppTextInputState extends State<AppTextInput> {
         textInputAction: widget.textInputAction,
         focusNode: _focusNode,
         autofocus: widget.autofocus,
-        cursorColor: semantic.accentDefault,
+        cursorColor: inputColors.focus,
         style: TextStyle(
           fontFamily: AppTypography.fontFamily,
           fontSize: AppTypography.xl,
-          color: widget.enabled ? semantic.fgDefault : semantic.fgMuted,
+          color: widget.enabled ? inputColors.foreground : inputColors.muted,
         ),
         decoration: InputDecoration(
           // Decorator sem nenhuma decoração: fundo, borda e altura são da
@@ -131,7 +130,7 @@ class _AppTextInputState extends State<AppTextInput> {
           hintStyle: TextStyle(
             fontFamily: AppTypography.fontFamily,
             fontSize: AppTypography.xl,
-            color: semantic.fgSubtle,
+            color: inputColors.placeholder,
           ),
         ),
       ),

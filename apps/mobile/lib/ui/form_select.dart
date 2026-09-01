@@ -4,7 +4,6 @@ import 'package:widgetbook/widgetbook.dart';
 import 'app_icon.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
-import '../design/theme/app_theme_extension.dart';
 import 'field_capsule.dart';
 import '../design/generated/app_layout.dart';
 
@@ -37,12 +36,12 @@ class AppFormSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final inputColors = appInputColors(context);
 
     final textStyle = TextStyle(
       fontFamily: AppTypography.fontFamily,
       fontSize: AppTypography.xl,
-      color: enabled ? semantic.fgDefault : semantic.fgMuted,
+      color: enabled ? inputColors.foreground : inputColors.muted,
     );
 
     // Cápsula (altura de 52px, fundo, raio) vem de `AppFieldCapsule` — o
@@ -60,9 +59,9 @@ class AppFormSelect extends StatelessWidget {
         icon: AppIcon(
           AppIcons.chevronDown,
           size: AppSize.iconSm,
-          color: semantic.fgSubtle,
+          color: inputColors.placeholder,
         ),
-        dropdownColor: semantic.bgSurface,
+        dropdownColor: inputColors.fill,
         style: textStyle,
         onChanged: enabled ? onChanged : null,
         decoration: const InputDecoration(
@@ -79,7 +78,7 @@ class AppFormSelect extends StatelessWidget {
                 style: TextStyle(
                   fontFamily: AppTypography.fontFamily,
                   fontSize: AppTypography.xl,
-                  color: semantic.fgSubtle,
+                  color: inputColors.placeholder,
                 ),
               ),
             ),

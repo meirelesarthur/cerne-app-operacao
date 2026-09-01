@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'app_icon.dart';
+import 'field_capsule.dart';
 import 'pressable.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
@@ -46,12 +47,13 @@ class AppSearchField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final inputColors = appInputColors(context);
 
     final content = Text(
       placeholder,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
-      style: TextStyle(fontSize: AppTypography.xl, color: semantic.fgMuted),
+      style: TextStyle(fontSize: AppTypography.xl, color: inputColors.muted),
     );
 
     final capsule = Container(
@@ -61,7 +63,7 @@ class AppSearchField extends StatelessWidget {
         right: AppSpacing.space2,
       ),
       decoration: BoxDecoration(
-        color: semantic.bgSubtle,
+        color: inputColors.fill,
         borderRadius: BorderRadius.circular(AppRadius.tile),
       ),
       child: Row(

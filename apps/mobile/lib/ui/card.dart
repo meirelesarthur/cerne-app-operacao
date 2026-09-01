@@ -6,6 +6,7 @@ import '../design/generated/app_shadows.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import 'field_capsule.dart';
 
 /// Espelha `Card.tsx` do protótipo React. `variant: ink` é a superfície escura
 /// de destaque (hero da referência) — permanece escura nos dois temas.
@@ -42,11 +43,14 @@ class AppCard extends StatelessWidget {
     final bg = isInk ? semantic.inkBg : semantic.bgRaised;
     final fg = isInk ? semantic.inkFg : null;
 
-    Widget content = Padding(
-      padding: padded
-          ? const EdgeInsets.all(AppSpacing.space5)
-          : EdgeInsets.zero,
-      child: child,
+    Widget content = AppInputSurface(
+      backgroundColor: bg,
+      child: Padding(
+        padding: padded
+            ? const EdgeInsets.all(AppSpacing.space5)
+            : EdgeInsets.zero,
+        child: child,
+      ),
     );
 
     if (fg != null) {
