@@ -69,13 +69,19 @@ class AppContentSheet extends StatelessWidget {
 
     if (header == null) return sheet;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ColoredBox(
-          color: semantic.bgSurface,
-          child: AppInputSurface(
+    // `ColoredBox` externo em `bgSurface`: sem ele, a quina arredondada da
+    // folha revela o que quer que o widget-pai pinte atrás (o `bgCanvas` do
+    // Shell) — e como esse cinza é quase idêntico ao `bgSheet`, o raio ficava
+    // opticamente invisível, lendo como uma quina reta. A referência do Figma
+    // mostra a quina revelando branco (a mesma faixa do seletor de fazenda),
+    // criando o "detalhe" de camada — não uma terceira cor de fundo.
+    return ColoredBox(
+      color: semantic.bgSurface,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppInputSurface(
             backgroundColor: semantic.bgSurface,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
@@ -87,9 +93,9 @@ class AppContentSheet extends StatelessWidget {
               child: header!,
             ),
           ),
-        ),
-        Flexible(child: sheet),
-      ],
+          Flexible(child: sheet),
+        ],
+      ),
     );
   }
 }
