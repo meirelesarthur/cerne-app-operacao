@@ -425,10 +425,13 @@ export const radius = {
   '3xl': '28px',
   '4xl': '32px',
   modal: '28px',
-  // Geometria do padrão global do Figma (node 54300-2458): ladrilho de módulo e
-  // campo de busca em 20; superfície de conteúdo sobre o canvas em 24.
+  // Geometria do padrão global do Figma (node 54300-2458): ladrilho de módulo,
+  // campo de busca e superfície de conteúdo sobre o canvas em 20 — a mesma
+  // aresta cria o "detalhe" da folha cinza encaixada sobre a faixa branca de
+  // seleção da fazenda (correção de medição: valor antigo, 24, não batia com
+  // a referência).
   tile: '20px',
-  surface: '24px',
+  surface: '20px',
   full: '9999px',
 } as const
 

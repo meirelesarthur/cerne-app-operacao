@@ -12,7 +12,7 @@ import '../design/theme/app_theme_extension.dart';
 /// (`54300-2458`), presente em **todos** os seis frames de referência.
 ///
 /// Anatomia medida: superfície [AppSemanticColors.bgSheet] com raio
-/// [AppRadius.surface] (24) **apenas nas quinas de cima**, ocupando a largura
+/// [AppRadius.surface] (20) **apenas nas quinas de cima**, ocupando a largura
 /// inteira e assentando sobre o canvas. O que fica acima dela é a faixa de
 /// contexto ([header]) — no Figma, o seletor de fazenda.
 ///
