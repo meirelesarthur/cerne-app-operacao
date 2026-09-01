@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_motion.dart';
 import '../../design/generated/app_spacing.dart';
+import '../../design/theme/theme_provider.dart';
 import '../../ui/ui.dart';
 import '../state/shell_store.dart';
 import '../state/prototype_session_store.dart';
@@ -80,6 +81,8 @@ class AppShellHeader extends ConsumerWidget {
     final user = state.user;
     final unread = state.unreadCount;
     final menuOpen = state.menuOpen;
+    final themeVariant = ref.watch(themeVariantProvider);
+    final isGbMode = themeVariant == AppThemeVariant.gbMode;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
     // Determinístico no protótipo (sem Date.now/relógio real) — a entrada de
@@ -120,7 +123,7 @@ class AppShellHeader extends ConsumerWidget {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [if (actions != null) actions],
+              children: [?actions],
             ),
           )
         : Padding(
@@ -144,6 +147,16 @@ class AppShellHeader extends ConsumerWidget {
                   hasUnread: unread > 0,
                   onNotifications: onOpenNotifications,
                   onProfile: onOpenProfile,
+                  beforeNotifications: _headerBubble(
+                    icon: AppIcon(
+                      isGbMode ? AppIcons.sun : AppIcons.moon,
+                      size: AppSize.iconMd,
+                    ),
+                    label: isGbMode ? 'Ativar modo claro' : 'Ativar GB Mode',
+                    active: false,
+                    onPressed: () =>
+                        ref.read(themeVariantProvider.notifier).toggle(),
+                  ),
                   trailing: actions,
                 ),
                 if (child != null)

@@ -34,6 +34,7 @@ class AppGreetingHeader extends StatelessWidget {
     this.onNotifications,
     this.notificationsLabel = 'Notificações',
     this.onProfile,
+    this.beforeNotifications,
     this.trailing,
   });
 
@@ -55,8 +56,12 @@ class AppGreetingHeader extends StatelessWidget {
   final String notificationsLabel;
   final VoidCallback? onProfile;
 
-  /// Bolhas extras à direita do sino (menu, modo consulta). Também extensão: o
-  /// Figma só tem o sino, mas o shell do app tem ações globais próprias.
+  /// Ação global exibida imediatamente antes do sino. O shell usa esse slot
+  /// para a troca rápida entre Light e GB Mode nas duas homes.
+  final Widget? beforeNotifications;
+
+  /// Bolhas extras à direita do sino (menu, modo consulta). Também extensão:
+  /// o Figma só tem o sino, mas o shell do app tem ações globais próprias.
   final Widget? trailing;
 
   /// Aresta da bolha de notificação no Figma.
@@ -161,6 +166,10 @@ class AppGreetingHeader extends StatelessWidget {
                 ),
         ),
         const SizedBox(width: AppSpacing.space2),
+        if (beforeNotifications != null) ...[
+          beforeNotifications!,
+          const SizedBox(width: AppSpacing.space2),
+        ],
         AppPressable(
           semanticLabel: hasUnread
               ? '$notificationsLabel, há novas'

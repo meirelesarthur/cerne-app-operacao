@@ -180,6 +180,9 @@ void main() {
 
       expect(find.text('MÓDULOS'), findsOneWidget);
       expect(find.text('Início'), findsOneWidget);
+      expect(find.text('Bank'), findsOneWidget);
+      expect(find.text('Crédito'), findsOneWidget);
+      expect(find.text('Marketplace'), findsOneWidget);
       expect(find.text('Armazém'), findsOneWidget);
       expect(find.text('CONTA'), findsOneWidget);
     });
@@ -272,7 +275,10 @@ void main() {
         await tester.scrollUntilVisible(
           find.text('Modo GB'),
           200,
-          scrollable: find.byType(Scrollable).last,
+          scrollable: find.descendant(
+            of: find.byKey(const ValueKey('reveal-menu-scroll')),
+            matching: find.byType(Scrollable),
+          ),
         );
         await tester.tap(find.text('Modo GB'));
         await tester.pumpAndSettle();

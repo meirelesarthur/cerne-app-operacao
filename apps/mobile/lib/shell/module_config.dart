@@ -494,10 +494,10 @@ ModuleDef? getModule(String? id) => id == null ? null : moduleMap[id];
 
 /// Módulos exibidos no dock global para o perfil da sessão (ver plano de
 /// melhorias de UX): o perfil operacional (mão de obra de campo) só precisa
-/// de Início, Fazendas e Armazém — Bank, Crédito e Marketplace ficam fora do
-/// dock (e, por consequência, também não aparecem como opção de navegação
-/// cruzada para quem não decide sobre eles). Administração continua vendo
-/// todos os módulos, igual a hoje.
+/// de Início, Fazendas e Armazém como atalhos persistentes. Bank, Crédito e
+/// Marketplace continuam disponíveis no menu lateral, que não deve herdar a
+/// limitação visual do dock. Administração continua vendo todos os módulos no
+/// dock, igual a hoje.
 const _operationalDockIds = {'inicio', 'fazendas', 'armazem'};
 
 List<ModuleDef> visibleModulesFor(UserAccessProfile? profile) {

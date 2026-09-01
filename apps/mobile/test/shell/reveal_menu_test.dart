@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/shell/components/reveal_menu.dart';
 import 'package:cerne_app/shell/module_config.dart';
+import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
 
 Widget _wrap(ProviderContainer container, Widget child) {
@@ -132,6 +133,33 @@ void main() {
       await tester.pump();
 
       expect(container.read(shellStoreProvider).isOnline, isFalse);
+    });
+
+    testWidgets('operacional encontra todos os módulos no menu lateral', (
+      tester,
+    ) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      container
+          .read(prototypeSessionProvider.notifier)
+          .loginAs(UserAccessProfile.operational);
+      container.read(shellStoreProvider.notifier).openMenu();
+      tester.view.physicalSize = const Size(800, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          AppRevealMenu(module: getModule('fazendas')!, onNavigate: (_) {}),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 900));
+
+      expect(find.text('MÓDULOS'), findsOneWidget);
+      for (final module in modules) {
+        expect(find.text(module.label), findsOneWidget);
+      }
     });
   });
 }

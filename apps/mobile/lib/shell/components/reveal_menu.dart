@@ -264,7 +264,11 @@ class _MenuContent extends StatelessWidget {
             ),
           ),
         ),
-        for (final parentModule in visibleModulesFor(profile)) ...[
+        // O dock operacional oferece apenas atalhos de rotina, mas o menu
+        // lateral é o índice completo do superapp. Não reutilize
+        // `visibleModulesFor` aqui: ela expressa exclusivamente a regra do
+        // dock e omitiria Bank, Crédito e Marketplace.
+        for (final parentModule in modules) ...[
           _stagger(
             next(),
             AppMenuItem(
@@ -451,6 +455,7 @@ class _MenuContent extends StatelessWidget {
       children: [
         Expanded(
           child: ListView(
+            key: const ValueKey('reveal-menu-scroll'),
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.space4,
               vertical: AppSpacing.space6,

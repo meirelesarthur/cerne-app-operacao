@@ -19,6 +19,16 @@ void main() {
       expect(getModule(null), isNull);
     });
 
+    test('dock operacional mantém apenas os atalhos prioritários', () {
+      expect(
+        visibleModulesFor(
+          UserAccessProfile.operational,
+        ).map((module) => module.id),
+        ['inicio', 'fazendas', 'armazem'],
+      );
+      expect(modules.map((module) => module.id), hasLength(6));
+    });
+
     test('getMenuSections usa menuSections quando definido', () {
       final bank = getModule('bank')!;
       final sections = getMenuSections(bank);

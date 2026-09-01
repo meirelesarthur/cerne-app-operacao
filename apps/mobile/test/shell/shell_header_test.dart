@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/design/theme/theme_provider.dart';
 import 'package:cerne_app/shell/components/shell_header.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
 import 'package:cerne_app/ui/app_icon.dart';
@@ -77,6 +78,36 @@ void main() {
       await tester.pump();
 
       expect(tapped, isTrue);
+    });
+
+    testWidgets('alterna o tema pelo ícone à esquerda do sino', (tester) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp(
+            theme: buildAppTheme(AppThemeVariant.light),
+            home: const Scaffold(body: AppShellHeader()),
+          ),
+        ),
+      );
+
+      final themeButton = findAppIcon(AppIcons.moon);
+      final notificationsButton = findAppIcon(AppIcons.bell);
+      expect(themeButton, findsOneWidget);
+      expect(notificationsButton, findsOneWidget);
+      expect(
+        tester.getCenter(themeButton).dx,
+        lessThan(tester.getCenter(notificationsButton).dx),
+      );
+
+      await tester.tap(themeButton);
+      await tester.pump();
+
+      expect(container.read(themeVariantProvider), AppThemeVariant.gbMode);
+      expect(findAppIcon(AppIcons.sun), findsOneWidget);
     });
 
     testWidgets('toca "Mais" e abre o menu global via shellStoreProvider', (
