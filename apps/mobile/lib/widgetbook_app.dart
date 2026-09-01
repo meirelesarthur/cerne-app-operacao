@@ -117,13 +117,24 @@ class CerneWidgetbook extends StatelessWidget {
               ],
             ),
             WidgetbookFolder(
+              name: 'Padrão global',
+              children: [
+                buildContentSheetWidgetbookComponent(),
+                buildTopBarWidgetbookComponent(),
+                buildGreetingHeaderWidgetbookComponent(),
+                buildFarmSelectorWidgetbookComponent(),
+                buildSearchFieldWidgetbookComponent(),
+                buildModuleTileWidgetbookComponent(),
+                buildEntityRowWidgetbookComponent(),
+                buildActionBarWidgetbookComponent(),
+                buildStepProgressWidgetbookComponent(),
+              ],
+            ),
+            WidgetbookFolder(
               name: 'Feedback',
               children: [
                 buildAlertStripWidgetbookComponent(),
                 buildAppIconWidgetbookComponent(),
-                buildFarmSelectorWidgetbookComponent(),
-                buildModuleTileWidgetbookComponent(),
-                buildSearchFieldWidgetbookComponent(),
                 buildBannerWidgetbookComponent(),
                 buildEmptyStateWidgetbookComponent(),
                 buildErrorStateWidgetbookComponent(),

@@ -81,11 +81,10 @@ class AppModuleTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            AppIcon(
-              icon,
-              size: AppSize.iconLg,
-              color: semantic.accentDefault,
-            ),
+            // Neutro, não verde: na referência o ladrilho não usa a cor da
+            // marca — o destaque vem do rótulo, e o ícone é um traço fino
+            // escuro (medido em 54349:2639).
+            AppIcon(icon, size: AppSize.iconLg, color: semantic.fgSecondary),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -111,7 +110,7 @@ class AppModuleTile extends StatelessWidget {
                       style: TextStyle(
                         fontSize: AppTypography.sm,
                         height: AppTypography.lineHeightTight,
-                        color: semantic.fgMuted,
+                        color: semantic.fgSecondary,
                       ),
                     ),
                   ),

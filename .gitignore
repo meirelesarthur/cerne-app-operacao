@@ -17,3 +17,6 @@ node_modules
 *.njsproj
 *.sln
 *.sw?
+
+# Diffs temporários do Alchemist quando um golden falha — artefato local, nunca versionado.
+apps/mobile/test/golden/failures/

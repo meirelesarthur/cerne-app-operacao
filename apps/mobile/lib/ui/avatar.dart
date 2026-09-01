@@ -20,16 +20,18 @@ class AppAvatar extends StatelessWidget {
   final String? initials;
   final AppAvatarSize size;
 
+  /// `lg` é o avatar do cabeçalho de saudação do padrão global (Figma
+  /// 54349:2374): 48 px com as iniciais em 18 px.
   double get _diameter => switch (size) {
     AppAvatarSize.sm => AppSpacing.space8,
     AppAvatarSize.md => AppSpacing.space10,
-    AppAvatarSize.lg => AppSpacing.space14,
+    AppAvatarSize.lg => AppSpacing.space12,
   };
 
   double get _fontSize => switch (size) {
     AppAvatarSize.sm => AppTypography.xs,
     AppAvatarSize.md => AppTypography.sm,
-    AppAvatarSize.lg => AppTypography.lg,
+    AppAvatarSize.lg => AppTypography.xlPlus,
   };
 
   /// Deriva iniciais a partir dos 2 primeiros nomes de [name], em maiúsculas.
@@ -57,16 +59,16 @@ class AppAvatar extends StatelessWidget {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: semantic.accentSubtle,
-          border: Border.all(color: semantic.borderDefault),
+          color: semantic.bgSubtle,
+          border: Border.all(color: semantic.borderSubtle),
         ),
         child: ExcludeSemantics(
           child: Text(
             displayInitials,
             style: TextStyle(
               fontSize: _fontSize,
-              fontWeight: AppTypography.weightSemibold,
-              color: semantic.accentDefault,
+              fontWeight: AppTypography.weightMedium,
+              color: semantic.fgMuted,
             ),
           ),
         ),

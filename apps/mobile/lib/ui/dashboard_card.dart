@@ -180,9 +180,7 @@ class AppDashboardCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     AppIcon(
-                      delta! >= 0
-                          ? AppIcons.trendingUp
-                          : AppIcons.trendingDown,
+                      delta! >= 0 ? AppIcons.trendingUp : AppIcons.trendingDown,
                       size: 13,
                       color: _dark
                           ? AppColors.neutral0.withValues(alpha: 0.9)

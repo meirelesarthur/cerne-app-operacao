@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../design/generated/app_colors.dart';
+import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -23,8 +24,8 @@ class AppFieldCapsule extends StatelessWidget {
     required this.child,
     this.focused = false,
     this.invalid = false,
-    this.height = AppSpacing.space12,
-    this.horizontalPadding = AppSpacing.space5,
+    this.height = AppSize.controlLg,
+    this.horizontalPadding = AppSpacing.space3,
     this.leading,
     this.trailing,
   });
@@ -35,8 +36,9 @@ class AppFieldCapsule extends StatelessWidget {
   final bool focused;
   final bool invalid;
 
-  /// Altura fixa da cápsula. Padrão: 48px (`space12`), a altura de toque do
-  /// design. Passe outro token apenas em campos com semântica diferente.
+  /// Altura fixa da cápsula. Padrão: 52px (`AppSize.controlLg`), a altura do
+  /// campo no padrão global do Figma (54349:2014). Passe outro token apenas em
+  /// campos com semântica diferente.
   final double height;
   final double horizontalPadding;
   final Widget? leading;
@@ -63,7 +65,10 @@ class AppFieldCapsule extends StatelessWidget {
       height: height,
       decoration: BoxDecoration(
         color: semantic.bgSubtle,
-        borderRadius: BorderRadius.circular(AppRadius.full),
+        // Raio 20 do Figma, não pílula: o campo do padrão global é um
+        // retângulo arredondado, e a pílula anterior encurtava visualmente o
+        // texto nas duas pontas em campos de conteúdo longo.
+        borderRadius: BorderRadius.circular(AppRadius.tile),
         border: Border.all(color: borderColor, width: _borderWidth),
       ),
       padding: EdgeInsets.symmetric(

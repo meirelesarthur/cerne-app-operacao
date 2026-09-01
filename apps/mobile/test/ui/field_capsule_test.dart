@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cerne_app/design/generated/app_spacing.dart';
+import 'package:cerne_app/design/generated/app_layout.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/field_capsule.dart';
@@ -17,9 +17,10 @@ Widget _wrap(Widget child) => MaterialApp(
 );
 
 /// Altura da cápsula **pintada**, não do widget externo. A distinção é o ponto
-/// do teste: com a decoração no `InputDecoration`, o `SizedBox` externo media
-/// 48px enquanto o pixel visível era uma pílula de 21px (o `InputDecorator`
-/// dimensiona `fillColor`/`border` pelo conteúdo, não pelas constraints).
+/// do teste: com a decoração no `InputDecoration`, o `SizedBox` externo media a
+/// altura nominal enquanto o pixel visível era uma pílula de 21px (o
+/// `InputDecorator` dimensiona `fillColor`/`border` pelo conteúdo, não pelas
+/// constraints).
 double _paintedHeight(WidgetTester tester) => tester
     .getSize(
       find
@@ -32,11 +33,11 @@ double _paintedHeight(WidgetTester tester) => tester
     .height;
 
 void main() {
-  group('Cápsula de campo — 48px reais e visíveis', () {
+  group('Cápsula de campo — 52px reais e visíveis', () {
     testWidgets('AppTextInput', (tester) async {
       await tester.pumpWidget(_wrap(const AppTextInput(placeholder: 'E-mail')));
 
-      expect(_paintedHeight(tester), AppSpacing.space12);
+      expect(_paintedHeight(tester), AppSize.controlLg);
     });
 
     testWidgets('AppTextInput com obscureText', (tester) async {
@@ -44,7 +45,7 @@ void main() {
         _wrap(const AppTextInput(placeholder: 'Senha', obscureText: true)),
       );
 
-      expect(_paintedHeight(tester), AppSpacing.space12);
+      expect(_paintedHeight(tester), AppSize.controlLg);
     });
 
     testWidgets('AppTextInput com prefixo e sufixo', (tester) async {
@@ -58,7 +59,7 @@ void main() {
         ),
       );
 
-      expect(_paintedHeight(tester), AppSpacing.space12);
+      expect(_paintedHeight(tester), AppSize.controlLg);
     });
 
     testWidgets('AppFormSelect', (tester) async {
@@ -71,7 +72,7 @@ void main() {
         ),
       );
 
-      expect(_paintedHeight(tester), AppSpacing.space12);
+      expect(_paintedHeight(tester), AppSize.controlLg);
     });
 
     testWidgets('AppSearchSelect', (tester) async {
@@ -84,7 +85,7 @@ void main() {
         ),
       );
 
-      expect(_paintedHeight(tester), AppSpacing.space12);
+      expect(_paintedHeight(tester), AppSize.controlLg);
     });
 
     testWidgets('o foco não muda a altura nem desloca o conteúdo', (
@@ -97,7 +98,7 @@ void main() {
       await tester.tap(find.byType(TextFormField));
       await tester.pumpAndSettle();
 
-      expect(_paintedHeight(tester), AppSpacing.space12);
+      expect(_paintedHeight(tester), AppSize.controlLg);
       expect(tester.getRect(find.byType(EditableText)), editorAntes);
     });
   });

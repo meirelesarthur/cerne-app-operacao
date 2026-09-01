@@ -3,12 +3,18 @@ import 'package:widgetbook/widgetbook.dart';
 
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
+import '../design/generated/app_shadows.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 
 /// Espelha `KpiStatCard.tsx` — card-resumo compacto para as linhas de KPIs do
 /// topo dos dashboards.
+///
+/// Anatomia do padrão global (Figma `54347:967`): superfície elevada com raio
+/// [AppRadius.tile] (20), `px 12 / py 16` e sombra `AppShadows.tile`; rótulo de
+/// 14 px SemiBold escuro no topo, valor em 18 px SemiBold e legenda de 12 px
+/// abafada na base — a leitura é do rótulo para o número, não o contrário.
 ///
 /// O tom `'default'` do React (palavra reservada em Dart) foi portado como
 /// [AppKpiStatTone.neutral].
@@ -30,9 +36,9 @@ class AppKpiStatCard extends StatelessWidget {
 
   Color _valueColor(AppSemanticColors s) => switch (tone) {
     AppKpiStatTone.neutral => s.fgDefault,
-    AppKpiStatTone.positive => AppColors.brand600,
-    AppKpiStatTone.negative => AppColors.red600,
-    AppKpiStatTone.warning => AppColors.amber600,
+    AppKpiStatTone.positive => AppColors.feedbackSuccessText,
+    AppKpiStatTone.negative => AppColors.feedbackErrorText,
+    AppKpiStatTone.warning => AppColors.feedbackWarningText,
   };
 
   @override
@@ -40,12 +46,14 @@ class AppKpiStatCard extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.space4),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.space3,
+        vertical: AppSpacing.space4,
+      ),
       decoration: BoxDecoration(
-        color: semantic.bgSurface,
-        borderRadius: BorderRadius.circular(AppRadius.xl2),
-        border: Border.all(color: semantic.borderSubtle),
-        boxShadow: semantic.shadowCard,
+        color: semantic.bgRaised,
+        borderRadius: BorderRadius.circular(AppRadius.tile),
+        boxShadow: AppShadows.tile,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -54,17 +62,17 @@ class AppKpiStatCard extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-              fontSize: AppTypography.xs,
-              fontWeight: AppTypography.weightMedium,
-              color: semantic.fgMuted,
+              fontSize: AppTypography.md,
+              fontWeight: AppTypography.weightSemibold,
+              color: semantic.fgDefault,
             ),
           ),
           const SizedBox(height: AppSpacing.space1),
           Text(
             value,
             style: TextStyle(
-              fontSize: AppTypography.xl,
-              fontWeight: AppTypography.weightBold,
+              fontSize: AppTypography.xlPlus,
+              fontWeight: AppTypography.weightSemibold,
               height: AppTypography.lineHeightTight,
               color: _valueColor(semantic),
             ),
@@ -74,8 +82,8 @@ class AppKpiStatCard extends StatelessWidget {
             Text(
               caption!,
               style: TextStyle(
-                fontSize: AppTypography.xs,
-                color: semantic.fgSubtle,
+                fontSize: AppTypography.sm,
+                color: semantic.fgSecondary,
               ),
             ),
           ],
