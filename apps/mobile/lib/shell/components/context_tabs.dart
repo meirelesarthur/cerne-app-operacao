@@ -11,9 +11,9 @@ import '../state/prototype_session_store.dart';
 
 /// Abas de contexto do módulo ativo: o segmented control do padrão global
 /// (Figma `54333:417`) — trilho [AppSemanticColors.bgTrack] com raio
-/// [AppRadius.surface] e `p 4`, aba ativa em cápsula verde com rótulo de
-/// contraste, inativas transparentes com rótulo abafado, 14 px SemiBold nos
-/// dois estados.
+/// [AppRadius.tile] (20) e `p 4`, aba ativa com raio [AppRadius.lgPlus] (16),
+/// rótulo de contraste, inativas transparentes com rótulo abafado, 14 px
+/// SemiBold nos dois estados.
 ///
 /// **Extensão do padrão:** a referência mostra três abas de largura igual num
 /// trilho fixo. Aqui um módulo chega a seis (Fazendas: Gestão, Rotinas,
@@ -61,7 +61,7 @@ class AppContextTabs extends StatelessWidget {
           height: _trackHeight,
           decoration: BoxDecoration(
             color: semantic.bgTrack,
-            borderRadius: BorderRadius.circular(AppRadius.surface),
+            borderRadius: BorderRadius.circular(AppRadius.tile),
           ),
           padding: const EdgeInsets.all(AppSpacing.space1),
           child: ListView.separated(
@@ -78,7 +78,7 @@ class AppContextTabs extends StatelessWidget {
                 selected: active,
                 onPressed: () => onTabSelected(tab.path),
                 minTouchTarget: false,
-                borderRadius: BorderRadius.circular(AppRadius.surface),
+                borderRadius: BorderRadius.circular(AppRadius.lgPlus),
                 child: Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(
@@ -88,7 +88,7 @@ class AppContextTabs extends StatelessWidget {
                     color: active
                         ? semantic.accentDefault
                         : AppColors.transparent,
-                    borderRadius: BorderRadius.circular(AppRadius.surface),
+                    borderRadius: BorderRadius.circular(AppRadius.lgPlus),
                   ),
                   child: Text(
                     tab.label,

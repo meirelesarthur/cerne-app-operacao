@@ -14,8 +14,8 @@ import 'pressable.dart';
 /// tela em vez de fragmentar em N rotas.
 ///
 /// Anatomia do padrão global (Figma `54333:417`): trilho
-/// [AppSemanticColors.bgTrack] com raio [AppRadius.surface] e `p 4`, gap 4;
-/// cada segmento com 40 px de altura e o mesmo raio; o ativo em
+/// [AppSemanticColors.bgTrack] com raio [AppRadius.tile] (20) e `p 4`, gap 4;
+/// cada segmento com 40 px de altura e raio [AppRadius.lgPlus] (16); o ativo em
 /// [AppSemanticColors.accentDefault] com rótulo na cor de contraste, os demais
 /// transparentes com rótulo abafado. Rótulo de 14 px SemiBold nos dois estados
 /// — a referência não muda o peso ao selecionar, só a cor.
@@ -45,7 +45,7 @@ class AppSegmentedTabs extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.space1),
       decoration: BoxDecoration(
         color: semantic.bgTrack,
-        borderRadius: BorderRadius.circular(AppRadius.surface),
+        borderRadius: BorderRadius.circular(AppRadius.tile),
       ),
       child: Row(
         children: [
@@ -56,7 +56,7 @@ class AppSegmentedTabs extends StatelessWidget {
                 semanticLabel: labels[i],
                 selected: i == selectedIndex,
                 onPressed: () => onChanged(i),
-                borderRadius: BorderRadius.circular(AppRadius.surface),
+                borderRadius: BorderRadius.circular(AppRadius.lgPlus),
                 child: Container(
                   height: _itemHeight,
                   alignment: Alignment.center,
@@ -64,7 +64,7 @@ class AppSegmentedTabs extends StatelessWidget {
                     color: i == selectedIndex
                         ? semantic.accentDefault
                         : AppColors.transparent,
-                    borderRadius: BorderRadius.circular(AppRadius.surface),
+                    borderRadius: BorderRadius.circular(AppRadius.lgPlus),
                   ),
                   child: Text(
                     labels[i],
