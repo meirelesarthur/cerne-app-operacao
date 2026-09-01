@@ -16,7 +16,7 @@ Duas entregas acopladas, na ordem em que se sustentam:
    busca, ladrilho de módulo, barra de ação fixa e passos. E fixar a separação **ADM × Operação**
    como dois arquétipos de home distintos, não como uma home com `if`.
 
-**Status: E1–E7 entregues.** As seções 1–4 são auditoria e decisão (fechadas). A seção 5 traz o
+**Status: E1–E8 entregues.** As seções 1–4 são auditoria e decisão (fechadas). A seção 5 traz o
 estado real de cada etapa; a seção 6 registra o que ficou de fora e por quê.
 
 ---
@@ -131,14 +131,24 @@ Três consequências desejadas:
 ### 3.3 Os dois vetores autorais do Figma
 
 `confinamento` e `pecuária` não existem no set gratuito (não há bovino em Hugeicons free — a busca
-por `Cow`/`Cattle`/`Bull` retorna vazio). Duas saídas, e a escolha é por etapa:
+por `Cow`/`Cattle`/`Bull` retorna vazio). O caminho foi em duas etapas:
 
-- **E1–E5 (migração):** mapear para o equivalente semântico mais próximo do set (`Barns` e `Steak`),
-  mantendo a app inteira numa família só.
-- **Etapa de fidelidade (aberta):** exportar os dois SVGs do Figma para `assets/icons/`, normalizados a traço
-  1.2, e servi-los pela **mesma** API `AppIcon` — o consumidor não sabe a origem.
+- **E1–E5 (migração):** mapeados para o equivalente semântico mais próximo do set (`Barns` e
+  `Steak`), mantendo a app inteira numa família só.
+- **E8 (fidelidade, feito):** os SVGs autorais entregues pelo designer vivem em `assets/icons/` e
+  são servidos pela **mesma** API `AppIcon` — o consumidor não sabe a origem. Isso obrigou
+  `AppIconData` a virar classe com duas origens (`.glyph` e `.asset`); como as 384 chamadas passam
+  `AppIcons.xxx`, só o **tipo** mudou, e nenhuma delas foi tocada.
 
-Registrado como divergência aberta — ver §6-C.
+**Normalização do traço.** O desenho vive num viewBox de 34 de largura e é encaixado numa caixa de
+24, ou seja, sofre escala `24/34`. Para que o traço *renderizado* seja 1.2, a fonte precisa de
+`1.2 × 34/24 = 1.7` — é o valor gravado nos arquivos, e há teste guardando a conta.
+
+**Ressalva real, medida no arquivo:** `pecuaria.svg` tem **4 caminhos preenchidos e 0 traços** —
+foi exportado com o contorno já vetorizado. A espessura está embutida na geometria e **não segue**
+`AppSize.iconStroke`. `confinamento.svg` é misto (4 preenchidos + 9 traçados): a estrutura do curral
+acompanha o token, a cabeça do bovino não. Uma reexportação do Figma com o traço preservado
+resolveria; há um teste que falha no dia em que isso mudar, para tirar a ressalva daqui.
 
 ### 3.4 Mapa Lucide → Hugeicons
 
@@ -189,7 +199,8 @@ comum sobe para o cabeçalho global; o que for específico fica no arquétipo.
 | **E2–E5** | Catálogo, shell, 6 módulos e suíte; remoção do `lucide_icons_flutter`; gate anti-regressão | `analyze --fatal-infos` limpo; suíte verde; `quality:functional` 34/34 | **feito** |
 | **E6** | `AppModuleTile`/`AppModuleTileGrid`, `AppFarmSelector`, `AppSearchField` | casos no Widgetbook; 18 testes novos | **feito** |
 | **E7** | Home de Operação no arquétipo: `ResponsibilityWorkspace` adota a grade do padrão e o seletor de fazenda | nenhum cartão de módulo reimplementado na tela | **feito** |
-| **E8** | Destino da busca global; barra de ação fixa e passos dos frames de cadastro; SVGs autorais de §3.3 | — | **aberto (§6)** |
+| **E8** | Busca global (`/busca`) e os dois SVGs autorais de §3.3 | busca nos dois perfis; ícones autorais servidos pela mesma `AppIcon` | **feito** |
+| **E9** | Barra de ação fixa e régua de passos dos frames de cadastro | — | **aberto (§6-B)** |
 
 ### Números da entrega
 
@@ -198,7 +209,7 @@ comum sobe para o cabeçalho global; o que for específico fica no arquétipo.
 | Referências de ícone | 384 `LucideIcons.*` | 384 `AppIcons.*` |
 | Famílias de ícone no app | 2 (Lucide + 1 Material) | **1** (Hugeicons 1.2) |
 | Espessura de traço | do glifo do pacote, não controlável | `AppSize.iconStroke` = **1.2** |
-| Testes | 447 | **465** |
+| Testes | 447 | **483** |
 | `main.dart.js` (release) | 3 116 932 B | 3 383 979 B (**+8,6 %**) |
 
 O crescimento de 267 KB responde ao risco de bundle levantado abaixo: os 8 MB de dados do pacote
@@ -227,18 +238,28 @@ renderizador SVG. Medido com `flutter build web --release` nos dois lados do com
 
 ## 6. O que ficou aberto — e por quê
 
-**A. A busca global não tem destino.** `AppSearchField` está no catálogo e no Widgetbook, mas não
-foi colocada nas homes: não existe tela de busca no protótipo. Um campo que não leva a lugar nenhum
-é pior que a ausência dele. O destino natural é uma busca sobre as 53 funcionalidades do
-`functional_catalog.dart` — é decisão de produto, não de implementação.
+**A. ~~A busca global não tem destino.~~ Fechado na E8.** `/busca` é tela cheia fora do
+`ShellRoute` (como `/perfil` e `/notificacoes`), procura nas **57 funções dos dois perfis** por
+nome, objetivo e módulo, e ignora acento e caixa — ninguém digita acento de bota, no curral.
+
+Uma decisão de produto ficou embutida e merece revisão sua: a busca **acha** nos dois perfis, mas
+só **abre** o do perfil da sessão. Uma função do outro ambiente aparece marcada e não é tocável,
+porque `redirectForSession` a desviaria de volta para a home sem explicar nada — achar é diferente
+de poder abrir, e a tela diz qual dos dois está acontecendo. Se a intenção for permitir a abertura
+cruzada, o que muda é a política de acesso, não a busca.
 
 **B. Os frames de cadastro não foram tocados.** `Cadastro bottom fixed` e `Cadastro steps` descrevem
 a barra de ação fixa e a régua de passos. Os fluxos operacionais já têm `FlowShell` e `AppStepper`
 próprios; alinhá-los ao Figma é uma auditoria de fluxo por fluxo, com escopo próprio.
 
-**C. Os dois vetores autorais de §3.3 continuam mapeados por aproximação.** `Confinamento` usa
-`Barns` e `Pecuária` usa `Steak`. Exportá-los do Figma como SVG normalizado a 1.2 e servi-los pela
-mesma API `AppIcon` continua sendo o caminho — §3.3 descreve como.
+**C. ~~Os dois vetores autorais continuam mapeados por aproximação.~~ Fechado na E8**, com uma
+ressalva de origem e uma observação ótica:
+
+- `pecuaria.svg` veio com o contorno vetorizado, sem traço — não acompanha o token (ver §3.3).
+- Os dois desenhos têm folga interna no próprio viewBox e, encaixados na caixa de 24 px como todo
+  ícone do sistema, leem **menores** que os do Hugeicons ao lado. No Figma isso não aparecia porque
+  lá eles ocupavam 34 px, e não 24. Apertar o viewBox ao conteúdo real resolveria sem número
+  mágico; fica como refinamento.
 
 **D. `ContextBadge` e `AppFarmSelector` mostram a mesma informação.** São dois componentes de
 propósito diferente: a faixa dentro dos fluxos é mitigação de IDOR ("você está lançando *nesta*

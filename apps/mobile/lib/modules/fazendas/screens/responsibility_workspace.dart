@@ -81,6 +81,8 @@ class ResponsibilityWorkspace extends ConsumerWidget {
           farmName: activeFarm.name,
           onTap: () => openFarmPicker(context, ref),
         ),
+        const SizedBox(height: AppSpacing.space3),
+        AppSearchField(onTap: () => context.push('/busca')),
         const SizedBox(height: AppSpacing.space4),
 
         // Só o título: o chip de ambiente e a descrição saíram daqui — o

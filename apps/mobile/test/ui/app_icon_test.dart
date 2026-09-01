@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hugeicons/hugeicons.dart';
@@ -140,38 +142,81 @@ void main() {
       };
 
       for (final entry in aliases.entries) {
+        final icon = entry.value;
         expect(
-          entry.value,
-          isNotEmpty,
-          reason: 'AppIcons.${entry.key} está vazio',
+          icon.glyph != null || icon.asset != null,
+          isTrue,
+          reason: 'AppIcons.${entry.key} não aponta para desenho nenhum',
+        );
+        expect(
+          icon.glyph,
+          anyOf(isNull, isNotEmpty),
+          reason: 'AppIcons.${entry.key} tem glifo vazio',
         );
       }
     });
 
     test('os ícones nomeados pelo Figma são os do Figma', () {
       // Nomes de camada lidos do nó 54300-2458 — ver §3.4 da esteira.
-      expect(AppIcons.barns, HugeIcons.strokeRoundedBarns);
-      expect(AppIcons.tractor, HugeIcons.strokeRoundedTractor);
-      expect(AppIcons.scanHeart, HugeIcons.strokeRoundedScanHeart);
-      expect(AppIcons.bookSearch, HugeIcons.strokeRoundedBookSearch);
-      expect(AppIcons.landmark, HugeIcons.strokeRoundedBank);
-      expect(AppIcons.eyeOff, HugeIcons.strokeRoundedViewOff);
-      expect(AppIcons.aiSearch, HugeIcons.strokeRoundedAiSearch);
-      expect(AppIcons.filter, HugeIcons.strokeRoundedFilterHorizontal);
-      expect(AppIcons.arrowRight, HugeIcons.strokeRoundedArrowRight01);
-      expect(AppIcons.store02, HugeIcons.strokeRoundedStore02);
-      expect(AppIcons.connect, HugeIcons.strokeRoundedConnect);
-      expect(AppIcons.cash, HugeIcons.strokeRoundedCash02);
+      expect(AppIcons.barns.glyph, HugeIcons.strokeRoundedBarns);
+      expect(AppIcons.tractor.glyph, HugeIcons.strokeRoundedTractor);
+      expect(AppIcons.scanHeart.glyph, HugeIcons.strokeRoundedScanHeart);
+      expect(AppIcons.bookSearch.glyph, HugeIcons.strokeRoundedBookSearch);
+      expect(AppIcons.landmark.glyph, HugeIcons.strokeRoundedBank);
+      expect(AppIcons.eyeOff.glyph, HugeIcons.strokeRoundedViewOff);
+      expect(AppIcons.aiSearch.glyph, HugeIcons.strokeRoundedAiSearch);
+      expect(AppIcons.filter.glyph, HugeIcons.strokeRoundedFilterHorizontal);
+      expect(AppIcons.arrowRight.glyph, HugeIcons.strokeRoundedArrowRight01);
+      expect(AppIcons.store02.glyph, HugeIcons.strokeRoundedStore02);
+      expect(AppIcons.connect.glyph, HugeIcons.strokeRoundedConnect);
+      expect(AppIcons.cash.glyph, HugeIcons.strokeRoundedCash02);
       expect(
-        AppIcons.creditCardAccept,
+        AppIcons.creditCardAccept.glyph,
         HugeIcons.strokeRoundedCreditCardAccept,
       );
+    });
+
+    test('os dois ícones agro vêm dos vetores autorais, não do set', () {
+      // Não há bovino no Hugeicons gratuito — §3.3 da esteira. Se alguém trocar
+      // estes por um equivalente do set, o desenho da marca some sem aviso.
+      expect(AppIcons.confinamento.asset, 'assets/icons/confinamento.svg');
+      expect(AppIcons.pecuaria.asset, 'assets/icons/pecuaria.svg');
+      expect(AppIcons.confinamento.glyph, isNull);
+      expect(AppIcons.pecuaria.glyph, isNull);
+    });
+
+    test('o traço dos vetores autorais é o traço do sistema', () async {
+      // O desenho vive num viewBox de 34 de largura e é encaixado numa caixa de
+      // 24: a espessura na fonte precisa ser 1.2 × 34/24 = 1.7 para cair em 1.2
+      // na tela. Este teste guarda a conta — reexportar o SVG do Figma sem
+      // renormalizar deixaria o ícone mais fino que todo o resto do app.
+      const esperado = 1.2 * 34 / 24;
+      final svg = await File(AppIcons.confinamento.asset!).readAsString();
+      final larguras = RegExp(r'stroke-width="([\d.]+)"')
+          .allMatches(svg)
+          .map((m) => double.parse(m.group(1)!))
+          .toSet();
+
+      expect(larguras, isNotEmpty, reason: 'o SVG perdeu os traços');
+      for (final largura in larguras) {
+        expect(largura, closeTo(esperado, 0.001));
+      }
+    });
+
+    test('pecuária é contorno vetorizado, e não traço', () async {
+      // Registro executável de uma limitação real (§6-C da esteira): o arquivo
+      // enviado não tem traço nenhum — a espessura está embutida na geometria e
+      // não acompanha `AppSize.iconStroke`. Se um dia vier uma versão traçada,
+      // este teste falha e avisa que a ressalva pode sair da documentação.
+      final svg = await File(AppIcons.pecuaria.asset!).readAsString();
+
+      expect(svg.contains('stroke-width'), isFalse);
     });
 
     test('o set de origem é stroke-rounded, e não sólido', () {
       // Um ícone sólido não teria atributo de traço para sobrescrever — é o que
       // torna o 1.2 possível. Guarda contra troca silenciosa de estilo.
-      final attributes = AppIcons.tractor
+      final attributes = AppIcons.tractor.glyph!
           .map((element) => element[1] as Map<String, dynamic>)
           .toList();
 

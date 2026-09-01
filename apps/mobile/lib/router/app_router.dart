@@ -6,6 +6,7 @@ import '../modules/armazem/armazem_module.dart';
 import '../modules/bank/bank_module.dart';
 import '../modules/credito/credito_module.dart';
 import '../modules/fazendas/fazendas_module.dart';
+import '../modules/fazendas/screens/busca_global_screen.dart';
 import '../modules/hub/hub_module.dart';
 import '../modules/marketplace/marketplace_module.dart';
 import '../shell/module_config.dart';
@@ -97,6 +98,15 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/notificacoes',
         builder: (context, state) => const NotificacoesPage(),
+      ),
+      // Busca global de funcionalidades. Fica fora do `ShellRoute` — como
+      // `/perfil` e `/notificacoes` — porque é tela cheia: quem busca quer a
+      // lista, não o cromo do app. A tela vive no módulo Fazendas, onde mora o
+      // catálogo funcional que ela pesquisa; a rota é de topo, onde mora a sua
+      // navegação.
+      GoRoute(
+        path: '/busca',
+        builder: (context, state) => const BuscaGlobalScreen(),
       ),
       GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
       GoRoute(

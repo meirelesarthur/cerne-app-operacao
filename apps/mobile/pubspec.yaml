@@ -46,6 +46,11 @@ dependencies:
   # `component_first_test.dart` guarda essa fronteira. Substituiu `lucide_icons_flutter` na E5.
   hugeicons: ^1.1.7
 
+  # Desenha os vetores autorais de `assets/icons/` (§3.3 da esteira) — os dois
+  # ícones agro que o set gratuito não tem. Já chega transitivamente pelo
+  # `hugeicons`, mas `lib/ui/app_icon.dart` o importa direto.
+  flutter_svg: ^2.0.9
+
   # Ícones e assets
   cupertino_icons: ^1.0.8
 
@@ -97,6 +102,8 @@ flutter:
 
   assets:
     - assets/images/
+    # Vetores autorais do GB CERNE, servidos por `AppIcons` (§3.3 da esteira).
+    - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
