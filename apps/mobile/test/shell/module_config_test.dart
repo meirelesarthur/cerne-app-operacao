@@ -104,10 +104,20 @@ void main() {
 
       expect(adminTabs.map((tab) => tab.id), contains('dashboard'));
       expect(adminTabs.map((tab) => tab.id), isNot(contains('rotinas')));
+      expect(
+        adminTabs.where((tab) => tab.action == null).map((tab) => tab.label),
+        ['Gestão', 'Consultas', 'Atividades'],
+      );
       expect(operationalTabs.map((tab) => tab.id), contains('rotinas'));
       expect(
         operationalTabs.map((tab) => tab.id),
         isNot(contains('dashboard')),
+      );
+      expect(
+        operationalTabs
+            .where((tab) => tab.action == null)
+            .map((tab) => tab.label),
+        ['Rotinas'],
       );
 
       final operationalItems = getMenuSections(

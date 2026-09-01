@@ -168,7 +168,7 @@ const adminFeatures = <FeatureDefinition>[
     title: 'Consultas gerenciais',
     objective: 'Consultar lotes, estoque e pesagens sem permitir alterações.',
     status: FeatureStatus.ready,
-    existingRoute: '/fazendas/consultas',
+    existingRoute: '/fazendas/consultas/gerenciais',
   ),
   FeatureDefinition(
     id: 'areas',

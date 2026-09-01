@@ -31,6 +31,7 @@ GoRoute buildFazendasModuleRoute() {
           child: ResponsibilityWorkspace(
             profile: FeatureProfile.administration,
             showLocalContext: false,
+            focusGroup: 'Painéis de decisão',
           ),
         ),
         routes: [
@@ -119,8 +120,30 @@ GoRoute buildFazendasModuleRoute() {
       // Ver docs/ESTEIRA-DASHBOARDS-ADM.md, secao 2.
       GoRoute(
         path: 'consultas',
-        builder: (context, state) =>
-            _FazendasScaffold(child: buildAdminDashboard('consultas')),
+        builder: (context, state) => const _FazendasScaffold(
+          child: ResponsibilityWorkspace(
+            profile: FeatureProfile.administration,
+            showLocalContext: false,
+            focusGroup: 'Consultas e auditoria',
+          ),
+        ),
+        routes: [
+          GoRoute(
+            path: 'gerenciais',
+            builder: (context, state) =>
+                _FazendasScaffold(child: buildAdminDashboard('consultas')),
+          ),
+          GoRoute(
+            path: ':featureId',
+            builder: (context, state) => _FazendasScaffold(
+              child: MappedFeatureScreen(
+                featureId: state.pathParameters['featureId']!,
+                profile: FeatureProfile.administration,
+                centerRoute: '/fazendas/consultas',
+              ),
+            ),
+          ),
+        ],
       ),
       GoRoute(
         path: 'dashboards/:dashId',

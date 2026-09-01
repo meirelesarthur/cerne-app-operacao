@@ -87,18 +87,63 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        // Abas de Fazendas (moduleConfig) — não existem no módulo Início.
-        // Escopo em AppContextTabs: a home do módulo (F4.2) também tem um atalho
-        // "Financeiro" no grid, então `find.text('Financeiro')` sozinho é ambíguo.
+        // Abas administrativas de Fazendas — a central agora entrega cada
+        // domínio no primeiro toque, sem a camada intermediária de grupos.
         final contextTabs = find.byType(AppContextTabs);
         expect(
           find.descendant(of: contextTabs, matching: find.text('Gestão')),
           findsOneWidget,
         );
+        expect(
+          find.descendant(of: contextTabs, matching: find.text('Consultas')),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(of: contextTabs, matching: find.text('Atividades')),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(of: contextTabs, matching: find.text('Fazendas')),
+          findsNothing,
+        );
+        expect(
+          find.descendant(of: contextTabs, matching: find.text('Financeiro')),
+          findsNothing,
+        );
         expect(find.text('Central de gestão'), findsOneWidget);
+        expect(find.text('Painéis de decisão'), findsOneWidget);
+        expect(find.text('Resultado'), findsOneWidget);
         // Abas do Início não devem aparecer.
         expect(find.text('Apps'), findsNothing);
         expect(find.text('Carteira'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'aba Consultas entrega consultas e auditoria e abre a consulta gerencial',
+      (tester) async {
+        await setTallSurface(tester);
+        harness.router.go('/fazendas/administracao');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        final contextTabs = find.byType(AppContextTabs);
+        await tester.tap(
+          find.descendant(of: contextTabs, matching: find.text('Consultas')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Consultas e auditoria'), findsOneWidget);
+        expect(find.text('Consultas gerenciais'), findsOneWidget);
+        expect(find.text('Exportar log de estoque'), findsOneWidget);
+        expect(find.byType(AppModuleTile), findsNWidgets(9));
+
+        await tester.tap(find.text('Consultas gerenciais'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Consultas Gerenciais'), findsOneWidget);
+        expect(find.byType(AppContextTabs), findsNothing);
+        expect(tester.takeException(), isNull);
       },
     );
 

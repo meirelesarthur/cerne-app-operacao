@@ -48,6 +48,7 @@ class ResponsibilityWorkspace extends ConsumerWidget {
     super.key,
     required this.profile,
     this.showLocalContext = true,
+    this.focusGroup,
   });
 
   final FeatureProfile profile;
@@ -56,14 +57,23 @@ class ResponsibilityWorkspace extends ConsumerWidget {
   /// como padrão para preservar o uso isolado desta tela no Widgetbook/testes.
   final bool showLocalContext;
 
+  /// Quando informado, a central abre diretamente as funções deste grupo em
+  /// vez de mostrar os grupos como uma segunda camada de navegação. A
+  /// Administração usa isso para que as abas Gestão e Consultas entreguem
+  /// conteúdo acionável no primeiro toque.
+  final String? focusGroup;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final activeFarm = ref.watch(
       fazendasStoreProvider.select((s) => s.activeFarm),
     );
-    final features = profile == FeatureProfile.administration
+    final allFeatures = profile == FeatureProfile.administration
         ? adminFeatures
         : operationalFeatures;
+    final features = focusGroup == null
+        ? allFeatures
+        : allFeatures.where((feature) => feature.group == focusGroup).toList();
     final groups = <String, List<FeatureDefinition>>{};
     for (final feature in features) {
       groups.putIfAbsent(feature.group, () => []).add(feature);
@@ -81,6 +91,7 @@ class ResponsibilityWorkspace extends ConsumerWidget {
       });
     final isAdministration = profile == FeatureProfile.administration;
     final segment = isAdministration ? 'administracao' : 'operacional';
+    final isFocusedGroup = focusGroup != null;
 
     final content = <Widget>[
       if (showLocalContext) ...[
@@ -100,23 +111,48 @@ class ResponsibilityWorkspace extends ConsumerWidget {
         ),
         const SizedBox(height: AppSpacing.space4),
       ],
-      AppModuleTileGrid(
-        tiles: [
-          for (final group in orderedGroups)
-            AppModuleTile(
-              icon: groupIcon(group),
-              label: groupDisplayLabel(group),
-              onTap: () => context.go(
-                '/fazendas/$segment/grupo/${groupToSlug(group)}',
+      if (isFocusedGroup) ...[
+        AppSectionTitle(child: Text(focusGroup!)),
+        const SizedBox(height: AppSpacing.space2),
+        AppModuleTileGrid(
+          lastTileFullWidth: false,
+          tiles: [
+            for (final feature in features)
+              AppModuleTile(
+                icon: featureIcon(feature.id, feature.group),
+                label: feature.title,
+                description: feature.objective,
+                layout: AppModuleTileLayout.module,
+                onTap: () => context.push(_featureRoute(feature, segment)),
               ),
-            ),
-        ],
-      ),
+          ],
+        ),
+      ] else
+        AppModuleTileGrid(
+          tiles: [
+            for (final group in orderedGroups)
+              AppModuleTile(
+                icon: groupIcon(group),
+                label: groupDisplayLabel(group),
+                onTap: () => context.go(
+                  '/fazendas/$segment/grupo/${groupToSlug(group)}',
+                ),
+              ),
+          ],
+        ),
     ];
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.space4),
       children: content,
     );
+  }
+
+  String _featureRoute(FeatureDefinition feature, String segment) {
+    if (feature.existingRoute case final route?) return route;
+    final routeSegment = focusGroup == 'Consultas e auditoria'
+        ? 'consultas'
+        : segment;
+    return '/fazendas/$routeSegment/${feature.id}';
   }
 }

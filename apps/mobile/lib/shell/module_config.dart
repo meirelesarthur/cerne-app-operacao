@@ -222,22 +222,17 @@ const List<ModuleDef> modules = [
         profiles: {UserAccessProfile.operational},
       ),
       BottomTab(
-        id: 'fazendas',
-        label: 'Fazendas',
-        icon: AppIcons.sprout,
-        path: 'fazendas',
+        id: 'consultas',
+        label: 'Consultas',
+        icon: AppIcons.search,
+        path: 'consultas',
+        profiles: {UserAccessProfile.administration},
       ),
       BottomTab(
         id: 'atividades',
         label: 'Atividades',
         icon: AppIcons.activity,
         path: 'atividades',
-      ),
-      BottomTab(
-        id: 'financeiro',
-        label: 'Financeiro',
-        icon: AppIcons.wallet,
-        path: 'financeiro',
         profiles: {UserAccessProfile.administration},
       ),
       BottomTab(

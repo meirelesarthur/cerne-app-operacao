@@ -16,11 +16,11 @@ import '../state/prototype_session_store.dart';
 /// SemiBold nos dois estados.
 ///
 /// **Extensão do padrão:** a referência mostra três abas de largura igual num
-/// trilho fixo. Aqui um módulo chega a seis (Fazendas: Gestão, Rotinas,
-/// Fazendas, Atividades, Financeiro, Mais), e dividir a largura por seis
-/// deixaria cada rótulo ilegível. O trilho vira rolável e cada aba se dimensiona
-/// pelo conteúdo — o vocabulário visual é o mesmo, só a regra de largura muda.
-/// Por isso não reusa `AppSegmentedTabs`, que é o controle de largura fixa.
+/// trilho fixo. Os módulos com mais opções continuam podendo rolar e cada aba
+/// se dimensiona pelo conteúdo — o vocabulário visual é o mesmo, só a regra de
+/// largura muda. Por isso não reusa `AppSegmentedTabs`, que é o controle de
+/// largura fixa. Em Fazendas/Administração, o conjunto foi mantido em três
+/// abas: Gestão, Consultas e Atividades.
 ///
 /// A ação "Mais" não entra (vira bolha no header, ver `AppShellHeader`).
 ///

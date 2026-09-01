@@ -53,8 +53,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           // as abas para a própria tela renderizar busca + cards.
           // Funcionalidades, dashboards e fluxos continuam sendo telas
           // fundas, sem chrome.
-          final isGroup =
-              segments.length > 2 && segments[2] == 'grupo';
+          final isGroup = segments.length > 2 && segments[2] == 'grupo';
           final isDeep = segments.length > 2 && !isGroup;
           return ShellLayout(
             moduleId: moduleId,
@@ -173,7 +172,7 @@ String? redirectForSession(String path, PrototypeSessionState session) {
   final isAdministrationRoute =
       path.startsWith('/fazendas/administracao') ||
       path.startsWith('/fazendas/dashboards') ||
-      path == '/fazendas/consultas' ||
+      path.startsWith('/fazendas/consultas') ||
       path == '/fazendas/financeiro';
   final isOperationalRoute =
       path.startsWith('/fazendas/operacional') ||

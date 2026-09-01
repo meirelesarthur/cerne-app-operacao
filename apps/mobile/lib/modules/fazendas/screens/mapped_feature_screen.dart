@@ -14,17 +14,20 @@ class MappedFeatureScreen extends StatelessWidget {
     super.key,
     required this.featureId,
     required this.profile,
+    this.centerRoute,
   });
 
   final String featureId;
   final FeatureProfile profile;
+  final String? centerRoute;
 
   @override
   Widget build(BuildContext context) {
     final feature = featureById(featureId);
-    final centerRoute = profile == FeatureProfile.administration
+    final fallbackCenterRoute = profile == FeatureProfile.administration
         ? '/fazendas/administracao'
         : '/fazendas/operacional';
+    final resolvedCenterRoute = centerRoute ?? fallbackCenterRoute;
 
     if (feature == null || feature.profile != profile) {
       return AppEmptyState(
@@ -33,7 +36,7 @@ class MappedFeatureScreen extends StatelessWidget {
         description:
             'Volte ao ambiente correspondente para acessar esta responsabilidade.',
         action: AppButton(
-          onPressed: () => context.go(centerRoute),
+          onPressed: () => context.go(resolvedCenterRoute),
           child: const Text('Voltar ao ambiente'),
         ),
       );
@@ -42,7 +45,7 @@ class MappedFeatureScreen extends StatelessWidget {
     return _MappedFeatureJourney(
       key: ValueKey('${profile.name}/${feature.id}'),
       feature: feature,
-      centerRoute: centerRoute,
+      centerRoute: resolvedCenterRoute,
     );
   }
 }
