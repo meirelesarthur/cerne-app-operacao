@@ -138,6 +138,13 @@ class AppIcons {
   static const AppIconData ellipsis = AppIconData.glyph(
     HugeIcons.strokeRoundedMoreHorizontal,
   );
+
+  /// Overflow da top bar do padrão global — o `DotsThreeVertical` do Figma
+  /// (54349:2085). Vertical de propósito: o horizontal já é o "mais opções"
+  /// de linha de lista, e as duas leituras coexistem nas telas de cadastro.
+  static const AppIconData moreVertical = AppIconData.glyph(
+    HugeIcons.strokeRoundedMoreVertical,
+  );
   static const AppIconData search = AppIconData.glyph(
     HugeIcons.strokeRoundedSearch01,
   );
@@ -183,9 +190,7 @@ class AppIcons {
   static const AppIconData users = AppIconData.glyph(
     HugeIcons.strokeRoundedUserGroup,
   );
-  static const AppIconData eye = AppIconData.glyph(
-    HugeIcons.strokeRoundedView,
-  );
+  static const AppIconData eye = AppIconData.glyph(HugeIcons.strokeRoundedView);
   static const AppIconData eyeOff = AppIconData.glyph(
     HugeIcons.strokeRoundedViewOff,
   );
@@ -356,9 +361,7 @@ class AppIcons {
   static const AppIconData milk = AppIconData.glyph(
     HugeIcons.strokeRoundedMilkBottle,
   );
-  static const AppIconData egg = AppIconData.glyph(
-    HugeIcons.strokeRoundedEgg,
-  );
+  static const AppIconData egg = AppIconData.glyph(HugeIcons.strokeRoundedEgg);
   static const AppIconData heart = AppIconData.glyph(
     HugeIcons.strokeRoundedFavouriteCircle,
   );
