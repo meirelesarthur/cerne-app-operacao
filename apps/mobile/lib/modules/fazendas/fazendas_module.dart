@@ -30,6 +30,7 @@ GoRoute buildFazendasModuleRoute() {
         builder: (context, state) => const _FazendasScaffold(
           child: ResponsibilityWorkspace(
             profile: FeatureProfile.administration,
+            showLocalContext: false,
           ),
         ),
         routes: [
@@ -56,7 +57,10 @@ GoRoute buildFazendasModuleRoute() {
       GoRoute(
         path: 'operacional',
         builder: (context, state) => const _FazendasScaffold(
-          child: ResponsibilityWorkspace(profile: FeatureProfile.operational),
+          child: ResponsibilityWorkspace(
+            profile: FeatureProfile.operational,
+            showLocalContext: false,
+          ),
         ),
         routes: [
           GoRoute(

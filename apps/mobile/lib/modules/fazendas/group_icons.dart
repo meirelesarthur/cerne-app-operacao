@@ -24,6 +24,16 @@ AppIconData groupIcon(String group) => switch (group) {
   _ => AppIcons.layers,
 };
 
+/// Rótulo de apresentação dos módulos na entrada operacional. O catálogo
+/// mantém o nome de domínio para chaves, slugs e auditoria; a home usa o
+/// vocabulário curto que aparece no layout de referência.
+String groupDisplayLabel(String group) => switch (group) {
+  'Ordem de serviço' => 'Ordem de Serviço',
+  'Gestão de frota' => 'Gestão de Frota',
+  'Sincronização' => 'Sincronizar aplicativo',
+  _ => group,
+};
+
 /// Ordem de exibição dos grupos na central de responsabilidade.
 ///
 /// Sem isso, a ordem seria a de inserção no array do catálogo — acidente de
@@ -37,12 +47,12 @@ const List<String> _groupDisplayOrder = [
   // Operacional — do mais frequente ao mais esporádico.
   'Confinamento',
   'Pecuária',
-  'Misturador',
   'Agricultura',
-  'Reprodução',
-  'Gestão de frota',
   'Ordem de serviço',
+  'Misturador',
+  'Reprodução',
   'Consultas',
+  'Gestão de frota',
   'Sincronização',
   // Administração.
   'Painéis de decisão',

@@ -14,7 +14,7 @@ import '../design/theme/app_theme_extension.dart';
 /// (Figma `54300-2458`, frames `operacao-home` e `modulo-confinamento`).
 ///
 /// Anatomia medida no Figma: 116 px de altura, raio [AppRadius.tile] (20),
-/// `px 12 / py 16`, ícone de 24 px **ancorado no topo-esquerda** e rótulo de
+/// `px 12 / py 16`, ícone de 32 px **ancorado no topo-esquerda** e rótulo de
 /// 14 px **ancorado na base-esquerda**. A largura vem da grade, não do widget.
 ///
 /// Por que não é uma variante de `AppBentoTile`: o bento ancora o ícone numa
@@ -84,7 +84,7 @@ class AppModuleTile extends StatelessWidget {
             // Neutro, não verde: na referência o ladrilho não usa a cor da
             // marca — o destaque vem do rótulo, e o ícone é um traço fino
             // escuro (medido em 54349:2639).
-            AppIcon(icon, size: AppSize.iconLg, color: semantic.fgSecondary),
+            AppIcon(icon, size: AppSize.iconXxl, color: semantic.fgSecondary),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,

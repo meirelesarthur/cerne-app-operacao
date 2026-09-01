@@ -8,6 +8,8 @@ import '../design/generated/app_motion.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
+import '../modules/fazendas/components/farm_picker.dart';
+import '../modules/fazendas/state/fazendas_store.dart';
 import '../ui/ui.dart';
 import 'components/bottom_tab_bar.dart';
 import 'components/context_tabs.dart';
@@ -118,9 +120,14 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     final module = getModule(moduleId) ?? modules.first;
     final state = ref.watch(shellStoreProvider);
     final profile = ref.watch(prototypeSessionProvider).profile;
+    final activeFarm = ref.watch(fazendasStoreProvider).activeFarm;
     final menuOpen = state.menuOpen;
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final isOperationalModule =
+        module.id == 'fazendas' && profile == UserAccessProfile.operational;
+    final showGlobalContext = !hideChrome && profile != null;
+    final currentPath = GoRouterState.of(context).uri.path;
 
     return Scaffold(
       body: Stack(
@@ -184,6 +191,13 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                               ? _content(state)
                               : AppContentSheet(
                                   padded: false,
+                                  header: showGlobalContext
+                                      ? AppFarmSelector(
+                                          farmName: activeFarm.name,
+                                          onTap: () =>
+                                              openFarmPicker(context, ref),
+                                        )
+                                      : null,
                                   child: Column(
                                     children: [
                                       AnimatedSize(
@@ -196,6 +210,9 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                           children: [
                                             AppShellHeader(
                                               collapsed: _headerCollapsed,
+                                              showMenu: !isOperationalModule,
+                                              showProfileSubtitle:
+                                                  !isOperationalModule,
                                               onOpenProfile: () =>
                                                   _go(context, ref, '/perfil'),
                                               onOpenNotifications: () => _go(
@@ -203,26 +220,36 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                                 ref,
                                                 '/notificacoes',
                                               ),
+                                              child: showGlobalContext
+                                                  ? AppSearchField(
+                                                      onTap: () => _go(
+                                                        context,
+                                                        ref,
+                                                        '/busca',
+                                                      ),
+                                                    )
+                                                  : null,
                                             ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal:
-                                                        AppSpacing.space4,
+                                            if (!isOperationalModule)
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal:
+                                                          AppSpacing.space4,
+                                                    ),
+                                                child: AppContextTabs(
+                                                  module: module,
+                                                  profile: profile,
+                                                  activePath: activeTab,
+                                                  onTabSelected: (path) => _go(
+                                                    context,
+                                                    ref,
+                                                    path.isEmpty
+                                                        ? '/${module.id}'
+                                                        : '/${module.id}/$path',
                                                   ),
-                                              child: AppContextTabs(
-                                                module: module,
-                                                profile: profile,
-                                                activePath: activeTab,
-                                                onTabSelected: (path) => _go(
-                                                  context,
-                                                  ref,
-                                                  path.isEmpty
-                                                      ? '/${module.id}'
-                                                      : '/${module.id}/$path',
                                                 ),
                                               ),
-                                            ),
                                           ],
                                         ),
                                       ),
@@ -242,15 +269,36 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                               AppComponentMetrics.tabbarInset +
                               MediaQuery.of(context).padding.bottom,
                           child: Center(
-                            child: AppBottomTabBar(
-                              visibleModules: visibleModulesFor(profile),
-                              activeId: module.id,
-                              onModuleSelected: (id) => _go(
-                                context,
-                                ref,
-                                moduleHomeRoute(getModule(id)!, profile),
-                              ),
-                            ),
+                            child: isOperationalModule
+                                ? AppBottomTabBar(
+                                    navigationTabs: operationalBottomTabs,
+                                    activeId: menuOpen
+                                        ? 'menu'
+                                        : _operationalTabFor(currentPath),
+                                    onModuleSelected: (_) {},
+                                    onNavigationSelected: (tab) {
+                                      if (tab.action == 'menu') {
+                                        ref
+                                            .read(shellStoreProvider.notifier)
+                                            .toggleMenu();
+                                      } else {
+                                        _go(
+                                          context,
+                                          ref,
+                                          '/fazendas/${tab.path}',
+                                        );
+                                      }
+                                    },
+                                  )
+                                : AppBottomTabBar(
+                                    visibleModules: visibleModulesFor(profile),
+                                    activeId: module.id,
+                                    onModuleSelected: (id) => _go(
+                                      context,
+                                      ref,
+                                      moduleHomeRoute(getModule(id)!, profile),
+                                    ),
+                                  ),
                           ),
                         ),
                       ],
@@ -264,6 +312,12 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
       ),
     );
   }
+}
+
+String _operationalTabFor(String path) {
+  if (path.contains('/grupo/pecuaria')) return 'pecuaria';
+  if (path.contains('/grupo/agricultura')) return 'agricultura';
+  return 'home';
 }
 
 /// Com o menu aberto, tocar em área vazia do app encolhido fecha o menu —

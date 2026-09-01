@@ -25,7 +25,7 @@ void main() {
     ) async {
       await tester.pumpWidget(_wrap(const AppShellHeader()));
 
-      expect(find.text('Bom dia,'), findsOneWidget);
+      expect(find.text('Boa tarde,'), findsOneWidget);
       expect(find.text('Silvio Ventura'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });

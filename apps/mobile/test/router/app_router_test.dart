@@ -79,6 +79,43 @@ void main() {
       },
     );
 
+    testWidgets('entrada operacional usa o chrome e a navegação de campo', (
+      tester,
+    ) async {
+      harness.dispose();
+      harness = RouterTestHarness(profile: UserAccessProfile.operational);
+      harness.router.go('/fazendas/operacional');
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Boa tarde,'), findsOneWidget);
+      expect(find.text('Fazenda São Pedro'), findsOneWidget);
+      expect(find.text('Procurando por algo?'), findsOneWidget);
+      expect(find.text('O que fazer hoje'), findsNothing);
+      expect(find.byType(AppContextTabs), findsNothing);
+      expect(find.text('Home'), findsOneWidget);
+      expect(find.text('Agricultura'), findsWidgets);
+      expect(find.text('Sincronizar aplicativo'), findsOneWidget);
+    });
+
+    testWidgets('menu operacional lista módulos-pai e a seção de conta', (
+      tester,
+    ) async {
+      harness.dispose();
+      harness = RouterTestHarness(profile: UserAccessProfile.operational);
+      harness.router.go('/fazendas/operacional');
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Menu'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('MÓDULOS'), findsOneWidget);
+      expect(find.text('Início'), findsOneWidget);
+      expect(find.text('Armazém'), findsOneWidget);
+      expect(find.text('CONTA'), findsOneWidget);
+    });
+
     testWidgets(
       'trocar de módulo pelo dock preserva o header (Silvio Ventura continua visível)',
       (tester) async {

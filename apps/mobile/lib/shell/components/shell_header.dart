@@ -38,6 +38,8 @@ class AppShellHeader extends ConsumerWidget {
     this.onOpenProfile,
     this.onOpenNotifications,
     this.collapsed = false,
+    this.showMenu = true,
+    this.showProfileSubtitle = true,
     this.child,
   });
 
@@ -57,6 +59,14 @@ class AppShellHeader extends ConsumerWidget {
   /// o slot [child], mantendo só as bolhas de ação à direita.
   final bool collapsed;
 
+  /// O menu operacional vive na barra inferior; nesse modo o cabeçalho mantém
+  /// apenas o sino no extremo direito, como na referência da entrada de campo.
+  final bool showMenu;
+
+  /// A referência da entrada operacional não repete o ambiente sob o nome do
+  /// usuário: a fazenda já governa o app na faixa superior.
+  final bool showProfileSubtitle;
+
   /// Slot de contexto do módulo ativo — equivalente ao `children` do React;
   /// aqui é um único `child` porque só há um consumidor real historicamente
   /// (a pílula de crédito, que saiu do header global — ver plano de UX).
@@ -72,33 +82,34 @@ class AppShellHeader extends ConsumerWidget {
     final menuOpen = state.menuOpen;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
 
-    // Determinístico no protótipo (sem Date.now/relógio real) — replica
-    // exatamente `ShellHeader.tsx`, que fixa a hora em 8 (resulta em "Bom dia").
-    const hour = 8;
+    // Determinístico no protótipo (sem Date.now/relógio real) — a entrada de
+    // operação segue a referência e fixa o período da tarde.
+    const hour = 14;
     const greeting = hour < 12
         ? 'Bom dia'
         : (hour < 18 ? 'Boa tarde' : 'Boa noite');
 
-    final actions = Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (onConsultMode != null) ...[
-          _headerBubble(
-            icon: const AppIcon(AppIcons.eye, size: AppSize.iconMd),
-            label: consultActive ? 'Sair do modo consulta' : 'Modo consulta',
-            active: consultActive,
-            onPressed: onConsultMode,
-          ),
-          const SizedBox(width: AppSpacing.space2),
-        ],
+    final actionWidgets = <Widget>[
+      if (onConsultMode != null) ...[
+        _headerBubble(
+          icon: const AppIcon(AppIcons.eye, size: AppSize.iconMd),
+          label: consultActive ? 'Sair do modo consulta' : 'Modo consulta',
+          active: consultActive,
+          onPressed: onConsultMode,
+        ),
+        const SizedBox(width: AppSpacing.space2),
+      ],
+      if (showMenu)
         _headerBubble(
           icon: const AppIcon(AppIcons.menu, size: AppSize.iconMd),
           label: 'Mais',
           active: menuOpen,
           onPressed: () => ref.read(shellStoreProvider.notifier).openMenu(),
         ),
-      ],
-    );
+    ];
+    final actions = actionWidgets.isEmpty
+        ? null
+        : Row(mainAxisSize: MainAxisSize.min, children: actionWidgets);
 
     final content = collapsed
         ? Padding(
@@ -109,7 +120,7 @@ class AppShellHeader extends ConsumerWidget {
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [actions],
+              children: [if (actions != null) actions],
             ),
           )
         : Padding(
@@ -127,7 +138,7 @@ class AppShellHeader extends ConsumerWidget {
                   greeting: '$greeting,',
                   name: user.name,
                   initials: user.initials,
-                  subtitle: profile == null
+                  subtitle: !showProfileSubtitle || profile == null
                       ? null
                       : 'Ambiente ${profile.label}',
                   hasUnread: unread > 0,

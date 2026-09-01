@@ -26,6 +26,8 @@ class AppBottomTabBar extends StatelessWidget {
     required this.activeId,
     required this.onModuleSelected,
     this.visibleModules = modules,
+    this.navigationTabs,
+    this.onNavigationSelected,
   });
 
   final String activeId;
@@ -38,13 +40,21 @@ class AppBottomTabBar extends StatelessWidget {
   /// operacional não precisa ver Bank/Crédito/Marketplace no dock).
   final List<ModuleDef> visibleModules;
 
+  /// Variante para uma barra primária contextual, como a entrada operacional.
+  /// Quando informada, substitui os módulos do superapp sem alterar o contrato
+  /// do dock global usado pelas demais áreas.
+  final List<BottomTab>? navigationTabs;
+  final ValueChanged<BottomTab>? onNavigationSelected;
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Semantics(
       container: true,
-      label: 'Módulos do superapp',
+      label: navigationTabs == null
+          ? 'Módulos do superapp'
+          : 'Navegação operacional',
       child: Container(
         padding: const EdgeInsets.all(
           AppComponentMetrics.tabbarInset / AppSpacing.half,
@@ -65,18 +75,31 @@ class AppBottomTabBar extends StatelessWidget {
           physics: const ClampingScrollPhysics(),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              for (final m in visibleModules) ...[
-                _ModuleButton(
-                  label: m.label,
-                  icon: m.icon,
-                  active: m.id == activeId,
-                  onTap: () => onModuleSelected(m.id),
-                ),
-                if (m != visibleModules.last)
-                  const SizedBox(width: AppSpacing.space1),
-              ],
-            ],
+            children: navigationTabs != null
+                ? [
+                    for (final tab in navigationTabs!) ...[
+                      _ModuleButton(
+                        label: tab.label,
+                        icon: tab.icon,
+                        active: tab.id == activeId,
+                        onTap: () => onNavigationSelected?.call(tab),
+                      ),
+                      if (tab != navigationTabs!.last)
+                        const SizedBox(width: AppSpacing.space1),
+                    ],
+                  ]
+                : [
+                    for (final m in visibleModules) ...[
+                      _ModuleButton(
+                        label: m.label,
+                        icon: m.icon,
+                        active: m.id == activeId,
+                        onTap: () => onModuleSelected(m.id),
+                      ),
+                      if (m != visibleModules.last)
+                        const SizedBox(width: AppSpacing.space1),
+                    ],
+                  ],
           ),
         ),
       ),

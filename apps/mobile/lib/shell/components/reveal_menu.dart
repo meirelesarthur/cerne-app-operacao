@@ -240,40 +240,84 @@ class _MenuContent extends StatelessWidget {
       ),
       const SizedBox(height: AppSpacing.space3),
 
-      // contexto do módulo ativo
-      _stagger(
-        next(),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space3),
-          child: Row(
-            children: [
-              Container(
-                height: AppSpacing.space7,
-                width: AppSpacing.space7,
-                decoration: BoxDecoration(
-                  color: semantic.inkBubble,
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-                alignment: Alignment.center,
-                child: AppIcon(
-                  module.icon,
-                  size: AppSize.iconXs,
-                  color: semantic.inkFg,
-                ),
+      // Módulos-pai do superapp. No operacional, a barra inferior reserva
+      // apenas as entradas mais frequentes; o restante continua acessível
+      // aqui, antes da seção de conta.
+      if (profile == UserAccessProfile.operational) ...[
+        _stagger(
+          next(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.space3,
+              0,
+              AppSpacing.space3,
+              AppSpacing.space1,
+            ),
+            child: Text(
+              'MÓDULOS',
+              style: TextStyle(
+                fontSize: AppTypography.xs,
+                fontWeight: AppTypography.weightSemibold,
+                letterSpacing: 0.4,
+                color: semantic.inkSubtle,
               ),
-              const SizedBox(width: AppSpacing.space2),
-              Text(
-                module.label,
-                style: TextStyle(
-                  fontSize: AppTypography.md,
-                  fontWeight: AppTypography.weightSemibold,
-                  color: semantic.inkFg,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        for (final parentModule in visibleModulesFor(profile)) ...[
+          _stagger(
+            next(),
+            AppMenuItem(
+              variant: AppMenuItemVariant.onDark,
+              icon: parentModule.icon,
+              label: parentModule.label,
+              active: parentModule.id == module.id,
+              onTap: () => onNavigate(
+                moduleHomeRoute(parentModule, profile),
+              ),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space1),
+        ],
+      ],
+
+      // contexto do módulo ativo
+      if (profile != UserAccessProfile.operational)
+        _stagger(
+          next(),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.space3,
+            ),
+            child: Row(
+              children: [
+                Container(
+                  height: AppSpacing.space7,
+                  width: AppSpacing.space7,
+                  decoration: BoxDecoration(
+                    color: semantic.inkBubble,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
+                  ),
+                  alignment: Alignment.center,
+                  child: AppIcon(
+                    module.icon,
+                    size: AppSize.iconXs,
+                    color: semantic.inkFg,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.space2),
+                Text(
+                  module.label,
+                  style: TextStyle(
+                    fontSize: AppTypography.md,
+                    fontWeight: AppTypography.weightSemibold,
+                    color: semantic.inkFg,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       const SizedBox(height: AppSpacing.space2),
 
       // funcionalidades do módulo atual
