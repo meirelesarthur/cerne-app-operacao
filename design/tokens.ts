@@ -218,16 +218,18 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       placeholder: 'rgba(2,53,53,0.54)',
       inverse: primitive.neutral[0],
     },
-    // `subtle` (fundo de inputs/ladrilhos) acompanha o canvas azul-neutro. As
-    // superfícies de cartão ficam no cinza neutro mais escuro da nova paleta.
+    // O canvas e a folha estrutural permanecem cinza. Todo elemento que recebe
+    // conteúdo ou interação — campos, cards, ladrilhos e a barra de navegação
+    // — usa uma superfície branca. Essa separação é global para que os perfis
+    // operacional e administrativo não voltem a parecer uma única massa cinza.
     bg: {
       canvas: '#f0f0f2',
       sheet: '#f0f0f0',
-      surface: '#f0f0f0',
-      subtle: '#f0f0f2',
-      raised: '#f0f0f0',
+      surface: primitive.neutral[0],
+      subtle: primitive.neutral[0],
+      raised: primitive.neutral[0],
       track: '#e6e6e6',
-      kpi: '#f8fffe',
+      kpi: primitive.neutral[0],
     },
     border: { default: '#e8e9e1', strong: '#d6d8ce', subtle: '#f0f1ea', tint: primitive.brand[100] },
     accent: { default: primitive.brand[700], hover: primitive.brand[800], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
@@ -252,7 +254,7 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
     // (era verde-menta + texto quase-preto); nav deixa de depender de blur/
     // translucidez e vira cápsula opaca, como a referência.
     cta: { bg: primitive.brand[700], hover: primitive.brand[800], fg: primitive.neutral[0] },
-    nav: { bg: '#f0f0f0', fg: '#67716a', active: primitive.brand[700], border: '#e8e9e1' },
+    nav: { bg: primitive.neutral[0], fg: '#67716a', active: primitive.brand[700], border: '#e8e9e1' },
     shadow: {
       card: '0 1px 2px rgba(16,21,16,0.03), 0 8px 24px rgba(16,21,16,0.05)',
       cardHover: '0 10px 30px rgba(16,21,16,0.10)',

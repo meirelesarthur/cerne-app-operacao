@@ -73,7 +73,7 @@ class AppSearchField extends StatelessWidget {
             height: _actionSize,
             alignment: Alignment.center,
             decoration: BoxDecoration(
-              color: semantic.bgSurface,
+              color: semantic.accentSubtle,
               shape: BoxShape.circle,
             ),
             child: AppIcon(

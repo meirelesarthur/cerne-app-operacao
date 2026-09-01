@@ -113,11 +113,11 @@ class AppColorsLight {
   static const Color fgInverse = Color(0xFFFFFFFF);
   static const Color bgCanvas = Color(0xFFF0F0F2);
   static const Color bgSheet = Color(0xFFF0F0F0);
-  static const Color bgSurface = Color(0xFFF0F0F0);
-  static const Color bgSubtle = Color(0xFFF0F0F2);
-  static const Color bgRaised = Color(0xFFF0F0F0);
+  static const Color bgSurface = Color(0xFFFFFFFF);
+  static const Color bgSubtle = Color(0xFFFFFFFF);
+  static const Color bgRaised = Color(0xFFFFFFFF);
   static const Color bgTrack = Color(0xFFE6E6E6);
-  static const Color bgKpi = Color(0xFFF8FFFE);
+  static const Color bgKpi = Color(0xFFFFFFFF);
   static const Color borderDefault = Color(0xFFE8E9E1);
   static const Color borderStrong = Color(0xFFD6D8CE);
   static const Color borderSubtle = Color(0xFFF0F1EA);
@@ -142,7 +142,7 @@ class AppColorsLight {
   static const Color ctaBg = Color(0xFF047857);
   static const Color ctaHover = Color(0xFF065F46);
   static const Color ctaFg = Color(0xFFFFFFFF);
-  static const Color navBg = Color(0xFFF0F0F0);
+  static const Color navBg = Color(0xFFFFFFFF);
   static const Color navFg = Color(0xFF67716A);
   static const Color navActive = Color(0xFF047857);
   static const Color navBorder = Color(0xFFE8E9E1);
