@@ -21,6 +21,16 @@ import '../design/theme/app_theme_extension.dart';
 /// textual e altura livre. Este é um cromo de **navegação** de altura fixa e
 /// título centralizado. Mesmo critério que separou `AppModuleTile` de
 /// `AppQuickAction` na esteira do padrão global (§1.2-A).
+///
+/// O título usa `NavigationToolbar` (o mesmo layout que centraliza o título do
+/// `AppBar` do Material) em vez de um `Row` com `Expanded` no meio: com
+/// `Expanded`, o título fica centralizado *entre* as duas colunas laterais,
+/// não na barra inteira — se elas tiverem larguras diferentes (ex.: o botão
+/// "Marcar lidas" de `trailing` X o glifo fixo de voltar), o título se desloca
+/// visualmente. Isso reproduzia de fato: a barra de Notificações descentrava o
+/// título enquanto havia não lidas e recentrava ao marcar todas como lidas
+/// (`trailing` sumindo). `NavigationToolbar(centerMiddle: true)` mede as duas
+/// colunas e mantém o título no centro geométrico da barra sempre que cabe.
 class AppTopBar extends StatelessWidget {
   const AppTopBar({
     super.key,
@@ -47,8 +57,9 @@ class AppTopBar extends StatelessWidget {
   /// Substitui a coluna da direita por um widget qualquer. A referência só tem
   /// o ícone de overflow, mas o app coloca ali um selo de acesso restrito e um
   /// "Marcar lidas" — conteúdo que não cabe num glifo. Quando presente, tem
-  /// precedência sobre [actionIcon]; o título deixa de ficar exatamente
-  /// centralizado, porque as duas colunas passam a ter larguras diferentes.
+  /// precedência sobre [actionIcon]. O título continua centralizado na barra
+  /// mesmo quando esta coluna é mais larga que a de voltar (ver nota de classe
+  /// sobre `NavigationToolbar`).
   final Widget? trailing;
 
   /// Altura do glifo no Figma. O alvo de toque é maior — ver [_slotSize].
@@ -87,30 +98,37 @@ class AppTopBar extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.space1),
-      child: Row(
-        children: [
-          slot(
+      child: SizedBox(
+        height: _slotSize,
+        // `NavigationToolbar` (o mesmo layout por trás do `AppBar` do
+        // Material) mede as colunas laterais e mantém o título no centro
+        // geométrico da barra — diferente de um `Row` com `Expanded` no meio,
+        // que centraliza o título *entre* as colunas e o desloca quando elas
+        // têm larguras diferentes (ver nota de classe).
+        child: NavigationToolbar(
+          // `centerMiddle` já é `true` por padrão no `NavigationToolbar`.
+          middleSpacing: AppSpacing.space2,
+          leading: slot(
             icon: onBack == null ? null : AppIcons.arrowLeft,
             label: backLabel,
             onPressed: onBack,
           ),
-          Expanded(
-            child: Semantics(
-              header: true,
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+          middle: Semantics(
+            header: true,
+            child: Text(
+              title,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
-          if (trailing != null)
-            trailing!
-          else
-            slot(icon: actionIcon, label: actionLabel, onPressed: onAction),
-        ],
+          trailing: trailing ?? slot(
+            icon: actionIcon,
+            label: actionLabel,
+            onPressed: onAction,
+          ),
+        ),
       ),
     );
   }
