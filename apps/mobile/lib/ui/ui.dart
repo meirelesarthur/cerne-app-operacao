@@ -25,6 +25,7 @@ export 'checkbox.dart';
 export 'chip.dart';
 export 'code_preview.dart';
 export 'dashboard_card.dart';
+export 'discovery_tile.dart';
 export 'donut_chart.dart';
 export 'empty_state.dart';
 export 'entity_row.dart';

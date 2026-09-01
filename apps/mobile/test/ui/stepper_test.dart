@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:cerne_app/design/generated/app_layout.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/ui/stepper.dart';
 
@@ -18,6 +19,10 @@ void main() {
 
       expect(find.text('3'), findsOneWidget);
       expect(find.text('sc'), findsOneWidget);
+      expect(
+        tester.getSize(find.byType(AppStepper)).height,
+        AppSize.controlLg,
+      );
       expect(tester.takeException(), isNull);
     });
 

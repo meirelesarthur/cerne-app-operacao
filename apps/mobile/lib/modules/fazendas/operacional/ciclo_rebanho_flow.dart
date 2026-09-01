@@ -184,7 +184,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
         children: [
           if (transferBlocked)
             const Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.space5),
+              padding: EdgeInsets.only(bottom: AppSpacing.space4),
               child: AppBanner(
                 tone: AppBannerTone.error,
                 icon: AppIcon(AppIcons.alertTriangle, size: AppSize.iconXs),
@@ -208,7 +208,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             ),
           ),
           if (isTransfer) ...[
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppFormField(
               label: 'Lote de destino',
               required: true,
@@ -222,7 +222,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
                 placeholder: 'Buscar lote de destino...',
               ),
             ),
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppFormField(
               label: 'Quantidade',
               required: true,
@@ -238,7 +238,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             ),
           ],
           if (_type != _EventType.transferencia) ...[
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppFormField(
               label: 'Data',
               required: true,
@@ -251,7 +251,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             ),
           ],
           if (_type == _EventType.nascimento) ...[
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppFormField(
               label: 'Peso ao nascer',
               hint: 'Opcional',
@@ -265,7 +265,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             ),
           ],
           if (_type == _EventType.morte) ...[
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppFormField(
               label: 'Causa',
               required: true,
@@ -277,7 +277,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
                 placeholder: 'Selecione a causa',
               ),
             ),
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppFormField(
               label: 'Observação',
               child: AppTextarea(

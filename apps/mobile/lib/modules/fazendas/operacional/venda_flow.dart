@@ -164,7 +164,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
               ),
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           const AppSectionTitle(child: Text('Nova venda')),
           const SizedBox(height: AppSpacing.space3),
           AppFormField(
@@ -181,7 +181,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
               placeholder: 'Buscar lote...',
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Quantidade de animais',
             required: true,
@@ -194,7 +194,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
               max: _esperado > 0 ? _esperado : 999,
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Cliente',
             required: true,
@@ -205,7 +205,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
               invalid: _attempted && _cliente.isEmpty,
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Condição de pagamento',
             required: true,
@@ -217,7 +217,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
               placeholder: 'Selecione',
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Data de embarque',
             required: true,
@@ -230,7 +230,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
               invalid: _attempted && _dataEmbarque.isEmpty,
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Valor total (R\$)',
             required: true,

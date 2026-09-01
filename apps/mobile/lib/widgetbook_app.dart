@@ -125,6 +125,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildGreetingHeaderWidgetbookComponent(),
                 buildFarmSelectorWidgetbookComponent(),
                 buildSearchFieldWidgetbookComponent(),
+                buildDiscoveryTileWidgetbookComponent(),
                 buildModuleTileWidgetbookComponent(),
                 buildEntityRowWidgetbookComponent(),
                 buildActionBarWidgetbookComponent(),

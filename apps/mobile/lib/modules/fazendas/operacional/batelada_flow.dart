@@ -142,7 +142,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
               }),
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Vagão destino',
             required: true,
@@ -154,7 +154,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
               onChanged: (v) => setState(() => _vagao = v),
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Quantidade produzida',
             required: true,
@@ -166,7 +166,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
             ),
           ),
           if (dieta != null) ...[
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             const AppSectionTitle(child: Text('Ingredientes')),
             const SizedBox(height: AppSpacing.space2),
             for (final ing in dieta.ingredientes)

@@ -82,7 +82,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Cápsula compartilhada: garante os 48px reais (o `InputDecorator`
+        // Cápsula compartilhada: garante os 52px reais (o `InputDecorator`
         // dimensiona a própria decoração pelo conteúdo, não pelas constraints).
         AppFieldCapsule(
           focused: _queryFocusNode.hasFocus,
@@ -98,7 +98,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
             onChanged: (v) => setState(() => _query = v),
             style: TextStyle(
               fontFamily: AppTypography.fontFamily,
-              fontSize: AppTypography.md,
+              fontSize: AppTypography.xl,
               color: semantic.fgDefault,
             ),
             decoration: InputDecoration(
@@ -109,7 +109,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
               hintText: widget.placeholder,
               hintStyle: TextStyle(
                 fontFamily: AppTypography.fontFamily,
-                fontSize: AppTypography.md,
+                fontSize: AppTypography.xl,
                 color: semantic.fgSubtle,
               ),
             ),

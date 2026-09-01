@@ -8,6 +8,7 @@ import 'package:cerne_app/modules/fazendas/functional_journey_engine.dart';
 import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
 import 'package:cerne_app/ui/ui.dart';
 
+import '../../../helpers/cta_finder.dart';
 import '../../../support/test_viewport.dart';
 
 Widget _wrap(ProviderContainer container, String featureId) =>
@@ -88,7 +89,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AppHardwareSimulator), findsOneWidget);
-      await tester.tap(find.text('Concluir configuração'));
+      await tester.tap(findCta('Concluir configuração'));
       await tester.pump();
       expect(find.text('Conclua a simulação para continuar.'), findsOneWidget);
 
@@ -101,7 +102,7 @@ void main() {
       await tester.pump();
       expect(find.textContaining('Balança BT-42 +'), findsOneWidget);
 
-      await tester.tap(find.text('Concluir configuração'));
+      await tester.tap(findCta('Concluir configuração'));
       await tester.pumpAndSettle();
       expect(find.text('Aparelhos conectados no protótipo'), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -118,7 +119,7 @@ void main() {
       await tester.pump();
       expect(find.text('482,6 kg'), findsOneWidget);
 
-      await tester.tap(find.text('Confirmar leitura'));
+      await tester.tap(findCta('Confirmar leitura'));
       await tester.pumpAndSettle();
       expect(find.text('Leitura de balança confirmada'), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -138,7 +139,7 @@ void main() {
       expect(find.byType(AppHardwareSimulator), findsOneWidget);
       expect(find.text('ou informe manualmente'), findsOneWidget);
 
-      await tester.tap(find.text('Salvar transferência'));
+      await tester.tap(findCta('Salvar transferência'));
       await tester.pump();
       expect(
         find.text('Capture ou informe a identificação manualmente.'),

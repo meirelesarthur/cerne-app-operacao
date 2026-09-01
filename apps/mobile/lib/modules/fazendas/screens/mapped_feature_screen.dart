@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
-import '../components/context_badge.dart';
 import '../functional_catalog.dart';
 import '../functional_journey_engine.dart';
 import '../state/prototype_records_store.dart';
@@ -68,7 +67,6 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   PrototypeRecord? _lastCreated;
 
   FeatureDefinition get feature => widget.feature;
-  bool get isOperational => feature.profile == FeatureProfile.operational;
   String get dataSourceId => feature.dataSourceId ?? feature.id;
 
   @override
@@ -138,6 +136,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
 
     final backToRecords =
         _journey.mode == FunctionalJourneyMode.form && feature.listMode;
+    final isForm = _journey.mode == FunctionalJourneyMode.form;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -153,6 +152,9 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
           onBack: backToRecords
               ? _showList
               : () => context.go(widget.centerRoute),
+          actionIcon: isForm ? AppIcons.moreVertical : null,
+          actionLabel: isForm ? 'Mais opções' : null,
+          onAction: isForm ? () => _showFormDetails(context) : null,
         ),
         Expanded(
           child: AppContentSheet(
@@ -160,13 +162,14 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                if (isOperational) const ContextBadge(),
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.all(AppSpacing.space4),
                     children: [
-                      _FeatureIntroduction(feature: feature),
-                      const SizedBox(height: AppSpacing.space4),
+                      if (!isForm) ...[
+                        _FeatureIntroduction(feature: feature),
+                        const SizedBox(height: AppSpacing.space4),
+                      ],
                       // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
                       // daqui (ver plano de UX): quando a função usa hardware
                       // simulado, o próprio `AppHardwareSimulator` já mostra isso
@@ -201,17 +204,31 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                           onValueChanged: _setValue,
                           onAddGroup: (group) =>
                               setState(() => _journey.addGroupItem(group)),
-                          onSubmit: _submit,
-                          onCancel: feature.listMode ? _showList : null,
                         ),
                     ],
                   ),
                 ),
+                if (isForm)
+                  AppActionBar(
+                    primaryLabel: feature.primaryAction ?? 'Salvar registro',
+                    primaryIcon: AppIcons.saveAll,
+                    onPrimary: _submit,
+                    secondaryLabel: feature.listMode ? 'Cancelar' : null,
+                    onSecondary: feature.listMode ? _showList : null,
+                  ),
               ],
             ),
           ),
         ),
       ],
+    );
+  }
+
+  void _showFormDetails(BuildContext context) {
+    showAppBottomSheet<void>(
+      context,
+      title: feature.title,
+      child: Text(feature.objective),
     );
   }
 }
@@ -431,16 +448,12 @@ class _FeatureForm extends StatelessWidget {
     required this.journey,
     required this.onValueChanged,
     required this.onAddGroup,
-    required this.onSubmit,
-    this.onCancel,
   });
 
   final FeatureDefinition feature;
   final FunctionalJourneyController journey;
   final void Function(String fieldId, String value) onValueChanged;
   final ValueChanged<String> onAddGroup;
-  final VoidCallback onSubmit;
-  final VoidCallback? onCancel;
 
   @override
   Widget build(BuildContext context) {
@@ -482,23 +495,31 @@ class _FeatureForm extends StatelessWidget {
         ],
         if (visibleFields.isNotEmpty)
           AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const AppSectionTitle(child: Text('Dados do registro')),
-                const SizedBox(height: AppSpacing.space4),
-                for (var index = 0; index < visibleFields.length; index++) ...[
-                  _FeatureFieldControl(
-                    feature: feature,
-                    field: visibleFields[index],
-                    journey: journey,
-                    onChanged: (value) =>
-                        onValueChanged(visibleFields[index].id, value),
-                  ),
-                  if (index < visibleFields.length - 1)
-                    const SizedBox(height: AppSpacing.space4),
+            padded: false,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.space4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const AppSectionTitle(child: Text('Dados do registro')),
+                  const SizedBox(height: AppSpacing.space4),
+                  for (
+                    var index = 0;
+                    index < visibleFields.length;
+                    index++
+                  ) ...[
+                    _FeatureFieldControl(
+                      feature: feature,
+                      field: visibleFields[index],
+                      journey: journey,
+                      onChanged: (value) =>
+                          onValueChanged(visibleFields[index].id, value),
+                    ),
+                    if (index < visibleFields.length - 1)
+                      const SizedBox(height: AppSpacing.space4),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
         if (feature.sections.isNotEmpty) ...[
@@ -516,23 +537,6 @@ class _FeatureForm extends StatelessWidget {
                 ),
               ],
             ),
-          ),
-        ],
-        const SizedBox(height: AppSpacing.space4),
-        AppButton(
-          fullWidth: true,
-          size: AppButtonSize.lg,
-          onPressed: onSubmit,
-          child: Text(feature.primaryAction ?? 'Salvar registro'),
-        ),
-        if (onCancel != null) ...[
-          const SizedBox(height: AppSpacing.space2),
-          AppButton(
-            fullWidth: true,
-            size: AppButtonSize.lg,
-            variant: AppButtonVariant.ghost,
-            onPressed: onCancel,
-            child: const Text('Cancelar'),
           ),
         ],
       ],

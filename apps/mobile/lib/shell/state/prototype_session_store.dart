@@ -18,6 +18,13 @@ extension UserAccessProfileLabels on UserAccessProfile {
     UserAccessProfile.administration => '/fazendas/administracao',
     UserAccessProfile.operational => '/fazendas/operacional',
   };
+
+  /// Primeira tela depois do login escolhido na pasta de apps. Administração
+  /// abre o hub Banking; Operação entra direto na rotina de campo.
+  String get landingRoute => switch (this) {
+    UserAccessProfile.administration => '/inicio',
+    UserAccessProfile.operational => homeRoute,
+  };
 }
 
 class PrototypeSessionState {

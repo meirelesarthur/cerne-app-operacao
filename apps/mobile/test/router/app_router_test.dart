@@ -2,9 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/theme_provider.dart';
+import 'package:cerne_app/modules/fazendas/components/context_badge.dart';
+import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
 import 'package:cerne_app/shell/components/context_tabs.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
+import 'package:cerne_app/ui/module_tile.dart';
+import 'package:cerne_app/ui/search_field.dart';
 
 import '../support/router_test_harness.dart';
 import '../support/test_viewport.dart';
@@ -34,7 +38,25 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Central de gestão'), findsOneWidget);
+      expect(find.text('Conta GB Banking'), findsOneWidget);
+      expect(find.text('Acesso rápido'), findsOneWidget);
+      expect(find.byType(AppContextTabs), findsOneWidget);
+      expect(find.byType(AppBottomTabBar), findsNothing);
+    });
+
+    testWidgets('tocar a busca da home administrativa abre a descoberta otimizada', (
+      tester,
+    ) async {
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(AppSearchField));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Seus Produtos'), findsOneWidget);
+      expect(find.text('Mais acessados'), findsOneWidget);
+      expect(find.text('Histórico'), findsOneWidget);
+      expect(find.text('Boa tarde,'), findsNothing);
     });
 
     testWidgets('deep-link "/bank/extrato" abre o módulo Bank na aba Extrato', (
@@ -79,8 +101,77 @@ void main() {
       },
     );
 
+    testWidgets('entrada operacional usa o chrome e a navegação de campo', (
+      tester,
+    ) async {
+      harness.dispose();
+      harness = RouterTestHarness(profile: UserAccessProfile.operational);
+      harness.router.go('/fazendas/operacional');
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Boa tarde,'), findsOneWidget);
+      expect(find.text('Fazenda São Pedro'), findsOneWidget);
+      expect(find.text('Procurando por algo?'), findsOneWidget);
+      expect(find.text('O que fazer hoje'), findsNothing);
+      expect(find.byType(AppContextTabs), findsNothing);
+      expect(find.text('Home'), findsOneWidget);
+      expect(find.text('Agricultura'), findsWidgets);
+      expect(find.text('Sincronizar aplicativo'), findsOneWidget);
+    });
+
+    testWidgets('menu operacional lista módulos-pai e a seção de conta', (
+      tester,
+    ) async {
+      harness.dispose();
+      harness = RouterTestHarness(profile: UserAccessProfile.operational);
+      harness.router.go('/fazendas/operacional');
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip('Menu'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('MÓDULOS'), findsOneWidget);
+      expect(find.text('Início'), findsOneWidget);
+      expect(find.text('Armazém'), findsOneWidget);
+      expect(find.text('CONTA'), findsOneWidget);
+    });
+
     testWidgets(
-      'trocar de módulo pelo dock preserva o header (Silvio Ventura continua visível)',
+      'central interna mantém fazenda e navbar, mas remove o perfil e as abas',
+      (tester) async {
+        harness.dispose();
+        harness = RouterTestHarness(profile: UserAccessProfile.operational);
+        harness.router.go('/fazendas/operacional/grupo/confinamento');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppBottomTabBar), findsOneWidget);
+        expect(find.text('Fazenda São Pedro'), findsOneWidget);
+        expect(find.byType(AppSearchField), findsOneWidget);
+        expect(find.byType(AppModuleTile), findsNWidgets(5));
+        expect(find.text('Boa tarde,'), findsNothing);
+        expect(find.byType(AppContextTabs), findsNothing);
+      },
+    );
+
+    testWidgets('cadastro profundo remove navbar e contexto da fazenda', (
+      tester,
+    ) async {
+      harness.dispose();
+      harness = RouterTestHarness(profile: UserAccessProfile.operational);
+      harness.router.go('/fazendas/campo/trato-diario');
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppBottomTabBar), findsNothing);
+      expect(find.byType(ContextBadge), findsNothing);
+      expect(find.byTooltip('Mais opções'), findsOneWidget);
+    });
+
+    testWidgets(
+      'trocar de aba administrativa preserva o header (Silvio Ventura continua visível)',
       (tester) async {
         await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
@@ -89,24 +180,27 @@ void main() {
 
         expect(find.text('Silvio Ventura'), findsOneWidget);
 
-        await tester.tap(find.byTooltip('Bank'));
+        await tester.tap(find.text('Carteira').first);
         await tester.pump(const Duration(seconds: 1));
         await tester.pumpAndSettle();
 
         expect(find.text('Silvio Ventura'), findsOneWidget);
-        // Tela real do módulo Bank (F4.4) — o dock é icon-only (só tooltip/Semantics).
-        expect(find.text('Meu cartão'), findsOneWidget);
+        expect(find.text('Resumo da sua conta GB Bank.'), findsOneWidget);
+        expect(find.byType(AppBottomTabBar), findsNothing);
       },
     );
 
-    testWidgets('tocar em "Mais" abre o RevealMenu do módulo ativo', (
+    testWidgets('tocar em "Menu" abre o RevealMenu operacional', (
       tester,
     ) async {
+      harness.dispose();
+      harness = RouterTestHarness(profile: UserAccessProfile.operational);
+      harness.router.go('/fazendas/operacional');
       await tester.pumpWidget(harness.buildApp());
       await _settleHubTimers(tester);
       await tester.pumpAndSettle();
 
-      await tester.tap(find.byTooltip('Mais'));
+      await tester.tap(find.byTooltip('Menu'));
       await tester.pumpAndSettle();
 
       expect(find.text('Sair'), findsOneWidget);
@@ -117,11 +211,14 @@ void main() {
       (tester) async {
         // Regressão: um overlay "tocar fora fecha o menu" cobrindo a tela inteira
         // por cima do RevealMenu bloqueava os toques nos próprios itens do menu.
+        harness.dispose();
+        harness = RouterTestHarness(profile: UserAccessProfile.operational);
+        harness.router.go('/fazendas/operacional');
         await tester.pumpWidget(harness.buildApp());
         await _settleHubTimers(tester);
         await tester.pumpAndSettle();
 
-        await tester.tap(find.byTooltip('Mais'));
+        await tester.tap(find.byTooltip('Menu'));
         await tester.pumpAndSettle();
         expect(harness.container.read(shellStoreProvider).menuOpen, isTrue);
 
@@ -177,7 +274,7 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.text('Central de gestão'), findsOneWidget);
+        expect(find.text('Conta GB Banking'), findsOneWidget);
       },
     );
 
@@ -201,7 +298,7 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Central de gestão'), findsOneWidget);
+      expect(find.text('Conta GB Banking'), findsOneWidget);
       expect(find.text('Nova pesagem'), findsNothing);
     });
   });

@@ -38,6 +38,23 @@ void main() {
 
   group('CrnAppFolderPage', () {
     testWidgets(
+      'tocar em "CRN ADM" empilha um único login administrativo',
+      (tester) async {
+        harness.router.go('/desktop/crn-app');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('CRN ADM'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Entrar'), findsOneWidget);
+        expect(find.text('Acesso administrativo'), findsOneWidget);
+        expect(find.text('Login Administração'), findsNothing);
+        expect(find.text('Login Operacional'), findsNothing);
+      },
+    );
+
+    testWidgets(
       'tocar em "CRN Operação" empilha o login (voltar retorna à pasta)',
       (tester) async {
         harness.router.go('/desktop/crn-app');
@@ -47,8 +64,8 @@ void main() {
         await tester.tap(find.text('CRN Operação'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Login Operacional'), findsOneWidget);
-        expect(find.text('Abrindo CRN Operação.'), findsOneWidget);
+        expect(find.text('Entrar'), findsOneWidget);
+        expect(find.text('Acesso operacional'), findsOneWidget);
 
         // `push`, não `go` — a pasta continua na pilha do Navigator.
         expect(harness.router.canPop(), isTrue);

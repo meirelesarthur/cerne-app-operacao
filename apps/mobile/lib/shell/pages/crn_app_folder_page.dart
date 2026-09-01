@@ -15,8 +15,8 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 ///
 /// Cada ícone leva ao login existente (decisão já validada com o time — não
 /// pula a etapa de login), com o ambiente escolhido sinalizado por query
-/// param (`?ambiente=administracao|operacional`) para o login já abrir
-/// destacando o botão correspondente. Usa `context.push` (não `go`) — mantém
+/// param (`?ambiente=administracao|operacional`) para o login saber qual app
+/// abrir depois do único botão "Entrar". Usa `context.push` (não `go`) — mantém
 /// esta tela na pilha para o voltar (gesto/botão do sistema) retornar aqui em
 /// vez de pular direto para a home Android.
 class CrnAppFolderPage extends StatelessWidget {

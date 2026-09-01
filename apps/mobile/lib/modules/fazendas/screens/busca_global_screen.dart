@@ -3,20 +3,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_layout.dart';
+import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/prototype_session_store.dart';
-import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
+import '../components/farm_picker.dart';
 import '../functional_catalog.dart';
 import '../group_icons.dart';
+import '../state/fazendas_store.dart';
 
 /// Busca global de funcionalidades — destino do `AppSearchField` do cabeçalho.
 ///
-/// Tela cheia, fora do `ShellRoute`: sem header global, sem abas e sem dock,
-/// como `/perfil` e `/notificacoes`. Quem busca está procurando **uma** coisa;
-/// o cromo do app só competiria com a lista.
+/// Tela cheia, fora do `ShellRoute`: conserva apenas o contexto da fazenda,
+/// enquanto troca o cabeçalho de perfil por descoberta de produtos, acessos
+/// recentes e histórico. Ao digitar, a curadoria dá lugar aos resultados do
+/// catálogo funcional dos dois perfis.
 ///
 /// **Procura nos dois perfis**, por decisão de produto: o catálogo funcional é
 /// um só e a pessoa não deveria precisar saber em qual ambiente uma função
@@ -39,107 +42,395 @@ class _BuscaGlobalScreenState extends ConsumerState<BuscaGlobalScreen> {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final sessionProfile = ref.watch(prototypeSessionProvider).profile;
+    final activeFarm = ref.watch(fazendasStoreProvider).activeFarm;
     final results = searchFeatures(_query, sessionProfile: sessionProfile);
     final hasQuery = normalizeForSearch(_query).isNotEmpty;
+    final products = _productsFor(sessionProfile);
+    final recent = _recentFor(sessionProfile);
+    final history = _historyFor(sessionProfile);
 
     return Scaffold(
       backgroundColor: semantic.bgCanvas,
       body: SafeArea(
-        child: Column(
-          children: [
-            SubPageHeader(
-              title: 'Buscar',
-              onBack: () => _voltar(context, sessionProfile),
+        child: AppContentSheet(
+          padded: false,
+          header: AppFarmSelector(
+            farmName: activeFarm.name,
+            onTap: () => openFarmPicker(context, ref),
+          ),
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.space4,
+              AppSpacing.space4,
+              AppSpacing.space4,
+              AppSpacing.space8,
             ),
-            Expanded(
-              child: AppContentSheet(
-                child: ListView(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.space4,
+            children: [
+              AppTextInput(
+                placeholder: 'Procurando por algo?',
+                autofocus: true,
+                suffixIcon: Container(
+                  width: AppSpacing.space10,
+                  height: AppSpacing.space10,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: semantic.bgSurface,
+                    shape: BoxShape.circle,
                   ),
-                  children: [
-                    AppTextInput(
-                      placeholder: 'Procurando por algo?',
-                      autofocus: true,
-                      prefixIcon: const AppIcon(
-                        AppIcons.aiSearch,
-                        size: AppSize.iconMd,
-                      ),
-                      onChanged: (value) => setState(() => _query = value),
-                    ),
-                    const SizedBox(height: AppSpacing.space4),
-
-                    if (!hasQuery)
-                      AppEmptyState(
-                        icon: AppIcons.aiSearch,
-                        title: 'O que você precisa fazer?',
-                        description:
-                            'Busque entre as ${allFeatures.length} funções dos dois '
-                            'ambientes pelo nome, pelo objetivo ou pelo módulo.',
-                      )
-                    else if (results.isEmpty)
-                      const AppEmptyState(
-                        icon: AppIcons.searchX,
-                        title: 'Nenhuma função encontrada',
-                        description:
-                            'Tente outro termo — o nome do módulo também vale.',
-                      )
-                    else ...[
-                      Text(
-                        '${results.length} '
-                        '${results.length == 1 ? 'resultado' : 'resultados'}',
-                        style: TextStyle(
-                          fontSize: AppTypography.sm,
-                          fontWeight: AppTypography.weightSemibold,
-                          color: semantic.fgMuted,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.space3),
-                      for (final result in results) ...[
-                        AppMenuItem(
-                          icon: groupIcon(result.feature.group),
-                          label: result.feature.title,
-                          description: result.feature.objective,
-                          showShadow: false,
-                          trailing: result.openable
-                              ? null
-                              : AppTag(
-                                  child: Text(_profileLabel(result.feature)),
-                                ),
-                          onTap: result.openable
-                              ? () => context.push(
-                                  featureDestination(result.feature),
-                                )
-                              : null,
-                        ),
-                        const SizedBox(height: AppSpacing.space2),
-                      ],
-                    ],
-                  ],
+                  child: AppIcon(
+                    AppIcons.aiSearch,
+                    size: AppSize.iconLg,
+                    color: semantic.accentDefault,
+                  ),
                 ),
+                onChanged: (value) => setState(() => _query = value),
               ),
-            ),
-          ],
+              const SizedBox(height: AppSpacing.space6),
+              if (!hasQuery) ...[
+                _SearchSectionHeader(title: 'Seus Produtos'),
+                const SizedBox(height: AppSpacing.space3),
+                _SearchDiscoveryRail(items: products),
+                const SizedBox(height: AppSpacing.space6),
+                _SearchSectionHeader(title: 'Mais acessados'),
+                const SizedBox(height: AppSpacing.space3),
+                _SearchDiscoveryRail(items: recent),
+                const SizedBox(height: AppSpacing.space6),
+                _SearchSectionHeader(title: 'Histórico'),
+                const SizedBox(height: AppSpacing.space2),
+                for (final item in history)
+                  _SearchHistoryItem(
+                    item: item,
+                    onTap: () => context.go(item.route),
+                  ),
+              ] else if (results.isEmpty)
+                const AppEmptyState(
+                  icon: AppIcons.searchX,
+                  title: 'Nenhuma função encontrada',
+                  description:
+                      'Tente outro termo — o nome do módulo também vale.',
+                )
+              else ...[
+                Text(
+                  '${results.length} '
+                  '${results.length == 1 ? 'resultado' : 'resultados'}',
+                  style: TextStyle(
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightSemibold,
+                    color: semantic.fgMuted,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.space3),
+                for (final result in results) ...[
+                  AppMenuItem(
+                    icon: groupIcon(result.feature.group),
+                    label: result.feature.title,
+                    description: result.feature.objective,
+                    showShadow: false,
+                    trailing: result.openable
+                        ? null
+                        : AppTag(child: Text(_profileLabel(result.feature))),
+                    onTap: result.openable
+                        ? () => context.push(featureDestination(result.feature))
+                        : null,
+                  ),
+                  const SizedBox(height: AppSpacing.space2),
+                ],
+              ],
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  /// A busca é aberta por `push` a partir de qualquer tela, mas também pode ser
-  /// o primeiro destino de um link direto — aí não há pilha para desempilhar e
-  /// o voltar precisa ter para onde ir.
-  void _voltar(BuildContext context, UserAccessProfile? profile) {
-    if (context.canPop()) {
-      context.pop();
-      return;
-    }
-    context.go(profile?.homeRoute ?? '/desktop');
   }
 
   String _profileLabel(FeatureDefinition feature) =>
       feature.profile == FeatureProfile.administration
       ? 'Administração'
       : 'Operação';
+}
+
+class _SearchSectionHeader extends StatelessWidget {
+  const _SearchSectionHeader({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
+    return Semantics(
+      header: true,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          AppHeading(level: AppHeadingLevel.h2, child: Text(title)),
+          AppIcon(
+            AppIcons.chevronRight,
+            size: AppSize.iconLg,
+            color: semantic.fgDefault,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchDiscoveryRail extends StatelessWidget {
+  const _SearchDiscoveryRail({required this.items});
+
+  final List<_SearchShortcut> items;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 132,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: items.length,
+        separatorBuilder: (context, index) =>
+            const SizedBox(width: AppSpacing.space2),
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return AppDiscoveryTile(
+            icon: item.icon,
+            label: item.label,
+            onTap: () => context.go(item.route),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _SearchHistoryItem extends StatelessWidget {
+  const _SearchHistoryItem({required this.item, required this.onTap});
+
+  final _SearchShortcut item;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
+    return AppPressable(
+      semanticLabel: item.label,
+      onPressed: onTap,
+      minTouchTarget: false,
+      borderRadius: BorderRadius.circular(AppRadius.md),
+      child: SizedBox(
+        height: AppSpacing.space14,
+        child: Row(
+          children: [
+            AppIcon(
+              item.icon,
+              size: AppSize.iconLg,
+              color: semantic.fgDefault,
+            ),
+            const SizedBox(width: AppSpacing.space4),
+            Expanded(
+              child: Text(
+                item.label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: AppTypography.xl,
+                  color: semantic.fgDefault,
+                ),
+              ),
+            ),
+            const SizedBox(width: AppSpacing.space2),
+            AppIcon(
+              AppIcons.chevronRight,
+              size: AppSize.iconLg,
+              color: semantic.fgDefault,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SearchShortcut {
+  const _SearchShortcut({
+    required this.label,
+    required this.icon,
+    required this.route,
+  });
+
+  final String label;
+  final AppIconData icon;
+  final String route;
+}
+
+List<_SearchShortcut> _productsFor(UserAccessProfile? profile) {
+  if (profile == UserAccessProfile.operational) {
+    return const [
+      _SearchShortcut(
+        label: 'Fazendas',
+        icon: AppIcons.sprout,
+        route: '/fazendas/operacional',
+      ),
+      _SearchShortcut(
+        label: 'Gestão de Estoque',
+        icon: AppIcons.boxes,
+        route: '/armazem/estoque',
+      ),
+      _SearchShortcut(
+        label: 'Confinamento',
+        icon: AppIcons.warehouse,
+        route: '/fazendas/operacional/grupo/confinamento',
+      ),
+      _SearchShortcut(
+        label: 'Agricultura',
+        icon: AppIcons.sprout,
+        route: '/fazendas/operacional/grupo/agricultura',
+      ),
+    ];
+  }
+
+  return const [
+    _SearchShortcut(
+      label: 'Fazendas',
+      icon: AppIcons.sprout,
+      route: '/fazendas/administracao',
+    ),
+    _SearchShortcut(
+      label: 'Gestão de Estoque',
+      icon: AppIcons.boxes,
+      route: '/armazem/estoque',
+    ),
+    _SearchShortcut(
+      label: 'Marketplace',
+      icon: AppIcons.store,
+      route: '/marketplace',
+    ),
+    _SearchShortcut(
+      label: 'Open Finance',
+      icon: AppIcons.openFinance,
+      route: '/bank',
+    ),
+  ];
+}
+
+List<_SearchShortcut> _recentFor(UserAccessProfile? profile) {
+  if (profile == UserAccessProfile.operational) {
+    return const [
+      _SearchShortcut(
+        label: 'Confinamento',
+        icon: AppIcons.warehouse,
+        route: '/fazendas/operacional/grupo/confinamento',
+      ),
+      _SearchShortcut(
+        label: 'Agricultura',
+        icon: AppIcons.sprout,
+        route: '/fazendas/operacional/grupo/agricultura',
+      ),
+      _SearchShortcut(
+        label: 'Fazendas',
+        icon: AppIcons.sprout,
+        route: '/fazendas/operacional',
+      ),
+      _SearchShortcut(
+        label: 'Gestão de Estoque',
+        icon: AppIcons.boxes,
+        route: '/armazem/estoque',
+      ),
+    ];
+  }
+
+  return const [
+    _SearchShortcut(
+      label: 'Open Finance',
+      icon: AppIcons.openFinance,
+      route: '/bank',
+    ),
+    _SearchShortcut(
+      label: 'Marketplace',
+      icon: AppIcons.store,
+      route: '/marketplace',
+    ),
+    _SearchShortcut(
+      label: 'Fazendas',
+      icon: AppIcons.sprout,
+      route: '/fazendas/administracao',
+    ),
+    _SearchShortcut(
+      label: 'Gestão de Estoque',
+      icon: AppIcons.boxes,
+      route: '/armazem/estoque',
+    ),
+  ];
+}
+
+List<_SearchShortcut> _historyFor(UserAccessProfile? profile) {
+  if (profile == UserAccessProfile.operational) {
+    return const [
+      _SearchShortcut(
+        label: 'Trato diário',
+        icon: AppIcons.tractor,
+        route: '/fazendas/campo/trato-diario',
+      ),
+      _SearchShortcut(
+        label: 'Pesagens',
+        icon: AppIcons.scale,
+        route: '/fazendas/campo/pesagem',
+      ),
+      _SearchShortcut(
+        label: 'Leitura de cocho',
+        icon: AppIcons.scanLine,
+        route: '/fazendas/operacional/leitura-cocho-confinamento',
+      ),
+      _SearchShortcut(
+        label: 'Ordens pendentes',
+        icon: AppIcons.clock,
+        route: '/fazendas/operacional/ordens-pendentes',
+      ),
+      _SearchShortcut(
+        label: 'Sincronizar aplicativo',
+        icon: AppIcons.refreshCw,
+        route: '/fazendas/mais/sync',
+      ),
+      _SearchShortcut(
+        label: 'Consultas de campo',
+        icon: AppIcons.bookOpen,
+        route: '/fazendas/operacional',
+      ),
+    ];
+  }
+
+  return const [
+    _SearchShortcut(
+      label: 'Empréstimos e Financiamentos',
+      icon: AppIcons.handCoins,
+      route: '/credito',
+    ),
+    _SearchShortcut(
+      label: 'Seguros, Consórcios e Capitalização',
+      icon: AppIcons.shieldCheck,
+      route: '/credito',
+    ),
+    _SearchShortcut(
+      label: 'Open Finance',
+      icon: AppIcons.openFinance,
+      route: '/bank',
+    ),
+    _SearchShortcut(
+      label: 'Transações',
+      icon: AppIcons.receipt,
+      route: '/bank/extrato',
+    ),
+    _SearchShortcut(
+      label: 'Autorizações',
+      icon: AppIcons.shieldCheck,
+      route: '/bank/pagamentos',
+    ),
+    _SearchShortcut(
+      label: 'Dashboards da Fazenda',
+      icon: AppIcons.layoutDashboard,
+      route: '/fazendas/administracao',
+    ),
+  ];
 }
 
 /// Uma linha do resultado: a função encontrada e se a sessão atual pode abri-la.

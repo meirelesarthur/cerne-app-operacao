@@ -64,6 +64,27 @@ void main() {
       );
     });
 
+    testWidgets('variante de módulo usa card maior e mantém o resumo', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppModuleTile(
+            icon: AppIcons.warehouse,
+            label: 'Meus Currais',
+            description: 'Ações realizadas nos currais',
+            layout: AppModuleTileLayout.module,
+          ),
+        ),
+      );
+
+      expect(
+        tester.getSize(find.byType(AppModuleTile)).height,
+        AppModuleTile.moduleHeight,
+      );
+      expect(find.text('Ações realizadas nos currais'), findsOneWidget);
+    });
+
     testWidgets('o resumo só aparece quando informado', (tester) async {
       await tester.pumpWidget(
         _wrap(
@@ -166,6 +187,30 @@ void main() {
 
       final last = tester.getSize(find.byType(AppModuleTile).at(2));
       expect(last.width, 402);
+    });
+
+    testWidgets('a central interna mantém o último card na primeira coluna', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppModuleTileGrid(
+            lastTileFullWidth: false,
+            tiles: [
+              AppModuleTile(icon: AppIcons.confinamento, label: 'Confinamento'),
+              AppModuleTile(icon: AppIcons.pecuaria, label: 'Pecuária'),
+              AppModuleTile(
+                icon: AppIcons.ordemServico,
+                label: 'Ordens pendentes',
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final last = tester.getSize(find.byType(AppModuleTile).at(2));
+      expect(last.width, lessThan(402));
+      expect(last.width, greaterThan(402 / 3));
     });
 
     testWidgets('a altura total soma as fileiras e o gap', (tester) async {

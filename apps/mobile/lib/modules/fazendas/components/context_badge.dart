@@ -9,10 +9,10 @@ import '../state/fazendas_store.dart';
 import 'farm_picker.dart';
 import '../../../design/generated/app_layout.dart';
 
-/// Badge de contexto fixo no topo de formulários operacionais (spec §3.5):
+/// Badge de contexto fixo na home operacional legada (spec §3.5):
 /// "Lançando em: {fazenda}" — mantém o tenant sempre visível (mitigação de UX
-/// p/ IDOR). Espelha `ContextBadge.tsx`. Usado por `FlowShell` (fluxos
-/// operacionais) e demais telas do módulo Fazendas.
+/// p/ IDOR). Espelha `ContextBadge.tsx`. Os fluxos profundos não o renderizam:
+/// neles, a fazenda já foi definida na entrada e o foco fica no cadastro.
 ///
 /// A faixa é tocável: abre o seletor de fazendas e troca o tenant sem sair da
 /// tela. Antes, trocar de fazenda exigia voltar até a aba "Fazendas" — o

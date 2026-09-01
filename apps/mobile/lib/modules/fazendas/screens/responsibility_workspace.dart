@@ -44,9 +44,17 @@ import '../state/fazendas_store.dart';
 /// - O contexto de fazenda passa a abrir a tela, como no Figma. É o único bloco
 ///   que Operação e Administração compartilham (§4 da esteira).
 class ResponsibilityWorkspace extends ConsumerWidget {
-  const ResponsibilityWorkspace({super.key, required this.profile});
+  const ResponsibilityWorkspace({
+    super.key,
+    required this.profile,
+    this.showLocalContext = true,
+  });
 
   final FeatureProfile profile;
+
+  /// O shell monta fazenda, saudação e busca globalmente. O valor `true` fica
+  /// como padrão para preservar o uso isolado desta tela no Widgetbook/testes.
+  final bool showLocalContext;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -74,9 +82,8 @@ class ResponsibilityWorkspace extends ConsumerWidget {
     final isAdministration = profile == FeatureProfile.administration;
     final segment = isAdministration ? 'administracao' : 'operacional';
 
-    return ListView(
-      padding: const EdgeInsets.all(AppSpacing.space4),
-      children: [
+    final content = <Widget>[
+      if (showLocalContext) ...[
         AppFarmSelector(
           farmName: activeFarm.name,
           onTap: () => openFarmPicker(context, ref),
@@ -84,31 +91,32 @@ class ResponsibilityWorkspace extends ConsumerWidget {
         const SizedBox(height: AppSpacing.space3),
         AppSearchField(onTap: () => context.push('/busca')),
         const SizedBox(height: AppSpacing.space4),
-
-        // Só o título: o chip de ambiente e a descrição saíram daqui — o
-        // header global e as abas de contexto já dizem em que ambiente a
-        // pessoa está, repetir isso na tela custava ~90px de rolagem antes do
-        // primeiro toque possível.
+      ],
+      if (isAdministration || showLocalContext) ...[
         AppHeading(
           child: Text(
             isAdministration ? 'Central de gestão' : 'O que fazer hoje',
           ),
         ),
         const SizedBox(height: AppSpacing.space4),
-
-        AppModuleTileGrid(
-          tiles: [
-            for (final group in orderedGroups)
-              AppModuleTile(
-                icon: groupIcon(group),
-                label: group,
-                onTap: () => context.go(
-                  '/fazendas/$segment/grupo/${groupToSlug(group)}',
-                ),
-              ),
-          ],
-        ),
       ],
+      AppModuleTileGrid(
+        tiles: [
+          for (final group in orderedGroups)
+            AppModuleTile(
+              icon: groupIcon(group),
+              label: groupDisplayLabel(group),
+              onTap: () => context.go(
+                '/fazendas/$segment/grupo/${groupToSlug(group)}',
+              ),
+            ),
+        ],
+      ),
+    ];
+
+    return ListView(
+      padding: const EdgeInsets.all(AppSpacing.space4),
+      children: content,
     );
   }
 }

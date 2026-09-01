@@ -65,7 +65,7 @@ class _AppStepperState extends State<AppStepper> {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    const height = AppSize.iconBtnMd;
+    const height = AppSize.controlLg;
 
     Widget stepButton({
       required AppIconData icon,
@@ -129,7 +129,7 @@ class _AppStepperState extends State<AppStepper> {
                       ),
                       style: TextStyle(
                         fontFamily: AppTypography.fontFamily,
-                        fontSize: AppTypography.md,
+                        fontSize: AppTypography.xl,
                         fontWeight: AppTypography.weightSemibold,
                         color: semantic.fgDefault,
                       ),

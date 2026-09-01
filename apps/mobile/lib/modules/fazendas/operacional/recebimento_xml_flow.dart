@@ -80,7 +80,7 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
             onChanged: (v) => setState(() => _file = v),
           ),
           if (_file != null) ...[
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppCard(
               child: Row(
                 children: [
@@ -135,7 +135,7 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                 ],
               ),
             ),
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

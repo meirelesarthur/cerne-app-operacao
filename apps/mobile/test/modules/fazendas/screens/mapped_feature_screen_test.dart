@@ -8,9 +8,9 @@ import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
 import 'package:cerne_app/modules/fazendas/state/prototype_records_store.dart';
 import 'package:cerne_app/ui/ui.dart';
 
-import '../../../support/test_viewport.dart';
-
+import '../../../helpers/cta_finder.dart';
 import '../../../helpers/app_icon_finder.dart';
+import '../../../support/test_viewport.dart';
 
 /// Localiza o controle (`TextFormField`/`DropdownButtonFormField`) do
 /// [AppFormField] pelo rótulo, não por índice posicional na árvore — um
@@ -225,8 +225,8 @@ void main() {
         expect(find.text('Veículo / equipamento'), findsOneWidget);
         expect(find.text('Quantidade (L)'), findsOneWidget);
 
-        await tester.ensureVisible(find.text('Registrar abastecimento'));
-        await tester.tap(find.text('Registrar abastecimento'));
+        await tester.ensureVisible(findCta('Registrar abastecimento'));
+        await tester.tap(findCta('Registrar abastecimento'));
         await tester.pumpAndSettle();
 
         expect(find.text('Campo obrigatório.'), findsNWidgets(7));
@@ -245,8 +245,8 @@ void main() {
         await _enterFieldText(tester, 'Posto / tanque de origem', 'Posto A');
         expect(tester.takeException(), isNull);
 
-        await tester.ensureVisible(find.text('Registrar abastecimento'));
-        await tester.tap(find.text('Registrar abastecimento'));
+        await tester.ensureVisible(findCta('Registrar abastecimento'));
+        await tester.tap(findCta('Registrar abastecimento'));
         await tester.pumpAndSettle();
 
         expect(find.text('Trator John Deere 6110 salvo'), findsOneWidget);

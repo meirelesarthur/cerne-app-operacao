@@ -3,7 +3,8 @@ import 'state/prototype_session_store.dart';
 
 /// Registro central de módulos do superapp — espelha `moduleConfig.ts` (spec §3.4/§7.3).
 /// O Shell itera este registro para montar o dock de módulos (`AppBottomTabBar`) e injeta os
-/// `bottomTabs` do módulo ativo nas `AppContextTabs` do topo; a ação 'menu' vira bolha no header.
+/// `bottomTabs` do módulo ativo nas `AppContextTabs` do topo. A entrada operacional possui uma
+/// navegação primária própria, declarada em [operationalBottomTabs].
 /// Nenhuma navegação de módulo é hardcodada fora daqui.
 
 class BottomTab {
@@ -88,6 +89,37 @@ class ModuleDef {
   final List<ModuleMenuSection>? menuSections;
 }
 
+/// Navegação primária da entrada operacional. Pecuária e Agricultura apontam
+/// diretamente para seus módulos-pai; as demais rotinas continuam acessíveis
+/// pela grade e pelo menu lateral.
+const List<BottomTab> operationalBottomTabs = [
+  BottomTab(
+    id: 'home',
+    label: 'Home',
+    icon: AppIcons.home,
+    path: 'operacional',
+  ),
+  BottomTab(
+    id: 'pecuaria',
+    label: 'Pecuária',
+    icon: AppIcons.pecuaria,
+    path: 'operacional/grupo/pecuaria',
+  ),
+  BottomTab(
+    id: 'agricultura',
+    label: 'Agricultura',
+    icon: AppIcons.agricultura,
+    path: 'operacional/grupo/agricultura',
+  ),
+  BottomTab(
+    id: 'menu',
+    label: 'Menu',
+    icon: AppIcons.menu,
+    path: '',
+    action: 'menu',
+  ),
+];
+
 /// Fallback do RevealMenu: seção única derivada das abas navegáveis do módulo.
 List<ModuleMenuSection> getMenuSections(
   ModuleDef module, {
@@ -144,16 +176,16 @@ const List<ModuleDef> modules = [
     bottomTabs: [
       BottomTab(id: 'home', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
-        id: 'apps',
-        label: 'Apps',
-        icon: AppIcons.layoutGrid,
-        path: 'apps',
-      ),
-      BottomTab(
         id: 'carteira',
         label: 'Carteira',
         icon: AppIcons.wallet,
         path: 'carteira',
+      ),
+      BottomTab(
+        id: 'apps',
+        label: 'Apps',
+        icon: AppIcons.layoutGrid,
+        path: 'apps',
       ),
       BottomTab(
         id: 'menu',

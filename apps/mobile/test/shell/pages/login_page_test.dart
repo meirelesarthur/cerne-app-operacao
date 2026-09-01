@@ -21,8 +21,9 @@ void main() {
 
       expect(find.text('GB CERNE'), findsOneWidget);
       expect(find.text('Bem-vindo!'), findsOneWidget);
-      expect(find.text('Login Administração'), findsOneWidget);
-      expect(find.text('Login Operacional'), findsOneWidget);
+      expect(find.text('Entrar'), findsOneWidget);
+      expect(find.text('Login Administração'), findsNothing);
+      expect(find.text('Login Operacional'), findsNothing);
       expect(tester.takeException(), isNull);
     });
 
@@ -49,31 +50,32 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('Login Administração inicia sessão e abre central de gestão', (
+    testWidgets('login padrão inicia sessão administrativa no Banking', (
       tester,
     ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Login Administração'));
+      await tester.tap(find.text('Entrar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Central de gestão'), findsOneWidget);
+      expect(find.text('Conta GB Banking'), findsOneWidget);
       expect(
         harness.container.read(prototypeSessionProvider).profile,
         UserAccessProfile.administration,
       );
     });
 
-    testWidgets('Login Operacional inicia sessão e abre central de rotinas', (
+    testWidgets('login sinalizado como operacional abre central de rotinas', (
       tester,
     ) async {
       await setTallSurface(tester);
+      harness.router.go('/login?ambiente=operacional');
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Login Operacional'));
+      await tester.tap(find.text('Entrar'));
       await tester.pumpAndSettle();
 
       expect(find.text('O que fazer hoje'), findsOneWidget);
@@ -84,24 +86,26 @@ void main() {
     });
 
     testWidgets(
-      '?ambiente=administracao (vindo da pasta CRN App) destaca o login correspondente',
+      '?ambiente=administracao (vindo da pasta CRN App) mantém o destino administrativo',
       (tester) async {
         harness.router.go('/login?ambiente=administracao');
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.text('Abrindo CRN ADM.'), findsOneWidget);
+        expect(find.text('Acesso administrativo'), findsOneWidget);
+        expect(find.text('Login Operacional'), findsNothing);
       },
     );
 
     testWidgets(
-      '?ambiente=operacional (vindo da pasta CRN App) destaca o login correspondente',
+      '?ambiente=operacional (vindo da pasta CRN App) mantém o destino operacional',
       (tester) async {
         harness.router.go('/login?ambiente=operacional');
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.text('Abrindo CRN Operação.'), findsOneWidget);
+        expect(find.text('Acesso operacional'), findsOneWidget);
+        expect(find.text('Login Administração'), findsNothing);
       },
     );
   });

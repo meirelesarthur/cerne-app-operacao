@@ -40,7 +40,9 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Currais elegíveis'), findsOneWidget);
-      expect(findCta('Finalizar fornecimento'), findsOneWidget);
+      expect(findCta('Finalizar trato'), findsOneWidget);
+      expect(find.text('Fornecido'), findsOneWidget);
+      expect(find.text('Faltam'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

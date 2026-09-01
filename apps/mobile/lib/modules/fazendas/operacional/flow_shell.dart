@@ -6,7 +6,6 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/components/sub_page_header.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
-import '../components/context_badge.dart';
 
 /// Esqueleto comum dos fluxos operacionais (spec §5). Os 6 fluxos de campo
 /// (`PesagemFlow`, `CicloRebanhoFlow`, etc.) usam este wrapper.
@@ -31,6 +30,9 @@ class FlowShell extends ConsumerWidget {
     this.primaryLabel,
     this.onPrimary,
     this.onBack,
+    this.actionIcon,
+    this.actionLabel,
+    this.onAction,
     this.totalSteps,
     this.currentStep = 0,
     this.summary,
@@ -43,6 +45,12 @@ class FlowShell extends ConsumerWidget {
   final String? primaryLabel;
   final VoidCallback? onPrimary;
   final VoidCallback? onBack;
+
+  /// Ação contextual opcional no extremo direito do cabeçalho. Quando nula,
+  /// o slot continua reservado para manter o título centralizado.
+  final AppIconData? actionIcon;
+  final String? actionLabel;
+  final VoidCallback? onAction;
 
   /// Quantidade de etapas do fluxo. Presente, desenha a régua de passos do
   /// frame `Cadastro steps` no topo da folha.
@@ -91,7 +99,13 @@ class FlowShell extends ConsumerWidget {
         bottom: false,
         child: Column(
           children: [
-            SubPageHeader(title: title, onBack: onBack),
+            SubPageHeader(
+              title: title,
+              onBack: onBack,
+              actionIcon: actionIcon,
+              actionLabel: actionLabel,
+              onAction: onAction,
+            ),
             Expanded(
               child: AppContentSheet(
                 padded: false,
@@ -110,7 +124,6 @@ class FlowShell extends ConsumerWidget {
                           current: currentStep,
                         ),
                       ),
-                    const ContextBadge(),
                     Expanded(
                       child: SingleChildScrollView(
                         padding: const EdgeInsets.all(AppSpacing.space4),

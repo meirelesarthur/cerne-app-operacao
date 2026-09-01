@@ -174,7 +174,7 @@ class _LeituraCochoFlowState extends ConsumerState<LeituraCochoFlow> {
               onChanged: (v) => setState(() => _responsavel = v),
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Adicionar curral',
             error: _attempted && _avaliacoes.isEmpty
@@ -198,7 +198,7 @@ class _LeituraCochoFlowState extends ConsumerState<LeituraCochoFlow> {
               },
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           for (final draft in _avaliacoes)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.space4),
@@ -464,7 +464,7 @@ void _adicionarOcorrencia(
                 onChanged: (v) => setSheetState(() => foto = v),
               ),
             ),
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppButton(
               fullWidth: true,
               onPressed: () {
