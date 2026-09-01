@@ -85,8 +85,10 @@ void main() {
       await _esperaDestinoReal(tester, 'Sanitário');
     });
 
-    testWidgets('ação rápida "Óbito" abre uma tela real', (tester) async {
-      await _esperaDestinoReal(tester, 'Óbito');
+    testWidgets('ação rápida "Registrar Evento" abre uma tela real', (
+      tester,
+    ) async {
+      await _esperaDestinoReal(tester, 'Registrar Evento');
     });
 
     testWidgets(

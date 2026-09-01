@@ -195,7 +195,7 @@ class _CurralCard extends ConsumerWidget {
                 size: AppButtonSize.sm,
                 variant: AppButtonVariant.secondary,
                 onPressed: () => context.push('/fazendas/campo/ciclo'),
-                child: const Text('Óbito'),
+                child: const Text('Registrar Evento'),
               ),
             ],
           ),
