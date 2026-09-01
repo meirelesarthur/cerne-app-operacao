@@ -32,7 +32,7 @@ class AppContentSheet extends StatelessWidget {
   /// Corpo da folha.
   final Widget child;
 
-  /// Faixa de contexto sobre o canvas, acima da folha. No Figma é o
+  /// Faixa de contexto branca acima da folha cinza. No Figma é o
   /// [AppFarmSelector]; em telas sem fazenda ativa, fica nulo e a folha começa
   /// no topo da área segura.
   final Widget? header;
@@ -72,14 +72,17 @@ class AppContentSheet extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(
-            contentInset,
-            AppSpacing.space2,
-            contentInset,
-            AppSpacing.space3,
+        ColoredBox(
+          color: semantic.bgSurface,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(
+              contentInset,
+              AppSpacing.space2,
+              contentInset,
+              AppSpacing.space3,
+            ),
+            child: header!,
           ),
-          child: header!,
         ),
         Flexible(child: sheet),
       ],
