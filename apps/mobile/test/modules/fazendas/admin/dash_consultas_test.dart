@@ -32,18 +32,26 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('troca para a seção de Localização (placeholder de mapa)', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_wrap(const DashConsultas()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'troca para a seção de Localização (esquema ilustrativo dos lotes)',
+      (tester) async {
+        await tester.pumpWidget(_wrap(const DashConsultas()));
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Localização'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('Localização'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Mapa de localização'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        expect(
+          find.textContaining('não georreferenciado'),
+          findsOneWidget,
+        );
+        expect(find.text('Lote 42 · Curral 02'), findsOneWidget);
+        expect(find.text('Lote 33 · Curral 01'), findsOneWidget);
+        // Sem busca nem paginação aqui: é um esquema visual, não uma lista.
+        expect(find.byType(AppPagination), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('permite buscar e paginar os registros de Lotes', (
       tester,

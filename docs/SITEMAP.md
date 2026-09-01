@@ -78,7 +78,7 @@ suprimentos   [rota]  cotações filtráveis · ⚖ selo "Dados de exemplo"
                       · detalhe da cotação c/ mini-histórico [sheet]
 uso           [rota]  multi-tenant · "Acesso restrito" · ⚖ indisponível offline
 consultas     [rota]  ⚖ 100% read-only: lotes, estoque, pesagens
-                      · mapa de localização [placeholder]
+                      · localização: esquema ilustrativo dos lotes (mock, sem GPS)
 ```
 
 ### Visão Campo — 6 fluxos `/fazendas/campo/:flowId`

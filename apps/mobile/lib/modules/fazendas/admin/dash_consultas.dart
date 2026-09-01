@@ -23,9 +23,21 @@ const _hub = [
 /// página maior nunca pagine de verdade.
 const _pageSize = 3;
 
+/// Posições ilustrativas dos lotes no esquema da fazenda — fração da largura
+/// e da altura do quadro, **não** coordenadas geográficas. O mapa segue a
+/// mesma regra do resto da tela ("dados espelhados do web"): é um esquema com
+/// dados mockados, não uma integração real de localização (spec §4.7 e
+/// `CLAUDE.md` — Limites do protótipo).
+const _posicoesLotes = <String, Offset>{
+  'l1': Offset(0.24, 0.30),
+  'l2': Offset(0.74, 0.24),
+  'l3': Offset(0.54, 0.72),
+  'l4': Offset(0.18, 0.80),
+};
+
 /// Consultas Gerenciais read-only (spec §4.7). 100% leitura: nenhum botão de
-/// ação/edição. Localização de animais = placeholder de mapa (PESADO/diferido
-/// no recorte). Espelha `DashConsultas.tsx`.
+/// ação/edição. Localização de animais = esquema ilustrativo dos lotes, sem
+/// GPS nem SDK de mapa — ver [_posicoesLotes]. Espelha `DashConsultas.tsx`.
 class DashConsultas extends StatefulWidget {
   const DashConsultas({super.key});
 
@@ -123,18 +135,31 @@ class _DashConsultasState extends State<DashConsultas> {
           AppSectionTitle(child: Text(ativo.label)),
           const SizedBox(height: AppSpacing.space2),
           if (_secao == _Secao.localizacao)
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: semantic.borderStrong),
-                borderRadius: BorderRadius.circular(AppRadius.xl2),
-                color: semantic.bgSubtle,
-              ),
-              child: const AppEmptyState(
-                icon: AppIcons.mapPinned,
-                title: 'Mapa de localização',
-                description:
-                    'Carregamento otimizado em desenvolvimento. O mapa de localização de animais será habilitado em uma próxima fase.',
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    AppIcon(
+                      AppIcons.info,
+                      size: AppSize.iconXs,
+                      color: semantic.fgSubtle,
+                    ),
+                    const SizedBox(width: AppSpacing.oneHalf),
+                    Expanded(
+                      child: Text(
+                        'Posições ilustrativas dos lotes ativos — esquema, não georreferenciado.',
+                        style: TextStyle(
+                          fontSize: AppTypography.xs,
+                          color: semantic.fgSubtle,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppSpacing.space3),
+                const _MapaIlustrativo(rows: lotes),
+              ],
             )
           else
             _ConsultaLista(
@@ -220,6 +245,105 @@ class _ConsultaLista extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// Esquema ilustrativo dos lotes na fazenda — pinos posicionados por fração
+/// do quadro ([_posicoesLotes]), não por coordenada real. Substitui o antigo
+/// placeholder "carregamento em desenvolvimento": a renderização é leve o
+/// bastante (sem tiles nem SDK externo) para não depender de uma integração
+/// pesada, mas segue rotulada como esquema — nunca como localização real.
+class _MapaIlustrativo extends StatelessWidget {
+  const _MapaIlustrativo({required this.rows});
+
+  final List<LinhaConsulta> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
+    return Container(
+      height: 260,
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: semantic.bgSubtle,
+        border: Border.all(color: semantic.borderDefault),
+        borderRadius: BorderRadius.circular(AppRadius.xl2),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
+            children: [
+              for (final r in rows)
+                if (_posicoesLotes[r.id] case final posicao?)
+                  Positioned(
+                    left: constraints.maxWidth * posicao.dx - 44,
+                    top: constraints.maxHeight * posicao.dy - 34,
+                    child: _PinLote(row: r),
+                  ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _PinLote extends StatelessWidget {
+  const _PinLote({required this.row});
+
+  final LinhaConsulta row;
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
+    return SizedBox(
+      width: 88,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: semantic.bgSurface,
+              shape: BoxShape.circle,
+              border: Border.all(color: semantic.accentDefault),
+            ),
+            child: AppIcon(
+              AppIcons.mapPin,
+              size: AppSize.iconMd,
+              color: semantic.accentDefault,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.oneHalf),
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.space2,
+              vertical: AppSpacing.oneHalf,
+            ),
+            decoration: BoxDecoration(
+              color: semantic.bgSurface,
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              border: Border.all(color: semantic.borderSubtle),
+            ),
+            child: Text(
+              '${row.titulo} · ${row.meta}',
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: AppTypography.xs,
+                fontWeight: AppTypography.weightMedium,
+                color: semantic.fgDefault,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
