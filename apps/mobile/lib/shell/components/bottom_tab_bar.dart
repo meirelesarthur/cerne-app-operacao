@@ -116,7 +116,11 @@ class _ModuleButton extends StatelessWidget {
               width: AppComponentMetrics.tabbarItemSize,
               height: AppComponentMetrics.tabbarItemSize,
               child: Center(
-                child: AppIcon(icon, size: 20, color: semantic.navFg),
+                child: AppIcon(
+                  icon,
+                  size: AppSize.iconMd,
+                  color: semantic.navFg,
+                ),
               ),
             ),
           ),
@@ -143,7 +147,7 @@ class _ModuleButton extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                AppIcon(icon, size: 20, color: semantic.ctaFg),
+                AppIcon(icon, size: AppSize.iconMd, color: semantic.ctaFg),
                 const SizedBox(width: AppSpacing.space2),
                 Text(
                   label,

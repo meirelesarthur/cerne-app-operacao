@@ -6,6 +6,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import '../../design/generated/app_layout.dart';
 
 /// Padrão de tela "CRUD" (Widgetbook → Padrões) — referência nova: nenhuma
 /// tela real do app tem hoje um fluxo completo de criar/editar/excluir um
@@ -124,7 +125,7 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
               const AppHeading(child: Text('Estoque')),
               AppButton(
                 size: AppButtonSize.sm,
-                leftIcon: const AppIcon(AppIcons.plus, size: 16),
+                leftIcon: const AppIcon(AppIcons.plus, size: AppSize.iconSm),
                 onPressed: () => _openForm(),
                 child: const Text('Novo item'),
               ),
@@ -181,12 +182,18 @@ class _CrudPatternExampleState extends State<_CrudPatternExample> {
                         ),
                       ),
                       AppIconButton(
-                        icon: const AppIcon(AppIcons.pencil, size: 16),
+                        icon: const AppIcon(
+                          AppIcons.pencil,
+                          size: AppSize.iconSm,
+                        ),
                         label: 'Editar ${item.nome}',
                         onPressed: () => _openForm(editing: item),
                       ),
                       AppIconButton(
-                        icon: const AppIcon(AppIcons.trash2, size: 16),
+                        icon: const AppIcon(
+                          AppIcons.trash2,
+                          size: AppSize.iconSm,
+                        ),
                         label: 'Excluir ${item.nome}',
                         onPressed: () => _confirmDelete(item),
                       ),

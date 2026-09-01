@@ -8,6 +8,7 @@ import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'button.dart';
 import 'heading.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `SuccessPanel.tsx` — painel de sucesso genérico pós-operação, no
 /// padrão da SuccessScreen de Fazendas (NEW_UI_SUPERAPP.md). A navegação de
@@ -46,7 +47,11 @@ class AppSuccessPanel extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: AppColors.brand50,
               ),
-              child: AppIcon(icon, size: 32, color: semantic.accentDefault),
+              child: AppIcon(
+                icon,
+                size: AppSize.iconXxl,
+                color: semantic.accentDefault,
+              ),
             ),
             const SizedBox(height: AppSpacing.space4),
             AppHeading(child: Text(title, textAlign: TextAlign.center)),

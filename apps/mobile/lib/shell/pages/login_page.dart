@@ -107,7 +107,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                           child: AppIcon(
                             AppIcons.sprout,
-                            size: 32,
+                            size: AppSize.iconXxl,
                             color: semantic.ctaBg,
                           ),
                         ),

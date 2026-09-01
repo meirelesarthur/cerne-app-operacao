@@ -7,6 +7,7 @@ import '../../../design/generated/app_typography.dart';
 import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
 import 'farm_picker.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Badge de contexto fixo no topo de formulários operacionais (spec §3.5):
 /// "Lançando em: {fazenda}" — mantém o tenant sempre visível (mitigação de UX
@@ -42,7 +43,11 @@ class ContextBadge extends ConsumerWidget {
         ),
         child: Row(
           children: [
-            const AppIcon(AppIcons.mapPin, size: 14, color: AppColors.brand700),
+            const AppIcon(
+              AppIcons.mapPin,
+              size: AppSize.iconXs,
+              color: AppColors.brand700,
+            ),
             const SizedBox(width: AppSpacing.space1),
             Flexible(
               child: Text(
@@ -60,7 +65,7 @@ class ContextBadge extends ConsumerWidget {
             // como rótulo estático.
             const AppIcon(
               AppIcons.chevronDown,
-              size: 14,
+              size: AppSize.iconXs,
               color: AppColors.brand700,
             ),
           ],

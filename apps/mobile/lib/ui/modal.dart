@@ -8,6 +8,7 @@ import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'icon_button.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `Modal.tsx` (spec §6.10).
 ///
@@ -85,7 +86,10 @@ class AppModal extends StatelessWidget {
                         ),
                       ),
                       AppIconButton(
-                        icon: const AppIcon(AppIcons.x, size: 18),
+                        icon: const AppIcon(
+                          AppIcons.x,
+                          size: AppSize.iconSmPlus,
+                        ),
                         label: 'Fechar',
                         onPressed: () => Navigator.of(context).pop(),
                       ),

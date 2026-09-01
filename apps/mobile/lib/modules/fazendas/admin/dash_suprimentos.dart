@@ -402,7 +402,7 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
                     children: [
                       AppIcon(
                         alta ? AppIcons.trendingUp : AppIcons.trendingDown,
-                        size: 14,
+                        size: AppSize.iconXs,
                         color: variacaoColor,
                       ),
                       const SizedBox(width: AppSpacing.space1),

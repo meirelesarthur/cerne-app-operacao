@@ -8,6 +8,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'sparkline_area.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `DashboardCard.tsx` — bloco de KPI dos dashboards de fazendas.
 /// `variant` cobre o claro padrão (`light`) e as superfícies escuras
@@ -92,7 +93,11 @@ class AppDashboardCard extends StatelessWidget {
                       color: AppColors.neutral200,
                       shape: BoxShape.circle,
                     ),
-                    child: AppIcon(icon, size: 18, color: AppColors.neutral500),
+                    child: AppIcon(
+                      icon,
+                      size: AppSize.iconSmPlus,
+                      color: AppColors.neutral500,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: AppSpacing.space3),
@@ -123,7 +128,11 @@ class AppDashboardCard extends StatelessWidget {
           Positioned(
             right: AppSpacing.space3,
             top: AppSpacing.space3,
-            child: AppIcon(AppIcons.lock, size: 14, color: semantic.fgSubtle),
+            child: AppIcon(
+              AppIcons.lock,
+              size: AppSize.iconXs,
+              color: semantic.fgSubtle,
+            ),
           ),
           Positioned(
             left: AppSpacing.space4,
@@ -171,7 +180,7 @@ class AppDashboardCard extends StatelessWidget {
                 ),
                 child: AppIcon(
                   icon,
-                  size: 18,
+                  size: AppSize.iconSmPlus,
                   color: _dark ? AppColors.neutral0 : semantic.accentDefault,
                 ),
               ),
@@ -181,7 +190,7 @@ class AppDashboardCard extends StatelessWidget {
                   children: [
                     AppIcon(
                       delta! >= 0 ? AppIcons.trendingUp : AppIcons.trendingDown,
-                      size: 13,
+                      size: AppSize.iconXs,
                       color: _dark
                           ? AppColors.neutral0.withValues(alpha: 0.9)
                           : (delta! >= 0

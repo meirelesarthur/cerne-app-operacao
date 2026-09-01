@@ -10,6 +10,7 @@ import '../../../shared/simulated_load.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Home do Marketplace (New-UI): busca de insumos, categorias em pílula,
 /// banner de oferta em destaque e grid de produtos do catálogo. Espelha
@@ -75,7 +76,10 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
           child: AppTextInput(
             controller: _buscaController,
             placeholder: 'Buscar insumos, máquinas, peças…',
-            prefixIcon: const AppIcon(AppIcons.search, size: 18),
+            prefixIcon: const AppIcon(
+              AppIcons.search,
+              size: AppSize.iconSmPlus,
+            ),
             onChanged: (value) => setState(() => _busca = value),
           ),
         ),
@@ -98,7 +102,7 @@ class _MarketplaceHomeScreenState extends State<MarketplaceHomeScreen> {
                   variant: ativa
                       ? AppButtonVariant.primary
                       : AppButtonVariant.secondary,
-                  leftIcon: AppIcon(categoria.icon, size: 14),
+                  leftIcon: AppIcon(categoria.icon, size: AppSize.iconXs),
                   onPressed: () => setState(
                     () => _categoriaAtiva = ativa ? null : categoria.id,
                   ),
@@ -253,7 +257,7 @@ class _ProdutoCard extends StatelessWidget {
             child: categoria != null
                 ? AppIcon(
                     categoria.icon,
-                    size: 28,
+                    size: AppSize.iconXl,
                     color: semantic.accentDefault,
                   )
                 : null,
@@ -306,7 +310,7 @@ class _ProdutoCard extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          AppIcon(AppIcons.truck, size: 11),
+                          AppIcon(AppIcons.truck, size: AppSize.iconXs),
                           SizedBox(width: AppSpacing.space1),
                           Text('Frete grátis'),
                         ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_spacing.dart';
+import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../components/context_badge.dart';
 import '../functional_catalog.dart';
@@ -141,59 +142,73 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (isOperational) const ContextBadge(),
+        // Título e voltar sobem para a barra superior, sobre o canvas: no
+        // arquétipo de cadastro do Figma eles são cromo fixo, e antes rolavam
+        // junto com o formulário — quem descia a tela perdia de vista tanto o
+        // nome da função quanto a saída.
+        SubPageHeader(
+          title: _journey.mode == FunctionalJourneyMode.form
+              ? feature.createAction ?? feature.title
+              : feature.title,
+          onBack: backToRecords
+              ? _showList
+              : () => context.go(widget.centerRoute),
+        ),
         Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(AppSpacing.space4),
-            children: [
-              _FeatureIntroduction(
-                feature: feature,
-                formMode: _journey.mode == FunctionalJourneyMode.form,
-                onBack: backToRecords
-                    ? _showList
-                    : () => context.go(widget.centerRoute),
-                backLabel: backToRecords
-                    ? 'Voltar aos registros'
-                    : 'Voltar ao ambiente',
-              ),
-              const SizedBox(height: AppSpacing.space4),
-              // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
-              // daqui (ver plano de UX): quando a função usa hardware
-              // simulado, o próprio `AppHardwareSimulator` já mostra isso
-              // mais abaixo, na hora de usar — listar de novo antes, em
-              // termos técnicos, só adiantava jargão sem ajudar a decisão.
-              if (feature.auditExport case final auditExport?)
-                _AuditExportJourney(kind: auditExport)
-              else if (feature.listMode &&
-                  _journey.mode == FunctionalJourneyMode.list)
-                _RecordsList(
-                  feature: feature,
-                  records: ref
-                      .watch(prototypeRecordsProvider)
-                      .recordsFor(dataSourceId),
-                  // banco-real: administração pode criar quando a própria tela
-                  // declara campos (ex.: Produtos) — deixou de ser exclusivo do
-                  // perfil operacional. Ver
-                  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
-                  // banco-real (onda 1): `readOnly` bloqueia a criação mesmo com
-                  // `fields` preenchidos — cadastro estruturante ou decisão que
-                  // pertence ao desktop, o app só consulta. Ver
-                  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-                  canCreate: feature.fields.isNotEmpty && !feature.readOnly,
-                  readOnly: feature.readOnly,
-                  onCreate: _startForm,
-                )
-              else
-                _FeatureForm(
-                  feature: feature,
-                  journey: _journey,
-                  onValueChanged: _setValue,
-                  onAddGroup: (group) =>
-                      setState(() => _journey.addGroupItem(group)),
-                  onSubmit: _submit,
-                  onCancel: feature.listMode ? _showList : null,
+          child: AppContentSheet(
+            padded: false,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (isOperational) const ContextBadge(),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.all(AppSpacing.space4),
+                    children: [
+                      _FeatureIntroduction(feature: feature),
+                      const SizedBox(height: AppSpacing.space4),
+                      // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
+                      // daqui (ver plano de UX): quando a função usa hardware
+                      // simulado, o próprio `AppHardwareSimulator` já mostra isso
+                      // mais abaixo, na hora de usar — listar de novo antes, em
+                      // termos técnicos, só adiantava jargão sem ajudar a decisão.
+                      if (feature.auditExport case final auditExport?)
+                        _AuditExportJourney(kind: auditExport)
+                      else if (feature.listMode &&
+                          _journey.mode == FunctionalJourneyMode.list)
+                        _RecordsList(
+                          feature: feature,
+                          records: ref
+                              .watch(prototypeRecordsProvider)
+                              .recordsFor(dataSourceId),
+                          // banco-real: administração pode criar quando a própria tela
+                          // declara campos (ex.: Produtos) — deixou de ser exclusivo do
+                          // perfil operacional. Ver
+                          // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+                          // banco-real (onda 1): `readOnly` bloqueia a criação mesmo com
+                          // `fields` preenchidos — cadastro estruturante ou decisão que
+                          // pertence ao desktop, o app só consulta. Ver
+                          // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+                          canCreate:
+                              feature.fields.isNotEmpty && !feature.readOnly,
+                          readOnly: feature.readOnly,
+                          onCreate: _startForm,
+                        )
+                      else
+                        _FeatureForm(
+                          feature: feature,
+                          journey: _journey,
+                          onValueChanged: _setValue,
+                          onAddGroup: (group) =>
+                              setState(() => _journey.addGroupItem(group)),
+                          onSubmit: _submit,
+                          onCancel: feature.listMode ? _showList : null,
+                        ),
+                    ],
+                  ),
                 ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -270,36 +285,25 @@ const _livestockAuditRows = <Map<String, String>>[
   },
 ];
 
+/// Abertura da função dentro da folha: o objetivo em uma linha e, quando
+/// existe, o aviso de origem do dado.
+///
+/// As chips de perfil ("Operação"/"Administração") e de status ("Funcional no
+/// protótipo") já tinham saído daqui — a primeira repetia o ambiente em que a
+/// pessoa entrou, a segunda é informação de desenvolvimento. Agora o título e o
+/// voltar também saíram: viraram a barra superior fixa do padrão global, acima
+/// da folha.
 class _FeatureIntroduction extends StatelessWidget {
-  const _FeatureIntroduction({
-    required this.feature,
-    required this.formMode,
-    required this.onBack,
-    required this.backLabel,
-  });
+  const _FeatureIntroduction({required this.feature});
 
   final FeatureDefinition feature;
-  final bool formMode;
-  final VoidCallback onBack;
-  final String backLabel;
 
   @override
   Widget build(BuildContext context) {
-    // As chips de perfil ("Operação"/"Administração") e de status
-    // ("Funcional no protótipo") saíram do topo: a primeira repetia o ambiente
-    // em que a pessoa já entrou e a segunda é informação de desenvolvimento,
-    // não do usuário em campo. O padrão do topo é título + voltar à esquerda.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        AppScreenHeader(
-          title: formMode
-              ? feature.createAction ?? feature.title
-              : feature.title,
-          description: feature.objective,
-          onBack: onBack,
-          backLabel: backLabel,
-        ),
+        Text(feature.objective, style: Theme.of(context).textTheme.bodyMedium),
         if (feature.sourceDetail case final detail?) ...[
           const SizedBox(height: AppSpacing.space3),
           AppBanner(child: Text(detail)),

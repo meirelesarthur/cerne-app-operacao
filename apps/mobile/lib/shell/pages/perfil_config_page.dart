@@ -31,68 +31,72 @@ class PerfilConfigPage extends ConsumerWidget {
           children: [
             const SubPageHeader(title: 'Perfil'),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(AppSpacing.space4),
-                children: [
-                  AppCard(
-                    variant: AppCardVariant.ink,
-                    child: Column(
-                      children: [
-                        AppAvatar(
-                          name: user.name,
-                          initials: user.initials,
-                          size: AppAvatarSize.lg,
-                        ),
-                        const SizedBox(height: AppSpacing.space3),
-                        AppHeading(
-                          level: AppHeadingLevel.h1,
-                          child: Text(user.name, textAlign: TextAlign.center),
-                        ),
-                        const SizedBox(height: AppSpacing.space1),
-                        Text(
-                          '$roleLabel · GB CERNE',
-                          style: TextStyle(color: semantic.inkMuted),
-                        ),
-                      ],
+              child: AppContentSheet(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.space4,
+                  ),
+                  children: [
+                    AppCard(
+                      variant: AppCardVariant.ink,
+                      child: Column(
+                        children: [
+                          AppAvatar(
+                            name: user.name,
+                            initials: user.initials,
+                            size: AppAvatarSize.lg,
+                          ),
+                          const SizedBox(height: AppSpacing.space3),
+                          AppHeading(
+                            level: AppHeadingLevel.h1,
+                            child: Text(user.name, textAlign: TextAlign.center),
+                          ),
+                          const SizedBox(height: AppSpacing.space1),
+                          Text(
+                            '$roleLabel · GB CERNE',
+                            style: TextStyle(color: semantic.inkMuted),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: AppSpacing.space3),
-                  AppMenuItem(
-                    icon: AppIcons.user,
-                    label: 'Editar perfil',
-                    description: 'Atualize seus dados',
-                    onTap: () => context.go('/perfil'),
-                  ),
-                  const SizedBox(height: AppSpacing.space2),
-                  AppMenuItem(
-                    icon: AppIcons.bell,
-                    label: 'Notificações',
-                    description: 'Gerencie seus avisos',
-                    onTap: () => context.go('/notificacoes'),
-                  ),
-                  const SizedBox(height: AppSpacing.space2),
-                  AppMenuItem(
-                    icon: isGbMode ? AppIcons.moon : AppIcons.sun,
-                    label: 'Tema',
-                    description: isGbMode
-                        ? 'GB Mode (escuro)'
-                        : 'Light (claro)',
-                    onTap: () =>
-                        ref.read(themeVariantProvider.notifier).toggle(),
-                  ),
-                  const SizedBox(height: AppSpacing.space6),
-                  AppMenuItem(
-                    icon: AppIcons.logOut,
-                    label: 'Sair',
-                    tone: AppMenuItemTone.danger,
-                    onTap: () {
-                      ref.read(prototypeSessionProvider.notifier).logout();
-                      // Volta para a home Android — simula "fechar o app",
-                      // reforçando a separação entre CRN ADM e CRN Operação.
-                      context.go('/desktop');
-                    },
-                  ),
-                ],
+                    const SizedBox(height: AppSpacing.space3),
+                    AppMenuItem(
+                      icon: AppIcons.user,
+                      label: 'Editar perfil',
+                      description: 'Atualize seus dados',
+                      onTap: () => context.go('/perfil'),
+                    ),
+                    const SizedBox(height: AppSpacing.space2),
+                    AppMenuItem(
+                      icon: AppIcons.bell,
+                      label: 'Notificações',
+                      description: 'Gerencie seus avisos',
+                      onTap: () => context.go('/notificacoes'),
+                    ),
+                    const SizedBox(height: AppSpacing.space2),
+                    AppMenuItem(
+                      icon: isGbMode ? AppIcons.moon : AppIcons.sun,
+                      label: 'Tema',
+                      description: isGbMode
+                          ? 'GB Mode (escuro)'
+                          : 'Light (claro)',
+                      onTap: () =>
+                          ref.read(themeVariantProvider.notifier).toggle(),
+                    ),
+                    const SizedBox(height: AppSpacing.space6),
+                    AppMenuItem(
+                      icon: AppIcons.logOut,
+                      label: 'Sair',
+                      tone: AppMenuItemTone.danger,
+                      onTap: () {
+                        ref.read(prototypeSessionProvider.notifier).logout();
+                        // Volta para a home Android — simula "fechar o app",
+                        // reforçando a separação entre CRN ADM e CRN Operação.
+                        context.go('/desktop');
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

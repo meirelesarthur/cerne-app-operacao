@@ -7,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import 'flows/pix_flow.dart';
 import 'flows/simple_payment_flow.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Fluxo selecionado no hub de Pagamentos — `pix` ou um [PaymentKind].
 enum PagamentosFlow { pix, boleto, transferir, cobrar }
@@ -133,7 +134,7 @@ class _PagamentosScreenState extends ConsumerState<PagamentosScreen> {
                   ),
                   child: AppIcon(
                     a.icon,
-                    size: 22,
+                    size: AppSize.iconMd,
                     color: semantic.accentDefault,
                   ),
                 ),
@@ -167,7 +168,7 @@ class _PagamentosScreenState extends ConsumerState<PagamentosScreen> {
                 ),
                 AppIcon(
                   AppIcons.chevronRight,
-                  size: 18,
+                  size: AppSize.iconSmPlus,
                   color: semantic.fgSubtle,
                 ),
               ],

@@ -13,6 +13,7 @@ import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
+import '../../../design/generated/app_layout.dart';
 
 const _responsaveis = <AppFormSelectOption>[
   AppFormSelectOption(value: 'João Oliveira', label: 'João Oliveira'),
@@ -249,7 +250,7 @@ class _AvaliacaoCard extends StatelessWidget {
                 ),
               ),
               AppIconButton(
-                icon: const AppIcon(AppIcons.x, size: 16),
+                icon: const AppIcon(AppIcons.x, size: AppSize.iconSm),
                 label: 'Remover $curralNome desta leitura',
                 onPressed: onRemover,
               ),

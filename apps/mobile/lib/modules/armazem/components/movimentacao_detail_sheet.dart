@@ -6,6 +6,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../mocks/estoque_mocks.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Detalhe de Movimentação do Armazém: BottomSheet acionado pelo item de
 /// lista (`AppTransactionListItem`) tanto na Home quanto em Movimentações — o
@@ -48,7 +49,7 @@ class _SheetBody extends StatelessWidget {
               ),
               child: AppIcon(
                 isEntrada ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
-                size: 22,
+                size: AppSize.iconMd,
                 color: isEntrada ? semantic.accentDefault : semantic.fgMuted,
               ),
             ),
@@ -57,7 +58,7 @@ class _SheetBody extends StatelessWidget {
               tone: isEntrada ? AppChipTone.brand : AppChipTone.neutral,
               icon: AppIcon(
                 isEntrada ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
-                size: 12,
+                size: AppSize.iconXs,
               ),
               child: Text(isEntrada ? 'Entrada' : 'Saída'),
             ),

@@ -5,6 +5,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import '../../design/generated/app_layout.dart';
 
 /// Pílula de crédito pré-aprovado no header do Shell (Nova UI): cápsula de
 /// superfície theme-aware com valor em destaque — espelha `CreditoPill.tsx`.
@@ -47,7 +48,7 @@ class AppCreditoPill extends StatelessWidget {
               children: [
                 AppIcon(
                   AppIcons.creditCard,
-                  size: 14,
+                  size: AppSize.iconXs,
                   color: semantic.accentDefault,
                 ),
                 const SizedBox(width: AppSpacing.space2),

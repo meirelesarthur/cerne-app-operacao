@@ -5,6 +5,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../types.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Ícone por tipo de atividade — fonte única, reutilizado no
 /// `ActivityDetailSheet` (Lei 2). Espelha `KIND_ICON` de `ActivityListItem.tsx`.
@@ -77,7 +78,11 @@ class ActivityListItem extends StatelessWidget {
               shape: BoxShape.circle,
               color: semantic.bgSubtle,
             ),
-            child: AppIcon(icon, size: 18, color: semantic.fgMuted),
+            child: AppIcon(
+              icon,
+              size: AppSize.iconSmPlus,
+              color: semantic.fgMuted,
+            ),
           ),
           const SizedBox(width: AppSpacing.space3),
           Expanded(
@@ -120,7 +125,11 @@ class ActivityListItem extends StatelessWidget {
             ],
           ),
           const SizedBox(width: AppSpacing.space1),
-          AppIcon(AppIcons.chevronRight, size: 16, color: semantic.fgSubtle),
+          AppIcon(
+            AppIcons.chevronRight,
+            size: AppSize.iconSm,
+            color: semantic.fgSubtle,
+          ),
         ],
       ),
     );

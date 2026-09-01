@@ -28,25 +28,28 @@ class OrdensPendentesScreen extends ConsumerWidget {
       children: [
         const SubPageHeader(title: 'Ordens pendentes'),
         Expanded(
-          child: ordens.isEmpty
-              ? const Center(
-                  child: AppEmptyState(
-                    icon: AppIcons.inbox,
-                    title: 'Nenhuma ordem pendente',
-                    description:
-                        'Transferências de lote e trocas de dieta criadas pelo ADM aparecem aqui.',
+          child: AppContentSheet(
+            padded: false,
+            child: ordens.isEmpty
+                ? const Center(
+                    child: AppEmptyState(
+                      icon: AppIcons.inbox,
+                      title: 'Nenhuma ordem pendente',
+                      description:
+                          'Transferências de lote e trocas de dieta criadas pelo ADM aparecem aqui.',
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.all(AppSpacing.space4),
+                    itemCount: ordens.length,
+                    separatorBuilder: (context, _) =>
+                        const SizedBox(height: AppSpacing.space3),
+                    itemBuilder: (context, index) => _OrdemCard(
+                      ordem: ordens[index],
+                      onConfirmar: notifier.confirmarOrdemPendente,
+                    ),
                   ),
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.all(AppSpacing.space4),
-                  itemCount: ordens.length,
-                  separatorBuilder: (context, _) =>
-                      const SizedBox(height: AppSpacing.space3),
-                  itemBuilder: (context, index) => _OrdemCard(
-                    ordem: ordens[index],
-                    onConfirmar: notifier.confirmarOrdemPendente,
-                  ),
-                ),
+          ),
         ),
       ],
     );

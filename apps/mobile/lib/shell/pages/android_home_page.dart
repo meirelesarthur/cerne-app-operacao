@@ -7,6 +7,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../design/generated/app_layout.dart';
 
 /// Simulação da tela inicial (launcher) de um aparelho Android — a porta de
 /// entrada do protótipo antes do login. Área de trabalho com um único ícone
@@ -95,11 +96,11 @@ class _AndroidStatusBar extends StatelessWidget {
           ),
           Row(
             children: [
-              AppIcon(AppIcons.signal, size: 14, color: iconColor),
+              AppIcon(AppIcons.signal, size: AppSize.iconXs, color: iconColor),
               const SizedBox(width: AppSpacing.space2),
-              AppIcon(AppIcons.wifi, size: 14, color: iconColor),
+              AppIcon(AppIcons.wifi, size: AppSize.iconXs, color: iconColor),
               const SizedBox(width: AppSpacing.space2),
-              AppIcon(AppIcons.battery, size: 14, color: iconColor),
+              AppIcon(AppIcons.battery, size: AppSize.iconXs, color: iconColor),
             ],
           ),
         ],

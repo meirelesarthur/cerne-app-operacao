@@ -44,7 +44,7 @@ class CreditoBanner extends StatelessWidget {
                 ),
                 child: const AppIcon(
                   AppIcons.handCoins,
-                  size: 22,
+                  size: AppSize.iconMd,
                   color: AppColors.neutral0,
                 ),
               ),
@@ -82,7 +82,7 @@ class CreditoBanner extends StatelessWidget {
               ),
               AppIcon(
                 AppIcons.arrowRight,
-                size: 18,
+                size: AppSize.iconSmPlus,
                 color: semantic.accentDefault,
               ),
             ],

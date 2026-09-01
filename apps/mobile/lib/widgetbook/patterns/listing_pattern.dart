@@ -7,6 +7,7 @@ import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import '../../design/generated/app_layout.dart';
 
 /// Padrão de tela "Listagem" (Widgetbook → Padrões).
 ///
@@ -109,7 +110,7 @@ class _ListingRow extends StatelessWidget {
               ),
               child: const AppIcon(
                 AppIcons.leaf,
-                size: 18,
+                size: AppSize.iconSmPlus,
                 color: AppColors.neutral0,
               ),
             ),

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/prototype_session_store.dart';
+import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
 import '../group_icons.dart';
@@ -43,65 +45,80 @@ class _BuscaGlobalScreenState extends ConsumerState<BuscaGlobalScreen> {
     return Scaffold(
       backgroundColor: semantic.bgCanvas,
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(AppSpacing.space4),
+        child: Column(
           children: [
-            AppScreenHeader(
+            SubPageHeader(
               title: 'Buscar',
-              description: 'Encontre qualquer função do GB CERNE.',
               onBack: () => _voltar(context, sessionProfile),
             ),
-            const SizedBox(height: AppSpacing.space4),
-            AppTextInput(
-              placeholder: 'Procurando por algo?',
-              autofocus: true,
-              prefixIcon: const AppIcon(AppIcons.aiSearch, size: 18),
-              onChanged: (value) => setState(() => _query = value),
-            ),
-            const SizedBox(height: AppSpacing.space4),
+            Expanded(
+              child: AppContentSheet(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppSpacing.space4,
+                  ),
+                  children: [
+                    AppTextInput(
+                      placeholder: 'Procurando por algo?',
+                      autofocus: true,
+                      prefixIcon: const AppIcon(
+                        AppIcons.aiSearch,
+                        size: AppSize.iconMd,
+                      ),
+                      onChanged: (value) => setState(() => _query = value),
+                    ),
+                    const SizedBox(height: AppSpacing.space4),
 
-            if (!hasQuery)
-              AppEmptyState(
-                icon: AppIcons.aiSearch,
-                title: 'O que você precisa fazer?',
-                description:
-                    'Busque entre as ${allFeatures.length} funções dos dois '
-                    'ambientes pelo nome, pelo objetivo ou pelo módulo.',
-              )
-            else if (results.isEmpty)
-              const AppEmptyState(
-                icon: AppIcons.searchX,
-                title: 'Nenhuma função encontrada',
-                description:
-                    'Tente outro termo — o nome do módulo também vale.',
-              )
-            else ...[
-              Text(
-                '${results.length} '
-                '${results.length == 1 ? 'resultado' : 'resultados'}',
-                style: TextStyle(
-                  fontSize: AppTypography.sm,
-                  fontWeight: AppTypography.weightSemibold,
-                  color: semantic.fgMuted,
+                    if (!hasQuery)
+                      AppEmptyState(
+                        icon: AppIcons.aiSearch,
+                        title: 'O que você precisa fazer?',
+                        description:
+                            'Busque entre as ${allFeatures.length} funções dos dois '
+                            'ambientes pelo nome, pelo objetivo ou pelo módulo.',
+                      )
+                    else if (results.isEmpty)
+                      const AppEmptyState(
+                        icon: AppIcons.searchX,
+                        title: 'Nenhuma função encontrada',
+                        description:
+                            'Tente outro termo — o nome do módulo também vale.',
+                      )
+                    else ...[
+                      Text(
+                        '${results.length} '
+                        '${results.length == 1 ? 'resultado' : 'resultados'}',
+                        style: TextStyle(
+                          fontSize: AppTypography.sm,
+                          fontWeight: AppTypography.weightSemibold,
+                          color: semantic.fgMuted,
+                        ),
+                      ),
+                      const SizedBox(height: AppSpacing.space3),
+                      for (final result in results) ...[
+                        AppMenuItem(
+                          icon: groupIcon(result.feature.group),
+                          label: result.feature.title,
+                          description: result.feature.objective,
+                          showShadow: false,
+                          trailing: result.openable
+                              ? null
+                              : AppTag(
+                                  child: Text(_profileLabel(result.feature)),
+                                ),
+                          onTap: result.openable
+                              ? () => context.push(
+                                  featureDestination(result.feature),
+                                )
+                              : null,
+                        ),
+                        const SizedBox(height: AppSpacing.space2),
+                      ],
+                    ],
+                  ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.space3),
-              for (final result in results) ...[
-                AppMenuItem(
-                  icon: groupIcon(result.feature.group),
-                  label: result.feature.title,
-                  description: result.feature.objective,
-                  showShadow: false,
-                  trailing: result.openable
-                      ? null
-                      : AppTag(child: Text(_profileLabel(result.feature))),
-                  onTap: result.openable
-                      ? () => context.push(featureDestination(result.feature))
-                      : null,
-                ),
-                const SizedBox(height: AppSpacing.space2),
-              ],
-            ],
+            ),
           ],
         ),
       ),

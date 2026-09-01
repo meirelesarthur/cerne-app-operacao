@@ -6,6 +6,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'heading.dart';
 import 'icon_button.dart';
+import '../design/generated/app_layout.dart';
 
 /// Cabeçalho padrão de toda tela do app: título no topo, voltar **à esquerda do
 /// título** (não numa linha própria acima dele) e descrição opcional abaixo.
@@ -61,7 +62,7 @@ class AppScreenHeader extends StatelessWidget {
                 variant: AppIconButtonVariant.solid,
                 size: AppIconButtonSize.lg,
                 onPressed: onBack,
-                icon: const AppIcon(AppIcons.arrowLeft, size: 20),
+                icon: const AppIcon(AppIcons.arrowLeft, size: AppSize.iconMd),
               ),
               const SizedBox(width: AppSpacing.space3),
             ],
@@ -105,7 +106,7 @@ WidgetbookComponent buildScreenHeaderWidgetbookComponent() {
               onBack: () {},
               action: AppIconButton(
                 label: 'Atualizar',
-                icon: const AppIcon(AppIcons.refreshCw, size: 20),
+                icon: const AppIcon(AppIcons.refreshCw, size: AppSize.iconMd),
                 onPressed: () {},
               ),
             ),

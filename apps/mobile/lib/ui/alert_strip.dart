@@ -8,6 +8,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'pressable.dart';
+import '../design/generated/app_layout.dart';
 
 /// Gravidade do alerta — define a cor da cápsula.
 enum AppAlertTone { critical, warning, info, neutral }
@@ -115,7 +116,7 @@ class _AlertPill extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AppIcon(item.icon, size: 16, color: palette.fg),
+          AppIcon(item.icon, size: AppSize.iconSm, color: palette.fg),
           const SizedBox(width: AppSpacing.space2),
           Column(
             mainAxisSize: MainAxisSize.min,

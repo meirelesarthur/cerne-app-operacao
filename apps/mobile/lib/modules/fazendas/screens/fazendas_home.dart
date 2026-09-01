@@ -20,6 +20,7 @@ import '../mocks/dashboards_mocks.dart';
 import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Home do módulo Fazendas (aba Dashboard) — espelha `FazendasHome.tsx`:
 /// O conteúdo é definido exclusivamente pelo perfil da sessão demonstrativa.
@@ -323,7 +324,10 @@ class _HomeGerencial extends StatelessWidget {
                     AppButton(
                       variant: AppButtonVariant.ghost,
                       size: AppButtonSize.sm,
-                      rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
+                      rightIcon: const AppIcon(
+                        AppIcons.arrowRight,
+                        size: AppSize.iconXs,
+                      ),
                       onPressed: () => context.go('/fazendas/atividades'),
                       child: const Text('Ver todas'),
                     ),
@@ -416,7 +420,11 @@ class _SafraPill extends StatelessWidget {
             ),
           ),
           const SizedBox(width: AppSpacing.space1),
-          AppIcon(AppIcons.chevronDown, size: 14, color: semantic.fgDefault),
+          AppIcon(
+            AppIcons.chevronDown,
+            size: AppSize.iconXs,
+            color: semantic.fgDefault,
+          ),
         ],
       ),
     );

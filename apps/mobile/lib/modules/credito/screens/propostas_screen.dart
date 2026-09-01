@@ -7,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../credito_status.dart';
 import '../mocks/credito_mocks.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Total solicitado somado das propostas — pré-computado (sem matemática
 /// financeira em runtime).
@@ -106,7 +107,7 @@ class PropostasScreen extends StatelessWidget {
                   const SizedBox(width: AppSpacing.space2),
                   AppIcon(
                     AppIcons.arrowRight,
-                    size: 16,
+                    size: AppSize.iconSm,
                     color: semantic.fgSubtle,
                   ),
                 ],

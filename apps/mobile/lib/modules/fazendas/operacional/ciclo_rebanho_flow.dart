@@ -12,6 +12,7 @@ import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
+import '../../../design/generated/app_layout.dart';
 
 enum _EventType { nascimento, desmame, transferencia, morte }
 
@@ -186,7 +187,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               padding: EdgeInsets.only(bottom: AppSpacing.space5),
               child: AppBanner(
                 tone: AppBannerTone.error,
-                icon: AppIcon(AppIcons.alertTriangle, size: 14),
+                icon: AppIcon(AppIcons.alertTriangle, size: AppSize.iconXs),
                 child: Text(
                   'Transferência bloqueada: é necessário registrar a pesagem do dia antes de transferir o lote (DUV-179).',
                 ),
@@ -325,7 +326,11 @@ class _EventTile extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.accentSubtle,
               ),
-              child: AppIcon(e.icon, size: 22, color: semantic.accentDefault),
+              child: AppIcon(
+                e.icon,
+                size: AppSize.iconMd,
+                color: semantic.accentDefault,
+              ),
             ),
             const SizedBox(height: AppSpacing.space2),
             Text(

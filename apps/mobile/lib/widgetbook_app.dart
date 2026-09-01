@@ -14,6 +14,7 @@ import 'widgetbook/patterns/crud_pattern.dart';
 import 'widgetbook/patterns/listing_pattern.dart';
 import 'widgetbook/patterns/login_pattern.dart';
 import 'widgetbook/patterns/menu_pattern.dart';
+import 'design/generated/app_layout.dart';
 
 /// Ponto de entrada da galeria de componentes (F2.5) e da auditoria de tema (F1.4).
 /// Rodar: `flutter run -t lib/widgetbook_app.dart -d chrome`.
@@ -277,7 +278,7 @@ class _SwatchState extends State<_Swatch> {
                     right: 4,
                     child: AppIcon(
                       AppIcons.check,
-                      size: 14,
+                      size: AppSize.iconXs,
                       color: semantic.fgDefault,
                     ),
                   ),

@@ -11,6 +11,7 @@ import '../../../shared/rise_in.dart';
 import '../../../ui/ui.dart';
 import '../credito_status.dart';
 import '../mocks/credito_mocks.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Ícone por linha de crédito — espelha `LINHA_ICONS` de `CreditoHome.tsx`.
 final Map<String, AppIconData> _linhaIcons = {
@@ -237,7 +238,7 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                               ),
                               child: AppIcon(
                                 _linhaIcons[linha.id] ?? AppIcons.fileText,
-                                size: 22,
+                                size: AppSize.iconMd,
                                 color: AppColors.neutral0,
                               ),
                             ),
@@ -285,7 +286,7 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                             ),
                             AppIcon(
                               AppIcons.arrowRight,
-                              size: 18,
+                              size: AppSize.iconSmPlus,
                               color: semantic.accentDefault,
                             ),
                           ],
@@ -312,7 +313,10 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
                   AppButton(
                     variant: AppButtonVariant.ghost,
                     size: AppButtonSize.sm,
-                    rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
+                    rightIcon: const AppIcon(
+                      AppIcons.arrowRight,
+                      size: AppSize.iconXs,
+                    ),
                     onPressed: () => context.go('/credito/propostas'),
                     child: const Text('Ver todas'),
                   ),
@@ -471,7 +475,7 @@ class _CreditoHero extends StatelessWidget {
                     alignment: Alignment.center,
                     child: const AppIcon(
                       AppIcons.handCoins,
-                      size: 16,
+                      size: AppSize.iconSm,
                       color: AppColors.neutral0,
                     ),
                   ),

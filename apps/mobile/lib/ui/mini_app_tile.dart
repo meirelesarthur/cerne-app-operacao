@@ -7,6 +7,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'chip.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha o selo de estado opcional de `MiniAppTile.tsx`
 /// (`badge?: 'novo' | 'breve'`).
@@ -77,7 +78,7 @@ class AppMiniAppTile extends StatelessWidget {
                         // aplicado por `AppIcon`; aqui só o tamanho é local.
                         child: AppIcon(
                           icon,
-                          size: 20,
+                          size: AppSize.iconMd,
                           color: semantic.accentDefault,
                         ),
                       ),

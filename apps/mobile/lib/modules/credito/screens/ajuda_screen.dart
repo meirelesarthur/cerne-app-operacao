@@ -4,6 +4,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
+import '../../../design/generated/app_layout.dart';
 
 class _FaqItem {
   const _FaqItem({required this.pergunta, required this.resposta});
@@ -78,7 +79,7 @@ class AjudaScreen extends StatelessWidget {
             ),
           ),
         const AppBanner(
-          icon: AppIcon(AppIcons.messageCircle, size: 14),
+          icon: AppIcon(AppIcons.messageCircle, size: AppSize.iconXs),
           child: Text(
             'Não encontrou o que precisava? Fale com seu gerente de relacionamento.',
           ),

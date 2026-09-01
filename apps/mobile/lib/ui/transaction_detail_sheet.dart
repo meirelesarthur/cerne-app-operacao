@@ -13,6 +13,7 @@ import 'bottom_sheet.dart';
 import 'chip.dart';
 import 'icon_button.dart';
 import 'transaction_list_item.dart';
+import '../design/generated/app_layout.dart';
 
 /// ID de operação mockado e determinístico (sem `DateTime.now()`) — protótipo,
 /// espelha `operationId` de `TransactionDetailSheet.tsx`.
@@ -99,7 +100,7 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
                 ),
                 child: AppIcon(
                   isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
-                  size: 22,
+                  size: AppSize.iconMd,
                   color: isIn ? semantic.accentDefault : semantic.fgMuted,
                 ),
               ),
@@ -108,7 +109,7 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
                 tone: isIn ? AppChipTone.brand : AppChipTone.neutral,
                 icon: AppIcon(
                   isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
-                  size: 12,
+                  size: AppSize.iconXs,
                 ),
                 child: Text(isIn ? 'Entrada' : 'Saída'),
               ),
@@ -214,7 +215,7 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
               AppIconButton(
                 icon: AppIcon(
                   _copied ? AppIcons.check : AppIcons.copy,
-                  size: 16,
+                  size: AppSize.iconSm,
                   color: _copied ? semantic.accentDefault : null,
                 ),
                 label: _copied ? 'ID copiado' : 'Copiar ID da operação',

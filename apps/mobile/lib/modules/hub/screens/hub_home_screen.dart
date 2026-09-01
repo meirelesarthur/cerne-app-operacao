@@ -11,6 +11,7 @@ import '../../../shell/state/prototype_session_store.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../mocks/hub_apps.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Home do hub agregador — espelha `HubHome.tsx`: Banking no centro da
 /// experiência (saldo + ações rápidas + últimas movimentações) e grid de
@@ -50,7 +51,10 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                 children: [
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const AppIcon(AppIcons.arrowDownLeft, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowDownLeft,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Entradas no mês',
                       value: ResumoMes.entradas,
                       hidden: balanceHidden,
@@ -59,7 +63,10 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const AppIcon(AppIcons.arrowUpRight, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowUpRight,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Saídas no mês',
                       value: ResumoMes.saidas,
                       hidden: balanceHidden,
@@ -129,7 +136,7 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                     ),
                     child: const AppIcon(
                       AppIcons.handCoins,
-                      size: 22,
+                      size: AppSize.iconMd,
                       color: AppColors.neutral0,
                     ),
                   ),
@@ -163,7 +170,7 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                       ],
                     ),
                   ),
-                  const AppIcon(AppIcons.arrowRight, size: 18),
+                  const AppIcon(AppIcons.arrowRight, size: AppSize.iconSmPlus),
                 ],
               ),
             ),
@@ -184,7 +191,10 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                   AppButton(
                     variant: AppButtonVariant.ghost,
                     size: AppButtonSize.sm,
-                    rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
+                    rightIcon: const AppIcon(
+                      AppIcons.arrowRight,
+                      size: AppSize.iconXs,
+                    ),
                     onPressed: () => context.go('/inicio/apps'),
                     child: const Text('Ver todos'),
                   ),
@@ -229,7 +239,10 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
                   AppButton(
                     variant: AppButtonVariant.ghost,
                     size: AppButtonSize.sm,
-                    rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
+                    rightIcon: const AppIcon(
+                      AppIcons.arrowRight,
+                      size: AppSize.iconXs,
+                    ),
                     onPressed: () => context.go('/bank/extrato'),
                     child: const Text('Extrato'),
                   ),

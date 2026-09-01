@@ -5,6 +5,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Item de atalho ícone + rótulo — espelha `Shortcut` (interface) de `ShortcutGrid.tsx`.
 class Shortcut {
@@ -63,7 +64,7 @@ class ShortcutGrid extends StatelessWidget {
                   ),
                   child: AppIcon(
                     it.icon,
-                    size: 22,
+                    size: AppSize.iconMd,
                     color: semantic.accentDefault,
                   ),
                 ),

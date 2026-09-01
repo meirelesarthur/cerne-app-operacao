@@ -7,6 +7,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shared/rise_in.dart';
 import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 class _LinkItem {
   const _LinkItem({required this.label, required this.icon, required this.to});
@@ -177,7 +178,7 @@ class _MaisRow extends StatelessWidget {
               ),
               child: AppIcon(
                 item.icon,
-                size: 18,
+                size: AppSize.iconSmPlus,
                 color: semantic.accentDefault,
               ),
             ),
@@ -191,7 +192,11 @@ class _MaisRow extends StatelessWidget {
                 ),
               ),
             ),
-            AppIcon(AppIcons.chevronRight, size: 16, color: semantic.fgSubtle),
+            AppIcon(
+              AppIcons.chevronRight,
+              size: AppSize.iconSm,
+              color: semantic.fgSubtle,
+            ),
           ],
         ),
       ),

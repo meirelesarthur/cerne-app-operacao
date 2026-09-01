@@ -4,6 +4,7 @@ import 'package:widgetbook/widgetbook.dart';
 import 'app_icon.dart';
 import '../design/generated/app_radius.dart';
 import '../design/theme/app_theme_extension.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `IllustrationSlot.tsx` — área de ilustração (onboarding/empty states).
 /// Com [src], a arte final é autocontida (a ilustração já traz o próprio fundo).
@@ -65,7 +66,11 @@ class AppIllustrationSlot extends StatelessWidget {
                     alignment: Alignment.center,
                     // O traço vem de `AppSize.iconStroke` (1.2) como em todo o app —
                     // `AppIcon` o aplica; nenhuma tela ou componente define o seu.
-                    child: AppIcon(icon, size: 44, color: semantic.ctaBg),
+                    child: AppIcon(
+                      icon,
+                      size: AppSize.iconXxl,
+                      color: semantic.ctaBg,
+                    ),
                   ),
           ),
         ),

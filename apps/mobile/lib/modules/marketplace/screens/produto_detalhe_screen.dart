@@ -7,6 +7,7 @@ import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Página do Produto (PDP) do Marketplace — acessada a partir do card na Home.
 /// Espelha `ProdutoDetalhe.tsx`.
@@ -77,7 +78,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                 child: categoria != null
                     ? AppIcon(
                         categoria.icon,
-                        size: 48,
+                        size: AppSize.iconXxl,
                         color: semantic.accentDefault,
                       )
                     : null,
@@ -120,7 +121,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              AppIcon(AppIcons.truck, size: 11),
+                              AppIcon(AppIcons.truck, size: AppSize.iconXs),
                               SizedBox(width: AppSpacing.space1),
                               Text('Frete grátis'),
                             ],
@@ -235,7 +236,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
               if (_adicionado) ...[
                 const AppBanner(
                   tone: AppBannerTone.success,
-                  icon: AppIcon(AppIcons.check, size: 14),
+                  icon: AppIcon(AppIcons.check, size: AppSize.iconXs),
                   child: Text('Produto adicionado ao pedido (protótipo).'),
                 ),
                 const SizedBox(height: AppSpacing.space5),
@@ -249,7 +250,7 @@ class _ProdutoDetalheScreenState extends State<ProdutoDetalheScreen> {
                     : () => setState(() => _adicionado = true),
                 leftIcon: AppIcon(
                   _adicionado ? AppIcons.check : AppIcons.shoppingCart,
-                  size: 18,
+                  size: AppSize.iconSmPlus,
                 ),
                 child: Text(
                   _adicionado ? 'Adicionado ao pedido' : 'Adicionar ao pedido',

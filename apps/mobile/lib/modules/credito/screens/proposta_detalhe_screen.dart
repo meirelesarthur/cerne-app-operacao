@@ -9,6 +9,7 @@ import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../credito_status.dart';
 import '../mocks/credito_mocks.dart';
+import '../../../design/generated/app_layout.dart';
 
 enum _StepState { done, current, pending, rejected }
 
@@ -149,13 +150,13 @@ class _Timeline extends StatelessWidget {
                         child: step.state == _StepState.done
                             ? AppIcon(
                                 AppIcons.check,
-                                size: 14,
+                                size: AppSize.iconXs,
                                 color: markerColors.fg,
                               )
                             : step.state == _StepState.rejected
                             ? AppIcon(
                                 AppIcons.x,
-                                size: 14,
+                                size: AppSize.iconXs,
                                 color: markerColors.fg,
                               )
                             : null,
@@ -416,7 +417,7 @@ class PropostaDetalheScreen extends StatelessWidget {
                                 ),
                                 child: AppIcon(
                                   AppIcons.fileText,
-                                  size: 18,
+                                  size: AppSize.iconSmPlus,
                                   color: semantic.fgMuted,
                                 ),
                               ),

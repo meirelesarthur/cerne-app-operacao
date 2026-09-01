@@ -7,6 +7,7 @@ import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 enum _Secao { lotes, estoque, pesagens, localizacao }
 
@@ -42,7 +43,11 @@ class _DashConsultasState extends State<DashConsultas> {
         children: [
           Row(
             children: [
-              AppIcon(AppIcons.lock, size: 12, color: semantic.fgSubtle),
+              AppIcon(
+                AppIcons.lock,
+                size: AppSize.iconXs,
+                color: semantic.fgSubtle,
+              ),
               const SizedBox(width: AppSpacing.oneHalf),
               Text(
                 'Somente leitura — dados espelhados do web.',
@@ -134,7 +139,7 @@ class _HubTile extends StatelessWidget {
           children: [
             AppIcon(
               icon,
-              size: 20,
+              size: AppSize.iconMd,
               color: selected ? semantic.accentDefault : semantic.fgMuted,
             ),
             const SizedBox(height: AppSpacing.oneHalf),

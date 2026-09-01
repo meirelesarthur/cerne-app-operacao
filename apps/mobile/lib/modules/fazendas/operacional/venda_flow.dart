@@ -12,6 +12,7 @@ import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Contagem de cabeças por lote (mock) — usado para validar que a contagem
 /// bate com o lote selecionado (spec §5.5). Local a este fluxo (não faz parte
@@ -122,7 +123,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
                     ),
                     child: AppIcon(
                       AppIcons.lock,
-                      size: 16,
+                      size: AppSize.iconSm,
                       color: semantic.fgSubtle,
                     ),
                   ),
@@ -155,7 +156,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
                     content: 'Mês congelado — edição bloqueada',
                     child: AppIcon(
                       AppIcons.lock,
-                      size: 16,
+                      size: AppSize.iconSm,
                       color: semantic.fgSubtle,
                     ),
                   ),

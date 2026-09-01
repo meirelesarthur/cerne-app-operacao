@@ -7,6 +7,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import '../design/generated/app_layout.dart';
 
 /// Direção do lançamento — espelha `'in' | 'out'` de `TransactionItem` (React).
 enum AppTransactionDirection { income, expense }
@@ -71,7 +72,7 @@ class AppTransactionListItem extends StatelessWidget {
           ),
           child: AppIcon(
             isIn ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
-            size: 18,
+            size: AppSize.iconSmPlus,
             color: isIn ? semantic.accentDefault : semantic.fgMuted,
           ),
         ),

@@ -8,6 +8,7 @@ import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'field_capsule.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import '../design/generated/app_layout.dart';
 
 class AppSearchSelectOption {
   const AppSearchSelectOption({
@@ -86,7 +87,11 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
         AppFieldCapsule(
           focused: _queryFocusNode.hasFocus,
           horizontalPadding: AppSpacing.space4,
-          leading: AppIcon(AppIcons.search, size: 16, color: semantic.fgSubtle),
+          leading: AppIcon(
+            AppIcons.search,
+            size: AppSize.iconSm,
+            color: semantic.fgSubtle,
+          ),
           child: TextField(
             controller: _queryController,
             focusNode: _queryFocusNode,
@@ -188,7 +193,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
                             if (selected)
                               AppIcon(
                                 AppIcons.check,
-                                size: 16,
+                                size: AppSize.iconSm,
                                 color: semantic.accentDefault,
                               ),
                           ],

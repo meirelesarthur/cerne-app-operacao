@@ -10,6 +10,7 @@ import '../../../shared/rise_in.dart';
 import '../../../shared/simulated_load.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Carteira do hub — espelha `CarteiraScreen.tsx`: visão condensada do Banking
 /// sem sair do Início. A experiência completa vive no módulo GB Bank.
@@ -59,7 +60,10 @@ class CarteiraScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const AppIcon(AppIcons.arrowDownLeft, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowDownLeft,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Entradas no mês',
                       value: ResumoMes.entradas,
                       hidden: balanceHidden,
@@ -68,7 +72,10 @@ class CarteiraScreen extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const AppIcon(AppIcons.arrowUpRight, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowUpRight,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Saídas no mês',
                       value: ResumoMes.saidas,
                       hidden: balanceHidden,
@@ -142,7 +149,10 @@ class CarteiraScreen extends ConsumerWidget {
           child: AppButton(
             fullWidth: true,
             size: AppButtonSize.lg,
-            leftIcon: const AppIcon(AppIcons.landmark, size: 18),
+            leftIcon: const AppIcon(
+              AppIcons.landmark,
+              size: AppSize.iconSmPlus,
+            ),
             onPressed: () => context.go('/bank'),
             child: const Text('Abrir GB Bank completo'),
           ),

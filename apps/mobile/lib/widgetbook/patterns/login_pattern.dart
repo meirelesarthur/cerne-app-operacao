@@ -5,6 +5,7 @@ import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import '../../design/generated/app_layout.dart';
 
 /// Padrão de tela "Login" (Widgetbook → Padrões).
 ///
@@ -66,7 +67,7 @@ class _LoginPatternExampleState extends State<_LoginPatternExample> {
                 ),
                 child: AppIcon(
                   AppIcons.sprout,
-                  size: 32,
+                  size: AppSize.iconXxl,
                   color: semantic.accentDefault,
                 ),
               ),

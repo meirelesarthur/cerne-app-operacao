@@ -149,7 +149,7 @@ class AppBentoTile extends StatelessWidget {
                 alignment: Alignment.center,
                 child: const AppIcon(
                   AppIcons.arrowRight,
-                  size: 16,
+                  size: AppSize.iconSm,
                   color: AppColors.neutral0,
                 ),
               ),

@@ -7,6 +7,7 @@ import '../../../ui/ui.dart';
 import '../mocks/dashboards_mocks.dart';
 import 'dashboard_screen.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 const Map<AtivoEstado, ({String label, AppChipTone tone, AppIconData icon})>
 _estadoMeta = {
@@ -180,7 +181,7 @@ class _AtivoCard extends StatelessWidget {
                       children: [
                         AppIcon(
                           AppIcons.wrench,
-                          size: 11,
+                          size: AppSize.iconXs,
                           color: semantic.fgSubtle,
                         ),
                         const SizedBox(width: AppSpacing.space1),
@@ -262,7 +263,7 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
                 ),
                 AppChip(
                   tone: estado.tone,
-                  icon: AppIcon(estado.icon, size: 12),
+                  icon: AppIcon(estado.icon, size: AppSize.iconXs),
                   child: Text(estado.label),
                 ),
               ],

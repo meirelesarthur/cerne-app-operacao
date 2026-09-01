@@ -11,6 +11,7 @@ import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../components/bank_card_visual.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Home do módulo GB Bank (New-UI): saldo, ações rápidas, cartão corporativo,
 /// deep-link para Crédito e últimas movimentações — experiência completa do
@@ -42,7 +43,10 @@ class BankHomeScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const AppIcon(AppIcons.arrowDownLeft, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowDownLeft,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Entradas no mês',
                       value: ResumoMes.entradas,
                       hidden: balanceHidden,
@@ -51,7 +55,10 @@ class BankHomeScreen extends ConsumerWidget {
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: AppBalanceSummaryItem(
-                      icon: const AppIcon(AppIcons.arrowUpRight, size: 14),
+                      icon: const AppIcon(
+                        AppIcons.arrowUpRight,
+                        size: AppSize.iconXs,
+                      ),
                       label: 'Saídas no mês',
                       value: ResumoMes.saidas,
                       hidden: balanceHidden,
@@ -180,7 +187,7 @@ class BankHomeScreen extends ConsumerWidget {
                   ),
                   child: const AppIcon(
                     AppIcons.trendingUp,
-                    size: 22,
+                    size: AppSize.iconMd,
                     color: AppColors.neutral0,
                   ),
                 ),
@@ -205,7 +212,7 @@ class BankHomeScreen extends ConsumerWidget {
                 ),
                 AppIcon(
                   AppIcons.arrowRight,
-                  size: 18,
+                  size: AppSize.iconSmPlus,
                   color: semantic.accentDefault,
                 ),
               ],

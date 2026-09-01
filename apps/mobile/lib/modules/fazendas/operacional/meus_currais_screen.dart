@@ -10,6 +10,7 @@ import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 import '../confinamento/models.dart';
 import '../confinamento/state/confinamento_store.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// "Meus currais" (spec §4.6/§5) — o que o Operacional lança curral a curral:
 /// alterar situação, pesagem, sanitário, óbito, e confirmar ordens que o ADM
@@ -35,25 +36,28 @@ class MeusCurraisScreen extends ConsumerWidget {
       children: [
         const SubPageHeader(title: 'Meus currais'),
         Expanded(
-          child: ListView.separated(
-            padding: const EdgeInsets.all(AppSpacing.space4),
-            itemCount: currais.length,
-            separatorBuilder: (context, _) =>
-                const SizedBox(height: AppSpacing.space3),
-            itemBuilder: (context, index) {
-              final curral = currais[index];
-              final ordemPendente = ordens
-                  .where(
-                    (o) =>
-                        o.status == OrdemStatus.pendente &&
-                        o.curralOrigemId == curral.id,
-                  )
-                  .toList();
-              return _CurralCard(
-                curral: curral,
-                ordensPendentes: ordemPendente,
-              );
-            },
+          child: AppContentSheet(
+            padded: false,
+            child: ListView.separated(
+              padding: const EdgeInsets.all(AppSpacing.space4),
+              itemCount: currais.length,
+              separatorBuilder: (context, _) =>
+                  const SizedBox(height: AppSpacing.space3),
+              itemBuilder: (context, index) {
+                final curral = currais[index];
+                final ordemPendente = ordens
+                    .where(
+                      (o) =>
+                          o.status == OrdemStatus.pendente &&
+                          o.curralOrigemId == curral.id,
+                    )
+                    .toList();
+                return _CurralCard(
+                  curral: curral,
+                  ordensPendentes: ordemPendente,
+                );
+              },
+            ),
           ),
         ),
       ],
@@ -120,7 +124,11 @@ class _CurralCard extends ConsumerWidget {
               ),
               child: Row(
                 children: [
-                  AppIcon(AppIcons.bellRing, size: 14, color: semantic.fgMuted),
+                  AppIcon(
+                    AppIcons.bellRing,
+                    size: AppSize.iconXs,
+                    color: semantic.fgMuted,
+                  ),
                   const SizedBox(width: AppSpacing.space2),
                   Expanded(
                     child: Text(

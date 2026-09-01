@@ -8,6 +8,7 @@ import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../mocks/produtos.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Favoritos do Marketplace — lista mockada de produtos marcados como
 /// favoritos. Espelha `MarketplaceFavoritos.tsx`.
@@ -68,7 +69,7 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                             child: categoria != null
                                 ? AppIcon(
                                     categoria.icon,
-                                    size: 24,
+                                    size: AppSize.iconLg,
                                     color: semantic.accentDefault,
                                   )
                                 : null,
@@ -109,7 +110,7 @@ class MarketplaceFavoritosScreen extends StatelessWidget {
                           ),
                           AppIcon(
                             AppIcons.heart,
-                            size: 18,
+                            size: AppSize.iconSmPlus,
                             color: semantic.accentDefault,
                           ),
                         ],

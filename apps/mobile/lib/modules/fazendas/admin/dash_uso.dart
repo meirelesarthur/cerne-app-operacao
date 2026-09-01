@@ -285,7 +285,11 @@ class _FazendaTile extends StatelessWidget {
               padding: const EdgeInsets.all(AppSpacing.space3),
               child: Row(
                 children: [
-                  AppIcon(AppIcons.circle, size: 10, color: onlineColor),
+                  AppIcon(
+                    AppIcons.circle,
+                    size: AppSize.iconXs,
+                    color: onlineColor,
+                  ),
                   const SizedBox(width: AppSpacing.space3),
                   Expanded(
                     child: Column(
@@ -314,7 +318,7 @@ class _FazendaTile extends StatelessWidget {
                     duration: AppMotion.fast,
                     child: AppIcon(
                       AppIcons.chevronDown,
-                      size: 18,
+                      size: AppSize.iconSmPlus,
                       color: semantic.fgSubtle,
                     ),
                   ),
@@ -336,7 +340,7 @@ class _FazendaTile extends StatelessWidget {
                       children: [
                         AppIcon(
                           AppIcons.circle,
-                          size: 8,
+                          size: AppSize.iconXs,
                           color: u.ativo
                               ? semantic.accentDefault
                               : semantic.borderStrong,

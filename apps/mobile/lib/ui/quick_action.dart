@@ -5,6 +5,7 @@ import 'app_icon.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `QuickAction.tsx` (New-UI hub): círculo de 56px (`AppSpacing.space14`)
 /// com rótulo abaixo — usado nas ações rápidas do hub. Ícone fixo em 21px; o
@@ -50,7 +51,11 @@ class AppQuickAction extends StatelessWidget {
                 boxShadow: semantic.shadowCard,
               ),
               alignment: Alignment.center,
-              child: AppIcon(icon, size: 21, color: semantic.accentDefault),
+              child: AppIcon(
+                icon,
+                size: AppSize.iconMd,
+                color: semantic.accentDefault,
+              ),
             ),
             const SizedBox(height: AppSpacing.space2),
             Text(

@@ -7,6 +7,7 @@ import '../../../ui/ui.dart';
 import '../mocks/pedidos.dart';
 import 'package:cerne_app/design/generated/app_radius.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 const Map<PedidoStatus, String> _statusLabel = {
   PedidoStatus.entregue: 'Entregue',
@@ -99,7 +100,7 @@ class MarketplacePedidosScreen extends StatelessWidget {
                                 tone: _statusTone[pedido.status]!,
                                 icon: AppIcon(
                                   _statusIcon[pedido.status],
-                                  size: 12,
+                                  size: AppSize.iconXs,
                                 ),
                                 child: Text(_statusLabel[pedido.status]!),
                               ),
@@ -168,7 +169,7 @@ class _PedidoDetalheBody extends StatelessWidget {
             Text('Status', style: TextStyle(color: semantic.fgMuted)),
             AppChip(
               tone: _statusTone[pedido.status]!,
-              icon: AppIcon(_statusIcon[pedido.status], size: 12),
+              icon: AppIcon(_statusIcon[pedido.status], size: AppSize.iconXs),
               child: Text(_statusLabel[pedido.status]!),
             ),
           ],

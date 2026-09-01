@@ -11,6 +11,7 @@ import '../../../../ui/ui.dart';
 import '../../components/bank_flow_shell.dart';
 import 'package:cerne_app/modules/bank/lib/currency.dart';
 import 'package:cerne_app/design/generated/app_radius.dart';
+import '../../../../design/generated/app_layout.dart';
 
 enum PaymentKind { boleto, transferir, cobrar }
 
@@ -250,7 +251,7 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
                   ),
                   child: AppIcon(
                     meta.icon,
-                    size: 22,
+                    size: AppSize.iconMd,
                     color: semantic.accentDefault,
                   ),
                 ),
@@ -304,7 +305,7 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
             ),
             const SizedBox(height: AppSpacing.space5),
             const AppBanner(
-              icon: AppIcon(AppIcons.info, size: 14),
+              icon: AppIcon(AppIcons.info, size: AppSize.iconXs),
               child: Text(
                 'Confira os dados antes de confirmar. Esta é uma operação simulada do protótipo.',
               ),

@@ -13,6 +13,7 @@ import '../components/unidade_detail_sheet.dart';
 import 'package:cerne_app/modules/armazem/lib/movimentacoes.dart';
 import '../mocks/estoque_mocks.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Home do módulo Armazém: ocupação e alertas em destaque, unidades de
 /// armazenagem (cards interativos com detalhe) e últimas movimentações
@@ -106,7 +107,7 @@ class ArmazemHomeScreen extends StatelessWidget {
                       ),
                       child: const AppIcon(
                         AppIcons.triangleAlert,
-                        size: 16,
+                        size: AppSize.iconSm,
                         color: AppColors.amber600,
                       ),
                     ),
@@ -230,7 +231,7 @@ class ArmazemHomeScreen extends StatelessWidget {
                   ),
                   child: const AppIcon(
                     AppIcons.shoppingBag,
-                    size: 22,
+                    size: AppSize.iconMd,
                     color: AppColors.neutral0,
                   ),
                 ),
@@ -261,7 +262,7 @@ class ArmazemHomeScreen extends StatelessWidget {
                 ),
                 AppIcon(
                   AppIcons.arrowRight,
-                  size: 18,
+                  size: AppSize.iconSmPlus,
                   color: semantic.accentDefault,
                 ),
               ],

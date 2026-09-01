@@ -7,6 +7,7 @@ import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'heading.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `EmptyState.tsx` — estado vazio (lista/dado ausente), com ícone
 /// opcional, título (`AppHeading` nível 3), descrição e ação opcionais.
@@ -47,7 +48,11 @@ class AppEmptyState extends StatelessWidget {
                   color: semantic.bgSubtle,
                   borderRadius: BorderRadius.circular(AppRadius.xl2),
                 ),
-                child: AppIcon(icon, size: 26, color: semantic.fgSubtle),
+                child: AppIcon(
+                  icon,
+                  size: AppSize.iconLg,
+                  color: semantic.fgSubtle,
+                ),
               ),
             ),
           AppHeading(

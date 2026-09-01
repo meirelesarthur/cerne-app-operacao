@@ -9,6 +9,7 @@ import '../../../mocks/bank_mocks.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../components/bank_card_visual.dart';
+import '../../../design/generated/app_layout.dart';
 
 enum _Sheet { segundaVia, ajustarLimite }
 
@@ -48,7 +49,7 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
         children: [
           const AppChip(
             tone: AppChipTone.amber,
-            icon: AppIcon(AppIcons.construction, size: 12),
+            icon: AppIcon(AppIcons.construction, size: AppSize.iconXs),
             child: Text('Em desenvolvimento'),
           ),
           const SizedBox(height: AppSpacing.space4),
@@ -140,7 +141,7 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
           const SizedBox(height: AppSpacing.space5),
           const AppBanner(
             tone: AppBannerTone.warning,
-            icon: AppIcon(AppIcons.lock, size: 14),
+            icon: AppIcon(AppIcons.lock, size: AppSize.iconXs),
             child: Text(
               'Cartão bloqueado temporariamente. Compras e saques estão suspensos até você reativar.',
             ),
@@ -162,7 +163,7 @@ class _CartoesScreenState extends ConsumerState<CartoesScreen> {
                 ),
                 child: AppIcon(
                   _blocked ? AppIcons.lock : AppIcons.shieldCheck,
-                  size: 20,
+                  size: AppSize.iconMd,
                   color: semantic.accentDefault,
                 ),
               ),

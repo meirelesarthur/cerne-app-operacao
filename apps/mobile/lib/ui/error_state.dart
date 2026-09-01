@@ -9,6 +9,7 @@ import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'button.dart';
 import 'heading.dart';
+import '../design/generated/app_layout.dart';
 
 /// Espelha `ErrorState.tsx` — estado de erro de carregamento com retry
 /// (spec §7.1). Compõe `AppHeading` (nível 3) + `AppButton` (variant
@@ -49,7 +50,7 @@ class AppErrorState extends StatelessWidget {
               ),
               child: const AppIcon(
                 AppIcons.triangleAlert,
-                size: 26,
+                size: AppSize.iconLg,
                 color: AppColors.red600,
               ),
             ),

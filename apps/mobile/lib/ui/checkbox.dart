@@ -69,7 +69,7 @@ class AppCheckbox extends StatelessWidget {
                   child: checked
                       ? const AppIcon(
                           AppIcons.check,
-                          size: 13,
+                          size: AppSize.iconXs,
                           color: AppColors.neutral0,
                         )
                       : null,

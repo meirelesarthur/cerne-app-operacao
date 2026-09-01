@@ -12,6 +12,7 @@ import '../state/fazendas_store.dart';
 import '../types.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Recebimento / Entrada por XML (NF-e) (spec §5.4): upload + conferência de
 /// itens. Espelha `RecebimentoXmlFlow.tsx`.
@@ -93,7 +94,7 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                     ),
                     child: AppIcon(
                       AppIcons.fileText,
-                      size: 20,
+                      size: AppSize.iconMd,
                       color: semantic.accentDefault,
                     ),
                   ),

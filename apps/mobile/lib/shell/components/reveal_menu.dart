@@ -230,7 +230,7 @@ class _MenuContent extends StatelessWidget {
                 ),
                 AppIcon(
                   AppIcons.chevronRight,
-                  size: 18,
+                  size: AppSize.iconSmPlus,
                   color: semantic.inkMuted,
                 ),
               ],
@@ -255,7 +255,11 @@ class _MenuContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 alignment: Alignment.center,
-                child: AppIcon(module.icon, size: 15, color: semantic.inkFg),
+                child: AppIcon(
+                  module.icon,
+                  size: AppSize.iconXs,
+                  color: semantic.inkFg,
+                ),
               ),
               const SizedBox(width: AppSpacing.space2),
               Text(

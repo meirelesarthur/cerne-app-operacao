@@ -82,7 +82,7 @@ class _AppStepperState extends State<AppStepper> {
             height: height,
             child: AppIcon(
               icon,
-              size: 16,
+              size: AppSize.iconSm,
               color: onTap == null ? semantic.fgSubtle : semantic.fgMuted,
             ),
           ),

@@ -9,6 +9,7 @@ import 'button.dart';
 import 'card.dart';
 import 'chip.dart';
 import 'heading.dart';
+import '../design/generated/app_layout.dart';
 
 /// Card contêiner de um gráfico, com título, período, ação e nota de rodapé.
 /// Compõe `AppCard` + `AppHeading` (nível 4), nunca reimplementa estilo de
@@ -119,7 +120,10 @@ class AppChartCard extends StatelessWidget {
                 child: AppButton(
                   variant: AppButtonVariant.ghost,
                   size: AppButtonSize.sm,
-                  rightIcon: const AppIcon(AppIcons.arrowRight, size: 13),
+                  rightIcon: const AppIcon(
+                    AppIcons.arrowRight,
+                    size: AppSize.iconXs,
+                  ),
                   onPressed: onExpand,
                   child: Text(expandLabel),
                 ),
@@ -158,7 +162,7 @@ WidgetbookComponent buildChartCardWidgetbookComponent() {
             width: 320,
             child: AppChartCard(
               title: 'Produção mensal',
-              action: AppIcon(AppIcons.ellipsis, size: 18),
+              action: AppIcon(AppIcons.ellipsis, size: AppSize.iconSmPlus),
               child: SizedBox(
                 height: 120,
                 child: Center(child: Text('Gráfico aqui')),

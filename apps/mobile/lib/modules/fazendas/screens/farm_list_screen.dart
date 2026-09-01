@@ -9,6 +9,7 @@ import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../../../design/generated/app_layout.dart';
 
 /// Aba "Fazendas" — espelha `FarmListScreen.tsx`: lista de fazendas vinculadas;
 /// toque troca o tenant ativo.
@@ -98,7 +99,7 @@ class _FarmRow extends StatelessWidget {
                 ),
                 child: const AppIcon(
                   AppIcons.leaf,
-                  size: 20,
+                  size: AppSize.iconMd,
                   color: AppColors.neutral0,
                 ),
               ),

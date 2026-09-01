@@ -40,20 +40,23 @@ class SuccessScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: semantic.bgCanvas,
       body: SafeArea(
-        child: AppSuccessPanel(
-          title: queued ? 'Salvo no aparelho' : title,
-          icon: queued ? AppIcons.refreshCw : AppIcons.checkCircle2,
-          description: Text(
-            queued
-                ? 'Vai subir sozinho quando o celular pegar sinal de novo — '
-                      '$pendentes ${pendentes == 1 ? 'lançamento está' : 'lançamentos estão'} '
-                      'esperando para sincronizar. $effects'
-                : effects,
-          ),
-          actions: AppButton(
-            fullWidth: true,
-            onPressed: () => context.go('/fazendas'),
-            child: const Text('Voltar ao início'),
+        child: AppContentSheet(
+          child: AppSuccessPanel(
+            title: queued ? 'Salvo no aparelho' : title,
+            icon: queued ? AppIcons.refreshCw : AppIcons.checkCircle2,
+            description: Text(
+              queued
+                  ? 'Vai subir sozinho quando o celular pegar sinal de novo — '
+                        '$pendentes ${pendentes == 1 ? 'lançamento está' : 'lançamentos estão'} '
+                        'esperando para sincronizar. $effects'
+                  : effects,
+            ),
+            actions: AppButton(
+              fullWidth: true,
+              size: AppButtonSize.lg,
+              onPressed: () => context.go('/fazendas'),
+              child: const Text('Voltar ao início'),
+            ),
           ),
         ),
       ),

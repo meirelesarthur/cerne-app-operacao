@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
@@ -45,111 +46,116 @@ class NotificacoesPage extends ConsumerWidget {
                   : null,
             ),
             Expanded(
-              child: notifications.isEmpty
-                  ? const Center(
-                      child: AppEmptyState(
-                        icon: AppIcons.bellOff,
-                        title: 'Sem notificações',
-                        description: 'Você está em dia.',
-                      ),
-                    )
-                  : ListView.separated(
-                      padding: const EdgeInsets.all(AppSpacing.space3),
-                      itemCount: notifications.length,
-                      separatorBuilder: (context, index) =>
-                          const SizedBox(height: AppSpacing.space2),
-                      itemBuilder: (context, index) {
-                        final n = notifications[index];
-                        final icon = _moduleIcon[n.moduleId] ?? AppIcons.sprout;
-                        final destination =
-                            getModule(n.moduleId)?.homeRoute ?? '/inicio';
+              child: AppContentSheet(
+                padded: false,
+                child: notifications.isEmpty
+                    ? const Center(
+                        child: AppEmptyState(
+                          icon: AppIcons.bellOff,
+                          title: 'Sem notificações',
+                          description: 'Você está em dia.',
+                        ),
+                      )
+                    : ListView.separated(
+                        padding: const EdgeInsets.all(AppSpacing.space4),
+                        itemCount: notifications.length,
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: AppSpacing.space2),
+                        itemBuilder: (context, index) {
+                          final n = notifications[index];
+                          final icon =
+                              _moduleIcon[n.moduleId] ?? AppIcons.sprout;
+                          final destination =
+                              getModule(n.moduleId)?.homeRoute ?? '/inicio';
 
-                        return AppCard(
-                          interactive: true,
-                          onTap: () => context.go(destination),
-                          padded: false,
-                          child: Container(
-                            padding: const EdgeInsets.all(AppSpacing.space3),
-                            decoration: !n.read
-                                ? BoxDecoration(
-                                    borderRadius: BorderRadius.circular(
-                                      AppRadius.xl3,
-                                    ),
-                                    border: Border.all(
-                                      color: semantic.accentDefault.withValues(
-                                        alpha: 0.6,
+                          return AppCard(
+                            interactive: true,
+                            onTap: () => context.go(destination),
+                            padded: false,
+                            child: Container(
+                              padding: const EdgeInsets.all(AppSpacing.space3),
+                              decoration: !n.read
+                                  ? BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        AppRadius.xl3,
                                       ),
+                                      border: Border.all(
+                                        color: semantic.accentDefault
+                                            .withValues(alpha: 0.6),
+                                      ),
+                                    )
+                                  : null,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: AppSpacing.space10,
+                                    height: AppSpacing.space10,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: semantic.accentSubtle,
+                                      shape: BoxShape.circle,
                                     ),
-                                  )
-                                : null,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: AppSpacing.space10,
-                                  height: AppSpacing.space10,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: semantic.accentSubtle,
-                                    shape: BoxShape.circle,
+                                    child: AppIcon(
+                                      icon,
+                                      size: AppSize.iconMd,
+                                      color: semantic.accentDefault,
+                                    ),
                                   ),
-                                  child: AppIcon(
-                                    icon,
-                                    size: 18,
-                                    color: semantic.accentDefault,
-                                  ),
-                                ),
-                                const SizedBox(width: AppSpacing.space3),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              n.title,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: TextStyle(
-                                                fontWeight: AppTypography
-                                                    .weightSemibold,
-                                                color: semantic.fgDefault,
+                                  const SizedBox(width: AppSpacing.space3),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                n.title,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  fontWeight: AppTypography
+                                                      .weightSemibold,
+                                                  color: semantic.fgDefault,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            width: AppSpacing.space2,
-                                          ),
-                                          Text(
-                                            n.time,
-                                            style: TextStyle(
-                                              fontSize: AppTypography.xs,
-                                              color: semantic.fgSubtle,
+                                            const SizedBox(
+                                              width: AppSpacing.space2,
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        n.detail,
-                                        style: TextStyle(
-                                          color: semantic.fgMuted,
+                                            Text(
+                                              n.time,
+                                              style: TextStyle(
+                                                fontSize: AppTypography.xs,
+                                                color: semantic.fgSubtle,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                      const SizedBox(height: AppSpacing.space1),
-                                      AppChip(child: Text(n.moduleId)),
-                                    ],
+                                        Text(
+                                          n.detail,
+                                          style: TextStyle(
+                                            color: semantic.fgMuted,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: AppSpacing.space1,
+                                        ),
+                                        AppChip(child: Text(n.moduleId)),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
+              ),
             ),
           ],
         ),

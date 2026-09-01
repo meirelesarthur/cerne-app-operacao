@@ -11,6 +11,7 @@ import '../../../../ui/ui.dart';
 import '../../components/bank_flow_shell.dart';
 import 'package:cerne_app/modules/bank/lib/currency.dart';
 import 'package:cerne_app/design/generated/app_radius.dart';
+import '../../../../design/generated/app_layout.dart';
 
 class _Destino {
   const _Destino({
@@ -208,7 +209,10 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             AppButton(
               variant: AppButtonVariant.secondary,
               fullWidth: true,
-              rightIcon: const AppIcon(AppIcons.arrowRight, size: 16),
+              rightIcon: const AppIcon(
+                AppIcons.arrowRight,
+                size: AppSize.iconSm,
+              ),
               onPressed: _chaveManualController.text.trim().isEmpty
                   ? null
                   : _continuarManual,
@@ -254,7 +258,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                     ),
                     AppIcon(
                       AppIcons.arrowRight,
-                      size: 18,
+                      size: AppSize.iconSmPlus,
                       color: semantic.accentDefault,
                     ),
                   ],
@@ -414,7 +418,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
                   ),
                   child: AppIcon(
                     AppIcons.zap,
-                    size: 22,
+                    size: AppSize.iconMd,
                     color: semantic.accentDefault,
                   ),
                 ),
@@ -464,7 +468,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             ),
             const SizedBox(height: AppSpacing.space5),
             const AppBanner(
-              icon: AppIcon(AppIcons.info, size: 14),
+              icon: AppIcon(AppIcons.info, size: AppSize.iconXs),
               child: Text(
                 'O Pix é processado na hora, 24/7. Confira os dados antes de confirmar.',
               ),
