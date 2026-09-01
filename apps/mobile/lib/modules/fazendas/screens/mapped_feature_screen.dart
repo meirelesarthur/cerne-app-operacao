@@ -197,7 +197,6 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                           // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
                           canCreate:
                               feature.fields.isNotEmpty && !feature.readOnly,
-                          readOnly: feature.readOnly,
                           onCreate: _startForm,
                         )
                       else
@@ -329,23 +328,69 @@ class _FeatureIntroduction extends StatelessWidget {
   }
 }
 
-class _RecordsList extends StatelessWidget {
+class _RecordsList extends StatefulWidget {
   const _RecordsList({
     required this.feature,
     required this.records,
     required this.canCreate,
-    required this.readOnly,
     required this.onCreate,
   });
 
   final FeatureDefinition feature;
   final List<PrototypeRecord> records;
   final bool canCreate;
-  final bool readOnly;
   final VoidCallback onCreate;
 
   @override
+  State<_RecordsList> createState() => _RecordsListState();
+}
+
+class _RecordsListState extends State<_RecordsList> {
+  static const _pageSize = 5;
+  late final TextEditingController _searchController;
+  var _query = '';
+  var _page = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _setQuery(String value) => setState(() {
+    _query = value;
+    _page = 0;
+  });
+
+  @override
   Widget build(BuildContext context) {
+    final records = _recordsWithMinimumSample(widget.feature, widget.records);
+    final query = _query.trim().toLowerCase();
+    final filteredRecords = query.isEmpty
+        ? records
+        : records
+              .where((record) {
+                final searchable = [
+                  record.title,
+                  record.description,
+                  ...record.details.keys,
+                  ...record.details.values,
+                ].join(' ').toLowerCase();
+                return searchable.contains(query);
+              })
+              .toList(growable: false);
+    final pageCount = (filteredRecords.length / _pageSize).ceil().clamp(1, 999);
+    final page = _page.clamp(0, pageCount - 1);
+    final start = page * _pageSize;
+    final end = (start + _pageSize).clamp(0, filteredRecords.length);
+    final visibleRecords = filteredRecords.sublist(start, end);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -362,46 +407,61 @@ class _RecordsList extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: AppSpacing.space3),
-              if (records.isEmpty)
-                AppEmptyState(
-                  icon: AppIcons.clipboardCheck,
-                  title: feature.emptyLabel ?? 'Nenhum registro encontrado',
-                  description: canCreate
-                      ? 'Use a ação abaixo para criar o primeiro registro desta rotina.'
-                      : readOnly
-                      ? 'O cadastro desta rotina é feito no sistema web. Assim que sincronizar, os registros aparecem aqui.'
-                      : 'Os registros operacionais desta sessão aparecerão aqui.',
+              AppFormField(
+                label: 'Buscar registros',
+                child: AppTextInput(
+                  controller: _searchController,
+                  placeholder: 'Nome, situação ou detalhe',
+                  prefixIcon: const AppIcon(AppIcons.aiSearch),
+                  onChanged: _setQuery,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.space3),
+              if (filteredRecords.isEmpty)
+                const AppEmptyState(
+                  icon: AppIcons.search,
+                  title: 'Nenhum registro encontrado',
+                  description: 'Ajuste a busca para encontrar outro cadastro.',
                 )
               else
-                for (var index = 0; index < records.length; index++) ...[
+                for (var index = 0; index < visibleRecords.length; index++) ...[
                   AppMenuItem(
                     icon: AppIcons.fileCheck2,
-                    label: records[index].title,
-                    description: records[index].description,
+                    label: visibleRecords[index].title,
+                    description: visibleRecords[index].description,
                     trailing: AppChip(
                       tone:
-                          records[index].status ==
+                          visibleRecords[index].status ==
                               PrototypeRecordStatus.scheduled
                           ? AppChipTone.blue
                           : AppChipTone.brand,
-                      child: Text(_statusLabel(records[index].status)),
+                      child: Text(_statusLabel(visibleRecords[index].status)),
                     ),
-                    onTap: () => _showRecord(context, records[index]),
+                    onTap: () => _showRecord(context, visibleRecords[index]),
                   ),
-                  if (index < records.length - 1)
+                  if (index < visibleRecords.length - 1)
                     const SizedBox(height: AppSpacing.space2),
                 ],
+              if (filteredRecords.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.space3),
+                AppPagination(
+                  page: page,
+                  totalItems: filteredRecords.length,
+                  pageSize: _pageSize,
+                  onPageChanged: (nextPage) => setState(() => _page = nextPage),
+                ),
+              ],
             ],
           ),
         ),
-        if (canCreate) ...[
+        if (widget.canCreate) ...[
           const SizedBox(height: AppSpacing.space4),
           AppButton(
             fullWidth: true,
             size: AppButtonSize.lg,
             leftIcon: const AppIcon(AppIcons.plus, size: AppSpacing.space5),
-            onPressed: onCreate,
-            child: Text(feature.createAction ?? 'Novo registro'),
+            onPressed: widget.onCreate,
+            child: Text(widget.feature.createAction ?? 'Novo registro'),
           ),
         ],
       ],
@@ -439,6 +499,39 @@ class _RecordsList extends StatelessWidget {
       ),
     );
   }
+}
+
+List<PrototypeRecord> _recordsWithMinimumSample(
+  FeatureDefinition feature,
+  List<PrototypeRecord> records,
+) {
+  const minimumRecords = 6;
+  if (records.length >= minimumRecords) return records;
+
+  final samples = List<PrototypeRecord>.of(records);
+  for (var index = samples.length; index < minimumRecords; index++) {
+    final number = index + 1;
+    final status = PrototypeRecordStatus
+        .values[index % PrototypeRecordStatus.values.length];
+    samples.add(
+      PrototypeRecord(
+        id: '${feature.id}-sample-$number',
+        title: '${feature.title} · Registro $number',
+        description: 'Fazenda Agro Pillathi · atualizado recentemente',
+        status: status,
+        details: {
+          'Fazenda': 'Fazenda Agro Pillathi',
+          'Situação': switch (status) {
+            PrototypeRecordStatus.active => 'Ativo',
+            PrototypeRecordStatus.completed => 'Concluído',
+            PrototypeRecordStatus.scheduled => 'Programado',
+          },
+          'Atualização': '$number dia${number == 1 ? '' : 's'} atrás',
+        },
+      ),
+    );
+  }
+  return samples;
 }
 
 class _FeatureForm extends StatelessWidget {

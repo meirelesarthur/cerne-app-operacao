@@ -7,6 +7,7 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/functional_journey_engine.dart';
 import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
+import 'package:cerne_app/ui/ui.dart';
 
 import '../../../support/router_test_harness.dart';
 import '../../../support/test_viewport.dart';
@@ -127,6 +128,37 @@ void main() {
         ),
         findsNothing,
       );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('cadastros começam populados e permitem busca com paginação', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          featureId: 'sanitario',
+          profile: FeatureProfile.operational,
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('6'), findsOneWidget);
+      expect(find.text('Sanitário · Registro 1'), findsOneWidget);
+      expect(find.text('Sanitário · Registro 6'), findsNothing);
+      expect(find.byType(AppPagination), findsOneWidget);
+
+      await tester.tap(find.bySemanticsLabel('Próxima página'));
+      await tester.pumpAndSettle();
+      expect(find.text('Sanitário · Registro 6'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextFormField), 'Registro 3');
+      await tester.pumpAndSettle();
+      expect(find.text('Sanitário · Registro 3'), findsOneWidget);
+      expect(find.text('Sanitário · Registro 6'), findsNothing);
       expect(tester.takeException(), isNull);
     });
 

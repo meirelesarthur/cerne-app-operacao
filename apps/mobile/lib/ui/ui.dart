@@ -49,6 +49,7 @@ export 'mini_app_tile.dart';
 export 'modal.dart';
 export 'module_tile.dart';
 export 'page_dots.dart';
+export 'pagination.dart';
 export 'progress_bar.dart';
 export 'pressable.dart';
 export 'quick_action.dart';
