@@ -56,7 +56,7 @@ class GroupFeaturesScreen extends StatelessWidget {
         AppSpacing.space4,
       ),
       children: [
-        AppSearchField(onTap: () => context.go('/busca')),
+        AppSearchField(onTap: () => context.push('/busca')),
         const SizedBox(height: AppSpacing.space4),
         AppSectionTitle(
           leading: AppIcons.chevronLeft,

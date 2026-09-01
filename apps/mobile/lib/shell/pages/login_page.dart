@@ -14,7 +14,9 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 /// Login do Shell (mock, sem autenticação real) — espelha `Login.tsx`: arte de
 /// campo em tela cheia como fundo fixo, véu escuro só no topo para a marca
 /// clara, e cartão de boas-vindas com o formulário flutuando sobre a arte.
-/// Qualquer entrada leva ao superapp (`/inicio`).
+/// A tela é compartilhada pelos dois apps, mas o destino é definido pelo
+/// ambiente enviado pela pasta `CRN App`: Administração abre o hub Banking e
+/// Operação abre a central de campo. Não há duas ações de login nesta tela.
 ///
 /// Desvio do React: `logo-min-white.svg` não é renderizável sem `flutter_svg`
 /// (fora do escopo desta mudança — ver relatório da tarefa). No lugar da marca
@@ -41,18 +43,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   void _loginAs(UserAccessProfile profile) {
     ref.read(prototypeSessionProvider.notifier).loginAs(profile);
-    context.go(profile.homeRoute);
+    context.go(profile.landingRoute);
   }
 
-  /// Ambiente sinalizado pela pasta "CRN App" da home Android (`?ambiente=
-  /// administracao|operacional`) — reforça visualmente a separação dos dois
-  /// apps sem remover a etapa de login compartilhada (decisão já validada).
-  UserAccessProfile? get _ambienteFromQuery {
+  /// Ambiente sinalizado pela pasta "CRN App" (`?ambiente=administracao|
+  /// operacional`). Um `/login` direto cai no administrativo, que é a porta
+  /// padrão do superapp.
+  UserAccessProfile get _ambienteFromQuery {
     final value = GoRouterState.of(context).uri.queryParameters['ambiente'];
     return switch (value) {
       'administracao' => UserAccessProfile.administration,
       'operacional' => UserAccessProfile.operational,
-      _ => null,
+      _ => UserAccessProfile.administration,
     };
   }
 
@@ -201,65 +203,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                           const SizedBox(height: AppSpacing.space3),
                           Text(
-                            switch (ambiente) {
-                              UserAccessProfile.administration =>
-                                'Abrindo CRN ADM.',
-                              UserAccessProfile.operational =>
-                                'Abrindo CRN Operação.',
-                              null =>
-                                'Escolha o ambiente para esta sessão demonstrativa.',
-                            },
+                            ambiente == UserAccessProfile.administration
+                                ? 'Acesso administrativo'
+                                : 'Acesso operacional',
                             textAlign: TextAlign.center,
                             style: TextStyle(color: semantic.fgMuted),
                           ),
                           const SizedBox(height: AppSpacing.space3),
-                          LayoutBuilder(
-                            builder: (context, constraints) {
-                              // Quando a tela chega sinalizada pela pasta
-                              // "CRN App" (`ambiente`), destaca o botão do
-                              // ambiente escolhido e reduz o outro a
-                              // secundário — reforça a separação dos dois
-                              // apps mesmo compartilhando o mesmo formulário.
-                              final administrationButton = AppButton(
-                                fullWidth: true,
-                                size: AppButtonSize.lg,
-                                variant:
-                                    ambiente == UserAccessProfile.operational
-                                    ? AppButtonVariant.ghost
-                                    : AppButtonVariant.primary,
-                                onPressed: () =>
-                                    _loginAs(UserAccessProfile.administration),
-                                child: const Text('Login Administração'),
-                              );
-                              final operationalButton = AppButton(
-                                fullWidth: true,
-                                size: AppButtonSize.lg,
-                                variant:
-                                    ambiente == UserAccessProfile.administration
-                                    ? AppButtonVariant.ghost
-                                    : AppButtonVariant.secondary,
-                                onPressed: () =>
-                                    _loginAs(UserAccessProfile.operational),
-                                child: const Text('Login Operacional'),
-                              );
-
-                              if (constraints.maxWidth > AppSize.phone) {
-                                return Row(
-                                  children: [
-                                    Expanded(child: administrationButton),
-                                    const SizedBox(width: AppSpacing.space3),
-                                    Expanded(child: operationalButton),
-                                  ],
-                                );
-                              }
-                              return Column(
-                                children: [
-                                  administrationButton,
-                                  const SizedBox(height: AppSpacing.space3),
-                                  operationalButton,
-                                ],
-                              );
-                            },
+                          AppButton(
+                            fullWidth: true,
+                            size: AppButtonSize.lg,
+                            onPressed: () => _loginAs(ambiente),
+                            child: const Text('Entrar'),
                           ),
                         ],
                       ),

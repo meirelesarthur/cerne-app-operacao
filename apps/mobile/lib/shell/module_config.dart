@@ -176,16 +176,16 @@ const List<ModuleDef> modules = [
     bottomTabs: [
       BottomTab(id: 'home', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
-        id: 'apps',
-        label: 'Apps',
-        icon: AppIcons.layoutGrid,
-        path: 'apps',
-      ),
-      BottomTab(
         id: 'carteira',
         label: 'Carteira',
         icon: AppIcons.wallet,
         path: 'carteira',
+      ),
+      BottomTab(
+        id: 'apps',
+        label: 'Apps',
+        icon: AppIcons.layoutGrid,
+        path: 'apps',
       ),
       BottomTab(
         id: 'menu',

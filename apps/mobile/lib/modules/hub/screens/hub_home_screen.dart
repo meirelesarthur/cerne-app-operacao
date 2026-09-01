@@ -11,6 +11,7 @@ import '../../../shell/state/prototype_session_store.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../mocks/hub_apps.dart';
+import 'administrative_home_screen.dart';
 import '../../../design/generated/app_layout.dart';
 
 /// Home do hub agregador — espelha `HubHome.tsx`: Banking no centro da
@@ -29,6 +30,9 @@ class _HubHomeScreenState extends ConsumerState<HubHomeScreen> {
     final shell = ref.watch(shellStoreProvider);
     final balanceHidden = shell.balanceHidden;
     final profile = ref.watch(prototypeSessionProvider).profile;
+    if (profile == UserAccessProfile.administration) {
+      return const AdministrativeHomeScreen();
+    }
     // A pílula de crédito pré-aprovado saiu do header global (ver plano de
     // UX): irrelevante — e sensível, é uma decisão financeira da fazenda —
     // para quem está no perfil operacional. Ela permanece só como este card,

@@ -94,6 +94,11 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     context.go(route);
   }
 
+  void _openSearch(BuildContext context, WidgetRef ref) {
+    ref.read(shellStoreProvider.notifier).closeMenu();
+    context.push('/busca');
+  }
+
   /// Corpo do módulo: faixa de offline (quando aplicável) e a tela em si, com
   /// o respiro do dock flutuante. É o mesmo em rota rasa e funda — só muda se
   /// a folha de conteúdo vem do shell ou da própria tela.
@@ -223,9 +228,8 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                             children: [
                                               AppShellHeader(
                                                 collapsed: _headerCollapsed,
-                                                showMenu: !isOperationalModule,
-                                                showProfileSubtitle:
-                                                    !isOperationalModule,
+                                                showMenu: false,
+                                                showProfileSubtitle: false,
                                                 onOpenProfile: () =>
                                                     _go(context, ref, '/perfil'),
                                                 onOpenNotifications: () => _go(
@@ -235,11 +239,11 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                                 ),
                                                 child: showGlobalContext
                                                     ? AppSearchField(
-                                                        onTap: () => _go(
-                                                          context,
-                                                          ref,
-                                                          '/busca',
-                                                        ),
+                                                        onTap: () =>
+                                                            _openSearch(
+                                                              context,
+                                                              ref,
+                                                            ),
                                                       )
                                                     : null,
                                               ),
@@ -269,14 +273,14 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                       Expanded(
                                         child: _content(
                                           state,
-                                          reserveTabBar: true,
+                                          reserveTabBar: isOperationalModule,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
                         ),
-                        if (!hideChrome)
+                        if (!hideChrome && isOperationalModule)
                           Positioned(
                             left: 0,
                             right: 0,

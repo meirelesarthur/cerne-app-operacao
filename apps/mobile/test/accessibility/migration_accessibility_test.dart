@@ -156,8 +156,9 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Login Administração'), findsOneWidget);
-      expect(find.text('Login Operacional'), findsOneWidget);
+      expect(find.text('Entrar'), findsOneWidget);
+      expect(find.text('Login Administração'), findsNothing);
+      expect(find.text('Login Operacional'), findsNothing);
       expect(tester.takeException(), isNull);
       await expectLater(tester, meetsGuideline(iOSTapTargetGuideline));
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));

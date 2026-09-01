@@ -164,7 +164,7 @@ String? redirectForSession(String path, PrototypeSessionState session) {
       path == '/login' ||
       path == '/desktop' ||
       path == '/desktop/crn-app') {
-    return profile.homeRoute;
+    return path == '/fazendas' ? profile.homeRoute : profile.landingRoute;
   }
   if (path == '/fazendas/mais') return profile.homeRoute;
   if (path == '/onboarding') return null;
@@ -180,10 +180,10 @@ String? redirectForSession(String path, PrototypeSessionState session) {
       path == '/fazendas/mais/sync';
 
   if (profile == UserAccessProfile.administration && isOperationalRoute) {
-    return profile.homeRoute;
+    return profile.landingRoute;
   }
   if (profile == UserAccessProfile.operational && isAdministrationRoute) {
-    return profile.homeRoute;
+    return profile.landingRoute;
   }
 
   return null;

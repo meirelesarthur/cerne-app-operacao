@@ -44,7 +44,7 @@ void main() {
       ]) {
         expect(
           redirectForSession(path, administration),
-          UserAccessProfile.administration.homeRoute,
+          UserAccessProfile.administration.landingRoute,
           reason: path,
         );
       }
@@ -65,7 +65,7 @@ void main() {
       ]) {
         expect(
           redirectForSession(path, operational),
-          UserAccessProfile.operational.homeRoute,
+          UserAccessProfile.operational.landingRoute,
           reason: path,
         );
       }
@@ -83,20 +83,23 @@ void main() {
     test('raiz, login e atalhos neutros retornam à central do perfil', () {
       for (final profile in UserAccessProfile.values) {
         final session = PrototypeSessionState.signedIn(profile);
-        for (final path in [
-          '/',
-          '/login',
-          '/fazendas',
-          '/fazendas/mais',
-          '/desktop',
-          '/desktop/crn-app',
-        ]) {
+        for (final path in ['/', '/login', '/desktop', '/desktop/crn-app']) {
           expect(
             redirectForSession(path, session),
-            profile.homeRoute,
+            profile.landingRoute,
             reason: '${profile.name}: $path',
           );
         }
+        expect(
+          redirectForSession('/fazendas', session),
+          profile.homeRoute,
+          reason: '${profile.name}: /fazendas',
+        );
+        expect(
+          redirectForSession('/fazendas/mais', session),
+          profile.homeRoute,
+          reason: '${profile.name}: /fazendas/mais',
+        );
       }
     });
   });

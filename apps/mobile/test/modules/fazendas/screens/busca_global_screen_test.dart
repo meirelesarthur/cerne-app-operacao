@@ -6,6 +6,7 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/screens/busca_global_screen.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
+import 'package:cerne_app/ui/discovery_tile.dart';
 import 'package:cerne_app/ui/menu_item.dart';
 
 Widget _app(WidgetTester tester, UserAccessProfile? profile) {
@@ -139,12 +140,29 @@ void main() {
   });
 
   group('BuscaGlobalScreen', () {
-    testWidgets('abre convidando a buscar, sem lista', (tester) async {
+    testWidgets('abre com produtos, acessos recentes e histórico', (
+      tester,
+    ) async {
       await tester.pumpWidget(_app(tester, UserAccessProfile.operational));
       await tester.pump();
 
-      expect(find.text('O que você precisa fazer?'), findsOneWidget);
+      expect(find.text('Seus Produtos'), findsOneWidget);
+      expect(find.text('Mais acessados'), findsOneWidget);
+      expect(find.text('Histórico'), findsOneWidget);
+      expect(find.byType(AppDiscoveryTile), findsNWidgets(8));
       expect(find.byType(AppMenuItem), findsNothing);
+    });
+
+    testWidgets('usa a mesma busca otimizada no administrativo', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_app(tester, UserAccessProfile.administration));
+      await tester.pump();
+
+      expect(find.text('Seus Produtos'), findsOneWidget);
+      expect(find.text('Open Finance'), findsWidgets);
+      expect(find.text('Histórico'), findsOneWidget);
+      expect(find.byType(AppDiscoveryTile), findsNWidgets(8));
     });
 
     testWidgets('lista o que encontrou com o ícone do módulo', (tester) async {
