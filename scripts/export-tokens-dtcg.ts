@@ -13,6 +13,7 @@ import { writeFileSync, mkdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
+  color as colorTokens,
   primitive,
   font,
   space,
@@ -100,6 +101,18 @@ const dtcg = {
       red: mapColors(primitive.red),
       amber: mapColors(primitive.amber),
       blue: mapColors(primitive.blue),
+      // Camada semântica de feedback: existia em design/tokens.ts desde sempre,
+      // mas nunca chegava ao Dart — os componentes acabavam lendo `red500`/
+      // `amber500` crus. O padrão global precisa dos tons próprios do Figma
+      // (o vermelho do "Cancelar" e o âmbar do badge "Em análise"), e é aqui
+      // que eles ganham nome.
+      feedback: {
+        success: mapColors(colorTokens.feedback.success),
+        error: mapColors(colorTokens.feedback.error),
+        warning: mapColors(colorTokens.feedback.warning),
+        info: mapColors(colorTokens.feedback.info),
+        notice: color(colorTokens.feedback.notice),
+      },
     },
     font: {
       family: { sans: { $value: font.family.sans, $type: 'fontFamily' } },
@@ -147,6 +160,7 @@ const dtcg = {
       itemStagger: duration(component.revealMenu.itemStagger),
     },
     header: mapColors(component.header),
+    hero: { angle: number(component.hero.angle) },
     kpi: mapColors(component.kpi),
     tabbar: mapDimensions(component.tabbar),
   },

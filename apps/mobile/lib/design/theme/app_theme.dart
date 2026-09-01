@@ -23,12 +23,14 @@ ThemeData buildAppTheme(AppThemeVariant variant) {
     required double fontSize,
     required FontWeight fontWeight,
     required Color color,
+    double? height,
   }) {
     return TextStyle(
       fontFamily: AppTypography.fontFamily,
       fontSize: fontSize,
       fontWeight: fontWeight,
       color: color,
+      height: height,
     );
   }
 
@@ -37,6 +39,9 @@ ThemeData buildAppTheme(AppThemeVariant variant) {
               ? Typography.material2021().black
               : Typography.material2021().white)
           .copyWith(
+            // Papéis medidos no Figma 54300-2458. Os slots do Material são o
+            // endereço; os valores são os da referência, não os do Material.
+            // saldo do cartão-herói (54300:16101)
             displayLarge: outfit(
               fontSize: AppTypography.xl4,
               fontWeight: AppTypography.weightBold,
@@ -47,18 +52,30 @@ ThemeData buildAppTheme(AppThemeVariant variant) {
               fontWeight: AppTypography.weightBold,
               color: semantic.fgDefault,
             ),
+            // título de tela do cabeçalho de saudação (54349:2379)
             titleLarge: outfit(
-              fontSize: AppTypography.xl2,
+              fontSize: AppTypography.xlPlus2,
               fontWeight: AppTypography.weightSemibold,
               color: semantic.fgDefault,
+              height: AppTypography.lineHeightHeading,
             ),
+            // título da top bar (54349:2084)
             titleMedium: outfit(
-              fontSize: AppTypography.xl,
+              fontSize: AppTypography.xlPlus,
               fontWeight: AppTypography.weightSemibold,
-              color: semantic.fgDefault,
+              color: semantic.fgHeading,
+              height: AppTypography.lineHeightHeading,
             ),
+            // cabeçalho de seção (54349:3165)
+            titleSmall: outfit(
+              fontSize: AppTypography.xl,
+              fontWeight: AppTypography.weightMedium,
+              color: semantic.fgSection,
+              height: AppTypography.lineHeightSection,
+            ),
+            // corpo e texto de input (54349:2016)
             bodyLarge: outfit(
-              fontSize: AppTypography.lg,
+              fontSize: AppTypography.xl,
               fontWeight: AppTypography.weightNormal,
               color: semantic.fgDefault,
             ),
@@ -67,15 +84,29 @@ ThemeData buildAppTheme(AppThemeVariant variant) {
               fontWeight: AppTypography.weightNormal,
               color: semantic.fgMuted,
             ),
+            // subtítulo de card (54349:3208)
             bodySmall: outfit(
               fontSize: AppTypography.sm,
               fontWeight: AppTypography.weightNormal,
-              color: semantic.fgSubtle,
+              color: semantic.fgSecondary,
             ),
+            // rótulo de ladrilho (54349:2433)
             labelLarge: outfit(
               fontSize: AppTypography.md,
               fontWeight: AppTypography.weightMedium,
               color: semantic.fgDefault,
+            ),
+            // metadado (54335:584)
+            labelMedium: outfit(
+              fontSize: AppTypography.sm,
+              fontWeight: AppTypography.weightNormal,
+              color: semantic.fgSubtle,
+            ),
+            // badge de status (54300:16148)
+            labelSmall: outfit(
+              fontSize: AppTypography.xs2,
+              fontWeight: AppTypography.weightMedium,
+              color: semantic.fgMuted,
             ),
           );
 
