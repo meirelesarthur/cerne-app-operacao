@@ -147,13 +147,17 @@ class AppShellHeader extends ConsumerWidget {
                   hasUnread: unread > 0,
                   onNotifications: onOpenNotifications,
                   onProfile: onOpenProfile,
-                  beforeNotifications: _headerBubble(
+                  // Sem bolha: a referência do Figma mostra a troca de tema
+                  // como ícone solto ao lado do sino (que tem bolha própria),
+                  // não como uma segunda bolha igual — variante `ghost` do
+                  // `AppIconButton` (fundo transparente, sem sombra).
+                  beforeNotifications: AppIconButton(
                     icon: AppIcon(
                       isGbMode ? AppIcons.sun : AppIcons.moon,
                       size: AppSize.iconMd,
                     ),
                     label: isGbMode ? 'Ativar modo claro' : 'Ativar GB Mode',
-                    active: false,
+                    size: AppIconButtonSize.lg,
                     onPressed: () =>
                         ref.read(themeVariantProvider.notifier).toggle(),
                   ),
