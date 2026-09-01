@@ -90,9 +90,10 @@ class PerfilConfigPage extends ConsumerWidget {
                       tone: AppMenuItemTone.danger,
                       onTap: () {
                         ref.read(prototypeSessionProvider.notifier).logout();
-                        // Volta para a home Android — simula "fechar o app",
-                        // reforçando a separação entre CRN ADM e CRN Operação.
-                        context.go('/desktop');
+                        // Volta para a seleção de ambiente — simula "fechar o
+                        // app", reforçando a separação entre CRN ADM e CRN
+                        // Operação.
+                        context.go('/desktop/crn-app');
                       },
                     ),
                   ],

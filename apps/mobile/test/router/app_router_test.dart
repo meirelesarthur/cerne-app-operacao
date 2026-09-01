@@ -34,6 +34,7 @@ void main() {
     testWidgets('"/" redireciona para a central do perfil autenticado', (
       tester,
     ) async {
+      await setTallSurface(tester);
       harness.router.go('/');
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
@@ -238,12 +239,12 @@ void main() {
       },
     );
 
-    testWidgets('deep link sem sessão retorna à home Android (não ao login)', (
+    testWidgets('deep link sem sessão retorna à seleção de ambiente (não ao login)', (
       tester,
     ) async {
-      // Regressão: a home Android (`/desktop`) é a porta de entrada real do
-      // protótipo — sem sessão, qualquer rota protegida cai lá, não direto no
-      // formulário de login (ver `redirectForSession`).
+      // Regressão: a seleção de ambiente (`/desktop/crn-app`) é a porta de
+      // entrada real do protótipo — sem sessão, qualquer rota protegida cai
+      // nela, não direto no formulário de login.
       harness.dispose();
       harness = RouterTestHarness();
       harness.router.go('/fazendas/dashboards/financeiro');
@@ -251,11 +252,12 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('CRN App'), findsOneWidget);
+      expect(find.text('CRN ADM'), findsOneWidget);
+      expect(find.text('CRN Operação'), findsOneWidget);
       expect(find.text('Login Administração'), findsNothing);
     });
 
-    testWidgets('rota inicial sem navegação explícita é a home Android', (
+    testWidgets('rota inicial sem navegação explícita é a seleção de ambiente', (
       tester,
     ) async {
       harness.dispose();
@@ -264,7 +266,8 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('CRN App'), findsOneWidget);
+      expect(find.text('CRN ADM'), findsOneWidget);
+      expect(find.text('CRN Operação'), findsOneWidget);
     });
 
     testWidgets(
@@ -286,7 +289,7 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('O que fazer hoje'), findsOneWidget);
+      expect(find.text('Fazenda São Pedro'), findsOneWidget);
       expect(find.text('Resumo financeiro'), findsNothing);
     });
 

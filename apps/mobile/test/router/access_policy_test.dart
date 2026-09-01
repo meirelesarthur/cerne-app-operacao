@@ -14,7 +14,7 @@ void main() {
     );
 
     test(
-      'sem sessão só login, onboarding e a home Android permanecem públicos',
+      'sem sessão só login, onboarding e a seleção de ambiente permanecem públicos',
       () {
         expect(redirectForSession('/login', signedOut), isNull);
         expect(redirectForSession('/onboarding', signedOut), isNull);
@@ -30,7 +30,11 @@ void main() {
           '/fazendas/administracao',
           '/fazendas/operacional/carga',
         ]) {
-          expect(redirectForSession(path, signedOut), '/desktop', reason: path);
+          expect(
+            redirectForSession(path, signedOut),
+            '/desktop/crn-app',
+            reason: path,
+          );
         }
       },
     );

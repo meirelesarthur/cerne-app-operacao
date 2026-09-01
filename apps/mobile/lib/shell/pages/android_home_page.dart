@@ -9,11 +9,11 @@ import '../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 import '../../design/generated/app_layout.dart';
 
-/// Simulação da tela inicial (launcher) de um aparelho Android — a porta de
-/// entrada do protótipo antes do login. Área de trabalho com um único ícone
+/// Simulação de uma tela de launcher Android — disponível como uma etapa
+/// opcional antes da seleção de ambiente. Área de trabalho com um único ícone
 /// funcional ("CRN App", que abre a pasta com CRN ADM/CRN Operação — ver
 /// [CrnAppFolderPage]) e um dock decorativo, para deixar visualmente clara a
-/// separação entre os dois ambientes desde antes de entrar no app.
+/// separação entre os dois ambientes.
 ///
 /// Barra de status, relógio e ícones do dock são só decoração — mock fixo,
 /// sem hora real nem qualquer integração nativa (Lei "Limites do protótipo").

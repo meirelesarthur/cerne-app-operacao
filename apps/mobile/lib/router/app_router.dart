@@ -35,7 +35,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   });
 
   final router = GoRouter(
-    initialLocation: '/desktop',
+    initialLocation: '/desktop/crn-app',
     refreshListenable: refresh,
     redirect: (context, state) {
       final session = ref.read(prototypeSessionProvider);
@@ -117,11 +117,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: '/onboarding',
         builder: (context, state) => const OnboardingPage(),
       ),
-      // Simulação da tela inicial Android — porta de entrada real do
-      // protótipo (ver `initialLocation` acima). `crn-app` é filho literal de
-      // `desktop`, então `context.go` entre as duas mantém a pilha correta
-      // (mesma linhagem) — só o salto para `/login` (rota irmã fora da
-      // linhagem) usa `push` em `CrnAppFolderPage`.
+      // Simulação da tela inicial Android. A apresentação começa diretamente
+      // na pasta `crn-app` (ver `initialLocation` acima), mas a área de
+      // trabalho continua disponível em `/desktop`. `crn-app` é filho literal
+      // de `desktop`, então `context.go` entre as duas mantém a linhagem — só
+      // o salto para `/login` (rota irmã fora da linhagem) usa `push` em
+      // `CrnAppFolderPage`.
       GoRoute(
         path: '/desktop',
         builder: (context, state) => const AndroidHomePage(),
@@ -153,10 +154,10 @@ String? redirectForSession(String path, PrototypeSessionState session) {
   final profile = session.profile;
 
   if (profile == null) {
-    // A home Android é a porta de entrada real do protótipo (ver
-    // `initialLocation`) — sem sessão, qualquer rota protegida cai lá, não
+    // A seleção de ambiente é a porta de entrada real do protótipo (ver
+    // `initialLocation`) — sem sessão, qualquer rota protegida cai nela, não
     // direto no formulário de login.
-    return isPublic ? null : '/desktop';
+    return isPublic ? null : '/desktop/crn-app';
   }
 
   if (path == '/' ||

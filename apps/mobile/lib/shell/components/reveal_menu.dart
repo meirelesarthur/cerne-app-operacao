@@ -130,10 +130,10 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
                               ref
                                   .read(prototypeSessionProvider.notifier)
                                   .logout();
-                              // Volta para a home Android — simula "fechar o
-                              // app", reforçando a separação entre CRN ADM e
-                              // CRN Operação.
-                              widget.onNavigate('/desktop');
+                              // Volta para a seleção de ambiente — simula
+                              // "fechar o app", reforçando a separação entre
+                              // CRN ADM e CRN Operação.
+                              widget.onNavigate('/desktop/crn-app');
                             },
                           )
                         : const SizedBox.shrink(),

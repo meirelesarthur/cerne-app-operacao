@@ -11,9 +11,10 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: CerneApp()));
     await tester.pumpAndSettle();
 
-    // Porta de entrada real do protótipo: a home Android, não o formulário
-    // de login diretamente (ver `initialLocation` em `app_router.dart`).
-    expect(find.text('CRN App'), findsOneWidget);
+    // Porta de entrada real do protótipo: a seleção de ambiente, não a home
+    // Android intermediária nem o formulário de login (ver `initialLocation`).
+    expect(find.text('CRN ADM'), findsOneWidget);
+    expect(find.text('CRN Operação'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
