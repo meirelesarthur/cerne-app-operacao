@@ -8,7 +8,7 @@ fluxo e servir de handoff ao time mobile. Baseado em `spec-cerne-app.md`.
 
 - **Flutter 3.44.6 + Dart 3** em `apps/mobile`
 - **Riverpod** (estado) · **go_router** (roteamento protegido em dois níveis)
-- **Outfit** self-hosted · **Lucide Icons Flutter** · gráficos próprios tokenizados
+- **Outfit** self-hosted · **Hugeicons 1.2** · gráficos próprios tokenizados
 - **Widgetbook** publicado junto com o app em `/storybook/`
 - **Cloudflare Workers Static Assets** com fallbacks separados para app e Widgetbook
 
@@ -22,7 +22,7 @@ npm install
 npm run dev            # Flutter Web no Chrome
 npm run lint           # flutter analyze --fatal-infos
 npm test               # suíte Flutter
-npm run quality:functional # gate de arquitetura, acesso e 53 funções
+npm run quality:functional # gate de arquitetura, acesso e 57 funções
 npm run build          # app + Widgetbook em apps/mobile/build/site
 npm run smoke:deploy   # valida rotas e fallbacks Cloudflare
 npm run tokens:export  # regenera tokens/tokens.json (DTCG) a partir de design/tokens.ts
@@ -45,7 +45,7 @@ apps/mobile/lib/
   router/                 # go_router + política de acesso
   shell/                  # shell global e sessão demonstrativa
   modules/
-    fazendas/             # 12 funções administrativas + 41 operacionais
+    fazendas/             # 14 funções administrativas + 43 operacionais
     hub|bank|credito|marketplace|armazem/
 ```
 
@@ -60,8 +60,8 @@ apps/mobile/lib/
 
 - **Dois ambientes protegidos por perfil**: Administração (leitura/decisão) e Operacional (entrada/campo).
 - **Farm switcher** (multi-tenant) no header do módulo; badge "Lançando em: {fazenda}" nos formulários.
-- **12 funções administrativas** e **41 operacionais** cobertas pelo catálogo normalizado, com
-  46 jornadas frontend prontas e 7 integrações de hardware funcionalmente simuladas.
+- **14 funções administrativas** e **43 operacionais** cobertas pelo catálogo normalizado, com
+  50 jornadas frontend prontas e 7 integrações de hardware funcionalmente simuladas.
 
 ### Regras de negócio refletidas na UI (§7.2)
 
@@ -85,7 +85,7 @@ apps/mobile/lib/
 - [x] Estado demonstrativo em memória por Riverpod, sem backend ou autenticação real.
 - [x] Estrutura Flutter `shell/` + `modules/<nome>/` como pipeline mobile oficial.
 - [x] Sessão demonstrativa obrigatória, logout efetivo e redirecionamento de rotas internas para o login.
-- [x] Gate automatizado garantindo 12 funções administrativas, 41 operacionais, IDs únicos,
+- [x] Gate automatizado garantindo 14 funções administrativas, 43 operacionais, IDs únicos,
   zero itens apenas `Mapeado` e simulação presente em toda dependência de hardware.
 - [x] Controles primários e secundários do design system com alvo mínimo de toque de 44 px,
   foco visível, rótulos acessíveis e ausência de rolagem horizontal em 390 px.

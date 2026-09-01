@@ -16,7 +16,7 @@ Duas entregas acopladas, na ordem em que se sustentam:
    busca, ladrilho de módulo, barra de ação fixa e passos. E fixar a separação **ADM × Operação**
    como dois arquétipos de home distintos, não como uma home com `if`.
 
-**Status: E1–E8 entregues.** As seções 1–4 são auditoria e decisão (fechadas). A seção 5 traz o
+**Status: E1–E9 entregues.** As seções 1–4 são auditoria e decisão (fechadas). A seção 5 traz o
 estado real de cada etapa; a seção 6 registra o que ficou de fora e por quê.
 
 ---
@@ -200,7 +200,7 @@ comum sobe para o cabeçalho global; o que for específico fica no arquétipo.
 | **E6** | `AppModuleTile`/`AppModuleTileGrid`, `AppFarmSelector`, `AppSearchField` | casos no Widgetbook; 18 testes novos | **feito** |
 | **E7** | Home de Operação no arquétipo: `ResponsibilityWorkspace` adota a grade do padrão e o seletor de fazenda | nenhum cartão de módulo reimplementado na tela | **feito** |
 | **E8** | Busca global (`/busca`) e os dois SVGs autorais de §3.3 | busca nos dois perfis; ícones autorais servidos pela mesma `AppIcon` | **feito** |
-| **E9** | Barra de ação fixa e régua de passos dos frames de cadastro | — | **aberto (§6-B)** |
+| **E9** | Barra de ação fixa e régua de passos dos frames de cadastro; extensão do vocabulário às telas sem frame próprio | `FlowShell` e `BankFlowShell` consomem `AppTopBar`, `AppStepProgress`, `AppContentSheet` e `AppActionBar`; suíte e capturas canônicas verdes | **feito** |
 
 ### Números da entrega
 
@@ -209,7 +209,7 @@ comum sobe para o cabeçalho global; o que for específico fica no arquétipo.
 | Referências de ícone | 384 `LucideIcons.*` | 384 `AppIcons.*` |
 | Famílias de ícone no app | 2 (Lucide + 1 Material) | **1** (Hugeicons 1.2) |
 | Espessura de traço | do glifo do pacote, não controlável | `AppSize.iconStroke` = **1.2** |
-| Testes | 447 | **483** |
+| Testes | 447 | **497** |
 | `main.dart.js` (release) | 3 116 932 B | 3 383 979 B (**+8,6 %**) |
 
 O crescimento de 267 KB responde ao risco de bundle levantado abaixo: os 8 MB de dados do pacote
@@ -248,9 +248,11 @@ porque `redirectForSession` a desviaria de volta para a home sem explicar nada �
 de poder abrir, e a tela diz qual dos dois está acontecendo. Se a intenção for permitir a abertura
 cruzada, o que muda é a política de acesso, não a busca.
 
-**B. Os frames de cadastro não foram tocados.** `Cadastro bottom fixed` e `Cadastro steps` descrevem
-a barra de ação fixa e a régua de passos. Os fluxos operacionais já têm `FlowShell` e `AppStepper`
-próprios; alinhá-los ao Figma é uma auditoria de fluxo por fluxo, com escopo próprio.
+**B. ~~Os frames de cadastro não foram tocados.~~ Fechado na E9.** `FlowShell` e `BankFlowShell`
+passaram a montar o mesmo arquétipo dos dois frames: `AppTopBar` fixa sobre o canvas,
+`AppContentSheet` para o formulário, `AppStepProgress` nos fluxos longos e `AppActionBar` fixa para
+uma ou duas ações. Os nove fluxos operacionais, Pix, pagamentos simples e as jornadas mapeadas
+herdam a gramática por esses shells; `AppStepper` continua exclusivamente como entrada numérica.
 
 **C. ~~Os dois vetores autorais continuam mapeados por aproximação.~~ Fechado na E8**, com uma
 ressalva de origem e uma observação ótica:
@@ -270,6 +272,18 @@ virou `openFarmPicker` e hoje é única. Fundir os dois visuais é decisão de d
 
 | Figma | GB CERNE | Motivo |
 |---|---|---|
-| Montserrat em rótulos e placeholders | Outfit | Lei 3 — família única de apresentação |
+| Montserrat no hero, ladrilhos, abas, rótulos, placeholders e textos secundários | Outfit nos mesmos tamanhos/pesos/line-heights | Lei 3 — família única de apresentação |
 | Ladrilho cinza sobre cartão branco | Ladrilho `bgSurface` sobre o canvas | Não existe o cartão branco intermediário; no tema claro `bgSubtle` **é** a cor do canvas, e as fileiras sumiriam |
 | Home de Operação com 9 módulos fixos | Grupos do `functional_catalog.dart` | Os grupos do catálogo já são, um a um e na mesma ordem, os ladrilhos do Figma — e cada um tem destino real |
+
+**F. Telas sem frame próprio.** A extensão deliberada usa sempre o arquétipo mais próximo, sem
+criar uma segunda linguagem visual:
+
+- dashboards administrativos usam a moldura de `administrativo-home` sem as abas, com
+  `AppTopBar`, folha, `AppSectionTitle`, `AppChartCard` e `AppKpiStatCard`;
+- detalhes usam a leitura *bottom fixed*, com conteúdo em folha e ação primária no rodapé quando
+  existe decisão terminal;
+- Perfil e Mais seguem `Menu-rapido-admin`; bottom sheets e modais herdam `bg.sheet` e raio superior
+  `surface`;
+- Android Home, pasta CRN, login e onboarding preservam a arte de tela cheia, mas usam Outfit e os
+  controles tokenizados do catálogo. São as únicas exceções estruturais à `AppContentSheet`.

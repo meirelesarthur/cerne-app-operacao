@@ -4,7 +4,7 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 58 funcionalidades e a divisão por perfil', () {
+    test('preserva as 57 funcionalidades e a divisão por perfil', () {
       // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
       // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
       // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
