@@ -103,7 +103,7 @@ class AdministrativeHomeScreen extends ConsumerWidget {
                             text: ' / 4',
                             style: TextStyle(
                               fontSize: AppTypography.md,
-                              fontWeight: AppTypography.weightRegular,
+                              fontWeight: AppTypography.weightNormal,
                               color: semantic.fgMuted,
                             ),
                           ),
