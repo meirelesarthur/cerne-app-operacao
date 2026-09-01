@@ -88,7 +88,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
   /// Corpo do módulo: faixa de offline (quando aplicável) e a tela em si, com
   /// o respiro do dock flutuante. É o mesmo em rota rasa e funda — só muda se
   /// a folha de conteúdo vem do shell ou da própria tela.
-  Widget _content(ShellState state) {
+  Widget _content(ShellState state, {required bool reserveTabBar}) {
     return NotificationListener<ScrollNotification>(
       onNotification: _handleScrollNotification,
       child: Column(
@@ -103,7 +103,9 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
             ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: AppLayout.tabBarClearance),
+              padding: reserveTabBar
+                  ? const EdgeInsets.only(bottom: AppLayout.tabBarClearance)
+                  : EdgeInsets.zero,
               child: widget.child,
             ),
           ),
@@ -188,7 +190,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                           // abre a folha aqui, com o cabeçalho e as abas
                           // dentro — como nas duas homes da referência.
                           child: hideChrome
-                              ? _content(state)
+                              ? _content(state, reserveTabBar: false)
                               : AppContentSheet(
                                   padded: false,
                                   header: showGlobalContext
@@ -253,54 +255,64 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                           ],
                                         ),
                                       ),
-                                      Expanded(child: _content(state)),
+                                      Expanded(
+                                        child: _content(
+                                          state,
+                                          reserveTabBar: true,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
                         ),
-                        Positioned(
-                          left: 0,
-                          right: 0,
-                          // soma o respiro do token à safe-area inferior real do
-                          // aparelho (home indicator/gesture bar) — sem isso a
-                          // cápsula flutuante fica colada/sobreposta pela área do
-                          // sistema em telas com esse recurso.
-                          bottom:
-                              AppComponentMetrics.tabbarInset +
-                              MediaQuery.of(context).padding.bottom,
-                          child: Center(
-                            child: isOperationalModule
-                                ? AppBottomTabBar(
-                                    navigationTabs: operationalBottomTabs,
-                                    activeId: menuOpen
-                                        ? 'menu'
-                                        : _operationalTabFor(currentPath),
-                                    onModuleSelected: (_) {},
-                                    onNavigationSelected: (tab) {
-                                      if (tab.action == 'menu') {
-                                        ref
-                                            .read(shellStoreProvider.notifier)
-                                            .toggleMenu();
-                                      } else {
-                                        _go(
-                                          context,
-                                          ref,
-                                          '/fazendas/${tab.path}',
-                                        );
-                                      }
-                                    },
-                                  )
-                                : AppBottomTabBar(
-                                    visibleModules: visibleModulesFor(profile),
-                                    activeId: module.id,
-                                    onModuleSelected: (id) => _go(
-                                      context,
-                                      ref,
-                                      moduleHomeRoute(getModule(id)!, profile),
+                        if (!hideChrome)
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            // soma o respiro do token à safe-area inferior real do
+                            // aparelho (home indicator/gesture bar) — sem isso a
+                            // cápsula flutuante fica colada/sobreposta pela área do
+                            // sistema em telas com esse recurso.
+                            bottom:
+                                AppComponentMetrics.tabbarInset +
+                                MediaQuery.of(context).padding.bottom,
+                            child: Center(
+                              child: isOperationalModule
+                                  ? AppBottomTabBar(
+                                      navigationTabs: operationalBottomTabs,
+                                      activeId: menuOpen
+                                          ? 'menu'
+                                          : _operationalTabFor(currentPath),
+                                      onModuleSelected: (_) {},
+                                      onNavigationSelected: (tab) {
+                                        if (tab.action == 'menu') {
+                                          ref
+                                              .read(shellStoreProvider.notifier)
+                                              .toggleMenu();
+                                        } else {
+                                          _go(
+                                            context,
+                                            ref,
+                                            '/fazendas/${tab.path}',
+                                          );
+                                        }
+                                      },
+                                    )
+                                  : AppBottomTabBar(
+                                      visibleModules:
+                                          visibleModulesFor(profile),
+                                      activeId: module.id,
+                                      onModuleSelected: (id) => _go(
+                                        context,
+                                        ref,
+                                        moduleHomeRoute(
+                                          getModule(id)!,
+                                          profile,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   ),

@@ -83,7 +83,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
               placeholder: 'Buscar lote...',
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Dieta / produto',
             required: true,
@@ -95,7 +95,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
               placeholder: 'Selecione a dieta',
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Quantidade fornecida',
             required: true,
@@ -110,7 +110,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
               suffix: 'kg',
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Depósito de origem',
             required: true,

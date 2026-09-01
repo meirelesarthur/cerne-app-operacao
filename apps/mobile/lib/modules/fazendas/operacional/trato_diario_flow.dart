@@ -65,6 +65,12 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
         : batelada!.quantidadeProduzida / elegiveis.length;
 
     final totalFornecido = _fornecida.values.fold<num>(0, (s, v) => s + v);
+    final faltante = batelada == null
+        ? 0
+        : (batelada.quantidadeProduzida - totalFornecido).clamp(
+            0,
+            batelada.quantidadeProduzida,
+          );
     final progresso = elegiveis.isEmpty
         ? 0
         : ((totalFornecido / batelada!.quantidadeProduzida) * 100).round();
@@ -72,10 +78,23 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
 
     return FlowShell(
       title: 'Trato diário',
-      primaryLabel: elegiveis.isEmpty ? null : 'Finalizar fornecimento',
+      actionIcon: AppIcons.moreVertical,
+      actionLabel: 'Mais opções',
+      onAction: () => _showDetails(context),
+      primaryLabel: elegiveis.isEmpty ? null : 'Finalizar trato',
       onPrimary: elegiveis.isEmpty
           ? null
           : () => _finalizar(elegiveis, batelada!),
+      summary: batelada == null
+          ? null
+          : AppActionBarSummary(
+              leadingLabel: 'Fornecido',
+              leadingValue: '${totalFornecido.toStringAsFixed(0)}kg',
+              trailingLabel: 'Faltam',
+              trailingValue: '${faltante.toStringAsFixed(0)}kg',
+              value: totalFornecido.toDouble(),
+              max: batelada.quantidadeProduzida.toDouble(),
+            ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -102,7 +121,7 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
             ),
           ),
           if (batelada != null) ...[
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             GridView.count(
               crossAxisCount: 3,
               shrinkWrap: true,
@@ -122,7 +141,7 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
                 ),
               ],
             ),
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             if (elegiveis.isEmpty)
               const AppEmptyState(
                 title: 'Nenhum curral elegível',
@@ -191,6 +210,17 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
             ],
           ],
         ],
+      ),
+    );
+  }
+
+  void _showDetails(BuildContext context) {
+    showAppBottomSheet<void>(
+      context,
+      title: 'Trato diário',
+      child: const Text(
+        'Selecione a batida de dieta e informe quanto foi fornecido em cada curral. '
+        'O resumo no rodapé mostra o saldo restante antes de finalizar.',
       ),
     );
   }

@@ -95,7 +95,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
               placeholder: 'Buscar lote...',
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           const AppSectionTitle(child: Text('Peso')),
           const SizedBox(height: AppSpacing.space2),
           const AppBanner(
@@ -160,7 +160,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
               ],
             ),
           ],
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Depósito de destino',
             required: true,

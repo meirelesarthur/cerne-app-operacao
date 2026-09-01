@@ -2,6 +2,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/theme_provider.dart';
+import 'package:cerne_app/modules/fazendas/components/context_badge.dart';
+import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
 import 'package:cerne_app/shell/components/context_tabs.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
@@ -114,6 +116,20 @@ void main() {
       expect(find.text('Início'), findsOneWidget);
       expect(find.text('Armazém'), findsOneWidget);
       expect(find.text('CONTA'), findsOneWidget);
+    });
+
+    testWidgets('cadastro profundo remove navbar e contexto da fazenda', (
+      tester,
+    ) async {
+      harness.dispose();
+      harness = RouterTestHarness(profile: UserAccessProfile.operational);
+      harness.router.go('/fazendas/campo/trato-diario');
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppBottomTabBar), findsNothing);
+      expect(find.byType(ContextBadge), findsNothing);
+      expect(find.byTooltip('Mais opções'), findsOneWidget);
     });
 
     testWidgets(

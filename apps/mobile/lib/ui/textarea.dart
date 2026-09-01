@@ -54,7 +54,7 @@ class AppTextarea extends StatelessWidget {
       maxLines: maxLines,
       style: TextStyle(
         fontFamily: AppTypography.fontFamily,
-        fontSize: AppTypography.md,
+        fontSize: AppTypography.xl,
         color: enabled ? semantic.fgDefault : semantic.fgMuted,
       ),
       cursorColor: semantic.accentDefault,
@@ -64,7 +64,7 @@ class AppTextarea extends StatelessWidget {
         hintText: placeholder,
         hintStyle: TextStyle(
           fontFamily: AppTypography.fontFamily,
-          fontSize: AppTypography.md,
+          fontSize: AppTypography.xl,
           color: semantic.fgSubtle,
         ),
         contentPadding: const EdgeInsets.symmetric(

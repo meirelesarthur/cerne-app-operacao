@@ -41,11 +41,11 @@ class AppFormSelect extends StatelessWidget {
 
     final textStyle = TextStyle(
       fontFamily: AppTypography.fontFamily,
-      fontSize: AppTypography.md,
+      fontSize: AppTypography.xl,
       color: enabled ? semantic.fgDefault : semantic.fgMuted,
     );
 
-    // Cápsula (altura de 48px, fundo, raio) vem de `AppFieldCapsule` — o
+    // Cápsula (altura de 52px, fundo, raio) vem de `AppFieldCapsule` — o
     // `InputDecorator` dimensiona `fillColor`/`border` pelo conteúdo, não pelas
     // constraints, então pintar por ele deixava a pílula com a altura do texto.
     return AppFieldCapsule(
@@ -78,6 +78,7 @@ class AppFormSelect extends StatelessWidget {
                 placeholder!,
                 style: TextStyle(
                   fontFamily: AppTypography.fontFamily,
+                  fontSize: AppTypography.xl,
                   color: semantic.fgSubtle,
                 ),
               ),

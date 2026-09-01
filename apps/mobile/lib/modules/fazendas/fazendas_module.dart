@@ -142,12 +142,10 @@ GoRoute buildFazendasModuleRoute() {
 ///
 /// Desvio consciente do React: lá, o próprio `FazendasModule` aplica o padding
 /// inferior (`AppLayout.tabBarClearance`) na área rolável. Na porta Flutter,
-/// esse respiro para o dock de módulos já é aplicado uma única vez, de forma
-/// global, pelo `ShellLayout` (`shell/shell_layout.dart`, `Padding(bottom:
-/// AppLayout.tabBarClearance)` ao redor do `child` roteado) — o mesmo padrão
-/// que as telas do hub (`hub_home_screen.dart`, `carteira_screen.dart`) já
-/// seguem, sem duplicar o respiro por módulo. Reaplicá-lo aqui somaria as duas
-/// paddings (Lei 2 — fonte única do espaçamento).
+/// esse respiro para o dock de módulos é aplicado uma única vez, de forma
+/// global, pelo `ShellLayout` quando a rota está rasa e o dock está visível.
+/// Rotas profundas de cadastro usam a área liberada integralmente — sem
+/// duplicar o respiro por módulo (Lei 2 — fonte única do espaçamento).
 class _FazendasScaffold extends StatelessWidget {
   const _FazendasScaffold({required this.child});
 

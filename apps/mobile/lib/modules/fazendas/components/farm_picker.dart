@@ -8,10 +8,9 @@ import '../state/fazendas_store.dart';
 /// Troca de fazenda (tenant) do módulo — fonte única da folha de seleção.
 ///
 /// Existe como função de módulo, e não dentro de um widget, porque dois pontos
-/// da interface abrem a mesma folha: a faixa `ContextBadge` dentro dos fluxos
-/// operacionais e o `AppFarmSelector` do cabeçalho das centrais. Antes a folha
-/// morava privada no `ContextBadge`; o segundo consumidor teria que copiá-la
-/// (Lei 2).
+/// da interface abrem a mesma folha: a faixa `ContextBadge` da home legada e o
+/// `AppFarmSelector` do cabeçalho das centrais. Antes a folha morava privada no
+/// `ContextBadge`; o segundo consumidor teria que copiá-la (Lei 2).
 void openFarmPicker(BuildContext context, WidgetRef ref) {
   final state = ref.read(fazendasStoreProvider);
   final notifier = ref.read(fazendasStoreProvider.notifier);

@@ -10,7 +10,7 @@ import 'field_capsule.dart';
 /// fundo sutil, sem borda dura. Encapsula `TextFormField` para cumprir a Lei 1
 /// (telas nunca usam `TextField`/`TextFormField` cru).
 ///
-/// A cápsula (altura de 48px, fundo, raio e anel de foco) vem de
+/// A cápsula (altura de 52px, fundo, raio e anel de foco) vem de
 /// `AppFieldCapsule`; aqui só mora o editor de texto.
 class AppTextInput extends StatefulWidget {
   const AppTextInput({
@@ -117,7 +117,7 @@ class _AppTextInputState extends State<AppTextInput> {
         cursorColor: semantic.accentDefault,
         style: TextStyle(
           fontFamily: AppTypography.fontFamily,
-          fontSize: AppTypography.md,
+          fontSize: AppTypography.xl,
           color: widget.enabled ? semantic.fgDefault : semantic.fgMuted,
         ),
         decoration: InputDecoration(
@@ -130,7 +130,7 @@ class _AppTextInputState extends State<AppTextInput> {
           hintText: widget.placeholder,
           hintStyle: TextStyle(
             fontFamily: AppTypography.fontFamily,
-            fontSize: AppTypography.md,
+            fontSize: AppTypography.xl,
             color: semantic.fgSubtle,
           ),
         ),

@@ -96,7 +96,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
               placeholder: 'Selecione o talhão',
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Ciclo de produção',
             child: AppFormSelect(
@@ -106,7 +106,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
               placeholder: 'Selecione o ciclo',
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Tipo de lançamento',
             required: true,
@@ -132,7 +132,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
               ],
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           AppFormField(
             label: 'Data',
             required: true,
@@ -143,7 +143,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
               invalid: _attempted && _data.isEmpty,
             ),
           ),
-          const SizedBox(height: AppSpacing.space5),
+          const SizedBox(height: AppSpacing.space4),
           if (_tipo == _Lancamento.aplicacao) ...[
             AppFormField(
               label: 'Produto / insumo',
@@ -154,7 +154,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
                 placeholder: 'Selecione o insumo',
               ),
             ),
-            const SizedBox(height: AppSpacing.space5),
+            const SizedBox(height: AppSpacing.space4),
             AppFormField(
               label: 'Quantidade',
               child: AppTextInput(
