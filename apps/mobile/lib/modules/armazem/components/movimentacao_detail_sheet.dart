@@ -47,9 +47,7 @@ class _SheetBody extends StatelessWidget {
                 color: isEntrada ? semantic.accentSubtle : semantic.bgSubtle,
               ),
               child: AppIcon(
-                isEntrada
-                    ? AppIcons.arrowDownLeft
-                    : AppIcons.arrowUpRight,
+                isEntrada ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
                 size: 22,
                 color: isEntrada ? semantic.accentDefault : semantic.fgMuted,
               ),
@@ -58,9 +56,7 @@ class _SheetBody extends StatelessWidget {
             AppChip(
               tone: isEntrada ? AppChipTone.brand : AppChipTone.neutral,
               icon: AppIcon(
-                isEntrada
-                    ? AppIcons.arrowDownLeft
-                    : AppIcons.arrowUpRight,
+                isEntrada ? AppIcons.arrowDownLeft : AppIcons.arrowUpRight,
                 size: 12,
               ),
               child: Text(isEntrada ? 'Entrada' : 'Saída'),

@@ -97,7 +97,8 @@ void main() {
       expect(
         residual,
         isEmpty,
-        reason: 'lucide_icons_flutter saiu do projeto na E5: ${residual.join(', ')}',
+        reason:
+            'lucide_icons_flutter saiu do projeto na E5: ${residual.join(', ')}',
       );
       expect(
         leaked,

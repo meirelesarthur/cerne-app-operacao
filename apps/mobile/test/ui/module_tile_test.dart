@@ -10,7 +10,9 @@ import '../helpers/app_icon_finder.dart';
 Widget _wrap(Widget child, {double width = 402}) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
   home: Scaffold(
-    body: Center(child: SizedBox(width: width, child: child)),
+    body: Center(
+      child: SizedBox(width: width, child: child),
+    ),
   ),
 );
 
@@ -65,10 +67,7 @@ void main() {
     testWidgets('o resumo só aparece quando informado', (tester) async {
       await tester.pumpWidget(
         _wrap(
-          const AppModuleTile(
-            icon: AppIcons.warehouse,
-            label: 'Meus Currais',
-          ),
+          const AppModuleTile(icon: AppIcons.warehouse, label: 'Meus Currais'),
         ),
       );
       expect(find.text('Ações realizadas nos currais'), findsNothing);

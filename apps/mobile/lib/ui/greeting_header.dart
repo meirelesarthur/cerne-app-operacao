@@ -29,10 +29,12 @@ class AppGreetingHeader extends StatelessWidget {
     required this.greeting,
     required this.name,
     this.initials,
+    this.subtitle,
     this.hasUnread = false,
     this.onNotifications,
     this.notificationsLabel = 'Notificações',
     this.onProfile,
+    this.trailing,
   });
 
   /// "Boa tarde," — a saudação por período do dia.
@@ -42,11 +44,20 @@ class AppGreetingHeader extends StatelessWidget {
   /// Iniciais do avatar. Nulo deriva de [name] (regra do `AppAvatar`).
   final String? initials;
 
+  /// Linha de contexto sob o nome — no app, o ambiente da sessão. Não existe na
+  /// referência: o Figma pressupõe um único ambiente, e o GB CERNE tem dois
+  /// perfis com permissões distintas. Extensão registrada.
+  final String? subtitle;
+
   /// Pinta o ponto de não-lida sobre a bolha do sino.
   final bool hasUnread;
   final VoidCallback? onNotifications;
   final String notificationsLabel;
   final VoidCallback? onProfile;
+
+  /// Bolhas extras à direita do sino (menu, modo consulta). Também extensão: o
+  /// Figma só tem o sino, mas o shell do app tem ações globais próprias.
+  final Widget? trailing;
 
   /// Aresta da bolha de notificação no Figma.
   static const double _bubbleSize = AppSize.control;
@@ -85,6 +96,17 @@ class AppGreetingHeader extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
+              if (subtitle != null)
+                Text(
+                  subtitle!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightSemibold,
+                    color: semantic.accentDefault,
+                  ),
+                ),
             ],
           ),
         ),
@@ -147,6 +169,10 @@ class AppGreetingHeader extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadius.full),
           child: bell,
         ),
+        if (trailing != null) ...[
+          const SizedBox(width: AppSpacing.space2),
+          trailing!,
+        ],
       ],
     );
   }
@@ -176,6 +202,7 @@ WidgetbookComponent buildGreetingHeaderWidgetbookComponent() {
           child: AppGreetingHeader(
             greeting: 'Bom dia,',
             name: 'Maria Aparecida de Souza',
+            subtitle: 'Ambiente Operação',
             onNotifications: () {},
           ),
         ),

@@ -35,7 +35,9 @@ void main() {
     ) async {
       var tapped = false;
       await tester.pumpWidget(
-        _wrap(const AppIconButton(icon: AppIcon(AppIcons.plus), label: 'Adicionar')),
+        _wrap(
+          const AppIconButton(icon: AppIcon(AppIcons.plus), label: 'Adicionar'),
+        ),
       );
 
       await tester.tap(find.byType(AppIconButton), warnIfMissed: false);

@@ -130,10 +130,7 @@ void main() {
             f.existingRoute == null && f.profile == FeatureProfile.operational,
       );
 
-      expect(
-        featureDestination(admin),
-        '/fazendas/administracao/${admin.id}',
-      );
+      expect(featureDestination(admin), '/fazendas/administracao/${admin.id}');
       expect(
         featureDestination(operacional),
         '/fazendas/operacional/${operacional.id}',

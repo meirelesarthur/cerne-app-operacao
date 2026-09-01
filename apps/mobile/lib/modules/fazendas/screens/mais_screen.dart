@@ -175,7 +175,11 @@ class _MaisRow extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: semantic.accentSubtle,
               ),
-              child: AppIcon(item.icon, size: 18, color: semantic.accentDefault),
+              child: AppIcon(
+                item.icon,
+                size: 18,
+                color: semantic.accentDefault,
+              ),
             ),
             const SizedBox(width: AppSpacing.space3),
             Expanded(

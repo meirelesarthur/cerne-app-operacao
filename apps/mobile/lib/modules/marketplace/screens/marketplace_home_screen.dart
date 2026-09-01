@@ -251,7 +251,11 @@ class _ProdutoCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppRadius.xl),
             ),
             child: categoria != null
-                ? AppIcon(categoria.icon, size: 28, color: semantic.accentDefault)
+                ? AppIcon(
+                    categoria.icon,
+                    size: 28,
+                    color: semantic.accentDefault,
+                  )
                 : null,
           ),
           const SizedBox(height: AppSpacing.space3),

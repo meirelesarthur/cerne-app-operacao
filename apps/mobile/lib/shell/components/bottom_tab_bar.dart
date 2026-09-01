@@ -115,7 +115,9 @@ class _ModuleButton extends StatelessWidget {
             child: SizedBox(
               width: AppComponentMetrics.tabbarItemSize,
               height: AppComponentMetrics.tabbarItemSize,
-              child: Center(child: AppIcon(icon, size: 20, color: semantic.navFg)),
+              child: Center(
+                child: AppIcon(icon, size: 20, color: semantic.navFg),
+              ),
             ),
           ),
         ),

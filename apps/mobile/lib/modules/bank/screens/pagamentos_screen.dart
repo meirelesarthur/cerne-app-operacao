@@ -131,7 +131,11 @@ class _PagamentosScreenState extends ConsumerState<PagamentosScreen> {
                     shape: BoxShape.circle,
                     color: semantic.accentSubtle,
                   ),
-                  child: AppIcon(a.icon, size: 22, color: semantic.accentDefault),
+                  child: AppIcon(
+                    a.icon,
+                    size: 22,
+                    color: semantic.accentDefault,
+                  ),
                 ),
                 const SizedBox(width: AppSpacing.space3),
                 Expanded(

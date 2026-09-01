@@ -46,8 +46,11 @@ class AppActionBar extends StatelessWidget {
   final String? secondaryLabel;
   final VoidCallback? onSecondary;
 
-  /// Linha de resumo do frame *bottom fixed*.
-  final AppActionBarSummary? summary;
+  /// Faixa acima dos botões. No frame *bottom fixed* é um
+  /// [AppActionBarSummary]; o app também usa para o aviso de fila offline.
+  /// Widget e não tipo fechado porque a referência define a *posição*, não o
+  /// conteúdo — e o que cabe ali varia por fluxo.
+  final Widget? summary;
 
   @override
   Widget build(BuildContext context) {
@@ -74,28 +77,41 @@ class AppActionBar extends StatelessWidget {
                 summary!,
                 const SizedBox(height: AppSpacing.space2),
               ],
-              AppButton(
-                size: AppButtonSize.lg,
-                fullWidth: true,
-                loading: primaryLoading,
-                onPressed: onPrimary,
-                rightIcon: primaryIcon == null
-                    ? null
-                    : AppIcon(
-                        primaryIcon!,
-                        size: AppSize.iconMd,
-                        color: semantic.ctaFg,
-                      ),
-                child: Text(primaryLabel.toUpperCase()),
+              // A caixa alta é decisão visual da referência, não do conteúdo:
+              // o `Semantics` mantém o rótulo em caixa natural para que o
+              // leitor de tela não soletre a palavra letra a letra.
+              Semantics(
+                label: primaryLabel,
+                child: AppButton(
+                  size: AppButtonSize.lg,
+                  fullWidth: true,
+                  loading: primaryLoading,
+                  onPressed: onPrimary,
+                  rightIcon: primaryIcon == null
+                      ? null
+                      : AppIcon(
+                          primaryIcon!,
+                          size: AppSize.iconMd,
+                          color: semantic.ctaFg,
+                        ),
+                  child: ExcludeSemantics(
+                    child: Text(primaryLabel.toUpperCase()),
+                  ),
+                ),
               ),
               if (secondaryLabel != null) ...[
                 const SizedBox(height: AppSpacing.space2),
-                AppButton(
-                  size: AppButtonSize.lg,
-                  fullWidth: true,
-                  variant: AppButtonVariant.dangerOutline,
-                  onPressed: onSecondary,
-                  child: Text(secondaryLabel!.toUpperCase()),
+                Semantics(
+                  label: secondaryLabel,
+                  child: AppButton(
+                    size: AppButtonSize.lg,
+                    fullWidth: true,
+                    variant: AppButtonVariant.dangerOutline,
+                    onPressed: onSecondary,
+                    child: ExcludeSemantics(
+                      child: Text(secondaryLabel!.toUpperCase()),
+                    ),
+                  ),
                 ),
               ],
             ],

@@ -1,4 +1,5 @@
 import '../../../ui/ui.dart';
+
 /// Mocks determinísticos do catálogo do Marketplace — espelha
 /// `src/modules/marketplace/mocks/produtos.ts`.
 
@@ -63,11 +64,7 @@ const List<Categoria> categorias = [
     label: 'Fertilizantes',
     icon: AppIcons.flaskConical,
   ),
-  Categoria(
-    id: 'defensivos',
-    label: 'Defensivos',
-    icon: AppIcons.shieldCheck,
-  ),
+  Categoria(id: 'defensivos', label: 'Defensivos', icon: AppIcons.shieldCheck),
   Categoria(
     id: 'nutricao-animal',
     label: 'Nutrição animal',

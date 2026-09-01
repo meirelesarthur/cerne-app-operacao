@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/bank/components/bank_flow_shell.dart';
+import '../../helpers/cta_finder.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
@@ -27,10 +28,10 @@ void main() {
 
       expect(find.text('Pix'), findsOneWidget);
       expect(find.text('Conteúdo do fluxo'), findsOneWidget);
-      expect(find.text('Revisar'), findsOneWidget);
+      expect(findCta('Revisar'), findsOneWidget);
       expect(tester.takeException(), isNull);
 
-      await tester.tap(find.text('Revisar'));
+      await tester.tap(findCta('Revisar'));
       await tester.pump();
       expect(primaryTapped, isTrue);
     });
@@ -46,7 +47,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Revisar'), findsNothing);
+      expect(findCta('Revisar'), findsNothing);
     });
 
     testWidgets('botão de voltar dispara onBack', (tester) async {

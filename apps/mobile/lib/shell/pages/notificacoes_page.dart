@@ -60,8 +60,7 @@ class NotificacoesPage extends ConsumerWidget {
                           const SizedBox(height: AppSpacing.space2),
                       itemBuilder: (context, index) {
                         final n = notifications[index];
-                        final icon =
-                            _moduleIcon[n.moduleId] ?? AppIcons.sprout;
+                        final icon = _moduleIcon[n.moduleId] ?? AppIcons.sprout;
                         final destination =
                             getModule(n.moduleId)?.homeRoute ?? '/inicio';
 

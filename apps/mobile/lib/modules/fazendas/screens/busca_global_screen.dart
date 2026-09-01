@@ -72,7 +72,8 @@ class _BuscaGlobalScreenState extends ConsumerState<BuscaGlobalScreen> {
               const AppEmptyState(
                 icon: AppIcons.searchX,
                 title: 'Nenhuma função encontrada',
-                description: 'Tente outro termo — o nome do módulo também vale.',
+                description:
+                    'Tente outro termo — o nome do módulo também vale.',
               )
             else ...[
               Text(

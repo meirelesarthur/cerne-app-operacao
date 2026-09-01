@@ -401,9 +401,7 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AppIcon(
-                        alta
-                            ? AppIcons.trendingUp
-                            : AppIcons.trendingDown,
+                        alta ? AppIcons.trendingUp : AppIcons.trendingDown,
                         size: 14,
                         color: variacaoColor,
                       ),

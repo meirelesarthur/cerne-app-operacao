@@ -7,6 +7,7 @@ import 'package:cerne_app/modules/fazendas/operacional/batelada_flow.dart';
 import 'package:cerne_app/shell/state/shell_store.dart';
 
 import '../../../support/test_viewport.dart';
+import '../../../helpers/cta_finder.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
   child: MaterialApp(
@@ -61,7 +62,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Registrar batelada'));
+      await tester.tap(findCta('Registrar batelada'));
       await tester.pumpAndSettle();
 
       expect(find.text('Selecione a dieta.'), findsOneWidget);

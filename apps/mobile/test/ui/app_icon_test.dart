@@ -192,10 +192,9 @@ void main() {
       // renormalizar deixaria o ícone mais fino que todo o resto do app.
       const esperado = 1.2 * 34 / 24;
       final svg = await File(AppIcons.confinamento.asset!).readAsString();
-      final larguras = RegExp(r'stroke-width="([\d.]+)"')
-          .allMatches(svg)
-          .map((m) => double.parse(m.group(1)!))
-          .toSet();
+      final larguras = RegExp(
+        r'stroke-width="([\d.]+)"',
+      ).allMatches(svg).map((m) => double.parse(m.group(1)!)).toSet();
 
       expect(larguras, isNotEmpty, reason: 'o SVG perdeu os traços');
       for (final largura in larguras) {

@@ -7,6 +7,7 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/bank/screens/flows/simple_payment_flow.dart';
 
 import '../../../support/test_viewport.dart';
+import '../../../helpers/cta_finder.dart';
 
 GoRouter _router(Widget flow) => GoRouter(
   initialLocation: '/bank/pagamentos',
@@ -64,12 +65,12 @@ void main() {
       await tester.enterText(fields.at(2), '500,00'); // Valor
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Revisar'));
+      await tester.tap(findCta('Revisar'));
       await tester.pumpAndSettle();
 
       expect(find.text('Banco do Brasil'), findsOneWidget);
 
-      await tester.tap(find.text('Confirmar transferência'));
+      await tester.tap(findCta('Confirmar transferência'));
       await tester.pumpAndSettle();
 
       expect(find.text('Transferência enviada'), findsOneWidget);
@@ -95,10 +96,10 @@ void main() {
       await tester.enterText(find.byType(TextFormField).at(1), '75,00');
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Revisar'));
+      await tester.tap(findCta('Revisar'));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Gerar cobrança'));
+      await tester.tap(findCta('Gerar cobrança'));
       await tester.pumpAndSettle();
 
       expect(find.text('Cobrança criada'), findsOneWidget);

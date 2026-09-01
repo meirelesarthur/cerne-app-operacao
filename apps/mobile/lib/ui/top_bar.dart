@@ -30,6 +30,7 @@ class AppTopBar extends StatelessWidget {
     this.actionIcon,
     this.actionLabel,
     this.onAction,
+    this.trailing,
   });
 
   final String title;
@@ -42,6 +43,13 @@ class AppTopBar extends StatelessWidget {
   final AppIconData? actionIcon;
   final String? actionLabel;
   final VoidCallback? onAction;
+
+  /// Substitui a coluna da direita por um widget qualquer. A referência só tem
+  /// o ícone de overflow, mas o app coloca ali um selo de acesso restrito e um
+  /// "Marcar lidas" — conteúdo que não cabe num glifo. Quando presente, tem
+  /// precedência sobre [actionIcon]; o título deixa de ficar exatamente
+  /// centralizado, porque as duas colunas passam a ter larguras diferentes.
+  final Widget? trailing;
 
   /// Altura do glifo no Figma. O alvo de toque é maior — ver [_slotSize].
   static const double glyphSize = AppSize.iconXxl;
@@ -58,15 +66,20 @@ class AppTopBar extends StatelessWidget {
       if (icon == null) {
         return const SizedBox(width: _slotSize, height: _slotSize);
       }
-      return AppPressable(
-        semanticLabel: label ?? '',
-        onPressed: onPressed,
-        borderRadius: BorderRadius.circular(AppRadius.full),
-        child: SizedBox(
-          width: _slotSize,
-          height: _slotSize,
-          child: Center(
-            child: AppIcon(icon, size: glyphSize, color: semantic.fgHeading),
+      // `Tooltip` como em `AppIconButton`: botão só-ícone precisa expor o
+      // rótulo por toque longo e por hover, não apenas ao leitor de tela.
+      return Tooltip(
+        message: label ?? '',
+        child: AppPressable(
+          semanticLabel: label ?? '',
+          onPressed: onPressed,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          child: SizedBox(
+            width: _slotSize,
+            height: _slotSize,
+            child: Center(
+              child: AppIcon(icon, size: glyphSize, color: semantic.fgHeading),
+            ),
           ),
         ),
       );
@@ -93,7 +106,10 @@ class AppTopBar extends StatelessWidget {
               ),
             ),
           ),
-          slot(icon: actionIcon, label: actionLabel, onPressed: onAction),
+          if (trailing != null)
+            trailing!
+          else
+            slot(icon: actionIcon, label: actionLabel, onPressed: onAction),
         ],
       ),
     );

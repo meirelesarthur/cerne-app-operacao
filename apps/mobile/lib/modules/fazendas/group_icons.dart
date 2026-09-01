@@ -1,4 +1,5 @@
 import '../../ui/ui.dart';
+
 /// Ícone por grupo de `FeatureDefinition.group` — usado no acesso rápido e nos
 /// cards de módulo da central de rotinas/gestão (`ResponsibilityWorkspace`) e
 /// na tela fullscreen de funções de um grupo (`GroupFeaturesScreen`).

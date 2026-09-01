@@ -15,10 +15,7 @@ void main() {
     testWidgets('renderiza fallback com ícone sem exceções', (tester) async {
       await tester.pumpWidget(
         _wrap(
-          const AppIllustrationSlot(
-            alt: 'Onboarding',
-            icon: AppIcons.sprout,
-          ),
+          const AppIllustrationSlot(alt: 'Onboarding', icon: AppIcons.sprout),
         ),
       );
 

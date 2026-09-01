@@ -231,12 +231,7 @@ const List<ModuleDef> modules = [
     icon: AppIcons.landmark,
     homeRoute: '/bank',
     bottomTabs: [
-      BottomTab(
-        id: 'inicio',
-        label: 'Início',
-        icon: AppIcons.home,
-        path: '',
-      ),
+      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'extrato',
         label: 'Extrato',
@@ -308,12 +303,7 @@ const List<ModuleDef> modules = [
     icon: AppIcons.handCoins,
     homeRoute: '/credito',
     bottomTabs: [
-      BottomTab(
-        id: 'inicio',
-        label: 'Início',
-        icon: AppIcons.home,
-        path: '',
-      ),
+      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'propostas',
         label: 'Minhas Propostas',
@@ -367,12 +357,7 @@ const List<ModuleDef> modules = [
     icon: AppIcons.shoppingBag,
     homeRoute: '/marketplace',
     bottomTabs: [
-      BottomTab(
-        id: 'inicio',
-        label: 'Início',
-        icon: AppIcons.home,
-        path: '',
-      ),
+      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'categorias',
         label: 'Categorias',
@@ -426,12 +411,7 @@ const List<ModuleDef> modules = [
     icon: AppIcons.warehouse,
     homeRoute: '/armazem',
     bottomTabs: [
-      BottomTab(
-        id: 'inicio',
-        label: 'Início',
-        icon: AppIcons.home,
-        path: '',
-      ),
+      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
       BottomTab(
         id: 'estoque',
         label: 'Estoque',

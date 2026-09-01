@@ -7,6 +7,7 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/bank/screens/flows/pix_flow.dart';
 
 import '../../../support/test_viewport.dart';
+import '../../../helpers/cta_finder.dart';
 
 GoRouter _router(VoidCallback onExit) => GoRouter(
   initialLocation: '/bank/pagamentos',
@@ -76,13 +77,13 @@ void main() {
       await tester.enterText(find.byType(TextFormField).first, '150,00');
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Revisar'));
+      await tester.tap(findCta('Revisar'));
       await tester.pumpAndSettle();
 
       expect(find.text('Revisar Pix'), findsOneWidget);
       expect(find.text('R\$ 150,00'), findsWidgets);
 
-      await tester.tap(find.text('Confirmar Pix'));
+      await tester.tap(findCta('Confirmar Pix'));
       await tester.pumpAndSettle();
 
       expect(find.text('Pix enviado'), findsOneWidget);
@@ -103,7 +104,7 @@ void main() {
         await tester.tap(find.textContaining('Agropecuária Vale Verde'));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Revisar'), warnIfMissed: false);
+        await tester.tap(findCta('Revisar'), warnIfMissed: false);
         await tester.pumpAndSettle();
 
         // Sem valor preenchido, o botão primário está desabilitado — o toque

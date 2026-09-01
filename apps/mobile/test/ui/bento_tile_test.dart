@@ -54,9 +54,7 @@ void main() {
 
     testWidgets('renderiza variante surface sem seta', (tester) async {
       await tester.pumpWidget(
-        _wrap(
-          const AppBentoTile(icon: AppIcons.landmark, label: 'Fazendas'),
-        ),
+        _wrap(const AppBentoTile(icon: AppIcons.landmark, label: 'Fazendas')),
       );
 
       expect(findAppIcon(AppIcons.arrowRight), findsNothing);

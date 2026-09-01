@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/operacional/recebimento_xml_flow.dart';
+import '../../../helpers/cta_finder.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
   child: MaterialApp(
@@ -21,7 +22,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Entrada por XML (NF-e)'), findsWidgets);
-      expect(find.text('Confirmar entrada'), findsNothing);
+      expect(findCta('Confirmar entrada'), findsNothing);
       expect(tester.takeException(), isNull);
     });
 
@@ -35,7 +36,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Agropecuária Vale Ltda'), findsOneWidget);
-      expect(find.text('Confirmar entrada'), findsOneWidget);
+      expect(findCta('Confirmar entrada'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

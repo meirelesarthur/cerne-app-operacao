@@ -6,6 +6,7 @@ import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_motion.dart';
 import '../design/generated/app_radius.dart';
+import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
 import '../ui/ui.dart';
 import 'components/bottom_tab_bar.dart';
@@ -82,6 +83,33 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     context.go(route);
   }
 
+  /// Corpo do módulo: faixa de offline (quando aplicável) e a tela em si, com
+  /// o respiro do dock flutuante. É o mesmo em rota rasa e funda — só muda se
+  /// a folha de conteúdo vem do shell ou da própria tela.
+  Widget _content(ShellState state) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: _handleScrollNotification,
+      child: Column(
+        children: [
+          if (!state.isOnline)
+            const AppBanner(
+              tone: AppBannerTone.offline,
+              icon: AppIcon(AppIcons.cloudOff, size: AppSize.iconXs),
+              child: Text(
+                'Você está offline — os lançamentos serão sincronizados quando a conexão voltar.',
+              ),
+            ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: AppLayout.tabBarClearance),
+              child: widget.child,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final moduleId = widget.moduleId;
@@ -142,96 +170,90 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                       ref.read(shellStoreProvider.notifier).closeMenu(),
                   child: ColoredBox(
                     color: semantic.bgCanvas,
-                    child: SafeArea(
-                      bottom: false,
-                      child: Column(
-                        children: [
-                          AnimatedSize(
-                            duration: reduceMotion
-                                ? Duration.zero
-                                : AppMotion.base,
-                            curve: AppMotion.easingOut,
-                            alignment: Alignment.topCenter,
-                            child: hideChrome
-                                ? const SizedBox(width: double.infinity)
-                                : Column(
+                    child: Stack(
+                      children: [
+                        SafeArea(
+                          bottom: false,
+                          // Rotas fundas mantêm o topo sobre o canvas: nos
+                          // frames de cadastro do Figma a barra superior fica
+                          // *acima* da folha, e é a própria tela que abre a
+                          // folha logo abaixo dela. Nas rotas rasas o shell
+                          // abre a folha aqui, com o cabeçalho e as abas
+                          // dentro — como nas duas homes da referência.
+                          child: hideChrome
+                              ? _content(state)
+                              : AppContentSheet(
+                                  padded: false,
+                                  child: Column(
                                     children: [
-                                      AppShellHeader(
-                                        collapsed: _headerCollapsed,
-                                        onOpenProfile: () =>
-                                            _go(context, ref, '/perfil'),
-                                        onOpenNotifications: () =>
-                                            _go(context, ref, '/notificacoes'),
-                                      ),
-                                      AppContextTabs(
-                                        module: module,
-                                        profile: profile,
-                                        activePath: activeTab,
-                                        onTabSelected: (path) => _go(
-                                          context,
-                                          ref,
-                                          path.isEmpty
-                                              ? '/${module.id}'
-                                              : '/${module.id}/$path',
+                                      AnimatedSize(
+                                        duration: reduceMotion
+                                            ? Duration.zero
+                                            : AppMotion.base,
+                                        curve: AppMotion.easingOut,
+                                        alignment: Alignment.topCenter,
+                                        child: Column(
+                                          children: [
+                                            AppShellHeader(
+                                              collapsed: _headerCollapsed,
+                                              onOpenProfile: () =>
+                                                  _go(context, ref, '/perfil'),
+                                              onOpenNotifications: () => _go(
+                                                context,
+                                                ref,
+                                                '/notificacoes',
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal:
+                                                        AppSpacing.space4,
+                                                  ),
+                                              child: AppContextTabs(
+                                                module: module,
+                                                profile: profile,
+                                                activePath: activeTab,
+                                                onTabSelected: (path) => _go(
+                                                  context,
+                                                  ref,
+                                                  path.isEmpty
+                                                      ? '/${module.id}'
+                                                      : '/${module.id}/$path',
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
+                                      Expanded(child: _content(state)),
                                     ],
                                   ),
-                          ),
-                          if (!state.isOnline)
-                            const AppBanner(
-                              tone: AppBannerTone.offline,
-                              icon: AppIcon(AppIcons.cloudOff, size: 14),
-                              child: Text(
-                                'Você está offline — os lançamentos serão sincronizados quando a conexão voltar.',
-                              ),
-                            ),
-                          Expanded(
-                            child: NotificationListener<ScrollNotification>(
-                              onNotification: _handleScrollNotification,
-                              child: Stack(
-                                children: [
-                                  Positioned.fill(
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        bottom: AppLayout.tabBarClearance,
-                                      ),
-                                      child: widget.child,
-                                    ),
-                                  ),
-                                  Positioned(
-                                    left: 0,
-                                    right: 0,
-                                    // soma o respiro do token à safe-area inferior real do
-                                    // aparelho (home indicator/gesture bar) — sem isso a
-                                    // cápsula flutuante fica colada/sobreposta pela área do
-                                    // sistema em telas com esse recurso.
-                                    bottom:
-                                        AppComponentMetrics.tabbarInset +
-                                        MediaQuery.of(context).padding.bottom,
-                                    child: Center(
-                                      child: AppBottomTabBar(
-                                        visibleModules: visibleModulesFor(
-                                          profile,
-                                        ),
-                                        activeId: module.id,
-                                        onModuleSelected: (id) => _go(
-                                          context,
-                                          ref,
-                                          moduleHomeRoute(
-                                            getModule(id)!,
-                                            profile,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
+                        ),
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          // soma o respiro do token à safe-area inferior real do
+                          // aparelho (home indicator/gesture bar) — sem isso a
+                          // cápsula flutuante fica colada/sobreposta pela área do
+                          // sistema em telas com esse recurso.
+                          bottom:
+                              AppComponentMetrics.tabbarInset +
+                              MediaQuery.of(context).padding.bottom,
+                          child: Center(
+                            child: AppBottomTabBar(
+                              visibleModules: visibleModulesFor(profile),
+                              activeId: module.id,
+                              onModuleSelected: (id) => _go(
+                                context,
+                                ref,
+                                moduleHomeRoute(getModule(id)!, profile),
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
