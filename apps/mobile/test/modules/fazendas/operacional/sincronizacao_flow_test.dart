@@ -16,10 +16,11 @@ Widget _app({ProviderContainer? container}) => UncontrolledProviderScope(
   ),
 );
 
-/// O percentual central do anel é pintado em `CustomPaint` (não é um `Text`
-/// widget) — lido pelas propriedades do `AppSyncRing`, não por `find.text`.
-AppSyncRing _ring(WidgetTester tester) =>
-    tester.widget<AppSyncRing>(find.byType(AppSyncRing));
+/// O percentual central do medidor é pintado em `CustomPaint` (não é um
+/// `Text` widget) — lido pelas propriedades do `AppGauge`, não por
+/// `find.text`.
+AppGauge _gauge(WidgetTester tester) =>
+    tester.widget<AppGauge>(find.byType(AppGauge));
 
 /// Avança tempo suficiente para a animação (24 passos de 140ms) terminar,
 /// bombeando o widget a cada tique em vez de `pumpAndSettle` — o progresso
@@ -40,7 +41,7 @@ void main() {
 
       expect(find.text('Pesagem'), findsOneWidget);
       expect(find.text('Eventos do rebanho'), findsOneWidget);
-      expect(_ring(tester).caption, '0/80');
+      expect(_gauge(tester).label, '0/80');
       expect(find.text('SINCRONIZAR'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
@@ -64,14 +65,14 @@ void main() {
         await tester.pumpWidget(_app(container: container));
         await tester.pumpAndSettle();
 
-        expect(_ring(tester).caption, '0/1');
+        expect(_gauge(tester).label, '0/1');
 
         await tester.tap(find.text('SINCRONIZAR'));
         await _runSyncToEnd(tester);
         await tester.pumpAndSettle();
 
         expect(container.read(fazendasStoreProvider).syncQueue, isEmpty);
-        expect(_ring(tester).caption, '1/1');
+        expect(_gauge(tester).label, '1/1');
         expect(find.text('CONCLUÍDO'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
@@ -90,8 +91,8 @@ void main() {
       await _runSyncToEnd(tester);
       await tester.pumpAndSettle();
 
-      expect(_ring(tester).caption, '80/80');
-      expect(find.text('ENVIADO PARA A NUVEM'), findsOneWidget);
+      expect(_gauge(tester).label, '80/80');
+      expect(find.text('MÓDULOS SINCRONIZADOS'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

@@ -152,18 +152,12 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
           ),
           const SizedBox(height: AppSpacing.space5),
           Center(
-            child: Container(
-              padding: const EdgeInsets.all(AppSpacing.space6),
-              decoration: BoxDecoration(
-                color: semantic.bgSurface,
-                borderRadius: BorderRadius.circular(AppRadius.xl3),
-                border: Border.all(color: semantic.borderDefault),
-              ),
-              child: AppSyncRing(
-                value: sent.toDouble(),
-                max: total == 0 ? 1 : total.toDouble(),
-                caption: '$sent/$total',
-              ),
+            child: AppGauge(
+              value: sent.toDouble(),
+              max: total == 0 ? 1 : total.toDouble(),
+              size: 200,
+              tone: AppGaugeTone.positive,
+              label: '$sent/$total',
             ),
           ),
           const SizedBox(height: AppSpacing.space5),
@@ -176,7 +170,7 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
               ),
               const SizedBox(width: AppSpacing.space2),
               Text(
-                finished ? 'ENVIADO PARA A NUVEM' : 'ENVIANDO PARA A NUVEM',
+                finished ? 'MÓDULOS SINCRONIZADOS' : 'ENVIANDO PARA A NUVEM',
                 style: TextStyle(
                   fontSize: AppTypography.xs,
                   fontWeight: AppTypography.weightSemibold,
