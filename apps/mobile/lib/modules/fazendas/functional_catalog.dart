@@ -350,6 +350,52 @@ const adminFeatures = <FeatureDefinition>[
         'Consulta demonstrativa das vendas de animais registradas nesta sessão.',
     listMode: true,
   ),
+  // Pastagens sai do operacional: recursos e serviços aplicados à pastagem
+  // são decisão de manejo/planejamento, não um lançamento de campo do dia a
+  // dia (mesmo critério de fronteira operação/gestão já aplicado a
+  // `vendas`/`compras-animais` acima) — a administração passa a só
+  // consultar o que foi registrado.
+  FeatureDefinition(
+    id: 'pastagens',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Pastagens',
+    objective: 'Consultar recursos e serviços aplicados à pastagem.',
+    status: FeatureStatus.ready,
+    readOnly: true,
+    fields: [
+      FeatureField(
+        id: 'responsavel',
+        label: 'Responsável',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
+      ),
+      // banco-real (onda 4): `warehouses` é tabela real de domínio — mesmas
+      // opções já usadas pelos demais campos "armazém" do catálogo (ex.:
+      // `batidas`).
+      FeatureField(
+        id: 'armazem-insumos',
+        label: 'Armazém de insumos',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Armazém A', 'Depósito B'],
+      ),
+      FeatureField(
+        id: 'armazem-producao',
+        label: 'Armazém de produção',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Armazém A', 'Depósito B'],
+      ),
+    ],
+    emptyLabel: 'Nenhum manejo de pastagem registrado.',
+    sourceDetail:
+        'Consulta demonstrativa dos manejos de pastagem registrados nesta sessão.',
+    listMode: true,
+    recordTitleField: 'armazem-producao',
+    recordDescriptionFields: ['armazem-insumos', 'responsavel'],
+  ),
   FeatureDefinition(
     id: 'exportar-log-estoque',
     profile: FeatureProfile.administration,
@@ -1255,46 +1301,6 @@ const operationalFeatures = <FeatureDefinition>[
         'Animal ativo no Lote 42 · Engorda, atualmente no Pasto Norte · Módulo A.',
   ),
   FeatureDefinition(
-    id: 'pastagens',
-    profile: FeatureProfile.operational,
-    group: 'Pecuária',
-    title: 'Pastagens',
-    objective: 'Registrar recursos e serviços aplicados à pastagem.',
-    status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      // banco-real (onda 4): `warehouses` é tabela real de domínio — mesmas
-      // opções já usadas pelos demais campos "armazém" do catálogo (ex.:
-      // `batidas`). Campo livre antes não tinha lastro no banco.
-      FeatureField(
-        id: 'armazem-insumos',
-        label: 'Armazém de insumos',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Armazém A', 'Depósito B'],
-      ),
-      FeatureField(
-        id: 'armazem-producao',
-        label: 'Armazém de produção',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Armazém A', 'Depósito B'],
-      ),
-    ],
-    sections: ['Insumos', 'Abastecimentos', 'Máquinas / Equipamentos'],
-    primaryAction: 'Salvar pastagem',
-    listMode: true,
-    createAction: 'Novo manejo de pastagem',
-    recordTitleField: 'armazem-producao',
-    recordDescriptionFields: ['armazem-insumos', 'responsavel'],
-  ),
-  FeatureDefinition(
     id: 'estacao-monta',
     profile: FeatureProfile.operational,
     group: 'Consultas',
@@ -1351,45 +1357,6 @@ const operationalFeatures = <FeatureDefinition>[
     createAction: 'Nova estação',
     recordTitleField: 'nome',
     recordDescriptionFields: ['metodo', 'inicio', 'fim'],
-  ),
-  FeatureDefinition(
-    id: 'lotes-reproducao',
-    profile: FeatureProfile.operational,
-    group: 'Reprodução',
-    title: 'Lotes / reprodução',
-    objective: 'Organizar lotes vinculados ao processo reprodutivo.',
-    status: FeatureStatus.ready,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(id: 'estacao', label: 'Estação de monta', isRequired: true),
-      FeatureField(id: 'lote', label: 'Lote', isRequired: true),
-      FeatureField(
-        id: 'finalidade',
-        label: 'Finalidade',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Matrizes', 'Reprodutores', 'Receptoras', 'Novilhas'],
-      ),
-      FeatureField(
-        id: 'quantidade',
-        label: 'Quantidade de animais',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-    ],
-    primaryAction: 'Salvar vínculo',
-    sourceDetail:
-        'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
-    listMode: true,
-    createAction: 'Vincular lote',
-    recordTitleField: 'lote',
-    recordDescriptionFields: ['finalidade', 'estacao', 'quantidade'],
   ),
   FeatureDefinition(
     id: 'material-reprodutivo',
@@ -1496,12 +1463,22 @@ const operationalFeatures = <FeatureDefinition>[
   // IATF vs. outro), checar `breeding_matings.type` — smallint sem tabela de
   // domínio no dump; hoje esta tela ainda não expõe esse campo. Ver
   // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
+  //
+  // Simplificação de grupo: "Monta natural" renomeada para "Acasalamento"
+  // (nome mais amplo, já que a tela cobre o registro do acasalamento em si,
+  // não um método específico — "Monta natural" continua existindo como
+  // valor de método em `estacao-monta.metodo`, ao lado de "Inseminação
+  // artificial"/"IATF"/"Transferência de embrião"). `lotes-reproducao`
+  // ("Lotes / reprodução") saiu do catálogo: o grupo Reprodução passa a ter
+  // só as duas funcionalidades de execução do dia a dia (Acasalamento e
+  // Diagnóstico de gestação) — vincular lote à estação é organização
+  // estrutural, mais próxima do papel de `lote-animais` (Consultas).
   FeatureDefinition(
     id: 'monta-natural',
     profile: FeatureProfile.operational,
     group: 'Reprodução',
-    title: 'Monta natural',
-    objective: 'Registrar operações de monta natural.',
+    title: 'Acasalamento',
+    objective: 'Registrar operações de acasalamento.',
     status: FeatureStatus.ready,
     fields: [
       FeatureField(
@@ -1531,11 +1508,11 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.textarea,
       ),
     ],
-    primaryAction: 'Registrar monta',
+    primaryAction: 'Registrar acasalamento',
     sourceDetail:
         'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
     listMode: true,
-    createAction: 'Nova monta',
+    createAction: 'Novo acasalamento',
     recordTitleField: 'lote',
     recordDescriptionFields: ['touro', 'quantidade', 'data'],
   ),

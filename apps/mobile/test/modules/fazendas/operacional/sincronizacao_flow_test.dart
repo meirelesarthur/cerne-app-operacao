@@ -20,7 +20,7 @@ Widget _app({ProviderContainer? container}) => UncontrolledProviderScope(
 AppGauge _gauge(WidgetTester tester) =>
     tester.widget<AppGauge>(find.byType(AppGauge));
 
-/// Avança tempo suficiente para as 38 funcionalidades operacionais do
+/// Avança tempo suficiente para as 36 funcionalidades operacionais do
 /// catálogo terminarem — um item por tique (180ms) — bombeando o widget em
 /// vez de `pumpAndSettle`: o progresso roda em `Timer`, não em
 /// `AnimationController`.
@@ -51,7 +51,7 @@ void main() {
       expect(find.text('0/7'), findsNWidgets(2));
       // Recolhido: a funcionalidade interna não aparece antes de sincronizar.
       expect(find.text('Conexão de aparelhos'), findsNothing);
-      expect(_gauge(tester).label, '0/38');
+      expect(_gauge(tester).label, '0/36');
       expect(find.text('SINCRONIZAR'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
@@ -82,7 +82,7 @@ void main() {
         // Ao concluir, cada módulo fecha — nenhuma funcionalidade interna
         // fica visível por padrão.
         expect(find.text('Conexão de aparelhos'), findsNothing);
-        expect(_gauge(tester).label, '38/38');
+        expect(_gauge(tester).label, '36/36');
         expect(find.text('CONCLUÍDO'), findsOneWidget);
         expect(find.text('MÓDULOS SINCRONIZADOS'), findsOneWidget);
         expect(tester.takeException(), isNull);

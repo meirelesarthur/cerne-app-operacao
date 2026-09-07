@@ -4,7 +4,7 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 53 funcionalidades e a divisão por perfil', () {
+    test('preserva as 52 funcionalidades e a divisão por perfil', () {
       // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
       // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
       // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
@@ -26,9 +26,17 @@ void main() {
       // já é coberta por `producao-batelada`/`trato-diario`) e `nota-cocho`
       // saiu por ser duplicata exata de `leitura-cocho-confinamento` — 4
       // funcionalidades a menos: 43-4=39 operacionais, 14+39=53 no total.
-      expect(adminFeatures, hasLength(14));
-      expect(operationalFeatures, hasLength(39));
-      expect(allFeatures, hasLength(53));
+      // reprodução (simplificação de grupo): `lotes-reproducao` saiu do
+      // catálogo; Reprodução passa a ter só Acasalamento (ex-"Monta
+      // natural") e Diagnóstico de gestação — 39-1=38 operacionais,
+      // 14+38=52 no total.
+      // `pastagens` sai do operacional e vira consulta administrativa
+      // (fronteira operação/gestão, mesmo critério de `vendas`/
+      // `compras-animais`) — 38-1=37 operacionais, 14+1=15
+      // administrativas, 15+37=52 no total (sem mudança na soma).
+      expect(adminFeatures, hasLength(15));
+      expect(operationalFeatures, hasLength(37));
+      expect(allFeatures, hasLength(52));
 
       expect(
         adminFeatures.every(
@@ -54,15 +62,16 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 47 ready, 6 hardware e zero mapped', () {
+    test('preserva a maturidade 46 ready, 6 hardware e zero mapped', () {
       // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
       // (ready) saiu do escopo — 52-1=51. Auditoria dos painéis:
       // `painel-pecuario` (ready) fundiu em `painel-financeiro` — 51-1=50.
       // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` (ready)
       // saíram do catálogo — 50-3=47; `balanca` (hardware) saiu junto — 7-1=6.
+      // reprodução: `lotes-reproducao` (ready) saiu do catálogo — 47-1=46.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(47),
+        hasLength(46),
       );
       expect(
         allFeatures.where(
@@ -118,14 +127,21 @@ void main() {
       // 140-8=132 obrigatórios; 12-4=8 seções. Perde `listMode` e ganha
       // `existingRoute` — 31-1=30 com `listMode`; 16+1=17 com
       // `existingRoute`. Ver docs/ajustes-banco-real/04-apontamento-appropriations.md.
-      expect(fields, hasLength(151));
-      expect(fields.where((field) => field.isRequired), hasLength(132));
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
+      // reprodução: `lotes-reproducao` saiu com seus 5 campos (5
+      // obrigatórios) e seu `listMode` — 151-5=146 campos; 132-5=127
+      // obrigatórios; 30-1=29 com `listMode`.
+      // `pastagens` muda de perfil mas mantém os mesmos 3 campos (3
+      // obrigatórios) e `listMode` — sem mudança nessas contagens; perde
+      // as 3 seções (eram do fluxo de criação, que não existe mais numa
+      // consulta somente leitura) — 8-3=5.
+      expect(fields, hasLength(146));
+      expect(fields.where((field) => field.isRequired), hasLength(127));
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(29));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
         hasLength(17),
       );
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(8));
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(5));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),

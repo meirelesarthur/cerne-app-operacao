@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/functional_journey_engine.dart';
-import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
 import 'package:cerne_app/modules/fazendas/state/prototype_records_store.dart';
-
-import '../../../support/test_viewport.dart';
 
 void main() {
   group('MappedFeatureScreen — Onda B', () {
-    test('os 13 contratos de pecuária e reprodução estão executáveis', () {
+    test('os 11 contratos de pecuária e reprodução estão executáveis', () {
+      // reprodução (simplificação de grupo): `lotes-reproducao` saiu do
+      // catálogo — Reprodução tem só `monta-natural` (Acasalamento) e
+      // `diagnostico-gestacao`. Ver `functional_catalog_test.dart`.
+      // `pastagens` saiu do operacional — virou consulta administrativa
+      // (`readOnly`, grupo Consultas e auditoria), coberta pelos testes
+      // genéricos de consulta somente leitura, não por este grupo.
       const ids = {
         'rebanho-inicial',
         'lote-animais',
@@ -20,9 +20,7 @@ void main() {
         'transferencia-lote-area',
         'sanitario',
         'desmama',
-        'pastagens',
         'estacao-monta',
-        'lotes-reproducao',
         'material-reprodutivo',
         'protocolos-estacao',
         'monta-natural',
@@ -69,45 +67,6 @@ void main() {
 
         expect(draft?.title, 'Estação 2026/2027');
         expect(draft?.status, PrototypeRecordStatus.scheduled);
-      },
-    );
-
-    testWidgets(
-      'Pastagens permite adicionar itens aos três grupos vinculados',
-      (tester) async {
-        await setTallSurface(tester);
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-
-        await tester.pumpWidget(
-          UncontrolledProviderScope(
-            container: container,
-            child: MaterialApp(
-              theme: buildAppTheme(AppThemeVariant.light),
-              home: const Scaffold(
-                body: MappedFeatureScreen(
-                  featureId: 'pastagens',
-                  profile: FeatureProfile.operational,
-                ),
-              ),
-            ),
-          ),
-        );
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text('Novo manejo de pastagem'));
-        await tester.pumpAndSettle();
-
-        expect(find.text('Itens vinculados'), findsOneWidget);
-        expect(find.text('Insumos'), findsOneWidget);
-        expect(find.text('Abastecimentos'), findsOneWidget);
-        expect(find.text('Máquinas / Equipamentos'), findsOneWidget);
-
-        await tester.tap(find.text('Adicionar').first);
-        await tester.pump();
-
-        expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
-        expect(tester.takeException(), isNull);
       },
     );
   });

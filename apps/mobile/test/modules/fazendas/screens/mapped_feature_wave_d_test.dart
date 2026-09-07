@@ -74,7 +74,7 @@ void main() {
       }
     });
 
-    test('todas as 47 funcionalidades Ready têm destino executável', () {
+    test('todas as 46 funcionalidades Ready têm destino executável', () {
       final ready = allFeatures.where(
         (feature) => feature.status == FeatureStatus.ready,
       );
@@ -87,8 +87,10 @@ void main() {
       // Auditoria dos painéis: `painel-pecuario` (ready) fundiu em
       // `painel-financeiro` — 51-1=50. Ver docs/ESTEIRA-DASHBOARDS-ADM.md.
       // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` (ready)
-      // saíram do catálogo — 50-3=47. Ver functional_catalog_test.dart.
-      expect(ready, hasLength(47));
+      // saíram do catálogo — 50-3=47. reprodução: `lotes-reproducao`
+      // (ready) saiu do catálogo — 47-1=46 (`pastagens` continua ready,
+      // só muda de perfil). Ver functional_catalog_test.dart.
+      expect(ready, hasLength(46));
       for (final feature in ready) {
         final handledByMappedScreen =
             feature.auditExport != null ||

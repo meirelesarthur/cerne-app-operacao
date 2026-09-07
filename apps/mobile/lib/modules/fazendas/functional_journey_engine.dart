@@ -150,7 +150,6 @@ PrototypeRecordStatus _statusFor(String featureId) {
   const scheduled = {
     'manutencao-frota',
     'estacao-monta',
-    'lotes-reproducao',
     'protocolos-estacao',
   };
   if (scheduled.contains(featureId)) return PrototypeRecordStatus.scheduled;
