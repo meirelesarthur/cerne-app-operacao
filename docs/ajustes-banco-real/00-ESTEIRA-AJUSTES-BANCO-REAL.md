@@ -156,11 +156,20 @@ dívida técnica dupla.
 | Onda 1 | Concluída | `4ed6dad` | 7 ajustes de campo aplicados; 11 campos novos (todos opcionais); catálogo 168→179 campos; gates verdes |
 | Onda 2 | Concluída | `1a2448d` | Consulta de Produtos criada (8 produtos sintéticos); Central de notificações enriquecida (2 alertas reais do dump); catálogo 53→54 funcionalidades |
 | Onda 3 | Concluída | _preencher no commit desta onda_ | 7 marcadores `TODO(banco-real)` cobrindo os 6 dicionários pendentes do Documento 2; gates verdes |
+| Onda 4 | Concluída | _preencher no commit desta onda_ | `apontamento` migrado para fluxo dedicado com fonte real `appropriations`; `pastagens` ganha dropdown real de armazém. Ver `04-apontamento-appropriations.md` |
 
-## Leva encerrada
+## Leva reaberta — Onda 4
 
-As três ondas planejadas para esta leva estão concluídas. Próximos passos possíveis (fora
-desta leva, avaliar com o usuário antes de iniciar): revisitar Cadastro de Clientes e Linha
-do tempo do animal (backlog da Onda 2), ou abrir a sessão de modelagem conjunta com o time
-web para os três itens de alto esforço (carga/descarga do misturador, nota de cocho,
-critério de apartação).
+A leva foi reaberta em 07/09/2026 a partir de um novo dump de homologação (`init_db.sql`,
+mesmo schema `gbcerne`), que permitiu inspecionar a família `appropriation_*` — não
+analisada nas ondas 1–3. Ela é a fonte real do Apontamento agrícola (a hipótese anterior,
+`service_orders`, ficou obsoleta). Detalhes completos em
+[`04-apontamento-appropriations.md`](04-apontamento-appropriations.md); resumo: `apontamento`
+saiu do motor genérico para um fluxo dedicado com campo real por item nos quatro grupos
+(Mão de obra, Máquinas, Insumos, Ocorrências), Operação/Atividade viraram dropdown real, e
+`pastagens` ganhou dropdown de armazém. Próximos passos possíveis (avaliar com o usuário
+antes de iniciar): estender a mesma curadoria a outros campos livres com candidato real
+identificado nesta onda (raça, lote, identificação, fornecedor — ver seção "Fora desta
+onda" do documento 4), revisitar Cadastro de Clientes e Linha do tempo do animal (backlog
+da Onda 2), ou abrir a sessão de modelagem conjunta com o time web para os três itens de
+alto esforço (carga/descarga do misturador, nota de cocho, critério de apartação).

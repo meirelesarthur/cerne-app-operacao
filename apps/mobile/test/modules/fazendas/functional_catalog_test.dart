@@ -111,15 +111,21 @@ void main() {
       // contagens não mudam) — cada uma levou seu `existingRoute`: 19-3=16.
       // `balanca` saiu com suas 2 capabilities (`Bluetooth`, `Balança`):
       // 25-2=23.
-      expect(fields, hasLength(163));
-      expect(fields.where((field) => field.isRequired), hasLength(140));
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(31));
-      // `painel-pecuario` levou junto o seu `existingRoute` — 20-1=19.
+      // banco-real (onda 4 — apontamento): fonte real é `appropriations` +
+      // tabelas filhas, não `service_orders` — motor genérico trocado por
+      // fluxo dedicado (`ApontamentoFlow`). Saem os 12 campos (8
+      // obrigatórios) e as 4 seções do `apontamento` — 163-12=151 campos;
+      // 140-8=132 obrigatórios; 12-4=8 seções. Perde `listMode` e ganha
+      // `existingRoute` — 31-1=30 com `listMode`; 16+1=17 com
+      // `existingRoute`. Ver docs/ajustes-banco-real/04-apontamento-appropriations.md.
+      expect(fields, hasLength(151));
+      expect(fields.where((field) => field.isRequired), hasLength(132));
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(16),
+        hasLength(17),
       );
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(12));
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(8));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),

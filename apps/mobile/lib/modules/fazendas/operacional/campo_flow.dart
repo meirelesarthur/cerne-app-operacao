@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../ui/ui.dart';
+import 'apontamento_flow.dart';
 import 'arracoamento_flow.dart';
 import 'batelada_flow.dart';
 import 'ciclo_rebanho_flow.dart';
@@ -30,6 +31,7 @@ Widget buildCampoFlow(String flowId) {
     'leitura-cocho' => const LeituraCochoFlow(),
     'ordens-pendentes' => const OrdensPendentesScreen(),
     'sincronizacao' => const SincronizacaoFlow(),
+    'apontamento' => const ApontamentoFlow(),
     _ => const Scaffold(
       body: Center(child: AppEmptyState(title: 'Lançamento')),
     ),

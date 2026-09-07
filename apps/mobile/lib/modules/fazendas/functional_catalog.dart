@@ -700,14 +700,16 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'nome',
     recordDescriptionFields: ['unidade', 'tolerancia', 'alerta'],
   ),
-  // banco-real (onda 2): campos e abas realinhados à especificação real de
-  // Apontamentos do AGRO365 web (não mais a `service_orders`, que não é a
-  // fonte do Apontamento — ver comentário histórico removido desta unidade).
-  // `prazo`, `resultado-esperado` e `criterio-sucesso` saíram por não
-  // existirem no Apontamento real do desktop. `data-apontamento`,
-  // `descricao`, `cultura-variedade` e `safra` entraram para espelhar a
-  // identificação e a classificação agronômica reais. Ver
-  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
+  // banco-real (onda 4): fonte real identificada no dump gbcerne é
+  // `appropriations` + tabelas filhas `appropriation_employee/equipment/
+  // stock/occurrences` — não `service_orders`, hipótese das ondas 1/2 (a
+  // esteira anterior não conhecia a família `appropriation_*`, só analisada
+  // nesta onda a partir do dump de homologação). Motor genérico
+  // (`fields`/`sections`) trocado por fluxo dedicado: os quatro grupos de
+  // recurso são listas reais por item (função, colaborador, quantidade,
+  // unidade, valor — não um contador), e Operação/Atividade viram dropdown
+  // vindo de `operations`/`activities` em vez de campo livre. Ver
+  // docs/ajustes-banco-real/04-apontamento-appropriations.md.
   FeatureDefinition(
     id: 'apontamento',
     profile: FeatureProfile.operational,
@@ -715,100 +717,7 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Apontamento agrícola',
     objective: 'Registrar uma operação agrícola e os recursos associados.',
     status: FeatureStatus.ready,
-    fields: [
-      // banco-real (onda 2): no desktop, `responsavel` é preenchido
-      // automaticamente com o usuário logado e é somente leitura — o
-      // contrato genérico de `FeatureField` não tem um modo read-only por
-      // campo (só a tela inteira via `readOnly`, que aqui removeria a
-      // criação). Mantido como seleção manual até o motor de formulário
-      // ganhar esse modo por campo. Ver
-      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      FeatureField(
-        id: 'area',
-        label: 'Área',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Talhão 01', 'Talhão 02', 'Pasto Norte'],
-      ),
-      FeatureField(id: 'operacao', label: 'Operação', isRequired: true),
-      FeatureField(id: 'atividade', label: 'Atividade', isRequired: true),
-      FeatureField(
-        id: 'data-apontamento',
-        label: 'Data do apontamento',
-        type: FeatureFieldType.date,
-        isRequired: true,
-      ),
-      // banco-real (onda 2): no desktop, `area-total` é herdado da área
-      // selecionada e é somente leitura — mesma limitação de campo
-      // read-only descrita acima em `responsavel`. Ver
-      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
-      FeatureField(
-        id: 'area-total',
-        label: 'Área total',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'area-utilizada',
-        label: 'Área utilizada',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
-        id: 'cultura-variedade',
-        label: 'Cultura / variedade',
-        type: FeatureFieldType.select,
-        options: ['Soja', 'Milho', 'Algodão', 'Cana-de-açúcar', 'Café'],
-      ),
-      FeatureField(
-        id: 'safra',
-        label: 'Safra',
-        type: FeatureFieldType.select,
-        options: ['2024/2025', '2025/2026', '2026/2027'],
-      ),
-      FeatureField(
-        id: 'armazem-insumo',
-        label: 'Armazém de insumo',
-        type: FeatureFieldType.select,
-        options: ['Armazém A', 'Depósito B'],
-      ),
-      FeatureField(
-        id: 'armazem-producao',
-        label: 'Armazém de produção',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Armazém A', 'Depósito B'],
-      ),
-      FeatureField(
-        id: 'descricao',
-        label: 'Descrição / Histórico',
-        type: FeatureFieldType.textarea,
-      ),
-    ],
-    // banco-real (onda 2): 4 abas alinhadas ao Apontamento real do desktop.
-    // `Abastecimentos` saiu por não existir no desktop; `Produção` fica
-    // exclusiva do desktop junto dos 13 parâmetros de classificação de
-    // qualidade (PH, avariados, umidade, quebra técnica…) que exigem
-    // balança e classificador. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md,
-    // Onda 2.
-    sections: [
-      'Mão de obra / Serviços',
-      'Máquinas / Implementos',
-      'Insumos',
-      'Ocorrências',
-    ],
-    primaryAction: 'Salvar apontamento',
-    listMode: true,
-    createAction: 'Novo apontamento',
-    recordTitleField: 'atividade',
-    recordDescriptionFields: ['operacao', 'area', 'area-utilizada'],
+    existingRoute: '/fazendas/campo/apontamento',
   ),
   FeatureDefinition(
     id: 'marcacao',
@@ -1360,15 +1269,22 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
       ),
+      // banco-real (onda 4): `warehouses` é tabela real de domínio — mesmas
+      // opções já usadas pelos demais campos "armazém" do catálogo (ex.:
+      // `batidas`). Campo livre antes não tinha lastro no banco.
       FeatureField(
         id: 'armazem-insumos',
         label: 'Armazém de insumos',
+        type: FeatureFieldType.select,
         isRequired: true,
+        options: ['Armazém A', 'Depósito B'],
       ),
       FeatureField(
         id: 'armazem-producao',
         label: 'Armazém de produção',
+        type: FeatureFieldType.select,
         isRequired: true,
+        options: ['Armazém A', 'Depósito B'],
       ),
     ],
     sections: ['Insumos', 'Abastecimentos', 'Máquinas / Equipamentos'],

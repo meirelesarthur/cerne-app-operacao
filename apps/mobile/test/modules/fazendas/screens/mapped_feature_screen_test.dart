@@ -57,12 +57,13 @@ Widget _wrap(ProviderContainer container, Widget child) =>
 
 void main() {
   group('MappedFeatureScreen — Onda A', () {
-    test('os seis contratos têm lista, campos e ação de criação', () {
+    test('os cinco contratos têm lista, campos e ação de criação', () {
+      // banco-real (onda 4): `apontamento` saiu do motor genérico — fluxo
+      // dedicado (`ApontamentoFlow`) com fonte real (`appropriations`).
       const ids = {
         'cadastrar-area',
         'formulacoes',
         'batidas',
-        'apontamento',
         'abastecimentos',
         'manutencao-frota',
       };
