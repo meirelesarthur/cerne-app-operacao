@@ -3,10 +3,10 @@
   "configurations": [
     {
       "name": "dev",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tool/serve_web_build.mjs"],
       "port": 5173,
-      "autoPort": true
+      "cwd": "apps/mobile"
     },
     {
       "name": "mobile-web",

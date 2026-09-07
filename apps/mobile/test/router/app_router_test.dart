@@ -203,6 +203,27 @@ void main() {
       expect(find.text('Sincronizar aplicativo'), findsOneWidget);
     });
 
+    testWidgets(
+      'grupo com uma única funcionalidade pula direto para o destino',
+      (tester) async {
+        await setTallSurface(tester);
+        harness.dispose();
+        harness = RouterTestHarness(profile: UserAccessProfile.operational);
+        harness.router.go('/fazendas/operacional');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        // "Sincronização" só tem uma funcionalidade — a tela de listagem do
+        // grupo (que mostraria só esse card) fica de fora da navegação.
+        await tester.tap(find.text('Sincronizar aplicativo'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Sincronização de dados'), findsNothing);
+        expect(find.text('SINCRONIZAR'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
     testWidgets('menu operacional lista módulos-pai e a seção de conta', (
       tester,
     ) async {

@@ -130,9 +130,20 @@ class ResponsibilityWorkspace extends ConsumerWidget {
               AppModuleTile(
                 icon: groupIcon(group),
                 label: groupDisplayLabel(group),
-                onTap: () => context.go(
-                  '/fazendas/$segment/grupo/${groupToSlug(group)}',
-                ),
+                // Grupo com uma única funcionalidade (ex.: Sincronização): a
+                // tela de listagem do grupo não teria nada além do próprio
+                // card — pula direto para o destino, sem a camada
+                // intermediária que só repetiria a mesma informação.
+                onTap: () {
+                  final groupFeatures = groups[group]!;
+                  if (groupFeatures.length == 1) {
+                    context.push(_featureRoute(groupFeatures.single, segment));
+                  } else {
+                    context.go(
+                      '/fazendas/$segment/grupo/${groupToSlug(group)}',
+                    );
+                  }
+                },
               ),
           ],
         ),

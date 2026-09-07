@@ -11,66 +11,56 @@ import '../../../design/generated/app_motion.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
-import '../components/activity_list_item.dart' show kindLabel;
+import '../functional_catalog.dart';
+import '../group_icons.dart';
 import '../state/fazendas_store.dart';
-import '../types.dart';
 import 'flow_shell.dart';
 
-/// Um módulo (categoria `ActivityKind`) e as funcionalidades internas que ele
-/// está enviando — o card da tela de sincronização expande para revelar esta
-/// lista, não a fila inteira de uma vez.
+/// Um módulo (grupo do catálogo funcional, ex.: Confinamento) e as
+/// funcionalidades internas que ele contém — o card da tela de sincronização
+/// expande para revelar esta lista, uma a uma.
 class _SyncModule {
-  const _SyncModule({required this.kind, required this.items});
+  const _SyncModule({required this.group, required this.items});
 
-  final ActivityKind kind;
+  final String group;
   final List<String> items;
 }
 
-/// Amostra usada quando a fila local está vazia — o protótipo não bloqueia a
-/// demonstração do envio por falta de lançamentos reais na sessão. Premissa
-/// funcional do protótipo frontend, como as demais distribuições de amostra
-/// do catálogo (`functional_catalog.dart`).
-const _demoSyncModules = <_SyncModule>[
-  _SyncModule(
-    kind: ActivityKind.pesagem,
-    items: ['Pesagem do Lote 12', 'Pesagem do Lote 27', 'Pesagem do Lote 34'],
-  ),
-  _SyncModule(
-    kind: ActivityKind.evento,
-    items: ['Nascimento — Lote 8', 'Morte — Lote 15', 'Transferência de lote'],
-  ),
-  _SyncModule(
-    kind: ActivityKind.nfe,
-    items: ['NF-e #48213', 'NF-e #48220'],
-  ),
-  _SyncModule(
-    kind: ActivityKind.venda,
-    items: ['Venda — Lote 19', 'Venda — Lote 33'],
-  ),
-  _SyncModule(
-    kind: ActivityKind.insumo,
-    items: ['Aplicação de fertilizante', 'Retirada de diesel'],
-  ),
-  _SyncModule(
-    kind: ActivityKind.arracoamento,
-    items: [
-      'Arraçoamento — Curral 3',
-      'Arraçoamento — Curral 7',
-      'Arraçoamento — Curral 11',
-    ],
-  ),
-];
+/// Agrupa `operationalFeatures` por `group` — mesma fonte e mesma ordem que a
+/// central operacional ([ResponsibilityWorkspace]) usa para os cards de
+/// módulo (Lei 2 — fonte única). `Sincronização` fica de fora: é o próprio
+/// grupo desta tela, não algo que ela sincroniza.
+List<_SyncModule> _buildSyncModules() {
+  final byGroup = <String, List<String>>{};
+  for (final feature in operationalFeatures) {
+    if (feature.group == 'Sincronização') continue;
+    (byGroup[feature.group] ??= []).add(feature.title);
+  }
+  final insertionOrder = byGroup.keys.toList();
+  final orderedGroups = [...insertionOrder]
+    ..sort((a, b) {
+      final byOrder = groupOrder(a).compareTo(groupOrder(b));
+      if (byOrder != 0) return byOrder;
+      return insertionOrder.indexOf(a).compareTo(insertionOrder.indexOf(b));
+    });
+  return [
+    for (final group in orderedGroups)
+      _SyncModule(group: group, items: byGroup[group]!),
+  ];
+}
+
+final _syncModules = _buildSyncModules();
 
 enum _SyncPhase { idle, syncing, done }
 
 enum _ModuleStatus { pending, active, done }
 
-/// Sincronização de dados (feature `sincronizacao`): envia a fila local para
-/// a nuvem módulo a módulo (`ActivityKind`, fonte única também usada pelas
-/// Atividades). Cada módulo é um card isolado que expande enquanto está
-/// enviando — mostrando cada funcionalidade interna — e recolhe assim que
-/// termina, liberando o próximo. Qualquer card pode ser reaberto a qualquer
-/// momento para conferir exatamente onde a sincronização passou.
+/// Sincronização de dados (feature `sincronizacao`): envia cada módulo
+/// operacional do catálogo (Confinamento, Pecuária, Agricultura...) para a
+/// nuvem, um de cada vez. Cada módulo é um card isolado que expande enquanto
+/// está enviando — mostrando cada funcionalidade interna — e recolhe assim
+/// que termina, liberando o próximo. Qualquer card pode ser reaberto a
+/// qualquer momento para conferir exatamente onde a sincronização passou.
 ///
 /// Fluxo de campo (`/fazendas/campo/sincronizacao`) como os demais — tela
 /// funda, sem navbar, CTA fixo no rodapé — em vez de um passo intermediário
@@ -83,11 +73,10 @@ class SincronizacaoFlow extends ConsumerStatefulWidget {
 }
 
 class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
-  static const _tickInterval = Duration(milliseconds: 420);
+  static const _tickInterval = Duration(milliseconds: 180);
 
   Timer? _timer;
   _SyncPhase _phase = _SyncPhase.idle;
-  List<_SyncModule> _modules = const [];
   int _moduleIndex = 0;
   int _itemIndex = 0;
   final Map<int, bool> _expandedOverride = {};
@@ -98,22 +87,9 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
     super.dispose();
   }
 
-  List<_SyncModule> _modulesFor(List<SyncItem> queue) {
-    if (queue.isEmpty) return _demoSyncModules;
-    final byKind = <ActivityKind, List<String>>{};
-    for (final item in queue) {
-      (byKind[item.kind] ??= []).add(item.label);
-    }
-    return [
-      for (final kind in ActivityKind.values)
-        if (byKind[kind] != null) _SyncModule(kind: kind, items: byKind[kind]!),
-    ];
-  }
-
-  void _start(List<SyncItem> queue) {
+  void _start() {
     _timer?.cancel();
     setState(() {
-      _modules = _modulesFor(queue);
       _moduleIndex = 0;
       _itemIndex = 0;
       _expandedOverride.clear();
@@ -127,12 +103,15 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
   /// ativo (fecha o módulo e pula pro próximo só quando ele esgota).
   void _scheduleTick() {
     _timer = Timer(_tickInterval, () {
-      final current = _modules[_moduleIndex];
-      final isLastModule = _moduleIndex == _modules.length - 1;
+      final current = _syncModules[_moduleIndex];
+      final isLastModule = _moduleIndex == _syncModules.length - 1;
       final nextItemIndex = _itemIndex + 1;
 
       if (nextItemIndex >= current.items.length) {
         if (isLastModule) {
+          // A tela sincroniza os módulos do catálogo, mas a fila offline
+          // real (lançamentos de campo enfileirados por outros fluxos)
+          // continua existindo — concluir aqui também a esvazia.
           ref.read(fazendasStoreProvider.notifier).clearSync();
           setState(() {
             _itemIndex = current.items.length;
@@ -155,7 +134,7 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
     if (_phase == _SyncPhase.idle) return _ModuleStatus.pending;
     if (index < _moduleIndex) return _ModuleStatus.done;
     if (index > _moduleIndex) return _ModuleStatus.pending;
-    return _itemIndex >= _modules[index].items.length
+    return _itemIndex >= _syncModules[index].items.length
         ? _ModuleStatus.done
         : _ModuleStatus.active;
   }
@@ -170,16 +149,14 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final isOnline = ref.watch(shellStoreProvider.select((s) => s.isOnline));
-    final queue = ref.watch(fazendasStoreProvider.select((s) => s.syncQueue));
 
     final finished = _phase == _SyncPhase.done;
     final syncing = _phase == _SyncPhase.syncing;
-    final modules = syncing || finished ? _modules : _modulesFor(queue);
-    final totalItems = modules.fold(0, (sum, m) => sum + m.items.length);
+    final totalItems = _syncModules.fold(0, (sum, m) => sum + m.items.length);
     var doneItems = 0;
     if (syncing || finished) {
       for (var i = 0; i < _moduleIndex; i++) {
-        doneItems += _modules[i].items.length;
+        doneItems += _syncModules[i].items.length;
       }
       doneItems += _itemIndex;
     }
@@ -193,7 +170,7 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
       },
       primaryLoading: syncing,
       onPrimary: switch (_phase) {
-        _SyncPhase.idle => isOnline ? () => _start(queue) : null,
+        _SyncPhase.idle => isOnline ? _start : null,
         _SyncPhase.syncing => null,
         _SyncPhase.done => () => Navigator.of(context).maybePop(),
       },
@@ -239,10 +216,10 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
             ],
           ),
           const SizedBox(height: AppSpacing.space3),
-          for (var i = 0; i < modules.length; i++) ...[
+          for (var i = 0; i < _syncModules.length; i++) ...[
             if (i > 0) const SizedBox(height: AppSpacing.space3),
             _ModuleCard(
-              module: modules[i],
+              module: _syncModules[i],
               status: _statusOf(i),
               currentItemIndex: i == _moduleIndex ? _itemIndex : 0,
               expanded: _isExpanded(i),
@@ -280,7 +257,7 @@ class _ModuleCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    final label = kindLabel[module.kind] ?? '—';
+    final label = groupDisplayLabel(module.group);
     final done = switch (status) {
       _ModuleStatus.done => module.items.length,
       _ModuleStatus.active => currentItemIndex,
