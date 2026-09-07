@@ -22,18 +22,18 @@ Widget _app({ProviderContainer? container}) => UncontrolledProviderScope(
 AppGauge _gauge(WidgetTester tester) =>
     tester.widget<AppGauge>(find.byType(AppGauge));
 
-/// Avança tempo suficiente para a animação (24 passos de 140ms) terminar,
-/// bombeando o widget a cada tique em vez de `pumpAndSettle` — o progresso
-/// roda em `Timer.periodic`, não em `AnimationController`.
+/// Avança tempo suficiente para os 15 itens da amostra padrão terminarem —
+/// um item por tique (420ms) — bombeando o widget em vez de `pumpAndSettle`:
+/// o progresso roda em `Timer`, não em `AnimationController`.
 Future<void> _runSyncToEnd(WidgetTester tester) async {
-  for (var i = 0; i < 25; i++) {
-    await tester.pump(const Duration(milliseconds: 140));
+  for (var i = 0; i < 20; i++) {
+    await tester.pump(const Duration(milliseconds: 420));
   }
 }
 
 void main() {
   group('SincronizacaoFlow', () {
-    testWidgets('estado inicial mostra as categorias pendentes', (
+    testWidgets('estado inicial mostra os módulos recolhidos', (
       tester,
     ) async {
       await tester.pumpWidget(_app());
@@ -41,10 +41,57 @@ void main() {
 
       expect(find.text('Pesagem'), findsOneWidget);
       expect(find.text('Eventos do rebanho'), findsOneWidget);
-      expect(_gauge(tester).label, '0/80');
+      expect(find.text('0/3'), findsWidgets);
+      // Recolhido: a funcionalidade interna não aparece antes de sincronizar.
+      expect(find.text('Pesagem do Lote 12'), findsNothing);
+      expect(_gauge(tester).label, '0/15');
       expect(find.text('SINCRONIZAR'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets(
+      'módulo ativo expande e mostra as funcionalidades internas',
+      (tester) async {
+        await tester.pumpWidget(_app());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('SINCRONIZAR'));
+        await tester.pump();
+
+        // O primeiro módulo (Pesagem) vira ativo e expande sozinho.
+        expect(find.text('Pesagem do Lote 12'), findsOneWidget);
+        expect(find.text('Pesagem do Lote 27'), findsOneWidget);
+
+        await _runSyncToEnd(tester);
+        await tester.pumpAndSettle();
+
+        // Ao concluir, cada módulo fecha — nenhuma funcionalidade interna
+        // fica visível por padrão.
+        expect(find.text('Pesagem do Lote 12'), findsNothing);
+        expect(find.text('CONCLUÍDO'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'permite reabrir um módulo já concluído para conferir onde parou',
+      (tester) async {
+        await tester.pumpWidget(_app());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('SINCRONIZAR'));
+        await _runSyncToEnd(tester);
+        await tester.pumpAndSettle();
+
+        expect(find.text('Pesagem do Lote 12'), findsNothing);
+
+        await tester.tap(find.text('Pesagem'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Pesagem do Lote 12'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets(
       'usa a fila real quando há lançamentos e esvazia ao concluir',
@@ -68,6 +115,9 @@ void main() {
         expect(_gauge(tester).label, '0/1');
 
         await tester.tap(find.text('SINCRONIZAR'));
+        await tester.pump();
+        expect(find.text('Pesagem do Lote 42'), findsOneWidget);
+
         await _runSyncToEnd(tester);
         await tester.pumpAndSettle();
 
@@ -91,7 +141,7 @@ void main() {
       await _runSyncToEnd(tester);
       await tester.pumpAndSettle();
 
-      expect(_gauge(tester).label, '80/80');
+      expect(_gauge(tester).label, '15/15');
       expect(find.text('MÓDULOS SINCRONIZADOS'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });

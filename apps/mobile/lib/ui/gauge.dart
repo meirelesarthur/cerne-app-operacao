@@ -29,6 +29,8 @@ class AppGauge extends StatelessWidget {
     this.valueLabel,
     this.target,
     this.tone = AppGaugeTone.auto,
+    this.valueFontSize,
+    this.labelFontSize,
   });
 
   final double value;
@@ -40,6 +42,14 @@ class AppGauge extends StatelessWidget {
 
   /// Texto do número central; padrão: o percentual de [value] sobre [max].
   final String? valueLabel;
+
+  /// Tamanho do número central; padrão [AppTypography.xl2]. Telas onde o
+  /// medidor é o protagonista (ex.: progresso de sincronização) podem pedir
+  /// um número maior sem afetar os demais usos do componente.
+  final double? valueFontSize;
+
+  /// Tamanho da legenda abaixo do número; padrão [AppTypography.xs].
+  final double? labelFontSize;
 
   /// Meta, na mesma unidade de [value] — desenhada como um traço no arco.
   final double? target;
@@ -77,7 +87,9 @@ class AppGauge extends StatelessWidget {
           trackColor: semantic.chartTrack,
           axisColor: semantic.chartAxis,
           valueLabel: valueLabel ?? '${(_fraction * 100).round()}%',
+          valueFontSize: valueFontSize ?? AppTypography.xl2,
           label: label,
+          labelFontSize: labelFontSize ?? AppTypography.xs,
           valueColor: semantic.fgDefault,
           labelColor: semantic.fgMuted,
         ),
@@ -94,7 +106,9 @@ class _GaugePainter extends CustomPainter {
     required this.trackColor,
     required this.axisColor,
     required this.valueLabel,
+    required this.valueFontSize,
     required this.label,
+    required this.labelFontSize,
     required this.valueColor,
     required this.labelColor,
   });
@@ -105,7 +119,9 @@ class _GaugePainter extends CustomPainter {
   final Color trackColor;
   final Color axisColor;
   final String valueLabel;
+  final double valueFontSize;
   final String? label;
+  final double labelFontSize;
   final Color valueColor;
   final Color labelColor;
 
@@ -161,7 +177,7 @@ class _GaugePainter extends CustomPainter {
       text: TextSpan(
         text: valueLabel,
         style: TextStyle(
-          fontSize: AppTypography.xl2,
+          fontSize: valueFontSize,
           fontWeight: AppTypography.weightBold,
           color: valueColor,
         ),
@@ -174,7 +190,7 @@ class _GaugePainter extends CustomPainter {
       labelPainter = TextPainter(
         text: TextSpan(
           text: label,
-          style: TextStyle(fontSize: AppTypography.xs, color: labelColor),
+          style: TextStyle(fontSize: labelFontSize, color: labelColor),
         ),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.center,
@@ -199,7 +215,9 @@ class _GaugePainter extends CustomPainter {
       old.color != color ||
       old.trackColor != trackColor ||
       old.valueLabel != valueLabel ||
-      old.label != label;
+      old.valueFontSize != valueFontSize ||
+      old.label != label ||
+      old.labelFontSize != labelFontSize;
 }
 
 WidgetbookComponent buildGaugeWidgetbookComponent() {
@@ -227,6 +245,19 @@ WidgetbookComponent buildGaugeWidgetbookComponent() {
             target: 1.55,
             valueLabel: '1,42',
             label: 'GMD kg/dia · meta 1,55',
+          ),
+        ),
+      ),
+      WidgetbookUseCase(
+        name: 'Texto grande (protagonista)',
+        builder: (context) => const Center(
+          child: AppGauge(
+            value: 80,
+            size: 200,
+            tone: AppGaugeTone.positive,
+            valueFontSize: AppTypography.xl2 * 2,
+            labelFontSize: AppTypography.xs * 2,
+            label: '80/100',
           ),
         ),
       ),
