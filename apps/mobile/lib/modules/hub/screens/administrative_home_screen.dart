@@ -68,7 +68,7 @@ class AdministrativeHomeScreen extends ConsumerWidget {
         const SizedBox(height: AppSpacing.space6),
         const _AdminSectionHeader(title: 'Acesso rápido'),
         const SizedBox(height: AppSpacing.space3),
-        _DiscoveryRail(items: _adminQuickAccess),
+        const _DiscoveryRail(items: _adminQuickAccess),
         const SizedBox(height: AppSpacing.space6),
         const _AdminSectionHeader(title: 'Parceiros de crédito'),
         const SizedBox(height: AppSpacing.space3),
@@ -177,7 +177,7 @@ class _AdminSectionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AppHeading(level: AppHeadingLevel.h2, child: Text(title)),
+          AppHeading(child: Text(title)),
           AppIcon(
             AppIcons.chevronRight,
             size: AppSize.iconLg,
