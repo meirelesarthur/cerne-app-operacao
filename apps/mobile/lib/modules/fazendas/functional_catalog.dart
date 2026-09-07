@@ -1833,7 +1833,7 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Sincronização de dados',
     objective: 'Enviar a fila local para a nuvem após operação offline.',
     status: FeatureStatus.ready,
-    existingRoute: '/fazendas/mais/sync',
+    existingRoute: '/fazendas/campo/sincronizacao',
     capabilities: ['Rebanho', 'Lotes', 'Pesagem', 'Mortes'],
   ),
   // confinamento (onda 1): submódulo de Confinamento (Cadastro + Nutrição),

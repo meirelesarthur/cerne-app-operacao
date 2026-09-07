@@ -176,8 +176,7 @@ String? redirectForSession(String path, PrototypeSessionState session) {
       path == '/fazendas/financeiro';
   final isOperationalRoute =
       path.startsWith('/fazendas/operacional') ||
-      path.startsWith('/fazendas/campo') ||
-      path == '/fazendas/mais/sync';
+      path.startsWith('/fazendas/campo');
 
   if (profile == UserAccessProfile.administration && isOperationalRoute) {
     return profile.landingRoute;

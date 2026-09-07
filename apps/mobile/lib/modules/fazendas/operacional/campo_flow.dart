@@ -10,6 +10,7 @@ import 'meus_currais_screen.dart';
 import 'ordens_pendentes_screen.dart';
 import 'pesagem_flow.dart';
 import 'recebimento_xml_flow.dart';
+import 'sincronizacao_flow.dart';
 import 'trato_diario_flow.dart';
 import 'venda_flow.dart';
 
@@ -28,6 +29,7 @@ Widget buildCampoFlow(String flowId) {
     'trato-diario' => const TratoDiarioFlow(),
     'leitura-cocho' => const LeituraCochoFlow(),
     'ordens-pendentes' => const OrdensPendentesScreen(),
+    'sincronizacao' => const SincronizacaoFlow(),
     _ => const Scaffold(
       body: Center(child: AppEmptyState(title: 'Lançamento')),
     ),

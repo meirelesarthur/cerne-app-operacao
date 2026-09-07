@@ -29,6 +29,7 @@ class FlowShell extends ConsumerWidget {
     required this.child,
     this.primaryLabel,
     this.onPrimary,
+    this.primaryLoading = false,
     this.onBack,
     this.actionIcon,
     this.actionLabel,
@@ -44,6 +45,11 @@ class FlowShell extends ConsumerWidget {
   /// Rótulo do botão primário; o rodapé inteiro é ocultado se ausente.
   final String? primaryLabel;
   final VoidCallback? onPrimary;
+
+  /// Estado "enviando" do CTA — desabilita o botão e troca o rótulo pelo
+  /// spinner do [AppButton], sem esconder o rodapé (a barra de resumo/aviso
+  /// offline continua visível durante o envio).
+  final bool primaryLoading;
   final VoidCallback? onBack;
 
   /// Ação contextual opcional no extremo direito do cabeçalho. Quando nula,
@@ -134,6 +140,7 @@ class FlowShell extends ConsumerWidget {
                       AppActionBar(
                         primaryLabel: primaryLabel!,
                         primaryIcon: AppIcons.saveAll,
+                        primaryLoading: primaryLoading,
                         onPrimary: onPrimary,
                         summary: actionBarSummary,
                       ),

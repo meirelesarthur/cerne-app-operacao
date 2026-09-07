@@ -75,9 +75,9 @@ const _groups = [
     title: 'Operacional',
     items: [
       _LinkItem(
-        label: 'Fila de sincronização',
+        label: 'Sincronização',
         icon: AppIcons.refreshCw,
-        to: '/fazendas/mais/sync',
+        to: '/fazendas/campo/sincronizacao',
       ),
     ],
   ),

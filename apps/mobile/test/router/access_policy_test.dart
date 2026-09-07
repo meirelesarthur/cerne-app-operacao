@@ -44,7 +44,7 @@ void main() {
         '/fazendas/operacional',
         '/fazendas/operacional/carga',
         '/fazendas/campo/pesagem',
-        '/fazendas/mais/sync',
+        '/fazendas/campo/sincronizacao',
       ]) {
         expect(
           redirectForSession(path, administration),

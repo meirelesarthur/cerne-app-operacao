@@ -64,6 +64,7 @@ export 'step_progress.dart';
 export 'stacked_bar.dart';
 export 'stepper.dart';
 export 'success_panel.dart';
+export 'sync_ring.dart';
 export 'tag.dart';
 export 'text_input.dart';
 export 'textarea.dart';

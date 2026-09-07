@@ -12,7 +12,6 @@ import 'screens/group_features_screen.dart';
 import 'screens/mais_screen.dart';
 import 'screens/mapped_feature_screen.dart';
 import 'screens/responsibility_workspace.dart';
-import 'screens/sync_queue_screen.dart';
 
 /// Rotas do módulo Fazendas (ex-"Cerne") — espelha `FazendasModule.tsx`.
 /// Registrado no `ShellRoute` principal (`lib/router/app_router.dart`), no
@@ -107,11 +106,6 @@ GoRoute buildFazendasModuleRoute() {
         path: 'mais',
         builder: (context, state) =>
             const _FazendasScaffold(child: MaisScreen()),
-      ),
-      GoRoute(
-        path: 'mais/sync',
-        builder: (context, state) =>
-            const _FazendasScaffold(child: SyncQueueScreen()),
       ),
       // Consultas Gerenciais e 100% leitura, sem indicador e sem acao: e um
       // console de consulta, nao um painel de decisao. Fica fora de

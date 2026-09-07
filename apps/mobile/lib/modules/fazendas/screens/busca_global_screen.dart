@@ -389,7 +389,7 @@ List<_SearchShortcut> _historyFor(UserAccessProfile? profile) {
       _SearchShortcut(
         label: 'Sincronizar aplicativo',
         icon: AppIcons.refreshCw,
-        route: '/fazendas/mais/sync',
+        route: '/fazendas/campo/sincronizacao',
       ),
       _SearchShortcut(
         label: 'Consultas de campo',

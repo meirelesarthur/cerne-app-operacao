@@ -182,6 +182,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildLineChartWidgetbookComponent(),
                 buildStackedBarWidgetbookComponent(),
                 buildGaugeWidgetbookComponent(),
+                buildSyncRingWidgetbookComponent(),
                 buildBulletChartWidgetbookComponent(),
                 buildChartLegendWidgetbookComponent(),
                 buildSparklineAreaWidgetbookComponent(),

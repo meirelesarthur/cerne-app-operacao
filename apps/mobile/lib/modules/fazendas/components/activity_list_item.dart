@@ -18,6 +18,17 @@ const Map<ActivityKind, AppIconData> kindIcon = {
   ActivityKind.arracoamento: AppIcons.wheat,
 };
 
+/// Rótulo de categoria por tipo de atividade — fonte única, reutilizado pela
+/// tela de sincronização (`SincronizacaoFlow`) para agrupar a fila por tipo.
+const Map<ActivityKind, String> kindLabel = {
+  ActivityKind.pesagem: 'Pesagem',
+  ActivityKind.evento: 'Eventos do rebanho',
+  ActivityKind.nfe: 'Notas fiscais',
+  ActivityKind.venda: 'Vendas',
+  ActivityKind.insumo: 'Insumos',
+  ActivityKind.arracoamento: 'Arraçoamento',
+};
+
 /// Rótulo + tom de status — fonte única, reutilizado no `ActivityDetailSheet`
 /// (Lei 2). Espelha `STATUS_META`.
 class StatusMeta {
