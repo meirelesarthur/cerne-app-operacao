@@ -225,5 +225,23 @@ void main() {
         reason: 'ícone sem strokeWidth: o override de 1.2 não teria efeito',
       );
     });
+
+    test(
+      'ícones de navegação distintos não colidem por identidade',
+      () {
+        // banco-real (correção de identidade): `chevronLeft`/`chevronRight`
+        // reaproveitavam o mesmo glifo 01 de `arrowLeft`/`arrowRight` — como
+        // os dois são `const AppIconData.glyph(...)` com o mesmo argumento,
+        // Dart canoniza os dois literais no mesmo objeto, e
+        // `find.byWidgetPredicate` por `identical(...)`
+        // (`test/helpers/app_icon_finder.dart`) via `findAppIcon` passava a
+        // casar os dois ao mesmo tempo — uma tela com o botão Voltar
+        // (`arrowLeft`) e uma paginação (`chevronLeft`) juntos quebrava
+        // `getRect`/`tap` por ambiguidade. Guarda para o par não colidir de
+        // novo silenciosamente.
+        expect(identical(AppIcons.arrowLeft, AppIcons.chevronLeft), isFalse);
+        expect(identical(AppIcons.arrowRight, AppIcons.chevronRight), isFalse);
+      },
+    );
   });
 }

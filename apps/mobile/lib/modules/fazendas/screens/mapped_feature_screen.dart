@@ -418,10 +418,28 @@ class _RecordsListState extends State<_RecordsList> {
               ),
               const SizedBox(height: AppSpacing.space3),
               if (filteredRecords.isEmpty)
-                const AppEmptyState(
-                  icon: AppIcons.search,
-                  title: 'Nenhum registro encontrado',
-                  description: 'Ajuste a busca para encontrar outro cadastro.',
+                // banco-real (correção de regressão): a busca (`dbec5b7`)
+                // trocou a mensagem de vazio por uma única, genérica — sem
+                // diferenciar "a busca não achou nada" (`records` existe,
+                // só o filtro zerou) de "não há registro nenhum". A segunda
+                // precisa continuar dizendo a verdade por perfil (criar vs.
+                // somente leitura vs. genérico), senão uma consulta
+                // somente leitura sem dado sincronizado passa a impressão
+                // de que o app perdeu o cadastro. Ver
+                // `mapped_feature_screen_test.dart`, "Áreas mostra estado
+                // vazio honesto...".
+                AppEmptyState(
+                  icon: query.isNotEmpty
+                      ? AppIcons.search
+                      : AppIcons.clipboardCheck,
+                  title: widget.feature.emptyLabel ?? 'Nenhum registro encontrado',
+                  description: query.isNotEmpty
+                      ? 'Ajuste a busca para encontrar outro cadastro.'
+                      : widget.canCreate
+                      ? 'Use a ação abaixo para criar o primeiro registro desta rotina.'
+                      : widget.feature.readOnly
+                      ? 'O cadastro desta rotina é feito no sistema web. Assim que sincronizar, os registros aparecem aqui.'
+                      : 'Os registros operacionais desta sessão aparecerão aqui.',
                 )
               else
                 for (var index = 0; index < visibleRecords.length; index++) ...[
@@ -506,6 +524,14 @@ List<PrototypeRecord> _recordsWithMinimumSample(
   List<PrototypeRecord> records,
 ) {
   const minimumRecords = 6;
+  // banco-real (correção de regressão): uma consulta somente leitura sem
+  // nenhum registro sincronizado precisa continuar genuinamente vazia — é
+  // o único jeito de mostrar o aviso honesto de que o cadastro vem do
+  // sistema web, em vez de fabricar 6 registros fingindo que já
+  // sincronizou algo que nunca existiu nesta sessão. Ver
+  // `mapped_feature_screen_test.dart`, "Áreas mostra estado vazio
+  // honesto...".
+  if (records.isEmpty && feature.readOnly) return records;
   if (records.length >= minimumRecords) return records;
 
   final samples = List<PrototypeRecord>.of(records);

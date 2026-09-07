@@ -71,11 +71,22 @@ class AppIcons {
   static const AppIconData arrowLeftRight = AppIconData.glyph(
     HugeIcons.strokeRoundedArrowDataTransferHorizontal,
   );
+  // banco-real (correção de identidade): usava o mesmo glifo 01 de
+  // arrowRight/arrowLeft — dois nomes distintos apontando para o mesmo
+  // `AppIconData` const (Dart canoniza literais const estruturalmente
+  // iguais em um único objeto). Isso quebra a suposição de
+  // `findAppIcon`/`test/helpers/app_icon_finder.dart` de que "ícones
+  // distintos nunca colidem": uma tela com o botão Voltar (arrowLeft) e a
+  // paginação (chevronLeft) ao mesmo tempo tinha 2 matches para o mesmo
+  // `find`, ambíguo em `getRect`/`tester.tap`. Variante 02 é visualmente
+  // próxima (mesma família seta-esquerda/direita do HugeIcons), mas um
+  // objeto const genuinamente diferente. Ver
+  // `mapped_feature_screen_test.dart` e `app_icon_test.dart`.
   static const AppIconData chevronRight = AppIconData.glyph(
-    HugeIcons.strokeRoundedArrowRight01,
+    HugeIcons.strokeRoundedArrowRight02,
   );
   static const AppIconData chevronLeft = AppIconData.glyph(
-    HugeIcons.strokeRoundedArrowLeft01,
+    HugeIcons.strokeRoundedArrowLeft02,
   );
   static const AppIconData chevronDown = AppIconData.glyph(
     HugeIcons.strokeRoundedArrowDown01,
