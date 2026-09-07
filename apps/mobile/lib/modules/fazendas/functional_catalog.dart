@@ -628,10 +628,18 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'produto',
     recordDescriptionFields: ['quantidade', 'quantidade-realizada', 'armazem'],
   ),
+  // confinamento (onda 2): o Confinamento absorveu as funções restantes do
+  // extinto grupo "Misturador" — `carga`, `descarga` e `balanca` deixaram de
+  // existir como funcionalidades próprias (a produção física e a distribuição
+  // de batelada já são cobertas por `producao-batelada`/`trato-diario`, e a
+  // simulação de balança standalone não tinha mais uso sem elas); `nota-cocho`
+  // saiu por ser duplicata exata de `leitura-cocho-confinamento` (mesmo
+  // objetivo, mesma rota). `conexao-aparelhos` e `configuracoes-misturador`
+  // seguem existindo, agora sob o grupo `Confinamento`.
   FeatureDefinition(
     id: 'conexao-aparelhos',
     profile: FeatureProfile.operational,
-    group: 'Misturador',
+    group: 'Confinamento',
     title: 'Conexão de aparelhos',
     objective: 'Conectar balança e equipamentos externos por Bluetooth.',
     status: FeatureStatus.hardware,
@@ -647,72 +655,10 @@ const operationalFeatures = <FeatureDefinition>[
     successDescription:
         'A balança e o equipamento externo estão disponíveis para os fluxos simulados desta sessão.',
   ),
-  // banco-real (Onda 3): `carga` grava na mesma tabela real que
-  // `producao-batelada` do Confinamento (`item_diet_beats`) — confirmado em
-  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Não removida do
-  // catálogo (quem já usa o caminho antigo não pode perder o acesso); vira
-  // redirecionamento para a tela nova, no mesmo padrão já usado por
-  // `pesagem`/`nascimentos`/`mortes`/`nutricoes` acima: só `existingRoute`,
-  // sem `fields`/`listMode` próprios. Ver
-  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
-  FeatureDefinition(
-    id: 'carga',
-    profile: FeatureProfile.operational,
-    group: 'Misturador',
-    title: 'Carga',
-    objective:
-        'Registrar a produção física de uma mistura de dieta, ingrediente a ingrediente.',
-    status: FeatureStatus.ready,
-    existingRoute: '/fazendas/campo/batelada',
-  ),
-  // banco-real (Onda 3): `descarga` grava na mesma tabela real que
-  // `trato-diario` do Confinamento (`item_nutritions`) — confirmado em
-  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Mesmo tratamento de
-  // `carga` acima: redireciona em vez de excluir. Ver
-  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
-  FeatureDefinition(
-    id: 'descarga',
-    profile: FeatureProfile.operational,
-    group: 'Misturador',
-    title: 'Descarga',
-    objective: 'Distribuir uma batelada entre os currais elegíveis do dia.',
-    status: FeatureStatus.ready,
-    existingRoute: '/fazendas/campo/trato-diario',
-  ),
-  FeatureDefinition(
-    id: 'balanca',
-    profile: FeatureProfile.operational,
-    group: 'Misturador',
-    title: 'Balança',
-    objective: 'Obter dados de pesagem do equipamento conectado.',
-    status: FeatureStatus.hardware,
-    capabilities: ['Bluetooth', 'Balança'],
-    primaryAction: 'Confirmar leitura',
-    simulation: HardwareSimulationKind.scale,
-    successTitle: 'Leitura de balança confirmada',
-    successDescription:
-        'O peso simulado foi capturado e pode ser usado na apresentação do fluxo.',
-  ),
-  // banco-real (Onda 3): `nota-cocho` grava na mesma tabela real que
-  // `leitura-cocho-confinamento` do Confinamento
-  // (`feedlot_corral_diet_histories`) — confirmado em
-  // docs/ajustes-banco-real/01-mapa-catalogo-banco.md. Mesmo tratamento de
-  // `carga`/`descarga` acima: redireciona em vez de excluir. Ver
-  // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
-  FeatureDefinition(
-    id: 'nota-cocho',
-    profile: FeatureProfile.operational,
-    group: 'Misturador',
-    title: 'Nota de cocho',
-    objective:
-        'Avaliar sobras por curral e registrar ocorrências sanitárias, estruturais e ambientais.',
-    status: FeatureStatus.ready,
-    existingRoute: '/fazendas/campo/leitura-cocho',
-  ),
   FeatureDefinition(
     id: 'configuracoes-misturador',
     profile: FeatureProfile.operational,
-    group: 'Misturador',
+    group: 'Confinamento',
     title: 'Configurações',
     objective: 'Parametrizar recursos do misturador.',
     status: FeatureStatus.ready,

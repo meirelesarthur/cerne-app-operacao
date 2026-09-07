@@ -173,7 +173,7 @@ void main() {
       addTearDown(container.dispose);
 
       for (final feature in [
-        ('carga', FeatureProfile.operational),
+        ('configuracoes-misturador', FeatureProfile.operational),
         ('transferencia-animal', FeatureProfile.operational),
         ('saldo-estoque', FeatureProfile.administration),
         ('exportar-log-estoque', FeatureProfile.administration),

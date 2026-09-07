@@ -46,11 +46,10 @@ void _fillRequiredFields(
 void main() {
   group('MappedFeatureScreen — Onda C', () {
     test(
-      'os sete contratos bloqueiam sem hardware e concluem com simulação',
+      'os seis contratos bloqueiam sem hardware e concluem com simulação',
       () {
         const ids = {
           'conexao-aparelhos',
-          'balanca',
           'conexao-aparelhos-pecuaria',
           'transferencia-animal',
           'scanner-sisbov',
@@ -105,23 +104,6 @@ void main() {
       await tester.tap(findCta('Concluir configuração'));
       await tester.pumpAndSettle();
       expect(find.text('Aparelhos conectados no protótipo'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('balança captura peso e conclui a leitura', (tester) async {
-      await setTallSurface(tester);
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      await tester.pumpWidget(_wrap(container, 'balanca'));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Simular leitura'));
-      await tester.pump();
-      expect(find.text('482,6 kg'), findsOneWidget);
-
-      await tester.tap(findCta('Confirmar leitura'));
-      await tester.pumpAndSettle();
-      expect(find.text('Leitura de balança confirmada'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

@@ -236,7 +236,9 @@ void main() {
         expect(find.byType(AppBottomTabBar), findsOneWidget);
         expect(find.text('Fazenda São Pedro'), findsOneWidget);
         expect(find.byType(AppSearchField), findsOneWidget);
-        expect(find.byType(AppModuleTile), findsNWidgets(5));
+        // confinamento (onda 2): o Confinamento absorveu `conexao-aparelhos`
+        // e `configuracoes-misturador` do extinto grupo Misturador — 5+2=7.
+        expect(find.byType(AppModuleTile), findsNWidgets(7));
         expect(find.text('Boa tarde,'), findsNothing);
         expect(find.byType(AppContextTabs), findsNothing);
       },

@@ -22,7 +22,7 @@ void main() {
   });
 
   test('hardware exige captura mesmo quando não há campo-alvo', () {
-    final feature = featureById('balanca')!;
+    final feature = featureById('conexao-aparelhos')!;
 
     expect(isFeatureFormValid(feature, const FunctionalFormState()), isFalse);
     expect(

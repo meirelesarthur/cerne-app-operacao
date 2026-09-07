@@ -83,48 +83,6 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
       },
     ),
   ],
-  'carga': [
-    PrototypeRecord(
-      id: 'carga-1',
-      title: 'Ração de engorda 18%',
-      description: '1.000 kg · Misturador 01',
-      status: PrototypeRecordStatus.completed,
-      details: {
-        'Responsável': 'João Oliveira',
-        'Origem': 'Armazém A',
-        'Equipamento': 'Misturador 01',
-        'Quantidade': '1.000 kg',
-      },
-    ),
-  ],
-  'descarga': [
-    PrototypeRecord(
-      id: 'descarga-1',
-      title: 'Curral 7 · Cocho A',
-      description: 'Ração de engorda · 980 kg',
-      status: PrototypeRecordStatus.completed,
-      details: {
-        'Responsável': 'Carlos Dias',
-        'Produto': 'Ração de engorda',
-        'Destino': 'Curral 7 · Cocho A',
-        'Quantidade': '980 kg',
-      },
-    ),
-  ],
-  'nota-cocho': [
-    PrototypeRecord(
-      id: 'cocho-1',
-      title: 'Lote 42 · Curral 7',
-      description: '2 — Adequado · 16/08/2026',
-      status: PrototypeRecordStatus.completed,
-      details: {
-        'Responsável': 'João Oliveira',
-        'Data': '16/08/2026',
-        'Nota': '2 — Adequado',
-        'Observação': 'Consumo dentro do esperado',
-      },
-    ),
-  ],
   'configuracoes-misturador': [
     PrototypeRecord(
       id: 'config-mist-1',

@@ -4,7 +4,7 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 57 funcionalidades e a divisão por perfil', () {
+    test('preserva as 53 funcionalidades e a divisão por perfil', () {
       // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
       // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
       // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
@@ -20,9 +20,15 @@ void main() {
       // `painel-financeiro` (mesmo P&L; o bloco produtivo passou a ser servido
       // por `lotacao-currais`, onde há dado real) — 15-1=14 administrativas,
       // 14+43=57 no total. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
+      // confinamento (onda 2): o Confinamento absorveu o que restava do
+      // extinto grupo "Misturador" — `carga`, `descarga` e `balanca` deixaram
+      // de existir como funcionalidades (a produção/distribuição de batelada
+      // já é coberta por `producao-batelada`/`trato-diario`) e `nota-cocho`
+      // saiu por ser duplicata exata de `leitura-cocho-confinamento` — 4
+      // funcionalidades a menos: 43-4=39 operacionais, 14+39=53 no total.
       expect(adminFeatures, hasLength(14));
-      expect(operationalFeatures, hasLength(43));
-      expect(allFeatures, hasLength(57));
+      expect(operationalFeatures, hasLength(39));
+      expect(allFeatures, hasLength(53));
 
       expect(
         adminFeatures.every(
@@ -48,19 +54,21 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 50 ready, 7 hardware e zero mapped', () {
+    test('preserva a maturidade 47 ready, 6 hardware e zero mapped', () {
       // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
       // (ready) saiu do escopo — 52-1=51. Auditoria dos painéis:
       // `painel-pecuario` (ready) fundiu em `painel-financeiro` — 51-1=50.
+      // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` (ready)
+      // saíram do catálogo — 50-3=47; `balanca` (hardware) saiu junto — 7-1=6.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(50),
+        hasLength(47),
       );
       expect(
         allFeatures.where(
           (feature) => feature.status == FeatureStatus.hardware,
         ),
-        hasLength(7),
+        hasLength(6),
       );
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.mapped),
@@ -98,18 +106,23 @@ void main() {
       // `existingRoute` e perderam `listMode` — 34-3=31 com `listMode`;
       // 17+3=20 com `existingRoute`. Ver
       // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
+      // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` saíram do
+      // catálogo (já não tinham `fields`/`listMode` próprios, então essas
+      // contagens não mudam) — cada uma levou seu `existingRoute`: 19-3=16.
+      // `balanca` saiu com suas 2 capabilities (`Bluetooth`, `Balança`):
+      // 25-2=23.
       expect(fields, hasLength(163));
       expect(fields.where((field) => field.isRequired), hasLength(140));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(31));
       // `painel-pecuario` levou junto o seu `existingRoute` — 20-1=19.
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(19),
+        hasLength(16),
       );
       expect(allFeatures.expand((feature) => feature.sections), hasLength(12));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
-        hasLength(25),
+        hasLength(23),
       );
     });
 
@@ -173,7 +186,6 @@ void main() {
 
       expect(hardware, {
         'conexao-aparelhos': HardwareSimulationKind.devices,
-        'balanca': HardwareSimulationKind.scale,
         'conexao-aparelhos-pecuaria': HardwareSimulationKind.devices,
         'transferencia-animal': HardwareSimulationKind.rfid,
         'scanner-sisbov': HardwareSimulationKind.scanner,
@@ -184,20 +196,13 @@ void main() {
 
     test('preserva consultas compartilhadas e exportações de auditoria', () {
       expect(featureById('areas')?.dataSourceId, 'cadastrar-area');
-      // banco-real (Onda 3 — duplicações): `carga`, `descarga` e
-      // `nota-cocho` gravam na mesma tabela real que as telas novas do
-      // Confinamento (ver docs/ajustes-banco-real/01-mapa-catalogo-banco.md)
-      // — não foram removidas do catálogo, viram redirecionamento. Ver
-      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
-      expect(featureById('carga')?.existingRoute, '/fazendas/campo/batelada');
-      expect(
-        featureById('descarga')?.existingRoute,
-        '/fazendas/campo/trato-diario',
-      );
-      expect(
-        featureById('nota-cocho')?.existingRoute,
-        '/fazendas/campo/leitura-cocho',
-      );
+      // confinamento (onda 2): `carga`, `descarga`, `balanca` e `nota-cocho`
+      // saíram do catálogo — o Confinamento absorveu o que restava do
+      // Misturador. Ver comentário em `functional_catalog.dart`.
+      expect(featureById('carga'), isNull);
+      expect(featureById('descarga'), isNull);
+      expect(featureById('balanca'), isNull);
+      expect(featureById('nota-cocho'), isNull);
       expect(
         featureById('exportar-log-estoque')?.auditExport,
         AuditExportKind.estoque,

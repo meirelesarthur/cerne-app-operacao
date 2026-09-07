@@ -6,10 +6,8 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/functional_journey_engine.dart';
 import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
-import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/ui/ui.dart';
 
-import '../../../support/router_test_harness.dart';
 import '../../../support/test_viewport.dart';
 
 Widget _wrap(
@@ -76,7 +74,7 @@ void main() {
       }
     });
 
-    test('todas as 50 funcionalidades Ready têm destino executável', () {
+    test('todas as 47 funcionalidades Ready têm destino executável', () {
       final ready = allFeatures.where(
         (feature) => feature.status == FeatureStatus.ready,
       );
@@ -88,7 +86,9 @@ void main() {
       // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
       // Auditoria dos painéis: `painel-pecuario` (ready) fundiu em
       // `painel-financeiro` — 51-1=50. Ver docs/ESTEIRA-DASHBOARDS-ADM.md.
-      expect(ready, hasLength(50));
+      // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` (ready)
+      // saíram do catálogo — 50-3=47. Ver functional_catalog_test.dart.
+      expect(ready, hasLength(47));
       for (final feature in ready) {
         final handledByMappedScreen =
             feature.auditExport != null ||
@@ -221,48 +221,6 @@ void main() {
       );
       expect(tester.takeException(), isNull);
     });
-
-    // banco-real (onda 3 — duplicações): `carga`, `descarga` e `nota-cocho`
-    // não abrem mais formulário próprio — o menu do grupo "Misturador" leva
-    // direto para a tela nova equivalente do Confinamento
-    // (`group_features_screen.dart`, `_destination` prioriza
-    // `existingRoute`). Substitui o teste anterior de formulário ("Carga
-    // parte da amostra e abre formulário validável"), que perdeu sentido: a
-    // tela antiga não é mais alcançável por navegação normal. Ver
-    // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
-    testWidgets(
-      'Carga, Descarga e Nota de cocho redirecionam para o Confinamento',
-      (tester) async {
-        await setTallSurface(tester);
-        final harness = RouterTestHarness(
-          profile: UserAccessProfile.operational,
-        );
-        addTearDown(harness.dispose);
-        harness.router.go('/fazendas/operacional/grupo/misturador');
-
-        await tester.pumpWidget(harness.buildApp());
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text('Carga'));
-        await tester.pumpAndSettle();
-        expect(find.text('Produzir batelada'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-
-        harness.router.go('/fazendas/operacional/grupo/misturador');
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Descarga'));
-        await tester.pumpAndSettle();
-        expect(find.text('Trato diário'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-
-        harness.router.go('/fazendas/operacional/grupo/misturador');
-        await tester.pumpAndSettle();
-        await tester.tap(find.text('Nota de cocho'));
-        await tester.pumpAndSettle();
-        expect(find.text('Leitura de cocho'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      },
-    );
 
     testWidgets('Minhas OS é consulta operacional sem ação de criação', (
       tester,
