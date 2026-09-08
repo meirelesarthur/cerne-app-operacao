@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'design/theme/app_theme.dart';
@@ -27,6 +28,15 @@ class CerneApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(variant),
       routerConfig: router,
+      // pt-BR é o único idioma do produto (datas DD/MM/AAAA, calendário do
+      // `AppDateInput` com nomes de mês/dia em português).
+      locale: const Locale('pt', 'BR'),
+      supportedLocales: const [Locale('pt', 'BR')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
     );
   }
 }

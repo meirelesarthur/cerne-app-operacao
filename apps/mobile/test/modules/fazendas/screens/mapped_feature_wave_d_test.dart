@@ -87,7 +87,11 @@ void main() {
       // Auditoria dos painéis: `painel-pecuario` (ready) fundiu em
       // `painel-financeiro` — 51-1=50. Ver docs/ESTEIRA-DASHBOARDS-ADM.md.
       // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` (ready)
-      // saíram do catálogo — 50-3=47. Ver functional_catalog_test.dart.
+      // saíram do catálogo — 50-3=47. reprodução: `lotes-reproducao`
+      // (ready) saiu do catálogo — 47-1=46 (`pastagens` continua ready,
+      // só muda de perfil). fidelidade-campos (onda 4): `lotes-reproducao`
+      // voltou como consulta administrativa — 46+1=47. Ver
+      // functional_catalog_test.dart.
       expect(ready, hasLength(47));
       for (final feature in ready) {
         final handledByMappedScreen =

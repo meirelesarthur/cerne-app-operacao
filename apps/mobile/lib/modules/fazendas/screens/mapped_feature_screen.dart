@@ -82,8 +82,87 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
 
   void _showList() => setState(_journey.showList);
 
+  /// CTA do rodapé em formulário com etapas: avança enquanto houver etapa e
+  /// só salva na última. Sem etapas declaradas, salva direto — o botão do
+  /// arquétipo *bottom fixed* continua sendo "Salvar".
+  void _advance() {
+    if (_journey.hasSteps && !_journey.isLastStep) {
+      setState(() {
+        _journey.advanceStep();
+      });
+      return;
+    }
+    _submit();
+  }
+
+  void _retreat() => setState(() {
+    _journey.retreatStep();
+  });
+
   void _setValue(String fieldId, String value) {
     setState(() => _journey.setValue(fieldId, value));
+  }
+
+  void _removeCollectionItem(String group, int index) =>
+      setState(() => _journey.removeGroupItem(group, index));
+
+  /// Formulário de **um item** da coleção, na folha inferior. É o que faltava
+  /// para a coleção deixar de ser um contador: cada "Adicionar" abre os campos
+  /// que o contrato define para o item e a linha entra na lista com o dado
+  /// verdadeiro. Coleção sem campos declarados continua só contando.
+  void _addCollectionItem(BuildContext context, FeatureCollection collection) {
+    if (collection.fields.isEmpty) {
+      setState(() => _journey.addGroupItem(collection.name));
+      return;
+    }
+
+    final values = <String, String>{};
+    var attempted = false;
+
+    showAppBottomSheet<void>(
+      context,
+      title: collection.itemLabel ?? collection.name,
+      child: StatefulBuilder(
+        builder: (context, setSheetState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var index = 0; index < collection.fields.length; index++) ...[
+              _FeatureFieldControl(
+                field: collection.fields[index],
+                value: values[collection.fields[index].id] ?? '',
+                isRequired: collection.fields[index].isRequired,
+                error: attempted
+                    ? featureItemFieldError(collection.fields[index], values)
+                    : null,
+                onChanged: (value) => setSheetState(() {
+                  values[collection.fields[index].id] = value;
+                }),
+              ),
+              if (index < collection.fields.length - 1)
+                const SizedBox(height: AppSpacing.space3),
+            ],
+            const SizedBox(height: AppSpacing.space4),
+            // Sem botão em beco sem saída (mesma regra de `FlowShell`): o
+            // toque sempre responde, e o que falta aparece nos campos.
+            AppButton(
+              fullWidth: true,
+              onPressed: () {
+                if (!isCollectionItemValid(collection, values)) {
+                  setSheetState(() => attempted = true);
+                  return;
+                }
+                setState(
+                  () => _journey.addGroupItem(collection.name, {...values}),
+                );
+                Navigator.of(context).pop();
+              },
+              child: const Text('Adicionar'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _submit() {
@@ -137,9 +216,13 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
       );
     }
 
-    final backToRecords =
-        _journey.mode == FunctionalJourneyMode.form && feature.listMode;
     final isForm = _journey.mode == FunctionalJourneyMode.form;
+    // Dentro de um formulário em etapas, o voltar do cabeçalho recua uma etapa
+    // em vez de abandonar o preenchimento: sair perdendo tudo o que já foi
+    // digitado é o pior desfecho possível num cadastro longo.
+    final inStep = isForm && _journey.hasSteps && !_journey.isFirstStep;
+    final backToRecords = isForm && feature.listMode && !inStep;
+    final step = isForm ? _journey.currentStep : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -152,7 +235,9 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
           title: _journey.mode == FunctionalJourneyMode.form
               ? feature.createAction ?? feature.title
               : feature.title,
-          onBack: backToRecords
+          onBack: inStep
+              ? _retreat
+              : backToRecords
               ? _showList
               : () => context.go(widget.centerRoute),
           actionIcon: isForm ? AppIcons.moreVertical : null,
@@ -165,6 +250,19 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                if (step != null)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.space4,
+                      AppSpacing.space5,
+                      AppSpacing.space4,
+                      0,
+                    ),
+                    child: AppStepProgress(
+                      total: _journey.stepCount,
+                      current: _journey.stepIndex + 1,
+                    ),
+                  ),
                 Expanded(
                   child: ListView(
                     padding: const EdgeInsets.all(AppSpacing.space4),
@@ -204,19 +302,32 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                           feature: feature,
                           journey: _journey,
                           onValueChanged: _setValue,
-                          onAddGroup: (group) =>
-                              setState(() => _journey.addGroupItem(group)),
+                          onAddCollectionItem: (collection) =>
+                              _addCollectionItem(context, collection),
+                          onRemoveCollectionItem: _removeCollectionItem,
                         ),
                     ],
                   ),
                 ),
                 if (isForm)
                   AppActionBar(
-                    primaryLabel: feature.primaryAction ?? 'Salvar registro',
-                    primaryIcon: AppIcons.saveAll,
-                    onPrimary: _submit,
-                    secondaryLabel: feature.listMode ? 'Cancelar' : null,
-                    onSecondary: feature.listMode ? _showList : null,
+                    primaryLabel: _journey.isLastStep
+                        ? feature.primaryAction ?? 'Salvar registro'
+                        : 'Continuar',
+                    primaryIcon: _journey.isLastStep
+                        ? AppIcons.saveAll
+                        : AppIcons.arrowRight,
+                    onPrimary: _advance,
+                    secondaryLabel: inStep
+                        ? 'Voltar'
+                        : feature.listMode
+                        ? 'Cancelar'
+                        : null,
+                    onSecondary: inStep
+                        ? _retreat
+                        : feature.listMode
+                        ? _showList
+                        : null,
                   ),
               ],
             ),
@@ -565,21 +676,30 @@ class _FeatureForm extends StatelessWidget {
     required this.feature,
     required this.journey,
     required this.onValueChanged,
-    required this.onAddGroup,
+    required this.onAddCollectionItem,
+    required this.onRemoveCollectionItem,
   });
 
   final FeatureDefinition feature;
   final FunctionalJourneyController journey;
   final void Function(String fieldId, String value) onValueChanged;
-  final ValueChanged<String> onAddGroup;
+  final ValueChanged<FeatureCollection> onAddCollectionItem;
+  final void Function(String group, int index) onRemoveCollectionItem;
 
   @override
   Widget build(BuildContext context) {
     final simulationTarget = feature.simulationTargetField;
-    final visibleFields = feature.fields
+    final stepIndex = journey.stepIndex;
+    final step = journey.currentStep;
+    final visibleFields = featureStepFields(feature, stepIndex)
         .where((field) => field.id != simulationTarget)
         .toList(growable: false);
-    final simulation = feature.simulation;
+    final sections = featureStepSections(feature, stepIndex);
+    final isReview = isFeatureReviewStep(feature, stepIndex);
+    // A simulação de hardware acompanha o campo-alvo, que por invariante de
+    // catálogo vive na primeira etapa — repetir o simulador em cada etapa
+    // convidaria a capturar duas vezes o mesmo brinco.
+    final simulation = journey.isFirstStep ? feature.simulation : null;
     final simulationValue = simulation == null
         ? null
         : journey.form.values[simulationTarget ?? '_hardware'] ?? '';
@@ -608,7 +728,7 @@ class _FeatureForm extends StatelessWidget {
             onCapture: (value) =>
                 onValueChanged(simulationTarget ?? '_hardware', value),
           ),
-          if (visibleFields.isNotEmpty || feature.sections.isNotEmpty)
+          if (visibleFields.isNotEmpty || sections.isNotEmpty)
             const SizedBox(height: AppSpacing.space4),
         ],
         if (visibleFields.isNotEmpty)
@@ -619,7 +739,13 @@ class _FeatureForm extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const AppSectionTitle(child: Text('Dados do registro')),
+                  AppSectionTitle(
+                    child: Text(step?.title ?? 'Dados do registro'),
+                  ),
+                  if (step?.hint case final hint?) ...[
+                    const SizedBox(height: AppSpacing.space1),
+                    Text(hint, style: Theme.of(context).textTheme.bodySmall),
+                  ],
                   const SizedBox(height: AppSpacing.space4),
                   for (
                     var index = 0;
@@ -627,9 +753,14 @@ class _FeatureForm extends StatelessWidget {
                     index++
                   ) ...[
                     _FeatureFieldControl(
-                      feature: feature,
                       field: visibleFields[index],
-                      journey: journey,
+                      value: journey.form.values[visibleFields[index].id] ?? '',
+                      isRequired: isFeatureFieldRequired(
+                        feature,
+                        visibleFields[index],
+                        journey.form.values,
+                      ),
+                      error: _fieldError(feature, visibleFields[index], journey),
                       onChanged: (value) =>
                           onValueChanged(visibleFields[index].id, value),
                     ),
@@ -640,19 +771,63 @@ class _FeatureForm extends StatelessWidget {
               ),
             ),
           ),
-        if (feature.sections.isNotEmpty) ...[
-          const SizedBox(height: AppSpacing.space4),
+        if (sections.isNotEmpty) ...[
+          if (visibleFields.isNotEmpty || simulation != null)
+            const SizedBox(height: AppSpacing.space4),
+          AppCard(
+            child: AppFormField(
+              label: 'Itens vinculados',
+              // fidelidade-campos (onda 0): coleção `min:1` no contrato real
+              // agora aparece como campo obrigatório de verdade — antes toda
+              // coleção era opcional e um protocolo sem etapa nenhuma podia
+              // ser salvo. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
+              required: sections.any(feature.requiredSections.contains),
+              error: journey.form.attempted
+                  ? _sectionError(feature, journey, sections)
+                  : null,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var index = 0; index < sections.length; index++) ...[
+                    if (index > 0) const SizedBox(height: AppSpacing.space4),
+                    if (feature.collectionByName(sections[index])
+                        case final collection?)
+                      AppCollectionList(
+                        name: collection.name,
+                        items: [
+                          for (final item in journey.form.itemsOf(
+                            collection.name,
+                          ))
+                            AppCollectionItemView(
+                              title: collectionItemTitle(collection, item),
+                              subtitle: collectionItemSubtitle(
+                                collection,
+                                item,
+                              ),
+                            ),
+                        ],
+                        onAdd: () => onAddCollectionItem(collection),
+                        onRemove: (item) =>
+                            onRemoveCollectionItem(collection.name, item),
+                      ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+        if (isReview) ...[
           AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const AppSectionTitle(child: Text('Itens vinculados')),
+                AppSectionTitle(child: Text(step?.title ?? 'Revisão')),
+                if (step?.hint case final hint?) ...[
+                  const SizedBox(height: AppSpacing.space1),
+                  Text(hint, style: Theme.of(context).textTheme.bodySmall),
+                ],
                 const SizedBox(height: AppSpacing.space3),
-                AppAddableGroupList(
-                  groups: feature.sections,
-                  counts: journey.form.groupCounts,
-                  onAdd: onAddGroup,
-                ),
+                AppReviewList(items: _reviewItems(feature, journey)),
               ],
             ),
           ),
@@ -660,6 +835,69 @@ class _FeatureForm extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Erro do campo, exibido depois da primeira tentativa ou quando já há valor.
+String? _fieldError(
+  FeatureDefinition feature,
+  FeatureField field,
+  FunctionalJourneyController journey,
+) {
+  final value = journey.form.values[field.id] ?? '';
+  if (!journey.form.attempted && value.isEmpty) return null;
+  return featureFieldError(feature, field, journey.form.values);
+}
+
+/// Na revisão, a coleção mostra quantos itens e quais — a contagem sozinha não
+/// diz se a pessoa lançou o insumo certo.
+String _resumoRevisao(
+  FeatureCollection collection,
+  FunctionalJourneyController journey,
+) {
+  final itens = journey.form.itemsOf(collection.name);
+  final contagem = '${itens.length} item(ns)';
+  if (collection.fields.isEmpty) return contagem;
+  final titulos = itens
+      .map((item) => collectionItemTitle(collection, item))
+      .join(', ');
+  return '$contagem · $titulos';
+}
+
+/// Primeira coleção obrigatória vazia entre as visíveis nesta etapa.
+String? _sectionError(
+  FeatureDefinition feature,
+  FunctionalJourneyController journey,
+  List<String> sections,
+) {
+  for (final section in feature.requiredSections) {
+    if (!sections.contains(section)) continue;
+    if ((journey.form.groupCounts[section] ?? 0) < 1) {
+      return 'Adicione ao menos um item em "$section".';
+    }
+  }
+  return null;
+}
+
+/// O que a pessoa já respondeu, na ordem do catálogo — campos preenchidos
+/// primeiro, coleções depois (destacadas, porque são o que mais se esquece de
+/// conferir antes de salvar).
+List<AppReviewItem> _reviewItems(
+  FeatureDefinition feature,
+  FunctionalJourneyController journey,
+) {
+  final values = journey.form.values;
+  return [
+    for (final field in feature.fields)
+      if ((values[field.id]?.trim() ?? '').isNotEmpty)
+        AppReviewItem(label: field.label, value: values[field.id]!.trim()),
+    for (final collection in feature.collections)
+      if (journey.form.itemsOf(collection.name).isNotEmpty)
+        AppReviewItem(
+          label: collection.name,
+          value: _resumoRevisao(collection, journey),
+          emphasis: true,
+        ),
+  ];
 }
 
 AppHardwareSimulationKind _simulationKind(HardwareSimulationKind kind) =>
@@ -670,29 +908,30 @@ AppHardwareSimulationKind _simulationKind(HardwareSimulationKind kind) =>
       HardwareSimulationKind.scanner => AppHardwareSimulationKind.scanner,
     };
 
+/// Um controle de campo do catálogo. Recebe valor, erro e obrigatoriedade já
+/// resolvidos porque serve dois contextos: o formulário do cadastro (onde eles
+/// vêm do `FunctionalJourneyController`) e o formulário de **um item de
+/// coleção** na folha inferior, que não tem jornada por trás.
 class _FeatureFieldControl extends StatelessWidget {
   const _FeatureFieldControl({
-    required this.feature,
     required this.field,
-    required this.journey,
+    required this.value,
+    required this.isRequired,
     required this.onChanged,
+    this.error,
   });
 
-  final FeatureDefinition feature;
   final FeatureField field;
-  final FunctionalJourneyController journey;
+  final String value;
+  final bool isRequired;
+  final String? error;
   final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final value = journey.form.values[field.id] ?? '';
-    final error = journey.form.attempted || value.isNotEmpty
-        ? featureFieldError(feature, field, journey.form.values)
-        : null;
-
     return AppFormField(
       label: field.label,
-      required: field.isRequired,
+      required: isRequired,
       error: error,
       child: switch (field.type) {
         FeatureFieldType.select => AppFormSelect(
@@ -716,10 +955,8 @@ class _FeatureFieldControl extends StatelessWidget {
           invalid: error != null,
           onChanged: onChanged,
         ),
-        FeatureFieldType.date => AppTextInput(
-          initialValue: value,
-          placeholder: field.placeholder ?? 'AAAA-MM-DD',
-          keyboardType: TextInputType.datetime,
+        FeatureFieldType.date => AppDateInput(
+          initialValue: value.isEmpty ? null : value,
           invalid: error != null,
           onChanged: onChanged,
         ),

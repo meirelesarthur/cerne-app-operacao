@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../design/generated/app_layout.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../ui/ui.dart';
 
@@ -10,6 +11,13 @@ import '../../ui/ui.dart';
 /// padrão global (Figma `54349:2081`): voltar de 32 px, título centralizado de
 /// 18 px e ação opcional à direita. Fica **sobre o canvas**, acima da folha de
 /// conteúdo, exatamente como nos frames de cadastro da referência.
+///
+/// Altura travada em [AppLayout.headerH] (64) — é essa faixa, não o
+/// `AppContentSheet` abaixo dela, que define a distância entre o topo da tela
+/// (após o `SafeArea`) e o início do card branco. Antes a altura era a soma
+/// implícita do padding com o miolo do `AppTopBar` (68px, sem token nenhum
+/// por trás); agora o token é aplicado e o `AppTopBar` fica centralizado na
+/// faixa.
 ///
 /// Substituiu `AppScreenHeader` aqui: aquele é cabeçalho de página (título à
 /// esquerda, descrição, rótulo "Voltar" textual) e continua servindo telas que
@@ -39,18 +47,20 @@ class SubPageHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.space4,
-        vertical: AppSpacing.space2,
-      ),
-      child: AppTopBar(
-        title: title,
-        onBack: onBack ?? () => Navigator.of(context).maybePop(),
-        actionIcon: actionIcon,
-        actionLabel: actionLabel,
-        onAction: onAction,
-        trailing: action,
+    return SizedBox(
+      height: AppLayout.headerH,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
+        child: Center(
+          child: AppTopBar(
+            title: title,
+            onBack: onBack ?? () => Navigator.of(context).maybePop(),
+            actionIcon: actionIcon,
+            actionLabel: actionLabel,
+            onAction: onAction,
+            trailing: action,
+          ),
+        ),
       ),
     );
   }

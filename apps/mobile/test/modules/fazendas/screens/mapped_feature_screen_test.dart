@@ -230,7 +230,10 @@ void main() {
         await tester.tap(findCta('Registrar abastecimento'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Campo obrigatório.'), findsNWidgets(7));
+        // fidelidade-campos (onda 5): `items.*.measurement_uuid` é required
+        // em `/supplies` e faltava — 7+1=8 obrigatórios. Ver
+        // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 5.
+        expect(find.text('Campo obrigatório.'), findsNWidgets(8));
         expect(tester.takeException(), isNull);
 
         await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
@@ -242,7 +245,11 @@ void main() {
         );
         await _selectFieldOption(tester, 'Combustível', 'Diesel S10');
         await _enterFieldText(tester, 'Quantidade (L)', '120');
-        await _enterFieldText(tester, 'Hodômetro / horímetro', '5400');
+        // O campo único "Hodômetro / horímetro" virou tipo + leitura: quem
+        // anotava o número não dizia qual dos dois medidores era.
+        await _selectFieldOption(tester, 'Tipo de medidor', 'Horímetro');
+        await _enterFieldText(tester, 'Leitura do medidor', '5400');
+        await _selectFieldOption(tester, 'Unidade', 'L');
         await _enterFieldText(tester, 'Posto / tanque de origem', 'Posto A');
         expect(tester.takeException(), isNull);
 
@@ -261,6 +268,155 @@ void main() {
         expect(tester.takeException(), isNull);
       },
     );
+
+    // fidelidade-campos (onda 8): a prova de que a coleção deixou de ser
+    // contador — o item entra pela folha inferior com os campos do contrato,
+    // aparece na lista com o dado verdadeiro, sai de lá, e chega à revisão e
+    // ao registro salvo. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 8.
+    testWidgets('Pastagens lança um insumo real na coleção e salva', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          const MappedFeatureScreen(
+            featureId: 'pastagens',
+            profile: FeatureProfile.operational,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Novo manejo de pastagem'));
+      await tester.pumpAndSettle();
+
+      // Etapa 1 — identificação. A área é escolhida antes do destino: com o
+      // destino já em "Área", o rótulo do campo e o valor do select passam a
+      // ter o mesmo texto na árvore.
+      expect(find.text('Identificação'), findsOneWidget);
+      await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
+      await _enterFieldText(tester, 'Data do manejo', '2026-09-08');
+      await _selectFieldOption(tester, 'Área', 'Pasto Norte');
+      await _selectFieldOption(tester, 'Local do manejo', 'Área');
+      await tester.tap(findCta('Continuar'));
+      await tester.pumpAndSettle();
+
+      // Etapa 2 — manejo.
+      await _selectFieldOption(
+        tester,
+        'Operação',
+        'Manutenção de pastagem',
+      );
+      await _selectFieldOption(tester, 'Atividade', 'Roçada');
+      await tester.tap(findCta('Continuar'));
+      await tester.pumpAndSettle();
+
+      // Etapa 3 — estoque.
+      await _selectFieldOption(tester, 'Armazém de insumos', 'Armazém A');
+      await _selectFieldOption(tester, 'Armazém de produção', 'Depósito B');
+      await tester.tap(findCta('Continuar'));
+      await tester.pumpAndSettle();
+
+      // Etapa 4 — as cinco coleções de `/pastures`, ainda vazias.
+      expect(find.text('Itens vinculados'), findsOneWidget);
+      expect(find.text('Nenhum item adicionado'), findsNWidgets(5));
+
+      // Insumos é a segunda coleção; cada uma compõe um AppAddableGroupList.
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AppAddableGroupList).at(1),
+          matching: find.text('Adicionar'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // A folha abre com o rótulo do item, não com o nome da coleção.
+      expect(find.text('Insumo'), findsOneWidget);
+      await _selectFieldOption(tester, 'Produto', 'Ração Engorda 18%');
+      await _enterFieldText(tester, 'Quantidade', '20');
+      await _selectFieldOption(tester, 'Unidade', 'kg');
+      await tester.tap(find.text('Adicionar').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ração Engorda 18%'), findsOneWidget);
+      expect(find.text('20 · kg'), findsOneWidget);
+      expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
+
+      // Etapa 5 — revisão: a coleção diz quantos e quais.
+      await tester.tap(findCta('Continuar'));
+      await tester.pumpAndSettle();
+      expect(find.text('Revisão'), findsWidgets);
+      expect(find.text('1 item(ns) · Ração Engorda 18%'), findsOneWidget);
+      expect(find.text('Roçada'), findsOneWidget);
+
+      await tester.tap(findCta('Salvar pastagem'));
+      await tester.pumpAndSettle();
+      expect(find.text('Roçada salvo'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('Pastagens remove o item lançado na coleção', (tester) async {
+      await setTallSurface(tester);
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(
+        _wrap(
+          container,
+          const MappedFeatureScreen(
+            featureId: 'pastagens',
+            profile: FeatureProfile.operational,
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Novo manejo de pastagem'));
+      await tester.pumpAndSettle();
+      await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
+      await _enterFieldText(tester, 'Data do manejo', '2026-09-08');
+      await _selectFieldOption(tester, 'Área', 'Pasto Norte');
+      await _selectFieldOption(tester, 'Local do manejo', 'Área');
+      await tester.tap(findCta('Continuar'));
+      await tester.pumpAndSettle();
+      await _selectFieldOption(
+        tester,
+        'Operação',
+        'Manutenção de pastagem',
+      );
+      await _selectFieldOption(tester, 'Atividade', 'Roçada');
+      await tester.tap(findCta('Continuar'));
+      await tester.pumpAndSettle();
+      await _selectFieldOption(tester, 'Armazém de insumos', 'Armazém A');
+      await _selectFieldOption(tester, 'Armazém de produção', 'Depósito B');
+      await tester.tap(findCta('Continuar'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find.descendant(
+          of: find.byType(AppAddableGroupList).at(1),
+          matching: find.text('Adicionar'),
+        ),
+      );
+      await tester.pumpAndSettle();
+      await _selectFieldOption(tester, 'Produto', 'Ração Engorda 18%');
+      await _enterFieldText(tester, 'Quantidade', '20');
+      await _selectFieldOption(tester, 'Unidade', 'kg');
+      await tester.tap(find.text('Adicionar').last);
+      await tester.pumpAndSettle();
+      expect(find.text('Ração Engorda 18%'), findsOneWidget);
+
+      await tester.tap(find.byTooltip('Remover item'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ração Engorda 18%'), findsNothing);
+      expect(find.text('Nenhum item adicionado'), findsNWidgets(5));
+      expect(tester.takeException(), isNull);
+    });
 
     testWidgets('consulta administrativa lê registro criado no operacional', (
       tester,

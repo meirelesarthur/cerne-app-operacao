@@ -24,7 +24,7 @@ void main() {
       expect(find.text('Painéis de decisão'), findsOneWidget);
       expect(find.text('Consultas e auditoria'), findsOneWidget);
       expect(find.text('Resultado'), findsOneWidget);
-      expect(find.text('Fila de sincronização'), findsOneWidget);
+      expect(find.text('Sincronização'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

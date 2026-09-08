@@ -154,6 +154,53 @@ ThemeData buildAppTheme(AppThemeVariant variant) {
         borderSide: BorderSide(color: semantic.borderDefault),
       ),
     ),
+    // Calendário do `AppDateInput` (`showDatePicker`): mesma superfície e raio
+    // de modal do resto do app, com o dia/ano selecionado na cor de marca —
+    // nenhuma tela ou componente sobrescreve isso localmente (Lei 2/3).
+    datePickerTheme: DatePickerThemeData(
+      backgroundColor: semantic.bgSurface,
+      surfaceTintColor: AppColors.transparent,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.modal),
+      ),
+      headerBackgroundColor: semantic.accentDefault,
+      headerForegroundColor: semantic.accentContrast,
+      weekdayStyle: outfit(
+        fontSize: AppTypography.sm,
+        fontWeight: AppTypography.weightMedium,
+        color: semantic.fgSubtle,
+      ),
+      dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return semantic.accentContrast;
+        if (states.contains(WidgetState.disabled)) return semantic.fgQuiet;
+        return semantic.fgDefault;
+      }),
+      dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return semantic.accentDefault;
+        return AppColors.transparent;
+      }),
+      todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return semantic.accentContrast;
+        return semantic.accentDefault;
+      }),
+      todayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return semantic.accentDefault;
+        return AppColors.transparent;
+      }),
+      todayBorder: BorderSide(color: semantic.accentDefault),
+      yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return semantic.accentContrast;
+        return semantic.fgDefault;
+      }),
+      yearBackgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) return semantic.accentDefault;
+        return AppColors.transparent;
+      }),
+      rangePickerShape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.modal),
+      ),
+    ),
     extensions: [semantic],
   );
 }

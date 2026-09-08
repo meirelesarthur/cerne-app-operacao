@@ -153,6 +153,18 @@ const _unidadesInsumo = <AppFormSelectOption>[
   AppFormSelectOption(value: 'un', label: 'Unidade'),
 ];
 
+// Produção — `appropriation_production`: o que a operação **gerou** (colheita,
+// forragem, semente). Era a quinta coleção do contrato `/appropriations` e a
+// única que o protótipo não tinha; sem ela um apontamento de colheita não
+// registra colheita nenhuma.
+const _unidadesProducao = <AppFormSelectOption>[
+  AppFormSelectOption(value: 'kg', label: 'kg'),
+  AppFormSelectOption(value: 'ton', label: 't'),
+  AppFormSelectOption(value: 'sc', label: 'Saco'),
+  AppFormSelectOption(value: 'arroba', label: 'Arroba'),
+  AppFormSelectOption(value: 'un', label: 'Unidade'),
+];
+
 // Ocorrências — `appropriation_occurrences.priority` (char(1), sem tabela de
 // domínio no dump — B/M/A inferido do próprio nome da coluna, mesmo padrão
 // de enum local já usado em `leitura_cocho_flow.dart`).
@@ -218,11 +230,35 @@ class _InsumoItem {
     required this.produto,
     required this.quantidade,
     required this.unidade,
+    this.armazem,
   });
 
   final String produto;
   final num quantidade;
   final String unidade;
+
+  /// `appropriation_stock.warehouse_uuid` — no contrato o armazém é **do
+  /// item**, não do cabeçalho. Fica opcional aqui: em branco, o item herda o
+  /// "Armazém de insumo" do cabeçalho, que é o caso comum de um apontamento
+  /// tirando tudo do mesmo depósito.
+  final String? armazem;
+}
+
+class _ProducaoItem {
+  const _ProducaoItem({
+    required this.produto,
+    required this.quantidade,
+    required this.unidade,
+    this.armazem,
+  });
+
+  final String produto;
+  final num quantidade;
+  final String unidade;
+
+  /// Destino da produção; em branco herda o "Armazém de produção" do
+  /// cabeçalho.
+  final String? armazem;
 }
 
 class _OcorrenciaItem {
@@ -241,8 +277,8 @@ class _OcorrenciaItem {
 
 /// Apontamento agrícola (spec real: `appropriations` + tabelas filhas do
 /// dump gbcerne — Onda 4 `banco-real`). Substitui o motor genérico
-/// (`fields`/`sections` de `FeatureDefinition`): os quatro grupos de recurso
-/// (Mão de obra, Máquinas, Insumos, Ocorrências) têm campo próprio por item,
+/// (`fields`/`sections` de `FeatureDefinition`): os cinco grupos de recurso
+/// (Mão de obra, Máquinas, Insumos, Produção, Ocorrências) têm campo por item,
 /// não um contador cego — cada "Adicionar" abre um formulário real e o item
 /// entra na lista com os dados verdadeiros preenchidos.
 class ApontamentoFlow extends ConsumerStatefulWidget {
@@ -269,26 +305,68 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   final _maoDeObra = <_MaoDeObraItem>[];
   final _maquinas = <_MaquinaItem>[];
   final _insumos = <_InsumoItem>[];
+  final _producoes = <_ProducaoItem>[];
   final _ocorrencias = <_OcorrenciaItem>[];
 
   bool? _queued;
   bool _attempted = false;
 
-  bool get _valid =>
+  /// fidelidade-campos (onda 2): o apontamento tem 12 campos de cabeçalho e 5
+  /// coleções — numa tela só, a pessoa rolava três telas de altura sem saber
+  /// quanto faltava, e o CTA "Salvar" ficava a uma rolagem de distância do
+  /// primeiro campo. Agora são três etapas com a régua do arquétipo `Cadastro
+  /// steps`: identificação, dados da operação e lançamentos.
+  int _step = 0;
+  static const _totalSteps = 3;
+
+  bool get _etapaIdentificacaoValida =>
       _responsavel != null &&
       _area != null &&
       _operacao != null &&
       _atividade != null &&
-      _data.isNotEmpty &&
+      _data.isNotEmpty;
+
+  bool get _etapaOperacaoValida =>
       _areaTotal.isNotEmpty &&
       _areaUtilizada.isNotEmpty &&
       _armazemProducao != null;
 
-  void _confirmar() {
-    if (!_valid) {
+  /// O contrato `/appropriations` exige ao menos um lançamento: um apontamento
+  /// sem recurso, produção nem ocorrência não registra nada.
+  bool get _etapaLancamentosValida =>
+      _maoDeObra.isNotEmpty ||
+      _maquinas.isNotEmpty ||
+      _insumos.isNotEmpty ||
+      _producoes.isNotEmpty ||
+      _ocorrencias.isNotEmpty;
+
+  bool get _etapaAtualValida => switch (_step) {
+    0 => _etapaIdentificacaoValida,
+    1 => _etapaOperacaoValida,
+    _ => _etapaLancamentosValida,
+  };
+
+  void _avancar() {
+    if (!_etapaAtualValida) {
       setState(() => _attempted = true);
       return;
     }
+    if (_step < _totalSteps - 1) {
+      setState(() {
+        _step += 1;
+        _attempted = false;
+      });
+      return;
+    }
+    _confirmar();
+  }
+
+  void _voltar() => setState(() {
+    _step -= 1;
+    _attempted = false;
+  });
+
+  void _confirmar() {
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
     if (queued) {
@@ -304,6 +382,8 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
                 if (_maoDeObra.isNotEmpty) '${_maoDeObra.length} mão de obra',
                 if (_maquinas.isNotEmpty) '${_maquinas.length} máquina(s)',
                 if (_insumos.isNotEmpty) '${_insumos.length} insumo(s)',
+                if (_producoes.isNotEmpty)
+                  '${_producoes.length} produção(ões)',
                 if (_ocorrencias.isNotEmpty)
                   '${_ocorrencias.length} ocorrência(s)',
               ].join(' · '),
@@ -321,263 +401,338 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
         title: 'Apontamento registrado',
         queued: _queued!,
         effects:
-            'Mão de obra, máquinas e insumos lançados baixam do centro de custo da área.',
+            'Mão de obra, máquinas e insumos baixam do centro de custo da '
+            'área; a produção lançada entra no armazém de destino.',
       );
     }
 
+    final lancamentoPendente =
+        _step == _totalSteps - 1 && _attempted && !_etapaLancamentosValida;
+
     return FlowShell(
       title: 'Apontamento agrícola',
-      primaryLabel: 'Salvar apontamento',
-      onPrimary: _confirmar,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          AppFormField(
-            label: 'Responsável',
-            required: true,
-            error: _attempted && _responsavel == null
-                ? 'Selecione o responsável.'
-                : null,
-            child: AppFormSelect(
-              options: _responsaveis,
-              value: _responsavel,
-              placeholder: 'Selecione',
-              onChanged: (v) => setState(() => _responsavel = v),
-            ),
+      totalSteps: _totalSteps,
+      currentStep: _step + 1,
+      onBack: _step == 0 ? null : _voltar,
+      primaryLabel: _step < _totalSteps - 1
+          ? 'Continuar'
+          : 'Salvar apontamento',
+      onPrimary: _avancar,
+      summary: lancamentoPendente
+          ? const Align(
+              alignment: Alignment.centerLeft,
+              child: AppChip(
+                tone: AppChipTone.red,
+                child: Text('Adicione ao menos um lançamento para salvar'),
+              ),
+            )
+          : null,
+      child: switch (_step) {
+        0 => _etapaIdentificacao(),
+        1 => _etapaOperacao(),
+        _ => _etapaLancamentos(context),
+      },
+    );
+  }
+
+  /// Etapa 1 — quem, onde, o quê e quando: os cinco vínculos que identificam o
+  /// apontamento e sem os quais nenhum lançamento tem endereço.
+  Widget _etapaIdentificacao() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AppFormField(
+          label: 'Responsável',
+          required: true,
+          error: _attempted && _responsavel == null
+              ? 'Selecione o responsável.'
+              : null,
+          child: AppFormSelect(
+            options: _responsaveis,
+            value: _responsavel,
+            placeholder: 'Selecione',
+            onChanged: (v) => setState(() => _responsavel = v),
           ),
-          const SizedBox(height: AppSpacing.space4),
-          AppFormField(
-            label: 'Área',
-            required: true,
-            error: _attempted && _area == null ? 'Selecione a área.' : null,
-            child: AppFormSelect(
-              options: _areas,
-              value: _area,
-              placeholder: 'Selecione a área',
-              onChanged: (v) => setState(() => _area = v),
-            ),
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        AppFormField(
+          label: 'Área',
+          required: true,
+          error: _attempted && _area == null ? 'Selecione a área.' : null,
+          child: AppFormSelect(
+            options: _areas,
+            value: _area,
+            placeholder: 'Selecione a área',
+            onChanged: (v) => setState(() => _area = v),
           ),
-          const SizedBox(height: AppSpacing.space4),
-          Row(
-            children: [
-              Expanded(
-                child: AppFormField(
-                  label: 'Operação',
-                  required: true,
-                  error: _attempted && _operacao == null
-                      ? 'Selecione a operação.'
-                      : null,
-                  child: AppFormSelect(
-                    options: _operacoes,
-                    value: _operacao,
-                    placeholder: 'Selecione',
-                    onChanged: (v) => setState(() => _operacao = v),
-                  ),
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        Row(
+          children: [
+            Expanded(
+              child: AppFormField(
+                label: 'Operação',
+                required: true,
+                error: _attempted && _operacao == null
+                    ? 'Selecione a operação.'
+                    : null,
+                child: AppFormSelect(
+                  options: _operacoes,
+                  value: _operacao,
+                  placeholder: 'Selecione',
+                  onChanged: (v) => setState(() => _operacao = v),
                 ),
               ),
-              const SizedBox(width: AppSpacing.space3),
-              Expanded(
-                child: AppFormField(
-                  label: 'Atividade',
-                  required: true,
-                  error: _attempted && _atividade == null
-                      ? 'Selecione a atividade.'
-                      : null,
-                  child: AppFormSelect(
-                    options: _atividades,
-                    value: _atividade,
-                    placeholder: 'Selecione',
-                    onChanged: (v) => setState(() => _atividade = v),
-                  ),
+            ),
+            const SizedBox(width: AppSpacing.space3),
+            Expanded(
+              child: AppFormField(
+                label: 'Atividade',
+                required: true,
+                error: _attempted && _atividade == null
+                    ? 'Selecione a atividade.'
+                    : null,
+                child: AppFormSelect(
+                  options: _atividades,
+                  value: _atividade,
+                  placeholder: 'Selecione',
+                  onChanged: (v) => setState(() => _atividade = v),
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.space4),
-          AppFormField(
-            label: 'Data do apontamento',
-            required: true,
-            error: _attempted && _data.isEmpty ? 'Informe a data.' : null,
-            child: AppTextInput(
-              onChanged: (v) => setState(() => _data = v),
-              placeholder: 'dd/mm/aaaa',
-              invalid: _attempted && _data.isEmpty,
             ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        AppFormField(
+          label: 'Data do apontamento',
+          required: true,
+          error: _attempted && _data.isEmpty ? 'Informe a data.' : null,
+          child: AppTextInput(
+            // Etapas recriam o campo a cada troca: sem `initialValue` o texto
+            // já digitado sumiria da tela ao voltar uma etapa.
+            initialValue: _data,
+            onChanged: (v) => setState(() => _data = v),
+            placeholder: 'dd/mm/aaaa',
+            invalid: _attempted && _data.isEmpty,
           ),
-          const SizedBox(height: AppSpacing.space4),
-          Row(
-            children: [
-              Expanded(
-                child: AppFormField(
-                  label: 'Área total',
-                  required: true,
-                  error: _attempted && _areaTotal.isEmpty
-                      ? 'Informe a área total.'
-                      : null,
-                  child: AppTextInput(
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    onChanged: (v) => setState(() => _areaTotal = v),
-                    placeholder: 'ha',
-                    invalid: _attempted && _areaTotal.isEmpty,
+        ),
+      ],
+    );
+  }
+
+  /// Etapa 2 — a dimensão da operação (área trabalhada, cultura, safra) e os
+  /// armazéns padrão dos lançamentos da etapa seguinte.
+  Widget _etapaOperacao() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: AppFormField(
+                label: 'Área total',
+                required: true,
+                error: _attempted && _areaTotal.isEmpty
+                    ? 'Informe a área total.'
+                    : null,
+                child: AppTextInput(
+                  initialValue: _areaTotal,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
                   ),
+                  onChanged: (v) => setState(() => _areaTotal = v),
+                  placeholder: 'ha',
+                  invalid: _attempted && _areaTotal.isEmpty,
                 ),
               ),
-              const SizedBox(width: AppSpacing.space3),
-              Expanded(
-                child: AppFormField(
-                  label: 'Área utilizada',
-                  required: true,
-                  error: _attempted && _areaUtilizada.isEmpty
-                      ? 'Informe a área utilizada.'
-                      : null,
-                  child: AppTextInput(
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    onChanged: (v) => setState(() => _areaUtilizada = v),
-                    placeholder: 'ha',
-                    invalid: _attempted && _areaUtilizada.isEmpty,
+            ),
+            const SizedBox(width: AppSpacing.space3),
+            Expanded(
+              child: AppFormField(
+                label: 'Área utilizada',
+                required: true,
+                error: _attempted && _areaUtilizada.isEmpty
+                    ? 'Informe a área utilizada.'
+                    : null,
+                child: AppTextInput(
+                  initialValue: _areaUtilizada,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
                   ),
+                  onChanged: (v) => setState(() => _areaUtilizada = v),
+                  placeholder: 'ha',
+                  invalid: _attempted && _areaUtilizada.isEmpty,
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.space4),
-          Row(
-            children: [
-              Expanded(
-                child: AppFormField(
-                  label: 'Cultura / variedade',
-                  child: AppFormSelect(
-                    options: _culturas,
-                    value: _cultura,
-                    placeholder: 'Selecione',
-                    onChanged: (v) => setState(() => _cultura = v),
-                  ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        Row(
+          children: [
+            Expanded(
+              child: AppFormField(
+                label: 'Cultura / variedade',
+                child: AppFormSelect(
+                  options: _culturas,
+                  value: _cultura,
+                  placeholder: 'Selecione',
+                  onChanged: (v) => setState(() => _cultura = v),
                 ),
               ),
-              const SizedBox(width: AppSpacing.space3),
-              Expanded(
-                child: AppFormField(
-                  label: 'Safra',
-                  child: AppFormSelect(
-                    options: _safras,
-                    value: _safra,
-                    placeholder: 'Selecione',
-                    onChanged: (v) => setState(() => _safra = v),
-                  ),
+            ),
+            const SizedBox(width: AppSpacing.space3),
+            Expanded(
+              child: AppFormField(
+                label: 'Safra',
+                child: AppFormSelect(
+                  options: _safras,
+                  value: _safra,
+                  placeholder: 'Selecione',
+                  onChanged: (v) => setState(() => _safra = v),
                 ),
               ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.space4),
-          AppFormField(
-            label: 'Armazém de insumo',
-            child: AppFormSelect(
-              options: _armazens,
-              value: _armazemInsumo,
-              placeholder: 'Selecione',
-              onChanged: (v) => setState(() => _armazemInsumo = v),
             ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        AppFormField(
+          label: 'Armazém de insumo',
+          child: AppFormSelect(
+            options: _armazens,
+            value: _armazemInsumo,
+            placeholder: 'Selecione',
+            onChanged: (v) => setState(() => _armazemInsumo = v),
           ),
-          const SizedBox(height: AppSpacing.space4),
-          AppFormField(
-            label: 'Armazém de produção',
-            required: true,
-            error: _attempted && _armazemProducao == null
-                ? 'Selecione o armazém de produção.'
-                : null,
-            child: AppFormSelect(
-              options: _armazens,
-              value: _armazemProducao,
-              placeholder: 'Selecione',
-              onChanged: (v) => setState(() => _armazemProducao = v),
-            ),
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        AppFormField(
+          label: 'Armazém de produção',
+          required: true,
+          error: _attempted && _armazemProducao == null
+              ? 'Selecione o armazém de produção.'
+              : null,
+          child: AppFormSelect(
+            options: _armazens,
+            value: _armazemProducao,
+            placeholder: 'Selecione',
+            onChanged: (v) => setState(() => _armazemProducao = v),
           ),
-          const SizedBox(height: AppSpacing.space4),
-          AppFormField(
-            label: 'Descrição / Histórico',
-            child: AppTextarea(
-              onChanged: (v) => _descricao = v,
-              minLines: 2,
-              maxLines: 4,
-            ),
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        AppFormField(
+          label: 'Descrição / Histórico',
+          child: AppTextarea(
+            initialValue: _descricao,
+            onChanged: (v) => _descricao = v,
+            minLines: 2,
+            maxLines: 4,
           ),
-          const SizedBox(height: AppSpacing.space5),
-          AppAddableGroupList(
-            groups: const ['Mão de obra / Serviços'],
-            counts: {'Mão de obra / Serviços': _maoDeObra.length},
-            onAdd: (_) => _adicionarMaoDeObra(context),
+        ),
+      ],
+    );
+  }
+
+  /// Etapa 3 — as cinco coleções do contrato. Cada "Adicionar" abre um
+  /// formulário real e o item entra na lista com os dados verdadeiros.
+  Widget _etapaLancamentos(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        AppAddableGroupList(
+          groups: const ['Mão de obra / Serviços'],
+          counts: {'Mão de obra / Serviços': _maoDeObra.length},
+          onAdd: (_) => _adicionarMaoDeObra(context),
+        ),
+        for (final item in _maoDeObra)
+          _ItemRow(
+            title: _optionLabel(_funcoes, item.funcao),
+            subtitle:
+                '${item.colaborador} · ${item.quantidade} ${_optionLabel(_unidadesMaoDeObra, item.unidade)} · R\$ ${item.valorUnitario}',
+            onRemove: () => setState(() => _maoDeObra.remove(item)),
           ),
-          for (final item in _maoDeObra)
-            _ItemRow(
-              title: _optionLabel(_funcoes, item.funcao),
-              subtitle:
-                  '${item.colaborador} · ${item.quantidade} ${_optionLabel(_unidadesMaoDeObra, item.unidade)} · R\$ ${item.valorUnitario}',
-              onRemove: () => setState(() => _maoDeObra.remove(item)),
-            ),
-          const SizedBox(height: AppSpacing.space5),
-          AppAddableGroupList(
-            groups: const ['Máquinas / Implementos'],
-            counts: {'Máquinas / Implementos': _maquinas.length},
-            onAdd: (_) => _adicionarMaquina(context),
+        const SizedBox(height: AppSpacing.space5),
+        AppAddableGroupList(
+          groups: const ['Máquinas / Implementos'],
+          counts: {'Máquinas / Implementos': _maquinas.length},
+          onAdd: (_) => _adicionarMaquina(context),
+        ),
+        for (final item in _maquinas)
+          _ItemRow(
+            title: _optionLabel(_equipamentos, item.equipamento),
+            subtitle:
+                '${item.quantidade} ${_optionLabel(_unidadesMaquina, item.unidade)} · horímetro ${item.horimetroInicial}→${item.horimetroFinal}',
+            onRemove: () => setState(() => _maquinas.remove(item)),
           ),
-          for (final item in _maquinas)
-            _ItemRow(
-              title: _optionLabel(_equipamentos, item.equipamento),
-              subtitle:
-                  '${item.quantidade} ${_optionLabel(_unidadesMaquina, item.unidade)} · horímetro ${item.horimetroInicial}→${item.horimetroFinal}',
-              onRemove: () => setState(() => _maquinas.remove(item)),
-            ),
-          const SizedBox(height: AppSpacing.space5),
-          AppAddableGroupList(
-            groups: const ['Insumos'],
-            counts: {'Insumos': _insumos.length},
-            onAdd: (_) => _adicionarInsumo(context),
+        const SizedBox(height: AppSpacing.space5),
+        AppAddableGroupList(
+          groups: const ['Insumos'],
+          counts: {'Insumos': _insumos.length},
+          onAdd: (_) => _adicionarInsumo(context),
+        ),
+        for (final item in _insumos)
+          _ItemRow(
+            title: item.produto,
+            subtitle: [
+              '${item.quantidade} '
+                  '${_optionLabel(_unidadesInsumo, item.unidade)}',
+              if (item.armazem case final armazem?)
+                _optionLabel(_armazens, armazem),
+            ].join(' · '),
+            onRemove: () => setState(() => _insumos.remove(item)),
           ),
-          for (final item in _insumos)
-            _ItemRow(
-              title: item.produto,
-              subtitle:
-                  '${item.quantidade} ${_optionLabel(_unidadesInsumo, item.unidade)}',
-              onRemove: () => setState(() => _insumos.remove(item)),
-            ),
-          const SizedBox(height: AppSpacing.space5),
-          AppAddableGroupList(
-            groups: const ['Ocorrências'],
-            counts: {'Ocorrências': _ocorrencias.length},
-            onAdd: (_) => _adicionarOcorrencia(context),
+        const SizedBox(height: AppSpacing.space5),
+        AppAddableGroupList(
+          groups: const ['Produção'],
+          counts: {'Produção': _producoes.length},
+          onAdd: (_) => _adicionarProducao(context),
+        ),
+        for (final item in _producoes)
+          _ItemRow(
+            title: item.produto,
+            subtitle: [
+              '${item.quantidade} '
+                  '${_optionLabel(_unidadesProducao, item.unidade)}',
+              if (item.armazem case final armazem?)
+                _optionLabel(_armazens, armazem),
+            ].join(' · '),
+            onRemove: () => setState(() => _producoes.remove(item)),
           ),
-          for (final item in _ocorrencias)
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.space2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppChip(
-                    tone: item.prioridade.tone,
-                    child: Text(item.prioridade.label),
+        const SizedBox(height: AppSpacing.space5),
+        AppAddableGroupList(
+          groups: const ['Ocorrências'],
+          counts: {'Ocorrências': _ocorrencias.length},
+          onAdd: (_) => _adicionarOcorrencia(context),
+        ),
+        for (final item in _ocorrencias)
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.space2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AppChip(
+                  tone: item.prioridade.tone,
+                  child: Text(item.prioridade.label),
+                ),
+                const SizedBox(width: AppSpacing.space2),
+                Expanded(
+                  child: Text(
+                    item.diagnostico,
+                    style: const TextStyle(fontSize: AppTypography.sm),
                   ),
-                  const SizedBox(width: AppSpacing.space2),
-                  Expanded(
-                    child: Text(
-                      item.diagnostico,
-                      style: const TextStyle(fontSize: AppTypography.sm),
-                    ),
-                  ),
-                  AppIconButton(
-                    icon: const AppIcon(AppIcons.x, size: AppSize.iconXs),
-                    label: 'Remover ocorrência',
-                    onPressed: () => setState(() => _ocorrencias.remove(item)),
-                  ),
-                ],
-              ),
+                ),
+                AppIconButton(
+                  icon: const AppIcon(AppIcons.x, size: AppSize.iconXs),
+                  label: 'Remover ocorrência',
+                  onPressed: () => setState(() => _ocorrencias.remove(item)),
+                ),
+              ],
             ),
-        ],
-      ),
+          ),
+      ],
     );
   }
 
@@ -780,6 +935,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
     String? produto;
     num quantidade = 1;
     String? unidade;
+    String? armazem;
 
     showAppBottomSheet<void>(
       context,
@@ -822,6 +978,19 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
                 onChanged: (v) => setSheetState(() => unidade = v),
               ),
             ),
+            const SizedBox(height: AppSpacing.space3),
+            // `appropriation_stock.warehouse_uuid` é do item. Opcional: em
+            // branco o item sai do armazém de insumo do cabeçalho.
+            AppFormField(
+              label: 'Armazém de origem',
+              hint: 'Em branco, usa o armazém de insumo do cabeçalho.',
+              child: AppFormSelect(
+                options: _armazens,
+                value: armazem,
+                placeholder: 'Selecione',
+                onChanged: (v) => setSheetState(() => armazem = v),
+              ),
+            ),
             const SizedBox(height: AppSpacing.space4),
             AppButton(
               fullWidth: true,
@@ -834,6 +1003,95 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
                             produto: produto!,
                             quantidade: quantidade,
                             unidade: unidade!,
+                            armazem: armazem,
+                          ),
+                        ),
+                      );
+                      Navigator.of(context).pop();
+                    },
+              child: const Text('Adicionar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// `appropriation_production` — o que a operação gerou. Mesma anatomia do
+  /// formulário de insumo (produto do catálogo real, quantidade no stepper,
+  /// unidade e armazém), porque para quem preenche é a mesma pergunta com o
+  /// sinal invertido: ali o que saiu, aqui o que entrou.
+  void _adicionarProducao(BuildContext context) {
+    String? produto;
+    num quantidade = 1;
+    String? unidade;
+    String? armazem;
+
+    showAppBottomSheet<void>(
+      context,
+      title: 'Produção',
+      child: StatefulBuilder(
+        builder: (context, setSheetState) => Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppFormField(
+              label: 'Produto colhido',
+              required: true,
+              child: AppFormSelect(
+                options: [
+                  for (final p in catalogoProdutos)
+                    AppFormSelectOption(value: p, label: p),
+                ],
+                value: produto,
+                placeholder: 'Selecione o produto',
+                onChanged: (v) => setSheetState(() => produto = v),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.space3),
+            AppFormField(
+              label: 'Quantidade',
+              required: true,
+              child: AppStepper(
+                value: quantidade,
+                onChanged: (v) => setSheetState(() => quantidade = v),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.space3),
+            AppFormField(
+              label: 'Unidade',
+              required: true,
+              child: AppFormSelect(
+                options: _unidadesProducao,
+                value: unidade,
+                placeholder: 'Selecione',
+                onChanged: (v) => setSheetState(() => unidade = v),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.space3),
+            AppFormField(
+              label: 'Armazém de destino',
+              hint: 'Em branco, usa o armazém de produção do cabeçalho.',
+              child: AppFormSelect(
+                options: _armazens,
+                value: armazem,
+                placeholder: 'Selecione',
+                onChanged: (v) => setSheetState(() => armazem = v),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.space4),
+            AppButton(
+              fullWidth: true,
+              onPressed: produto == null || unidade == null
+                  ? null
+                  : () {
+                      setState(
+                        () => _producoes.add(
+                          _ProducaoItem(
+                            produto: produto!,
+                            quantidade: quantidade,
+                            unidade: unidade!,
+                            armazem: armazem,
                           ),
                         ),
                       );

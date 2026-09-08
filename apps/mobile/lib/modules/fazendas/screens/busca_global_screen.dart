@@ -87,15 +87,15 @@ class _BuscaGlobalScreenState extends ConsumerState<BuscaGlobalScreen> {
               ),
               const SizedBox(height: AppSpacing.space6),
               if (!hasQuery) ...[
-                _SearchSectionHeader(title: 'Seus Produtos'),
+                const _SearchSectionHeader(title: 'Seus Produtos'),
                 const SizedBox(height: AppSpacing.space3),
                 _SearchDiscoveryRail(items: products),
                 const SizedBox(height: AppSpacing.space6),
-                _SearchSectionHeader(title: 'Mais acessados'),
+                const _SearchSectionHeader(title: 'Mais acessados'),
                 const SizedBox(height: AppSpacing.space3),
                 _SearchDiscoveryRail(items: recent),
                 const SizedBox(height: AppSpacing.space6),
-                _SearchSectionHeader(title: 'Histórico'),
+                const _SearchSectionHeader(title: 'Histórico'),
                 const SizedBox(height: AppSpacing.space2),
                 for (final item in history)
                   _SearchHistoryItem(
@@ -163,7 +163,7 @@ class _SearchSectionHeader extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          AppHeading(level: AppHeadingLevel.h2, child: Text(title)),
+          AppHeading(child: Text(title)),
           AppIcon(
             AppIcons.chevronRight,
             size: AppSize.iconLg,

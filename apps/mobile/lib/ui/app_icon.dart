@@ -420,6 +420,9 @@ class AppIcons {
   static const AppIconData clock = AppIconData.glyph(
     HugeIcons.strokeRoundedClock01,
   );
+  static const AppIconData calendar = AppIconData.glyph(
+    HugeIcons.strokeRoundedCalendar03,
+  );
   static const AppIconData refreshCw = AppIconData.glyph(
     HugeIcons.strokeRoundedReload,
   );
