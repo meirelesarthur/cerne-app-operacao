@@ -17,7 +17,7 @@ removido na M13 e existe apenas na tag de rollback `react-rollback-final-2026-08
 npm run dev                # Flutter Web no Chrome
 npm run lint               # flutter analyze --fatal-infos
 npm test                   # suíte Flutter completa
-npm run quality:functional # gates de arquitetura, acesso e catálogo 52/52
+npm run quality:functional # gates de arquitetura, acesso e catálogo 53/53
 npm run tokens:verify      # design/tokens.ts → DTCG → Dart
 npm run build              # app + Widgetbook em apps/mobile/build/site
 npm run smoke:deploy       # rotas e fallbacks do Worker
