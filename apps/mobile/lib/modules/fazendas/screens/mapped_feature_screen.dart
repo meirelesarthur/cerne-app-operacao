@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_spacing.dart';
+import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
 import '../functional_journey_engine.dart';
@@ -241,6 +242,12 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
       onAction: isForm ? () => _showFormDetails(context) : null,
       totalSteps: step != null ? _journey.stepCount : null,
       currentStep: _journey.stepIndex + 1,
+      // Cadastro: a folha é a superfície branca e os campos assentam direto
+      // nela. Listagem e introdução seguem na folha cinza, onde é o cinza que
+      // separa um `AppCard` do outro.
+      sheetColor: isForm
+          ? null
+          : Theme.of(context).extension<AppSemanticColors>()!.bgSheet,
       scrollable: false,
       bodyPadding: EdgeInsets.zero,
       actionBar: isForm
@@ -702,45 +709,38 @@ class _FeatureForm extends StatelessWidget {
           if (visibleFields.isNotEmpty || sections.isNotEmpty)
             const SizedBox(height: AppSpacing.space4),
         ],
+        // Sem `AppCard` em volta dos campos: a folha branca do
+        // `AppPageScaffold` já é a superfície do cadastro. O cartão interno
+        // duplicava a superfície — branco sobre branco com margem lateral
+        // própria —, encolhia a largura útil dos campos e fazia o branco
+        // terminar antes da base da tela.
         if (visibleFields.isNotEmpty)
-          AppCard(
-            padded: false,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.space4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppSectionTitle(
-                    child: Text(step?.title ?? 'Dados do registro'),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppSectionTitle(child: Text(step?.title ?? 'Dados do registro')),
+              if (step?.hint case final hint?) ...[
+                const SizedBox(height: AppSpacing.space1),
+                Text(hint, style: Theme.of(context).textTheme.bodySmall),
+              ],
+              const SizedBox(height: AppSpacing.space4),
+              for (var index = 0; index < visibleFields.length; index++) ...[
+                _FeatureFieldControl(
+                  field: visibleFields[index],
+                  value: journey.form.values[visibleFields[index].id] ?? '',
+                  isRequired: isFeatureFieldRequired(
+                    feature,
+                    visibleFields[index],
+                    journey.form.values,
                   ),
-                  if (step?.hint case final hint?) ...[
-                    const SizedBox(height: AppSpacing.space1),
-                    Text(hint, style: Theme.of(context).textTheme.bodySmall),
-                  ],
+                  error: _fieldError(feature, visibleFields[index], journey),
+                  onChanged: (value) =>
+                      onValueChanged(visibleFields[index].id, value),
+                ),
+                if (index < visibleFields.length - 1)
                   const SizedBox(height: AppSpacing.space4),
-                  for (
-                    var index = 0;
-                    index < visibleFields.length;
-                    index++
-                  ) ...[
-                    _FeatureFieldControl(
-                      field: visibleFields[index],
-                      value: journey.form.values[visibleFields[index].id] ?? '',
-                      isRequired: isFeatureFieldRequired(
-                        feature,
-                        visibleFields[index],
-                        journey.form.values,
-                      ),
-                      error: _fieldError(feature, visibleFields[index], journey),
-                      onChanged: (value) =>
-                          onValueChanged(visibleFields[index].id, value),
-                    ),
-                    if (index < visibleFields.length - 1)
-                      const SizedBox(height: AppSpacing.space4),
-                  ],
-                ],
-              ),
-            ),
+              ],
+            ],
           ),
         if (sections.isNotEmpty) ...[
           if (visibleFields.isNotEmpty || simulation != null)

@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/generated/app_layout.dart';
 import 'package:cerne_app/design/generated/app_radius.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/design/theme/app_theme_extension.dart';
 import 'package:cerne_app/ui/action_bar.dart';
 import 'package:cerne_app/ui/content_sheet.dart';
 import 'package:cerne_app/ui/page_scaffold.dart';
@@ -79,6 +80,26 @@ void main() {
         decoration.borderRadius,
         const BorderRadius.vertical(top: Radius.circular(AppRadius.surface)),
       );
+    });
+
+    testWidgets('a folha é branca — a superfície do cadastro, não um cartão', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppPageScaffold(title: 'Novo animal', child: Text('Corpo')),
+        ),
+      );
+
+      final context = tester.element(find.byType(AppContentSheet));
+      final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
+      expect(
+        tester.widget<AppContentSheet>(find.byType(AppContentSheet)).color,
+        semantic.bgSurface,
+      );
+      // E o canvas atrás continua no cinza que faz o raio de cima aparecer.
+      expect(semantic.bgSurface, isNot(semantic.bgCanvas));
     });
 
     testWidgets('a régua de etapas fica dentro da folha, não acima dela', (

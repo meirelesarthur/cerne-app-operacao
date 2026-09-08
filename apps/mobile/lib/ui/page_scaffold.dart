@@ -70,8 +70,17 @@ class AppPageHeaderBand extends StatelessWidget {
 }
 
 /// O arquétipo de **tela funda** do padrão global, em uma peça: faixa de 64 px
-/// sobre o canvas, folha branca sangrando nas laterais e descendo até o fim da
-/// tela com raio 20 só nas quinas de cima, e rodapé de ação fixo opcional.
+/// sobre o canvas, folha **branca** ([AppSemanticColors.bgSurface]) sangrando
+/// nas laterais e descendo até o fim da tela com raio 20 só nas quinas de
+/// cima, e rodapé de ação fixo opcional.
+///
+/// A folha é a superfície branca, não um cartão dentro dela. Antes o branco
+/// que se via no cadastro era um `AppCard` interno — com margem lateral
+/// própria, raio nos quatro cantos e fim antes da base da tela — sobre uma
+/// folha `bgSheet` (#F0F0F0) opticamente idêntica ao canvas (#F0F0F2), o que
+/// fazia o raio de 20 desaparecer e o branco parar no meio da tela. Agora o
+/// branco é a folha: encosta nas duas laterais, desce até a borda inferior e
+/// o raio de cima aparece contra o cinza do canvas.
 ///
 /// Vale para *todo* cadastro — administrativo e operacional — e também para as
 /// visualizações de registro, que deixaram de ser folha inferior e passaram a
@@ -103,6 +112,7 @@ class AppPageScaffold extends StatelessWidget {
     this.actionBar,
     this.scrollable = true,
     this.bodyPadding,
+    this.sheetColor,
   });
 
   final String title;
@@ -137,6 +147,11 @@ class AppPageScaffold extends StatelessWidget {
   /// `EdgeInsets.zero` para conteúdo que precisa sangrar.
   final EdgeInsetsGeometry? bodyPadding;
 
+  /// Superfície da folha. Padrão branco — só passe outra cor numa tela funda
+  /// cujo corpo seja uma listagem de cartões, onde o cinza da folha é o que
+  /// separa um cartão do outro.
+  final Color? sheetColor;
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
@@ -162,6 +177,7 @@ class AppPageScaffold extends StatelessWidget {
           actionBar: actionBar,
           scrollable: scrollable,
           bodyPadding: padding,
+          sheetColor: sheetColor,
           child: child,
         ),
       ),
@@ -192,6 +208,7 @@ class AppPageBody extends StatelessWidget {
     this.actionBar,
     this.scrollable = true,
     this.bodyPadding,
+    this.sheetColor,
   });
 
   final String title;
@@ -207,9 +224,11 @@ class AppPageBody extends StatelessWidget {
   final Widget? actionBar;
   final bool scrollable;
   final EdgeInsetsGeometry? bodyPadding;
+  final Color? sheetColor;
 
   @override
   Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final padding = bodyPadding ?? const EdgeInsets.all(AppSpacing.space4);
 
     return Column(
@@ -227,6 +246,7 @@ class AppPageBody extends StatelessWidget {
         Expanded(
           child: AppContentSheet(
             padded: false,
+            color: sheetColor ?? semantic.bgSurface,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
