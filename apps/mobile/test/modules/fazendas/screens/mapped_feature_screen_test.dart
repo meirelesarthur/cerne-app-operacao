@@ -230,7 +230,10 @@ void main() {
         await tester.tap(findCta('Registrar abastecimento'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Campo obrigatório.'), findsNWidgets(7));
+        // fidelidade-campos (onda 5): `items.*.measurement_uuid` é required
+        // em `/supplies` e faltava — 7+1=8 obrigatórios. Ver
+        // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 5.
+        expect(find.text('Campo obrigatório.'), findsNWidgets(8));
         expect(tester.takeException(), isNull);
 
         await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
@@ -242,7 +245,11 @@ void main() {
         );
         await _selectFieldOption(tester, 'Combustível', 'Diesel S10');
         await _enterFieldText(tester, 'Quantidade (L)', '120');
-        await _enterFieldText(tester, 'Hodômetro / horímetro', '5400');
+        // O campo único "Hodômetro / horímetro" virou tipo + leitura: quem
+        // anotava o número não dizia qual dos dois medidores era.
+        await _selectFieldOption(tester, 'Tipo de medidor', 'Horímetro');
+        await _enterFieldText(tester, 'Leitura do medidor', '5400');
+        await _selectFieldOption(tester, 'Unidade', 'L');
         await _enterFieldText(tester, 'Posto / tanque de origem', 'Posto A');
         expect(tester.takeException(), isNull);
 

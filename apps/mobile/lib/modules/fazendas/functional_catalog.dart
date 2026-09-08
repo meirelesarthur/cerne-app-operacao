@@ -2556,34 +2556,10 @@ const operationalFeatures = <FeatureDefinition>[
     // `/supplies` é multi-item: um abastecimento pode encher mais de um
     // equipamento na mesma ida ao tanque.
     sections: ['Itens do abastecimento'],
-    steps: [
-      FeatureFormStep(
-        title: 'Identificação',
-        hint: 'Quem abasteceu, quando e qual equipamento.',
-        fields: ['responsavel', 'data', 'veiculo'],
-      ),
-      FeatureFormStep(
-        title: 'Abastecimento',
-        hint: 'Combustível, volume e a leitura do medidor.',
-        fields: [
-          'combustivel',
-          'quantidade',
-          'unidade',
-          'tipo-medidor',
-          'medidor',
-        ],
-      ),
-      FeatureFormStep(
-        title: 'Origem',
-        hint: 'De onde saiu o combustível e o que mais registrar.',
-        fields: ['origem', 'observacao'],
-        sections: ['Itens do abastecimento'],
-      ),
-      FeatureFormStep(
-        title: 'Revisão',
-        hint: 'Confira o abastecimento antes de registrar.',
-      ),
-    ],
+    // Sem etapas: com 10 campos, abastecimento fica na fronteira e o ganho
+    // não paga o custo — em campo a pessoa abastece e lança na hora, e uma
+    // tela só é mais rápida do que quatro. As etapas ficam nos formulários de
+    // 11 campos ou mais. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
     primaryAction: 'Registrar abastecimento',
     emptyLabel: 'Nenhum abastecimento registrado.',
     sourceDetail:

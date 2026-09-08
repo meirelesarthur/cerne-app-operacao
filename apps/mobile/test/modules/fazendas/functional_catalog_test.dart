@@ -4,7 +4,7 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 52 funcionalidades e a divisão por perfil', () {
+    test('preserva as 53 funcionalidades e a divisão por perfil', () {
       // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
       // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
       // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
@@ -34,9 +34,18 @@ void main() {
       // (fronteira operação/gestão, mesmo critério de `vendas`/
       // `compras-animais`) — 38-1=37 operacionais, 14+1=15
       // administrativas, 15+37=52 no total (sem mudança na soma).
+      // fidelidade-campos (onda 1): `pastagens` volta ao operacional —
+      // registrar recursos e serviços aplicados na pastagem é lançamento de
+      // campo, do mesmo gênero do apontamento agrícola: 15-1=14
+      // administrativas, 37+1=38 operacionais, total 52 (sem mudança na
+      // soma). fidelidade-campos (onda 4): `lotes-reproducao` volta ao
+      // catálogo, mas como consulta administrativa somente leitura — o que se
+      // perdeu ao tirá-la foi a documentação do contrato
+      // `/breeding-batches`: 14+1=15 administrativas, 15+38=53 no total. Ver
+      // docs/ESTEIRA-FIDELIDADE-CAMPOS.md.
       expect(adminFeatures, hasLength(15));
-      expect(operationalFeatures, hasLength(37));
-      expect(allFeatures, hasLength(52));
+      expect(operationalFeatures, hasLength(38));
+      expect(allFeatures, hasLength(53));
 
       expect(
         adminFeatures.every(
@@ -62,16 +71,18 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 46 ready, 6 hardware e zero mapped', () {
+    test('preserva a maturidade 47 ready, 6 hardware e zero mapped', () {
       // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
       // (ready) saiu do escopo — 52-1=51. Auditoria dos painéis:
       // `painel-pecuario` (ready) fundiu em `painel-financeiro` — 51-1=50.
       // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` (ready)
       // saíram do catálogo — 50-3=47; `balanca` (hardware) saiu junto — 7-1=6.
       // reprodução: `lotes-reproducao` (ready) saiu do catálogo — 47-1=46.
+      // fidelidade-campos (onda 4): `lotes-reproducao` (ready) volta como
+      // consulta administrativa — 46+1=47.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(46),
+        hasLength(47),
       );
       expect(
         allFeatures.where(
@@ -134,17 +145,125 @@ void main() {
       // obrigatórios) e `listMode` — sem mudança nessas contagens; perde
       // as 3 seções (eram do fluxo de criação, que não existe mais numa
       // consulta somente leitura) — 8-3=5.
-      expect(fields, hasLength(146));
-      expect(fields.where((field) => field.isRequired), hasLength(127));
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(29));
+      // fidelidade-campos: a leva soma, cadastro a cadastro, os campos que o
+      // contrato real tem e o protótipo não mostrava. Ver
+      // docs/ESTEIRA-FIDELIDADE-CAMPOS.md.
+      // Onda 1 — `pastagens` sai do ADM com 3 campos (3 obrigatórios) e
+      // volta ao operacional com 12 (7) e 5 coleções: 146+9=155 campos;
+      // 127+4=131 obrigatórios; 5+5=10 seções.
+      // Onda 2 — `marcacao` +8 campos (1 obrigatório): 155+8=163; 131+1=132.
+      // Onda 3 — `registrar-animal` +13 (3), `rebanho-inicial` +8 (1),
+      // `cadastrar-area` +6 (1), `lote-animais` +3 (1), `desmama` +2 (1),
+      // `transferencia-lote-area` +2 (1), `transferencia-animal` +1 (1):
+      // 163+35=198 campos; 132+9=141 obrigatórios. Coleções novas em
+      // `registrar-animal`, `rebanho-inicial`, `cadastrar-area`,
+      // `lote-animais` (1 cada) e `sanitario` (3): 10+7=17 seções.
+      // Onda 4 — `estacao-monta` +2 (2), `material-reprodutivo` +4 (4),
+      // `protocolos-estacao` +2 (1), `acasalamento` +6 (2),
+      // `diagnostico-gestacao` +3 (1) e `lotes-reproducao` de volta com 7
+      // (7): 198+24=222 campos; 141+17=158 obrigatórios. Coleções em
+      // `material-reprodutivo` (1), `acasalamento` (2) e
+      // `diagnostico-gestacao` (1): 17+4=21 seções. `lotes-reproducao` traz
+      // seu `listMode` de volta — 29+1=30.
+      // Onda 5 — `compras-animais` +7 (6), `batidas` +3 (3), `formulacoes`
+      // +4 (1), `abastecimentos` +3 (1) e `manutencao-frota` +3 (0):
+      // 222+20=242 campos; 158+11=169 obrigatórios. Coleções em
+      // `compras-animais` (2), `batidas`, `abastecimentos` e
+      // `manutencao-frota` (1 cada): 21+5=26 seções.
+      expect(fields, hasLength(242));
+      expect(fields.where((field) => field.isRequired), hasLength(169));
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
         hasLength(17),
       );
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(5));
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(26));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
+      );
+    });
+
+    // fidelidade-campos (onda 0): um formulário em etapas pode esconder um
+    // campo para sempre se ele não constar de nenhuma etapa — e o motor não
+    // tem como perceber, porque o campo continua no contrato e continua sendo
+    // validado no `submit`. Esta é a invariante que impede isso.
+    test('as etapas alcançam todo campo e toda coleção do cadastro', () {
+      final comEtapas = allFeatures
+          .where((feature) => feature.steps.isNotEmpty)
+          .toList(growable: false);
+
+      // Pastagens, marcação, registrar animal, rebanho inicial, sanitário,
+      // acasalamento, diagnóstico de gestação e manutenção — os formulários
+      // de 11 campos ou mais. Abastecimentos ficou de fora de propósito: com
+      // 10 campos, uma tela só é mais rápida em campo do que quatro.
+      expect(comEtapas, hasLength(8));
+
+      for (final feature in comEtapas) {
+        final camposEmEtapas = [
+          for (final step in feature.steps) ...step.fields,
+        ];
+        expect(
+          camposEmEtapas.toSet(),
+          hasLength(camposEmEtapas.length),
+          reason: 'campo repetido em duas etapas de ${feature.id}',
+        );
+        expect(
+          camposEmEtapas.toSet(),
+          feature.fields.map((field) => field.id).toSet(),
+          reason: 'campo fora de qualquer etapa em ${feature.id}',
+        );
+
+        final colecoesEmEtapas = [
+          for (final step in feature.steps) ...step.sections,
+        ];
+        expect(
+          colecoesEmEtapas.toSet(),
+          feature.sections.toSet(),
+          reason: 'coleção fora de qualquer etapa em ${feature.id}',
+        );
+
+        // A etapa sem campo e sem coleção é a revisão: existe uma só, e é a
+        // última — do contrário o motor mostraria uma tela vazia no meio.
+        final vazias = [
+          for (var index = 0; index < feature.steps.length; index++)
+            if (feature.steps[index].fields.isEmpty &&
+                feature.steps[index].sections.isEmpty)
+              index,
+        ];
+        expect(vazias, [feature.steps.length - 1], reason: feature.id);
+
+        final simulationTargetField = feature.simulationTargetField;
+        if (simulationTargetField != null) {
+          expect(
+            feature.steps.first.fields,
+            contains(simulationTargetField),
+            reason: 'simulação fora da 1a etapa em ${feature.id}',
+          );
+        }
+      }
+    });
+
+    test('coleção obrigatória sempre existe entre as coleções da tela', () {
+      for (final feature in allFeatures) {
+        for (final section in feature.requiredSections) {
+          expect(feature.sections, contains(section), reason: feature.id);
+        }
+      }
+
+      // `protocolos-estacao.items[]` e `diagnostico-gestacao.animals[]` são
+      // as duas coleções `min:1` do contrato real: nos dois casos a coleção
+      // **é** o registro, e salvar sem nenhum item não registra nada.
+      expect(
+        {
+          for (final feature in allFeatures)
+            if (feature.requiredSections.isNotEmpty)
+              feature.id: feature.requiredSections,
+        },
+        {
+          'protocolos-estacao': ['Etapas do protocolo'],
+          'diagnostico-gestacao': ['Animais diagnosticados'],
+        },
       );
     });
 
@@ -222,6 +341,13 @@ void main() {
       // saíram do catálogo — o Confinamento absorveu o que restava do
       // Misturador. Ver comentário em `functional_catalog.dart`.
       expect(featureById('carga'), isNull);
+      // fidelidade-campos (onda 4): `lotes-reproducao` voltou — agora como
+      // consulta administrativa somente leitura.
+      expect(featureById('lotes-reproducao')?.readOnly, isTrue);
+      expect(
+        featureById('lotes-reproducao')?.profile,
+        FeatureProfile.administration,
+      );
       expect(featureById('descarga'), isNull);
       expect(featureById('balanca'), isNull);
       expect(featureById('nota-cocho'), isNull);
