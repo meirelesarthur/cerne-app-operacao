@@ -32,6 +32,40 @@ class FeatureField {
   final List<String> options;
 }
 
+/// Uma etapa do formulário longo — o arquétipo `Cadastro steps` do Figma
+/// (`54349:1990`), que até aqui só existia nos fluxos dedicados de campo
+/// (`FlowShell.totalSteps`) e não no motor genérico de cadastros.
+///
+/// Cada etapa nomeia um subconjunto dos [FeatureDefinition.fields] (por `id`)
+/// e/ou das [FeatureDefinition.sections] (por nome). Uma etapa **sem** campos e
+/// sem coleções é a etapa de revisão: a tela mostra ali o que foi preenchido,
+/// antes de salvar.
+///
+/// Invariante conferida em `functional_catalog_test.dart`: quando uma
+/// funcionalidade declara etapas, todo campo visível e toda coleção aparecem em
+/// exatamente uma etapa — nada pode ficar inalcançável.
+class FeatureFormStep {
+  const FeatureFormStep({
+    required this.title,
+    this.fields = const [],
+    this.sections = const [],
+    this.hint,
+  });
+
+  /// Título da etapa, exibido no lugar de "Dados do registro".
+  final String title;
+
+  /// `id`s de [FeatureField] desta etapa, na ordem de exibição.
+  final List<String> fields;
+
+  /// Nomes de coleção ([FeatureDefinition.sections]) desta etapa.
+  final List<String> sections;
+
+  /// Uma linha de orientação sob o título — o que a pessoa precisa ter em mãos
+  /// para vencer a etapa.
+  final String? hint;
+}
+
 class FeatureDefinition {
   const FeatureDefinition({
     required this.id,
@@ -58,6 +92,8 @@ class FeatureDefinition {
     this.successTitle,
     this.successDescription,
     this.auditExport,
+    this.steps = const [],
+    this.requiredSections = const [],
   });
 
   final String id;
@@ -90,6 +126,19 @@ class FeatureDefinition {
   final String? successTitle;
   final String? successDescription;
   final AuditExportKind? auditExport;
+
+  /// Etapas do formulário (fidelidade-campos, onda 0). Vazio = formulário de
+  /// rolagem única, comportamento anterior. Preenchido, o motor genérico passa
+  /// a paginar o cadastro e a validar etapa a etapa — usado só nos formulários
+  /// longos, onde a rolagem única escondia o fim do preenchimento. Ver
+  /// docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
+  final List<FeatureFormStep> steps;
+
+  /// Coleções de [sections] que o contrato real exige com pelo menos um item
+  /// (`min:1`). Sem isso o motor tratava toda coleção como opcional, e um
+  /// cadastro cujo conteúdo real é a coleção (protocolo, apontamento) podia ser
+  /// salvo vazio. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
+  final List<String> requiredSections;
 }
 
 // banco-real: única fonte de nomes de produto para todo o catálogo — espelha

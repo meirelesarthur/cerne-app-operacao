@@ -53,6 +53,7 @@ export 'pagination.dart';
 export 'progress_bar.dart';
 export 'pressable.dart';
 export 'quick_action.dart';
+export 'review_list.dart';
 export 'screen_header.dart';
 export 'search_field.dart';
 export 'search_select.dart';
