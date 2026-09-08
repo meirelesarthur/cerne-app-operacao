@@ -32,6 +32,50 @@ class FeatureField {
   final List<String> options;
 }
 
+/// Uma coleção de itens de um cadastro — `items[]`, `products[]`,
+/// `identifications[]` e companhia no contrato real.
+///
+/// Antes da onda 8 uma coleção era só um nome numa lista de `String`, e o
+/// motor genérico a tratava como contador: "Adicionar" incrementava um número
+/// e nada mais. Servia para documentar que a coleção existe, não para
+/// registrar o que ela contém — e as coleções são justamente o conteúdo real
+/// de vários cadastros (a agenda do protocolo, os animais diagnosticados, os
+/// insumos consumidos no manejo).
+///
+/// Com [fields] preenchido, cada "Adicionar" abre um formulário de item e a
+/// linha entra na lista com os dados verdadeiros. Sem [fields], o
+/// comportamento antigo de contador é preservado — é o caso das duas "seções"
+/// de `processamentos`, que são rótulos de agrupamento, não coleções.
+class FeatureCollection {
+  const FeatureCollection({
+    required this.name,
+    this.itemLabel,
+    this.fields = const [],
+    this.isRequired = false,
+    this.titleField,
+    this.subtitleFields = const [],
+  });
+
+  /// Nome da coleção, como aparece na tela e no contrato ("Insumos").
+  final String name;
+
+  /// Título do formulário de um item ("Insumo"). Ausente, a tela usa [name].
+  final String? itemLabel;
+
+  /// Campos de **um item**. Vazio = coleção-contador (comportamento anterior).
+  final List<FeatureField> fields;
+
+  /// A coleção é `min:1` no contrato: salvar sem nenhum item não registra
+  /// nada e o backend recusa.
+  final bool isRequired;
+
+  /// Campo que titula a linha da lista. Ausente, usa o primeiro de [fields].
+  final String? titleField;
+
+  /// Campos que compõem o resumo da linha, na ordem, separados por " · ".
+  final List<String> subtitleFields;
+}
+
 /// Uma etapa do formulário longo — o arquétipo `Cadastro steps` do Figma
 /// (`54349:1990`), que até aqui só existia nos fluxos dedicados de campo
 /// (`FlowShell.totalSteps`) e não no motor genérico de cadastros.
@@ -76,7 +120,7 @@ class FeatureDefinition {
     required this.status,
     this.existingRoute,
     this.fields = const [],
-    this.sections = const [],
+    this.collections = const [],
     this.capabilities = const [],
     this.primaryAction,
     this.emptyLabel,
@@ -93,7 +137,6 @@ class FeatureDefinition {
     this.successDescription,
     this.auditExport,
     this.steps = const [],
-    this.requiredSections = const [],
   });
 
   final String id;
@@ -104,7 +147,30 @@ class FeatureDefinition {
   final FeatureStatus status;
   final String? existingRoute;
   final List<FeatureField> fields;
-  final List<String> sections;
+
+  /// Coleções de itens da funcionalidade (onda 8). Ver [FeatureCollection].
+  final List<FeatureCollection> collections;
+
+  /// Nomes das coleções, na ordem — a forma como o resto do app sempre leu
+  /// esta informação (etapas, motor, testes congelados). Derivado de
+  /// [collections] desde a onda 8, para que exista uma fonte só.
+  List<String> get sections => [
+    for (final collection in collections) collection.name,
+  ];
+
+  /// Coleções `min:1` no contrato real.
+  List<String> get requiredSections => [
+    for (final collection in collections)
+      if (collection.isRequired) collection.name,
+  ];
+
+  FeatureCollection? collectionByName(String name) {
+    for (final collection in collections) {
+      if (collection.name == name) return collection;
+    }
+    return null;
+  }
+
   final List<String> capabilities;
   final String? primaryAction;
   final String? emptyLabel;
@@ -134,11 +200,6 @@ class FeatureDefinition {
   /// docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
   final List<FeatureFormStep> steps;
 
-  /// Coleções de [sections] que o contrato real exige com pelo menos um item
-  /// (`min:1`). Sem isso o motor tratava toda coleção como opcional, e um
-  /// cadastro cujo conteúdo real é a coleção (protocolo, apontamento) podia ser
-  /// salvo vazio. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
-  final List<String> requiredSections;
 }
 
 // banco-real: única fonte de nomes de produto para todo o catálogo — espelha
@@ -313,7 +374,10 @@ const adminFeatures = <FeatureDefinition>[
     title: 'Processamentos pecuários',
     objective: 'Acompanhar rotinas pendentes e concluídas.',
     status: FeatureStatus.ready,
-    sections: ['Pendentes', 'Concluídos'],
+    collections: [
+      FeatureCollection(name: 'Pendentes'),
+      FeatureCollection(name: 'Concluídos'),
+    ],
     emptyLabel: 'Nenhum processamento pendente.',
     listMode: true,
   ),
@@ -420,7 +484,10 @@ const adminFeatures = <FeatureDefinition>[
     ],
     // `items[]` traz lote, pasto e centro de custo de cada grupo comprado;
     // `financial[]` é o parcelamento. Duas coleções, nenhuma no protótipo.
-    sections: ['Itens da compra', 'Parcelas'],
+    collections: [
+      FeatureCollection(name: 'Itens da compra'),
+      FeatureCollection(name: 'Parcelas'),
+    ],
     emptyLabel: 'Nenhuma compra de animais registrada.',
     sourceDetail:
         'O formulário não foi aberto; os campos são premissas funcionais do protótipo frontend.',
@@ -646,7 +713,9 @@ const operationalFeatures = <FeatureDefinition>[
       ),
     ],
     // `infrastructure[]` — cercas, bebedouros, currais e benfeitorias da área.
-    sections: ['Infraestrutura'],
+    collections: [
+      FeatureCollection(name: 'Infraestrutura'),
+    ],
     primaryAction: 'Salvar área',
     listMode: true,
     createAction: 'Adicionar área',
@@ -766,7 +835,9 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.textarea,
       ),
     ],
-    sections: ['Matérias-primas'],
+    collections: [
+      FeatureCollection(name: 'Matérias-primas'),
+    ],
     primaryAction: 'Salvar formulação',
     listMode: true,
     createAction: 'Nova formulação',
@@ -876,7 +947,9 @@ const operationalFeatures = <FeatureDefinition>[
     ],
     // `items[]` — cada ingrediente da batida tem estoque, matéria seca, custo
     // e porcentagem próprios; é onde o desvio da batida aparece.
-    sections: ['Itens da batida'],
+    collections: [
+      FeatureCollection(name: 'Itens da batida'),
+    ],
     primaryAction: 'Salvar batida',
     emptyLabel: 'Nenhuma batida registrada.',
     listMode: true,
@@ -1206,7 +1279,9 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(id: 'mae', label: 'Mãe', placeholder: 'Identificação'),
       FeatureField(id: 'pai', label: 'Pai', placeholder: 'Identificação'),
     ],
-    sections: ['Identificações'],
+    collections: [
+      FeatureCollection(name: 'Identificações'),
+    ],
     steps: [
       FeatureFormStep(
         title: 'Levantamento',
@@ -1319,7 +1394,9 @@ const operationalFeatures = <FeatureDefinition>[
     ],
     // `animal_uuids[]` — quais animais compõem o lote. É o que diferencia
     // `/animal-batches` de `/batches`, que não tem a coleção.
-    sections: ['Animais do lote'],
+    collections: [
+      FeatureCollection(name: 'Animais do lote'),
+    ],
     primaryAction: 'Criar lote',
     listMode: true,
     createAction: 'Novo lote',
@@ -1426,7 +1503,9 @@ const operationalFeatures = <FeatureDefinition>[
     ],
     // `identifications[]` — um animal costuma ter mais de uma marca (brinco de
     // manejo, SISBOV, tatuagem); no contrato é coleção, não campo único.
-    sections: ['Identificações'],
+    collections: [
+      FeatureCollection(name: 'Identificações'),
+    ],
     steps: [
       FeatureFormStep(
         title: 'Identificação',
@@ -1725,7 +1804,11 @@ const operationalFeatures = <FeatureDefinition>[
     // animais** o manejo se aplica — sem isso não há rastreabilidade de
     // carência; `items[]` são os produtos consumidos (armazém, estoque,
     // unidade, quantidade, centro de custo) e `labor[]` quem executou.
-    sections: ['Animais alvo', 'Itens de estoque', 'Mão de obra'],
+    collections: [
+      FeatureCollection(name: 'Animais alvo'),
+      FeatureCollection(name: 'Itens de estoque'),
+      FeatureCollection(name: 'Mão de obra'),
+    ],
     steps: [
       FeatureFormStep(
         title: 'Identificação',
@@ -1797,7 +1880,9 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Lote de destino dos bezerros',
       ),
     ],
-    sections: ['Identificações adicionais'],
+    collections: [
+      FeatureCollection(name: 'Identificações adicionais'),
+    ],
     primaryAction: 'Salvar desmama',
     listMode: true,
     createAction: 'Nova desmama',
@@ -1992,12 +2077,12 @@ const operationalFeatures = <FeatureDefinition>[
     // As 5 coleções de `/pastures`: equipments[], inputs[], productions[],
     // services[] e occurrences[]. Nenhuma é `min:1` no contrato — um manejo
     // pode ser só a operação registrada.
-    sections: [
-      'Máquinas / Equipamentos',
-      'Insumos',
-      'Produção',
-      'Serviços',
-      'Ocorrências',
+    collections: [
+      FeatureCollection(name: 'Máquinas / Equipamentos'),
+      FeatureCollection(name: 'Insumos'),
+      FeatureCollection(name: 'Produção'),
+      FeatureCollection(name: 'Serviços'),
+      FeatureCollection(name: 'Ocorrências'),
     ],
     steps: [
       FeatureFormStep(
@@ -2168,7 +2253,9 @@ const operationalFeatures = <FeatureDefinition>[
       ),
     ],
     // `products[]` — cada palheta/dose tem armazém e produto próprios.
-    sections: ['Produtos (armazém e sêmen)'],
+    collections: [
+      FeatureCollection(name: 'Produtos (armazém e sêmen)'),
+    ],
     primaryAction: 'Cadastrar recurso',
     sourceDetail:
         'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
@@ -2224,7 +2311,12 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.textarea,
       ),
     ],
-    sections: ['Etapas do protocolo'],
+    collections: [
+      FeatureCollection(
+        name: 'Etapas do protocolo',
+        isRequired: true,
+      ),
+    ],
     // `items[] ·req min:1` — a agenda do protocolo **é** o protocolo: data,
     // quantidade, produto ou serviço e armazém de cada etapa. Um protocolo
     // sem nenhuma etapa não protocola nada, e o contrato recusa.
@@ -2233,7 +2325,6 @@ const operationalFeatures = <FeatureDefinition>[
     // do contrato, não regra de tela: o motor só a aplica onde há formulário
     // (hoje, `diagnostico-gestacao`). Fica declarada para quando o cadastro
     // descer para o app — ou para quando o time web ler o contrato daqui.
-    requiredSections: ['Etapas do protocolo'],
     primaryAction: 'Salvar protocolo',
     sourceDetail:
         'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
@@ -2333,7 +2424,10 @@ const operationalFeatures = <FeatureDefinition>[
     // é o lançamento linha a linha, quando o tipo de lançamento é por animal.
     // Nenhuma das duas é obrigatória aqui porque no contrato a exigência é
     // condicional ao `type`/`launch_type`, não absoluta.
-    sections: ['Vacas do acasalamento', 'Animais por linha'],
+    collections: [
+      FeatureCollection(name: 'Vacas do acasalamento'),
+      FeatureCollection(name: 'Animais por linha'),
+    ],
     steps: [
       FeatureFormStep(
         title: 'Identificação',
@@ -2441,8 +2535,12 @@ const operationalFeatures = <FeatureDefinition>[
     // O contrato é um **array de animais**, um por linha diagnosticada; o
     // protótipo tratava como formulário plano com uma quantidade. A coleção é
     // o registro em si — por isso `min:1`.
-    sections: ['Animais diagnosticados'],
-    requiredSections: ['Animais diagnosticados'],
+    collections: [
+      FeatureCollection(
+        name: 'Animais diagnosticados',
+        isRequired: true,
+      ),
+    ],
     steps: [
       FeatureFormStep(
         title: 'Identificação',
@@ -2560,7 +2658,9 @@ const operationalFeatures = <FeatureDefinition>[
     ],
     // `/supplies` é multi-item: um abastecimento pode encher mais de um
     // equipamento na mesma ida ao tanque.
-    sections: ['Itens do abastecimento'],
+    collections: [
+      FeatureCollection(name: 'Itens do abastecimento'),
+    ],
     // Sem etapas: com 10 campos, abastecimento fica na fronteira e o ganho
     // não paga o custo — em campo a pessoa abastece e lança na hora, e uma
     // tela só é mais rápida do que quatro. As etapas ficam nos formulários de
@@ -2657,7 +2757,9 @@ const operationalFeatures = <FeatureDefinition>[
     ],
     // `items[]` — produto, unidade, quantidade e armazém de cada peça ou
     // insumo consumido na manutenção.
-    sections: ['Peças / Insumos'],
+    collections: [
+      FeatureCollection(name: 'Peças / Insumos'),
+    ],
     steps: [
       FeatureFormStep(
         title: 'Identificação',

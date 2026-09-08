@@ -25,6 +25,7 @@ export 'chart_legend.dart';
 export 'checkbox.dart';
 export 'chip.dart';
 export 'code_preview.dart';
+export 'collection_list.dart';
 export 'dashboard_card.dart';
 export 'discovery_tile.dart';
 export 'donut_chart.dart';

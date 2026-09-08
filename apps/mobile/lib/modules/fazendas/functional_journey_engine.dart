@@ -36,8 +36,14 @@ class FunctionalJourneyController {
     form = form.setValue(fieldId, value);
   }
 
-  void addGroupItem(String group) {
-    form = form.addGroupItem(group);
+  /// Acrescenta um item à coleção. Sem [item], entra um item vazio — é o
+  /// comportamento de contador das coleções que ainda não declaram campos.
+  void addGroupItem(String group, [Map<String, String> item = const {}]) {
+    form = form.addGroupItem(group, item);
+  }
+
+  void removeGroupItem(String group, int index) {
+    form = form.removeGroupItem(group, index);
   }
 
   /// Avança uma etapa. Devolve `false` quando a etapa atual tem pendência —
@@ -87,36 +93,66 @@ class FunctionalJourneyController {
 class FunctionalFormState {
   const FunctionalFormState({
     this.values = const {},
-    this.groupCounts = const {},
+    this.groupItems = const {},
     this.attempted = false,
   });
 
   final Map<String, String> values;
-  final Map<String, int> groupCounts;
+
+  /// Itens de cada coleção, na ordem em que foram adicionados. Cada item é um
+  /// mapa `id do campo → valor`. Até a onda 8 aqui havia só uma contagem: a
+  /// coleção existia na tela mas não guardava o que continha.
+  final Map<String, List<Map<String, String>>> groupItems;
+
   final bool attempted;
+
+  /// Quantos itens por coleção — a leitura que o resto do app já fazia.
+  Map<String, int> get groupCounts => {
+    for (final entry in groupItems.entries) entry.key: entry.value.length,
+  };
+
+  List<Map<String, String>> itemsOf(String group) =>
+      groupItems[group] ?? const [];
 
   FunctionalFormState setValue(String fieldId, String value) =>
       FunctionalFormState(
         values: {...values, fieldId: value},
-        groupCounts: groupCounts,
+        groupItems: groupItems,
         attempted: attempted,
       );
 
-  FunctionalFormState addGroupItem(String group) => FunctionalFormState(
+  FunctionalFormState addGroupItem(
+    String group, [
+    Map<String, String> item = const {},
+  ]) => FunctionalFormState(
     values: values,
-    groupCounts: {...groupCounts, group: (groupCounts[group] ?? 0) + 1},
+    groupItems: {
+      ...groupItems,
+      group: [...itemsOf(group), item],
+    },
     attempted: attempted,
   );
 
+  FunctionalFormState removeGroupItem(String group, int index) {
+    final atuais = [...itemsOf(group)];
+    if (index < 0 || index >= atuais.length) return this;
+    atuais.removeAt(index);
+    return FunctionalFormState(
+      values: values,
+      groupItems: {...groupItems, group: atuais},
+      attempted: attempted,
+    );
+  }
+
   FunctionalFormState markAttempted() => FunctionalFormState(
     values: values,
-    groupCounts: groupCounts,
+    groupItems: groupItems,
     attempted: true,
   );
 
   FunctionalFormState clearAttempted() => FunctionalFormState(
     values: values,
-    groupCounts: groupCounts,
+    groupItems: groupItems,
   );
 }
 
@@ -170,11 +206,10 @@ bool isFeatureFieldRequired(
   return false;
 }
 
-String? featureFieldError(
-  FeatureDefinition feature,
-  FeatureField field,
-  Map<String, String> values,
-) {
+/// Validação que não depende do cadastro: obrigatoriedade e número positivo.
+/// Serve tanto para o campo do formulário principal quanto para o campo de um
+/// **item de coleção**, que não tem `FeatureDefinition` por trás.
+String? featureItemFieldError(FeatureField field, Map<String, String> values) {
   final value = values[field.id]?.trim() ?? '';
   if (field.isRequired && value.isEmpty) return 'Campo obrigatório.';
   if (field.type == FeatureFieldType.number && value.isNotEmpty) {
@@ -183,6 +218,50 @@ String? featureFieldError(
       return 'Informe um valor maior que zero.';
     }
   }
+  return null;
+}
+
+/// O item de coleção só entra na lista quando seus obrigatórios estão de pé.
+bool isCollectionItemValid(
+  FeatureCollection collection,
+  Map<String, String> values,
+) => collection.fields.every(
+  (field) => featureItemFieldError(field, values) == null,
+);
+
+/// Título da linha de um item já adicionado.
+String collectionItemTitle(
+  FeatureCollection collection,
+  Map<String, String> item,
+) {
+  final id =
+      collection.titleField ??
+      (collection.fields.isEmpty ? null : collection.fields.first.id);
+  final value = id == null ? '' : item[id]?.trim() ?? '';
+  return value.isEmpty ? collection.itemLabel ?? collection.name : value;
+}
+
+/// Resumo da linha — os campos de [FeatureCollection.subtitleFields] que a
+/// pessoa preencheu, na ordem declarada.
+String? collectionItemSubtitle(
+  FeatureCollection collection,
+  Map<String, String> item,
+) {
+  final partes = [
+    for (final id in collection.subtitleFields)
+      if ((item[id]?.trim() ?? '').isNotEmpty) item[id]!.trim(),
+  ];
+  return partes.isEmpty ? null : partes.join(' · ');
+}
+
+String? featureFieldError(
+  FeatureDefinition feature,
+  FeatureField field,
+  Map<String, String> values,
+) {
+  final generico = featureItemFieldError(field, values);
+  if (generico != null) return generico;
+  final value = values[field.id]?.trim() ?? '';
   if (feature.id == 'estacao-monta' &&
       field.id == 'fim' &&
       value.isNotEmpty &&
@@ -273,8 +352,14 @@ PrototypeRecordDraft buildPrototypeRecordDraft(
     for (final entry in state.values.entries)
       if (entry.value.trim().isNotEmpty)
         labels[entry.key] ?? entry.key: entry.value.trim(),
-    for (final entry in state.groupCounts.entries)
-      if (entry.value > 0) entry.key: '${entry.value} item(ns)',
+    // Onda 8: a coleção deixou de ser um número no detalhe do registro — o
+    // resumo passa a citar o que foi lançado, que é o que a pessoa confere.
+    for (final collection in feature.collections)
+      if (state.itemsOf(collection.name).isNotEmpty)
+        collection.name: _resumoColecao(
+          collection,
+          state.itemsOf(collection.name),
+        ),
   };
   final titleField = feature.recordTitleField ?? 'nome';
   final title = state.values[titleField]?.trim();
@@ -289,6 +374,18 @@ PrototypeRecordDraft buildPrototypeRecordDraft(
     status: _statusFor(feature.id),
     details: details,
   );
+}
+
+String _resumoColecao(
+  FeatureCollection collection,
+  List<Map<String, String>> itens,
+) {
+  final contagem = '${itens.length} item(ns)';
+  if (collection.fields.isEmpty) return contagem;
+  final titulos = itens
+      .map((item) => collectionItemTitle(collection, item))
+      .toList(growable: false);
+  return '$contagem · ${titulos.join(', ')}';
 }
 
 PrototypeRecordStatus _statusFor(String featureId) {

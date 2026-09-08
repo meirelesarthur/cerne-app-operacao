@@ -38,7 +38,14 @@ void main() {
     final feature = featureById('formulacoes')!;
     const state = FunctionalFormState(
       values: {'produto': 'Ração 18%', 'quantidade': '1000', 'unidade': 'kg'},
-      groupCounts: {'Matérias-primas': 2},
+      // Onda 8: a coleção guarda os itens, não uma contagem — a contagem
+      // passou a ser derivada (`groupCounts`).
+      groupItems: {
+        'Matérias-primas': [
+          {'materia-prima': 'Milho moído'},
+          {'materia-prima': 'Farelo de soja'},
+        ],
+      },
     );
 
     final draft = buildPrototypeRecordDraft(feature, state);
