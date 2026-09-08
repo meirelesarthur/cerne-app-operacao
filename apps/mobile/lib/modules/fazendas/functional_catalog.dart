@@ -496,6 +496,44 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Cultura / cobertura',
         placeholder: 'Opcional',
       ),
+      // fidelidade-campos (onda 3): o que `/areas` tem e a tela não mostrava.
+      // `color` é required no contrato — é a cor com que a área aparece no
+      // mapa, sem ela o desenho da fazenda não se distingue.
+      FeatureField(
+        id: 'cor',
+        label: 'Cor no mapa',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Verde', 'Amarelo', 'Vermelho', 'Azul', 'Roxo', 'Cinza'],
+      ),
+      FeatureField(
+        id: 'matricula',
+        label: 'Matrícula',
+        placeholder: 'Matrícula do imóvel',
+      ),
+      FeatureField(
+        id: 'atividade',
+        label: 'Atividade',
+        type: FeatureFieldType.select,
+        options: ['Agricultura', 'Pecuária', 'Fruticultura', 'Silvicultura'],
+      ),
+      FeatureField(
+        id: 'proprietario',
+        label: 'Proprietário',
+        placeholder: 'Pessoa ou empresa titular',
+      ),
+      FeatureField(
+        id: 'area-recreio',
+        label: 'Área de recreio',
+        type: FeatureFieldType.select,
+        options: ['Sim', 'Não'],
+      ),
+      FeatureField(
+        id: 'ativo',
+        label: 'Ativa',
+        type: FeatureFieldType.select,
+        options: ['Sim', 'Não'],
+      ),
       FeatureField(
         id: 'observacao',
         label: 'Observação',
@@ -503,6 +541,8 @@ const operationalFeatures = <FeatureDefinition>[
         placeholder: 'Informações adicionais',
       ),
     ],
+    // `infrastructure[]` — cercas, bebedouros, currais e benfeitorias da área.
+    sections: ['Infraestrutura'],
     primaryAction: 'Salvar área',
     listMode: true,
     createAction: 'Adicionar área',
@@ -958,10 +998,79 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Área / módulo inicial',
         isRequired: true,
       ),
+      // fidelidade-campos (onda 3): o rebanho inicial grava em `/animals` — o
+      // mesmo contrato de `registrar-animal`, não uma importação de planilha
+      // (`/inventoried-animals` não tem store). Faltava o bloco de raça,
+      // nascimento, identificação, valores e genealogia. Mesma curadoria dos
+      // três valores calculados: entram opcionais.
+      FeatureField(id: 'raca', label: 'Raça'),
+      FeatureField(
+        id: 'nascimento',
+        label: 'Data de nascimento',
+        type: FeatureFieldType.date,
+      ),
+      FeatureField(
+        id: 'tipo-identificacao',
+        label: 'Modo de identificação',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Brinco', 'RFID', 'SISBOV', 'Tatuagem'],
+      ),
       FeatureField(
         id: 'peso-medio',
         label: 'Peso médio (kg)',
         type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'preco-arroba',
+        label: 'Preço da arroba (vivo)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'valor-unitario',
+        label: 'Valor unitário (R\$)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'ua',
+        label: 'Unidade animal (UA)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(id: 'mae', label: 'Mãe', placeholder: 'Identificação'),
+      FeatureField(id: 'pai', label: 'Pai', placeholder: 'Identificação'),
+    ],
+    sections: ['Identificações'],
+    steps: [
+      FeatureFormStep(
+        title: 'Levantamento',
+        hint: 'Quem levantou, quando, e onde o rebanho está.',
+        fields: ['responsavel', 'data', 'data-entrada', 'area'],
+      ),
+      FeatureFormStep(
+        title: 'Composição',
+        hint: 'De que é feito o rebanho que está entrando.',
+        fields: ['especie', 'categoria', 'raca', 'quantidade', 'nascimento'],
+      ),
+      FeatureFormStep(
+        title: 'Identificação e valores',
+        hint: 'Como os animais são marcados e quanto valem.',
+        fields: [
+          'tipo-identificacao',
+          'peso-medio',
+          'preco-arroba',
+          'valor-unitario',
+          'ua',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Genealogia',
+        hint: 'Quando o levantamento conhece a origem dos animais.',
+        fields: ['mae', 'pai'],
+        sections: ['Identificações'],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira a composição antes de cadastrar.',
       ),
     ],
     primaryAction: 'Cadastrar rebanho',
@@ -1020,12 +1129,35 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['Bezerro', 'Novilha', 'Vaca', 'Boi'],
       ),
+      // fidelidade-campos (onda 3): `/animal-batches` exige `date` e liga o
+      // lote a curral e parâmetro de peso — nada disso existia na tela.
+      FeatureField(
+        id: 'data',
+        label: 'Data de formação',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'curral',
+        label: 'Curral de confinamento',
+        type: FeatureFieldType.select,
+        options: ['Curral 01', 'Curral 02', 'Curral 03', 'Curral 04'],
+      ),
+      FeatureField(
+        id: 'parametro-peso',
+        label: 'Parâmetro de peso',
+        type: FeatureFieldType.select,
+        options: ['Leve', 'Médio', 'Pesado'],
+      ),
     ],
+    // `animal_uuids[]` — quais animais compõem o lote. É o que diferencia
+    // `/animal-batches` de `/batches`, que não tem a coleção.
+    sections: ['Animais do lote'],
     primaryAction: 'Criar lote',
     listMode: true,
     createAction: 'Novo lote',
     recordTitleField: 'descricao',
-    recordDescriptionFields: ['especie', 'categoria'],
+    recordDescriptionFields: ['especie', 'categoria', 'data'],
   ),
   FeatureDefinition(
     id: 'registrar-animal',
@@ -1034,14 +1166,59 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Registrar animal',
     objective: 'Cadastrar um animal individualmente.',
     status: FeatureStatus.ready,
+    // fidelidade-campos (onda 3): faltavam espécie e data de entrada
+    // (obrigatórias em `/animals`) e o bloco inteiro de identificação,
+    // genealogia e valores. Os três valores calculados (arroba, unitário, UA)
+    // entram **opcionais** de propósito: o Form Request os marca `required`,
+    // mas o servidor os recalcula, e pedir "UA" a quem está no brete seria
+    // exigir conta de escritório em pé no curral. Ver
+    // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, "Curadoria".
     fields: [
+      FeatureField(
+        id: 'especie',
+        label: 'Espécie',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Bovino', 'Bubalino', 'Ovino'],
+      ),
+      FeatureField(
+        id: 'tipo-identificacao',
+        label: 'Modo de identificação',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Brinco', 'RFID', 'SISBOV', 'Tatuagem'],
+      ),
+      FeatureField(
+        id: 'identificacao',
+        label: 'Identificação principal',
+        placeholder: 'Número do brinco, RFID ou SISBOV',
+      ),
       FeatureField(id: 'categoria', label: 'Categoria', isRequired: true),
       FeatureField(id: 'raca', label: 'Raça', isRequired: true),
+      FeatureField(
+        id: 'data-entrada',
+        label: 'Data de entrada',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
       FeatureField(
         id: 'nascimento',
         label: 'Data de nascimento',
         type: FeatureFieldType.date,
         isRequired: true,
+      ),
+      FeatureField(
+        id: 'quantidade',
+        label: 'Quantidade',
+        type: FeatureFieldType.number,
+        placeholder: 'Para lançamento em lote',
+      ),
+      FeatureField(id: 'mae', label: 'Mãe', placeholder: 'Identificação'),
+      FeatureField(id: 'pai', label: 'Pai', placeholder: 'Identificação'),
+      FeatureField(
+        id: 'previsao-parto',
+        label: 'Previsão de parto',
+        type: FeatureFieldType.date,
       ),
       FeatureField(
         id: 'peso',
@@ -1050,16 +1227,91 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
       ),
       FeatureField(
+        id: 'pelagem',
+        label: 'Pelagem',
+        placeholder: 'Descrição da pelagem',
+      ),
+      FeatureField(
         id: 'preco-kg',
         label: 'Preço do kg vivo',
         type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'preco-arroba',
+        label: 'Preço da arroba (vivo)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'valor-unitario',
+        label: 'Valor unitário (R\$)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'ua',
+        label: 'Unidade animal (UA)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'observacao',
+        label: 'Observação',
+        type: FeatureFieldType.textarea,
+      ),
+    ],
+    // `identifications[]` — um animal costuma ter mais de uma marca (brinco de
+    // manejo, SISBOV, tatuagem); no contrato é coleção, não campo único.
+    sections: ['Identificações'],
+    steps: [
+      FeatureFormStep(
+        title: 'Identificação',
+        hint: 'Espécie, marca e classificação do animal.',
+        fields: [
+          'especie',
+          'tipo-identificacao',
+          'identificacao',
+          'categoria',
+          'raca',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Origem e genealogia',
+        hint: 'Quando entrou na fazenda, quando nasceu e de quem.',
+        fields: [
+          'data-entrada',
+          'nascimento',
+          'quantidade',
+          'mae',
+          'pai',
+          'previsao-parto',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Peso e valores',
+        hint: 'Peso de entrada e, se houver, os valores de referência.',
+        fields: [
+          'peso',
+          'pelagem',
+          'preco-kg',
+          'preco-arroba',
+          'valor-unitario',
+          'ua',
+          'observacao',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Identificações adicionais',
+        hint: 'Outras marcas do mesmo animal.',
+        sections: ['Identificações'],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira o animal antes de registrar.',
       ),
     ],
     primaryAction: 'Registrar animal',
     listMode: true,
     createAction: 'Novo animal',
-    recordTitleField: 'categoria',
-    recordDescriptionFields: ['raca', 'peso', 'nascimento'],
+    recordTitleField: 'identificacao',
+    recordDescriptionFields: ['categoria', 'raca', 'peso'],
   ),
   FeatureDefinition(
     id: 'pesagem',
@@ -1098,6 +1350,17 @@ const operationalFeatures = <FeatureDefinition>[
       ),
       FeatureField(id: 'lote-atual', label: 'Lote atual', isRequired: true),
       FeatureField(id: 'novo-lote', label: 'Novo lote', isRequired: true),
+      // fidelidade-campos (onda 3): `same_batch` é a flag required de
+      // `/animals/batch-transfer` — decide se todos os animais vão para um
+      // lote só ou se cada um tem o seu destino. Sem ela o backend não sabe
+      // como interpretar o resto da submissão.
+      FeatureField(
+        id: 'destino-unico',
+        label: 'Mesmo lote para todos',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Sim', 'Não'],
+      ),
     ],
     capabilities: ['Balança', 'RFID', 'Scanner SISBOV'],
     primaryAction: 'Salvar transferência',
@@ -1145,12 +1408,27 @@ const operationalFeatures = <FeatureDefinition>[
       ),
       FeatureField(id: 'area', label: 'Nova área', isRequired: true),
       FeatureField(id: 'modulo', label: 'Novo módulo', isRequired: true),
+      // fidelidade-campos (onda 3): `date` é required em
+      // `/batch-module-area-transfers`, e o curral de confinamento é o
+      // terceiro destino possível, em XOR com área e módulo.
+      FeatureField(
+        id: 'data',
+        label: 'Data da transferência',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'curral',
+        label: 'Curral de confinamento',
+        type: FeatureFieldType.select,
+        options: ['Curral 01', 'Curral 02', 'Curral 03', 'Curral 04'],
+      ),
     ],
     primaryAction: 'Salvar transferência',
     listMode: true,
     createAction: 'Nova transferência',
     recordTitleField: 'lote',
-    recordDescriptionFields: ['area', 'modulo'],
+    recordDescriptionFields: ['area', 'modulo', 'data'],
   ),
   FeatureDefinition(
     id: 'nascimentos',
@@ -1275,6 +1553,33 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.textarea,
       ),
     ],
+    // fidelidade-campos (onda 3): em `/sanitaries` o manejo tem três coleções
+    // e a tela tinha um "produto" solto. `animal_uuids[]` diz a **quais
+    // animais** o manejo se aplica — sem isso não há rastreabilidade de
+    // carência; `items[]` são os produtos consumidos (armazém, estoque,
+    // unidade, quantidade, centro de custo) e `labor[]` quem executou.
+    sections: ['Animais alvo', 'Itens de estoque', 'Mão de obra'],
+    steps: [
+      FeatureFormStep(
+        title: 'Identificação',
+        hint: 'Quem aplicou o manejo, em que lote e quando.',
+        fields: ['responsavel', 'lote', 'data'],
+      ),
+      FeatureFormStep(
+        title: 'Manejo',
+        hint: 'O que foi feito e se há carência a respeitar.',
+        fields: ['tipo', 'produto', 'controle-por-tempo', 'observacao'],
+      ),
+      FeatureFormStep(
+        title: 'Animais, produtos e equipe',
+        hint: 'A quem se aplicou, o que saiu do estoque e quem executou.',
+        sections: ['Animais alvo', 'Itens de estoque', 'Mão de obra'],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira o manejo antes de salvar.',
+      ),
+    ],
     primaryAction: 'Salvar manejo',
     sourceDetail:
         'A fonte mostrou apenas a primeira etapa; os campos complementares são premissas do protótipo frontend.',
@@ -1311,13 +1616,26 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Identificação das vacas paridas',
         isRequired: true,
       ),
+      // fidelidade-campos (onda 3): `date` é required em `/weanings` e o lote
+      // de destino é para onde os bezerros desmamados são transferidos —
+      // faltavam os dois.
+      FeatureField(
+        id: 'data',
+        label: 'Data da desmama',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'lote-destino',
+        label: 'Lote de destino dos bezerros',
+      ),
     ],
     sections: ['Identificações adicionais'],
     primaryAction: 'Salvar desmama',
     listMode: true,
     createAction: 'Nova desmama',
     recordTitleField: 'lote',
-    recordDescriptionFields: ['tipo', 'identificacao'],
+    recordDescriptionFields: ['tipo', 'data', 'lote-destino'],
   ),
   FeatureDefinition(
     id: 'apartacao',
