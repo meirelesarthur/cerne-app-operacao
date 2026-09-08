@@ -784,6 +784,15 @@ const operationalFeatures = <FeatureDefinition>[
         options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
       ),
       FeatureField(id: 'area', label: 'Área', isRequired: true),
+      // fidelidade-campos (onda 2): `date` não vem marcado como required em
+      // `/markings`, mas toda marcação nasce de um dia de campo e todos os
+      // demais lançamentos do catálogo pedem a data — mantida obrigatória.
+      FeatureField(
+        id: 'data',
+        label: 'Data da marcação',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
       FeatureField(
         id: 'tipo',
         label: 'Tipo de marcação',
@@ -802,6 +811,89 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Referência de localização',
         isRequired: true,
       ),
+      // Os 8 campos reais de `/markings` que o protótipo não tinha. A tela era
+      // quase inteiramente presumida: tipo/descrição/referência não existem no
+      // contrato (ficam, por decisão desta leva — nada sai), e o que existe de
+      // verdade (safra, variedade, semana, cor, quantidade, funcionário,
+      // centro de custo) estava ausente.
+      FeatureField(
+        id: 'safra',
+        label: 'Safra',
+        type: FeatureFieldType.select,
+        options: ['2023/2024', '2024/2025', '2025/2026', '2026/2027'],
+      ),
+      FeatureField(
+        id: 'variedade',
+        label: 'Variedade / cultura',
+        type: FeatureFieldType.select,
+        options: [
+          'Soja',
+          'Milho',
+          'Algodão',
+          'Cana-de-açúcar',
+          'Café',
+          'Braquiária',
+        ],
+      ),
+      // TODO(banco-real): `week_vintage_uuid` é FK para a semana da safra;
+      // sem a tabela de domínio no dump, o protótipo pede o número da semana.
+      // Confirmar com o time web se vira select antes de ligar o backend.
+      FeatureField(
+        id: 'semana-safra',
+        label: 'Semana da safra',
+        type: FeatureFieldType.number,
+        placeholder: 'Nº da semana',
+      ),
+      FeatureField(
+        id: 'quantidade',
+        label: 'Quantidade',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'cor',
+        label: 'Cor no mapa',
+        type: FeatureFieldType.select,
+        options: ['Verde', 'Amarelo', 'Vermelho', 'Azul', 'Roxo'],
+      ),
+      FeatureField(
+        id: 'funcionario',
+        label: 'Funcionário',
+        type: FeatureFieldType.select,
+        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
+      ),
+      FeatureField(
+        id: 'centro-custo',
+        label: 'Centro de custo',
+        type: FeatureFieldType.select,
+        options: ['Centro Agrícola', 'Centro Pecuária', 'Centro Frota'],
+      ),
+    ],
+    steps: [
+      FeatureFormStep(
+        title: 'Identificação',
+        hint: 'Quem marcou, quando e em que área.',
+        fields: ['responsavel', 'data', 'area', 'referencia'],
+      ),
+      FeatureFormStep(
+        title: 'Marcação',
+        hint: 'O que foi marcado e como aparece no mapa.',
+        fields: ['tipo', 'descricao', 'cor', 'quantidade'],
+      ),
+      FeatureFormStep(
+        title: 'Safra e custo',
+        hint: 'A que safra a marcação pertence e quem a executou.',
+        fields: [
+          'safra',
+          'variedade',
+          'semana-safra',
+          'funcionario',
+          'centro-custo',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira a marcação antes de salvar.',
+      ),
     ],
     primaryAction: 'Salvar marcação',
     sourceDetail:
@@ -809,7 +901,7 @@ const operationalFeatures = <FeatureDefinition>[
     listMode: true,
     createAction: 'Nova marcação',
     recordTitleField: 'descricao',
-    recordDescriptionFields: ['tipo', 'area', 'referencia'],
+    recordDescriptionFields: ['tipo', 'area', 'data'],
   ),
   FeatureDefinition(
     id: 'rebanho-inicial',
