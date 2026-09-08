@@ -371,7 +371,56 @@ const adminFeatures = <FeatureDefinition>[
         label: 'Nota / documento de origem',
         isRequired: true,
       ),
+      // fidelidade-campos (onda 5): `/movement-purchases` exige o bloco
+      // financeiro inteiro de cabeçalho — forma de pagamento, total de
+      // produtos, frete, outros valores e desconto — e nada disso existia. Sem
+      // eles a consulta mostra um valor total que não se explica.
+      FeatureField(
+        id: 'forma-pagamento',
+        label: 'Forma de pagamento',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['À vista', 'Parcelado', 'Permuta', 'Boleto'],
+      ),
+      FeatureField(
+        id: 'total-produtos',
+        label: 'Total de produtos (R\$)',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'frete',
+        label: 'Frete (R\$)',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'outros-valores',
+        label: 'Outros valores (R\$)',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'desconto',
+        label: 'Desconto (R\$)',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'valor-unitario',
+        label: 'Valor unitário por animal (R\$)',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'vendedor',
+        label: 'Vendedor',
+        placeholder: 'Quem intermediou a compra',
+      ),
     ],
+    // `items[]` traz lote, pasto e centro de custo de cada grupo comprado;
+    // `financial[]` é o parcelamento. Duas coleções, nenhuma no protótipo.
+    sections: ['Itens da compra', 'Parcelas'],
     emptyLabel: 'Nenhuma compra de animais registrada.',
     sourceDetail:
         'O formulário não foi aberto; os campos são premissas funcionais do protótipo frontend.',
@@ -688,6 +737,34 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Custo estimado (R\$)',
         type: FeatureFieldType.number,
       ),
+      // fidelidade-campos (onda 5): esta é a tela mais alinhada da auditoria —
+      // faltavam a data (required no contrato), a unidade da matéria-prima
+      // (`feedstocks.*.measurement_uuid`, que no contrato é por ingrediente) e,
+      // se a tela for lida como Dieta, objetivo e observação. `custo-por-kg` e
+      // `custo-estimado` continuam aqui como leitura: são calculados no
+      // servidor e nunca entram como input.
+      FeatureField(
+        id: 'data',
+        label: 'Data da formulação',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'unidade-materia-prima',
+        label: 'Unidade da matéria-prima',
+        type: FeatureFieldType.select,
+        options: ['kg', 't', 'L', 'Saco'],
+      ),
+      FeatureField(
+        id: 'objetivo',
+        label: 'Objetivo',
+        placeholder: 'Ganho de peso, mantença, terminação',
+      ),
+      FeatureField(
+        id: 'observacao',
+        label: 'Observação',
+        type: FeatureFieldType.textarea,
+      ),
     ],
     sections: ['Matérias-primas'],
     primaryAction: 'Salvar formulação',
@@ -764,7 +841,42 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['kg', 't', 'L'],
       ),
+      // fidelidade-campos (onda 5): a tela misturava dois recursos reais
+      // (DietBeat × FoodBeat). `tipo` e `armazem` acima pertencem ao FoodBeat
+      // e ficam (nada sai nesta leva); o que faltava era o DietBeat inteiro —
+      // dieta, vagão e data, os três required em `/diet-beats`.
+      FeatureField(
+        id: 'dieta',
+        label: 'Dieta',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: [
+          'Dieta Adaptação',
+          'Dieta Crescimento',
+          'Dieta Terminação',
+        ],
+      ),
+      FeatureField(
+        id: 'equipamento',
+        label: 'Vagão / equipamento',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: [
+          'Vagão Misturador 01',
+          'Vagão Misturador 02',
+          'Misturador Fixo',
+        ],
+      ),
+      FeatureField(
+        id: 'data',
+        label: 'Data da batida',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
     ],
+    // `items[]` — cada ingrediente da batida tem estoque, matéria seca, custo
+    // e porcentagem próprios; é onde o desvio da batida aparece.
+    sections: ['Itens da batida'],
     primaryAction: 'Salvar batida',
     emptyLabel: 'Nenhuma batida registrada.',
     listMode: true,
@@ -2407,16 +2519,69 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
+      // fidelidade-campos (onda 5): o "medidor" cobria horímetro e hodômetro
+      // no mesmo campo — quem lê o número não sabia qual estava informando.
+      // O tipo agora é explícito, e a unidade (`items.*.measurement_uuid`) é
+      // required no contrato e faltava.
+      FeatureField(
+        id: 'tipo-medidor',
+        label: 'Tipo de medidor',
+        type: FeatureFieldType.select,
+        options: ['Hodômetro', 'Horímetro'],
+      ),
       FeatureField(
         id: 'medidor',
-        label: 'Hodômetro / horímetro',
+        label: 'Leitura do medidor',
         type: FeatureFieldType.number,
         isRequired: true,
+      ),
+      FeatureField(
+        id: 'unidade',
+        label: 'Unidade',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['L', 'kg'],
       ),
       FeatureField(
         id: 'origem',
         label: 'Posto / tanque de origem',
         isRequired: true,
+      ),
+      FeatureField(
+        id: 'observacao',
+        label: 'Observação',
+        type: FeatureFieldType.textarea,
+      ),
+    ],
+    // `/supplies` é multi-item: um abastecimento pode encher mais de um
+    // equipamento na mesma ida ao tanque.
+    sections: ['Itens do abastecimento'],
+    steps: [
+      FeatureFormStep(
+        title: 'Identificação',
+        hint: 'Quem abasteceu, quando e qual equipamento.',
+        fields: ['responsavel', 'data', 'veiculo'],
+      ),
+      FeatureFormStep(
+        title: 'Abastecimento',
+        hint: 'Combustível, volume e a leitura do medidor.',
+        fields: [
+          'combustivel',
+          'quantidade',
+          'unidade',
+          'tipo-medidor',
+          'medidor',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Origem',
+        hint: 'De onde saiu o combustível e o que mais registrar.',
+        fields: ['origem', 'observacao'],
+        sections: ['Itens do abastecimento'],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira o abastecimento antes de registrar.',
       ),
     ],
     primaryAction: 'Registrar abastecimento',
@@ -2484,10 +2649,54 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Custo estimado (R\$)',
         type: FeatureFieldType.number,
       ),
+      // fidelidade-campos (onda 5): `/maintenances` é cabeçalho + itens e o
+      // protótipo achatou — faltava toda a parte de peça/insumo. Horímetro,
+      // hodômetro e horas de mão de obra são por item no contrato; aqui entram
+      // como leitura do equipamento no cabeçalho, que é como o mecânico anota.
+      FeatureField(
+        id: 'horimetro',
+        label: 'Horímetro',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'hodometro',
+        label: 'Hodômetro',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'horas-mao-de-obra',
+        label: 'Horas de mão de obra',
+        type: FeatureFieldType.number,
+      ),
       FeatureField(
         id: 'observacao',
         label: 'Observação',
         type: FeatureFieldType.textarea,
+      ),
+    ],
+    // `items[]` — produto, unidade, quantidade e armazém de cada peça ou
+    // insumo consumido na manutenção.
+    sections: ['Peças / Insumos'],
+    steps: [
+      FeatureFormStep(
+        title: 'Identificação',
+        hint: 'Quem programou, em que equipamento e quando.',
+        fields: ['responsavel', 'equipamento', 'data'],
+      ),
+      FeatureFormStep(
+        title: 'Serviço',
+        hint: 'O que será feito e por quem.',
+        fields: ['tipo', 'descricao', 'oficina', 'custo'],
+      ),
+      FeatureFormStep(
+        title: 'Medidores e peças',
+        hint: 'Leitura do equipamento e o que será consumido.',
+        fields: ['horimetro', 'hodometro', 'horas-mao-de-obra', 'observacao'],
+        sections: ['Peças / Insumos'],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira a manutenção antes de programar.',
       ),
     ],
     primaryAction: 'Programar manutenção',
