@@ -163,6 +163,51 @@ void main() {
     expect(controller.retreatStep(), isFalse);
   });
 
+  // fidelidade-campos (onda 8): item de coleção com dado de verdade.
+  test('item de coleção entra com os campos do contrato e pode sair', () {
+    final feature = featureById('pastagens')!;
+    final insumos = feature.collectionByName('Insumos')!;
+    final controller = FunctionalJourneyController(feature)..startForm();
+
+    expect(insumos.itemLabel, 'Insumo');
+    // Item sem os obrigatórios não entra na lista.
+    expect(isCollectionItemValid(insumos, const {}), isFalse);
+    expect(
+      featureItemFieldError(insumos.fields.first, const {}),
+      'Campo obrigatório.',
+    );
+
+    const item = {
+      'produto': 'Ração Engorda 18%',
+      'quantidade': '20',
+      'unidade': 'kg',
+    };
+    expect(isCollectionItemValid(insumos, item), isTrue);
+
+    controller.addGroupItem('Insumos', item);
+    expect(controller.form.itemsOf('Insumos'), hasLength(1));
+    expect(controller.form.groupCounts['Insumos'], 1);
+    expect(collectionItemTitle(insumos, item), 'Ração Engorda 18%');
+    expect(collectionItemSubtitle(insumos, item), '20 · kg');
+
+    controller.addGroupItem('Insumos', const {
+      'produto': 'Sal Mineral Proteinado',
+      'quantidade': '50',
+      'unidade': 'kg',
+    });
+    expect(controller.form.groupCounts['Insumos'], 2);
+
+    controller.removeGroupItem('Insumos', 0);
+    expect(controller.form.itemsOf('Insumos'), hasLength(1));
+    expect(
+      controller.form.itemsOf('Insumos').first['produto'],
+      'Sal Mineral Proteinado',
+    );
+    // Índice fora da lista não mexe em nada — nem lança.
+    controller.removeGroupItem('Insumos', 9);
+    expect(controller.form.itemsOf('Insumos'), hasLength(1));
+  });
+
   test('coleção obrigatória bloqueia o salvamento e aponta a etapa', () {
     final feature = featureById('diagnostico-gestacao')!;
     final controller = FunctionalJourneyController(feature)..startForm();
@@ -190,7 +235,19 @@ void main() {
     // E leva de volta à etapa onde a pendência pode ser resolvida.
     expect(controller.stepIndex, 2);
 
-    controller.addGroupItem('Animais diagnosticados');
-    expect(controller.submit(), isNotNull);
+    // Onda 8: quem satisfaz o `min:1` é um item de verdade, com a técnica e
+    // o resultado por animal que o contrato pede.
+    controller.addGroupItem('Animais diagnosticados', const {
+      'identificacao': 'BR 1042',
+      'tecnica': 'Ultrassonografia',
+      'resultado': 'Prenhe',
+      'dias-gestacao': '45',
+    });
+    final salvo = controller.submit();
+    expect(salvo, isNotNull);
+    expect(
+      salvo!.details['Animais diagnosticados'],
+      '1 item(ns) · BR 1042',
+    );
   });
 }

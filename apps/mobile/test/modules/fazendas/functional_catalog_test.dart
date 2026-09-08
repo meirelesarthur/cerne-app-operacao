@@ -244,6 +244,64 @@ void main() {
       }
     });
 
+    // fidelidade-campos (onda 8): a coleção deixou de ser um nome numa lista
+    // de `String` e passou a declarar o que **um item** é. Estas são as
+    // invariantes que impedem uma coleção de voltar ao estado de contador sem
+    // que alguém decida isso.
+    test('coleção com campos descreve o item por inteiro', () {
+      final colecoes = [
+        for (final feature in allFeatures)
+          for (final collection in feature.collections)
+            (feature: feature, collection: collection),
+      ];
+
+      expect(colecoes, hasLength(26));
+
+      final comCampos = colecoes
+          .where((par) => par.collection.fields.isNotEmpty)
+          .toList(growable: false);
+      // 24 coleções reais do contrato. As 2 restantes são as "seções" de
+      // `processamentos` — rótulos de agrupamento (Pendentes/Concluídos), não
+      // coleções de item; seguem como contador de propósito.
+      expect(comCampos, hasLength(24));
+      expect(
+        colecoes
+            .where((par) => par.collection.fields.isEmpty)
+            .map((par) => par.feature.id)
+            .toSet(),
+        {'processamentos'},
+      );
+      expect(
+        comCampos.fold<int>(
+          0,
+          (total, par) => total + par.collection.fields.length,
+        ),
+        93,
+      );
+
+      for (final par in comCampos) {
+        final onde = '${par.feature.id}/${par.collection.name}';
+        final ids = par.collection.fields
+            .map((field) => field.id)
+            .toList(growable: false);
+
+        expect(ids.toSet(), hasLength(ids.length), reason: onde);
+        // Sem rótulo do item, a folha do formulário abriria com o nome da
+        // coleção no plural ("Insumos") para cadastrar um só.
+        expect(par.collection.itemLabel, isNotNull, reason: onde);
+        expect(ids, contains(par.collection.titleField), reason: onde);
+        for (final campo in par.collection.subtitleFields) {
+          expect(ids, contains(campo), reason: onde);
+        }
+        // Um item sem nenhum campo obrigatório entraria vazio na lista.
+        expect(
+          par.collection.fields.any((field) => field.isRequired),
+          isTrue,
+          reason: onde,
+        );
+      }
+    });
+
     test('coleção obrigatória sempre existe entre as coleções da tela', () {
       for (final feature in allFeatures) {
         for (final section in feature.requiredSections) {

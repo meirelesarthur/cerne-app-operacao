@@ -196,6 +196,51 @@ Duas invariantes novas em `functional_catalog_test.dart` protegem o motor:
 - [x] `pastagens` volta à Onda B dos contratos executáveis; o `ApontamentoFlow` ganhou testes
       de navegação por etapa, da coleção de produção e do bloqueio sem lançamento nenhum.
 
+## Onda 8 — Coleção com item real no motor genérico
+
+Era a primeira pendência que esta esteira registrou, e fecha o padrão ① da
+auditoria de verdade: até aqui a coleção existia na tela mas não guardava o que
+continha. "Adicionar" incrementava um número — documentava que `items[]`
+existe, sem registrar nenhum item.
+
+- [x] **`FeatureCollection`** no catálogo: nome, rótulo do item, os campos **de
+      um item**, `isRequired` (o `min:1` do contrato), o campo que titula a
+      linha e os que compõem o resumo. `FeatureDefinition.sections` e
+      `requiredSections` passam a ser **derivados** de `collections`, então
+      etapas, motor e testes congelados continuam lendo o que sempre leram, com
+      uma fonte só.
+- [x] **`FunctionalFormState.groupItems`**: os itens de cada coleção, cada um um
+      mapa `id do campo → valor`. `groupCounts` continua existindo, derivado.
+      Entram `itemsOf` e `removeGroupItem`.
+- [x] **`AppCollectionList`** no catálogo de UI: compõe `AppAddableGroupList`
+      (a faixa é o mesmo pixel) e acrescenta o que faltava — as linhas do que
+      foi adicionado, cada uma removível. Era o pedaço que o
+      `apontamento_flow` reimplementava por conta em `_ItemRow`.
+- [x] **`MappedFeatureScreen`**: cada "Adicionar" abre o formulário do item na
+      folha inferior, com os campos do contrato, validação dos obrigatórios do
+      item e nenhum botão em beco sem saída. A revisão da última etapa e o
+      detalhe do registro passam a citar **o que** foi lançado, não só quantos.
+      `_FeatureFieldControl` passou a receber valor, erro e obrigatoriedade
+      resolvidos: serve o formulário do cadastro e o do item, que não tem
+      jornada por trás.
+- [x] **93 campos de item em 24 coleções** — de `equipments[]`/`inputs[]` da
+      pastagem a `animals[]` do diagnóstico. Sete domínios de item ficam em
+      constante única (unidades, armazéns, centros de custo, responsáveis, modo
+      de identificação, categorias animais, equipamentos), mesmo critério de
+      `catalogoProdutos`; os literais que já se repetiam nos campos de
+      cabeçalho passaram a apontar para elas — 28 ocorrências deixaram de ser
+      lista solta.
+
+As duas "seções" de `processamentos` (Pendentes/Concluídos) seguem como
+contador de propósito: são rótulos de agrupamento, não coleções de item — e o
+motor preserva esse comportamento para coleção sem campos declarados.
+
+Invariantes novas: a coleção com campos declara `itemLabel`, tem
+`titleField`/`subtitleFields` existentes, ids de item únicos e **ao menos um
+campo obrigatório** (sem isso um item entraria vazio na lista). Em teste de
+widget, o caminho inteiro: pastagem → etapa de lançamentos → folha do insumo →
+linha com o dado verdadeiro → revisão citando o item → registro salvo.
+
 ---
 
 ## Cadastro a cadastro
@@ -238,6 +283,8 @@ Duas invariantes novas em `functional_catalog_test.dart` protegem o motor:
 | Coleções (`sections`) | 5 | **26** |
 | Coleções obrigatórias | 0 | **2** |
 | Formulários em etapas | 0 (no motor genérico) | **8** (+ `ApontamentoFlow`) |
+| Coleções com item real | 0 | **24** de 26 |
+| Campos de item | 0 | **93** |
 
 ## Pendências conhecidas
 
@@ -245,10 +292,16 @@ Duas invariantes novas em `functional_catalog_test.dart` protegem o motor:
   `responsavel` em quase todo o catálogo, `marcacao.tipo/descricao/referencia`,
   `area.cultura/unidade/carga-animal` e o excesso de `apartacao`. Onda futura, com refatoração
   de `recordTitleField`/`recordDescriptionFields`, amostras e testes.
-- **Coleções no motor genérico continuam contadores.** `AppAddableGroupList` incrementa um
-  número; quem tem formulário real por item é o `ApontamentoFlow`. Fechar isso no motor
-  genérico é a evolução natural da onda 0 — e o que falta para as coleções novas destas ondas
-  virarem dado de verdade.
+- ~~**Coleções no motor genérico continuam contadores.**~~ Fechado na onda 8.
+- **O `ApontamentoFlow` continua com item próprio.** Ele já tinha formulário real por item
+  antes do motor genérico ter, e a linha de ocorrência carrega uma chip de prioridade que a
+  linha genérica não tem. Migrá-lo para `AppCollectionList` é consolidação pendente, não
+  lacuna funcional.
+- **Os itens não sobrevivem ao registro.** `groupItems` vive no formulário; ao salvar, o
+  registro guarda o resumo da coleção em `details` (`'2 item(ns) · Milho moído, Farelo de
+  soja'`), não as linhas estruturadas. Guardar item a item exige mudar
+  `PrototypeRecord.details`, que é `Map<String, String>` — vale quando houver tela que leia
+  isso de volta.
 - **`TODO(banco-real)` aberto** em `marcacao.semana-safra`: `week_vintage_uuid` é FK e o dump
   não traz a tabela de domínio; hoje o protótipo pede o número da semana.
 - **`flutter analyze`, `flutter test` e `dart format` não foram executados nesta leva** — o
