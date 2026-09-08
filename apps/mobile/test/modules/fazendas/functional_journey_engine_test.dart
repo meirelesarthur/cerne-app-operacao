@@ -52,7 +52,12 @@ void main() {
 
     expect(draft.title, 'Ração 18%');
     expect(draft.description, contains('1000'));
-    expect(draft.details['Matérias-primas'], '2 item(ns)');
+    // Onda 8: o detalhe do registro cita o que foi lançado — a contagem
+    // sozinha não dizia se a pessoa pôs a matéria-prima certa.
+    expect(
+      draft.details['Matérias-primas'],
+      '2 item(ns) · Milho moído, Farelo de soja',
+    );
     expect(draft.status, PrototypeRecordStatus.active);
   });
 
