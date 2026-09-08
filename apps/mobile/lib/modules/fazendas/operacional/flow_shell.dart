@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design/generated/app_spacing.dart';
-import '../../../design/theme/app_theme_extension.dart';
-import '../../../shell/components/sub_page_header.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 
@@ -13,8 +11,11 @@ import '../../../ui/ui.dart';
 /// É o arquétipo *Cadastro* do padrão global, nas suas duas leituras do Figma:
 /// `Cadastro bottom fixed` (`54300:16032`) quando o fluxo é de uma tela só, e
 /// `Cadastro steps` (`54349:1990`) quando [totalSteps] é informado. A anatomia
-/// é a mesma nos dois: barra superior **sobre o canvas**, folha de conteúdo
-/// arredondada logo abaixo e [AppActionBar] fixa no rodapé.
+/// é a mesma nos dois, e agora vem inteira de [AppPageScaffold]: faixa de
+/// 64 px sobre o canvas, folha de conteúdo arredondada descendo até a base da
+/// tela, régua de etapas dentro dela e [AppActionBar] fixa no rodapé. O que
+/// resta aqui é o que só o operacional tem — o aviso de fila offline e o
+/// resumo do fluxo, compostos na faixa acima do CTA.
 ///
 /// Ajuste de usabilidade (ver plano de melhorias de UX): o botão primário não
 /// aceita mais um estado desabilitado — antes, com campo obrigatório em
@@ -69,7 +70,6 @@ class FlowShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isOnline = ref.watch(shellStoreProvider).isOnline;
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     final offlineNote = isOnline
         ? null
@@ -99,58 +99,24 @@ class FlowShell extends ConsumerWidget {
       ),
     };
 
-    return Scaffold(
-      backgroundColor: semantic.bgCanvas,
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            SubPageHeader(
-              title: title,
-              onBack: onBack,
-              actionIcon: actionIcon,
-              actionLabel: actionLabel,
-              onAction: onAction,
+    return AppPageScaffold(
+      title: title,
+      onBack: onBack ?? () => Navigator.of(context).maybePop(),
+      actionIcon: actionIcon,
+      actionLabel: actionLabel,
+      onAction: onAction,
+      totalSteps: totalSteps,
+      currentStep: currentStep,
+      actionBar: primaryLabel == null
+          ? null
+          : AppActionBar(
+              primaryLabel: primaryLabel!,
+              primaryIcon: AppIcons.saveAll,
+              primaryLoading: primaryLoading,
+              onPrimary: onPrimary,
+              summary: actionBarSummary,
             ),
-            Expanded(
-              child: AppContentSheet(
-                padded: false,
-                child: Column(
-                  children: [
-                    if (totalSteps != null)
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(
-                          AppSpacing.space4,
-                          AppSpacing.space5,
-                          AppSpacing.space4,
-                          0,
-                        ),
-                        child: AppStepProgress(
-                          total: totalSteps!,
-                          current: currentStep,
-                        ),
-                      ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.all(AppSpacing.space4),
-                        child: child,
-                      ),
-                    ),
-                    if (primaryLabel != null)
-                      AppActionBar(
-                        primaryLabel: primaryLabel!,
-                        primaryIcon: AppIcons.saveAll,
-                        primaryLoading: primaryLoading,
-                        onPrimary: onPrimary,
-                        summary: actionBarSummary,
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      child: child,
     );
   }
 }
