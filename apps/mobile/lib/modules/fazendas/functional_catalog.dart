@@ -2228,6 +2228,11 @@ const operationalFeatures = <FeatureDefinition>[
     // `items[] ·req min:1` — a agenda do protocolo **é** o protocolo: data,
     // quantidade, produto ou serviço e armazém de cada etapa. Um protocolo
     // sem nenhuma etapa não protocola nada, e o contrato recusa.
+    //
+    // Enquanto esta tela for consulta (`readOnly`), a exigência é documentação
+    // do contrato, não regra de tela: o motor só a aplica onde há formulário
+    // (hoje, `diagnostico-gestacao`). Fica declarada para quando o cadastro
+    // descer para o app — ou para quando o time web ler o contrato daqui.
     requiredSections: ['Etapas do protocolo'],
     primaryAction: 'Salvar protocolo',
     sourceDetail:

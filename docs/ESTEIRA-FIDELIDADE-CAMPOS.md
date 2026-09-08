@@ -160,7 +160,7 @@ Duas invariantes novas em `functional_catalog_test.dart` protegem o motor:
       descrição, estação) e a coleção `products[]`.
 - [x] **protocolos-estacao**: `codigo` required, descrição, e `items[]` como coleção
       **obrigatória** — a agenda do protocolo é o protocolo.
-- [x] **acasalamento** (6→14, 2 coleções, 5 etapas): `type` e `launch_type`, os dois required
+- [x] **acasalamento** (6→12, 2 coleções, 5 etapas): `type` e `launch_type`, os dois required
       que definem o modo do registro; e as **vacas** — a tela tinha o touro e não as fêmeas
       cobertas. Resolve o `TODO(banco-real)` sobre `breeding_matings.type`: os valores são os
       métodos reprodutivos, os mesmos de `estacao-monta.metodo`.
