@@ -71,6 +71,11 @@ dependencies:
   # Download local dos arquivos de auditoria no protótipo Flutter Web.
   web: ^1.1.1
 
+  # Localização pt-BR do Material (nomes de mês/dia do calendário nativo usado
+  # por `AppDateInput`). Embutido no SDK do Flutter — sem fetch de rede.
+  flutter_localizations:
+    sdk: flutter
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

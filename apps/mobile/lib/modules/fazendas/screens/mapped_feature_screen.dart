@@ -955,10 +955,8 @@ class _FeatureFieldControl extends StatelessWidget {
           invalid: error != null,
           onChanged: onChanged,
         ),
-        FeatureFieldType.date => AppTextInput(
-          initialValue: value,
-          placeholder: field.placeholder ?? 'AAAA-MM-DD',
-          keyboardType: TextInputType.datetime,
+        FeatureFieldType.date => AppDateInput(
+          initialValue: value.isEmpty ? null : value,
           invalid: error != null,
           onChanged: onChanged,
         ),

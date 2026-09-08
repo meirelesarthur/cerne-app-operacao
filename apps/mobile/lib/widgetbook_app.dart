@@ -106,6 +106,7 @@ class CerneWidgetbook extends StatelessWidget {
               name: 'Formulário',
               children: [
                 buildTextInputWidgetbookComponent(),
+                buildDateInputWidgetbookComponent(),
                 buildTextareaWidgetbookComponent(),
                 buildFormFieldWidgetbookComponent(),
                 buildFormSelectWidgetbookComponent(),
