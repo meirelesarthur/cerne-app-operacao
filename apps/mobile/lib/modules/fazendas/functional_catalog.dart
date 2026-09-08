@@ -399,52 +399,6 @@ const adminFeatures = <FeatureDefinition>[
         'Consulta demonstrativa das vendas de animais registradas nesta sessão.',
     listMode: true,
   ),
-  // Pastagens sai do operacional: recursos e serviços aplicados à pastagem
-  // são decisão de manejo/planejamento, não um lançamento de campo do dia a
-  // dia (mesmo critério de fronteira operação/gestão já aplicado a
-  // `vendas`/`compras-animais` acima) — a administração passa a só
-  // consultar o que foi registrado.
-  FeatureDefinition(
-    id: 'pastagens',
-    profile: FeatureProfile.administration,
-    group: 'Consultas e auditoria',
-    title: 'Pastagens',
-    objective: 'Consultar recursos e serviços aplicados à pastagem.',
-    status: FeatureStatus.ready,
-    readOnly: true,
-    fields: [
-      FeatureField(
-        id: 'responsavel',
-        label: 'Responsável',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
-      ),
-      // banco-real (onda 4): `warehouses` é tabela real de domínio — mesmas
-      // opções já usadas pelos demais campos "armazém" do catálogo (ex.:
-      // `batidas`).
-      FeatureField(
-        id: 'armazem-insumos',
-        label: 'Armazém de insumos',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Armazém A', 'Depósito B'],
-      ),
-      FeatureField(
-        id: 'armazem-producao',
-        label: 'Armazém de produção',
-        type: FeatureFieldType.select,
-        isRequired: true,
-        options: ['Armazém A', 'Depósito B'],
-      ),
-    ],
-    emptyLabel: 'Nenhum manejo de pastagem registrado.',
-    sourceDetail:
-        'Consulta demonstrativa dos manejos de pastagem registrados nesta sessão.',
-    listMode: true,
-    recordTitleField: 'armazem-producao',
-    recordDescriptionFields: ['armazem-insumos', 'responsavel'],
-  ),
   FeatureDefinition(
     id: 'exportar-log-estoque',
     profile: FeatureProfile.administration,
@@ -1348,6 +1302,164 @@ const operationalFeatures = <FeatureDefinition>[
     successTitle: 'Animal localizado',
     successDescription:
         'Animal ativo no Lote 42 · Engorda, atualmente no Pasto Norte · Módulo A.',
+  ),
+  // fidelidade-campos (onda 1): `pastagens` volta ao operacional. A terceira
+  // decisão de 360f0f8 a tinha tratado como decisão de manejo, mas o registro
+  // é o mesmo gênero do apontamento agrícola — data, local, operação e os
+  // recursos consumidos no dia —, e o app é o executor desse lançamento.
+  //
+  // Volta com o formulário inteiro que o protótipo nunca teve: no contrato
+  // `/pastures` faltavam 6 escalares (data, destino em XOR, operação,
+  // atividade, lote, animal) e as 5 coleções de lançamento; a tela tinha só
+  // responsável e dois armazéns. Por ser o formulário mais longo do motor
+  // genérico, é também o primeiro a usar as etapas da onda 0. Ver
+  // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 1.
+  FeatureDefinition(
+    id: 'pastagens',
+    profile: FeatureProfile.operational,
+    group: 'Pecuária',
+    title: 'Pastagens',
+    objective: 'Registrar recursos e serviços aplicados à pastagem.',
+    status: FeatureStatus.ready,
+    fields: [
+      FeatureField(
+        id: 'responsavel',
+        label: 'Responsável',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
+      ),
+      FeatureField(
+        id: 'data',
+        label: 'Data do manejo',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      // O contrato aceita área **ou** piquete, nunca os dois: este select é o
+      // que decide qual dos dois campos abaixo passa a ser exigido (regra em
+      // `isFeatureFieldRequired`/`featureFieldError`). Sem ele, a tela pediria
+      // os dois e nenhuma submissão passaria.
+      FeatureField(
+        id: 'destino',
+        label: 'Local do manejo',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Área', 'Piquete'],
+      ),
+      FeatureField(
+        id: 'area',
+        label: 'Área',
+        type: FeatureFieldType.select,
+        options: ['Talhão 01', 'Talhão 02', 'Pasto Norte', 'Pasto Sul'],
+      ),
+      FeatureField(
+        id: 'piquete',
+        label: 'Piquete',
+        type: FeatureFieldType.select,
+        options: ['Piquete 01', 'Piquete 02', 'Piquete 03', 'Piquete 04'],
+      ),
+      FeatureField(
+        id: 'operacao',
+        label: 'Operação',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: [
+          'Formação de pastagem',
+          'Manutenção de pastagem',
+          'Reforma de pastagem',
+          'Vedação / diferimento',
+        ],
+      ),
+      FeatureField(
+        id: 'atividade',
+        label: 'Atividade',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: [
+          'Roçada',
+          'Gradagem',
+          'Calagem',
+          'Adubação de cobertura',
+          'Aplicação de herbicida',
+          'Plantio de forrageira',
+          'Sobressemeadura',
+          'Rotação de piquete',
+        ],
+      ),
+      FeatureField(id: 'lote', label: 'Lote'),
+      FeatureField(
+        id: 'animal',
+        label: 'Animal',
+        placeholder: 'Brinco ou ID — só quando o manejo é de um animal',
+      ),
+      FeatureField(
+        id: 'armazem-insumos',
+        label: 'Armazém de insumos',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Armazém A', 'Depósito B'],
+      ),
+      FeatureField(
+        id: 'armazem-producao',
+        label: 'Armazém de produção',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Armazém A', 'Depósito B'],
+      ),
+      FeatureField(
+        id: 'observacao',
+        label: 'Observação',
+        type: FeatureFieldType.textarea,
+      ),
+    ],
+    // As 5 coleções de `/pastures`: equipments[], inputs[], productions[],
+    // services[] e occurrences[]. Nenhuma é `min:1` no contrato — um manejo
+    // pode ser só a operação registrada.
+    sections: [
+      'Máquinas / Equipamentos',
+      'Insumos',
+      'Produção',
+      'Serviços',
+      'Ocorrências',
+    ],
+    steps: [
+      FeatureFormStep(
+        title: 'Identificação',
+        hint: 'Quem lançou, quando e onde o manejo aconteceu.',
+        fields: ['responsavel', 'data', 'destino', 'area', 'piquete'],
+      ),
+      FeatureFormStep(
+        title: 'Manejo',
+        hint: 'A operação executada e o rebanho envolvido.',
+        fields: ['operacao', 'atividade', 'lote', 'animal'],
+      ),
+      FeatureFormStep(
+        title: 'Estoque',
+        hint: 'De onde saem os insumos e para onde vai a produção.',
+        fields: ['armazem-insumos', 'armazem-producao', 'observacao'],
+      ),
+      FeatureFormStep(
+        title: 'Lançamentos',
+        hint: 'Recursos consumidos, produção medida e ocorrências do dia.',
+        sections: [
+          'Máquinas / Equipamentos',
+          'Insumos',
+          'Produção',
+          'Serviços',
+          'Ocorrências',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira o manejo antes de salvar.',
+      ),
+    ],
+    primaryAction: 'Salvar pastagem',
+    emptyLabel: 'Nenhum manejo de pastagem registrado.',
+    listMode: true,
+    createAction: 'Novo manejo de pastagem',
+    recordTitleField: 'atividade',
+    recordDescriptionFields: ['lote', 'data', 'armazem-producao'],
   ),
   FeatureDefinition(
     id: 'estacao-monta',
