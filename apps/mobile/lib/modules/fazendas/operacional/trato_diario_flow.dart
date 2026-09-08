@@ -155,6 +155,7 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
                 Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.space3),
                   child: AppCard(
+                    variant: AppCardVariant.inset,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,

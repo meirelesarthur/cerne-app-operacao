@@ -82,6 +82,7 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
           if (_file != null) ...[
             const SizedBox(height: AppSpacing.space4),
             AppCard(
+              variant: AppCardVariant.inset,
               child: Row(
                 children: [
                   Container(

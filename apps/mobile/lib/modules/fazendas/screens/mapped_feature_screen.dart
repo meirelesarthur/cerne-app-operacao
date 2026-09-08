@@ -482,87 +482,82 @@ class _RecordsListState extends State<_RecordsList> {
     final end = (start + _pageSize).clamp(0, filteredRecords.length);
     final visibleRecords = filteredRecords.sublist(start, end);
 
+    // Sem `AppCard` embrulhando a listagem inteira: a folha cinza já é a
+    // superfície da página e as linhas brancas são o que se destaca contra
+    // ela. O cartão só empilhava mais uma superfície em volta de tudo e
+    // comia 40 px de largura em recuo — era ele que truncava o título dos
+    // registros ("Registrar animal · Registr…").
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  const Expanded(
-                    child: AppSectionTitle(child: Text('Registros')),
-                  ),
-                  AppChip(child: Text('${records.length}')),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.space3),
-              AppFormField(
-                label: 'Buscar registros',
-                child: AppTextInput(
-                  controller: _searchController,
-                  placeholder: 'Nome, situação ou detalhe',
-                  prefixIcon: const AppIcon(AppIcons.aiSearch),
-                  onChanged: _setQuery,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.space3),
-              if (filteredRecords.isEmpty)
-                // banco-real (correção de regressão): a busca (`dbec5b7`)
-                // trocou a mensagem de vazio por uma única, genérica — sem
-                // diferenciar "a busca não achou nada" (`records` existe,
-                // só o filtro zerou) de "não há registro nenhum". A segunda
-                // precisa continuar dizendo a verdade por perfil (criar vs.
-                // somente leitura vs. genérico), senão uma consulta
-                // somente leitura sem dado sincronizado passa a impressão
-                // de que o app perdeu o cadastro. Ver
-                // `mapped_feature_screen_test.dart`, "Áreas mostra estado
-                // vazio honesto...".
-                AppEmptyState(
-                  icon: query.isNotEmpty
-                      ? AppIcons.search
-                      : AppIcons.clipboardCheck,
-                  title: widget.feature.emptyLabel ?? 'Nenhum registro encontrado',
-                  description: query.isNotEmpty
-                      ? 'Ajuste a busca para encontrar outro cadastro.'
-                      : widget.canCreate
-                      ? 'Use a ação abaixo para criar o primeiro registro desta rotina.'
-                      : widget.feature.readOnly
-                      ? 'O cadastro desta rotina é feito no sistema web. Assim que sincronizar, os registros aparecem aqui.'
-                      : 'Os registros operacionais desta sessão aparecerão aqui.',
-                )
-              else
-                for (var index = 0; index < visibleRecords.length; index++) ...[
-                  AppMenuItem(
-                    icon: AppIcons.fileCheck2,
-                    label: visibleRecords[index].title,
-                    description: visibleRecords[index].description,
-                    trailing: AppChip(
-                      tone:
-                          visibleRecords[index].status ==
-                              PrototypeRecordStatus.scheduled
-                          ? AppChipTone.blue
-                          : AppChipTone.brand,
-                      child: Text(_statusLabel(visibleRecords[index].status)),
-                    ),
-                    onTap: () => _showRecord(context, visibleRecords[index]),
-                  ),
-                  if (index < visibleRecords.length - 1)
-                    const SizedBox(height: AppSpacing.space2),
-                ],
-              if (filteredRecords.isNotEmpty) ...[
-                const SizedBox(height: AppSpacing.space3),
-                AppPagination(
-                  page: page,
-                  totalItems: filteredRecords.length,
-                  pageSize: _pageSize,
-                  onPageChanged: (nextPage) => setState(() => _page = nextPage),
-                ),
-              ],
-            ],
+        Row(
+          children: [
+            const Expanded(child: AppSectionTitle(child: Text('Registros'))),
+            AppChip(child: Text('${records.length}')),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.space3),
+        AppFormField(
+          label: 'Buscar registros',
+          child: AppTextInput(
+            controller: _searchController,
+            placeholder: 'Nome, situação ou detalhe',
+            prefixIcon: const AppIcon(AppIcons.aiSearch),
+            onChanged: _setQuery,
           ),
         ),
+        const SizedBox(height: AppSpacing.space3),
+        if (filteredRecords.isEmpty)
+          // banco-real (correção de regressão): a busca (`dbec5b7`)
+          // trocou a mensagem de vazio por uma única, genérica — sem
+          // diferenciar "a busca não achou nada" (`records` existe,
+          // só o filtro zerou) de "não há registro nenhum". A segunda
+          // precisa continuar dizendo a verdade por perfil (criar vs.
+          // somente leitura vs. genérico), senão uma consulta
+          // somente leitura sem dado sincronizado passa a impressão
+          // de que o app perdeu o cadastro. Ver
+          // `mapped_feature_screen_test.dart`, "Áreas mostra estado
+          // vazio honesto...".
+          AppEmptyState(
+            icon: query.isNotEmpty ? AppIcons.search : AppIcons.clipboardCheck,
+            title: widget.feature.emptyLabel ?? 'Nenhum registro encontrado',
+            description: query.isNotEmpty
+                ? 'Ajuste a busca para encontrar outro cadastro.'
+                : widget.canCreate
+                ? 'Use a ação abaixo para criar o primeiro registro desta rotina.'
+                : widget.feature.readOnly
+                ? 'O cadastro desta rotina é feito no sistema web. Assim que sincronizar, os registros aparecem aqui.'
+                : 'Os registros operacionais desta sessão aparecerão aqui.',
+          )
+        else
+          for (var index = 0; index < visibleRecords.length; index++) ...[
+            AppMenuItem(
+              icon: AppIcons.fileCheck2,
+              label: visibleRecords[index].title,
+              description: visibleRecords[index].description,
+              trailing: AppChip(
+                tone:
+                    visibleRecords[index].status ==
+                        PrototypeRecordStatus.scheduled
+                    ? AppChipTone.blue
+                    : AppChipTone.brand,
+                child: Text(_statusLabel(visibleRecords[index].status)),
+              ),
+              onTap: () => _showRecord(context, visibleRecords[index]),
+            ),
+            if (index < visibleRecords.length - 1)
+              const SizedBox(height: AppSpacing.space2),
+          ],
+        if (filteredRecords.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.space3),
+          AppPagination(
+            page: page,
+            totalItems: filteredRecords.length,
+            pageSize: _pageSize,
+            onPageChanged: (nextPage) => setState(() => _page = nextPage),
+          ),
+        ],
+
         if (widget.canCreate) ...[
           const SizedBox(height: AppSpacing.space4),
           AppButton(
@@ -600,8 +595,17 @@ class _RecordsListState extends State<_RecordsList> {
             child: AppChip(child: Text(_statusLabel(record.status))),
           ),
           const SizedBox(height: AppSpacing.space3),
-          for (final entry in record.details.entries)
-            AppMenuItem(label: entry.key, description: entry.value),
+          // `AppReviewList`, não `AppMenuItem`: a linha de menu é branca com
+          // sombra e, sobre a folha branca da tela funda, some. A linha de
+          // revisão tem borda, então se lê sobre branco — e é o par
+          // rótulo/valor que um detalhe de registro realmente é, não um item
+          // navegável.
+          AppReviewList(
+            items: [
+              for (final entry in record.details.entries)
+                AppReviewItem(label: entry.key, value: entry.value),
+            ],
+          ),
         ],
       ),
     );
@@ -669,9 +673,10 @@ class _FeatureForm extends StatelessWidget {
     final simulationTarget = feature.simulationTargetField;
     final stepIndex = journey.stepIndex;
     final step = journey.currentStep;
-    final visibleFields = featureStepFields(feature, stepIndex)
-        .where((field) => field.id != simulationTarget)
-        .toList(growable: false);
+    final visibleFields = featureStepFields(
+      feature,
+      stepIndex,
+    ).where((field) => field.id != simulationTarget).toList(growable: false);
     final sections = featureStepSections(feature, stepIndex);
     final isReview = isFeatureReviewStep(feature, stepIndex);
     // A simulação de hardware acompanha o campo-alvo, que por invariante de
@@ -745,62 +750,59 @@ class _FeatureForm extends StatelessWidget {
         if (sections.isNotEmpty) ...[
           if (visibleFields.isNotEmpty || simulation != null)
             const SizedBox(height: AppSpacing.space4),
-          AppCard(
-            child: AppFormField(
-              label: 'Itens vinculados',
-              // fidelidade-campos (onda 0): coleção `min:1` no contrato real
-              // agora aparece como campo obrigatório de verdade — antes toda
-              // coleção era opcional e um protocolo sem etapa nenhuma podia
-              // ser salvo. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
-              required: sections.any(feature.requiredSections.contains),
-              error: journey.form.attempted
-                  ? _sectionError(feature, journey, sections)
-                  : null,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (var index = 0; index < sections.length; index++) ...[
-                    if (index > 0) const SizedBox(height: AppSpacing.space4),
-                    if (feature.collectionByName(sections[index])
-                        case final collection?)
-                      AppCollectionList(
-                        name: collection.name,
-                        items: [
-                          for (final item in journey.form.itemsOf(
-                            collection.name,
-                          ))
-                            AppCollectionItemView(
-                              title: collectionItemTitle(collection, item),
-                              subtitle: collectionItemSubtitle(
-                                collection,
-                                item,
-                              ),
-                            ),
-                        ],
-                        onAdd: () => onAddCollectionItem(collection),
-                        onRemove: (item) =>
-                            onRemoveCollectionItem(collection.name, item),
-                      ),
-                  ],
+          // Seção da folha, não cartão: campos, itens vinculados e revisão são
+          // três blocos da mesma superfície branca, separados por título e
+          // espaço. Empilhar cartões brancos sobre folha branca só multiplica
+          // planos de leitura sem separar nada.
+          AppFormField(
+            label: 'Itens vinculados',
+            // fidelidade-campos (onda 0): coleção `min:1` no contrato real
+            // agora aparece como campo obrigatório de verdade — antes toda
+            // coleção era opcional e um protocolo sem etapa nenhuma podia
+            // ser salvo. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
+            required: sections.any(feature.requiredSections.contains),
+            error: journey.form.attempted
+                ? _sectionError(feature, journey, sections)
+                : null,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var index = 0; index < sections.length; index++) ...[
+                  if (index > 0) const SizedBox(height: AppSpacing.space4),
+                  if (feature.collectionByName(sections[index])
+                      case final collection?)
+                    AppCollectionList(
+                      name: collection.name,
+                      items: [
+                        for (final item in journey.form.itemsOf(
+                          collection.name,
+                        ))
+                          AppCollectionItemView(
+                            title: collectionItemTitle(collection, item),
+                            subtitle: collectionItemSubtitle(collection, item),
+                          ),
+                      ],
+                      onAdd: () => onAddCollectionItem(collection),
+                      onRemove: (item) =>
+                          onRemoveCollectionItem(collection.name, item),
+                    ),
                 ],
-              ),
+              ],
             ),
           ),
         ],
         if (isReview) ...[
-          AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AppSectionTitle(child: Text(step?.title ?? 'Revisão')),
-                if (step?.hint case final hint?) ...[
-                  const SizedBox(height: AppSpacing.space1),
-                  Text(hint, style: Theme.of(context).textTheme.bodySmall),
-                ],
-                const SizedBox(height: AppSpacing.space3),
-                AppReviewList(items: _reviewItems(feature, journey)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppSectionTitle(child: Text(step?.title ?? 'Revisão')),
+              if (step?.hint case final hint?) ...[
+                const SizedBox(height: AppSpacing.space1),
+                Text(hint, style: Theme.of(context).textTheme.bodySmall),
               ],
-            ),
+              const SizedBox(height: AppSpacing.space3),
+              AppReviewList(items: _reviewItems(feature, journey)),
+            ],
           ),
         ],
       ],

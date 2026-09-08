@@ -18,7 +18,15 @@ import 'field_capsule.dart';
 /// Quando `interactive` e `onTap` estão presentes, o toque dispara ripple e o
 /// widget é focável/ativável via teclado (Enter/Espaço), espelhando o
 /// `role="button"` + `onKeyDown` do React.
-enum AppCardVariant { surface, ink }
+///
+/// `variant: inset` inverte a camada: bloco cinza [AppSemanticColors.bgSheet]
+/// **sem elevação**, para conteúdo que vive sobre a folha branca das telas
+/// fundas. `surface` (branco + sombra) só se lê contra o cinza da folha de
+/// listagem; sobre o branco do cadastro ele vira branco-no-branco e a sombra
+/// sozinha não sustenta a separação. O cinza sobre branco já é o idioma dos
+/// campos do app (a cápsula de input é exatamente isso), então o bloco entra
+/// no vocabulário que o usuário já lê, em vez de inventar um terceiro nível.
+enum AppCardVariant { surface, ink, inset }
 
 class AppCard extends StatelessWidget {
   const AppCard({
@@ -40,7 +48,12 @@ class AppCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final isInk = variant == AppCardVariant.ink;
-    final bg = isInk ? semantic.inkBg : semantic.bgRaised;
+    final isInset = variant == AppCardVariant.inset;
+    final bg = switch (variant) {
+      AppCardVariant.ink => semantic.inkBg,
+      AppCardVariant.inset => semantic.bgSheet,
+      AppCardVariant.surface => semantic.bgRaised,
+    };
     final fg = isInk ? semantic.inkFg : null;
 
     Widget content = AppInputSurface(
@@ -66,7 +79,7 @@ class AppCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: radius,
-        boxShadow: AppShadows.tile,
+        boxShadow: isInset ? null : AppShadows.tile,
       ),
       child: ClipRRect(
         borderRadius: radius,
@@ -110,6 +123,22 @@ WidgetbookComponent buildCardWidgetbookComponent() {
                   interactive: true,
                   onTap: () {},
                   child: const Text('Card interativo (toque)'),
+                ),
+              ),
+              const SizedBox(height: AppSpacing.space4),
+              // O `inset` só faz sentido lido sobre branco — é a camada que
+              // as telas fundas usam, onde a folha é a superfície clara.
+              const ColoredBox(
+                color: AppColors.neutral0,
+                child: Padding(
+                  padding: EdgeInsets.all(AppSpacing.space4),
+                  child: SizedBox(
+                    width: 280,
+                    child: AppCard(
+                      variant: AppCardVariant.inset,
+                      child: Text('Card inset (sobre folha branca)'),
+                    ),
+                  ),
                 ),
               ),
             ],

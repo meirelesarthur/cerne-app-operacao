@@ -223,6 +223,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
             const SizedBox(height: AppSpacing.space2),
             for (final c in pixContatos) ...[
               AppCard(
+                variant: AppCardVariant.inset,
                 interactive: true,
                 onTap: () => _selecionarContato(c),
                 child: Row(
@@ -292,6 +293,7 @@ class _PixFlowState extends ConsumerState<PixFlow> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppCard(
+              variant: AppCardVariant.inset,
               child: Row(
                 children: [
                   AppAvatar(name: destino.nome, initials: destino.inicial),
