@@ -399,6 +399,61 @@ const adminFeatures = <FeatureDefinition>[
         'Consulta demonstrativa das vendas de animais registradas nesta sessão.',
     listMode: true,
   ),
+  // fidelidade-campos (onda 4): `lotes-reproducao` volta ao catálogo, mas do
+  // lado administrativo e somente leitura. A avaliação de 360f0f8 continua
+  // valendo — vincular lote à estação de monta é organização estrutural, não
+  // execução de campo —, e a lacuna era outra: tirar do catálogo apagou
+  // também a documentação do contrato `/breeding-batches`, que a auditoria de
+  // fidelidade audita. Como consulta, o vínculo volta a ser visível no app sem
+  // reabrir o cadastro no celular. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md,
+  // Onda 4.
+  FeatureDefinition(
+    id: 'lotes-reproducao',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Lotes / reprodução',
+    objective: 'Consultar lotes vinculados ao processo reprodutivo.',
+    status: FeatureStatus.ready,
+    readOnly: true,
+    fields: [
+      FeatureField(
+        id: 'responsavel',
+        label: 'Responsável',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
+      ),
+      // Os dois escalares required de `/breeding-batches` que faltavam.
+      FeatureField(id: 'codigo', label: 'Código', isRequired: true),
+      FeatureField(
+        id: 'data',
+        label: 'Data do vínculo',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      FeatureField(id: 'estacao', label: 'Estação de monta', isRequired: true),
+      FeatureField(id: 'lote', label: 'Lote', isRequired: true),
+      FeatureField(
+        id: 'finalidade',
+        label: 'Finalidade',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Matrizes', 'Reprodutores', 'Receptoras', 'Novilhas'],
+      ),
+      FeatureField(
+        id: 'quantidade',
+        label: 'Quantidade de animais',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+    ],
+    emptyLabel: 'Nenhum lote vinculado à reprodução.',
+    sourceDetail:
+        'Consulta demonstrativa dos vínculos de lote e estação de monta.',
+    listMode: true,
+    recordTitleField: 'lote',
+    recordDescriptionFields: ['finalidade', 'estacao', 'data'],
+  ),
   FeatureDefinition(
     id: 'exportar-log-estoque',
     profile: FeatureProfile.administration,
@@ -1891,6 +1946,16 @@ const operationalFeatures = <FeatureDefinition>[
         options: ['João Oliveira', 'Maria Souza', 'Carlos Dias'],
       ),
       FeatureField(id: 'nome', label: 'Nome da estação', isRequired: true),
+      // fidelidade-campos (onda 4): `code` e `date` são required em
+      // `/breeding-seasons` e faltavam — o formulário não submeteria. `date` é
+      // a data do lançamento da estação, distinta do início do período.
+      FeatureField(id: 'codigo', label: 'Código', isRequired: true),
+      FeatureField(
+        id: 'data',
+        label: 'Data do lançamento',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
       FeatureField(
         id: 'inicio',
         label: 'Data de início',
@@ -1972,7 +2037,26 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
+      // fidelidade-campos (onda 4): `/bull-seed-season` exige code, date,
+      // description e a estação de monta — os quatro faltavam, e sem eles
+      // nenhuma submissão passaria. `identificacao` (acima) é a marca do
+      // touro/palheta; `codigo` é o código do lançamento, outra coisa.
+      FeatureField(id: 'codigo', label: 'Código', isRequired: true),
+      FeatureField(
+        id: 'data',
+        label: 'Data do lançamento',
+        type: FeatureFieldType.date,
+        isRequired: true,
+      ),
+      FeatureField(id: 'descricao', label: 'Descrição', isRequired: true),
+      FeatureField(
+        id: 'estacao-monta',
+        label: 'Estação de monta',
+        isRequired: true,
+      ),
     ],
+    // `products[]` — cada palheta/dose tem armazém e produto próprios.
+    sections: ['Produtos (armazém e sêmen)'],
     primaryAction: 'Cadastrar recurso',
     sourceDetail:
         'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
@@ -2020,8 +2104,19 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
+      // fidelidade-campos (onda 4): `code` é required em `/protocols-season`.
+      FeatureField(id: 'codigo', label: 'Código', isRequired: true),
+      FeatureField(
+        id: 'descricao',
+        label: 'Descrição',
+        type: FeatureFieldType.textarea,
+      ),
     ],
     sections: ['Etapas do protocolo'],
+    // `items[] ·req min:1` — a agenda do protocolo **é** o protocolo: data,
+    // quantidade, produto ou serviço e armazém de cada etapa. Um protocolo
+    // sem nenhuma etapa não protocola nada, e o contrato recusa.
+    requiredSections: ['Etapas do protocolo'],
     primaryAction: 'Salvar protocolo',
     sourceDetail:
         'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
@@ -2067,6 +2162,43 @@ const operationalFeatures = <FeatureDefinition>[
       ),
       FeatureField(id: 'lote', label: 'Lote de matrizes', isRequired: true),
       FeatureField(id: 'touro', label: 'Touro / reprodutor', isRequired: true),
+      // fidelidade-campos (onda 4): `type` e `launch_type` são required em
+      // `/breeding-matings` e controlam o modo inteiro do registro — o
+      // primeiro diz se é monta natural, IA, IATF ou TE; o segundo, se o
+      // lançamento é por lote ou animal por animal. O TODO(banco-real) que
+      // existia aqui (`breeding_matings.type` sem tabela de domínio) fica
+      // resolvido pelo próprio contrato: os valores são os métodos
+      // reprodutivos, os mesmos de `estacao-monta.metodo`.
+      FeatureField(
+        id: 'tipo',
+        label: 'Tipo de acasalamento',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: [
+          'Monta natural',
+          'Inseminação artificial',
+          'IATF',
+          'Transferência de embrião',
+        ],
+      ),
+      FeatureField(
+        id: 'tipo-lancamento',
+        label: 'Tipo de lançamento',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Por lote', 'Animal por animal'],
+      ),
+      FeatureField(id: 'estacao-monta', label: 'Estação de monta'),
+      FeatureField(
+        id: 'material-reprodutivo',
+        label: 'Material reprodutivo',
+        placeholder: 'Touro, sêmen ou embrião do estoque',
+      ),
+      FeatureField(id: 'protocolo', label: 'Protocolo'),
+      FeatureField(
+        id: 'identificacao-protocolo',
+        label: 'Identificação do protocolo',
+      ),
       FeatureField(
         id: 'quantidade',
         label: 'Quantidade de fêmeas',
@@ -2079,13 +2211,50 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.textarea,
       ),
     ],
+    // O protótipo tinha o touro e não **as vacas**. `natural.cow_uuids[]` é a
+    // coleção das fêmeas cobertas; `protocol_animals[]`/`simplified_animals[]`
+    // é o lançamento linha a linha, quando o tipo de lançamento é por animal.
+    // Nenhuma das duas é obrigatória aqui porque no contrato a exigência é
+    // condicional ao `type`/`launch_type`, não absoluta.
+    sections: ['Vacas do acasalamento', 'Animais por linha'],
+    steps: [
+      FeatureFormStep(
+        title: 'Identificação',
+        hint: 'Quem registrou, quando, e de que tipo é o acasalamento.',
+        fields: ['responsavel', 'data', 'tipo', 'tipo-lancamento'],
+      ),
+      FeatureFormStep(
+        title: 'Vínculos',
+        hint: 'Estação, lote de matrizes e o material reprodutivo usado.',
+        fields: ['estacao-monta', 'lote', 'touro', 'material-reprodutivo'],
+      ),
+      FeatureFormStep(
+        title: 'Protocolo',
+        hint: 'Quando o acasalamento segue um protocolo da estação.',
+        fields: [
+          'protocolo',
+          'identificacao-protocolo',
+          'quantidade',
+          'observacao',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Animais',
+        hint: 'As fêmeas cobertas e, se for o caso, o lançamento por animal.',
+        sections: ['Vacas do acasalamento', 'Animais por linha'],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira o acasalamento antes de registrar.',
+      ),
+    ],
     primaryAction: 'Registrar acasalamento',
     sourceDetail:
         'A fonte mostrou apenas o acesso; os campos são premissas funcionais do protótipo frontend.',
     listMode: true,
     createAction: 'Novo acasalamento',
     recordTitleField: 'lote',
-    recordDescriptionFields: ['touro', 'quantidade', 'data'],
+    recordDescriptionFields: ['tipo', 'touro', 'data'],
   ),
   FeatureDefinition(
     id: 'diagnostico-gestacao',
@@ -2126,6 +2295,62 @@ const operationalFeatures = <FeatureDefinition>[
         id: 'veterinario',
         label: 'Veterinário responsável',
         isRequired: true,
+      ),
+      // fidelidade-campos (onda 4): a técnica do diagnóstico é required no
+      // contrato (`animals.*.diagnostic_technique_uuid`) e faltava; dias de
+      // gestação e touro completam a leitura por animal.
+      FeatureField(
+        id: 'tecnica-diagnostico',
+        label: 'Técnica de diagnóstico',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: [
+          'Palpação retal',
+          'Ultrassonografia',
+          'Dosagem hormonal',
+        ],
+      ),
+      FeatureField(
+        id: 'dias-gestacao',
+        label: 'Dias de gestação',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'touro',
+        label: 'Touro atribuído',
+        placeholder: 'Reprodutor da cobertura',
+      ),
+    ],
+    // O contrato é um **array de animais**, um por linha diagnosticada; o
+    // protótipo tratava como formulário plano com uma quantidade. A coleção é
+    // o registro em si — por isso `min:1`.
+    sections: ['Animais diagnosticados'],
+    requiredSections: ['Animais diagnosticados'],
+    steps: [
+      FeatureFormStep(
+        title: 'Identificação',
+        hint: 'Quem diagnosticou, quando e em que lote.',
+        fields: ['responsavel', 'data', 'lote', 'veterinario'],
+      ),
+      FeatureFormStep(
+        title: 'Diagnóstico',
+        hint: 'Técnica usada e o que foi encontrado.',
+        fields: [
+          'tecnica-diagnostico',
+          'resultado',
+          'dias-gestacao',
+          'touro',
+          'quantidade',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Animais',
+        hint: 'Uma linha por animal diagnosticado.',
+        sections: ['Animais diagnosticados'],
+      ),
+      FeatureFormStep(
+        title: 'Revisão',
+        hint: 'Confira o diagnóstico antes de salvar.',
       ),
     ],
     primaryAction: 'Salvar diagnóstico',

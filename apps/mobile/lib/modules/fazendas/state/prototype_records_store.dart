@@ -400,9 +400,47 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
       status: PrototypeRecordStatus.active,
       details: {
         'Responsável': 'Maria Souza',
+        'Código': 'EM-2026-01',
+        'Data do lançamento': '2026-08-20',
         'Data de início': '01/09/2026',
         'Data de término': '30/11/2026',
         'Método principal': 'IATF',
+      },
+    ),
+  ],
+  // fidelidade-campos (onda 4): `lotes-reproducao` volta como consulta
+  // somente leitura e, como as demais `readOnly`, precisa de amostra semeada
+  // — o app não cria registro para ela, então sem isto a lista ficaria vazia
+  // para sempre. Dado sintético, coerente com os mocks do módulo.
+  'lotes-reproducao': [
+    PrototypeRecord(
+      id: 'lotes-reproducao-1',
+      title: 'Lote Matrizes 01',
+      description: 'Matrizes · Estação Primavera 2026 · 2026-08-22',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'Maria Souza',
+        'Código': 'LR-2026-014',
+        'Data do vínculo': '2026-08-22',
+        'Estação de monta': 'Estação Primavera 2026',
+        'Lote': 'Lote Matrizes 01',
+        'Finalidade': 'Matrizes',
+        'Quantidade de animais': '212',
+      },
+    ),
+    PrototypeRecord(
+      id: 'lotes-reproducao-2',
+      title: 'Lote Receptoras 03',
+      description: 'Receptoras · Estação Primavera 2026 · 2026-08-25',
+      status: PrototypeRecordStatus.active,
+      details: {
+        'Responsável': 'Carlos Dias',
+        'Código': 'LR-2026-015',
+        'Data do vínculo': '2026-08-25',
+        'Estação de monta': 'Estação Primavera 2026',
+        'Lote': 'Lote Receptoras 03',
+        'Finalidade': 'Receptoras',
+        'Quantidade de animais': '64',
       },
     ),
   ],
@@ -418,6 +456,11 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Raça': 'Nelore',
         'Fornecedor / origem': 'Central de Genética Boa Vista',
         'Quantidade disponível': '120',
+        'Código': 'BSS-2026-007',
+        'Data do lançamento': '2026-08-18',
+        'Descrição': 'Partida de sêmen Nelore para a estação de primavera',
+        'Estação de monta': 'Estação Primavera 2026',
+        'Produtos (armazém e sêmen)': '2 item(ns)',
       },
     ),
     PrototypeRecord(
