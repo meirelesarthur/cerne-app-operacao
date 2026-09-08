@@ -13,7 +13,7 @@ class ContratosScreen extends StatelessWidget {
   const ContratosScreen({super.key});
 
   void _abrirContrato(BuildContext context, Contrato contrato) {
-    showAppBottomSheet<void>(
+    showAppDetailPage<void>(
       context,
       title: contrato.linha,
       child: _ContratoBottomSheetContent(contrato: contrato),

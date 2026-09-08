@@ -576,8 +576,13 @@ class _RecordsListState extends State<_RecordsList> {
     PrototypeRecordStatus.scheduled => 'Programado',
   };
 
+  /// Visualização do registro em tela cheia. Era folha inferior: o campo
+  /// tinha 85% da viewport para ler um registro que pode ter uma dúzia de
+  /// linhas, e a saída era um botão "Fechar" no fim de uma rolagem curta.
+  /// Agora abre como tela funda — o dado usa a altura inteira e o retorno é o
+  /// voltar do cabeçalho, o mesmo gesto de qualquer outra tela.
   void _showRecord(BuildContext context, PrototypeRecord record) {
-    showAppBottomSheet<void>(
+    showAppDetailPage<void>(
       context,
       title: record.title,
       child: Column(
@@ -590,13 +595,6 @@ class _RecordsListState extends State<_RecordsList> {
           const SizedBox(height: AppSpacing.space3),
           for (final entry in record.details.entries)
             AppMenuItem(label: entry.key, description: entry.value),
-          const SizedBox(height: AppSpacing.space3),
-          AppButton(
-            fullWidth: true,
-            variant: AppButtonVariant.secondary,
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Fechar'),
-          ),
         ],
       ),
     );

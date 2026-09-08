@@ -393,7 +393,7 @@ class _CurralTile extends StatelessWidget {
 }
 
 void _showCurralDetail(BuildContext context, CurralInfo curral) {
-  showAppBottomSheet<void>(
+  showAppDetailPage<void>(
     context,
     title: curral.nome,
     child: Builder(

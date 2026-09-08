@@ -33,7 +33,7 @@ class MarketplacePedidosScreen extends StatelessWidget {
   const MarketplacePedidosScreen({super.key});
 
   void _abrirDetalhe(BuildContext context, Pedido pedido) {
-    showAppBottomSheet<void>(
+    showAppDetailPage<void>(
       context,
       title: 'Pedido ${pedido.numero}',
       child: _PedidoDetalheBody(pedido: pedido),

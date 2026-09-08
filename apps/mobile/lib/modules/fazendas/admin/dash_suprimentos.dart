@@ -273,7 +273,7 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
   final alta = c.variacao >= 0;
   const historicoLabels = ['2 cotações atrás', 'Cotação anterior', 'Atual'];
 
-  showAppBottomSheet<void>(
+  showAppDetailPage<void>(
     context,
     title: 'Detalhe da cotação',
     child: Builder(

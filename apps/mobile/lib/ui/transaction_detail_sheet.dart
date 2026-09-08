@@ -9,7 +9,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
-import 'bottom_sheet.dart';
+import 'page_scaffold.dart';
 import 'chip.dart';
 import 'icon_button.dart';
 import 'transaction_list_item.dart';
@@ -20,19 +20,24 @@ import '../design/generated/app_layout.dart';
 String _operationId(String id) =>
     'E9040088-2607-${id.toUpperCase().padLeft(6, '0')}-GBNK';
 
-/// Espelha `TransactionDetailSheet.tsx` (Plano de Navegabilidade, B2):
-/// BottomSheet com anatomia de comprovante bancário, acionado pelo
-/// `TransactionListItem` no hub Início e no GB Bank. No React é um wrapper
-/// controlado (`transaction: TransactionItem | null` + `onClose`); em
-/// Flutter isso vira uma função que dispara `showAppBottomSheet` — chamar
-/// `showAppTransactionDetailSheet(context, transaction: tx)` a partir do
-/// `onTap` de `AppTransactionListItem`.
+/// Comprovante bancário de uma transação, acionado pelo
+/// `AppTransactionListItem` no hub Início, na Carteira, no GB Bank e no
+/// extrato. No React (`TransactionDetailSheet.tsx`) é um wrapper controlado
+/// (`transaction: TransactionItem | null` + `onClose`); em Flutter é uma
+/// função — chamar `showAppTransactionDetailSheet(context, transaction: tx)`
+/// a partir do `onTap` do item de lista.
+///
+/// Abre em **tela cheia** ([showAppDetailPage]), não mais como folha inferior:
+/// o comprovante é a visualização mais longa do app (direção, valor, partes,
+/// ID de operação, ações) e o teto de 85% da viewport obrigava a rolar um
+/// container curto dentro de outra tela. O nome do arquivo continua por
+/// compatibilidade com os 4 pontos de chamada e com o Widgetbook.
 Future<void> showAppTransactionDetailSheet(
   BuildContext context, {
   required AppTransactionItem transaction,
   bool hidden = false,
 }) {
-  return showAppBottomSheet<void>(
+  return showAppDetailPage<void>(
     context,
     title: 'Detalhe da transação',
     child: _TransactionDetailBody(transaction: transaction, hidden: hidden),
