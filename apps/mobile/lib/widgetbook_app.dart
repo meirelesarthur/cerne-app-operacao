@@ -124,6 +124,7 @@ class CerneWidgetbook extends StatelessWidget {
               name: 'Padrão global',
               children: [
                 buildContentSheetWidgetbookComponent(),
+                buildPageScaffoldWidgetbookComponent(),
                 buildBrandLogoWidgetbookComponent(),
                 buildTopBarWidgetbookComponent(),
                 buildGreetingHeaderWidgetbookComponent(),

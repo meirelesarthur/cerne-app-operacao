@@ -164,8 +164,7 @@ List<FeatureField> featureStepFields(FeatureDefinition feature, int index) {
   final step = feature.steps[index.clamp(0, feature.steps.length - 1)];
   final byId = {for (final field in feature.fields) field.id: field};
   return [
-    for (final id in step.fields)
-      if (byId[id] case final field?) field,
+    for (final id in step.fields) ?byId[id],
   ];
 }
 

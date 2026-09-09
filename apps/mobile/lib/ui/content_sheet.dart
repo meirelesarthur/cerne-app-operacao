@@ -28,6 +28,7 @@ class AppContentSheet extends StatelessWidget {
     required this.child,
     this.header,
     this.padded = true,
+    this.color,
   });
 
   /// Corpo da folha.
@@ -42,12 +43,23 @@ class AppContentSheet extends StatelessWidget {
   /// conteúdo precisa sangrar (trilhos horizontais, listas com divisor).
   final bool padded;
 
+  /// Superfície da folha. Padrão [AppSemanticColors.bgSheet] — o cinza das
+  /// telas de listagem, onde os blocos de conteúdo aparecem como `AppCard`
+  /// branco por cima.
+  ///
+  /// As telas fundas passam [AppSemanticColors.bgSurface]: no arquétipo de
+  /// cadastro a folha **é** a superfície branca, e os campos assentam direto
+  /// nela em vez de num cartão interno com margem própria. Ver
+  /// `AppPageScaffold`.
+  final Color? color;
+
   /// Margem lateral do padrão global: conteúdo de 370 px num frame de 402.
   static const double contentInset = AppSpacing.space4;
 
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final surface = color ?? semantic.bgSheet;
 
     final sheet = Container(
       width: double.infinity,
@@ -56,7 +68,7 @@ class AppContentSheet extends StatelessWidget {
       // das quinas e apagam o arredondamento que define a folha.
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        color: semantic.bgSheet,
+        color: surface,
         borderRadius: const BorderRadius.vertical(
           top: Radius.circular(AppRadius.surface),
         ),
@@ -64,7 +76,7 @@ class AppContentSheet extends StatelessWidget {
       padding: padded
           ? const EdgeInsets.symmetric(horizontal: contentInset)
           : EdgeInsets.zero,
-      child: AppInputSurface(backgroundColor: semantic.bgSheet, child: child),
+      child: AppInputSurface(backgroundColor: surface, child: child),
     );
 
     if (header == null) return sheet;

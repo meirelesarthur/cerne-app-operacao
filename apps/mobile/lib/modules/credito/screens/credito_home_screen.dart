@@ -69,7 +69,7 @@ class _CreditoHomeScreenState extends State<CreditoHomeScreen> {
       linhas.firstWhere((l) => l.id == 'custeio-safra');
 
   void _abrirLinha(LinhaCredito linha) {
-    showAppBottomSheet<void>(
+    showAppDetailPage<void>(
       context,
       title: linha.nome,
       child: _LinhaBottomSheetContent(

@@ -234,7 +234,11 @@ class _AvaliacaoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
+    // `inset`: bloco cinza sem elevação. Sobre a folha branca da tela funda
+    // um cartão branco vira branco-no-branco e a sombra sozinha não
+    // sustenta a separação.
     return AppCard(
+      variant: AppCardVariant.inset,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,

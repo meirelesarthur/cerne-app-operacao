@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_spacing.dart';
-import '../../../shell/components/sub_page_header.dart';
+import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
 import '../functional_journey_engine.dart';
@@ -224,116 +224,96 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     final backToRecords = isForm && feature.listMode && !inStep;
     final step = isForm ? _journey.currentStep : null;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        // Título e voltar sobem para a barra superior, sobre o canvas: no
-        // arquétipo de cadastro do Figma eles são cromo fixo, e antes rolavam
-        // junto com o formulário — quem descia a tela perdia de vista tanto o
-        // nome da função quanto a saída.
-        SubPageHeader(
-          title: _journey.mode == FunctionalJourneyMode.form
-              ? feature.createAction ?? feature.title
-              : feature.title,
-          onBack: inStep
-              ? _retreat
-              : backToRecords
-              ? _showList
-              : () => context.go(widget.centerRoute),
-          actionIcon: isForm ? AppIcons.moreVertical : null,
-          actionLabel: isForm ? 'Mais opções' : null,
-          onAction: isForm ? () => _showFormDetails(context) : null,
-        ),
-        Expanded(
-          child: AppContentSheet(
-            padded: false,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (step != null)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.space4,
-                      AppSpacing.space5,
-                      AppSpacing.space4,
-                      0,
-                    ),
-                    child: AppStepProgress(
-                      total: _journey.stepCount,
-                      current: _journey.stepIndex + 1,
-                    ),
-                  ),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.all(AppSpacing.space4),
-                    children: [
-                      if (!isForm) ...[
-                        _FeatureIntroduction(feature: feature),
-                        const SizedBox(height: AppSpacing.space4),
-                      ],
-                      // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
-                      // daqui (ver plano de UX): quando a função usa hardware
-                      // simulado, o próprio `AppHardwareSimulator` já mostra isso
-                      // mais abaixo, na hora de usar — listar de novo antes, em
-                      // termos técnicos, só adiantava jargão sem ajudar a decisão.
-                      if (feature.auditExport case final auditExport?)
-                        _AuditExportJourney(kind: auditExport)
-                      else if (feature.listMode &&
-                          _journey.mode == FunctionalJourneyMode.list)
-                        _RecordsList(
-                          feature: feature,
-                          records: ref
-                              .watch(prototypeRecordsProvider)
-                              .recordsFor(dataSourceId),
-                          // banco-real: administração pode criar quando a própria tela
-                          // declara campos (ex.: Produtos) — deixou de ser exclusivo do
-                          // perfil operacional. Ver
-                          // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
-                          // banco-real (onda 1): `readOnly` bloqueia a criação mesmo com
-                          // `fields` preenchidos — cadastro estruturante ou decisão que
-                          // pertence ao desktop, o app só consulta. Ver
-                          // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-                          canCreate:
-                              feature.fields.isNotEmpty && !feature.readOnly,
-                          onCreate: _startForm,
-                        )
-                      else
-                        _FeatureForm(
-                          feature: feature,
-                          journey: _journey,
-                          onValueChanged: _setValue,
-                          onAddCollectionItem: (collection) =>
-                              _addCollectionItem(context, collection),
-                          onRemoveCollectionItem: _removeCollectionItem,
-                        ),
-                    ],
-                  ),
-                ),
-                if (isForm)
-                  AppActionBar(
-                    primaryLabel: _journey.isLastStep
-                        ? feature.primaryAction ?? 'Salvar registro'
-                        : 'Continuar',
-                    primaryIcon: _journey.isLastStep
-                        ? AppIcons.saveAll
-                        : AppIcons.arrowRight,
-                    onPrimary: _advance,
-                    secondaryLabel: inStep
-                        ? 'Voltar'
-                        : feature.listMode
-                        ? 'Cancelar'
-                        : null,
-                    onSecondary: inStep
-                        ? _retreat
-                        : feature.listMode
-                        ? _showList
-                        : null,
-                  ),
-              ],
+    // Título e voltar vivem na faixa de 64 px sobre o canvas, a régua de
+    // etapas dentro da folha branca e o rodapé colado na base: a anatomia
+    // inteira vem de [AppPageBody] — a mesma peça dos fluxos operacionais e do
+    // Bank —, sem `Scaffold` porque o shell já resolveu a área segura.
+    return AppPageBody(
+      title: _journey.mode == FunctionalJourneyMode.form
+          ? feature.createAction ?? feature.title
+          : feature.title,
+      onBack: inStep
+          ? _retreat
+          : backToRecords
+          ? _showList
+          : () => context.go(widget.centerRoute),
+      actionIcon: isForm ? AppIcons.moreVertical : null,
+      actionLabel: isForm ? 'Mais opções' : null,
+      onAction: isForm ? () => _showFormDetails(context) : null,
+      totalSteps: step != null ? _journey.stepCount : null,
+      currentStep: _journey.stepIndex + 1,
+      // Cadastro: a folha é a superfície branca e os campos assentam direto
+      // nela. Listagem e introdução seguem na folha cinza, onde é o cinza que
+      // separa um `AppCard` do outro.
+      sheetColor: isForm
+          ? null
+          : Theme.of(context).extension<AppSemanticColors>()!.bgSheet,
+      scrollable: false,
+      bodyPadding: EdgeInsets.zero,
+      actionBar: isForm
+          ? AppActionBar(
+              primaryLabel: _journey.isLastStep
+                  ? feature.primaryAction ?? 'Salvar registro'
+                  : 'Continuar',
+              primaryIcon: _journey.isLastStep
+                  ? AppIcons.saveAll
+                  : AppIcons.arrowRight,
+              onPrimary: _advance,
+              secondaryLabel: inStep
+                  ? 'Voltar'
+                  : feature.listMode
+                  ? 'Cancelar'
+                  : null,
+              onSecondary: inStep
+                  ? _retreat
+                  : feature.listMode
+                  ? _showList
+                  : null,
+            )
+          : null,
+      child: ListView(
+        padding: const EdgeInsets.all(AppSpacing.space4),
+        children: [
+          if (!isForm) ...[
+            _FeatureIntroduction(feature: feature),
+            const SizedBox(height: AppSpacing.space4),
+          ],
+          // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
+          // daqui (ver plano de UX): quando a função usa hardware simulado, o
+          // próprio `AppHardwareSimulator` já mostra isso mais abaixo, na hora
+          // de usar — listar de novo antes, em termos técnicos, só adiantava
+          // jargão sem ajudar a decisão.
+          if (feature.auditExport case final auditExport?)
+            _AuditExportJourney(kind: auditExport)
+          else if (feature.listMode &&
+              _journey.mode == FunctionalJourneyMode.list)
+            _RecordsList(
+              feature: feature,
+              records: ref
+                  .watch(prototypeRecordsProvider)
+                  .recordsFor(dataSourceId),
+              // banco-real: administração pode criar quando a própria tela
+              // declara campos (ex.: Produtos) — deixou de ser exclusivo do
+              // perfil operacional. Ver
+              // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+              // banco-real (onda 1): `readOnly` bloqueia a criação mesmo com
+              // `fields` preenchidos — cadastro estruturante ou decisão que
+              // pertence ao desktop, o app só consulta. Ver
+              // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+              canCreate: feature.fields.isNotEmpty && !feature.readOnly,
+              onCreate: _startForm,
+            )
+          else
+            _FeatureForm(
+              feature: feature,
+              journey: _journey,
+              onValueChanged: _setValue,
+              onAddCollectionItem: (collection) =>
+                  _addCollectionItem(context, collection),
+              onRemoveCollectionItem: _removeCollectionItem,
             ),
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -502,87 +482,82 @@ class _RecordsListState extends State<_RecordsList> {
     final end = (start + _pageSize).clamp(0, filteredRecords.length);
     final visibleRecords = filteredRecords.sublist(start, end);
 
+    // Sem `AppCard` embrulhando a listagem inteira: a folha cinza já é a
+    // superfície da página e as linhas brancas são o que se destaca contra
+    // ela. O cartão só empilhava mais uma superfície em volta de tudo e
+    // comia 40 px de largura em recuo — era ele que truncava o título dos
+    // registros ("Registrar animal · Registr…").
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppCard(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  const Expanded(
-                    child: AppSectionTitle(child: Text('Registros')),
-                  ),
-                  AppChip(child: Text('${records.length}')),
-                ],
-              ),
-              const SizedBox(height: AppSpacing.space3),
-              AppFormField(
-                label: 'Buscar registros',
-                child: AppTextInput(
-                  controller: _searchController,
-                  placeholder: 'Nome, situação ou detalhe',
-                  prefixIcon: const AppIcon(AppIcons.aiSearch),
-                  onChanged: _setQuery,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.space3),
-              if (filteredRecords.isEmpty)
-                // banco-real (correção de regressão): a busca (`dbec5b7`)
-                // trocou a mensagem de vazio por uma única, genérica — sem
-                // diferenciar "a busca não achou nada" (`records` existe,
-                // só o filtro zerou) de "não há registro nenhum". A segunda
-                // precisa continuar dizendo a verdade por perfil (criar vs.
-                // somente leitura vs. genérico), senão uma consulta
-                // somente leitura sem dado sincronizado passa a impressão
-                // de que o app perdeu o cadastro. Ver
-                // `mapped_feature_screen_test.dart`, "Áreas mostra estado
-                // vazio honesto...".
-                AppEmptyState(
-                  icon: query.isNotEmpty
-                      ? AppIcons.search
-                      : AppIcons.clipboardCheck,
-                  title: widget.feature.emptyLabel ?? 'Nenhum registro encontrado',
-                  description: query.isNotEmpty
-                      ? 'Ajuste a busca para encontrar outro cadastro.'
-                      : widget.canCreate
-                      ? 'Use a ação abaixo para criar o primeiro registro desta rotina.'
-                      : widget.feature.readOnly
-                      ? 'O cadastro desta rotina é feito no sistema web. Assim que sincronizar, os registros aparecem aqui.'
-                      : 'Os registros operacionais desta sessão aparecerão aqui.',
-                )
-              else
-                for (var index = 0; index < visibleRecords.length; index++) ...[
-                  AppMenuItem(
-                    icon: AppIcons.fileCheck2,
-                    label: visibleRecords[index].title,
-                    description: visibleRecords[index].description,
-                    trailing: AppChip(
-                      tone:
-                          visibleRecords[index].status ==
-                              PrototypeRecordStatus.scheduled
-                          ? AppChipTone.blue
-                          : AppChipTone.brand,
-                      child: Text(_statusLabel(visibleRecords[index].status)),
-                    ),
-                    onTap: () => _showRecord(context, visibleRecords[index]),
-                  ),
-                  if (index < visibleRecords.length - 1)
-                    const SizedBox(height: AppSpacing.space2),
-                ],
-              if (filteredRecords.isNotEmpty) ...[
-                const SizedBox(height: AppSpacing.space3),
-                AppPagination(
-                  page: page,
-                  totalItems: filteredRecords.length,
-                  pageSize: _pageSize,
-                  onPageChanged: (nextPage) => setState(() => _page = nextPage),
-                ),
-              ],
-            ],
+        Row(
+          children: [
+            const Expanded(child: AppSectionTitle(child: Text('Registros'))),
+            AppChip(child: Text('${records.length}')),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.space3),
+        AppFormField(
+          label: 'Buscar registros',
+          child: AppTextInput(
+            controller: _searchController,
+            placeholder: 'Nome, situação ou detalhe',
+            prefixIcon: const AppIcon(AppIcons.aiSearch),
+            onChanged: _setQuery,
           ),
         ),
+        const SizedBox(height: AppSpacing.space3),
+        if (filteredRecords.isEmpty)
+          // banco-real (correção de regressão): a busca (`dbec5b7`)
+          // trocou a mensagem de vazio por uma única, genérica — sem
+          // diferenciar "a busca não achou nada" (`records` existe,
+          // só o filtro zerou) de "não há registro nenhum". A segunda
+          // precisa continuar dizendo a verdade por perfil (criar vs.
+          // somente leitura vs. genérico), senão uma consulta
+          // somente leitura sem dado sincronizado passa a impressão
+          // de que o app perdeu o cadastro. Ver
+          // `mapped_feature_screen_test.dart`, "Áreas mostra estado
+          // vazio honesto...".
+          AppEmptyState(
+            icon: query.isNotEmpty ? AppIcons.search : AppIcons.clipboardCheck,
+            title: widget.feature.emptyLabel ?? 'Nenhum registro encontrado',
+            description: query.isNotEmpty
+                ? 'Ajuste a busca para encontrar outro cadastro.'
+                : widget.canCreate
+                ? 'Use a ação abaixo para criar o primeiro registro desta rotina.'
+                : widget.feature.readOnly
+                ? 'O cadastro desta rotina é feito no sistema web. Assim que sincronizar, os registros aparecem aqui.'
+                : 'Os registros operacionais desta sessão aparecerão aqui.',
+          )
+        else
+          for (var index = 0; index < visibleRecords.length; index++) ...[
+            AppMenuItem(
+              icon: AppIcons.fileCheck2,
+              label: visibleRecords[index].title,
+              description: visibleRecords[index].description,
+              trailing: AppChip(
+                tone:
+                    visibleRecords[index].status ==
+                        PrototypeRecordStatus.scheduled
+                    ? AppChipTone.blue
+                    : AppChipTone.brand,
+                child: Text(_statusLabel(visibleRecords[index].status)),
+              ),
+              onTap: () => _showRecord(context, visibleRecords[index]),
+            ),
+            if (index < visibleRecords.length - 1)
+              const SizedBox(height: AppSpacing.space2),
+          ],
+        if (filteredRecords.isNotEmpty) ...[
+          const SizedBox(height: AppSpacing.space3),
+          AppPagination(
+            page: page,
+            totalItems: filteredRecords.length,
+            pageSize: _pageSize,
+            onPageChanged: (nextPage) => setState(() => _page = nextPage),
+          ),
+        ],
+
         if (widget.canCreate) ...[
           const SizedBox(height: AppSpacing.space4),
           AppButton(
@@ -603,8 +578,13 @@ class _RecordsListState extends State<_RecordsList> {
     PrototypeRecordStatus.scheduled => 'Programado',
   };
 
+  /// Visualização do registro em tela cheia. Era folha inferior: o campo
+  /// tinha 85% da viewport para ler um registro que pode ter uma dúzia de
+  /// linhas, e a saída era um botão "Fechar" no fim de uma rolagem curta.
+  /// Agora abre como tela funda — o dado usa a altura inteira e o retorno é o
+  /// voltar do cabeçalho, o mesmo gesto de qualquer outra tela.
   void _showRecord(BuildContext context, PrototypeRecord record) {
-    showAppBottomSheet<void>(
+    showAppDetailPage<void>(
       context,
       title: record.title,
       child: Column(
@@ -615,14 +595,16 @@ class _RecordsListState extends State<_RecordsList> {
             child: AppChip(child: Text(_statusLabel(record.status))),
           ),
           const SizedBox(height: AppSpacing.space3),
-          for (final entry in record.details.entries)
-            AppMenuItem(label: entry.key, description: entry.value),
-          const SizedBox(height: AppSpacing.space3),
-          AppButton(
-            fullWidth: true,
-            variant: AppButtonVariant.secondary,
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Fechar'),
+          // `AppReviewList`, não `AppMenuItem`: a linha de menu é branca com
+          // sombra e, sobre a folha branca da tela funda, some. A linha de
+          // revisão tem borda, então se lê sobre branco — e é o par
+          // rótulo/valor que um detalhe de registro realmente é, não um item
+          // navegável.
+          AppReviewList(
+            items: [
+              for (final entry in record.details.entries)
+                AppReviewItem(label: entry.key, value: entry.value),
+            ],
           ),
         ],
       ),
@@ -691,9 +673,10 @@ class _FeatureForm extends StatelessWidget {
     final simulationTarget = feature.simulationTargetField;
     final stepIndex = journey.stepIndex;
     final step = journey.currentStep;
-    final visibleFields = featureStepFields(feature, stepIndex)
-        .where((field) => field.id != simulationTarget)
-        .toList(growable: false);
+    final visibleFields = featureStepFields(
+      feature,
+      stepIndex,
+    ).where((field) => field.id != simulationTarget).toList(growable: false);
     final sections = featureStepSections(feature, stepIndex);
     final isReview = isFeatureReviewStep(feature, stepIndex);
     // A simulação de hardware acompanha o campo-alvo, que por invariante de
@@ -731,105 +714,95 @@ class _FeatureForm extends StatelessWidget {
           if (visibleFields.isNotEmpty || sections.isNotEmpty)
             const SizedBox(height: AppSpacing.space4),
         ],
+        // Sem `AppCard` em volta dos campos: a folha branca do
+        // `AppPageScaffold` já é a superfície do cadastro. O cartão interno
+        // duplicava a superfície — branco sobre branco com margem lateral
+        // própria —, encolhia a largura útil dos campos e fazia o branco
+        // terminar antes da base da tela.
         if (visibleFields.isNotEmpty)
-          AppCard(
-            padded: false,
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.space4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  AppSectionTitle(
-                    child: Text(step?.title ?? 'Dados do registro'),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppSectionTitle(child: Text(step?.title ?? 'Dados do registro')),
+              if (step?.hint case final hint?) ...[
+                const SizedBox(height: AppSpacing.space1),
+                Text(hint, style: Theme.of(context).textTheme.bodySmall),
+              ],
+              const SizedBox(height: AppSpacing.space4),
+              for (var index = 0; index < visibleFields.length; index++) ...[
+                _FeatureFieldControl(
+                  field: visibleFields[index],
+                  value: journey.form.values[visibleFields[index].id] ?? '',
+                  isRequired: isFeatureFieldRequired(
+                    feature,
+                    visibleFields[index],
+                    journey.form.values,
                   ),
-                  if (step?.hint case final hint?) ...[
-                    const SizedBox(height: AppSpacing.space1),
-                    Text(hint, style: Theme.of(context).textTheme.bodySmall),
-                  ],
+                  error: _fieldError(feature, visibleFields[index], journey),
+                  onChanged: (value) =>
+                      onValueChanged(visibleFields[index].id, value),
+                ),
+                if (index < visibleFields.length - 1)
                   const SizedBox(height: AppSpacing.space4),
-                  for (
-                    var index = 0;
-                    index < visibleFields.length;
-                    index++
-                  ) ...[
-                    _FeatureFieldControl(
-                      field: visibleFields[index],
-                      value: journey.form.values[visibleFields[index].id] ?? '',
-                      isRequired: isFeatureFieldRequired(
-                        feature,
-                        visibleFields[index],
-                        journey.form.values,
-                      ),
-                      error: _fieldError(feature, visibleFields[index], journey),
-                      onChanged: (value) =>
-                          onValueChanged(visibleFields[index].id, value),
-                    ),
-                    if (index < visibleFields.length - 1)
-                      const SizedBox(height: AppSpacing.space4),
-                  ],
-                ],
-              ),
-            ),
+              ],
+            ],
           ),
         if (sections.isNotEmpty) ...[
           if (visibleFields.isNotEmpty || simulation != null)
             const SizedBox(height: AppSpacing.space4),
-          AppCard(
-            child: AppFormField(
-              label: 'Itens vinculados',
-              // fidelidade-campos (onda 0): coleção `min:1` no contrato real
-              // agora aparece como campo obrigatório de verdade — antes toda
-              // coleção era opcional e um protocolo sem etapa nenhuma podia
-              // ser salvo. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
-              required: sections.any(feature.requiredSections.contains),
-              error: journey.form.attempted
-                  ? _sectionError(feature, journey, sections)
-                  : null,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  for (var index = 0; index < sections.length; index++) ...[
-                    if (index > 0) const SizedBox(height: AppSpacing.space4),
-                    if (feature.collectionByName(sections[index])
-                        case final collection?)
-                      AppCollectionList(
-                        name: collection.name,
-                        items: [
-                          for (final item in journey.form.itemsOf(
-                            collection.name,
-                          ))
-                            AppCollectionItemView(
-                              title: collectionItemTitle(collection, item),
-                              subtitle: collectionItemSubtitle(
-                                collection,
-                                item,
-                              ),
-                            ),
-                        ],
-                        onAdd: () => onAddCollectionItem(collection),
-                        onRemove: (item) =>
-                            onRemoveCollectionItem(collection.name, item),
-                      ),
-                  ],
+          // Seção da folha, não cartão: campos, itens vinculados e revisão são
+          // três blocos da mesma superfície branca, separados por título e
+          // espaço. Empilhar cartões brancos sobre folha branca só multiplica
+          // planos de leitura sem separar nada.
+          AppFormField(
+            label: 'Itens vinculados',
+            // fidelidade-campos (onda 0): coleção `min:1` no contrato real
+            // agora aparece como campo obrigatório de verdade — antes toda
+            // coleção era opcional e um protocolo sem etapa nenhuma podia
+            // ser salvo. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
+            required: sections.any(feature.requiredSections.contains),
+            error: journey.form.attempted
+                ? _sectionError(feature, journey, sections)
+                : null,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var index = 0; index < sections.length; index++) ...[
+                  if (index > 0) const SizedBox(height: AppSpacing.space4),
+                  if (feature.collectionByName(sections[index])
+                      case final collection?)
+                    AppCollectionList(
+                      name: collection.name,
+                      items: [
+                        for (final item in journey.form.itemsOf(
+                          collection.name,
+                        ))
+                          AppCollectionItemView(
+                            title: collectionItemTitle(collection, item),
+                            subtitle: collectionItemSubtitle(collection, item),
+                          ),
+                      ],
+                      onAdd: () => onAddCollectionItem(collection),
+                      onRemove: (item) =>
+                          onRemoveCollectionItem(collection.name, item),
+                    ),
                 ],
-              ),
+              ],
             ),
           ),
         ],
         if (isReview) ...[
-          AppCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AppSectionTitle(child: Text(step?.title ?? 'Revisão')),
-                if (step?.hint case final hint?) ...[
-                  const SizedBox(height: AppSpacing.space1),
-                  Text(hint, style: Theme.of(context).textTheme.bodySmall),
-                ],
-                const SizedBox(height: AppSpacing.space3),
-                AppReviewList(items: _reviewItems(feature, journey)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AppSectionTitle(child: Text(step?.title ?? 'Revisão')),
+              if (step?.hint case final hint?) ...[
+                const SizedBox(height: AppSpacing.space1),
+                Text(hint, style: Theme.of(context).textTheme.bodySmall),
               ],
-            ),
+              const SizedBox(height: AppSpacing.space3),
+              AppReviewList(items: _reviewItems(feature, journey)),
+            ],
           ),
         ],
       ],

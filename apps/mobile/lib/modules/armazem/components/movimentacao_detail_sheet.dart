@@ -8,15 +8,18 @@ import '../mocks/estoque_mocks.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 import '../../../design/generated/app_layout.dart';
 
-/// Detalhe de Movimentação do Armazém: BottomSheet acionado pelo item de
-/// lista (`AppTransactionListItem`) tanto na Home quanto em Movimentações — o
-/// mesmo componente é reutilizado nos dois pontos de entrada (Lei 2). Espelha
+/// Detalhe de Movimentação do Armazém, acionado pelo item de lista
+/// (`AppTransactionListItem`) tanto na Home quanto em Movimentações — o mesmo
+/// componente nos dois pontos de entrada (Lei 2). Espelha
 /// `MovimentacaoDetailSheet.tsx`.
+///
+/// Abre em tela cheia ([showAppDetailPage]) em vez de folha inferior: é
+/// visualização de registro, e a tela funda tem a altura que o dado pede.
 Future<void> showMovimentacaoDetailSheet(
   BuildContext context, {
   required Movimentacao movimentacao,
 }) {
-  return showAppBottomSheet<void>(
+  return showAppDetailPage<void>(
     context,
     title: 'Detalhe da movimentação',
     child: _SheetBody(mov: movimentacao),

@@ -10,15 +10,19 @@ import 'unidade_card.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 import '../../../design/generated/app_layout.dart';
 
-/// Detalhe de Unidade de armazenagem: BottomSheet acionado pelo `UnidadeCard`
-/// na Home e na aba Unidades — capacidade, ocupação, produtos armazenados,
-/// endereço mock e CTA para o estoque já filtrado pela unidade. Espelha
+/// Detalhe de Unidade de armazenagem, acionado pelo `UnidadeCard` na Home e na
+/// aba Unidades — capacidade, ocupação, produtos armazenados, endereço mock e
+/// CTA para o estoque já filtrado pela unidade. Espelha
 /// `UnidadeDetailSheet.tsx`.
+///
+/// Abre em tela cheia ([showAppDetailPage]): das visualizações do Armazém é a
+/// que mais sofria na folha inferior, porque a lista de produtos armazenados
+/// cresce com a ocupação da unidade.
 Future<void> showUnidadeDetailSheet(
   BuildContext context, {
   required Unidade unidade,
 }) {
-  return showAppBottomSheet<void>(
+  return showAppDetailPage<void>(
     context,
     title: 'Detalhe da unidade',
     child: _SheetBody(unidade: unidade),

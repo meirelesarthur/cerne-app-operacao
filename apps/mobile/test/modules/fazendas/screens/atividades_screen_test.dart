@@ -60,8 +60,18 @@ void main() {
       await tester.tap(find.text('Transferência de lote'));
       await tester.pumpAndSettle();
 
+      // O detalhe agora é tela cheia, não folha inferior: ele cobre a lista,
+      // então a régua de paginação sai da árvore enquanto está aberto. A
+      // invariante que o teste protege — paginar e abrir um item não zera a
+      // página — se verifica no retorno.
       expect(find.text('Detalhe da atividade'), findsOneWidget);
+      expect(find.text('Página 2 de 2'), findsNothing);
+
+      await tester.tap(find.byTooltip('Voltar'));
+      await tester.pumpAndSettle();
+
       expect(find.text('Página 2 de 2'), findsOneWidget);
+      expect(find.text('Transferência de lote'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

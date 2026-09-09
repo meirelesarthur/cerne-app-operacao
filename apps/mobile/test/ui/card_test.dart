@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/design/theme/app_theme_extension.dart';
 import 'package:cerne_app/ui/card.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
@@ -23,6 +24,52 @@ void main() {
       );
       expect(find.text('Ink'), findsOneWidget);
       expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('inset é bloco cinza sem elevação, para folha branca', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppCard(variant: AppCardVariant.inset, child: Text('Inset')),
+        ),
+      );
+
+      final context = tester.element(find.byType(AppCard));
+      final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+      final decoration =
+          tester
+                  .widget<Container>(
+                    find
+                        .descendant(
+                          of: find.byType(AppCard),
+                          matching: find.byType(Container),
+                        )
+                        .first,
+                  )
+                  .decoration
+              as BoxDecoration;
+
+      expect(decoration.color, semantic.bgSheet);
+      // Sem sombra: sobre branco, a separação vem da cor do bloco, não de uma
+      // elevação que o branco-no-branco não sustenta.
+      expect(decoration.boxShadow, isNull);
+      // E o `surface` continua branco com sombra, para a folha cinza.
+      await tester.pumpWidget(_wrap(const AppCard(child: Text('Surface'))));
+      final surface =
+          tester
+                  .widget<Container>(
+                    find
+                        .descendant(
+                          of: find.byType(AppCard),
+                          matching: find.byType(Container),
+                        )
+                        .first,
+                  )
+                  .decoration
+              as BoxDecoration;
+      expect(surface.color, semantic.bgRaised);
+      expect(surface.boxShadow, isNotNull);
     });
 
     testWidgets('interactive dispara onTap ao tocar', (tester) async {

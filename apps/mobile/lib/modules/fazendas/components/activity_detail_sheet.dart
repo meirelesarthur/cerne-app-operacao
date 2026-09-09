@@ -46,13 +46,13 @@ const List<ActivityKind> _fieldKinds = [
 /// Reaproveita os mesmos ícones e tons de status da lista (fonte única, Lei 2).
 ///
 /// Espelha o padrão já usado por `showAppTransactionDetailSheet`: função que
-/// dispara `showAppBottomSheet`, chamada a partir do `onTap` do
-/// `ActivityListItem`.
+/// abre a visualização em tela cheia ([showAppDetailPage]), chamada a partir
+/// do `onTap` do `ActivityListItem`.
 Future<void> showActivityDetailSheet(
   BuildContext context, {
   required Activity activity,
 }) {
-  return showAppBottomSheet<void>(
+  return showAppDetailPage<void>(
     context,
     title: 'Detalhe da atividade',
     child: _ActivityDetailBody(activity: activity),

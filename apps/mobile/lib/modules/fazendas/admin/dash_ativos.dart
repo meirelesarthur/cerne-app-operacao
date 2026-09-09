@@ -278,7 +278,7 @@ class _AtivoCard extends StatelessWidget {
 void _showAtivoDetail(BuildContext context, Ativo ativo) {
   final estado = _estadoMeta[ativo.estado]!;
 
-  showAppBottomSheet<void>(
+  showAppDetailPage<void>(
     context,
     title: 'Detalhe do ativo',
     child: Builder(
