@@ -13,8 +13,8 @@ enum AppAppIconTileSize { large, small }
 
 /// Ícone de app estilo launcher Android — quadrado arredondado ("squircle") +
 /// rótulo abaixo. Usado pela simulação de tela inicial ([AndroidHomePage] e
-/// [CrnAppFolderPage]): o ícone "CRN App" na área de trabalho, "CRN ADM"/
-/// "CRN Operação" dentro da pasta, e os ícones decorativos do dock.
+/// [CerneAppFolderPage]): o ícone "CERNE App" na área de trabalho, "CERNE ADM"/
+/// "CERNE Operação" dentro da pasta, e os ícones decorativos do dock.
 ///
 /// Deriva do mesmo padrão de [AppQuickAction] (círculo + rótulo, ação do hub),
 /// mas com forma de "squircle" — a leitura visual precisa ser "ícone de app",
@@ -116,9 +116,9 @@ WidgetbookComponent buildAppIconTileWidgetbookComponent() {
             spacing: AppSpacing.space6,
             runSpacing: AppSpacing.space6,
             children: [
-              AppAppIconTile(icon: AppIcons.layoutGrid, label: 'CRN App'),
-              AppAppIconTile(icon: AppIcons.shieldCheck, label: 'CRN ADM'),
-              AppAppIconTile(icon: AppIcons.tractor, label: 'CRN Operação'),
+              AppAppIconTile(icon: AppIcons.layoutGrid, label: 'CERNE App'),
+              AppAppIconTile(icon: AppIcons.shieldCheck, label: 'CERNE ADM'),
+              AppAppIconTile(icon: AppIcons.tractor, label: 'CERNE Operação'),
             ],
           ),
         ),

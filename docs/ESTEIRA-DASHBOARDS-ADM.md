@@ -68,7 +68,7 @@ centro de custo de R$ 5 mil ganha quase a mesma barra de um de R$ 59 mil. É err
 dado, não de estética, e precisa cair.
 
 **G. Nenhum painel é responsivo.** `crossAxisCount` é fixo (2, 3 ou 4) e `childAspectRatio` é
-constante. Com a entrada do desktop (`shell/pages/android_home_page.dart` e `crn_app_folder_page.dart`,
+constante. Com a entrada do desktop (`shell/pages/android_home_page.dart` e `cerne_app_folder_page.dart`,
 commit 983a333), os painéis seguem em duas colunas numa viewport larga, e o `childAspectRatio` fixo
 estoura com escala de texto grande.
 
@@ -199,7 +199,7 @@ materializava esse caso como `List<Color>`). Nenhum gráfico lê mais `AppColors
 ## 6. Responsividade
 
 As grades dos painéis passam a derivar colunas da largura (`LayoutBuilder`), com `mainAxisExtent` em
-vez de `childAspectRatio` fixo (achado G). Alvo: 2 colunas em telefone, 3 em tablet, 4 no desktop CRN
+vez de `childAspectRatio` fixo (achado G). Alvo: 2 colunas em telefone, 3 em tablet, 4 no desktop CERNE
 ADM — sem tela nova, mesmo widget.
 
 ---

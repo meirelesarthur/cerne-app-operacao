@@ -86,7 +86,7 @@ void main() {
     });
 
     testWidgets(
-      '?ambiente=administracao (vindo da pasta CRN App) mantém o destino administrativo',
+      '?ambiente=administracao (vindo da pasta CERNE App) mantém o destino administrativo',
       (tester) async {
         harness.router.go('/login?ambiente=administracao');
         await tester.pumpWidget(harness.buildApp());
@@ -98,7 +98,7 @@ void main() {
     );
 
     testWidgets(
-      '?ambiente=operacional (vindo da pasta CRN App) mantém o destino operacional',
+      '?ambiente=operacional (vindo da pasta CERNE App) mantém o destino operacional',
       (tester) async {
         harness.router.go('/login?ambiente=operacional');
         await tester.pumpWidget(harness.buildApp());

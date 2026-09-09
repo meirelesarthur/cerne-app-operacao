@@ -11,8 +11,8 @@ import '../../design/generated/app_layout.dart';
 
 /// Simulação de uma tela de launcher Android — disponível como uma etapa
 /// opcional antes da seleção de ambiente. Área de trabalho com um único ícone
-/// funcional ("CRN App", que abre a pasta com CRN ADM/CRN Operação — ver
-/// [CrnAppFolderPage]) e um dock decorativo, para deixar visualmente clara a
+/// funcional ("CERNE App", que abre a pasta com CERNE ADM/CERNE Operação — ver
+/// [CerneAppFolderPage]) e um dock decorativo, para deixar visualmente clara a
 /// separação entre os dois ambientes.
 ///
 /// Barra de status, relógio e ícones do dock são só decoração — mock fixo,
@@ -51,8 +51,8 @@ class AndroidHomePage extends StatelessWidget {
                 const Spacer(flex: 2),
                 AppAppIconTile(
                   icon: AppIcons.layoutGrid,
-                  label: 'CRN App',
-                  onTap: () => context.go('/desktop/crn-app'),
+                  label: 'CERNE App',
+                  onTap: () => context.go('/desktop/cerne-app'),
                 ),
                 const Spacer(flex: 3),
                 const AppPageDots(count: 3, active: 0),
