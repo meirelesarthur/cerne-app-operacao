@@ -78,7 +78,8 @@ void main() {
       await tester.tap(find.text('Curral 01'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Situação'), findsOneWidget);
+      // O rótulo do campo de leitura aparece em versalete (`AppReviewList`).
+      expect(find.text('SITUAÇÃO'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
@@ -94,57 +93,16 @@ class _SheetBody extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.space4),
 
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.space4),
-          decoration: BoxDecoration(
-            color: semantic.bgSubtle,
-            border: Border.all(color: semantic.borderDefault),
-            borderRadius: BorderRadius.circular(AppRadius.xl2),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _DetailRow(label: 'Origem', value: mov.origem),
-              const SizedBox(height: AppSpacing.space3),
-              _DetailRow(label: 'Destino', value: mov.destino),
-              const SizedBox(height: AppSpacing.space3),
-              _DetailRow(label: 'Responsável', value: mov.responsavel),
-              const SizedBox(height: AppSpacing.space3),
-              _DetailRow(label: 'Veículo', value: mov.veiculo),
-            ],
-          ),
-        ),
-        const SizedBox(height: AppSpacing.space4),
-
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.space4),
-          decoration: BoxDecoration(
-            border: Border.all(color: semantic.borderDefault),
-            borderRadius: BorderRadius.circular(AppRadius.xl2),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'NOTA',
-                style: TextStyle(
-                  fontSize: AppTypography.sm,
-                  fontWeight: AppTypography.weightSemibold,
-                  color: semantic.fgSubtle,
-                  letterSpacing: 0.4,
-                ),
-              ),
-              const SizedBox(height: AppSpacing.space1),
-              Text(
-                mov.nota,
-                style: TextStyle(
-                  fontSize: AppTypography.md,
-                  color: semantic.fgDefault,
-                ),
-              ),
-            ],
-          ),
+        // `AppReviewList`, fonte única dos campos de leitura (Lei 2): cada
+        // campo é seu próprio cartão abafado, rótulo acima do valor.
+        AppReviewList(
+          items: [
+            AppReviewItem(label: 'Origem', value: mov.origem),
+            AppReviewItem(label: 'Destino', value: mov.destino),
+            AppReviewItem(label: 'Responsável', value: mov.responsavel),
+            AppReviewItem(label: 'Veículo', value: mov.veiculo),
+            AppReviewItem(label: 'Nota', value: mov.nota),
+          ],
         ),
         const SizedBox(height: AppSpacing.space4),
 
@@ -153,42 +111,6 @@ class _SheetBody extends StatelessWidget {
           style: TextStyle(
             fontSize: AppTypography.md,
             color: semantic.fgSubtle,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: TextStyle(fontSize: AppTypography.md, color: semantic.fgMuted),
-        ),
-        const SizedBox(width: AppSpacing.space3),
-        Flexible(
-          child: Text(
-            value,
-            textAlign: TextAlign.right,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: AppTypography.md,
-              fontWeight: AppTypography.weightSemibold,
-              color: semantic.fgDefault,
-            ),
           ),
         ),
       ],

@@ -5,7 +5,6 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../types.dart';
 import 'activity_list_item.dart';
-import 'package:cerne_app/design/generated/app_radius.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 import '../../../design/generated/app_layout.dart';
 
@@ -129,25 +128,18 @@ class _ActivityDetailBody extends StatelessWidget {
         ),
         const SizedBox(height: AppSpacing.space4),
 
-        // Ficha da atividade
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.space4),
-          decoration: BoxDecoration(
-            color: semantic.bgSubtle,
-            borderRadius: BorderRadius.circular(AppRadius.lgPlus),
-            border: Border.all(color: semantic.borderDefault),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _DetailRow(label: 'Quando', value: activity.time),
-              for (var i = 0; i < segments.length; i++)
-                _DetailRow(
-                  label: i < detailLabels.length ? detailLabels[i] : 'Detalhe',
-                  value: segments[i],
-                ),
-            ],
-          ),
+        // Ficha da atividade — `AppReviewList`, fonte única dos campos de
+        // leitura (Lei 2): cada linha é seu próprio cartão, não itens dentro
+        // de uma moldura só.
+        AppReviewList(
+          items: [
+            AppReviewItem(label: 'Quando', value: activity.time),
+            for (var i = 0; i < segments.length; i++)
+              AppReviewItem(
+                label: i < detailLabels.length ? detailLabels[i] : 'Detalhe',
+                value: segments[i],
+              ),
+          ],
         ),
 
         if (syncedFromField) ...[
@@ -197,42 +189,6 @@ class _ActivityDetailBody extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.space1),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label, style: TextStyle(color: semantic.fgMuted)),
-          const SizedBox(width: AppSpacing.space3),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontWeight: AppTypography.weightSemibold,
-                color: semantic.fgDefault,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
