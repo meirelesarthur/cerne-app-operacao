@@ -306,11 +306,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Etapa 2 — manejo.
-      await _selectFieldOption(
-        tester,
-        'Operação',
-        'Manutenção de pastagem',
-      );
+      await _selectFieldOption(tester, 'Operação', 'Manutenção de pastagem');
       await _selectFieldOption(tester, 'Atividade', 'Roçada');
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
@@ -383,11 +379,7 @@ void main() {
       await _selectFieldOption(tester, 'Local do manejo', 'Área');
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
-      await _selectFieldOption(
-        tester,
-        'Operação',
-        'Manutenção de pastagem',
-      );
+      await _selectFieldOption(tester, 'Operação', 'Manutenção de pastagem');
       await _selectFieldOption(tester, 'Atividade', 'Roçada');
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
@@ -450,5 +442,70 @@ void main() {
       expect(find.text('Novo registro'), findsNothing);
       expect(tester.takeException(), isNull);
     });
+  });
+
+  group('MappedFeatureScreen — etapas viram abas na visualização', () {
+    // `marcacao` declara etapas ("Identificação", "Marcação", "Safra e
+    // custo", "Revisão") — o detalhe do registro precisa separar os campos
+    // de volta pelas mesmas etapas em vez de despejar tudo numa lista só.
+    testWidgets(
+      'o detalhe do registro agrupa os campos pelas etapas do cadastro',
+      (tester) async {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        container
+            .read(prototypeRecordsProvider.notifier)
+            .addRecord(
+              featureId: 'marcacao',
+              title: 'Marcação em Pasto Sul',
+              description: 'Registro de teste',
+              status: PrototypeRecordStatus.active,
+              details: const {
+                'Responsável': 'João Oliveira',
+                'Tipo de marcação': 'Amostragem',
+                'Centro de custo': 'Centro Agrícola',
+              },
+            );
+
+        await tester.pumpWidget(
+          _wrap(
+            container,
+            const MappedFeatureScreen(
+              featureId: 'marcacao',
+              profile: FeatureProfile.operational,
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Marcação em Pasto Sul'));
+        await tester.pumpAndSettle();
+
+        // As três etapas com conteúdo viram abas; a revisão (sem campo
+        // próprio) não aparece.
+        expect(find.text('Identificação'), findsOneWidget);
+        expect(find.text('Marcação'), findsOneWidget);
+        expect(find.text('Safra e custo'), findsOneWidget);
+        expect(find.text('Revisão'), findsNothing);
+
+        // Aba inicial: só o campo da primeira etapa está visível.
+        expect(find.text('João Oliveira'), findsOneWidget);
+        expect(find.text('Amostragem'), findsNothing);
+        expect(find.text('Centro Agrícola'), findsNothing);
+
+        await tester.tap(find.text('Marcação'));
+        await tester.pumpAndSettle();
+        expect(find.text('Amostragem'), findsOneWidget);
+        expect(find.text('João Oliveira'), findsNothing);
+        expect(find.text('Centro Agrícola'), findsNothing);
+
+        await tester.tap(find.text('Safra e custo'));
+        await tester.pumpAndSettle();
+        expect(find.text('Centro Agrícola'), findsOneWidget);
+        expect(find.text('Amostragem'), findsNothing);
+
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

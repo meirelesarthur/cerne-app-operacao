@@ -11,7 +11,7 @@ import '../../../mocks/bank_mocks.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 
-/// Home do CRN ADM: uma visão de Banking conectada à rotina da fazenda.
+/// Home do CERNE ADM: uma visão de Banking conectada à rotina da fazenda.
 ///
 /// Os parceiros e a central de segurança são dados demonstrativos — não
 /// criam uma segunda camada de navegação nem simulam uma integração financeira

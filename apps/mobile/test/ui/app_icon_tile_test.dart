@@ -15,11 +15,11 @@ void main() {
     testWidgets('renderiza ícone e rótulo sem exceção', (tester) async {
       await tester.pumpWidget(
         _wrap(
-          const AppAppIconTile(icon: AppIcons.layoutGrid, label: 'CRN App'),
+          const AppAppIconTile(icon: AppIcons.layoutGrid, label: 'CERNE App'),
         ),
       );
 
-      expect(find.text('CRN App'), findsOneWidget);
+      expect(find.text('CERNE App'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
@@ -29,13 +29,13 @@ void main() {
         _wrap(
           AppAppIconTile(
             icon: AppIcons.shieldCheck,
-            label: 'CRN ADM',
+            label: 'CERNE ADM',
             onTap: () => tapped = true,
           ),
         ),
       );
 
-      await tester.tap(find.text('CRN ADM'));
+      await tester.tap(find.text('CERNE ADM'));
       await tester.pump();
 
       expect(tapped, isTrue);

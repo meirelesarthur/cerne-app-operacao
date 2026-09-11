@@ -12,6 +12,7 @@ import '../design/theme/app_theme_extension.dart';
 import 'page_scaffold.dart';
 import 'chip.dart';
 import 'icon_button.dart';
+import 'review_list.dart';
 import 'transaction_list_item.dart';
 import '../design/generated/app_layout.dart';
 
@@ -142,34 +143,21 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
         ),
         const SizedBox(height: AppSpacing.space4),
 
-        // Ficha do comprovante.
-        Container(
-          padding: const EdgeInsets.all(AppSpacing.space4),
-          decoration: BoxDecoration(
-            color: semantic.bgSubtle,
-            border: Border.all(color: semantic.borderDefault),
-            borderRadius: BorderRadius.circular(AppRadius.xl2),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _ReceiptRow(label: isIn ? 'De' : 'Para', value: Text(tx.title)),
-              if (tx.subtitle != null) ...[
-                const SizedBox(height: AppSpacing.space3),
-                _ReceiptRow(label: 'Descrição', value: Text(tx.subtitle!)),
-              ],
-              const SizedBox(height: AppSpacing.space3),
-              _ReceiptRow(label: 'Data', value: Text(tx.time)),
-              const SizedBox(height: AppSpacing.space3),
-              const _ReceiptRow(
-                label: 'Situação',
-                value: AppChip(
-                  tone: AppChipTone.brand,
-                  child: Text('Efetivada'),
-                ),
-              ),
-            ],
-          ),
+        // Ficha do comprovante — `AppReviewList`, fonte única dos campos de
+        // leitura (Lei 2): cada campo é seu próprio cartão abafado. A
+        // situação continua um `AppChip` à parte: não é texto, é estado.
+        AppReviewList(
+          items: [
+            AppReviewItem(label: isIn ? 'De' : 'Para', value: tx.title),
+            if (tx.subtitle != null)
+              AppReviewItem(label: 'Descrição', value: tx.subtitle!),
+            AppReviewItem(label: 'Data', value: tx.time),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.space3),
+        const _ReceiptRow(
+          label: 'Situação',
+          value: AppChip(tone: AppChipTone.brand, child: Text('Efetivada')),
         ),
         const SizedBox(height: AppSpacing.space4),
 

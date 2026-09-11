@@ -375,20 +375,13 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
               ),
             ),
             const SizedBox(height: AppSpacing.space4),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.space4),
-              decoration: BoxDecoration(
-                color: semantic.bgSubtle,
-                borderRadius: BorderRadius.circular(AppRadius.xl2),
-              ),
-              child: Column(
-                children: [
-                  _DetailRow(label: 'Unidade', value: c.unidade),
-                  _DetailRow(label: 'Validade da cotação', value: c.validade),
-                  _DetailRow(label: 'Itens', value: '${c.itens}'),
-                  _DetailRow(label: 'Total', value: c.total),
-                ],
-              ),
+            AppReviewList(
+              items: [
+                AppReviewItem(label: 'Unidade', value: c.unidade),
+                AppReviewItem(label: 'Validade da cotação', value: c.validade),
+                AppReviewItem(label: 'Itens', value: '${c.itens}'),
+                AppReviewItem(label: 'Total', value: c.total),
+              ],
             ),
             const SizedBox(height: AppSpacing.space4),
             Text(
@@ -444,44 +437,4 @@ void _showCotacaoDetail(BuildContext context, Cotacao c) {
       },
     ),
   );
-}
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.space1),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: AppTypography.base,
-              color: semantic.fgMuted,
-            ),
-          ),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: AppTypography.base,
-                fontWeight: AppTypography.weightSemibold,
-                color: semantic.fgDefault,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

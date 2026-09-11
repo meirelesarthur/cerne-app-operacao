@@ -393,56 +393,46 @@ class _CurralTile extends StatelessWidget {
 }
 
 void _showCurralDetail(BuildContext context, CurralInfo curral) {
+  final ind = curral.indicadores;
+
   showAppDetailPage<void>(
     context,
     title: curral.nome,
-    child: Builder(
-      builder: (context) {
-        final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-        final ind = curral.indicadores;
-        Widget row(String label, String value) => Padding(
-          padding: const EdgeInsets.only(bottom: AppSpacing.space2),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(label, style: TextStyle(color: semantic.fgMuted)),
-              Text(
-                value,
-                style: TextStyle(
-                  fontWeight: AppTypography.weightSemibold,
-                  color: semantic.fgDefault,
-                ),
-              ),
-            ],
+    child: AppReviewList(
+      items: [
+        AppReviewItem(label: 'Situação', value: curral.situacao.label),
+        if (ind != null) ...[
+          AppReviewItem(
+            label: 'Cabeças',
+            value: '${ind.totalAnimais}/${curral.capacidade}',
           ),
-        );
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            row('Situação', curral.situacao.label),
-            if (ind != null) ...[
-              row('Cabeças', '${ind.totalAnimais}/${curral.capacidade}'),
-              row(
-                'Peso médio',
-                '${ind.pesoMedioAtualKg.toStringAsFixed(0)} kg',
-              ),
-              row('Dias de confinamento', '${ind.diasConfinamento}'),
-              row('GMD', '${ind.gmdKg.toStringAsFixed(2)} kg/dia'),
-              row(
-                'Peso previsto pós-confinamento',
-                '${ind.pesoPrevistoPosConfinamentoKg.toStringAsFixed(0)} kg',
-              ),
-              row('Desempenho', '${ind.indicadorDesempenhoPct}%'),
-            ] else if (curral.liberacaoEm != null)
-              row(
-                'Liberação em',
+          AppReviewItem(
+            label: 'Peso médio',
+            value: '${ind.pesoMedioAtualKg.toStringAsFixed(0)} kg',
+          ),
+          AppReviewItem(
+            label: 'Dias de confinamento',
+            value: '${ind.diasConfinamento}',
+          ),
+          AppReviewItem(
+            label: 'GMD',
+            value: '${ind.gmdKg.toStringAsFixed(2)} kg/dia',
+          ),
+          AppReviewItem(
+            label: 'Peso previsto pós-confinamento',
+            value: '${ind.pesoPrevistoPosConfinamentoKg.toStringAsFixed(0)} kg',
+          ),
+          AppReviewItem(
+            label: 'Desempenho',
+            value: '${ind.indicadorDesempenhoPct}%',
+          ),
+        ] else if (curral.liberacaoEm != null)
+          AppReviewItem(
+            label: 'Liberação em',
+            value:
                 '${curral.liberacaoEm!.day}/${curral.liberacaoEm!.month}/${curral.liberacaoEm!.year}',
-              ),
-          ],
-        );
-      },
+          ),
+      ],
     ),
   );
 }

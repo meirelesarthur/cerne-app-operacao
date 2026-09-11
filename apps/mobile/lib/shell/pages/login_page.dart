@@ -13,7 +13,7 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 /// campo em tela cheia como fundo fixo, véu escuro só no topo para a marca
 /// clara, e cartão de boas-vindas com o formulário flutuando sobre a arte.
 /// A tela é compartilhada pelos dois apps, mas o destino é definido pelo
-/// ambiente enviado pela pasta `CRN App`: Administração abre o hub Banking e
+/// ambiente enviado pela pasta `CERNE App`: Administração abre o hub Banking e
 /// Operação abre a central de campo. Não há duas ações de login nesta tela.
 ///
 class LoginPage extends ConsumerStatefulWidget {
@@ -40,7 +40,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     context.go(profile.landingRoute);
   }
 
-  /// Ambiente sinalizado pela pasta "CRN App" (`?ambiente=administracao|
+  /// Ambiente sinalizado pela pasta "CERNE App" (`?ambiente=administracao|
   /// operacional`). Um `/login` direto cai no administrativo, que é a porta
   /// padrão do superapp.
   UserAccessProfile get _ambienteFromQuery {

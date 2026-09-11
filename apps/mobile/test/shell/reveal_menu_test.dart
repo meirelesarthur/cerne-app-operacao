@@ -75,7 +75,7 @@ void main() {
 
         // Logout volta para a seleção de ambiente (simula "fechar o app"),
         // não direto para o login.
-        expect(navigatedTo, '/desktop/crn-app');
+        expect(navigatedTo, '/desktop/cerne-app');
       },
     );
 

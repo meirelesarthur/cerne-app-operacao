@@ -19,7 +19,7 @@ void main() {
         expect(redirectForSession('/login', signedOut), isNull);
         expect(redirectForSession('/onboarding', signedOut), isNull);
         expect(redirectForSession('/desktop', signedOut), isNull);
-        expect(redirectForSession('/desktop/crn-app', signedOut), isNull);
+        expect(redirectForSession('/desktop/cerne-app', signedOut), isNull);
 
         for (final path in [
           '/',
@@ -32,7 +32,7 @@ void main() {
         ]) {
           expect(
             redirectForSession(path, signedOut),
-            '/desktop/crn-app',
+            '/desktop/cerne-app',
             reason: path,
           );
         }
@@ -87,7 +87,7 @@ void main() {
     test('raiz, login e atalhos neutros retornam à central do perfil', () {
       for (final profile in UserAccessProfile.values) {
         final session = PrototypeSessionState.signedIn(profile);
-        for (final path in ['/', '/login', '/desktop', '/desktop/crn-app']) {
+        for (final path in ['/', '/login', '/desktop', '/desktop/cerne-app']) {
           expect(
             redirectForSession(path, session),
             profile.landingRoute,
