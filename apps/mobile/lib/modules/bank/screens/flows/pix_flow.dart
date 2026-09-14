@@ -106,11 +106,13 @@ class _PixFlowState extends ConsumerState<PixFlow> {
     }
   }
 
-  String get _stepLabel => switch (_step) {
-    _Step.chave => '1 de 3',
-    _Step.valor => '2 de 3',
-    _Step.revisao => '3 de 3',
-    _Step.done => '',
+  /// Índice 1-based na régua de [AppStepProgress] — a mesma peça do
+  /// `Cadastro steps` global, em vez do rótulo de texto solto no cabeçalho.
+  int get _stepNumber => switch (_step) {
+    _Step.chave => 1,
+    _Step.valor => 2,
+    _Step.revisao => 3,
+    _Step.done => 3,
   };
 
   @override
@@ -183,14 +185,8 @@ class _PixFlowState extends ConsumerState<PixFlow> {
       return BankFlowShell(
         title: 'Pix',
         onBack: _back,
-        headerAction: Text(
-          _stepLabel,
-          style: TextStyle(
-            fontSize: AppTypography.xs,
-            fontWeight: AppTypography.weightSemibold,
-            color: semantic.fgSubtle,
-          ),
-        ),
+        totalSteps: 3,
+        currentStep: _stepNumber,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -278,14 +274,8 @@ class _PixFlowState extends ConsumerState<PixFlow> {
       return BankFlowShell(
         title: 'Pix',
         onBack: _back,
-        headerAction: Text(
-          _stepLabel,
-          style: TextStyle(
-            fontSize: AppTypography.xs,
-            fontWeight: AppTypography.weightSemibold,
-            color: semantic.fgSubtle,
-          ),
-        ),
+        totalSteps: 3,
+        currentStep: _stepNumber,
         primaryLabel: 'Revisar',
         onPrimary: () => setState(() => _step = _Step.revisao),
         primaryDisabled: !_valorValido,
@@ -395,14 +385,8 @@ class _PixFlowState extends ConsumerState<PixFlow> {
       return BankFlowShell(
         title: 'Revisar Pix',
         onBack: _back,
-        headerAction: Text(
-          _stepLabel,
-          style: TextStyle(
-            fontSize: AppTypography.xs,
-            fontWeight: AppTypography.weightSemibold,
-            color: semantic.fgSubtle,
-          ),
-        ),
+        totalSteps: 3,
+        currentStep: _stepNumber,
         primaryLabel: 'Confirmar Pix',
         onPrimary: () => setState(() => _step = _Step.done),
         child: Column(

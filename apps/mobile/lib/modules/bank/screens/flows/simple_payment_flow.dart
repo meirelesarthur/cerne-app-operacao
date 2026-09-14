@@ -234,6 +234,8 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
       return BankFlowShell(
         title: meta.title,
         onBack: _back,
+        totalSteps: 2,
+        currentStep: 2,
         primaryLabel: meta.confirm,
         onPrimary: () => setState(() => _step = _Step.done),
         child: Column(
@@ -319,6 +321,8 @@ class _SimplePaymentFlowState extends ConsumerState<SimplePaymentFlow> {
     return BankFlowShell(
       title: meta.title,
       onBack: _back,
+      totalSteps: 2,
+      currentStep: 1,
       primaryLabel: 'Revisar',
       onPrimary: () => setState(() => _step = _Step.revisao),
       primaryDisabled: !_valid,
