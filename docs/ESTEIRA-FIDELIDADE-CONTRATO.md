@@ -120,12 +120,21 @@ mudança de contagem.
 baixado nesta sessão e `npm run lint`/`npm run test`/`npm run quality:functional` rodaram de
 verdade. Isso pegou 3 bugs que a checagem estrutural (sem compilar) não via — dois testes que
 não preenchiam campo novo, um teste que checava obrigatoriedade por posição em vez de por id —
-todos corrigidos. A suíte completa do app (544 testes) tem **10 falhas, nenhuma desta leva**:
-6 são golden tests (diferença de renderização de fonte neste ambiente, não têm relação com
-`functional_catalog.dart`) e 4 já falham em `main` sem nenhuma mudança desta esteira
-(`Bluetooth exige descoberta`, `scanner SISBOV`, `TratoDiarioFlow`, `LoginPage login
-sinalizado como operacional`) — confirmado revertendo para `main` e rodando os mesmos testes
-lá. `functional_catalog_test.dart` e `functional_journey_engine_test.dart`: **verdes**.
+todos corrigidos. A primeira rodada completa (544 testes) tinha **10 falhas, nenhuma desta
+leva**: 6 golden tests (diferença de renderização de fonte neste ambiente) e 4 já quebradas em
+`main` sem nenhuma mudança desta esteira (`Bluetooth exige descoberta`, `scanner SISBOV`,
+`TratoDiarioFlow`, `LoginPage login sinalizado como operacional`) — confirmado revertendo para
+`main` e rodando os mesmos testes lá.
+
+Das quatro falhas de `main`, duas eram simulação de hardware (Bluetooth, scanner SISBOV) — e a
+causa raiz acabou sendo um bug real em `mapped_feature_screen.dart`, não uma questão de
+simulação: nenhuma funcionalidade sem `listMode` (hardware simulado incluído) conseguia
+mostrar a barra de ação com o CTA, porque a tela só entrava em "modo formulário" pela via de
+uma listagem que essas telas não têm. Corrigido (`showingForm` no lugar de `isForm` nos quatro
+pontos que precisavam concordar com o que já era renderizado). Segunda rodada completa: **546
+testes, 8 falhas** — as 6 golden mais `TratoDiarioFlow`/`LoginPage`, que continuam de `main`,
+sem relação com hardware simulado ou com esta esteira. `functional_catalog_test.dart` e
+`functional_journey_engine_test.dart`: **verdes**.
 
 ---
 
