@@ -342,6 +342,7 @@ void main() {
       );
       await _enterFieldText(tester, 'Quantidade', '20');
       await _selectFieldOption(tester, 'Unidade', 'kg');
+      await tester.ensureVisible(find.text('Adicionar').last);
       await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
 
@@ -410,6 +411,7 @@ void main() {
       );
       await _enterFieldText(tester, 'Quantidade', '20');
       await _selectFieldOption(tester, 'Unidade', 'kg');
+      await tester.ensureVisible(find.text('Adicionar').last);
       await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
       expect(find.text('Ração Engorda 18%'), findsOneWidget);
