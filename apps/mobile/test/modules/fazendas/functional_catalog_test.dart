@@ -310,12 +310,17 @@ void main() {
             .toSet(),
         {'processamentos'},
       );
+      // fidelidade-contrato (onda 3): `lote-animais."Animais do lote"` ganha
+      // `tipo-identificacao` — a identificação por texto vira modo +
+      // número, mesmo padrão de `identifications[]` de `registrar-animal`,
+      // documentando a intenção de FK (`animal_uuids[]`) sem UUID sintético.
+      // 103+1=104. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 3.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        103,
+        104,
       );
 
       for (final par in comCampos) {

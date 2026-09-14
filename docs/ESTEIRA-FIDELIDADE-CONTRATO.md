@@ -155,19 +155,24 @@ abaixo do checklist original).
 
 ## Onda 3 — Categoria C: FK como texto livre → `select` sobre domínio
 
-- [ ] `lote-animais` — item da coleção "Animais do lote": identificação livre vira seleção
-      sobre `catalogoIdentificacaoAnimal` + UUID simulado, mesmo padrão de `identifications[]`
-      de `registrar-animal`.
-- [ ] `transferencia-animal` — mesma mudança: identificação por texto vira seleção/coleção
-      (ver também Onda 5, é também um problema de cardinalidade aqui).
-- [ ] `desmama` — campo `lote`: texto livre vira `select` sobre um novo domínio compartilhado
-      `catalogoLotes` (ainda não existe no catálogo — nasce aqui, pelo critério da onda 8:
-      usado por `lote-animais`, `desmama`, `sanitario`, `apartacao`, `lotes-reproducao` e
-      outros já hoje em campo `lote` livre).
-- [ ] `apartacao` — campo `lote-origem`: mesma migração para `catalogoLotes`.
-- [ ] `compras-animais` — campo `fornecedor`/`vendedor`: migra de texto livre para `select`
+- [x] `lote-animais` — item da coleção "Animais do lote": ganha `tipo-identificacao` (select
+      sobre `catalogoIdentificacaoAnimal`) ao lado da `identificacao` (número/brinco em texto)
+      — mesmo padrão de `identifications[]` de `registrar-animal` (modo + número, não um UUID
+      sintético de uma lista fechada de animais, que misrepresentaria a realidade pior do que
+      o texto livre).
+- [x] `transferencia-animal` — **não** convertido: `identificacao` é o campo-alvo da simulação
+      de RFID (`simulationTargetField`) — virar `select` quebraria a captura por hardware
+      simulado. `lote-atual`/`novo-lote` migraram para `select` sobre `catalogoLotes` (ver
+      abaixo); a cardinalidade de `identificacao` (escalar → `animal_uuids[]`) fica para a
+      Onda 5.
+- [x] `desmama` — campo `lote` e `lote-destino`: `select` sobre o novo domínio compartilhado
+      `catalogoLotes` (nasce aqui, critério da onda 8: reusado por `desmama`, `apartacao` e
+      `transferencia-animal`).
+- [x] `apartacao` — campos `lote-origem` e `lote-destino`: mesma migração para `catalogoLotes`.
+- [x] `compras-animais` — campos `fornecedor`/`vendedor`: migram de texto livre para `select`
       sobre novo domínio `catalogoFornecedores` (sintético, mesmo critério de dado de exemplo
-      da leva anterior — nunca copiado de produção).
+      da leva anterior — nunca copiado de produção; inclui `Fazenda Boa Vista`, já usado na
+      amostra semeada como `fornecedor`).
 
 ## Onda 4 — Categoria D: array × escalar / campo por item
 

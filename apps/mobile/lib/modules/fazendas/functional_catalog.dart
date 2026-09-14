@@ -274,6 +274,31 @@ const catalogoItensEstoque = <String>[
   'Diesel S10 — Lote 2026-08-A',
 ];
 
+// fidelidade-contrato (onda 3): categoria C da re-auditoria de 14/09 — o
+// contrato exige UUID de catálogo (`exists` tenant-scoped) onde o protótipo
+// captura texto livre. Sem persistência real, o protótipo não tem UUID de
+// verdade; a correção é de forma — texto livre vira `select` sobre um
+// domínio real, mesmo critério de `catalogoItensEstoque` acima. Compartilhado
+// por `desmama`, `apartacao` e `transferencia-animal` (só
+// lote-atual/novo-lote — a identificação do animal continua texto: é o
+// campo-alvo da simulação de RFID). Ver
+// docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 3.
+const catalogoLotes = <String>[
+  'Lote Recria 02',
+  'Lote Engorda 05',
+  'Lote Matrizes 01',
+  'Lote Receptoras 03',
+];
+
+// Compartilhado por `compras-animais` (fornecedor e vendedor).
+const catalogoFornecedores = <String>[
+  'Fazenda Boa Vista',
+  'Corretora Campo Alto',
+  'Central de Genética Boa Vista',
+  'Fazenda São Pedro',
+  'Agropecuária Vale Verde',
+];
+
 const adminFeatures = <FeatureDefinition>[
   // Auditoria dos painéis (docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2):
   // `painel-pecuario` fundiu aqui. Os dois painéis mostravam o mesmo P&L e o
@@ -459,7 +484,17 @@ const adminFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoResponsaveis,
       ),
-      FeatureField(id: 'fornecedor', label: 'Fornecedor', isRequired: true),
+      // fidelidade-contrato (onda 3): `provider_uuid` é FK no contrato real
+      // de `/movement-purchases` — texto livre não referencia nada. Vira
+      // `select` sobre `catalogoFornecedores`, mesmo domínio de `vendedor`
+      // abaixo. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 3.
+      FeatureField(
+        id: 'fornecedor',
+        label: 'Fornecedor',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoFornecedores,
+      ),
       FeatureField(
         id: 'data',
         label: 'Data da compra',
@@ -535,7 +570,8 @@ const adminFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'vendedor',
         label: 'Vendedor',
-        placeholder: 'Quem intermediou a compra',
+        type: FeatureFieldType.select,
+        options: catalogoFornecedores,
       ),
     ],
     // `items[]` traz lote, pasto e centro de custo de cada grupo comprado;
@@ -1761,11 +1797,23 @@ const operationalFeatures = <FeatureDefinition>[
         titleField: 'identificacao',
         subtitleFields: ['categoria', 'peso'],
         fields: [
+          // fidelidade-contrato (onda 3): `animal_uuids[]` exige UUID de um
+          // animal já cadastrado — texto livre não referencia nada de
+          // verdade. Vira `select` sobre `catalogoIdentificacaoAnimal`
+          // combinado ao número (mesmo padrão de `identifications[]` de
+          // `registrar-animal`), documentando a intenção de FK.
+          FeatureField(
+            id: 'tipo-identificacao',
+            label: 'Modo de identificação',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoIdentificacaoAnimal,
+          ),
           FeatureField(
             id: 'identificacao',
             label: 'Identificação',
             isRequired: true,
-            placeholder: 'Brinco ou RFID',
+            placeholder: 'Brinco, RFID ou SISBOV',
           ),
           FeatureField(
             id: 'categoria',
@@ -2003,8 +2051,24 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoResponsaveis,
       ),
-      FeatureField(id: 'lote-atual', label: 'Lote atual', isRequired: true),
-      FeatureField(id: 'novo-lote', label: 'Novo lote', isRequired: true),
+      // fidelidade-contrato (onda 3): texto livre vira `select` sobre
+      // `catalogoLotes` — a identificação do animal (acima) continua texto:
+      // é o campo-alvo da simulação de RFID, não um select. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 3.
+      FeatureField(
+        id: 'lote-atual',
+        label: 'Lote atual',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
+      FeatureField(
+        id: 'novo-lote',
+        label: 'Novo lote',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
       // fidelidade-campos (onda 3): `same_batch` é a flag required de
       // `/animals/batch-transfer` — decide se todos os animais vão para um
       // lote só ou se cada um tem o seu destino. Sem ela o backend não sabe
@@ -2389,7 +2453,16 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['Recria', 'Venda'],
       ),
-      FeatureField(id: 'lote', label: 'Lote', isRequired: true),
+      // fidelidade-contrato (onda 3): `lote` referencia um `batch_uuid` real
+      // no contrato — texto livre não referencia nada. Vira `select` sobre
+      // `catalogoLotes`. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 3.
+      FeatureField(
+        id: 'lote',
+        label: 'Lote',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
       FeatureField(
         id: 'identificacao',
         label: 'Identificação das vacas paridas',
@@ -2407,6 +2480,8 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'lote-destino',
         label: 'Lote de destino dos bezerros',
+        type: FeatureFieldType.select,
+        options: catalogoLotes,
       ),
     ],
     collections: [
@@ -2456,10 +2531,17 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
+      // fidelidade-contrato (onda 3): o contrato real é `batches[]` (array de
+      // UUID); `lote-origem` continua escalar aqui de propósito (a
+      // cardinalidade vira Onda 5), mas o texto livre vira `select` sobre
+      // `catalogoLotes` — mesma correção de forma que `desmama`. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 3.
       FeatureField(
         id: 'lote-origem',
         label: 'Lote de origem',
+        type: FeatureFieldType.select,
         isRequired: true,
+        options: catalogoLotes,
       ),
       FeatureField(
         id: 'criterio',
@@ -2471,7 +2553,9 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'lote-destino',
         label: 'Lote de destino',
+        type: FeatureFieldType.select,
         isRequired: true,
+        options: catalogoLotes,
       ),
       FeatureField(
         id: 'quantidade',
