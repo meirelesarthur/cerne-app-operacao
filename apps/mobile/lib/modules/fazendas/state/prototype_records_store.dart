@@ -289,6 +289,10 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Atividade': 'Agricultura',
         'Proprietário': 'Fazenda Cerne S/A',
         'Ativa': 'Sim',
+        // fidelidade-campos (onda 9 — re-auditoria 11/09): `farm_uuid` e
+        // `coordinates`, os dois residuais de `/areas`.
+        'Fazenda': 'Fazenda São Pedro',
+        'Coordenadas (polígono)': 'Desenhado no mapa · 6 vértices',
         'Infraestrutura': '3 item(ns)',
       },
     ),
@@ -307,6 +311,8 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Atividade': 'Pecuária',
         'Área de recreio': 'Não',
         'Ativa': 'Sim',
+        'Fazenda': 'Fazenda São Pedro',
+        'Coordenadas (polígono)': 'Desenhado no mapa · 4 vértices',
       },
     ),
   ],
@@ -441,6 +447,9 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Responsável': 'Maria Souza',
         'Código': 'LR-2026-014',
         'Data do vínculo': '2026-08-22',
+        // fidelidade-campos (onda 9 — re-auditoria 11/09): `description`,
+        // único required residual de `/breeding-batches`.
+        'Descrição': 'Vínculo das matrizes à IATF da estação Primavera',
         'Estação de monta': 'Estação Primavera 2026',
         'Lote': 'Lote Matrizes 01',
         'Finalidade': 'Matrizes',
@@ -456,6 +465,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Responsável': 'Carlos Dias',
         'Código': 'LR-2026-015',
         'Data do vínculo': '2026-08-25',
+        'Descrição': 'Receptoras aptas para transferência de embrião',
         'Estação de monta': 'Estação Primavera 2026',
         'Lote': 'Lote Receptoras 03',
         'Finalidade': 'Receptoras',

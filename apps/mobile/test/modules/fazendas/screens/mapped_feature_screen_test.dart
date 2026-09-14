@@ -337,6 +337,13 @@ void main() {
       // A folha abre com o rótulo do item, não com o nome da coleção.
       expect(find.text('Insumo'), findsOneWidget);
       await _selectFieldOption(tester, 'Produto', 'Ração Engorda 18%');
+      // fidelidade-campos (onda 9 — re-auditoria 11/09): `estoque` entrou
+      // como required (`inputs.*.stock_uuid`).
+      await _selectFieldOption(
+        tester,
+        'Item de estoque',
+        'Ração Engorda 18% — Lote 2026-07-A',
+      );
       await _enterFieldText(tester, 'Quantidade', '20');
       await _selectFieldOption(tester, 'Unidade', 'kg');
       await tester.tap(find.text('Adicionar').last);
@@ -404,6 +411,11 @@ void main() {
       );
       await tester.pumpAndSettle();
       await _selectFieldOption(tester, 'Produto', 'Ração Engorda 18%');
+      await _selectFieldOption(
+        tester,
+        'Item de estoque',
+        'Ração Engorda 18% — Lote 2026-07-A',
+      );
       await _enterFieldText(tester, 'Quantidade', '20');
       await _selectFieldOption(tester, 'Unidade', 'kg');
       await tester.tap(find.text('Adicionar').last);

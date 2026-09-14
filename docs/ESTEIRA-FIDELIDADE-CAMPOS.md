@@ -241,31 +241,74 @@ campo obrigatório** (sem isso um item entraria vazio na lista). Em teste de
 widget, o caminho inteiro: pastagem → etapa de lançamentos → folha do insumo →
 linha com o dado verdadeiro → revisão citando o item → registro salvo.
 
+## Onda 9 — Resíduos da re-auditoria de 11/09
+
+A re-auditoria **"Gaps de campo — Cadastros CERNE"** (11/09/2026, três auditores
+paralelos) comparou o catálogo pós-onda 8 outra vez contra o `rules()` atual dos Form
+Requests — não contra o autorrelato desta esteira. Resultado: de 22 cadastros com gap em
+07/09, 9 ainda tinham resíduo, nenhum mais de severidade alta. Três padrões, de novo:
+
+1. **Campo de item ainda achatado no cabeçalho ou ausente da coleção** —
+   `pastagens.inputs.*.stock_uuid`, `pastagens.services.*.measurement_uuid`,
+   `sanitario.items.*.stock_uuid`, `compras-animais.items.*.amount`,
+   `batidas.items.*.quantity_realized`, `manutencao-frota.items.*.equipment_uuid`.
+   Entram como campo do item, na coleção correspondente — o mesmo padrão da onda 8, sem
+   mexer no motor. `stock_uuid` (lote de estoque, distinto do produto) vira domínio
+   compartilhado `catalogoItensEstoque`, mesmo critério de `catalogoUnidades`/
+   `catalogoArmazens`.
+2. **Escalar obrigatório residual** — `lotes-reproducao.description` (o único required
+   que a onda 4 não fechou), `rebanho-inicial.price_kilo_alive` (já declarado em
+   `registrar-animal`, faltava aqui) e `cadastrar-area.coordinates`/`farm_uuid`
+   (geometria de mapa e contexto de fazenda — a tela é readOnly, então documentam o
+   contrato, mesmo critério da decisão 2 da curadoria original).
+3. **Coleção genérica sem os itens do contrato** — único caso, `monta-natural`: a coleção
+   "Animais por linha" cobria o lançamento por animal com quatro campos genéricos, mas o
+   contrato tem **duas** coleções distintas ali — `simplified_animals[]` (lançamento
+   direto: armazém, estoque, unidade, quantidade) e `protocol_animals[]` (lançamento por
+   protocolo: hora, elegibilidade). Vira duas `FeatureCollection`, cada uma com os campos
+   required do seu array.
+
+Decisões desta onda:
+
+- **`preco-kg` entra opcional em `rebanho-inicial`**, espelhando exatamente o campo já
+  existente em `registrar-animal` — mesmo `id`, mesmo rótulo, mesma fonte real
+  (`/animals`). Não é um dos três valores recalculados da curadoria original
+  (`price_arroba_alive`/`value_unitary`/`unity_animal_ua`), mas os dois cadastros do
+  mesmo contrato devem tratar o campo do mesmo jeito.
+- **`fazenda`/`coordenadas` em `cadastrar-area` documentam, não editam** — a tela
+  continua `readOnly` (cadastro no desktop, onda 1 da esteira de fronteira); a amostra
+  semeada ganhou os dois campos, mesmo critério da decisão 2 da curadoria original.
+- **Padrão ③ (campos inventados) continua fora de escopo** — nenhuma remoção nesta onda,
+  mesma curadoria da leva original.
+
 ---
 
 ## Cadastro a cadastro
 
+A coluna Situação registra o estado ao fim da leva original (onda 6). Onde a
+re-auditoria de 11/09 (onda 9) achou resíduo, a nota `[onda 9]` diz o que fechou depois.
+
 | Cadastro | Sev. | O que faltava | Situação |
 |---|---|---|---|
 | `apontamento` | alta | as 5 coleções de lançamento | 5ª coleção (Produção) + armazém por item + ≥1 lançamento; 3 etapas |
-| `pastagens` | alta | 6 escalares e as 5 coleções | completo; volta ao operacional; 5 etapas |
+| `pastagens` | alta | 6 escalares e as 5 coleções | completo; volta ao operacional; 5 etapas. `[onda 9]` + `stock_uuid` do insumo, `measurement_uuid` do serviço |
 | `registrar-animal` | alta | espécie, entrada, identificação, genealogia, valores | completo; 5 etapas |
-| `cadastrar-area` | alta | cor (req), matrícula, vínculos, infraestrutura | completo (consulta) |
-| `compras-animais` | alta | bloco financeiro, itens, parcelas | completo (consulta) |
-| `batidas` | alta | dieta, vagão, data, itens | completo (consulta) |
+| `cadastrar-area` | alta | cor (req), matrícula, vínculos, infraestrutura | completo (consulta). `[onda 9]` + `farm_uuid`, `coordinates` |
+| `compras-animais` | alta | bloco financeiro, itens, parcelas | completo (consulta). `[onda 9]` + `items.*.amount` |
+| `batidas` | alta | dieta, vagão, data, itens | completo (consulta). `[onda 9]` + `items.*.quantity_realized` |
 | `marcacao` | alta | os 8 campos reais de `/markings` | completo; 4 etapas |
-| `manutencao-frota` | alta | peça/insumo por item, medidores, horas | completo; 4 etapas |
-| `sanitario` | alta | animais alvo, itens de estoque, mão de obra | completo; 4 etapas |
+| `manutencao-frota` | alta | peça/insumo por item, medidores, horas | completo; 4 etapas. `[onda 9]` + `items.*.equipment_uuid` |
+| `sanitario` | alta | animais alvo, itens de estoque, mão de obra | completo; 4 etapas. `[onda 9]` + `items.*.stock_uuid` |
 | `material-reprodutivo` | alta | code, date, descrição, estação, produtos | completo (consulta) |
 | `protocolos-estacao` | alta | code e `items[] min:1` | completo (consulta); coleção obrigatória |
-| `acasalamento` | alta | type, launch_type, as vacas, linhas por animal | completo; 5 etapas |
+| `acasalamento` | alta | type, launch_type, as vacas, linhas por animal | completo; 5 etapas. `[onda 9]` "Animais por linha" genérica virou `simplified_animals[]`/`protocol_animals[]` reais |
 | `diagnostico-gestacao` | alta | animal, técnica, dias; array por linha | completo; coleção obrigatória; 4 etapas |
-| `rebanho-inicial` | alta | raça, nascimento, identificação, valores, genealogia | completo; 5 etapas |
+| `rebanho-inicial` | alta | raça, nascimento, identificação, valores, genealogia | completo; 5 etapas. `[onda 9]` + `price_kilo_alive` |
 | `lote-animais` | média | data, animais, curral, parâmetro de peso | completo (consulta) |
 | `desmama` | média | data, lote de destino | completo |
 | `transferencia-lote-area` | média | data, curral | completo |
 | `estacao-monta` | média | code, date | completo (consulta) |
-| `lotes-reproducao` | média | code, date | de volta ao catálogo como consulta ADM, com os dois |
+| `lotes-reproducao` | média | code, date | de volta ao catálogo como consulta ADM, com os dois. `[onda 9]` + `description`, o required residual |
 | `formulacoes` | baixa | data, unidade da matéria-prima | completo (consulta) |
 | `abastecimentos` | baixa | unidade, observação, multi-item | completo; sem etapas (10 campos) |
 | `transferencia-animal` | baixa | `same_batch` | completo |
@@ -274,17 +317,17 @@ linha com o dado verdadeiro → revisão citando o item → registro salvo.
 
 ## Contagens do catálogo
 
-| | Antes (`360f0f8`) | Depois |
-|---|---|---|
-| Funcionalidades | 52 (15 adm · 37 op) | **53** (15 adm · 38 op) |
-| Ready | 46 | **47** |
-| Campos | 146 | **242** |
-| Campos obrigatórios | 127 | **169** |
-| Coleções (`sections`) | 5 | **26** |
-| Coleções obrigatórias | 0 | **2** |
-| Formulários em etapas | 0 (no motor genérico) | **8** (+ `ApontamentoFlow`) |
-| Coleções com item real | 0 | **24** de 26 |
-| Campos de item | 0 | **93** |
+| | Antes (`360f0f8`) | Onda 6 | Onda 9 (atual) |
+|---|---|---|---|
+| Funcionalidades | 52 (15 adm · 37 op) | 53 (15 adm · 38 op) | **53** (15 adm · 38 op) |
+| Ready | 46 | 47 | **47** |
+| Campos | 146 | 242 | **246** |
+| Campos obrigatórios | 127 | 169 | **172** |
+| Coleções (`sections`) | 5 | 26 | **27** |
+| Coleções obrigatórias | 0 | 2 | **2** |
+| Formulários em etapas | 0 (no motor genérico) | 8 (+ `ApontamentoFlow`) | **8** (+ `ApontamentoFlow`) |
+| Coleções com item real | 0 | 24 de 26 | **25** de 27 |
+| Campos de item | 0 | 93 | **103** |
 
 ## Pendências conhecidas
 
@@ -309,4 +352,7 @@ linha com o dado verdadeiro → revisão citando o item → registro salvo.
   catálogo (contagens, unicidade de id, referências de `recordTitleField`/
   `recordDescriptionFields`, cobertura das etapas) foram conferidas por um verificador
   equivalente escrito à parte, mas **a suíte precisa rodar antes do merge**:
-  `npm run lint && npm test && npm run quality:functional`.
+  `npm run lint && npm test && npm run quality:functional`. A onda 9 (mesmo ambiente sem
+  SDK) repetiu o critério: verificador equivalente reconferiu as mesmas invariantes contra
+  as 246 declarações de campo e 27 coleções resultantes — mesma pendência de rodar a suíte
+  real antes do merge.

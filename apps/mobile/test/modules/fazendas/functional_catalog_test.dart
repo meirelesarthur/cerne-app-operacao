@@ -170,14 +170,26 @@ void main() {
       // 222+20=242 campos; 158+11=169 obrigatórios. Coleções em
       // `compras-animais` (2), `batidas`, `abastecimentos` e
       // `manutencao-frota` (1 cada): 21+5=26 seções.
-      expect(fields, hasLength(242));
-      expect(fields.where((field) => field.isRequired), hasLength(169));
+      // Onda 9 (re-auditoria 11/09) — resíduos de campo **escalar** de
+      // cabeçalho: `cadastrar-area` +2 (2, `fazenda`/`coordenadas`),
+      // `lotes-reproducao` +1 (1, `descricao`) e `rebanho-inicial` +1 (0,
+      // `preco-kg` opcional, espelha `registrar-animal`): 242+4=246 campos;
+      // 169+3=172 obrigatórios. Nenhuma coleção nova nestes três — os
+      // residuais de **item** (`pastagens.inputs[]`/`services[]`,
+      // `sanitario.items[]`, `compras-animais.items[]`,
+      // `batidas.items[]`, `manutencao-frota.items[]`) entram nos campos da
+      // coleção, não nos do cabeçalho. `monta-natural` troca 1 coleção
+      // genérica por 2 do contrato (`simplified_animals[]`/
+      // `protocol_animals[]`): 26+1=27 seções. Ver
+      // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
+      expect(fields, hasLength(246));
+      expect(fields.where((field) => field.isRequired), hasLength(172));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
         hasLength(17),
       );
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(26));
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(27));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
@@ -255,15 +267,29 @@ void main() {
             (feature: feature, collection: collection),
       ];
 
-      expect(colecoes, hasLength(26));
+      expect(colecoes, hasLength(27));
 
       final comCampos = colecoes
           .where((par) => par.collection.fields.isNotEmpty)
           .toList(growable: false);
-      // 24 coleções reais do contrato. As 2 restantes são as "seções" de
+      // 25 coleções reais do contrato. As 2 restantes são as "seções" de
       // `processamentos` — rótulos de agrupamento (Pendentes/Concluídos), não
       // coleções de item; seguem como contador de propósito.
-      expect(comCampos, hasLength(24));
+      //
+      // fidelidade-campos (onda 9 — re-auditoria 11/09): `monta-natural`
+      // troca a coleção genérica "Animais por linha" (4 campos) pelas duas
+      // do contrato — "Animais (lançamento simplificado)" (5 campos:
+      // identificação, armazém, estoque, unidade, quantidade — os
+      // `simplified_animals.*` required) e "Animais do protocolo" (3
+      // campos: identificação, hora, elegível — os `protocol_animals.*`
+      // required) — +1 coleção, +4 campos de item. Mais 1 campo de item em
+      // cada uma de `pastagens.inputs[]` (estoque), `pastagens.services[]`
+      // (unidade), `sanitario.items[]` (estoque), `compras-animais.items[]`
+      // (subtotal), `batidas.items[]` (quantidade realizada) e
+      // `manutencao-frota.items[]` (equipamento): 24+1=25 coleções com
+      // campo; 93+10=103 campos de item. Ver
+      // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
+      expect(comCampos, hasLength(25));
       expect(
         colecoes
             .where((par) => par.collection.fields.isEmpty)
@@ -276,7 +302,7 @@ void main() {
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        93,
+        103,
       );
 
       for (final par in comCampos) {

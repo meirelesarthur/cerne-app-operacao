@@ -177,8 +177,11 @@ void main() {
       'Campo obrigatório.',
     );
 
+    // fidelidade-campos (onda 9 — re-auditoria 11/09): `estoque` entrou como
+    // required (`inputs.*.stock_uuid`) — sem ele o item não valida mais.
     const item = {
       'produto': 'Ração Engorda 18%',
+      'estoque': 'Ração Engorda 18% — Lote 2026-07-A',
       'quantidade': '20',
       'unidade': 'kg',
     };
@@ -192,6 +195,7 @@ void main() {
 
     controller.addGroupItem('Insumos', const {
       'produto': 'Sal Mineral Proteinado',
+      'estoque': 'Sal Mineral Proteinado — Lote 2026-06-C',
       'quantidade': '50',
       'unidade': 'kg',
     });

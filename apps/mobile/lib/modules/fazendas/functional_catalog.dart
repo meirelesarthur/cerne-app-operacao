@@ -261,6 +261,19 @@ const catalogoEquipamentos = <String>[
   'Grade Aradora',
 ];
 
+// fidelidade-campos (onda 9 — re-auditoria 11/09): `stock_uuid` é o lote de
+// estoque de um produto já recebido (o `ItemEstoque` do módulo Armazém), não
+// o produto em si — `produto`/`materia-prima` seguem apontando para
+// `catalogoProdutos`. Compartilhado por `pastagens.inputs[]`,
+// `sanitario.items[]` e `monta-natural.simplified_animals[]`. Ver
+// docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
+const catalogoItensEstoque = <String>[
+  'Ração Engorda 18% — Lote 2026-07-A',
+  'Sal Mineral Proteinado — Lote 2026-06-C',
+  'Vermífugo Injetável — Lote 2026-05-B',
+  'Diesel S10 — Lote 2026-08-A',
+];
+
 const adminFeatures = <FeatureDefinition>[
   // Auditoria dos painéis (docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2):
   // `painel-pecuario` fundiu aqui. Os dois painéis mostravam o mesmo P&L e o
@@ -553,6 +566,16 @@ const adminFeatures = <FeatureDefinition>[
             type: FeatureFieldType.number,
             isRequired: true,
           ),
+          // fidelidade-campos (onda 9 — re-auditoria 11/09):
+          // `items.*.amount` é required em `/movement-purchases` — o
+          // subtotal do item, derivável de quantidade × valor unitário, mas
+          // que o contrato exige explícito no envio.
+          FeatureField(
+            id: 'subtotal',
+            label: 'Subtotal do item (R\$)',
+            type: FeatureFieldType.number,
+            isRequired: true,
+          ),
           FeatureField(
             id: 'lote',
             label: 'Lote de destino',
@@ -660,6 +683,10 @@ const adminFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
+      // fidelidade-campos (onda 9 — re-auditoria 11/09): `description` é
+      // required no POST de `/breeding-batches` e era o único required ainda
+      // faltando desta leva — ficou de fora quando `codigo`/`data` entraram.
+      FeatureField(id: 'descricao', label: 'Descrição', isRequired: true),
       FeatureField(id: 'estacao', label: 'Estação de monta', isRequired: true),
       FeatureField(id: 'lote', label: 'Lote', isRequired: true),
       FeatureField(
@@ -817,6 +844,24 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Ativa',
         type: FeatureFieldType.select,
         options: ['Sim', 'Não'],
+      ),
+      // fidelidade-campos (onda 9 — re-auditoria 11/09): `farm_uuid` é
+      // required no POST de `/areas` (a fazenda dona da área) e `coordinates`
+      // é o polígono desenhado no mapa — os dois vêm do cadastro no desktop;
+      // aqui documentam o contrato que a consulta audita.
+      FeatureField(
+        id: 'fazenda',
+        label: 'Fazenda',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Fazenda São Pedro', 'Fazenda Boa Vista'],
+      ),
+      FeatureField(
+        id: 'coordenadas',
+        label: 'Coordenadas (polígono)',
+        type: FeatureFieldType.textarea,
+        isRequired: true,
+        placeholder: 'Desenhado no mapa da área, no cadastro do desktop',
       ),
       FeatureField(
         id: 'observacao',
@@ -1155,6 +1200,15 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.number,
             isRequired: true,
           ),
+          // fidelidade-campos (onda 9 — re-auditoria 11/09):
+          // `items.*.quantity_realized` é required em `/diet-beats` e é **por
+          // item** — só existia no cabeçalho, que mostra o total da batida.
+          FeatureField(
+            id: 'quantidade-realizada',
+            label: 'Quantidade realizada',
+            type: FeatureFieldType.number,
+            isRequired: true,
+          ),
           FeatureField(
             id: 'materia-seca',
             label: 'Matéria seca (%)',
@@ -1484,6 +1538,15 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Peso médio (kg)',
         type: FeatureFieldType.number,
       ),
+      // fidelidade-campos (onda 9 — re-auditoria 11/09): `price_kilo_alive` é
+      // required no mesmo `/animals` de `registrar-animal` — que já declara
+      // este campo — e ficou de fora aqui. Mesmo id/rótulo dos dois
+      // cadastros, mesma fonte real.
+      FeatureField(
+        id: 'preco-kg',
+        label: 'Preço do kg vivo',
+        type: FeatureFieldType.number,
+      ),
       FeatureField(
         id: 'preco-arroba',
         label: 'Preço da arroba (vivo)',
@@ -1542,6 +1605,7 @@ const operationalFeatures = <FeatureDefinition>[
         fields: [
           'tipo-identificacao',
           'peso-medio',
+          'preco-kg',
           'preco-arroba',
           'valor-unitario',
           'ua',
@@ -2123,6 +2187,16 @@ const operationalFeatures = <FeatureDefinition>[
             isRequired: true,
             options: catalogoProdutos,
           ),
+          // fidelidade-campos (onda 9 — re-auditoria 11/09):
+          // `items.*.stock_uuid` é required em `/sanitaries` — o lote de
+          // estoque de onde o produto saiu, não só o produto.
+          FeatureField(
+            id: 'estoque',
+            label: 'Item de estoque',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoItensEstoque,
+          ),
           FeatureField(
             id: 'quantidade',
             label: 'Quantidade',
@@ -2533,6 +2607,16 @@ const operationalFeatures = <FeatureDefinition>[
             isRequired: true,
             options: catalogoProdutos,
           ),
+          // fidelidade-campos (onda 9 — re-auditoria 11/09):
+          // `inputs.*.stock_uuid` é required em `/pastures` e faltava — o
+          // lote de estoque de onde o insumo saiu, não só o produto.
+          FeatureField(
+            id: 'estoque',
+            label: 'Item de estoque',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoItensEstoque,
+          ),
           FeatureField(
             id: 'quantidade',
             label: 'Quantidade',
@@ -2609,6 +2693,16 @@ const operationalFeatures = <FeatureDefinition>[
             id: 'quantidade',
             label: 'Quantidade',
             type: FeatureFieldType.number,
+          ),
+          // fidelidade-campos (onda 9 — re-auditoria 11/09):
+          // `services.*.measurement_uuid` é required em `/pastures` — a
+          // unidade em que a quantidade do serviço é medida.
+          FeatureField(
+            id: 'unidade',
+            label: 'Unidade',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoUnidades,
           ),
           FeatureField(
             id: 'valor',
@@ -3047,10 +3141,15 @@ const operationalFeatures = <FeatureDefinition>[
       ),
     ],
     // O protótipo tinha o touro e não **as vacas**. `natural.cow_uuids[]` é a
-    // coleção das fêmeas cobertas; `protocol_animals[]`/`simplified_animals[]`
-    // é o lançamento linha a linha, quando o tipo de lançamento é por animal.
-    // Nenhuma das duas é obrigatória aqui porque no contrato a exigência é
-    // condicional ao `type`/`launch_type`, não absoluta.
+    // coleção das fêmeas cobertas. O lançamento linha a linha, quando o tipo
+    // de lançamento é por animal, é **duas** coleções distintas no contrato —
+    // `simplified_animals[]` (lançamento direto, com o material que saiu do
+    // estoque) e `protocol_animals[]` (lançamento por protocolo, com hora e
+    // elegibilidade) — e não uma coleção genérica só, que era o único
+    // cadastro da re-auditoria de 11/09 em que a coleção existia sem os itens
+    // do contrato. Nenhuma das três é obrigatória aqui porque no contrato a
+    // exigência é condicional ao `type`/`launch_type`, não absoluta. Ver
+    // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
     collections: [
       FeatureCollection(
         name: 'Vacas do acasalamento',
@@ -3071,10 +3170,10 @@ const operationalFeatures = <FeatureDefinition>[
         ],
       ),
       FeatureCollection(
-        name: 'Animais por linha',
-        itemLabel: 'Animal do acasalamento',
+        name: 'Animais (lançamento simplificado)',
+        itemLabel: 'Animal do lançamento',
         titleField: 'identificacao',
-        subtitleFields: ['touro', 'data'],
+        subtitleFields: ['estoque', 'quantidade'],
         fields: [
           FeatureField(
             id: 'identificacao',
@@ -3083,17 +3182,58 @@ const operationalFeatures = <FeatureDefinition>[
             placeholder: 'Brinco ou RFID',
           ),
           FeatureField(
-            id: 'touro',
-            label: 'Touro / material',
+            id: 'armazem',
+            label: 'Armazém',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoArmazens,
           ),
           FeatureField(
-            id: 'data',
-            label: 'Data da cobertura',
-            type: FeatureFieldType.date,
+            id: 'estoque',
+            label: 'Item de estoque',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoItensEstoque,
           ),
           FeatureField(
-            id: 'observacao',
-            label: 'Observação',
+            id: 'unidade',
+            label: 'Unidade',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoUnidades,
+          ),
+          FeatureField(
+            id: 'quantidade',
+            label: 'Quantidade',
+            type: FeatureFieldType.number,
+            isRequired: true,
+          ),
+        ],
+      ),
+      FeatureCollection(
+        name: 'Animais do protocolo',
+        itemLabel: 'Animal do protocolo',
+        titleField: 'identificacao',
+        subtitleFields: ['hora', 'elegivel'],
+        fields: [
+          FeatureField(
+            id: 'identificacao',
+            label: 'Identificação',
+            isRequired: true,
+            placeholder: 'Brinco ou RFID',
+          ),
+          FeatureField(
+            id: 'hora',
+            label: 'Hora da aplicação',
+            isRequired: true,
+            placeholder: 'HH:MM',
+          ),
+          FeatureField(
+            id: 'elegivel',
+            label: 'Elegível',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: ['Sim', 'Não'],
           ),
         ],
       ),
@@ -3122,7 +3262,11 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureFormStep(
         title: 'Animais',
         hint: 'As fêmeas cobertas e, se for o caso, o lançamento por animal.',
-        sections: ['Vacas do acasalamento', 'Animais por linha'],
+        sections: [
+          'Vacas do acasalamento',
+          'Animais (lançamento simplificado)',
+          'Animais do protocolo',
+        ],
       ),
       FeatureFormStep(
         title: 'Revisão',
@@ -3527,6 +3671,22 @@ const operationalFeatures = <FeatureDefinition>[
         titleField: 'produto',
         subtitleFields: ['quantidade', 'unidade'],
         fields: [
+          // fidelidade-campos (onda 9 — re-auditoria 11/09):
+          // `items.*.equipment_uuid` é required em `/maintenances` e é **por
+          // item** — a peça pertence a um veículo/equipamento específico da
+          // manutenção, não só ao cabeçalho.
+          FeatureField(
+            id: 'equipamento',
+            label: 'Veículo / equipamento',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: [
+              'Trator John Deere 6110',
+              'Colheitadeira CR7',
+              'Caminhão Boiadeiro',
+              'Pulverizador',
+            ],
+          ),
           FeatureField(
             id: 'produto',
             label: 'Produto / peça',
