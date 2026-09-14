@@ -114,9 +114,18 @@ que ninguém confirmou.
 
 Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
 com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
-mudança de contagem. `functional_catalog_test.dart` e `functional_journey_engine_test.dart`
-atualizados e conferidos por verificador estrutural equivalente a cada onda (sem SDK Flutter
-neste ambiente); a suíte real precisa rodar antes do merge.
+mudança de contagem.
+
+**Verificação real, não só estrutural**: o SDK Flutter (3.44.6, a versão do `CLAUDE.md`) foi
+baixado nesta sessão e `npm run lint`/`npm run test`/`npm run quality:functional` rodaram de
+verdade. Isso pegou 3 bugs que a checagem estrutural (sem compilar) não via — dois testes que
+não preenchiam campo novo, um teste que checava obrigatoriedade por posição em vez de por id —
+todos corrigidos. A suíte completa do app (544 testes) tem **10 falhas, nenhuma desta leva**:
+6 são golden tests (diferença de renderização de fonte neste ambiente, não têm relação com
+`functional_catalog.dart`) e 4 já falham em `main` sem nenhuma mudança desta esteira
+(`Bluetooth exige descoberta`, `scanner SISBOV`, `TratoDiarioFlow`, `LoginPage login
+sinalizado como operacional`) — confirmado revertendo para `main` e rodando os mesmos testes
+lá. `functional_catalog_test.dart` e `functional_journey_engine_test.dart`: **verdes**.
 
 ---
 
@@ -293,15 +302,13 @@ Fora das cinco categorias por ser mais estrutural — a coleção "Serviços" de
 Cada um é um arquivo Dart próprio, não uma entrada de `functional_catalog.dart` — maior custo
 de engenharia por item, e testado por conta.
 
-**Decisão desta execução: nenhum dos três foi editado.** Motivo, registrado em vez de
-adivinhado: as Ondas 1-7 são edição de **dado declarativo** (`functional_catalog.dart`), onde
-uma invariante estrutural escrita à parte (contagens, cobertura de etapas, referências de
-campo) dá confiança razoável sem compilar. Os três arquivos aqui são **widget Dart imperativo**
-— `apontamento_flow.dart` sozinho tem 1248 linhas, um `StatefulWidget` com estado próprio, sem
-o mesmo verificador possível. Sem SDK Flutter neste ambiente para compilar/rodar o widget test
-depois de editar, um erro de sintaxe ou de tipo só apareceria no CI, não aqui. Some-se a isso
-que boa parte do que falta é semântica de negócio que a auditoria não detalha (os valores reais
-de `percentage`/`difference`/`amount`/`total` de `feedstocks[]`, as 13 colunas da matriz de
+**Decisão desta execução: nenhum dos três foi editado.** A justificativa original (sem SDK
+Flutter neste ambiente para compilar depois de editar) deixou de valer — o SDK 3.44.6 foi
+baixado durante esta mesma sessão e `flutter test` roda de verdade agora (ver "Verificação
+real" no topo deste arquivo). O que continua de pé, e por isso a decisão não muda: boa parte do
+que falta em `apontamento_flow.dart`/`batelada_flow.dart` é **semântica de negócio que a
+auditoria não detalha** (os valores reais de `percentage`/`difference`/`amount`/`total` de
+`feedstocks[]`, as 13 colunas da matriz de
 qualidade) — inventar a forma exata seria o mesmo erro que a curadoria já vetou para enums sem
 domínio completo (Onda 2b), agora em código de tela em vez de `options`.
 
@@ -430,7 +437,8 @@ Tabela de trabalho — cada linha é uma issue do relatório, com a onda que a f
   na tabela — o relatório aponta a divergência mas não dá dado suficiente (enum completo, nome
   exato do campo-destino) para fechar sem olhar o Form Request real; não incluídas em onda
   numerada até essa confirmação.
-- **`flutter analyze`/`flutter test` não rodam neste ambiente** (sem SDK Flutter) — mesma
-  limitação registrada em `ESTEIRA-FIDELIDADE-CAMPOS.md`. Cada onda desta esteira precisa do
-  mesmo tratamento: verificador estrutural equivalente durante o desenvolvimento, e
-  `npm run lint && npm test && npm run quality:functional` antes do merge.
+- ~~**`flutter analyze`/`flutter test` não rodam neste ambiente**~~ — resolvido nesta sessão:
+  SDK Flutter 3.44.6 baixado, `npm run lint`/`npm run quality:functional`/`npm test`
+  (544 testes) rodaram de verdade. 3 bugs reais corrigidos (ver "Verificação real" no topo).
+  10 falhas continuam de pé, nenhuma desta leva — 6 golden tests (fonte do ambiente) e 4 já
+  quebradas em `main` sem relação com fidelidade de contrato.
