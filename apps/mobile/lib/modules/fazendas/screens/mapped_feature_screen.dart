@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
+import '../../../shell/state/prototype_session_store.dart';
 import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
 import '../functional_journey_engine.dart';
@@ -69,6 +70,11 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   late final FunctionalJourneyController _journey;
   PrototypeRecord? _lastCreated;
 
+  /// Título do registro editado na última submissão — `null` quando a
+  /// submissão foi uma criação. Só existe para diferenciar a mensagem do
+  /// painel de sucesso ("atualizado" vs. "salvo").
+  String? _lastEditedTitle;
+
   FeatureDefinition get feature => widget.feature;
   String get dataSourceId => feature.dataSourceId ?? feature.id;
 
@@ -79,6 +85,12 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   }
 
   void _startForm() => setState(_journey.startForm);
+
+  /// Abre o cadastro pré-preenchido com os dados de [record] — a ação
+  /// "Editar" que a visualização do registro oferece ao perfil operacional.
+  /// Ver [FunctionalJourneyController.startEditing].
+  void _editRecord(PrototypeRecord record) =>
+      setState(() => _journey.startEditing(record));
 
   void _showList() => setState(_journey.showList);
 
@@ -180,33 +192,54 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   }
 
   void _submit() {
+    final editingId = _journey.editingRecordId;
     final draft = _journey.submit();
     if (draft == null) {
       setState(() {});
       return;
     }
-    _lastCreated = ref
-        .read(prototypeRecordsProvider.notifier)
-        .addRecord(
-          featureId: dataSourceId,
-          title: draft.title,
-          description: draft.description,
-          status: draft.status,
-          details: draft.details,
-        );
+    _lastEditedTitle = editingId == null ? null : draft.title;
+    final notifier = ref.read(prototypeRecordsProvider.notifier);
+    _lastCreated = editingId == null
+        ? notifier.addRecord(
+            featureId: dataSourceId,
+            title: draft.title,
+            description: draft.description,
+            status: draft.status,
+            details: draft.details,
+          )
+        : notifier.updateRecord(
+                featureId: dataSourceId,
+                id: editingId,
+                title: draft.title,
+                description: draft.description,
+                status: draft.status,
+                details: draft.details,
+              ) ??
+              notifier.addRecord(
+                featureId: dataSourceId,
+                title: draft.title,
+                description: draft.description,
+                status: draft.status,
+                details: draft.details,
+              );
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     if (_journey.mode == FunctionalJourneyMode.success) {
+      final wasEditing = _lastEditedTitle != null;
       return AppSuccessPanel(
-        title:
-            feature.successTitle ??
-            '${_lastCreated?.title ?? feature.title} salvo',
+        title: wasEditing
+            ? '${_lastEditedTitle ?? feature.title} atualizado'
+            : feature.successTitle ??
+                  '${_lastCreated?.title ?? feature.title} salvo',
         description: Text(
-          feature.successDescription ??
-              'O registro foi incluído no protótipo e já está disponível nesta sessão.',
+          wasEditing
+              ? 'As alterações foram salvas e já estão disponíveis nesta sessão.'
+              : feature.successDescription ??
+                    'O registro foi incluído no protótipo e já está disponível nesta sessão.',
         ),
         actions: Column(
           mainAxisSize: MainAxisSize.min,
@@ -255,8 +288,14 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     // etapas dentro da folha branca e o rodapé colado na base: a anatomia
     // inteira vem de [AppPageBody] — a mesma peça dos fluxos operacionais e do
     // Bank —, sem `Scaffold` porque o shell já resolveu a área segura.
+    final isEditing = isForm && _journey.editingRecordId != null;
+
     return AppPageBody(
-      title: isForm ? feature.createAction ?? feature.title : feature.title,
+      title: isForm
+          ? isEditing
+                ? 'Editar ${feature.title}'
+                : feature.createAction ?? feature.title
+          : feature.title,
       onBack: inStep
           ? _retreat
           : backToRecords
@@ -278,7 +317,9 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
       actionBar: showingForm
           ? AppActionBar(
               primaryLabel: _journey.isLastStep
-                  ? feature.primaryAction ?? 'Salvar registro'
+                  ? isEditing
+                        ? 'Salvar alterações'
+                        : feature.primaryAction ?? 'Salvar registro'
                   : 'Continuar',
               primaryIcon: _journey.isLastStep
                   ? AppIcons.saveAll
@@ -327,6 +368,17 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
               // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
               canCreate: feature.fields.isNotEmpty && !feature.readOnly,
               onCreate: _startForm,
+              // RBAC da visualização: só o perfil operacional edita um
+              // registro já gravado — administração consulta em modo
+              // somente leitura, sem ação de editar na ficha do registro.
+              // Mesma condição de `canCreate`, porque só há campo para
+              // editar quando também há campo para criar.
+              canEdit:
+                  ref.watch(prototypeSessionProvider).profile ==
+                      UserAccessProfile.operational &&
+                  feature.fields.isNotEmpty &&
+                  !feature.readOnly,
+              onEdit: _editRecord,
             )
           else
             _FeatureForm(
@@ -450,12 +502,20 @@ class _RecordsList extends StatefulWidget {
     required this.records,
     required this.canCreate,
     required this.onCreate,
+    required this.canEdit,
+    required this.onEdit,
   });
 
   final FeatureDefinition feature;
   final List<PrototypeRecord> records;
   final bool canCreate;
   final VoidCallback onCreate;
+
+  /// Perfil operacional em funcionalidade editável: a visualização do
+  /// registro ganha a ação "Editar" no cabeçalho. Administração, ou uma
+  /// funcionalidade sem campo próprio, mantém a ficha somente leitura.
+  final bool canEdit;
+  final ValueChanged<PrototypeRecord> onEdit;
 
   @override
   State<_RecordsList> createState() => _RecordsListState();
@@ -619,6 +679,14 @@ class _RecordsListState extends State<_RecordsList> {
     showAppDetailPage<void>(
       context,
       title: record.title,
+      actionIcon: widget.canEdit ? AppIcons.pencil : null,
+      actionLabel: widget.canEdit ? 'Editar' : null,
+      onAction: widget.canEdit
+          ? () {
+              Navigator.of(context).pop();
+              widget.onEdit(record);
+            }
+          : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

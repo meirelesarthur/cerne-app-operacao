@@ -649,6 +649,37 @@ class PrototypeRecordsNotifier extends Notifier<PrototypeRecordsState> {
     return created;
   }
 
+  /// Substitui um registro existente pelos dados revisados — a contraparte de
+  /// [addRecord] para a edição operacional de um registro já gravado. Mantém
+  /// o `id` e a posição na lista; se o `id` não existir mais (removido em
+  /// outra aba), a edição é descartada silenciosamente.
+  PrototypeRecord? updateRecord({
+    required String featureId,
+    required String id,
+    required String title,
+    required String description,
+    required PrototypeRecordStatus status,
+    Map<String, String> details = const {},
+  }) {
+    final current = state.recordsFor(featureId);
+    final index = current.indexWhere((record) => record.id == id);
+    if (index == -1) return null;
+
+    final updated = PrototypeRecord(
+      id: id,
+      title: title,
+      description: description,
+      status: status,
+      details: Map.unmodifiable(details),
+    );
+    final next = [...current];
+    next[index] = updated;
+    state = state.copyWith(
+      recordsByFeature: {...state.recordsByFeature, featureId: next},
+    );
+    return updated;
+  }
+
   void seed(Map<String, List<PrototypeRecord>> recordsByFeature) {
     state = state.copyWith(
       recordsByFeature: {

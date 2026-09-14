@@ -26,10 +26,38 @@ class FunctionalJourneyController {
 
   bool get isLastStep => stepIndex >= stepCount - 1;
 
+  /// Id do registro em edição — `null` quando o formulário está criando um
+  /// registro novo. [submit] usa isto para decidir entre `addRecord` e
+  /// `updateRecord`, e a tela para trocar "Salvar registro" por "Salvar
+  /// alterações".
+  String? editingRecordId;
+
   void startForm() {
     mode = FunctionalJourneyMode.form;
     form = const FunctionalFormState();
     stepIndex = 0;
+    editingRecordId = null;
+  }
+
+  /// Reabre o formulário preenchido com os valores de [record], para o
+  /// perfil operacional corrigir um registro já gravado — a mesma tela de
+  /// cadastro, agora em modo de edição.
+  ///
+  /// `record.details` é achatado por rótulo ([PrototypeRecord.details]); a
+  /// tradução de volta para `fieldId` usa [FeatureDefinition.fields]. Campos
+  /// de coleção não fazem parte deste mapa (ver `buildPrototypeRecordDraft`)
+  /// e por isso não são reconstituídos aqui — a pessoa os refaz ao editar,
+  /// como já acontece em qualquer campo opcional não respondido.
+  void startEditing(PrototypeRecord record) {
+    final idByLabel = {for (final field in feature.fields) field.label: field.id};
+    final values = <String, String>{
+      for (final entry in record.details.entries)
+        ?idByLabel[entry.key]: entry.value,
+    };
+    mode = FunctionalJourneyMode.form;
+    form = FunctionalFormState(values: values);
+    stepIndex = 0;
+    editingRecordId = record.id;
   }
 
   void setValue(String fieldId, String value) {
