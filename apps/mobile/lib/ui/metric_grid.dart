@@ -9,7 +9,7 @@ import 'kpi_stat_card.dart';
 ///
 /// Os painéis usavam `GridView.count` com `crossAxisCount` constante (2, 3 ou
 /// 4) e `childAspectRatio` fixo. Isso trazia dois defeitos: numa viewport larga
-/// — o desktop CRN ADM — continuavam em duas colunas; e como a proporção fixa
+/// — o desktop CERNE ADM — continuavam em duas colunas; e como a proporção fixa
 /// derivava a altura da largura da coluna, o conteúdo estourava assim que o
 /// texto crescia (escala de acessibilidade) ou a coluna estreitava.
 ///

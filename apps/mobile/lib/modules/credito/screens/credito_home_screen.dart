@@ -536,18 +536,8 @@ class _LinhaBottomSheetContent extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Taxa', style: TextStyle(color: semantic.fgMuted)),
-            Text(
-              linha.taxa,
-              style: TextStyle(
-                fontWeight: AppTypography.weightBold,
-                color: semantic.fgDefault,
-              ),
-            ),
-          ],
+        AppReviewList(
+          items: [AppReviewItem(label: 'Taxa', value: linha.taxa)],
         ),
         const SizedBox(height: AppSpacing.space3),
         Text(

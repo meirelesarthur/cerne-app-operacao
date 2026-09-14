@@ -40,7 +40,8 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Detalhe do ativo'), findsOneWidget);
-      expect(find.text('Valor de aquisição'), findsOneWidget);
+      // O rótulo do campo de leitura aparece em versalete (`AppReviewList`).
+      expect(find.text('VALOR DE AQUISIÇÃO'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

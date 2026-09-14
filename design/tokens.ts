@@ -596,6 +596,10 @@ export const component = {
     /** diâmetro dos botões circulares internos */
     itemSize: '48px',
   },
+  /** card de primeiro nível para menus extensos (mosaico 2×N com lista interna) */
+  navigationCard: {
+    height: '140px',
+  },
 } as const
 
 /* ------------------------------------------------------------------ *

@@ -13,8 +13,8 @@ void main() {
 
     // Porta de entrada real do protótipo: a seleção de ambiente, não a home
     // Android intermediária nem o formulário de login (ver `initialLocation`).
-    expect(find.text('CRN ADM'), findsOneWidget);
-    expect(find.text('CRN Operação'), findsOneWidget);
+    expect(find.text('CERNE ADM'), findsOneWidget);
+    expect(find.text('CERNE Operação'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

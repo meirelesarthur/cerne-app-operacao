@@ -285,5 +285,5 @@ criar uma segunda linguagem visual:
   existe decisão terminal;
 - Perfil e Mais seguem `Menu-rapido-admin`; bottom sheets e modais herdam `bg.sheet` e raio superior
   `surface`;
-- Android Home, pasta CRN, login e onboarding preservam a arte de tela cheia, mas usam Outfit e os
+- Android Home, pasta CERNE, login e onboarding preservam a arte de tela cheia, mas usam Outfit e os
   controles tokenizados do catálogo. São as únicas exceções estruturais à `AppContentSheet`.

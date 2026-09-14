@@ -32,11 +32,12 @@ void main() {
         await tester.tap(find.text('CPR Financeira'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Próxima parcela'), findsOneWidget);
+        // O rótulo do campo de leitura aparece em versalete (`AppReviewList`).
+        expect(find.text('PRÓXIMA PARCELA'), findsOneWidget);
         expect(find.text('R\$ 4.520,33'), findsOneWidget);
-        expect(find.text('Vencimento'), findsOneWidget);
+        expect(find.text('VENCIMENTO'), findsOneWidget);
         expect(find.text('05/08'), findsOneWidget);
-        expect(find.text('Saldo devedor'), findsOneWidget);
+        expect(find.text('SALDO DEVEDOR'), findsOneWidget);
         expect(find.text('R\$ 68.220,17'), findsOneWidget);
       },
     );

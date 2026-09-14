@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
@@ -319,29 +318,22 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
               ],
             ),
             const SizedBox(height: AppSpacing.space4),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.space4),
-              decoration: BoxDecoration(
-                color: semantic.bgSubtle,
-                borderRadius: BorderRadius.circular(AppRadius.xl2),
-              ),
-              child: Column(
-                children: [
-                  _DetailRow(label: 'Ano de aquisição', value: '${ativo.ano}'),
-                  _DetailRow(
-                    label: 'Valor de aquisição',
-                    value: ativo.aquisicao,
-                  ),
-                  _DetailRow(
-                    label: 'Valor residual',
-                    value: ativo.valorResidual,
-                  ),
-                  _DetailRow(
-                    label: 'Próxima manutenção',
-                    value: ativo.proximaManutencao,
-                  ),
-                ],
-              ),
+            AppReviewList(
+              items: [
+                AppReviewItem(label: 'Ano de aquisição', value: '${ativo.ano}'),
+                AppReviewItem(
+                  label: 'Valor de aquisição',
+                  value: ativo.aquisicao,
+                ),
+                AppReviewItem(
+                  label: 'Valor residual',
+                  value: ativo.valorResidual,
+                ),
+                AppReviewItem(
+                  label: 'Próxima manutenção',
+                  value: ativo.proximaManutencao,
+                ),
+              ],
             ),
             const SizedBox(height: AppSpacing.space4),
             Row(
@@ -378,44 +370,4 @@ void _showAtivoDetail(BuildContext context, Ativo ativo) {
       },
     ),
   );
-}
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppSpacing.space1),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: AppTypography.base,
-              color: semantic.fgMuted,
-            ),
-          ),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: AppTypography.base,
-                fontWeight: AppTypography.weightSemibold,
-                color: semantic.fgDefault,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }

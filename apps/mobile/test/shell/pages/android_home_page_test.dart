@@ -12,39 +12,39 @@ void main() {
   });
 
   group('AndroidHomePage', () {
-    testWidgets('renderiza a área de trabalho com o ícone CRN App', (
+    testWidgets('renderiza a área de trabalho com o ícone CERNE App', (
       tester,
     ) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('CRN App'), findsOneWidget);
+      expect(find.text('CERNE App'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tocar em "CRN App" abre a pasta com CRN ADM/CRN Operação', (
+    testWidgets('tocar em "CERNE App" abre a pasta com CERNE ADM/CERNE Operação', (
       tester,
     ) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('CRN App'));
+      await tester.tap(find.text('CERNE App'));
       await tester.pumpAndSettle();
 
-      expect(find.text('CRN ADM'), findsOneWidget);
-      expect(find.text('CRN Operação'), findsOneWidget);
+      expect(find.text('CERNE ADM'), findsOneWidget);
+      expect(find.text('CERNE Operação'), findsOneWidget);
     });
   });
 
-  group('CrnAppFolderPage', () {
+  group('CerneAppFolderPage', () {
     testWidgets(
-      'tocar em "CRN ADM" empilha um único login administrativo',
+      'tocar em "CERNE ADM" empilha um único login administrativo',
       (tester) async {
-        harness.router.go('/desktop/crn-app');
+        harness.router.go('/desktop/cerne-app');
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('CRN ADM'));
+        await tester.tap(find.text('CERNE ADM'));
         await tester.pumpAndSettle();
 
         expect(find.text('Entrar'), findsOneWidget);
@@ -55,13 +55,13 @@ void main() {
     );
 
     testWidgets(
-      'tocar em "CRN Operação" empilha o login (voltar retorna à pasta)',
+      'tocar em "CERNE Operação" empilha o login (voltar retorna à pasta)',
       (tester) async {
-        harness.router.go('/desktop/crn-app');
+        harness.router.go('/desktop/cerne-app');
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('CRN Operação'));
+        await tester.tap(find.text('CERNE Operação'));
         await tester.pumpAndSettle();
 
         expect(find.text('Entrar'), findsOneWidget);

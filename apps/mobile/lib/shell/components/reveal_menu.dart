@@ -132,8 +132,8 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
                                   .logout();
                               // Volta para a seleção de ambiente — simula
                               // "fechar o app", reforçando a separação entre
-                              // CRN ADM e CRN Operação.
-                              widget.onNavigate('/desktop/crn-app');
+                              // CERNE ADM e CERNE Operação.
+                              widget.onNavigate('/desktop/cerne-app');
                             },
                           )
                         : const SizedBox.shrink(),

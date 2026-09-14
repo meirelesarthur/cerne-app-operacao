@@ -118,6 +118,7 @@ class CerneWidgetbook extends StatelessWidget {
                 buildAddableGroupListWidgetbookComponent(),
                 buildCollectionListWidgetbookComponent(),
                 buildReviewListWidgetbookComponent(),
+                buildReviewTabsWidgetbookComponent(),
               ],
             ),
             WidgetbookFolder(

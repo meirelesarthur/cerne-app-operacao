@@ -11,7 +11,7 @@ import '../modules/hub/hub_module.dart';
 import '../modules/marketplace/marketplace_module.dart';
 import '../shell/module_config.dart';
 import '../shell/pages/android_home_page.dart';
-import '../shell/pages/crn_app_folder_page.dart';
+import '../shell/pages/cerne_app_folder_page.dart';
 import '../shell/pages/login_page.dart';
 import '../shell/pages/module_placeholder_screen.dart';
 import '../shell/pages/notificacoes_page.dart';
@@ -35,7 +35,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   });
 
   final router = GoRouter(
-    initialLocation: '/desktop/crn-app',
+    initialLocation: '/desktop/cerne-app',
     refreshListenable: refresh,
     redirect: (context, state) {
       final session = ref.read(prototypeSessionProvider);
@@ -117,18 +117,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const OnboardingPage(),
       ),
       // Simulação da tela inicial Android. A apresentação começa diretamente
-      // na pasta `crn-app` (ver `initialLocation` acima), mas a área de
-      // trabalho continua disponível em `/desktop`. `crn-app` é filho literal
+      // na pasta `cerne-app` (ver `initialLocation` acima), mas a área de
+      // trabalho continua disponível em `/desktop`. `cerne-app` é filho literal
       // de `desktop`, então `context.go` entre as duas mantém a linhagem — só
       // o salto para `/login` (rota irmã fora da linhagem) usa `push` em
-      // `CrnAppFolderPage`.
+      // `CerneAppFolderPage`.
       GoRoute(
         path: '/desktop',
         builder: (context, state) => const AndroidHomePage(),
         routes: [
           GoRoute(
-            path: 'crn-app',
-            builder: (context, state) => const CrnAppFolderPage(),
+            path: 'cerne-app',
+            builder: (context, state) => const CerneAppFolderPage(),
           ),
         ],
       ),
@@ -149,21 +149,21 @@ String? redirectForSession(String path, PrototypeSessionState session) {
       path == '/login' ||
       path == '/onboarding' ||
       path == '/desktop' ||
-      path == '/desktop/crn-app';
+      path == '/desktop/cerne-app';
   final profile = session.profile;
 
   if (profile == null) {
     // A seleção de ambiente é a porta de entrada real do protótipo (ver
     // `initialLocation`) — sem sessão, qualquer rota protegida cai nela, não
     // direto no formulário de login.
-    return isPublic ? null : '/desktop/crn-app';
+    return isPublic ? null : '/desktop/cerne-app';
   }
 
   if (path == '/' ||
       path == '/fazendas' ||
       path == '/login' ||
       path == '/desktop' ||
-      path == '/desktop/crn-app') {
+      path == '/desktop/cerne-app') {
     return path == '/fazendas' ? profile.homeRoute : profile.landingRoute;
   }
   if (path == '/fazendas/mais') return profile.homeRoute;

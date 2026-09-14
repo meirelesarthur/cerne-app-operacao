@@ -56,4 +56,5 @@ class AppComponentMetrics {
   static const double tabbarHeight = 68;
   static const double tabbarInset = 14;
   static const double tabbarItemSize = 48;
+  static const double navigationCardHeight = 140;
 }

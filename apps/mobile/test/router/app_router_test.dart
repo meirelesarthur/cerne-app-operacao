@@ -353,7 +353,7 @@ void main() {
     testWidgets(
       'deep link sem sessão retorna à seleção de ambiente (não ao login)',
       (tester) async {
-        // Regressão: a seleção de ambiente (`/desktop/crn-app`) é a porta de
+        // Regressão: a seleção de ambiente (`/desktop/cerne-app`) é a porta de
         // entrada real do protótipo — sem sessão, qualquer rota protegida cai
         // nela, não direto no formulário de login.
         harness.dispose();
@@ -363,8 +363,8 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.text('CRN ADM'), findsOneWidget);
-        expect(find.text('CRN Operação'), findsOneWidget);
+        expect(find.text('CERNE ADM'), findsOneWidget);
+        expect(find.text('CERNE Operação'), findsOneWidget);
         expect(find.text('Login Administração'), findsNothing);
       },
     );
@@ -378,8 +378,8 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.text('CRN ADM'), findsOneWidget);
-        expect(find.text('CRN Operação'), findsOneWidget);
+        expect(find.text('CERNE ADM'), findsOneWidget);
+        expect(find.text('CERNE Operação'), findsOneWidget);
       },
     );
 

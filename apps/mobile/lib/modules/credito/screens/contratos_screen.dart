@@ -99,31 +99,11 @@ class _ContratoBottomSheetContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-
-    Widget row(String label, String value) => Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(label, style: TextStyle(color: semantic.fgMuted)),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: AppTypography.weightBold,
-            color: semantic.fgDefault,
-          ),
-        ),
-      ],
-    );
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        row('Próxima parcela', contrato.proximaParcela),
-        const SizedBox(height: AppSpacing.space3),
-        row('Vencimento', contrato.vencimento),
-        const SizedBox(height: AppSpacing.space3),
-        row('Saldo devedor', contrato.saldoDevedor),
+    return AppReviewList(
+      items: [
+        AppReviewItem(label: 'Próxima parcela', value: contrato.proximaParcela),
+        AppReviewItem(label: 'Vencimento', value: contrato.vencimento),
+        AppReviewItem(label: 'Saldo devedor', value: contrato.saldoDevedor),
       ],
     );
   }

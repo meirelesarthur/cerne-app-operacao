@@ -583,7 +583,14 @@ class _RecordsListState extends State<_RecordsList> {
   /// linhas, e a saída era um botão "Fechar" no fim de uma rolagem curta.
   /// Agora abre como tela funda — o dado usa a altura inteira e o retorno é o
   /// voltar do cabeçalho, o mesmo gesto de qualquer outra tela.
+  ///
+  /// Quando o cadastro de origem declarou etapas, os campos do registro não
+  /// entram numa lista só: [_recordStepGroups] os separa de volta pelas
+  /// mesmas etapas do preenchimento e a tela vira [AppReviewTabs] — a régua
+  /// que orientou quem preencheu orienta também quem lê depois.
   void _showRecord(BuildContext context, PrototypeRecord record) {
+    final stepGroups = _recordStepGroups(widget.feature, record);
+
     showAppDetailPage<void>(
       context,
       title: record.title,
@@ -595,21 +602,61 @@ class _RecordsListState extends State<_RecordsList> {
             child: AppChip(child: Text(_statusLabel(record.status))),
           ),
           const SizedBox(height: AppSpacing.space3),
-          // `AppReviewList`, não `AppMenuItem`: a linha de menu é branca com
-          // sombra e, sobre a folha branca da tela funda, some. A linha de
-          // revisão tem borda, então se lê sobre branco — e é o par
-          // rótulo/valor que um detalhe de registro realmente é, não um item
+          // `AppReviewList`/`AppReviewTabs`, não `AppMenuItem`: a linha de
+          // menu é branca com sombra e, sobre a folha branca da tela funda,
+          // some. O par rótulo/valor em cartão abafado se lê sobre branco —
+          // e é o que um detalhe de registro realmente é, não um item
           // navegável.
-          AppReviewList(
-            items: [
-              for (final entry in record.details.entries)
-                AppReviewItem(label: entry.key, value: entry.value),
-            ],
-          ),
+          if (stepGroups != null)
+            AppReviewTabs(groups: stepGroups)
+          else
+            AppReviewList(
+              items: [
+                for (final entry in record.details.entries)
+                  AppReviewItem(label: entry.key, value: entry.value),
+              ],
+            ),
         ],
       ),
     );
   }
+}
+
+/// Reagrupa `record.details` (um `Map<String, String>` já achatado — ver
+/// `buildPrototypeRecordDraft`) pelas etapas do cadastro de origem, para
+/// alimentar [AppReviewTabs]. `null` quando a funcionalidade não declara
+/// etapas: aí quem chama usa a lista única, como sempre.
+///
+/// A etapa de revisão ([isFeatureReviewStep]) nunca vira grupo — não tem
+/// campo nem coleção própria, é só a tela de conferência do preenchimento.
+/// Uma etapa cujos campos ficaram todos em branco (opcionais não
+/// respondidos) também não vira aba vazia: só entra grupo com conteúdo.
+List<AppReviewTabGroup>? _recordStepGroups(
+  FeatureDefinition feature,
+  PrototypeRecord record,
+) {
+  if (feature.steps.isEmpty) return null;
+
+  final groups = <AppReviewTabGroup>[];
+  for (var index = 0; index < feature.steps.length; index++) {
+    if (isFeatureReviewStep(feature, index)) continue;
+
+    final labels = <String>{
+      for (final field in featureStepFields(feature, index)) field.label,
+      ...featureStepSections(feature, index),
+    };
+    final items = [
+      for (final entry in record.details.entries)
+        if (labels.contains(entry.key))
+          AppReviewItem(label: entry.key, value: entry.value),
+    ];
+    if (items.isNotEmpty) {
+      groups.add(
+        AppReviewTabGroup(label: feature.steps[index].title, items: items),
+      );
+    }
+  }
+  return groups.isEmpty ? null : groups;
 }
 
 List<PrototypeRecord> _recordsWithMinimumSample(
