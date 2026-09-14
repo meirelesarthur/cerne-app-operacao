@@ -226,36 +226,47 @@ catálogo já representa como coleção.
 
 ## Onda 6 — Categoria E: condicionalidade não modelada
 
-Estende `isFeatureFieldRequired`/`featureFieldError` em `functional_journey_engine.dart`, uma
-`if (feature.id == '...')` por cadastro, mesmo padrão do XOR de `pastagens.destino`.
+Estende `isFeatureFieldRequired`/`featureFieldError` em `functional_journey_engine.dart` para os
+casos de cabeçalho, mesmo padrão do XOR de `pastagens.destino`. Para os dois casos de **item de
+coleção** (produto⊕serviço, executor), nasceram duas funções irmãs — `isCollectionItemFieldRequired`/
+`collectionItemFieldError` — porque `featureItemFieldError` não recebe `feature`/`collection` no
+contexto; `mapped_feature_screen.dart` passou a usá-las nas duas coleções afetadas.
 
-- [ ] `acasalamento` — matriz `type`/`launch_type` decide quais campos entre
-      `estacao-monta`/`material-reprodutivo`/`protocolo`/as duas coleções ficam `required` —
-      hoje tudo é obrigatório fixo ou opcional fixo.
-- [ ] `transferencia-lote-area` — XOR de três destinos (área, módulo, curral): contrato exige
-      **exatamente um**; hoje área e módulo são `required` fixos e o curral, opcional fixo.
-- [ ] `pastagens` — coleção "Serviços": `executor` é XOR `employee`/`function`/`provider`
-      (mesma família de `sanitario.labor.func_type`, onda 2) — a coleção hoje não tem nem nome
-      nem valor do serviço modelados corretamente; ver também Onda 7.
-- [ ] `protocolos-estacao` — XOR `product` ⊕ `service` por item da coleção "Etapas do
-      protocolo" — hoje os dois campos, quando existirem (ver Onda 4), seriam tratados como
-      independentes.
+- [x] `acasalamento` (`monta-natural`) — modelagem mínima: `protocolo` vira obrigatório quando
+      `tipo = IATF`; `material-reprodutivo` vira obrigatório quando `tipo-lancamento = Por
+      lote`. Não cobre a matriz inteira do relatório (ex.: `estacao-monta` continua sempre
+      opcional) — os dois casos mais claros primeiro, resto fica de nota.
+- [x] `transferencia-lote-area` — novo campo `destino` (select Área/Módulo/Curral) resolve o
+      XOR; `area`/`modulo` deixam de ser `required` fixos.
+- [x] `pastagens` — coleção "Serviços" recomposta na Onda 7 (`tipo-executor` + `executor`);
+      XOR aqui: `executor` é obrigatório só quando `tipo-executor` é "Empregado" ou
+      "Prestador" — "Função" já é a resposta em si.
+- [x] `protocolos-estacao` — XOR `produto` ⊕ `servico` por item de "Etapas do protocolo",
+      conforme `tipo` do item (`Produto`/`Serviço`).
+
+Testes novos em `functional_journey_engine_test.dart` cobrem o XOR de `transferencia-lote-area`
+e o XOR de item de `protocolos-estacao` — os dois com lógica nova, verificados linha a linha
+contra a implementação já que a suíte real não roda neste ambiente.
 
 ## Onda 7 — Resíduo de coleção mal modelada em `pastagens`
 
-Fora das cinco categorias por ser mais estrutural — a coleção "Serviços" de `/pastures` está
+Fora das cinco categorias por ser mais estrutural — a coleção "Serviços" de `/pastures` estava
 **quase incompatível** com o contrato real, não só faltando um campo:
 
-- [ ] Renomear/recompor os campos da coleção "Serviços" para bater com o contrato real
-      (`name`/`value` que hoje não existem como tal) e resolver o executor via XOR (Onda 6).
+- [x] Recomposta a coleção "Serviços": `prestador` (texto livre) virou `tipo-executor` +
+      `executor` (Onda 6 cuida do XOR de obrigatoriedade); `servico`/`valor` já cobriam
+      nome/valor. Ver commit da Onda 6 — as duas mudanças saíram juntas por dependência direta
+      (o XOR de obrigatoriedade não existe sem os campos).
+- [x] Inversão `required`↔`nullable` corrigida: `produto` (`product_uuid`) volta a opcional em
+      `pastagens."Insumos"` — é `estoque` (`stock_uuid`) o obrigatório, a onda 9 tinha travado
+      o sentido errado.
 - [ ] Nova coleção de **imagens geo** para `occurrences[]` — `lat`/`long`/`foto`, máximo 3 —
-      sem equivalente hoje em `FeatureField`/`FeatureCollection` (não há tipo de campo de
-      imagem no catálogo). Avaliar se entra como tipo de campo novo
-      (`FeatureFieldType.image`?) ou fica documentado como `TODO` de motor — decisão de
-      arquitetura, não só de dado, então cabe revisão antes de codar.
-- [ ] Inversões `required`↔`nullable` já identificadas: `product_uuid` deveria ser opcional
-      (é `stock_uuid` o obrigatório, que já entrou na onda 9) — conferir se algum campo de
-      insumo ficou `isRequired: true` no lugar errado depois da onda 9.
+      **não entra nesta leva**. Não existe tipo de campo de imagem no catálogo
+      (`FeatureFieldType` só tem `text`/`number`/`date`/`select`/`textarea`); um campo de
+      captura de foto se aproxima de "hardware simulado" (câmera), que o próprio `CLAUDE.md`
+      lista como limite do protótipo ("Limites do protótipo": não apresentar câmera como
+      integração nativa concluída). Decisão de arquitetura — motor + eventual simulação de
+      câmera — que pede revisão própria antes de codar, não uma correção de catálogo.
 
 ## Onda 8 — Fluxos dedicados (fora do motor genérico)
 

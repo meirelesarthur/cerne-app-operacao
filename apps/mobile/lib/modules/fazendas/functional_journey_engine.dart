@@ -202,6 +202,64 @@ bool isFeatureFieldRequired(
     if (field.id == 'area') return destino == 'Área';
     if (field.id == 'piquete') return destino == 'Piquete';
   }
+  // fidelidade-contrato (onda 6): `/batch-module-area-transfers` exige
+  // **exatamente um** destino — área, módulo ou curral — nunca dois fixos
+  // como o catálogo obrigava antes desta onda. Mesmo padrão do XOR acima.
+  if (feature.id == 'transferencia-lote-area') {
+    final destino = values['destino']?.trim() ?? '';
+    if (field.id == 'area') return destino == 'Área';
+    if (field.id == 'modulo') return destino == 'Módulo';
+    if (field.id == 'curral') return destino == 'Curral';
+  }
+  // fidelidade-contrato (onda 6): `/breeding-matings` liga a obrigatoriedade
+  // de estação/material/protocolo ao par `type`/`launch_type` — hoje o
+  // catálogo trata os quatro como sempre opcionais. Modelagem mínima: um
+  // acasalamento por protocolo exige o protocolo; um lançamento por lote
+  // (não por animal) exige o material reprodutivo usado no lote inteiro.
+  if (feature.id == 'monta-natural') {
+    final tipoLancamento = values['tipo-lancamento']?.trim() ?? '';
+    if (field.id == 'protocolo') {
+      return (values['tipo']?.trim() ?? '') == 'IATF';
+    }
+    if (field.id == 'material-reprodutivo') {
+      return tipoLancamento == 'Por lote';
+    }
+  }
+  return false;
+}
+
+/// Mesma obrigatoriedade condicional de [isFeatureFieldRequired], mas para um
+/// campo de **item de coleção** — os poucos casos em que a exigência de um
+/// campo do item depende de outro campo do mesmo item, não de um campo do
+/// cabeçalho. Sem `feature`/`collection` para identificar o caso, um
+/// `featureItemFieldError` genérico não teria como saber disso.
+bool isCollectionItemFieldRequired(
+  FeatureDefinition feature,
+  FeatureCollection collection,
+  FeatureField field,
+  Map<String, String> values,
+) {
+  if (field.isRequired) return true;
+  // fidelidade-contrato (onda 6): `pastagens."Serviços"` — o executor é
+  // `employee`/`function`/`provider` no contrato; "Função" já é a resposta
+  // (o tipo de mão de obra), então só "Empregado"/"Prestador" pedem a
+  // pessoa. Mesma ideia de `sanitario.labor`, mas aqui é XOR de fato: o
+  // contrato não aceita os dois de uma vez.
+  if (feature.id == 'pastagens' && collection.name == 'Serviços') {
+    final tipoExecutor = values['tipo-executor']?.trim() ?? '';
+    if (field.id == 'executor') {
+      return tipoExecutor == 'Empregado' || tipoExecutor == 'Prestador';
+    }
+  }
+  // fidelidade-contrato (onda 6): `protocolos-estacao."Etapas do
+  // protocolo"` — o item é produto **ou** serviço, nunca os dois; `tipo`
+  // decide qual dos dois campos vira obrigatório.
+  if (feature.id == 'protocolos-estacao' &&
+      collection.name == 'Etapas do protocolo') {
+    final tipoItem = values['tipo']?.trim() ?? '';
+    if (field.id == 'produto') return tipoItem == 'Produto';
+    if (field.id == 'servico') return tipoItem == 'Serviço';
+  }
   return false;
 }
 
@@ -226,6 +284,40 @@ bool isCollectionItemValid(
   Map<String, String> values,
 ) => collection.fields.every(
   (field) => featureItemFieldError(field, values) == null,
+);
+
+/// Erro de um campo de **item de coleção**, com a mesma obrigatoriedade
+/// condicional de [isCollectionItemFieldRequired] — para os poucos itens
+/// (`pastagens."Serviços"`, `protocolos-estacao."Etapas do protocolo"`) cujo
+/// XOR só existe dentro do próprio item, não do cabeçalho.
+String? collectionItemFieldError(
+  FeatureDefinition feature,
+  FeatureCollection collection,
+  FeatureField field,
+  Map<String, String> values,
+) {
+  final value = values[field.id]?.trim() ?? '';
+  if (isCollectionItemFieldRequired(feature, collection, field, values) &&
+      value.isEmpty) {
+    return 'Campo obrigatório.';
+  }
+  if (field.type == FeatureFieldType.number && value.isNotEmpty) {
+    final number = double.tryParse(value.replaceAll(',', '.'));
+    if (number == null || number <= 0) {
+      return 'Informe um valor maior que zero.';
+    }
+  }
+  return null;
+}
+
+/// Mesma ideia de [isCollectionItemValid], mas usando
+/// [collectionItemFieldError] — para as duas coleções com XOR interno.
+bool isCollectionItemValidFor(
+  FeatureDefinition feature,
+  FeatureCollection collection,
+  Map<String, String> values,
+) => collection.fields.every(
+  (field) => collectionItemFieldError(feature, collection, field, values) == null,
 );
 
 /// Título da linha de um item já adicionado.
@@ -279,6 +371,32 @@ String? featureFieldError(
     }
     if (field.id == 'piquete' && destino == 'Piquete') {
       return 'Selecione o piquete do manejo.';
+    }
+  }
+  // fidelidade-contrato (onda 6): mesmo XOR de `pastagens.destino`, agora com
+  // três destinos possíveis.
+  if (feature.id == 'transferencia-lote-area' && value.isEmpty) {
+    final destino = values['destino']?.trim() ?? '';
+    if (field.id == 'area' && destino == 'Área') {
+      return 'Selecione a nova área.';
+    }
+    if (field.id == 'modulo' && destino == 'Módulo') {
+      return 'Selecione o novo módulo.';
+    }
+    if (field.id == 'curral' && destino == 'Curral') {
+      return 'Selecione o curral de destino.';
+    }
+  }
+  // fidelidade-contrato (onda 6): `/breeding-matings` — protocolo é exigido
+  // quando o tipo é IATF; material reprodutivo é exigido quando o
+  // lançamento é por lote inteiro (não por animal).
+  if (feature.id == 'monta-natural' && value.isEmpty) {
+    if (field.id == 'protocolo' && (values['tipo']?.trim() ?? '') == 'IATF') {
+      return 'Selecione o protocolo da estação.';
+    }
+    if (field.id == 'material-reprodutivo' &&
+        (values['tipo-lancamento']?.trim() ?? '') == 'Por lote') {
+      return 'Informe o material reprodutivo usado no lote.';
     }
   }
   return null;

@@ -264,4 +264,63 @@ void main() {
       '1 item(ns) · BR 1042',
     );
   });
+
+  // fidelidade-contrato (onda 6): XOR de três destinos, mesmo padrão do XOR
+  // de `pastagens.destino`. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 6.
+  test('transferência lote/área exige exatamente um destino', () {
+    final feature = featureById('transferencia-lote-area')!;
+    final area = feature.fields.firstWhere((field) => field.id == 'area');
+    final modulo = feature.fields.firstWhere((field) => field.id == 'modulo');
+    final curral = feature.fields.firstWhere((field) => field.id == 'curral');
+
+    // Sem destino escolhido, nenhum dos três é obrigatório — mas o próprio
+    // `destino` é, e ele barra o avanço.
+    expect(isFeatureFieldRequired(feature, area, const {}), isFalse);
+    expect(isFeatureFieldRequired(feature, modulo, const {}), isFalse);
+    expect(isFeatureFieldRequired(feature, curral, const {}), isFalse);
+
+    const escolheuModulo = {'destino': 'Módulo'};
+    expect(isFeatureFieldRequired(feature, area, escolheuModulo), isFalse);
+    expect(isFeatureFieldRequired(feature, modulo, escolheuModulo), isTrue);
+    expect(isFeatureFieldRequired(feature, curral, escolheuModulo), isFalse);
+    expect(
+      featureFieldError(feature, modulo, escolheuModulo),
+      'Selecione o novo módulo.',
+    );
+  });
+
+  // fidelidade-contrato (onda 6): XOR interno ao item — produto **ou**
+  // serviço, nunca os dois. Só existe com `feature`/`collection` no
+  // contexto, por isso `collectionItemFieldError`, não
+  // `featureItemFieldError`.
+  test('etapa do protocolo exige produto ou serviço, conforme o tipo', () {
+    final feature = featureById('protocolos-estacao')!;
+    final etapas = feature.collectionByName('Etapas do protocolo')!;
+    final produto = etapas.fields.firstWhere((field) => field.id == 'produto');
+    final servico = etapas.fields.firstWhere((field) => field.id == 'servico');
+
+    const itemProduto = {'tipo': 'Produto'};
+    expect(
+      isCollectionItemFieldRequired(feature, etapas, produto, itemProduto),
+      isTrue,
+    );
+    expect(
+      isCollectionItemFieldRequired(feature, etapas, servico, itemProduto),
+      isFalse,
+    );
+    expect(
+      collectionItemFieldError(feature, etapas, produto, itemProduto),
+      'Campo obrigatório.',
+    );
+
+    const itemServico = {'tipo': 'Serviço', 'servico': 'Vacinação em massa'};
+    expect(
+      isCollectionItemFieldRequired(feature, etapas, produto, itemServico),
+      isFalse,
+    );
+    expect(
+      collectionItemFieldError(feature, etapas, servico, itemServico),
+      isNull,
+    );
+  });
 }

@@ -2188,8 +2188,21 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Área / módulo atual',
         isRequired: true,
       ),
-      FeatureField(id: 'area', label: 'Nova área', isRequired: true),
-      FeatureField(id: 'modulo', label: 'Novo módulo', isRequired: true),
+      // fidelidade-contrato (onda 6): o contrato exige **exatamente um**
+      // destino — área, módulo ou curral — nunca área e módulo ao mesmo
+      // tempo (como o form obrigava fixo até aqui) nem nenhum dos três. Este
+      // select decide qual dos três campos abaixo passa a ser exigido, mesmo
+      // padrão do XOR de `pastagens.destino`. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 6.
+      FeatureField(
+        id: 'destino',
+        label: 'Destino da transferência',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['Área', 'Módulo', 'Curral'],
+      ),
+      FeatureField(id: 'area', label: 'Nova área'),
+      FeatureField(id: 'modulo', label: 'Novo módulo'),
       // fidelidade-campos (onda 3): `date` é required em
       // `/batch-module-area-transfers`, e o curral de confinamento é o
       // terceiro destino possível, em XOR com área e módulo.
@@ -2841,11 +2854,15 @@ const operationalFeatures = <FeatureDefinition>[
         titleField: 'produto',
         subtitleFields: ['quantidade', 'unidade', 'armazem'],
         fields: [
+          // fidelidade-contrato (onda 7): `product_uuid` é opcional no
+          // contrato real — é `stock_uuid` (abaixo) o obrigatório, o lote
+          // específico de onde o insumo saiu. A onda 9 tinha travado
+          // `produto` como required por engano (sentido invertido). Ver
+          // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 7.
           FeatureField(
             id: 'produto',
             label: 'Produto',
             type: FeatureFieldType.select,
-            isRequired: true,
             options: catalogoProdutos,
           ),
           // fidelidade-campos (onda 9 — re-auditoria 11/09):
@@ -2913,11 +2930,17 @@ const operationalFeatures = <FeatureDefinition>[
           ),
         ],
       ),
+      // fidelidade-contrato (onda 7): a coleção estava "quase incompatível"
+      // — faltava o executor real do serviço (`employee`/`function`/
+      // `provider`, XOR pelo tipo). `prestador` (texto livre) vira
+      // `tipo-executor` + `executor`, mesma família de `sanitario.labor` —
+      // a obrigatoriedade condicional de `executor` entra na Onda 6. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 7.
       FeatureCollection(
         name: 'Serviços',
         itemLabel: 'Serviço',
         titleField: 'servico',
-        subtitleFields: ['prestador', 'valor'],
+        subtitleFields: ['tipo-executor', 'valor'],
         fields: [
           FeatureField(
             id: 'servico',
@@ -2926,9 +2949,17 @@ const operationalFeatures = <FeatureDefinition>[
             placeholder: 'Descrição do serviço',
           ),
           FeatureField(
-            id: 'prestador',
-            label: 'Prestador',
-            placeholder: 'Quem executou',
+            id: 'tipo-executor',
+            label: 'Executor',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: ['Empregado', 'Função', 'Prestador'],
+          ),
+          FeatureField(
+            id: 'executor',
+            label: 'Quem executou',
+            type: FeatureFieldType.select,
+            options: catalogoResponsaveis,
           ),
           FeatureField(
             id: 'quantidade',

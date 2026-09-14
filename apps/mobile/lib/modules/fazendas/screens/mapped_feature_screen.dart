@@ -131,9 +131,19 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
               _FeatureFieldControl(
                 field: collection.fields[index],
                 value: values[collection.fields[index].id] ?? '',
-                isRequired: collection.fields[index].isRequired,
+                isRequired: isCollectionItemFieldRequired(
+                  _journey.feature,
+                  collection,
+                  collection.fields[index],
+                  values,
+                ),
                 error: attempted
-                    ? featureItemFieldError(collection.fields[index], values)
+                    ? collectionItemFieldError(
+                        _journey.feature,
+                        collection,
+                        collection.fields[index],
+                        values,
+                      )
                     : null,
                 onChanged: (value) => setSheetState(() {
                   values[collection.fields[index].id] = value;
@@ -148,7 +158,11 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
             AppButton(
               fullWidth: true,
               onPressed: () {
-                if (!isCollectionItemValid(collection, values)) {
+                if (!isCollectionItemValidFor(
+                  _journey.feature,
+                  collection,
+                  values,
+                )) {
                   setSheetState(() => attempted = true);
                   return;
                 }
