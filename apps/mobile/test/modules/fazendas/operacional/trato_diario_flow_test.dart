@@ -41,8 +41,13 @@ void main() {
 
       expect(find.text('Currais elegíveis'), findsOneWidget);
       expect(findCta('Finalizar trato'), findsOneWidget);
+      // `AppActionBarSummary` funde rótulo e valor num só `Text.rich`
+      // ("Faltam 500kg"), não um `Text('Faltam')` isolado — `find.text`
+      // exato só bate por coincidência com o KPI "Fornecido" (que tem
+      // rótulo e valor em widgets separados). `textContaining` é o que
+      // reflete a renderização de verdade dos dois.
       expect(find.text('Fornecido'), findsOneWidget);
-      expect(find.text('Faltam'), findsOneWidget);
+      expect(find.textContaining('Faltam'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

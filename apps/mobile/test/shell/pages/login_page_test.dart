@@ -78,7 +78,13 @@ void main() {
       await tester.tap(find.text('Entrar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('O que fazer hoje'), findsOneWidget);
+      // "O que fazer hoje" saiu da central operacional quando o shell passou
+      // a montar fazenda/saudação/busca globalmente
+      // (`ResponsibilityWorkspace(showLocalContext: false)`) — ver
+      // `app_router_test.dart`, que já confere `findsNothing` na mesma rota.
+      // A saudação do shell é o marcador estável de que o login levou ao
+      // ambiente operacional certo.
+      expect(find.text('Boa tarde,'), findsOneWidget);
       expect(
         harness.container.read(prototypeSessionProvider).profile,
         UserAccessProfile.operational,
