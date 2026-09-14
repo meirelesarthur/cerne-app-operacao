@@ -208,7 +208,12 @@ void main() {
       // `manutencao-frota` ganha "Mão de obra" (bloco de executor por item,
       // ausente por completo): 28+1=29 seções. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(29));
+      // fidelidade-contrato (onda 5) — `lote-animais` ganha "Categorias do
+      // lote" (`category_uuids[]`) e `apartacao` ganha "Lotes de origem"
+      // (`batches[]`), reusando o motor de coleção em vez de um multi-select
+      // novo: 29+2=31 seções. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
+      // Onda 5.
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(31));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
@@ -288,9 +293,10 @@ void main() {
 
       // fidelidade-contrato (onda 4): `lotes-reproducao` ganha "Lotes
       // vinculados" (1 campo, `batch_uuids[]`): 27+1=28.
-      // `manutencao-frota` ganha "Mão de obra" (4 campos): 28+1=29. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
-      expect(colecoes, hasLength(29));
+      // `manutencao-frota` ganha "Mão de obra" (4 campos): 28+1=29.
+      // fidelidade-contrato (onda 5): `lote-animais` ganha "Categorias do
+      // lote" e `apartacao` ganha "Lotes de origem" (1 campo cada): 29+2=31.
+      expect(colecoes, hasLength(31));
 
       final comCampos = colecoes
           .where((par) => par.collection.fields.isNotEmpty)
@@ -315,7 +321,9 @@ void main() {
       // fidelidade-contrato (onda 4): +1 coleção com campo (`lotes-reproducao`
       // "Lotes vinculados"): 25+1=26. +1 (`manutencao-frota` "Mão de obra"):
       // 26+1=27.
-      expect(comCampos, hasLength(27));
+      // fidelidade-contrato (onda 5): +2 (`lote-animais`/`apartacao`):
+      // 27+2=29.
+      expect(comCampos, hasLength(29));
       expect(
         colecoes
             .where((par) => par.collection.fields.isEmpty)
@@ -334,13 +342,16 @@ void main() {
       // `lotes-reproducao."Lotes vinculados"` +1 (lote): 104+5=109.
       // `manutencao-frota."Peças / Insumos"` +2 (horimetro, hodometro) e a
       // nova coleção "Mão de obra" +4 (tipo, executor, quantidade, total):
-      // 109+6=115. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+      // 109+6=115.
+      // fidelidade-contrato (onda 5): `lote-animais."Categorias do lote"` +1
+      // e `apartacao."Lotes de origem"` +1: 115+2=117. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 5.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        115,
+        117,
       );
 
       for (final par in comCampos) {
@@ -373,12 +384,15 @@ void main() {
         }
       }
 
-      // `protocolos-estacao.items[]`, `diagnostico-gestacao.animals[]` e
-      // `lotes-reproducao.batch_uuids[]` são as três coleções `min:1` do
-      // contrato real: em todos os três a coleção **é** o registro (ou parte
-      // essencial dele), e salvar sem nenhum item não registra nada.
-      // fidelidade-contrato (onda 4): `lotes-reproducao` entra. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+      // `protocolos-estacao.items[]`, `diagnostico-gestacao.animals[]`,
+      // `lotes-reproducao.batch_uuids[]`, `lote-animais.category_uuids[]` e
+      // `apartacao.batches[]` são as cinco coleções `min:1` do contrato real:
+      // em todos os casos a coleção **é** o registro (ou parte essencial
+      // dele), e salvar sem nenhum item não registra nada.
+      // fidelidade-contrato (onda 4): `lotes-reproducao` entra.
+      // fidelidade-contrato (onda 5): `lote-animais`/`apartacao` entram —
+      // mesmo motor de coleção, sem multi-select novo. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Ondas 4-5.
       expect(
         {
           for (final feature in allFeatures)
@@ -389,6 +403,8 @@ void main() {
           'protocolos-estacao': ['Etapas do protocolo'],
           'diagnostico-gestacao': ['Animais diagnosticados'],
           'lotes-reproducao': ['Lotes vinculados'],
+          'lote-animais': ['Categorias do lote'],
+          'apartacao': ['Lotes de origem'],
         },
       );
     });

@@ -40,6 +40,23 @@ void _fillRequiredFields(
           : 'Dado de teste',
     );
   }
+  // fidelidade-contrato (onda 5): coleção obrigatória (`min:1`) também
+  // precisa de um item de verdade — sem ele `submit()` bloqueia mesmo com
+  // todos os escalares preenchidos. Ver
+  // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 5.
+  for (final section in feature.requiredSections) {
+    final collection = feature.collectionByName(section)!;
+    controller.addGroupItem(section, {
+      for (final field in collection.fields.where((field) => field.isRequired))
+        field.id: field.options.isNotEmpty
+            ? field.options.first
+            : field.type == FeatureFieldType.number
+            ? '1'
+            : field.type == FeatureFieldType.date
+            ? '2026-08-16'
+            : 'Dado de teste',
+    });
+  }
 }
 
 void main() {

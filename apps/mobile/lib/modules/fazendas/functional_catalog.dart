@@ -1798,6 +1798,12 @@ const operationalFeatures = <FeatureDefinition>[
         options: ['Bovino', 'Bubalino', 'Ovino'],
       ),
       FeatureField(id: 'descricao', label: 'Descrição', isRequired: true),
+      // fidelidade-contrato (onda 5): o contrato real é `category_uuids[]`
+      // (array, min:1) — este escalar permanece só para a descrição do
+      // registro nesta consulta (mesma nuance de `diagnostico-gestacao`/
+      // `lotes-reproducao` na onda 4); a coleção abaixo documenta a
+      // cardinalidade correta. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
+      // Onda 5.
       FeatureField(
         id: 'categoria',
         label: 'Categoria',
@@ -1863,6 +1869,25 @@ const operationalFeatures = <FeatureDefinition>[
             id: 'peso',
             label: 'Peso (kg)',
             type: FeatureFieldType.number,
+          ),
+        ],
+      ),
+      // fidelidade-contrato (onda 5): `category_uuids[]` — o contrato aceita
+      // mais de uma categoria por lote (ex.: um lote de "novilhas e bois").
+      // Reusa o motor de coleção (nenhum componente novo) em vez de um
+      // multi-select próprio: o mesmo truque de `lotes-reproducao` na onda 4.
+      FeatureCollection(
+        name: 'Categorias do lote',
+        itemLabel: 'Categoria',
+        isRequired: true,
+        titleField: 'categoria',
+        fields: [
+          FeatureField(
+            id: 'categoria',
+            label: 'Categoria',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoCategoriasAnimais,
           ),
         ],
       ),
@@ -2600,6 +2625,28 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Quantidade de animais',
         type: FeatureFieldType.number,
         isRequired: true,
+      ),
+    ],
+    // fidelidade-contrato (onda 5): `batches[]` é array de UUID (min:1) — o
+    // escalar `lote-origem` acima permanece só como `recordTitleField`
+    // (mesma nuance de `lote-animais`/`diagnostico-gestacao`); a coleção
+    // documenta a cardinalidade real. Reusa o motor de coleção, sem
+    // componente novo. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 5.
+    collections: [
+      FeatureCollection(
+        name: 'Lotes de origem',
+        itemLabel: 'Lote',
+        isRequired: true,
+        titleField: 'lote',
+        fields: [
+          FeatureField(
+            id: 'lote',
+            label: 'Lote',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoLotes,
+          ),
+        ],
       ),
     ],
     primaryAction: 'Registrar apartação',

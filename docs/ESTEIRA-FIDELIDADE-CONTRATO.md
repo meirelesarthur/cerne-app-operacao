@@ -202,19 +202,27 @@ abaixo do checklist original).
 
 ## Onda 5 — Categoria D (continuação): cardinalidade de identificação/lote em array
 
-- [ ] `lote-animais` — categoria: `select` único vira `category_uuids[]` (array, min:1) — a
-      tela precisa de multi-seleção, que hoje não existe como padrão de `FeatureField`; avaliar
-      se cabe como coleção sem formulário de item (lista de chips) ou se é caso para um
-      controle novo em `lib/ui/` (Lei 1 — component-first: nasce no catálogo de componentes
-      antes de ser consumido aqui).
-- [ ] `transferencia-animal` — identificação escalar vira `animal_uuids[]` (array, min:1);
-      destino por-animal (`batch_uuids[]` alinhado por índice, quando `same_batch = Não`) não
-      tem equivalente hoje no motor genérico — avaliar extensão pontual em
-      `functional_journey_engine.dart` (mesmo espírito da Onda 6, mas é par de arrays
-      correlacionados por índice, não um XOR simples).
-- [ ] `apartacao` — `batches[]` (array de UUID, min:1) troca o escalar `lote-origem`; contrato
-      só aceita `date` + `batches[]` — os outros 4 campos (`criterio`/`lote-destino`/
-      `quantidade`/`responsavel`) continuam como inventados mantidos (padrão ③, decisão 1).
+Decisão de arquitetura tomada nesta onda: **nenhum componente novo**. Um `category_uuids[]`/
+`batches[]` (array de valores de um domínio fechado, min:1) é modelado como uma
+`FeatureCollection` de um campo só — o mesmo motor de coleção da onda 8, reaproveitado. Não é
+um multi-select disfarçado; é literalmente a mesma forma de dado (`array<FK>`) que o resto do
+catálogo já representa como coleção.
+
+- [x] `lote-animais` — nova coleção obrigatória "Categorias do lote" (`category_uuids[]`,
+      min:1). O escalar `categoria` permanece (usado em `recordDescriptionFields`), mesma
+      nuance de duplicação da Onda 4.
+- [x] `apartacao` — nova coleção obrigatória "Lotes de origem" (`batches[]`, min:1). O escalar
+      `lote-origem` permanece (é o `recordTitleField`); os outros 4 campos
+      (`criterio`/`lote-destino`/`quantidade`/`responsavel`) continuam como inventados mantidos
+      (padrão ③, decisão 1).
+- [ ] `transferencia-animal` — **não fechado, de propósito**. `identificacao` é o campo-alvo
+      da simulação de RFID (`simulationTargetField`): a captura por hardware simulado hoje é
+      "escaneie um, preencha um campo", não "escaneie vários, monte uma lista". Converter para
+      `animal_uuids[]` de verdade (mesmo truque de coleção acima) exigiria também redesenhar a
+      simulação de captura para adicionar itens a uma coleção a cada "leitura" — trabalho de
+      fluxo de UI, não só de catálogo, mesmo tipo de esforço da Onda 8. O par correlacionado
+      `batch_uuids[]` por índice (quando `same_batch = Não`) tem o mesmo problema e fica junto.
+      Registrado como pendência (ver seção de Pendências).
 
 ## Onda 6 — Categoria E: condicionalidade não modelada
 
@@ -355,9 +363,12 @@ Tabela de trabalho — cada linha é uma issue do relatório, com a onda que a f
 - **Tipo de campo "imagem" não existe no catálogo** (`FeatureFieldType`) — necessário para a
   coleção geo de `pastagens.occurrences[]` (Onda 7). É decisão de motor, não só de dado;
   revisar antes de codar.
-- **Multi-seleção (`category_uuids[]`, `animal_uuids[]` como array real)** não tem componente
-  hoje em `lib/ui/` — Lei 1 (component-first) exige nascer no catálogo de componentes antes de
-  ser consumido pelas Ondas 4/5.
+- **`transferencia-animal` continua com identificação escalar.** A Onda 5 fechou
+  `category_uuids[]`/`batches[]` reaproveitando o motor de coleção (nenhum componente novo
+  necessário — ver a decisão de arquitetura no início da Onda 5), mas `identificacao` é o
+  campo-alvo da simulação de RFID: convertê-lo para `animal_uuids[]` exige redesenhar a
+  captura por hardware simulado para empilhar leituras numa coleção, não só declarar o campo.
+  Mesmo tipo de esforço da Onda 8 (fluxo dedicado), fica para lá ou para uma onda própria.
 - **`compras-animais`/`abastecimentos`/`estacao-monta`** têm issues marcadas "revisão manual"
   na tabela — o relatório aponta a divergência mas não dá dado suficiente (enum completo, nome
   exato do campo-destino) para fechar sem olhar o Form Request real; não incluídas em onda
