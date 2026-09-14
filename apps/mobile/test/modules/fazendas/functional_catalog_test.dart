@@ -182,8 +182,21 @@ void main() {
       // genérica por 2 do contrato (`simplified_animals[]`/
       // `protocol_animals[]`): 26+1=27 seções. Ver
       // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
-      expect(fields, hasLength(246));
-      expect(fields.where((field) => field.isRequired), hasLength(172));
+      // fidelidade-contrato (onda 1) — flips de obrigatoriedade sem ambiguidade
+      // de valor, contra o `rules()` real (categoria A da re-auditoria de
+      // 14/09): `marcacao` +0 campo (5 flips), `rebanho-inicial` +0 (4:
+      // `data-entrada`/`raca`/`peso-medio`/`preco-kg`), `registrar-animal` +0
+      // (1: `preco-kg`), `cadastrar-area` +0 (4: `area-produtiva`/
+      // `area-nao-produtiva`/`area-recreio`/`ativo`), `sanitario` +0 (1:
+      // `controle-por-tempo`) — 15 flips, nenhum campo novo de cabeçalho.
+      // `monta-natural` +1 campo, +1 obrigatório (`bull-seed-season`, era
+      // ausente por completo). `material-reprodutivo` reverte 1 (o item
+      // `products.*.armazem` era `required` por engano — o contrato real o
+      // marca opcional; não conta aqui, é campo de coleção, ver o teste de
+      // coleções abaixo). 246+1=247 campos; 172+15+1=188 obrigatórios. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
+      expect(fields, hasLength(247));
+      expect(fields.where((field) => field.isRequired), hasLength(188));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),

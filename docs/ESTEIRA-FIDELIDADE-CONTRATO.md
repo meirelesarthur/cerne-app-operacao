@@ -103,25 +103,34 @@ que ninguém confirmou.
 ## Onda 1 — Categoria A: obrigatoriedade divergente (fechamento direto)
 
 Sem ambiguidade de valor — é inverter `isRequired` ou declarar o campo que falta. Fecha nos
-quatro cadastros que o relatório aponta.
+quatro cadastros que o relatório aponta, mais três achados durante a execução (registrado
+abaixo do checklist original).
 
-- [ ] `marcacao` — 5 required voltam a `isRequired: true`: `safra`, `variedade`, `semana`,
-      `quantidade`, `cor`.
-- [ ] `rebanho-inicial` — 7 required voltam a `isRequired: true`: `entry_date` (campo `data` ou
-      `data-entrada` — confirmar qual dos dois é o `entry_date` real antes de travar, ver nota
-      da onda 3 de `ESTEIRA-FIDELIDADE-CAMPOS.md` sobre a duplicidade), `breed_id` (`raca`),
-      `weight` (`peso-medio`), `price_kilo_alive` (`preco-kg`, entrou na onda 9),
-      `price_arroba_alive` (`preco-arroba`), `value_unitary` (`valor-unitario`),
-      `unity_animal_ua` (`ua`). **Atenção**: os três últimos são os valores recalculados pelo
-      servidor que a curadoria original da leva anterior deixou opcionais de propósito — não
-      reverter essa decisão sem reabrir a discussão; documentar a divergência no catálogo, no
-      ponto, em vez de forçar `isRequired: true` nos três.
+- [x] `marcacao` — 5 required voltam a `isRequired: true`: `safra`, `variedade`,
+      `semana-safra`, `quantidade`, `cor`.
+- [x] `rebanho-inicial` — required voltam a `isRequired: true`: `data-entrada` (mapeia
+      `entry_date` — é o campo de `banco-real` já reconhecido como o candidato certo, distinto
+      de `data`, a data de referência do levantamento), `raca` (`breed_id`), `peso-medio`
+      (`weight`), `preco-kg` (`price_kilo_alive`). **Não** reverte a decisão da curadoria
+      original: `preco-arroba`/`valor-unitario`/`ua` (os três valores recalculados pelo
+      servidor) continuam opcionais de propósito.
+- [x] `registrar-animal` — `preco-kg` (`price_kilo_alive`) volta a `isRequired: true`, mesma
+      correção espelhada de `rebanho-inicial` — achado extra durante a execução, o relatório o
+      lista como issue própria (severidade baixa) deste cadastro.
 - [ ] `apontamento` — 11 inversões de obrigatoriedade no `ApontamentoFlow` (não no motor
       genérico — ver Onda 8): `operation`, `used_area` e o armazém por item, entre outros.
       Levantamento campo a campo fica para o início da Onda 8.
-- [ ] `cadastrar-area` — 4 required voltam a `isRequired: true`: `productive_area`
-      (`area-produtiva`), `unproductive_area` (`area-nao-produtiva`), `recreation_area`
-      (`area-recreio`), `is_enabled` (`ativo`).
+- [x] `cadastrar-area` — 4 required voltam a `isRequired: true`: `area-produtiva`
+      (`productive_area`), `area-nao-produtiva` (`unproductive_area`), `area-recreio`
+      (`recreation_area`), `ativo` (`is_enabled`).
+- [x] `sanitario` — `controle-por-tempo` (`time_control`) volta a `isRequired: true`.
+- [x] `monta-natural` (acasalamento) — `bull_seed_season_uuid` estava ausente por completo;
+      entra como campo novo `bull-seed-season` (select sobre os códigos `BSS-*` do próprio
+      catálogo de `material-reprodutivo`), distinto do texto livre `material-reprodutivo`
+      (que documenta o insumo, não o vínculo à estação).
+- [x] `material-reprodutivo` — `products.*.armazem` tinha o sentido invertido: a leva anterior
+      o travou `isRequired: true`, mas o contrato real o marca opcional. Reverte para opcional
+      (é a única correção desta onda que **remove** um `isRequired`, não adiciona).
 
 ## Onda 2 — Categoria B: enum/valor incompatível (onde o relatório dá o domínio inteiro)
 

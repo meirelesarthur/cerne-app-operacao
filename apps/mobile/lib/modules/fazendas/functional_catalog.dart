@@ -774,15 +774,21 @@ const operationalFeatures = <FeatureDefinition>[
       // `areas.animal_load` já existem no banco e alimentam o dashboard pecuário
       // real — faltavam no cadastro. Ver
       // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      //
+      // fidelidade-contrato (onda 1): `productive_area` e `unproductive_area`
+      // são required em `/areas` e entraram opcionais. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
       FeatureField(
         id: 'area-produtiva',
         label: 'Área produtiva',
         type: FeatureFieldType.number,
+        isRequired: true,
       ),
       FeatureField(
         id: 'area-nao-produtiva',
         label: 'Área não produtiva',
         type: FeatureFieldType.number,
+        isRequired: true,
       ),
       FeatureField(
         id: 'carga-animal',
@@ -833,16 +839,21 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Proprietário',
         placeholder: 'Pessoa ou empresa titular',
       ),
+      // fidelidade-contrato (onda 1): `recreation_area` e `is_enabled` são
+      // required em `/areas` e entraram opcionais. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
       FeatureField(
         id: 'area-recreio',
         label: 'Área de recreio',
         type: FeatureFieldType.select,
+        isRequired: true,
         options: ['Sim', 'Não'],
       ),
       FeatureField(
         id: 'ativo',
         label: 'Ativa',
         type: FeatureFieldType.select,
+        isRequired: true,
         options: ['Sim', 'Não'],
       ),
       // fidelidade-campos (onda 9 — re-auditoria 11/09): `farm_uuid` é
@@ -1373,16 +1384,22 @@ const operationalFeatures = <FeatureDefinition>[
       // contrato (ficam, por decisão desta leva — nada sai), e o que existe de
       // verdade (safra, variedade, semana, cor, quantidade, funcionário,
       // centro de custo) estava ausente.
+      //
+      // fidelidade-contrato (onda 1): os 5 abaixo são `required` no contrato
+      // real e entraram como opcionais na leva anterior — a submissão
+      // quebraria com 422. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
       FeatureField(
         id: 'safra',
         label: 'Safra',
         type: FeatureFieldType.select,
+        isRequired: true,
         options: ['2023/2024', '2024/2025', '2025/2026', '2026/2027'],
       ),
       FeatureField(
         id: 'variedade',
         label: 'Variedade / cultura',
         type: FeatureFieldType.select,
+        isRequired: true,
         options: [
           'Soja',
           'Milho',
@@ -1399,17 +1416,20 @@ const operationalFeatures = <FeatureDefinition>[
         id: 'semana-safra',
         label: 'Semana da safra',
         type: FeatureFieldType.number,
+        isRequired: true,
         placeholder: 'Nº da semana',
       ),
       FeatureField(
         id: 'quantidade',
         label: 'Quantidade',
         type: FeatureFieldType.number,
+        isRequired: true,
       ),
       FeatureField(
         id: 'cor',
         label: 'Cor no mapa',
         type: FeatureFieldType.select,
+        isRequired: true,
         options: ['Verde', 'Amarelo', 'Vermelho', 'Azul', 'Roxo'],
       ),
       FeatureField(
@@ -1485,10 +1505,15 @@ const operationalFeatures = <FeatureDefinition>[
       // fazenda e é distinta da data de referência do levantamento — o banco
       // guarda as duas separadas. Ver
       // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      //
+      // fidelidade-contrato (onda 1): `entry_date` é required em `/animals` —
+      // este é o campo que mapeia para ele, e entrou opcional na leva
+      // anterior. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
       FeatureField(
         id: 'data-entrada',
         label: 'Data de entrada',
         type: FeatureFieldType.date,
+        isRequired: true,
       ),
       FeatureField(
         id: 'especie',
@@ -1520,7 +1545,13 @@ const operationalFeatures = <FeatureDefinition>[
       // (`/inventoried-animals` não tem store). Faltava o bloco de raça,
       // nascimento, identificação, valores e genealogia. Mesma curadoria dos
       // três valores calculados: entram opcionais.
-      FeatureField(id: 'raca', label: 'Raça'),
+      //
+      // fidelidade-contrato (onda 1): `breed_id` (raca) e `weight`
+      // (peso-medio) são required em `/animals` e entraram opcionais — só
+      // `nascimento` não tem contrapartida `required` no contrato e continua
+      // opcional de propósito. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
+      // Onda 1.
+      FeatureField(id: 'raca', label: 'Raça', isRequired: true),
       FeatureField(
         id: 'nascimento',
         label: 'Data de nascimento',
@@ -1537,15 +1568,21 @@ const operationalFeatures = <FeatureDefinition>[
         id: 'peso-medio',
         label: 'Peso médio (kg)',
         type: FeatureFieldType.number,
+        isRequired: true,
       ),
       // fidelidade-campos (onda 9 — re-auditoria 11/09): `price_kilo_alive` é
       // required no mesmo `/animals` de `registrar-animal` — que já declara
       // este campo — e ficou de fora aqui. Mesmo id/rótulo dos dois
       // cadastros, mesma fonte real.
+      //
+      // fidelidade-contrato (onda 1): entra obrigatório, como o contrato
+      // exige — só os três valores recalculados pelo servidor (abaixo)
+      // continuam opcionais por decisão da curadoria original.
       FeatureField(
         id: 'preco-kg',
         label: 'Preço do kg vivo',
         type: FeatureFieldType.number,
+        isRequired: true,
       ),
       FeatureField(
         id: 'preco-arroba',
@@ -1806,10 +1843,15 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Pelagem',
         placeholder: 'Descrição da pelagem',
       ),
+      // fidelidade-contrato (onda 1): `price_kilo_alive` é required em
+      // `/animals` — só os três valores recalculados pelo servidor abaixo
+      // continuam opcionais por decisão da curadoria original. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
       FeatureField(
         id: 'preco-kg',
         label: 'Preço do kg vivo',
         type: FeatureFieldType.number,
+        isRequired: true,
       ),
       FeatureField(
         id: 'preco-arroba',
@@ -2138,10 +2180,14 @@ const operationalFeatures = <FeatureDefinition>[
       // carência/intervalo a respeitar — dado sensível de rastreabilidade
       // (retirada de leite/carne pós-medicamento) ausente no protótipo. Ver
       // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
+      //
+      // fidelidade-contrato (onda 1): `time_control` é required no contrato
+      // real, não opcional. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
       FeatureField(
         id: 'controle-por-tempo',
         label: 'Controle por tempo (carência)',
         type: FeatureFieldType.select,
+        isRequired: true,
         options: ['Sim', 'Não'],
       ),
       FeatureField(
@@ -2918,11 +2964,14 @@ const operationalFeatures = <FeatureDefinition>[
         titleField: 'produto',
         subtitleFields: ['armazem', 'quantidade'],
         fields: [
+          // fidelidade-contrato (onda 1): `products.*.armazem` é opcional no
+          // contrato real de `/bull-seed-season` — a leva anterior travou
+          // como required por engano (sentido invertido, não faltando). Ver
+          // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
             type: FeatureFieldType.select,
-            isRequired: true,
             options: catalogoArmazens,
           ),
           FeatureField(
@@ -3123,6 +3172,19 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Material reprodutivo',
         placeholder: 'Touro, sêmen ou embrião do estoque',
       ),
+      // fidelidade-contrato (onda 1): `bull_seed_season_uuid` é required em
+      // `/breeding-matings` e estava ausente por completo — é o registro de
+      // `material-reprodutivo` (touro/sêmen/embrião já vinculado a uma
+      // estação, catálogo `/bull-seed-season`) usado nesta cobertura, não o
+      // texto livre de `material-reprodutivo` acima. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
+      FeatureField(
+        id: 'bull-seed-season',
+        label: 'Touro / sêmen da estação',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: ['BSS-2026-007', 'BSS-2026-012'],
+      ),
       FeatureField(id: 'protocolo', label: 'Protocolo'),
       FeatureField(
         id: 'identificacao-protocolo',
@@ -3247,7 +3309,13 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureFormStep(
         title: 'Vínculos',
         hint: 'Estação, lote de matrizes e o material reprodutivo usado.',
-        fields: ['estacao-monta', 'lote', 'touro', 'material-reprodutivo'],
+        fields: [
+          'estacao-monta',
+          'lote',
+          'touro',
+          'material-reprodutivo',
+          'bull-seed-season',
+        ],
       ),
       FeatureFormStep(
         title: 'Protocolo',

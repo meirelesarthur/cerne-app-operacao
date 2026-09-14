@@ -79,7 +79,14 @@ void main() {
       // fidelidade-campos (onda 3): `color` é required em `/areas` — a cor
       // com que a área aparece no mapa. Ver
       // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 3.
-      ..setValue('cor', 'Verde');
+      ..setValue('cor', 'Verde')
+      // fidelidade-contrato (onda 1): `productive_area`/`unproductive_area`/
+      // `recreation_area`/`is_enabled` voltaram a `required`. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
+      ..setValue('area-produtiva', '20')
+      ..setValue('area-nao-produtiva', '4')
+      ..setValue('area-recreio', 'Não')
+      ..setValue('ativo', 'Sim');
     final draft = controller.submit();
 
     expect(draft?.title, 'Talhão 03');
