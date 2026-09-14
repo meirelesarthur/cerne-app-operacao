@@ -409,6 +409,23 @@ const adminFeatures = <FeatureDefinition>[
     // banco-real: única superfície de criação de produto (campo livre). Todo
     // outro campo "produto" do catálogo busca em `catalogoProdutos` acima, em
     // vez de aceitar texto livre — fonte real: `products` (543.983 linhas).
+    //
+    // fidelidade-contrato (onda 9): esta tela já é criação de verdade
+    // (`createAction`/`primaryAction`, sem `readOnly`) — a auditoria de
+    // 14/09 a descreve como consulta, mas o catálogo aqui a declara editável
+    // desde a onda 2 do banco-real. O contrato real de `POST /products` tem
+    // ~40 campos fiscais; 6 são `required` e faltam por completo:
+    // `group_uuid`, `has_lot`, `is_equipment`, `is_enabled`, `control_stock`,
+    // `las_price`. Três desses (`is_equipment`/`is_enabled`/`control_stock`)
+    // são booleanos — `FeatureFieldType` não tem esse tipo hoje (só
+    // `select` simula Sim/Não), então declará-los exige a mesma decisão de
+    // motor da coleção de imagens da Onda 7, não é só adicionar campo.
+    // `categoria`/`unidade` (abaixo) são rótulo onde o contrato quer
+    // `category_uuid`/`measurement_uuid` (categoria C) — mesma correção de
+    // `catalogoLotes`/`catalogoFornecedores` se algum dia entrar. Nada disso
+    // fechado nesta leva: expandir ~40 campos numa tela que hoje tem 4 é
+    // decisão de escopo de produto, não fidelidade pontual. Ver
+    // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 9.
     fields: [
       FeatureField(
         id: 'nome-produto',

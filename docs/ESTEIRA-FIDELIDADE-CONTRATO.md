@@ -98,6 +98,26 @@ que ninguém confirmou.
   repositório — é uma referência externa ao rastreador da própria auditoria, não a um doc do
   CERNE. Ignorada aqui.
 
+## Status desta execução (ondas 1-9)
+
+| Onda | Categoria | Status |
+|---|---|---|
+| 1 | A — obrigatoriedade | ✅ fechada |
+| 2 / 2b | B — enum/valor | ✅ fechada (2 `TODO(banco-real)` honestos) |
+| 3 | C — FK como texto | ✅ fechada |
+| 4 | D — array × escalar / item | ✅ quase completa (`material-reprodutivo.animals[]` fica de fora — contrato não especificado) |
+| 5 | D — cardinalidade fechada em coleção | ✅ fechada (`transferencia-animal` fica de fora — conflito com simulação de RFID) |
+| 6 | E — condicionalidade | ✅ fechada (4 casos, matriz de `monta-natural` simplificada) |
+| 7 | Resíduo estrutural de `pastagens` | ✅ quase completa (coleção de imagens geo fica de fora — motor + câmera simulada) |
+| 8 | Fluxos dedicados | ⏸️ não iniciada — ver justificativa na própria onda |
+| 9 | `consulta-produtos` | ✅ documentação registrada |
+
+Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
+com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
+mudança de contagem. `functional_catalog_test.dart` e `functional_journey_engine_test.dart`
+atualizados e conferidos por verificador estrutural equivalente a cada onda (sem SDK Flutter
+neste ambiente); a suíte real precisa rodar antes do merge.
+
 ---
 
 ## Onda 1 — Categoria A: obrigatoriedade divergente (fechamento direto)
@@ -273,29 +293,55 @@ Fora das cinco categorias por ser mais estrutural — a coleção "Serviços" de
 Cada um é um arquivo Dart próprio, não uma entrada de `functional_catalog.dart` — maior custo
 de engenharia por item, e testado por conta.
 
+**Decisão desta execução: nenhum dos três foi editado.** Motivo, registrado em vez de
+adivinhado: as Ondas 1-7 são edição de **dado declarativo** (`functional_catalog.dart`), onde
+uma invariante estrutural escrita à parte (contagens, cobertura de etapas, referências de
+campo) dá confiança razoável sem compilar. Os três arquivos aqui são **widget Dart imperativo**
+— `apontamento_flow.dart` sozinho tem 1248 linhas, um `StatefulWidget` com estado próprio, sem
+o mesmo verificador possível. Sem SDK Flutter neste ambiente para compilar/rodar o widget test
+depois de editar, um erro de sintaxe ou de tipo só apareceria no CI, não aqui. Some-se a isso
+que boa parte do que falta é semântica de negócio que a auditoria não detalha (os valores reais
+de `percentage`/`difference`/`amount`/`total` de `feedstocks[]`, as 13 colunas da matriz de
+qualidade) — inventar a forma exata seria o mesmo erro que a curadoria já vetou para enums sem
+domínio completo (Onda 2b), agora em código de tela em vez de `options`.
+
 - [ ] `apontamento_flow.dart` — as 11 inversões de obrigatoriedade da Onda 1 e o bloco de mão
       de obra (`labor`: hoje função+texto livre; contrato é máquina de estados
       `type → employee/function/provider`, a mesma família de XOR de executor de `sanitario`/
       `pastagens`) e a matriz de qualidade da produção (13 colunas do contrato, reduzida a 4
-      campos hoje).
-- [ ] `batelada_flow.dart` (`producao-batelada`) — `date` + `warehouse_uuid` no topo e os 5
-      required de `feedstocks[]` (`quantity`/`percentage`/`difference`/`amount`/`total`);
-      `'vagão'` inventado fica (padrão ③). Baixo valor imediato — o fluxo é mock local, não
-      chama a API; prioriza-se por último dentro desta onda.
+      campos hoje). Arquivo maior e de maior risco desta onda — pede sessão própria, com
+      alguém rodando `flutter test` a cada mudança.
+- [ ] `batelada_flow.dart` (`producao-batelada`) — `date` no topo é a única peça
+      inequívoca (as demais dependem de fórmula de negócio não confirmada); mesmo assim,
+      nenhum fluxo dedicado do módulo hoje tem campo de data (são todos "operação de hoje"
+      implícita) — inserir um quebraria esse padrão sem um pedido explícito de UX. `[nenhuma
+      mudança]`. Os 5 required de `feedstocks[]`
+      (`quantity`/`percentage`/`difference`/`amount`/`total`) e `warehouse_uuid` no topo
+      continuam ausentes; `'vagão'` inventado fica (padrão ③). Baixo valor imediato — o fluxo é
+      mock local, não chama a API.
 - [ ] `leitura_cocho_flow.dart` — fora de escopo de campo: o núcleo da funcionalidade (escore/
       sobras/aspecto/comportamento/ocorrências) não tem endpoint real. Só o bloco consumo/dieta
       é auditável (`diet_id`/`feed_intake`, ambos `required`, ausentes no fluxo) — fechar só
-      esse bloco; o resto é gap de backend (ver Pendências).
+      esse bloco; o resto é gap de backend (ver Pendências). Mesma reserva de risco/verificação
+      do item acima.
 
 ## Onda 9 — `consulta-produtos` (documentação, sem expandir a tela)
 
-- [ ] Registrar no catálogo, em comentário, os ~40 campos fiscais do contrato de escrita real
-      e os 6 required (`group_uuid`, `has_lot`, `is_equipment`, `is_enabled`, `control_stock`,
-      `las_price`) — mesmo tratamento de documentação que consultas `readOnly` já recebem, sem
-      criar formulário de criação nesta tela.
-- [ ] Campos `categoria`/`unidade`: mesma categoria C (FK como texto/rótulo onde o contrato
-      quer `category_uuid`/`measurement_uuid`) — se e quando a tela virar formulário de
-      criação, entra pela Onda 3.
+**Correção de premissa**: o relatório descreve `consulta-produtos` como consulta `readOnly`,
+mas o catálogo já a declara como criação de verdade desde a onda 2 do banco-real
+(`createAction: 'Novo produto'`, sem `readOnly`). O tratamento de "documentar, não expandir"
+desta onda vale mesmo assim — a tela é editável, mas o contrato real (~40 campos fiscais) é
+grande demais para entrar de uma vez sem decisão de produto.
+
+- [x] Registrado no catálogo, em comentário, os ~40 campos fiscais do contrato de escrita real
+      e os 6 required ausentes (`group_uuid`, `has_lot`, `is_equipment`, `is_enabled`,
+      `control_stock`, `las_price`) — três deles booleanos, que `FeatureFieldType` não modela
+      hoje (mesma lacuna de motor da coleção de imagens da Onda 7). Sem criar os campos nesta
+      onda: 4 campos → ~44 é decisão de escopo de produto, não uma correção pontual de
+      fidelidade.
+- [x] Campos `categoria`/`unidade`: mesma nota de categoria C (FK como rótulo onde o contrato
+      quer `category_uuid`/`measurement_uuid`) registrada no ponto — correção real fica para
+      quando/se a expansão de campos acontecer.
 
 ---
 
