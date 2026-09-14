@@ -26,6 +26,8 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     required this.bgRaised,
     required this.bgTrack,
     required this.bgKpi,
+    required this.fieldOnSurface,
+    required this.fieldOnCanvas,
     required this.borderDefault,
     required this.borderStrong,
     required this.borderSubtle,
@@ -81,6 +83,16 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
   final Color bgRaised;
   final Color bgTrack;
   final Color bgKpi;
+
+  /// Preenchimento dos campos de formulário (`AppFieldCapsule`), theme-aware.
+  /// `fieldOnSurface` quando o campo está sobre `bgSurface` (folha branca do
+  /// cadastro); `fieldOnCanvas`, sobre `bgCanvas`/`bgSheet`. Substituem os
+  /// literais `AppColors.neutral100`/`neutral0` que `appInputColors()` usava
+  /// antes — fixos, não sobreviviam ao gbMode e deixavam o campo branco puro
+  /// sobre o tema escuro.
+  final Color fieldOnSurface;
+  final Color fieldOnCanvas;
+
   final Color borderDefault;
   final Color borderStrong;
   final Color borderSubtle;
@@ -145,6 +157,8 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     bgRaised: AppColorsLight.bgRaised,
     bgTrack: AppColorsLight.bgTrack,
     bgKpi: AppColorsLight.bgKpi,
+    fieldOnSurface: AppColorsLight.fieldOnSurface,
+    fieldOnCanvas: AppColorsLight.fieldOnCanvas,
     borderDefault: AppColorsLight.borderDefault,
     borderStrong: AppColorsLight.borderStrong,
     borderSubtle: AppColorsLight.borderSubtle,
@@ -201,6 +215,8 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     bgRaised: AppColorsGbMode.bgRaised,
     bgTrack: AppColorsGbMode.bgTrack,
     bgKpi: AppColorsGbMode.bgKpi,
+    fieldOnSurface: AppColorsGbMode.fieldOnSurface,
+    fieldOnCanvas: AppColorsGbMode.fieldOnCanvas,
     borderDefault: AppColorsGbMode.borderDefault,
     borderStrong: AppColorsGbMode.borderStrong,
     borderSubtle: AppColorsGbMode.borderSubtle,
@@ -258,6 +274,8 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     Color? bgRaised,
     Color? bgTrack,
     Color? bgKpi,
+    Color? fieldOnSurface,
+    Color? fieldOnCanvas,
     Color? borderDefault,
     Color? borderStrong,
     Color? borderSubtle,
@@ -313,6 +331,8 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
       bgRaised: bgRaised ?? this.bgRaised,
       bgTrack: bgTrack ?? this.bgTrack,
       bgKpi: bgKpi ?? this.bgKpi,
+      fieldOnSurface: fieldOnSurface ?? this.fieldOnSurface,
+      fieldOnCanvas: fieldOnCanvas ?? this.fieldOnCanvas,
       borderDefault: borderDefault ?? this.borderDefault,
       borderStrong: borderStrong ?? this.borderStrong,
       borderSubtle: borderSubtle ?? this.borderSubtle,
@@ -374,6 +394,8 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
       bgRaised: c(bgRaised, other.bgRaised),
       bgTrack: c(bgTrack, other.bgTrack),
       bgKpi: c(bgKpi, other.bgKpi),
+      fieldOnSurface: c(fieldOnSurface, other.fieldOnSurface),
+      fieldOnCanvas: c(fieldOnCanvas, other.fieldOnCanvas),
       borderDefault: c(borderDefault, other.borderDefault),
       borderStrong: c(borderStrong, other.borderStrong),
       borderSubtle: c(borderSubtle, other.borderSubtle),

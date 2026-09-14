@@ -50,18 +50,28 @@ class AppInputColors {
 
 /// Resolve o preenchimento e a legibilidade do campo a partir da superfície
 /// mais próxima. Sem um [AppInputSurface] ancestral, o canvas do tema é a
-/// referência segura — nele os campos continuam brancos.
+/// referência segura.
+///
+/// Antes esta função respondia só à luminância da superfície e devolvia
+/// literais fixos (`AppColors.neutral100`/`neutral0`/`neutral800`...) —
+/// corretos no tema claro, mas alheios ao gbMode: como nenhuma superfície
+/// escura tem luminância "quase branca", o campo sempre caía no branco puro
+/// (`neutral0`) e virava um retângulo branco quebrando o tema escuro (campo
+/// de busca, entre outros). Os tokens `fieldOnSurface`/`fieldOnCanvas` já
+/// resolvem os dois papéis por tema — em gbMode nenhuma superfície é branca e
+/// os dois convergem para o mesmo verde elevado (`bgRaised`); o restante lê
+/// direto da paleta semântica, que já é theme-aware.
 AppInputColors appInputColors(BuildContext context) {
   final semantic = Theme.of(context).extension<AppSemanticColors>()!;
   final background = AppInputSurface.maybeOf(context) ?? semantic.bgCanvas;
-  final isWhiteSurface = background.computeLuminance() >= 0.98;
+  final isOnSurface = background.computeLuminance() >= 0.98;
 
   return AppInputColors(
-    fill: isWhiteSurface ? AppColors.neutral100 : AppColors.neutral0,
-    foreground: AppColors.neutral800,
-    muted: AppColors.neutral600,
-    placeholder: AppColors.neutral500,
-    focus: AppColors.brand700,
+    fill: isOnSurface ? semantic.fieldOnSurface : semantic.fieldOnCanvas,
+    foreground: semantic.fgDefault,
+    muted: semantic.fgMuted,
+    placeholder: semantic.fgPlaceholder,
+    focus: semantic.accentDefault,
   );
 }
 

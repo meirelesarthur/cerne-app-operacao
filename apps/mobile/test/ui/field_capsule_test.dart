@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_layout.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
+import 'package:cerne_app/design/theme/app_theme_extension.dart';
 import 'package:cerne_app/ui/app_icon.dart';
 import 'package:cerne_app/ui/card.dart';
 import 'package:cerne_app/ui/content_sheet.dart';
@@ -122,24 +123,36 @@ void main() {
       expect(tester.getRect(find.byType(EditableText)), editorAntes);
     });
 
-    testWidgets('usa branco sobre a folha cinza e no GB Mode', (tester) async {
+    testWidgets('usa branco sobre a folha cinza no tema claro', (tester) async {
       await tester.pumpWidget(
         _wrap(
           const AppContentSheet(child: AppTextInput(placeholder: 'E-mail')),
         ),
       );
       expect(_fillColor(tester), AppColors.neutral0);
+    });
 
+    // Nenhuma superfície de gbMode é "quase branca" — os dois papéis do
+    // campo (`fieldOnSurface`/`fieldOnCanvas`) convergem para o mesmo verde
+    // elevado do tema. Antes esta asserção era `AppColors.neutral0` (branco
+    // puro) e `neutral800` (texto escuro do tema claro): o bug de contraste
+    // que quebrava o GB Mode — o campo virava um retângulo branco cego sobre
+    // o app escuro — estava fixado como comportamento esperado aqui.
+    testWidgets('usa o verde elevado do tema, não branco, no GB Mode', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(
           const AppTextInput(placeholder: 'E-mail'),
           variant: AppThemeVariant.gbMode,
         ),
       );
-      expect(_fillColor(tester), AppColors.neutral0);
+
+      expect(_fillColor(tester), AppColorsGbMode.fieldOnCanvas);
+      expect(_fillColor(tester), isNot(AppColors.neutral0));
       expect(
         tester.widget<EditableText>(find.byType(EditableText)).style.color,
-        AppColors.neutral800,
+        AppSemanticColors.gbMode.fgDefault,
       );
     });
 

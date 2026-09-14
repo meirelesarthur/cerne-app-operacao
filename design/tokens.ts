@@ -161,6 +161,16 @@ export interface ThemePalette {
    * `track` é o trilho do segmented control.
    */
   bg: { canvas: string; sheet: string; surface: string; subtle: string; raised: string; track: string; kpi: string }
+  /**
+   * Preenchimento dos campos de formulário (`AppFieldCapsule`), que precisa
+   * contrastar com a superfície em que o campo está — não com um branco fixo.
+   * `onSurface` é o preenchimento quando o campo está sobre `bg.surface`
+   * (branco em claro); `onCanvas`, sobre `bg.canvas`/`bg.sheet` (cinza em
+   * claro). Em gbMode nenhuma superfície é branca, então os dois papéis
+   * convergem para `bg.raised` — o campo continua dentro da paleta escura,
+   * nunca vira um retângulo branco sobre o tema escuro.
+   */
+  field: { onSurface: string; onCanvas: string }
   border: { default: string; strong: string; subtle: string; tint: string }
   accent: { default: string; hover: string; subtle: string; contrast: string }
   /** superfície escura de destaque (hero cards / canvas invertido da referência) */
@@ -231,6 +241,11 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       track: '#e6e6e6',
       kpi: primitive.neutral[0],
     },
+    // Sobre o branco de `bg.surface`, o campo precisa de um cinza próprio
+    // para se destacar (neutral[100]) — `bg.subtle`/`bg.raised` são brancos
+    // aqui e não serviriam. Sobre o cinza do canvas/folha, o branco puro já
+    // contrasta, e é a leitura histórica do campo de busca do app.
+    field: { onSurface: primitive.neutral[100], onCanvas: primitive.neutral[0] },
     border: { default: '#e8e9e1', strong: '#d6d8ce', subtle: '#f0f1ea', tint: primitive.brand[100] },
     accent: { default: primitive.brand[700], hover: primitive.brand[800], subtle: primitive.brand[50], contrast: primitive.neutral[0] },
     ink: {
@@ -291,6 +306,11 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       inverse: '#051008',
     },
     bg: { canvas: '#051008', sheet: '#0e2a1d', surface: '#0e2a1d', subtle: '#0a2016', raised: '#123a28', track: 'rgba(255,255,255,0.10)', kpi: '#0e2a1d' },
+    // Nenhuma superfície de gbMode é branca — os dois papéis convergem para
+    // `bg.raised` (o mesmo verde elevado dos cards), corrigindo o campo que
+    // antes virava branco puro sobre o tema escuro (quebra de contraste
+    // reportada: busca com fill branco total no GB mode).
+    field: { onSurface: '#123a28', onCanvas: '#123a28' },
     border: { default: 'rgba(255,255,255,0.10)', strong: 'rgba(255,255,255,0.18)', subtle: 'rgba(255,255,255,0.06)', tint: 'rgba(255,255,255,0.10)' },
     accent: { default: '#10b981', hover: '#34d399', subtle: 'rgba(16,185,129,0.14)', contrast: '#051008' },
     ink: {
