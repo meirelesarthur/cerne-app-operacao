@@ -89,7 +89,13 @@ void main() {
       ..setValue('area-produtiva', '20')
       ..setValue('area-nao-produtiva', '4')
       ..setValue('area-recreio', 'Não')
-      ..setValue('ativo', 'Sim');
+      ..setValue('ativo', 'Sim')
+      // fidelidade-campos (onda 9 — re-auditoria 11/09): `farm_uuid`/
+      // `coordinates` são required — faltavam neste teste desde que
+      // entraram no catálogo (bug latente, só visível agora que a suíte
+      // real roda). Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
+      ..setValue('fazenda', 'Fazenda São Pedro')
+      ..setValue('coordenadas', 'Desenhado no mapa · 6 vértices');
     final draft = controller.submit();
 
     expect(draft?.title, 'Talhão 03');
@@ -182,8 +188,14 @@ void main() {
     expect(insumos.itemLabel, 'Insumo');
     // Item sem os obrigatórios não entra na lista.
     expect(isCollectionItemValid(insumos, const {}), isFalse);
+    // fidelidade-contrato (onda 7): `produto` (product_uuid) é opcional no
+    // contrato real — é `estoque` (stock_uuid) o obrigatório. Ver
+    // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 7.
+    final estoqueField = insumos.fields.firstWhere(
+      (field) => field.id == 'estoque',
+    );
     expect(
-      featureItemFieldError(insumos.fields.first, const {}),
+      featureItemFieldError(estoqueField, const {}),
       'Campo obrigatório.',
     );
 
