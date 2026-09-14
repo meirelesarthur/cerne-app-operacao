@@ -457,6 +457,9 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Lote': 'Lote Matrizes 01',
         'Finalidade': 'Matrizes',
         'Quantidade de animais': '212',
+        // fidelidade-contrato (onda 4): `batch_uuids[]`, a cardinalidade real
+        // do vínculo.
+        'Lotes vinculados': '1 item(ns) · Lote Matrizes 01',
       },
     ),
     PrototypeRecord(
@@ -473,6 +476,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Lote': 'Lote Receptoras 03',
         'Finalidade': 'Receptoras',
         'Quantidade de animais': '64',
+        'Lotes vinculados': '1 item(ns) · Lote Receptoras 03',
       },
     ),
   ],

@@ -724,6 +724,12 @@ const adminFeatures = <FeatureDefinition>[
       // faltando desta leva — ficou de fora quando `codigo`/`data` entraram.
       FeatureField(id: 'descricao', label: 'Descrição', isRequired: true),
       FeatureField(id: 'estacao', label: 'Estação de monta', isRequired: true),
+      // fidelidade-contrato (onda 4): o contrato real é `batch_uuids[]`
+      // (array de UUID, min:1) — este escalar permanece só para título e
+      // descrição do registro nesta consulta (remover exigiria redesenhar
+      // `recordTitleField`, fora do escopo desta onda); a coleção abaixo
+      // documenta a cardinalidade correta. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
       FeatureField(id: 'lote', label: 'Lote', isRequired: true),
       FeatureField(
         id: 'finalidade',
@@ -737,6 +743,24 @@ const adminFeatures = <FeatureDefinition>[
         label: 'Quantidade de animais',
         type: FeatureFieldType.number,
         isRequired: true,
+      ),
+    ],
+    // `batch_uuids[]` — o vínculo é com um ou mais lotes, não um escalar.
+    collections: [
+      FeatureCollection(
+        name: 'Lotes vinculados',
+        itemLabel: 'Lote',
+        isRequired: true,
+        titleField: 'lote',
+        fields: [
+          FeatureField(
+            id: 'lote',
+            label: 'Lote',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoLotes,
+          ),
+        ],
       ),
     ],
     emptyLabel: 'Nenhum lote vinculado à reprodução.',
@@ -1272,20 +1296,34 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.number,
             isRequired: true,
           ),
+          // fidelidade-contrato (onda 4): `items.*.measurement_uuid` é
+          // required e estava ausente; `materia-seca`/`custo`/`porcentagem`
+          // são os 3 required por item que a leva anterior deixou opcionais.
+          // Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+          FeatureField(
+            id: 'unidade',
+            label: 'Unidade',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoUnidades,
+          ),
           FeatureField(
             id: 'materia-seca',
             label: 'Matéria seca (%)',
             type: FeatureFieldType.number,
+            isRequired: true,
           ),
           FeatureField(
             id: 'custo',
             label: 'Custo (R\$)',
             type: FeatureFieldType.number,
+            isRequired: true,
           ),
           FeatureField(
             id: 'porcentagem',
             label: 'Porcentagem da dieta (%)',
             type: FeatureFieldType.number,
+            isRequired: true,
           ),
         ],
       ),
@@ -3183,10 +3221,30 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             options: catalogoProdutos,
           ),
+          // fidelidade-contrato (onda 4): `items.*.service` é o valor do
+          // serviço quando `tipo = Serviço` — faltava por completo (só
+          // `produto` existia). TODO(banco-real): o enum real de serviço não
+          // está confirmado; entra como texto até o time web confirmar os
+          // valores. A exigência XOR produto⊕serviço fica para a Onda 6. Ver
+          // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+          FeatureField(
+            id: 'servico',
+            label: 'Serviço',
+            placeholder: 'Descrição do serviço',
+          ),
+          // `items.*.measurement_uuid` é required — faltava.
+          FeatureField(
+            id: 'unidade',
+            label: 'Unidade',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoUnidades,
+          ),
           FeatureField(
             id: 'quantidade',
             label: 'Quantidade',
             type: FeatureFieldType.number,
+            isRequired: true,
           ),
           FeatureField(
             id: 'armazem',
@@ -3574,6 +3632,18 @@ const operationalFeatures = <FeatureDefinition>[
             id: 'touro',
             label: 'Touro atribuído',
           ),
+          // fidelidade-contrato (onda 4): `provider_uuid` é required **por
+          // item** no contrato — cada linha tem seu próprio veterinário, não
+          // um só no cabeçalho. O campo `veterinario` do cabeçalho permanece
+          // (nuance registrada em ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4:
+          // remover a duplicação exigiria redesenhar `recordTitleField` e as
+          // etapas, fora do escopo desta onda). Ver
+          // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+          FeatureField(
+            id: 'veterinario',
+            label: 'Veterinário responsável',
+            isRequired: true,
+          ),
         ],
       ),
     ],
@@ -3898,6 +3968,57 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Valor (R\$)',
             type: FeatureFieldType.number,
           ),
+          // fidelidade-contrato (onda 4): `hour_meter`/`mileage` são leituras
+          // **por item** no contrato real — ficavam só no cabeçalho, que
+          // documenta o equipamento como um todo. Ver
+          // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+          FeatureField(
+            id: 'horimetro',
+            label: 'Horímetro',
+            type: FeatureFieldType.number,
+          ),
+          FeatureField(
+            id: 'hodometro',
+            label: 'Hodômetro',
+            type: FeatureFieldType.number,
+          ),
+        ],
+      ),
+      // fidelidade-contrato (onda 4): `executor_type` + `employee`/
+      // `provider` + `quantidade`/`total` — bloco de mão de obra **por
+      // item**, ausente por completo (o form só tinha `horas-mao-de-obra` no
+      // cabeçalho, um total sem executor).
+      FeatureCollection(
+        name: 'Mão de obra',
+        itemLabel: 'Mão de obra',
+        titleField: 'executor',
+        subtitleFields: ['tipo', 'quantidade'],
+        fields: [
+          FeatureField(
+            id: 'tipo',
+            label: 'Tipo',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: ['Empregado', 'Prestador'],
+          ),
+          FeatureField(
+            id: 'executor',
+            label: 'Executor',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoResponsaveis,
+          ),
+          FeatureField(
+            id: 'quantidade',
+            label: 'Horas',
+            type: FeatureFieldType.number,
+            isRequired: true,
+          ),
+          FeatureField(
+            id: 'total',
+            label: 'Total (R\$)',
+            type: FeatureFieldType.number,
+          ),
         ],
       ),
     ],
@@ -3916,7 +4037,7 @@ const operationalFeatures = <FeatureDefinition>[
         title: 'Medidores e peças',
         hint: 'Leitura do equipamento e o que será consumido.',
         fields: ['horimetro', 'hodometro', 'horas-mao-de-obra', 'observacao'],
-        sections: ['Peças / Insumos'],
+        sections: ['Peças / Insumos', 'Mão de obra'],
       ),
       FeatureFormStep(
         title: 'Revisão',

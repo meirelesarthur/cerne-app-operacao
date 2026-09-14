@@ -202,7 +202,13 @@ void main() {
         allFeatures.where((feature) => feature.existingRoute != null),
         hasLength(17),
       );
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(27));
+      // fidelidade-contrato (onda 4) — `lotes-reproducao` ganha a coleção
+      // obrigatória "Lotes vinculados" (`batch_uuids[]`, o escalar `lote`
+      // permanece só para título/descrição do registro): 27+1=28. E
+      // `manutencao-frota` ganha "Mão de obra" (bloco de executor por item,
+      // ausente por completo): 28+1=29 seções. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(29));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
@@ -280,7 +286,11 @@ void main() {
             (feature: feature, collection: collection),
       ];
 
-      expect(colecoes, hasLength(27));
+      // fidelidade-contrato (onda 4): `lotes-reproducao` ganha "Lotes
+      // vinculados" (1 campo, `batch_uuids[]`): 27+1=28.
+      // `manutencao-frota` ganha "Mão de obra" (4 campos): 28+1=29. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+      expect(colecoes, hasLength(29));
 
       final comCampos = colecoes
           .where((par) => par.collection.fields.isNotEmpty)
@@ -302,7 +312,10 @@ void main() {
       // `manutencao-frota.items[]` (equipamento): 24+1=25 coleções com
       // campo; 93+10=103 campos de item. Ver
       // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
-      expect(comCampos, hasLength(25));
+      // fidelidade-contrato (onda 4): +1 coleção com campo (`lotes-reproducao`
+      // "Lotes vinculados"): 25+1=26. +1 (`manutencao-frota` "Mão de obra"):
+      // 26+1=27.
+      expect(comCampos, hasLength(27));
       expect(
         colecoes
             .where((par) => par.collection.fields.isEmpty)
@@ -314,13 +327,20 @@ void main() {
       // `tipo-identificacao` — a identificação por texto vira modo +
       // número, mesmo padrão de `identifications[]` de `registrar-animal`,
       // documentando a intenção de FK (`animal_uuids[]`) sem UUID sintético.
-      // 103+1=104. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 3.
+      // 103+1=104.
+      // fidelidade-contrato (onda 4): `batidas.items[]` +1 (unidade),
+      // `protocolos-estacao.items[]` +2 (servico, unidade),
+      // `diagnostico-gestacao."Animais diagnosticados"` +1 (veterinario),
+      // `lotes-reproducao."Lotes vinculados"` +1 (lote): 104+5=109.
+      // `manutencao-frota."Peças / Insumos"` +2 (horimetro, hodometro) e a
+      // nova coleção "Mão de obra" +4 (tipo, executor, quantidade, total):
+      // 109+6=115. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        104,
+        115,
       );
 
       for (final par in comCampos) {
@@ -353,9 +373,12 @@ void main() {
         }
       }
 
-      // `protocolos-estacao.items[]` e `diagnostico-gestacao.animals[]` são
-      // as duas coleções `min:1` do contrato real: nos dois casos a coleção
-      // **é** o registro, e salvar sem nenhum item não registra nada.
+      // `protocolos-estacao.items[]`, `diagnostico-gestacao.animals[]` e
+      // `lotes-reproducao.batch_uuids[]` são as três coleções `min:1` do
+      // contrato real: em todos os três a coleção **é** o registro (ou parte
+      // essencial dele), e salvar sem nenhum item não registra nada.
+      // fidelidade-contrato (onda 4): `lotes-reproducao` entra. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
       expect(
         {
           for (final feature in allFeatures)
@@ -365,6 +388,7 @@ void main() {
         {
           'protocolos-estacao': ['Etapas do protocolo'],
           'diagnostico-gestacao': ['Animais diagnosticados'],
+          'lotes-reproducao': ['Lotes vinculados'],
         },
       );
     });

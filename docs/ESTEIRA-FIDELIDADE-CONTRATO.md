@@ -176,28 +176,29 @@ abaixo do checklist original).
 
 ## Onda 4 — Categoria D: array × escalar / campo por item
 
-- [ ] `manutencao-frota` — bloco de executor **por item** ausente na coleção "Peças / Insumos"
-      (ou numa coleção nova "Mão de obra", espelhando o padrão já usado em `sanitario`):
-      `executor_type` + `employee`/`provider` + `quantidade`/`total`. As leituras por item
-      (`equipment_uuid`/`hour_meter`/`mileage`) que hoje estão achatadas no cabeçalho migram
-      para dentro do item (nota: `equipment_uuid` por item já entrou na onda 9 — falta
-      `hour_meter`/`mileage`).
-- [ ] `batidas` — `items.*.measurement_uuid` ausente na coleção "Itens da batida"; os 3
-      required por item hoje opcionais (`dry_matter`/`materia-seca`, `cost_value`/`custo`,
-      `percentage`/`porcentagem`) voltam a `isRequired: true`.
-- [ ] `diagnostico-gestacao` — `provider_uuid` required por item ausente na coleção "Animais
-      diagnosticados"; os campos planos do topo (`veterinario`/`lote`/`quantidade`) que
-      duplicam o que só existe por linha somem do cabeçalho (ficam só no item, evitando a
-      dupla fonte de verdade).
-- [ ] `lotes-reproducao` — campo `lote` (escalar) vira coleção obrigatória `batch_uuids[]`
-      (min:1) — muda de consulta administrativa simples para ter uma `FeatureCollection`
-      (primeira vez que uma tela `readOnly` ganha coleção nesta leva; documentação do
-      contrato, não formulário editável).
-- [ ] `material-reprodutivo` — coleção `animals[]` do contrato está **ausente por completo**;
-      nasce como nova `FeatureCollection` (analista deve puxar os campos reais de
-      `animals.*` no Form Request antes de declarar, o relatório não lista quais são).
-- [ ] `protocolos-estacao` — `items.*.service` (enum) e `items.*.measurement_uuid` ausentes na
-      coleção "Etapas do protocolo"; `items.*.quantity` volta a `isRequired: true`.
+- [x] `manutencao-frota` — nova coleção "Mão de obra" (`tipo` Empregado/Prestador, `executor`,
+      `quantidade` em horas, `total`) — o form só tinha `horas-mao-de-obra` no cabeçalho, um
+      total sem executor. `hour_meter`/`mileage` (`horimetro`/`hodometro`) migraram para
+      dentro de "Peças / Insumos" (`equipment_uuid` por item já tinha entrado na onda 9).
+- [x] `batidas` — `items.*.measurement_uuid` (`unidade`) entrou na coleção "Itens da batida";
+      os 3 required por item (`materia-seca`, `custo`, `porcentagem`) voltam a
+      `isRequired: true`.
+- [x] `diagnostico-gestacao` — `provider_uuid` (`veterinario`) required por item entrou na
+      coleção "Animais diagnosticados". **Não fechado por completo**: os campos planos do
+      topo (`veterinario`/`lote`/`quantidade`) continuam — removê-los exigiria redesenhar
+      `recordTitleField` (hoje `lote`, um campo de cabeçalho) e as etapas, fora do escopo desta
+      onda. Nuance registrada, não é pattern ③ (não são inventados, duplicam algo real).
+- [x] `lotes-reproducao` — nova coleção obrigatória "Lotes vinculados" (`batch_uuids[]`,
+      min:1, select sobre `catalogoLotes`). O escalar `lote` **permanece** pelo mesmo motivo de
+      `diagnostico-gestacao`: é o `recordTitleField` desta consulta. Amostras semeadas
+      atualizadas.
+- [ ] `material-reprodutivo` — coleção `animals[]` do contrato continua **ausente**: o
+      relatório não lista os campos reais de `animals.*` em `/bull-seed-season`, e inventá-los
+      seria advinhar contrato, não documentá-lo. Fica para quando alguém puxar o Form Request
+      real.
+- [x] `protocolos-estacao` — `items.*.service` (`servico`, texto — `TODO(banco-real)`: enum
+      real não confirmado) e `items.*.measurement_uuid` (`unidade`) entraram na coleção "Etapas
+      do protocolo"; `items.*.quantity` volta a `isRequired: true`.
 
 ## Onda 5 — Categoria D (continuação): cardinalidade de identificação/lote em array
 
