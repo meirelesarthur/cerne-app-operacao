@@ -753,16 +753,18 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         placeholder: 'Ex.: Talhão 03',
       ),
-      // TODO(banco-real): `areas.type` é smallint no banco real, sem tabela de
-      // domínio no dump — as opções abaixo são placeholder. Confirmar com o
-      // time web os valores válidos antes de travar este select em produção.
-      // Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C.
+      // fidelidade-contrato (onda 2): o TODO(banco-real) abaixo fica
+      // resolvido — a auditoria de 14/09 confirma o enum real de `AreaType`:
+      // `{Produtiva, Reserva}`. A classificação setorial (agricultura,
+      // pecuária…) já mora em "Atividade", mais abaixo — este campo é outra
+      // dimensão do contrato (se a área produz ou é reserva). Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2.
       FeatureField(
         id: 'tipo',
         label: 'Tipo de uso',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Agricultura', 'Pecuária', 'Fruticultura', 'Reserva'],
+        options: ['Produtiva', 'Reserva'],
       ),
       FeatureField(
         id: 'area-total',
@@ -816,12 +818,19 @@ const operationalFeatures = <FeatureDefinition>[
       // fidelidade-campos (onda 3): o que `/areas` tem e a tela não mostrava.
       // `color` é required no contrato — é a cor com que a área aparece no
       // mapa, sem ela o desenho da fazenda não se distingue.
+      //
+      // TODO(banco-real) — fidelidade-contrato (onda 2b): `AreaColor` real
+      // são 14 hex; a auditoria de 14/09 só confirma que `Roxo` **não**
+      // existe nesse domínio (removido abaixo). Os 5 restantes não têm
+      // confirmação de que batem 1:1 com os hex reais — pedir a lista
+      // completa ao time web antes de recompor. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2b.
       FeatureField(
         id: 'cor',
         label: 'Cor no mapa',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Verde', 'Amarelo', 'Vermelho', 'Azul', 'Roxo', 'Cinza'],
+        options: ['Verde', 'Amarelo', 'Vermelho', 'Azul', 'Cinza'],
       ),
       FeatureField(
         id: 'matricula',
@@ -974,6 +983,13 @@ const operationalFeatures = <FeatureDefinition>[
       // Confirmar com o time web se devem virar dois selects separados e quais
       // os valores válidos. Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md,
       // seção C.
+      //
+      // fidelidade-contrato (onda 2b): a auditoria de 14/09 confirma que o
+      // enum real (`FoodTypeEnum`, aplicado a `/foods` — não a este campo
+      // conflatado) tem 2 códigos, `P`/`U`, sem rótulo em português
+      // confirmado. Não trocar `Estoque`/`Formulação` sem essa confirmação —
+      // arriscaria inverter o sentido dos dois. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2b.
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
@@ -2284,14 +2300,21 @@ const operationalFeatures = <FeatureDefinition>[
             isRequired: true,
             options: catalogoResponsaveis,
           ),
+          // fidelidade-contrato (onda 2): `labor.func_type` real tem 3
+          // valores (`employees`/`functions`/`providers`), não 2. TODO
+          // (banco-real): confirmar com o time web o rótulo em português
+          // exato de `functions` — "Função" é a tradução literal, mas pode
+          // não ser o termo usado para tipo de mão de obra em campo. Ver
+          // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2.
           FeatureField(
             id: 'tipo',
             label: 'Tipo',
             type: FeatureFieldType.select,
             isRequired: true,
             options: [
-              'Própria',
-              'Terceirizada',
+              'Empregado',
+              'Função',
+              'Prestador',
             ],
           ),
           FeatureField(
@@ -2356,12 +2379,15 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoResponsaveis,
       ),
+      // fidelidade-contrato (onda 2): `WeaningTypeEnum` real é
+      // `{Recria, Venda}` — nada em comum com o enum anterior. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2.
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Convencional', 'Precoce', 'Temporária'],
+        options: ['Recria', 'Venda'],
       ),
       FeatureField(id: 'lote', label: 'Lote', isRequired: true),
       FeatureField(
@@ -3147,17 +3173,19 @@ const operationalFeatures = <FeatureDefinition>[
       // existia aqui (`breeding_matings.type` sem tabela de domínio) fica
       // resolvido pelo próprio contrato: os valores são os métodos
       // reprodutivos, os mesmos de `estacao-monta.metodo`.
+      //
+      // fidelidade-contrato (onda 2): o enum real de `breeding_matings.type`
+      // tem só 3 valores — "Inseminação artificial" e "Transferência de
+      // embrião" não existem nele, e faltava "FIV". `estacao-monta.metodo`
+      // não foi tocado: a auditoria não o aponta como divergente (é campo
+      // descritivo da estação, não validado contra este mesmo enum). Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2.
       FeatureField(
         id: 'tipo',
         label: 'Tipo de acasalamento',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: [
-          'Monta natural',
-          'Inseminação artificial',
-          'IATF',
-          'Transferência de embrião',
-        ],
+        options: ['Monta natural', 'IATF', 'FIV'],
       ),
       FeatureField(
         id: 'tipo-lancamento',

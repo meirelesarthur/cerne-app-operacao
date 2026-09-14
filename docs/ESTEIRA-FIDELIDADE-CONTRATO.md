@@ -134,35 +134,24 @@ abaixo do checklist original).
 
 ## Onda 2 — Categoria B: enum/valor incompatível (onde o relatório dá o domínio inteiro)
 
-- [ ] `acasalamento` (`monta-natural`) — campo `tipo`: contrato tem 3 valores, o form tem 4.
-      `Inseminação artificial` e `Transferência de embrião` **não existem** no enum real;
-      **falta `FIV`**. Novo domínio: `['Monta natural', 'IATF', 'FIV']`. Confirmar se o rótulo
-      de exibição de `FIV` é esse mesmo ou se o time web usa outra grafia antes de travar (é o
-      único dos três sem confirmação explícita no relatório).
-- [ ] `desmama` — campo `tipo`: `WeaningTypeEnum` real é `{Recria, Venda}`, não
-      `Convencional/Precoce/Temporária`. Novo domínio: `['Recria', 'Venda']`.
-- [ ] `cadastrar-area` — campo `tipo`: `AreaType` real é `{Produtiva, Reserva}`, não
-      `['Agricultura', 'Pecuária', 'Fruticultura', 'Reserva']`. Novo domínio:
-      `['Produtiva', 'Reserva']`. **Atenção**: isto estreita bastante o enum de uso da área —
-      confirmar com o time web que não há um terceiro valor documentado em outro lugar do
-      contrato antes de travar em produção (aqui trava porque o relatório afirma just os 2).
-- [ ] `sanitario` — `labor.func_type`: contrato tem 3 valores (`employees`/`functions`/
-      `providers`), o form tem 2 (`Própria`/`Terceirizada`). Novo domínio proposto:
-      `['Empregado', 'Função', 'Prestador']` — **TODO(banco-real)**: confirmar os rótulos em
-      português exatos com o time web (a tradução literal de `functions` como "Função" soa
-      estranha para um tipo de mão de obra; pode ser "Função interna" ou nome próprio de
-      cargo — não travar sem confirmar).
+- [x] `acasalamento` (`monta-natural`) — campo `tipo`: novo domínio
+      `['Monta natural', 'IATF', 'FIV']` — `Inseminação artificial`/`Transferência de embrião`
+      não existiam no enum real; `estacao-monta.metodo` **não** foi tocado (a auditoria não o
+      aponta como divergente).
+- [x] `desmama` — campo `tipo`: novo domínio `['Recria', 'Venda']` (`WeaningTypeEnum`).
+- [x] `cadastrar-area` — campo `tipo`: novo domínio `['Produtiva', 'Reserva']` (`AreaType`) — a
+      classificação setorial (agricultura/pecuária/…) já mora em "Atividade", campo distinto.
+      Amostras semeadas (`area-1`/`area-2`) atualizadas.
+- [x] `sanitario` — `labor.func_type`: novo domínio `['Empregado', 'Função', 'Prestador']`.
+      **TODO(banco-real) permanece**: rótulos em português não confirmados pelo time web —
+      anotado no ponto.
 
 ### Onda 2b — Categoria B com domínio incompleto (`TODO(banco-real)`, não fecha nesta leva)
 
-- [ ] `cadastrar-area` — campo `cor`: `AreaColor` real são 14 hex; o relatório só confirma que
-      **`Roxo` não existe**. Ação segura agora: remover `Roxo` das `options` e anotar
-      `TODO(banco-real)` pedindo a lista completa de 14 cores/hex ao time web antes de
-      recompor o domínio.
-- [ ] `formulacoes` — campo `tipo`: `FoodTypeEnum` real é `{P, U}` (códigos, sem rótulo
-      confirmado); o form usa `['Estoque', 'Formulação']`. `TODO(banco-real)`: pedir ao time
-      web o rótulo em português de `P`/`U` antes de trocar — mapear às cegas arriscaria
-      inverter o sentido dos dois.
+- [x] `cadastrar-area` — campo `cor`: removido `Roxo` (confirmado inexistente); os 5 restantes
+      ficam com `TODO(banco-real)` pedindo a lista completa de 14 cores/hex ao time web.
+- [x] `formulacoes` — campo `tipo`: valores **não alterados** (`Estoque`/`Formulação`) —
+      `TODO(banco-real)` anotado no ponto pedindo o rótulo real de `P`/`U` antes de trocar.
 
 ## Onda 3 — Categoria C: FK como texto livre → `select` sobre domínio
 

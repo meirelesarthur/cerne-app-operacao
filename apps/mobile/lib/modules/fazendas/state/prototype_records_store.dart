@@ -272,10 +272,13 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
     PrototypeRecord(
       id: 'area-1',
       title: 'Talhão 03',
-      description: 'Agricultura · 42 ha',
+      description: 'Produtiva · 42 ha',
       status: PrototypeRecordStatus.active,
       details: {
-        'Tipo de uso': 'Agricultura',
+        // fidelidade-contrato (onda 2): `AreaType` real é
+        // `{Produtiva, Reserva}` — o valor de uso setorial (agricultura,
+        // pecuária…) mora em "Atividade", abaixo.
+        'Tipo de uso': 'Produtiva',
         'Área total': '42 ha',
         'Área produtiva': '38 ha',
         'Área não produtiva': '4 ha',
@@ -299,10 +302,10 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
     PrototypeRecord(
       id: 'area-2',
       title: 'Piquete 07',
-      description: 'Pecuária · 18 ha',
+      description: 'Produtiva · 18 ha',
       status: PrototypeRecordStatus.active,
       details: {
-        'Tipo de uso': 'Pecuária',
+        'Tipo de uso': 'Produtiva',
         'Área total': '18 ha',
         'Carga animal (UA/ha)': '1,8',
         'Unidade': 'ha',

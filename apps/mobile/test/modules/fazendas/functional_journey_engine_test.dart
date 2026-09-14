@@ -72,7 +72,10 @@ void main() {
 
     controller
       ..setValue('nome', 'Talhão 03')
-      ..setValue('tipo', 'Agricultura')
+      // fidelidade-contrato (onda 2): `AreaType` real é
+      // `{Produtiva, Reserva}`. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
+      // Onda 2.
+      ..setValue('tipo', 'Produtiva')
       ..setValue('area-total', '24')
       ..setValue('unidade', 'ha')
       ..setValue('localizacao', 'Setor Sul')
