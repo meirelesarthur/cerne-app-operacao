@@ -5,7 +5,6 @@ import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
-import '../../../shell/components/sub_page_header.dart';
 import '../../../ui/ui.dart';
 import '../credito_status.dart';
 import '../mocks/credito_mocks.dart';
@@ -294,160 +293,152 @@ class PropostaDetalheScreen extends StatelessWidget {
     }
 
     if (proposta == null) {
-      return Container(
-        color: semantic.bgCanvas,
-        child: Column(
-          children: [
-            const SubPageHeader(title: 'Proposta'),
-            Expanded(
-              child: Center(
-                child: AppEmptyState(
-                  icon: AppIcons.frown,
-                  title: 'Proposta não encontrada',
-                  description:
-                      'Essa proposta pode ter sido removida ou o link está incorreto.',
-                  action: AppButton(
-                    onPressed: () => context.go('/credito/propostas'),
-                    child: const Text('Ver todas as propostas'),
-                  ),
-                ),
-              ),
+      return AppPageBody(
+        title: 'Proposta',
+        onBack: () => context.go('/credito/propostas'),
+        sheetColor: semantic.bgSheet,
+        child: Center(
+          child: AppEmptyState(
+            icon: AppIcons.frown,
+            title: 'Proposta não encontrada',
+            description:
+                'Essa proposta pode ter sido removida ou o link está incorreto.',
+            action: AppButton(
+              onPressed: () => context.go('/credito/propostas'),
+              child: const Text('Ver todas as propostas'),
             ),
-          ],
+          ),
         ),
       );
     }
 
     final steps = _buildTimeline(proposta);
 
-    return Container(
-      color: semantic.bgCanvas,
-      child: Column(
+    // Folha cinza (`bgSheet`): a tela é uma listagem de cartões de status —
+    // andamento, dados, documentos —, não um formulário. O mesmo critério de
+    // `sheetColor` que separa cadastro (folha branca) de consulta em
+    // `AppPageScaffold`.
+    return AppPageBody(
+      title: proposta.linha,
+      onBack: () => context.go('/credito/propostas'),
+      sheetColor: semantic.bgSheet,
+      scrollable: false,
+      bodyPadding: EdgeInsets.zero,
+      child: ListView(
+        padding: const EdgeInsets.all(AppSpacing.space4),
         children: [
-          SubPageHeader(title: proposta.linha),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(AppSpacing.space4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Valor solicitado',
+                    style: TextStyle(
+                      fontSize: AppTypography.xs,
+                      color: semantic.fgMuted,
+                    ),
+                  ),
+                  Text(
+                    proposta.valor,
+                    style: TextStyle(
+                      fontSize: AppTypography.xl2,
+                      fontWeight: AppTypography.weightBold,
+                      color: semantic.fgDefault,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  ),
+                ],
+              ),
+              AppChip(
+                tone: propostaStatusTone(proposta.status),
+                child: Text(propostaStatusLabel(proposta.status)),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.space5),
+          _StatusCta(proposta: proposta),
+          const SizedBox(height: AppSpacing.space5),
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+                const AppSectionTitle(child: Text('Andamento')),
+                const SizedBox(height: AppSpacing.space3),
+                _Timeline(steps: steps),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space5),
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const AppSectionTitle(child: Text('Dados da proposta')),
+                const SizedBox(height: AppSpacing.space3),
+                _dadoRow(context, 'Linha', proposta.linha),
+                const SizedBox(height: AppSpacing.space2),
+                _dadoRow(context, 'Valor', proposta.valor),
+                const SizedBox(height: AppSpacing.space2),
+                _dadoRow(context, 'Prazo', '${proposta.prazo} meses'),
+                const SizedBox(height: AppSpacing.space2),
+                _dadoRow(context, 'Taxa', proposta.taxa),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space5),
+          AppCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const AppSectionTitle(child: Text('Documentos')),
+                const SizedBox(height: AppSpacing.space3),
+                for (final doc in proposta.documentos)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppSpacing.space3),
+                    child: Row(
                       children: [
-                        Text(
-                          'Valor solicitado',
-                          style: TextStyle(
-                            fontSize: AppTypography.xs,
+                        Container(
+                          width: AppSpacing.space9,
+                          height: AppSpacing.space9,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: semantic.bgSubtle,
+                          ),
+                          child: AppIcon(
+                            AppIcons.fileText,
+                            size: AppSize.iconSmPlus,
                             color: semantic.fgMuted,
                           ),
                         ),
-                        Text(
-                          proposta.valor,
-                          style: TextStyle(
-                            fontSize: AppTypography.xl2,
-                            fontWeight: AppTypography.weightBold,
-                            color: semantic.fgDefault,
-                            fontFeatures: const [FontFeature.tabularFigures()],
+                        const SizedBox(width: AppSpacing.space3),
+                        Expanded(
+                          child: Text(
+                            doc.nome,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: AppTypography.sm,
+                              fontWeight: AppTypography.weightMedium,
+                              color: semantic.fgDefault,
+                            ),
                           ),
+                        ),
+                        AppChip(
+                          tone: doc.enviado
+                              ? AppChipTone.brand
+                              : AppChipTone.amber,
+                          child: Text(doc.enviado ? 'Enviado' : 'Pendente'),
                         ),
                       ],
                     ),
-                    AppChip(
-                      tone: propostaStatusTone(proposta.status),
-                      child: Text(propostaStatusLabel(proposta.status)),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: AppSpacing.space5),
-                _StatusCta(proposta: proposta),
-                const SizedBox(height: AppSpacing.space5),
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const AppSectionTitle(child: Text('Andamento')),
-                      const SizedBox(height: AppSpacing.space3),
-                      _Timeline(steps: steps),
-                    ],
                   ),
-                ),
-                const SizedBox(height: AppSpacing.space5),
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const AppSectionTitle(child: Text('Dados da proposta')),
-                      const SizedBox(height: AppSpacing.space3),
-                      _dadoRow(context, 'Linha', proposta.linha),
-                      const SizedBox(height: AppSpacing.space2),
-                      _dadoRow(context, 'Valor', proposta.valor),
-                      const SizedBox(height: AppSpacing.space2),
-                      _dadoRow(context, 'Prazo', '${proposta.prazo} meses'),
-                      const SizedBox(height: AppSpacing.space2),
-                      _dadoRow(context, 'Taxa', proposta.taxa),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: AppSpacing.space5),
-                AppCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const AppSectionTitle(child: Text('Documentos')),
-                      const SizedBox(height: AppSpacing.space3),
-                      for (final doc in proposta.documentos)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            bottom: AppSpacing.space3,
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                width: AppSpacing.space9,
-                                height: AppSpacing.space9,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: semantic.bgSubtle,
-                                ),
-                                child: AppIcon(
-                                  AppIcons.fileText,
-                                  size: AppSize.iconSmPlus,
-                                  color: semantic.fgMuted,
-                                ),
-                              ),
-                              const SizedBox(width: AppSpacing.space3),
-                              Expanded(
-                                child: Text(
-                                  doc.nome,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: AppTypography.sm,
-                                    fontWeight: AppTypography.weightMedium,
-                                    color: semantic.fgDefault,
-                                  ),
-                                ),
-                              ),
-                              AppChip(
-                                tone: doc.enviado
-                                    ? AppChipTone.brand
-                                    : AppChipTone.amber,
-                                child: Text(
-                                  doc.enviado ? 'Enviado' : 'Pendente',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
               ],
             ),
           ),
