@@ -230,41 +230,52 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
       );
     }
 
+    // `isForm` (mode == form) só é verdadeiro para cadastros `listMode`, que
+    // têm uma listagem separada e entram em modo de formulário ao criar. Uma
+    // funcionalidade `!listMode` (hardware simulado, consulta sem lista) não
+    // tem esse estado de listagem — ela **é** o formulário desde o primeiro
+    // frame, e cai direto no `else` de `_FeatureForm` mais abaixo,
+    // independente do modo. `showingForm` é a mesma condição desse `else`:
+    // sem ela, o cabeçalho/rodapé de formulário (barra de ação com o CTA,
+    // folha branca, "mais opções") nunca aparecia nessas telas — o botão de
+    // concluir a simulação ficava inacessível. Ver
+    // docs/ESTEIRA-FIDELIDADE-CONTRATO.md.
     final isForm = _journey.mode == FunctionalJourneyMode.form;
+    final showingForm =
+        feature.auditExport == null &&
+        !(feature.listMode && _journey.mode == FunctionalJourneyMode.list);
     // Dentro de um formulário em etapas, o voltar do cabeçalho recua uma etapa
     // em vez de abandonar o preenchimento: sair perdendo tudo o que já foi
     // digitado é o pior desfecho possível num cadastro longo.
-    final inStep = isForm && _journey.hasSteps && !_journey.isFirstStep;
-    final backToRecords = isForm && feature.listMode && !inStep;
-    final step = isForm ? _journey.currentStep : null;
+    final inStep = showingForm && _journey.hasSteps && !_journey.isFirstStep;
+    final backToRecords = showingForm && feature.listMode && !inStep;
+    final step = showingForm ? _journey.currentStep : null;
 
     // Título e voltar vivem na faixa de 64 px sobre o canvas, a régua de
     // etapas dentro da folha branca e o rodapé colado na base: a anatomia
     // inteira vem de [AppPageBody] — a mesma peça dos fluxos operacionais e do
     // Bank —, sem `Scaffold` porque o shell já resolveu a área segura.
     return AppPageBody(
-      title: _journey.mode == FunctionalJourneyMode.form
-          ? feature.createAction ?? feature.title
-          : feature.title,
+      title: isForm ? feature.createAction ?? feature.title : feature.title,
       onBack: inStep
           ? _retreat
           : backToRecords
           ? _showList
           : () => context.go(widget.centerRoute),
-      actionIcon: isForm ? AppIcons.moreVertical : null,
-      actionLabel: isForm ? 'Mais opções' : null,
-      onAction: isForm ? () => _showFormDetails(context) : null,
+      actionIcon: showingForm ? AppIcons.moreVertical : null,
+      actionLabel: showingForm ? 'Mais opções' : null,
+      onAction: showingForm ? () => _showFormDetails(context) : null,
       totalSteps: step != null ? _journey.stepCount : null,
       currentStep: _journey.stepIndex + 1,
       // Cadastro: a folha é a superfície branca e os campos assentam direto
       // nela. Listagem e introdução seguem na folha cinza, onde é o cinza que
       // separa um `AppCard` do outro.
-      sheetColor: isForm
+      sheetColor: showingForm
           ? null
           : Theme.of(context).extension<AppSemanticColors>()!.bgSheet,
       scrollable: false,
       bodyPadding: EdgeInsets.zero,
-      actionBar: isForm
+      actionBar: showingForm
           ? AppActionBar(
               primaryLabel: _journey.isLastStep
                   ? feature.primaryAction ?? 'Salvar registro'

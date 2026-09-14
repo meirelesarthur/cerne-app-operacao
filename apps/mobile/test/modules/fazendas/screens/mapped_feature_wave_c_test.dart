@@ -159,7 +159,9 @@ void main() {
       await tester.pump();
       expect(find.textContaining('SISBOV BR'), findsOneWidget);
 
-      await tester.tap(find.text('Usar identificação capturada'));
+      // `findCta` (não `find.text`) porque este é o CTA da `AppActionBar` —
+      // renderiza em caixa alta. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md.
+      await tester.tap(findCta('Usar identificação capturada'));
       await tester.pumpAndSettle();
       expect(find.text('Identificação SISBOV capturada'), findsOneWidget);
       expect(tester.takeException(), isNull);
