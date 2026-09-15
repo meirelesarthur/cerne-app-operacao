@@ -750,8 +750,12 @@ Widget _disabledRecordCollection(FeatureCollection collection, String value) {
 /// Uma consulta somente leitura (`feature.fields`/`sections` vazios — não há
 /// cadastro para espelhar) ainda pode ter `record.details` preenchido pelo
 /// dado demonstrativo/sincronizado. Sem [FeatureField] para saber o tipo do
-/// controle, essas sobras continuam como [AppReviewItem] — a mesma leitura de
-/// antes —, para não desaparecerem da tela.
+/// controle, essas sobras viram campo de texto desabilitado (o mesmo padrão
+/// do resto da tela) — sintetiza um [FeatureField] só com `id`/`label`, que
+/// cai no caso `text` do switch de [_FeatureFieldControl]. Continua sem
+/// aparecer como `AppReviewList`: uma consulta sem cadastro não deixa de
+/// seguir o mesmo modelo de campo desabilitado só por não ter [FeatureField]
+/// declarado.
 ///
 /// [includeLeftover] só vale para a chamada única (sem etapas — `fields`/
 /// `sectionNames` já são os da funcionalidade inteira). Por etapa
@@ -791,16 +795,18 @@ List<Widget> _recordFieldWidgets(
   }
 
   if (includeLeftover) {
-    final leftover = [
-      for (final entry in record.details.entries)
-        if (!consumedLabels.contains(entry.key))
-          AppReviewItem(label: entry.key, value: entry.value),
-    ];
-    if (leftover.isNotEmpty) {
+    for (final entry in record.details.entries) {
+      if (consumedLabels.contains(entry.key)) continue;
+      if (entry.value.trim().isEmpty) continue;
       if (widgets.isNotEmpty) {
         widgets.add(const SizedBox(height: AppSpacing.space4));
       }
-      widgets.add(AppReviewList(items: leftover));
+      widgets.add(
+        _disabledRecordField(
+          FeatureField(id: entry.key, label: entry.key),
+          entry.value,
+        ),
+      );
     }
   }
 
