@@ -48,17 +48,27 @@ Future<void> _selectFieldOption(
 }
 
 /// `AppSearchSelect` (`FeatureFieldType.searchSelect` — fidelidade-esteira:
-/// todo campo Lote/Produto é dropdown com busca) já mostra a lista inline,
-/// sem precisar abrir nada antes de tocar na opção. A lista inline é alta o
-/// bastante para empurrar o resto do formulário para fora da viewport, por
-/// isso o `ensureVisible` antes de tocar.
+/// todo campo de domínio massivo, como lote/produto/armazém/centro de custo,
+/// é dropdown com busca) abre um dock em bottom sheet em vez de mostrar a
+/// lista inline — localiza o campo pelo rótulo, toca para abrir o dock e
+/// toca na opção já visível na lista.
 Future<void> _selectSearchFieldOption(
   WidgetTester tester,
+  String label,
   String option,
 ) async {
-  final target = find.text(option).last;
-  await tester.ensureVisible(target);
-  await tester.tap(target);
+  final field = find.descendant(
+    of: _fieldByLabel(label),
+    matching: find.byType(AppSearchSelect),
+  );
+  await tester.ensureVisible(field);
+  await tester.tap(field);
+  await tester.pumpAndSettle();
+  // O dock só constrói os itens dentro da área visível (lista virtualizada) —
+  // filtrar pela própria busca do dock garante que a opção esteja visível.
+  await tester.enterText(find.byType(TextField).last, option);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(option).last);
   await tester.pumpAndSettle();
 }
 
@@ -257,7 +267,7 @@ void main() {
 
         await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
         await _enterFieldText(tester, 'Data', '2026-08-16');
-        await _selectFieldOption(
+        await _selectSearchFieldOption(
           tester,
           'Veículo / equipamento',
           'Trator John Deere 6110',
@@ -329,8 +339,16 @@ void main() {
       await tester.pumpAndSettle();
 
       // Etapa 3 — estoque.
-      await _selectFieldOption(tester, 'Armazém de insumos', 'Armazém A');
-      await _selectFieldOption(tester, 'Armazém de produção', 'Depósito B');
+      await _selectSearchFieldOption(
+        tester,
+        'Armazém de insumos',
+        'Armazém A',
+      );
+      await _selectSearchFieldOption(
+        tester,
+        'Armazém de produção',
+        'Depósito B',
+      );
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
 
@@ -349,7 +367,7 @@ void main() {
 
       // A folha abre com o rótulo do item, não com o nome da coleção.
       expect(find.text('Insumo'), findsOneWidget);
-      await _selectSearchFieldOption(tester, 'Ração Engorda 18%');
+      await _selectSearchFieldOption(tester, 'Produto', 'Ração Engorda 18%');
       // fidelidade-campos (onda 9 — re-auditoria 11/09): `estoque` entrou
       // como required (`inputs.*.stock_uuid`).
       await _selectFieldOption(
@@ -409,8 +427,16 @@ void main() {
       await _selectFieldOption(tester, 'Atividade', 'Roçada');
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
-      await _selectFieldOption(tester, 'Armazém de insumos', 'Armazém A');
-      await _selectFieldOption(tester, 'Armazém de produção', 'Depósito B');
+      await _selectSearchFieldOption(
+        tester,
+        'Armazém de insumos',
+        'Armazém A',
+      );
+      await _selectSearchFieldOption(
+        tester,
+        'Armazém de produção',
+        'Depósito B',
+      );
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
 
@@ -421,7 +447,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await _selectSearchFieldOption(tester, 'Ração Engorda 18%');
+      await _selectSearchFieldOption(tester, 'Produto', 'Ração Engorda 18%');
       await _selectFieldOption(
         tester,
         'Item de estoque',

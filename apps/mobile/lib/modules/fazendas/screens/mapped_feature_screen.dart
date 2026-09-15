@@ -1315,7 +1315,8 @@ class _FeatureFieldControl extends StatelessWidget {
           enabled: enabled,
           onChanged: (next) => onChanged(next ?? ''),
         ),
-        // fidelidade-esteira: todo campo de Lote é dropdown com busca, não
+        // fidelidade-esteira: todo campo de domínio massivo (lote, produto,
+        // armazém, centro de custo...) é dropdown com busca em dock, não
         // select simples — `AppSearchSelect` em vez de `AppFormSelect`.
         FeatureFieldType.searchSelect => IgnorePointer(
           ignoring: !enabled,
@@ -1323,6 +1324,7 @@ class _FeatureFieldControl extends StatelessWidget {
             opacity: enabled ? 1 : 0.5,
             child: AppSearchSelect(
               value: value.isEmpty ? null : value,
+              label: field.label,
               options: [
                 for (final option in field.options)
                   AppSearchSelectOption(value: option, label: option),

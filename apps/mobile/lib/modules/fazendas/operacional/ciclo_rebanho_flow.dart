@@ -204,6 +204,11 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
+              label: isTransfer
+                  ? 'Lote de origem'
+                  : (_type == _EventType.nascimento
+                        ? 'Animal-mãe / lote'
+                        : 'Animal / lote'),
               onChanged: (v) => setState(() => _lote = v),
             ),
           ),
@@ -218,6 +223,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               child: AppSearchSelect(
                 options: lotesOpcoes.where((l) => l.value != _lote).toList(),
                 value: _loteDestino,
+                label: 'Lote de destino',
                 onChanged: (v) => setState(() => _loteDestino = v),
                 placeholder: 'Buscar lote de destino...',
               ),

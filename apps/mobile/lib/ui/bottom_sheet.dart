@@ -21,6 +21,7 @@ Future<T?> showAppBottomSheet<T>(
   required Widget child,
   String? title,
   double maxHeightFraction = 0.85,
+  bool expand = false,
 }) {
   return showModalBottomSheet<T>(
     context: context,
@@ -32,6 +33,7 @@ Future<T?> showAppBottomSheet<T>(
     builder: (context) => AppBottomSheet(
       title: title,
       maxHeightFraction: maxHeightFraction,
+      expand: expand,
       child: child,
     ),
   );
@@ -46,22 +48,32 @@ class AppBottomSheet extends StatelessWidget {
     required this.child,
     this.title,
     this.maxHeightFraction = 0.85,
+    this.expand = false,
   });
 
   final Widget child;
   final String? title;
   final double maxHeightFraction;
 
+  /// Quando `true`, o sheet ocupa exatamente `maxHeightFraction` da altura da
+  /// tela (não só até esse limite) e `child` preenche o espaço restante via
+  /// `Expanded`, em vez de rolar dentro de um `SingleChildScrollView` — usado
+  /// pelo dock de busca (`AppSearchSelect`/`showAppSearchSelectDock`), cuja
+  /// lista interna já rola por si e precisa de altura previsível.
+  final bool expand;
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    final maxHeight = MediaQuery.sizeOf(context).height * maxHeightFraction;
+    final sheetHeight = MediaQuery.sizeOf(context).height * maxHeightFraction;
 
     return Semantics(
       container: true,
       label: title,
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: maxHeight),
+        constraints: expand
+            ? BoxConstraints.tightFor(height: sheetHeight)
+            : BoxConstraints(maxHeight: sheetHeight),
         child: Container(
           decoration: BoxDecoration(
             color: semantic.bgSurface,
@@ -73,7 +85,7 @@ class AppBottomSheet extends StatelessWidget {
           child: SafeArea(
             top: false,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(
@@ -109,20 +121,36 @@ class AppBottomSheet extends StatelessWidget {
                       ),
                     ),
                   ),
-                Flexible(
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.space5,
-                      0,
-                      AppSpacing.space5,
-                      AppSpacing.space5,
+                if (expand)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.space5,
+                        0,
+                        AppSpacing.space5,
+                        AppSpacing.space5,
+                      ),
+                      child: AppInputSurface(
+                        backgroundColor: semantic.bgSurface,
+                        child: child,
+                      ),
                     ),
-                    child: AppInputSurface(
-                      backgroundColor: semantic.bgSurface,
-                      child: child,
+                  )
+                else
+                  Flexible(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.space5,
+                        0,
+                        AppSpacing.space5,
+                        AppSpacing.space5,
+                      ),
+                      child: AppInputSurface(
+                        backgroundColor: semantic.bgSurface,
+                        child: child,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

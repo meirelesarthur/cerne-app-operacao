@@ -532,7 +532,7 @@ const adminFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'group-uuid',
         label: 'Grupo do produto',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoGruposProdutos,
       ),
@@ -605,13 +605,13 @@ const adminFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'default-warehouse-uuid',
         label: 'Armazém padrão',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         options: catalogoArmazens,
       ),
       FeatureField(
         id: 'default-cost-center-uuid',
         label: 'Centro de custo padrão',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         options: catalogoCentrosCusto,
       ),
       FeatureField(
@@ -651,7 +651,7 @@ const adminFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'financial-category-uuid',
         label: 'Categoria financeira',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         options: catalogoCategoriasFinanceiras,
       ),
       FeatureField(
@@ -970,7 +970,7 @@ const adminFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'fornecedor',
         label: 'Fornecedor',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoFornecedores,
       ),
@@ -1042,7 +1042,7 @@ const adminFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'vendedor',
         label: 'Vendedor',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         options: catalogoFornecedores,
       ),
     ],
@@ -1059,7 +1059,7 @@ const adminFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'categoria',
             label: 'Categoria',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoCategoriasAnimais,
           ),
@@ -1098,7 +1098,7 @@ const adminFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'centro-custo',
             label: 'Centro de custo',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoCentrosCusto,
           ),
         ],
@@ -1223,7 +1223,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'categoria',
         label: 'Categoria',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoCategoriasAnimais,
       ),
@@ -1278,7 +1278,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'categoria',
             label: 'Categoria',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoCategoriasAnimais,
           ),
           FeatureField(
@@ -1301,7 +1301,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'categoria',
             label: 'Categoria',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoCategoriasAnimais,
           ),
@@ -1820,7 +1820,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'centro-custo',
         label: 'Centro de custo',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         options: catalogoCentrosCusto,
       ),
     ],
@@ -1999,14 +1999,14 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoArmazens,
           ),
           FeatureField(
             id: 'centro-custo',
             label: 'Centro de custo',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoCentrosCusto,
           ),
         ],
@@ -2127,7 +2127,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'armazem',
         label: 'Armazém de destino',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: ['Armazém A', 'Depósito B', 'Farmácia'],
       ),
@@ -2208,7 +2208,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'armazem',
             label: 'Armazém de estoque',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoArmazens,
           ),
@@ -2551,14 +2551,14 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'armazem-insumos',
         label: 'Armazém de insumos',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: ['Armazém A', 'Depósito B'],
       ),
       FeatureField(
         id: 'armazem-producao',
         label: 'Armazém de produção',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: ['Armazém A', 'Depósito B'],
       ),
@@ -2581,7 +2581,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'equipamento',
             label: 'Equipamento',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoEquipamentos,
           ),
@@ -2657,7 +2657,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
           ),
         ],
@@ -2691,7 +2691,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
           ),
         ],
@@ -3283,7 +3283,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'categoria',
         label: 'Categoria',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoCategoriasAnimais,
       ),
@@ -3630,7 +3630,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
           ),
         ],
@@ -3761,7 +3761,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
           ),
           // fidelidade-esteira: fica de fora da regra "todo campo Produto é
@@ -3944,7 +3944,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoArmazens,
           ),
@@ -4240,7 +4240,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'veiculo',
         label: 'Veículo / equipamento',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: [
           'Trator John Deere 6110',
@@ -4307,7 +4307,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'veiculo',
             label: 'Veículo / equipamento',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoEquipamentos,
           ),
@@ -4380,7 +4380,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'equipamento',
         label: 'Veículo / equipamento',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: [
           'Trator John Deere 6110',
@@ -4459,7 +4459,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'equipamento',
             label: 'Veículo / equipamento',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: [
               'Trator John Deere 6110',
@@ -4491,7 +4491,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
           ),
           FeatureField(

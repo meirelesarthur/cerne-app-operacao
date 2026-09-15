@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'app_icon.dart';
-import '../design/generated/app_radius.dart';
+import 'bottom_sheet.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -22,32 +22,132 @@ class AppSearchSelectOption {
   final String? detail;
 }
 
-/// Espelha `SearchSelect.tsx` — seleção com busca (ex.: selecionar lote/carga).
-/// No React a lista é sempre inline (sem modal), então aqui também é inline —
-/// não usamos `showModalBottomSheet` porque o próprio componente já é a lista
-/// visível (diferente de um dropdown fechado por padrão).
-///
-/// `value`/`onChanged` são controlados (padrão do catálogo); a busca (`query`)
-/// é estado interno, espelhando o `useState` local do componente React.
-class AppSearchSelect extends StatefulWidget {
+/// Espelha `SearchSelect.tsx`, adaptado para o padrão "dock": os domínios que
+/// este campo representa (lote, produto, armazém, centro de custo...) são
+/// massivos em produção, então a lista não pode ficar sempre inline dentro do
+/// formulário (empurrando o resto do cadastro fora da viewport). O campo
+/// mostra o valor selecionado como um dropdown fechado e, ao ser tocado, abre
+/// [showAppSearchSelectDock] — um bottom sheet a 60% da altura da tela com
+/// busca no topo e a lista rolável ocupando o espaço restante. Selecionar um
+/// item fecha o dock e devolve o valor por `onChanged`, liberando o cadastro.
+class AppSearchSelect extends StatelessWidget {
   const AppSearchSelect({
     super.key,
     required this.options,
     required this.onChanged,
     this.value,
-    this.placeholder = 'Buscar...',
+    this.placeholder = 'Selecionar',
+    this.searchPlaceholder = 'Buscar...',
+    this.label,
   });
 
   final List<AppSearchSelectOption> options;
   final String? value;
   final ValueChanged<String> onChanged;
   final String placeholder;
+  final String searchPlaceholder;
+
+  /// Título exibido no topo do dock — em geral o mesmo rótulo do campo
+  /// (`AppFormField.label`), para orientar a busca. Opcional.
+  final String? label;
+
+  AppSearchSelectOption? get _selected {
+    if (value == null || value!.isEmpty) return null;
+    for (final option in options) {
+      if (option.value == value) return option;
+    }
+    return null;
+  }
 
   @override
-  State<AppSearchSelect> createState() => _AppSearchSelectState();
+  Widget build(BuildContext context) {
+    final inputColors = appInputColors(context);
+    final selected = _selected;
+
+    return AppFieldCapsule(
+      leading: AppIcon(
+        AppIcons.search,
+        size: AppSize.iconSm,
+        color: inputColors.placeholder,
+      ),
+      trailing: AppIcon(
+        AppIcons.chevronDown,
+        size: AppSize.iconSm,
+        color: inputColors.placeholder,
+      ),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => _open(context),
+        child: Text(
+          selected?.label ?? placeholder,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: TextStyle(
+            fontFamily: AppTypography.fontFamily,
+            fontSize: AppTypography.xl,
+            color: selected == null
+                ? inputColors.placeholder
+                : inputColors.foreground,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _open(BuildContext context) async {
+    final result = await showAppSearchSelectDock(
+      context,
+      options: options,
+      value: value,
+      title: label,
+      searchPlaceholder: searchPlaceholder,
+    );
+    if (result != null) onChanged(result);
+  }
 }
 
-class _AppSearchSelectState extends State<AppSearchSelect> {
+/// Abre o dock de seleção com busca: bottom sheet fixo em 60% da altura da
+/// tela (`maxHeightFraction: 0.6`, `expand: true` — a lista preenche esse
+/// espaço em vez de crescer com o conteúdo), com o campo de busca no topo e a
+/// lista rolável abaixo. Tocar numa opção fecha o dock devolvendo o valor;
+/// tocar fora ou no fechar devolve `null` (sem mudança).
+Future<String?> showAppSearchSelectDock(
+  BuildContext context, {
+  required List<AppSearchSelectOption> options,
+  String? value,
+  String? title,
+  String searchPlaceholder = 'Buscar...',
+}) {
+  return showAppBottomSheet<String>(
+    context,
+    title: title,
+    maxHeightFraction: 0.6,
+    expand: true,
+    child: _SearchSelectDockContent(
+      options: options,
+      value: value,
+      searchPlaceholder: searchPlaceholder,
+    ),
+  );
+}
+
+class _SearchSelectDockContent extends StatefulWidget {
+  const _SearchSelectDockContent({
+    required this.options,
+    required this.value,
+    required this.searchPlaceholder,
+  });
+
+  final List<AppSearchSelectOption> options;
+  final String? value;
+  final String searchPlaceholder;
+
+  @override
+  State<_SearchSelectDockContent> createState() =>
+      _SearchSelectDockContentState();
+}
+
+class _SearchSelectDockContentState extends State<_SearchSelectDockContent> {
   final _queryController = TextEditingController();
 
   /// O anel de foco é pintado pela cápsula, então o estado de foco precisa ser
@@ -80,11 +180,8 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
         .toList();
 
     return Column(
-      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Cápsula compartilhada: garante os 52px reais (o `InputDecorator`
-        // dimensiona a própria decoração pelo conteúdo, não pelas constraints).
         AppFieldCapsule(
           focused: _queryFocusNode.hasFocus,
           horizontalPadding: AppSpacing.space4,
@@ -96,6 +193,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
           child: TextField(
             controller: _queryController,
             focusNode: _queryFocusNode,
+            autofocus: true,
             onChanged: (v) => setState(() => _query = v),
             style: TextStyle(
               fontFamily: AppTypography.fontFamily,
@@ -107,7 +205,7 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
               filled: false,
               border: InputBorder.none,
               contentPadding: EdgeInsets.zero,
-              hintText: widget.placeholder,
+              hintText: widget.searchPlaceholder,
               hintStyle: TextStyle(
                 fontFamily: AppTypography.fontFamily,
                 fontSize: AppTypography.xl,
@@ -116,25 +214,10 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.space2),
-        Container(
-          // 224px = max-h-56 do React, composto por tokens existentes
-          // (space20*2 + space16 = 160 + 64) para não hardcodar um valor fora de tokens.
-          constraints: const BoxConstraints(
-            maxHeight: AppSpacing.space20 * 2 + AppSpacing.space16,
-          ),
-          decoration: BoxDecoration(
-            color: semantic.bgSurface,
-            borderRadius: BorderRadius.circular(AppRadius.xl2),
-            border: Border.all(color: semantic.borderSubtle),
-            boxShadow: semantic.shadowCard,
-          ),
+        const SizedBox(height: AppSpacing.space3),
+        Expanded(
           child: filtered.isEmpty
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: AppSpacing.space4,
-                    horizontal: AppSpacing.space3,
-                  ),
+              ? Center(
                   child: Text(
                     'Nada encontrado',
                     textAlign: TextAlign.center,
@@ -146,7 +229,6 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
                   ),
                 )
               : ListView.separated(
-                  shrinkWrap: true,
                   itemCount: filtered.length,
                   separatorBuilder: (context, index) =>
                       Divider(height: 1, color: semantic.borderSubtle),
@@ -154,14 +236,14 @@ class _AppSearchSelectState extends State<AppSearchSelect> {
                     final option = filtered[index];
                     final selected = option.value == widget.value;
                     return InkWell(
-                      onTap: () => widget.onChanged(option.value),
+                      onTap: () => Navigator.of(context).pop(option.value),
                       child: Container(
                         color: selected
                             ? semantic.accentSubtle
                             : AppColors.transparent,
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppSpacing.space3,
-                          vertical: AppSpacing.space2,
+                          vertical: AppSpacing.space3,
                         ),
                         child: Row(
                           children: [
@@ -214,7 +296,7 @@ WidgetbookComponent buildSearchSelectWidgetbookComponent() {
     name: 'SearchSelect',
     useCases: [
       WidgetbookUseCase(
-        name: 'Interativo',
+        name: 'Interativo (dock)',
         builder: (context) => const _SearchSelectUseCase(),
       ),
     ],
@@ -258,7 +340,9 @@ class _SearchSelectUseCaseState extends State<_SearchSelectUseCase> {
           options: _options,
           value: _value,
           onChanged: (v) => setState(() => _value = v),
-          placeholder: 'Buscar lote...',
+          placeholder: 'Selecionar lote',
+          searchPlaceholder: 'Buscar lote...',
+          label: 'Lote',
         ),
       ),
     );

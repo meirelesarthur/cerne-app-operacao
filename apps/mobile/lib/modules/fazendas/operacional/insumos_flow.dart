@@ -150,6 +150,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
               child: AppSearchSelect(
                 options: insumos,
                 value: _insumo,
+                label: 'Produto / insumo',
                 onChanged: (v) => setState(() => _insumo = v),
                 placeholder: 'Buscar produto...',
               ),

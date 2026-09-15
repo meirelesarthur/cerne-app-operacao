@@ -36,18 +36,22 @@ Future<void> _selectOption(
 }
 
 /// `AppSearchSelect` (campos Produto — fidelidade-esteira: dropdown com
-/// busca) já mostra a lista inline, sem precisar abrir nada antes de tocar
-/// na opção — diferente de `_selectOption`, que abre o
-/// `DropdownButtonFormField` primeiro. A lista inline é alta o bastante para
-/// empurrar o resto da folha para fora da viewport, por isso o
-/// `ensureVisible` antes de tocar.
+/// busca) abre um dock em bottom sheet: toca o campo para abrir e só então
+/// toca a opção já visível na lista.
 Future<void> _selectSearchOption(
   WidgetTester tester,
   String option,
 ) async {
-  final target = find.text(option).last;
-  await tester.ensureVisible(target);
-  await tester.tap(target);
+  final field = find.byType(AppSearchSelect).first;
+  await tester.ensureVisible(field);
+  await tester.tap(field);
+  await tester.pumpAndSettle();
+  // O dock só constrói os itens dentro da área visível (lista virtualizada) —
+  // filtrar pela própria busca do dock garante que a opção esteja visível,
+  // em vez de depender da altura/rolagem da superfície de teste.
+  await tester.enterText(find.byType(TextField).last, option);
+  await tester.pumpAndSettle();
+  await tester.tap(find.text(option).last);
   await tester.pumpAndSettle();
 }
 

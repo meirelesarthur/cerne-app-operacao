@@ -174,6 +174,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
+              label: 'Lote / animais',
               onChanged: (v) => setState(() {
                 _lote = v;
                 _qtd = _loteCabecas[v] ?? 0;

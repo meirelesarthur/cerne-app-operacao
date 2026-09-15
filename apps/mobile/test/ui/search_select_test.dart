@@ -20,20 +20,37 @@ const _options = [
 
 void main() {
   group('AppSearchSelect', () {
-    testWidgets('renderiza todas as opções sem exceções', (tester) async {
+    testWidgets('mostra o placeholder fechado e abre o dock ao tocar', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        _wrap(AppSearchSelect(options: _options, onChanged: (_) {})),
+        _wrap(
+          AppSearchSelect(
+            options: _options,
+            onChanged: (_) {},
+            placeholder: 'Selecionar lote',
+          ),
+        ),
       );
+
+      expect(find.text('Selecionar lote'), findsOneWidget);
+      expect(find.text('Lote 01'), findsNothing);
+
+      await tester.tap(find.byType(AppSearchSelect));
+      await tester.pumpAndSettle();
 
       expect(find.text('Lote 01'), findsOneWidget);
       expect(find.text('Lote 02'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('filtra a lista ao digitar na busca', (tester) async {
+    testWidgets('filtra a lista do dock ao digitar na busca', (tester) async {
       await tester.pumpWidget(
         _wrap(AppSearchSelect(options: _options, onChanged: (_) {})),
       );
+
+      await tester.tap(find.byType(AppSearchSelect));
+      await tester.pumpAndSettle();
 
       await tester.enterText(find.byType(TextField), '01');
       await tester.pump();
@@ -42,7 +59,9 @@ void main() {
       expect(find.text('Lote 02'), findsNothing);
     });
 
-    testWidgets('dispara onChanged ao tocar em uma opção', (tester) async {
+    testWidgets('dispara onChanged e fecha o dock ao tocar em uma opção', (
+      tester,
+    ) async {
       String? selected;
       await tester.pumpWidget(
         _wrap(
@@ -50,10 +69,14 @@ void main() {
         ),
       );
 
+      await tester.tap(find.byType(AppSearchSelect));
+      await tester.pumpAndSettle();
+
       await tester.tap(find.text('Lote 02'));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       expect(selected, 'lote-02');
+      expect(find.text('Lote 02'), findsNothing);
     });
   });
 }

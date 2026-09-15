@@ -102,6 +102,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
+              label: 'Lote / carga',
               onChanged: (v) => setState(() {
                 _lote = v;
                 _animal = null;
@@ -120,6 +121,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
               child: AppSearchSelect(
                 options: animaisPorLote[_lote] ?? const [],
                 value: _animal,
+                label: 'Animal',
                 onChanged: (v) => setState(() => _animal = v),
                 placeholder: 'Buscar animal (brinco ou RFID)...',
               ),

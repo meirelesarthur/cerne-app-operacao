@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/operacional/venda_flow.dart';
+import 'package:cerne_app/ui/ui.dart';
 
 Widget _wrap(Widget child) => ProviderScope(
   child: MaterialApp(
@@ -29,7 +30,14 @@ void main() {
         await tester.pumpWidget(_wrap(const VendaFlow()));
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('Lote 42'));
+        // `AppSearchSelect` abre um dock em bottom sheet: toca o campo para
+        // abrir, filtra pela busca (a lista é virtualizada — só os itens
+        // visíveis são construídos) e só então toca a opção.
+        await tester.tap(find.byType(AppSearchSelect));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField).last, 'Lote 42');
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Lote 42').last);
         await tester.pumpAndSettle();
 
         expect(find.text('128'), findsOneWidget);

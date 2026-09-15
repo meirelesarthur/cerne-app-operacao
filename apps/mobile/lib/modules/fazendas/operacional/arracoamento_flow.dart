@@ -79,6 +79,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
+              label: 'Lote',
               onChanged: (v) => setState(() => _lote = v),
               placeholder: 'Buscar lote...',
             ),
