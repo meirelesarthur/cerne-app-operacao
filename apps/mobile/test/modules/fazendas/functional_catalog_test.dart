@@ -213,8 +213,14 @@ void main() {
       // atualizar este teste; -1 da coleção é o delta novo);
       // 187-3+1-1=184 obrigatórios. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
       // Onda 10.
-      expect(fields, hasLength(246));
-      expect(fields.where((field) => field.isRequired), hasLength(184));
+      // fidelidade-esteira (onda 13): `transferencia-animal` perde o campo
+      // escalar `identificacao` (obrigatório, vira campo de item da nova
+      // coleção "Animais transferidos") e `novo-lote` deixa de ser sempre
+      // obrigatório (agora XOR contra o `novo-lote` por item, condicional em
+      // `destino-unico`): 246-1=245 campos; 184-2=182 obrigatórios. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
+      expect(fields, hasLength(245));
+      expect(fields.where((field) => field.isRequired), hasLength(182));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
@@ -234,7 +240,10 @@ void main() {
       // fidelidade-esteira (onda 12): `material-reprodutivo` ganha "Animais"
       // (coleção `min:1`, confirmada pivô puro no dump real): 31+1=32
       // seções. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 12.
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(32));
+      // fidelidade-esteira (onda 13): `transferencia-animal` ganha "Animais
+      // transferidos" (coleção `min:1`, alvo da captura de RFID empilhada):
+      // 32+1=33. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(33));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
@@ -319,7 +328,9 @@ void main() {
       // lote" e `apartacao` ganha "Lotes de origem" (1 campo cada): 29+2=31.
       // fidelidade-esteira (onda 12): `material-reprodutivo` ganha "Animais":
       // 31+1=32.
-      expect(colecoes, hasLength(32));
+      // fidelidade-esteira (onda 13): `transferencia-animal` ganha "Animais
+      // transferidos": 32+1=33.
+      expect(colecoes, hasLength(33));
 
       final comCampos = colecoes
           .where((par) => par.collection.fields.isNotEmpty)
@@ -348,7 +359,9 @@ void main() {
       // 27+2=29.
       // fidelidade-esteira (onda 12): +1 (`material-reprodutivo` "Animais"):
       // 29+1=30.
-      expect(comCampos, hasLength(30));
+      // fidelidade-esteira (onda 13): +1 (`transferencia-animal` "Animais
+      // transferidos"): 30+1=31.
+      expect(comCampos, hasLength(31));
       expect(
         colecoes
             .where((par) => par.collection.fields.isEmpty)
@@ -381,12 +394,14 @@ void main() {
       // cabeçalho do evento, não por item: 118-1=117.
       // fidelidade-esteira (onda 12): `material-reprodutivo."Animais"` +2
       // (`tipo-identificacao`, `identificacao`): 117+2=119.
+      // fidelidade-esteira (onda 13): `transferencia-animal."Animais
+      // transferidos"` +2 (`identificacao`, `novo-lote`): 119+2=121.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        119,
+        121,
       );
 
       for (final par in comCampos) {
@@ -432,6 +447,10 @@ void main() {
       // `animal_bull_seed_season` no dump real é pivô puro, confirmando que
       // a coleção "Animais" é `min:1` (sem ela o vínculo não existe). Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 12.
+      // fidelidade-esteira (onda 13): `transferencia-animal` entra —
+      // `animal_transfer_animal_farm` também é pivô puro; sem nenhum animal
+      // capturado não há o que transferir. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
       expect(
         {
           for (final feature in allFeatures)
@@ -445,6 +464,7 @@ void main() {
           'lote-animais': ['Categorias do lote'],
           'apartacao': ['Lotes de origem'],
           'material-reprodutivo': ['Animais'],
+          'transferencia-animal': ['Animais transferidos'],
         },
       );
     });
@@ -490,8 +510,20 @@ void main() {
 
         final simulationTargetField = feature.simulationTargetField;
         if (simulationTargetField != null) {
+          // fidelidade-esteira (onda 13): quando a captura empilha numa
+          // coleção (`simulationCollectionName`), o campo-alvo é o `id` de
+          // um campo **do item**, não de `feature.fields` — o cabeçalho não
+          // tem mais esse campo escalar.
+          final simulationCollectionName = feature.simulationCollectionName;
+          final targetIds = simulationCollectionName == null
+              ? fieldIds
+              : feature
+                    .collectionByName(simulationCollectionName)!
+                    .fields
+                    .map((field) => field.id)
+                    .toSet();
           expect(
-            fieldIds,
+            targetIds,
             contains(simulationTargetField),
             reason: 'Campo-alvo da simulação inválido em ${feature.id}',
           );

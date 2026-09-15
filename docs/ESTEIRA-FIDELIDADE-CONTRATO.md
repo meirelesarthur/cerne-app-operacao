@@ -114,6 +114,7 @@ que ninguém confirmou.
 | 10 | Revisão manual fechada com dado real (`estacao-monta`/`abastecimentos`/`compras-animais`) | ✅ fechada |
 | 11 | Cor: `FeatureFieldType.color` + `AppColorInput` | ✅ fechada |
 | 12 | `material-reprodutivo.animals[]` | ✅ fechada |
+| 13 | `transferencia-animal`: captura RFID empilhada em coleção | ✅ fechada |
 
 Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
 com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
@@ -438,6 +439,48 @@ extra por item.
       (`tipo-identificacao` + `identificacao`, o mesmo par de `lote-animais`."Animais do lote" e
       `registrar-animal`."Identificações", fidelidade-contrato Onda 3) — dois campos, não um, mas
       é o padrão consistente já estabelecido no resto do catálogo para este exato problema.
+
+## Onda 13 — `transferencia-animal`: identificação em array + destino por índice
+
+`animal_transfer_animal_farm` no dump também é pivô puro (`animal_id`, `transfer_animal_farm_id`)
+— confirma que o contrato real aceita destino por animal, não um destino único para o lote
+inteiro. Maior risco de UI desta esteira: mexe na simulação de captura por RFID.
+
+- [x] Campo escalar `identificacao` (alvo antigo da simulação de RFID) sai do cabeçalho; nova
+      `FeatureCollection` "Animais transferidos" (`isRequired: true`) o substitui, com
+      `identificacao` e `novo-lote` por item.
+- [x] Novo campo `FeatureDefinition.simulationCollectionName`: quando preenchido, a captura de
+      hardware deixa de sobrescrever um campo escalar (`onValueChanged`) e passa a empilhar um
+      item na coleção (`addGroupItem`) a cada leitura — cada toque em "Simular leitura RFID"
+      agora é um animal novo na lista, não a substituição do único valor capturado.
+      `featureSimulationError` passa a checar a contagem da coleção (`>= 1`) em vez do valor de um
+      campo. A simulação de hardware em si (`AppHardwareSimulator`) não muda de arquivo — só o
+      destino do valor capturado, como o plano pedia.
+- [x] Novo `multiCapture` em `AppHardwareSimulator` (`apps/mobile/lib/ui/hardware_simulator.dart`):
+      a entrada manual deixa de disparar `onCapture` a cada tecla (que empilharia um item por
+      caractere) — um botão "Adicionar leitura manual" ao lado do campo confirma a leitura
+      inteira, mesmo padrão de "captura, empilha, pronta para a próxima" do botão principal (que
+      em `multiCapture` nunca entra no estado "pronto" preso na tela — cada toque já sai direto
+      para a lista). Caso novo no Widgetbook (`rfid-multi-capture`) documentando o comportamento.
+- [x] `novo-lote` de cabeçalho (usado quando `destino-unico` = "Sim", um lote para todos) e
+      `novo-lote` por item (usado quando "Não", um lote por animal) formam um XOR — mesmo padrão
+      de `isFeatureFieldRequired`/`isCollectionItemFieldRequired` da Onda 6, com um parâmetro novo
+      (`formValues`) em `isCollectionItemFieldRequired`/`collectionItemFieldError`/
+      `isCollectionItemValidFor` para o item de coleção conseguir ler um campo do **cabeçalho**
+      (`destino-unico`), não só de outro campo do próprio item (os dois casos anteriores desta
+      família eram sempre XOR interno ao item).
+- [x] Verificação: suíte completa (555 testes) inclui o fluxo de ponta a ponta —
+      `mapped_feature_wave_c_test.dart` ("RFID oferece alternativa manual no próprio fluxo" e "os
+      seis contratos bloqueiam sem hardware e concluem com simulação") tapa em "Nova transferência
+      de animal", confirma o simulador, valida a mensagem de coleção vazia, digita uma
+      identificação manual, confirma pelo botão, e submete — sem exceções
+      (`tester.takeException()` nulo). A verificação visual manual em navegador (build release +
+      servidor estático) ficou bloqueada por uma limitação do ambiente de preview: a navegação por
+      `context.push()` (usada pela busca global) trava com tela em branco (0 `<canvas>` no DOM,
+      nenhum erro JS) — reproduzido de forma idêntica navegando para `registrar-animal` (feature
+      não tocada nesta onda) pelo mesmo caminho, confirmando que não é uma regressão desta
+      mudança. A navegação por toque direto no grid de módulo (`context.go`) funciona normalmente
+      neste mesmo ambiente.
 
 ---
 

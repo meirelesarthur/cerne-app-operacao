@@ -115,6 +115,21 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     setState(() => _journey.setValue(fieldId, value));
   }
 
+  // fidelidade-esteira (onda 13): destino da captura de hardware quando a
+  // funcionalidade declara `simulationCollectionName` — cada leitura vira um
+  // item novo na coleção (empilha), em vez de sobrescrever um campo
+  // escalar. Ver `transferencia-animal`.
+  void _captureCollectionItem(
+    String collectionName,
+    String fieldId,
+    String value,
+  ) {
+    if (value.trim().isEmpty) return;
+    setState(
+      () => _journey.addGroupItem(collectionName, {fieldId: value.trim()}),
+    );
+  }
+
   void _removeCollectionItem(String group, int index) =>
       setState(() => _journey.removeGroupItem(group, index));
 
@@ -148,6 +163,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   collection,
                   collection.fields[index],
                   values,
+                  _journey.form.values,
                 ),
                 error: attempted
                     ? collectionItemFieldError(
@@ -155,6 +171,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                         collection,
                         collection.fields[index],
                         values,
+                        _journey.form.values,
                       )
                     : null,
                 onChanged: (value) => setSheetState(() {
@@ -174,6 +191,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   _journey.feature,
                   collection,
                   values,
+                  _journey.form.values,
                 )) {
                   setSheetState(() => attempted = true);
                   return;
@@ -388,6 +406,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
               onAddCollectionItem: (collection) =>
                   _addCollectionItem(context, collection),
               onRemoveCollectionItem: _removeCollectionItem,
+              onCaptureCollectionItem: _captureCollectionItem,
             ),
         ],
       ),
@@ -943,6 +962,7 @@ class _FeatureForm extends StatelessWidget {
     required this.onValueChanged,
     required this.onAddCollectionItem,
     required this.onRemoveCollectionItem,
+    required this.onCaptureCollectionItem,
   });
 
   final FeatureDefinition feature;
@@ -950,10 +970,13 @@ class _FeatureForm extends StatelessWidget {
   final void Function(String fieldId, String value) onValueChanged;
   final ValueChanged<FeatureCollection> onAddCollectionItem;
   final void Function(String group, int index) onRemoveCollectionItem;
+  final void Function(String collectionName, String fieldId, String value)
+  onCaptureCollectionItem;
 
   @override
   Widget build(BuildContext context) {
     final simulationTarget = feature.simulationTargetField;
+    final simulationCollectionName = feature.simulationCollectionName;
     final stepIndex = journey.stepIndex;
     final step = journey.currentStep;
     final visibleFields = featureStepFields(
@@ -966,12 +989,29 @@ class _FeatureForm extends StatelessWidget {
     // catálogo vive na primeira etapa — repetir o simulador em cada etapa
     // convidaria a capturar duas vezes o mesmo brinco.
     final simulation = journey.isFirstStep ? feature.simulation : null;
-    final simulationValue = simulation == null
+    // fidelidade-esteira (onda 13): quando a captura empilha numa coleção, o
+    // simulador nunca fica "pronto" com um valor parado na tela — cada
+    // leitura já sai direto para a lista, e o campo-alvo (`identificacao`)
+    // não existe mais em `feature.fields`/`journey.form.values`.
+    final simulationValue = simulation == null || simulationCollectionName != null
         ? null
         : journey.form.values[simulationTarget ?? '_hardware'] ?? '';
     final simulationError = journey.form.attempted
         ? featureSimulationError(feature, journey.form)
         : null;
+    final simulationCollection = simulationCollectionName == null
+        ? null
+        : feature.collectionByName(simulationCollectionName);
+    final simulationFieldLabel = simulationTarget == null
+        ? null
+        : (simulationCollection?.fields ?? feature.fields)
+              .firstWhere((field) => field.id == simulationTarget)
+              .label;
+    final simulationFieldPlaceholder = simulationTarget == null
+        ? null
+        : (simulationCollection?.fields ?? feature.fields)
+              .firstWhere((field) => field.id == simulationTarget)
+              .placeholder;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -981,18 +1021,16 @@ class _FeatureForm extends StatelessWidget {
             kind: _simulationKind(simulation),
             value: simulationValue,
             error: simulationError,
-            manualEntryLabel: simulationTarget == null
-                ? null
-                : feature.fields
-                      .firstWhere((field) => field.id == simulationTarget)
-                      .label,
-            manualEntryPlaceholder: simulationTarget == null
-                ? null
-                : feature.fields
-                      .firstWhere((field) => field.id == simulationTarget)
-                      .placeholder,
-            onCapture: (value) =>
-                onValueChanged(simulationTarget ?? '_hardware', value),
+            multiCapture: simulationCollectionName != null,
+            manualEntryLabel: simulationFieldLabel,
+            manualEntryPlaceholder: simulationFieldPlaceholder,
+            onCapture: (value) => simulationCollectionName != null
+                ? onCaptureCollectionItem(
+                    simulationCollectionName,
+                    simulationTarget ?? '_hardware',
+                    value,
+                  )
+                : onValueChanged(simulationTarget ?? '_hardware', value),
           ),
           if (visibleFields.isNotEmpty || sections.isNotEmpty)
             const SizedBox(height: AppSpacing.space4),

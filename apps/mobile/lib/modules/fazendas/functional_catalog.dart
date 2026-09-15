@@ -136,6 +136,7 @@ class FeatureDefinition {
     this.recordDescriptionFields = const [],
     this.simulation,
     this.simulationTargetField,
+    this.simulationCollectionName,
     this.successTitle,
     this.successDescription,
     this.auditExport,
@@ -192,6 +193,15 @@ class FeatureDefinition {
   final List<String> recordDescriptionFields;
   final HardwareSimulationKind? simulation;
   final String? simulationTargetField;
+
+  // fidelidade-esteira (onda 13): `animal_transfer_animal_farm` no dump é
+  // pivô puro (`animal_id`, `transfer_animal_farm_id`) — o contrato real
+  // aceita destino por animal, não um destino único para o lote inteiro.
+  // Quando preenchido, a captura de hardware (RFID/scanner) não sobrescreve
+  // mais um campo escalar de [simulationTargetField]: ela empilha um item
+  // nesta coleção, com [simulationTargetField] como o `id` do campo do item
+  // que recebe o valor capturado. Só `transferencia-animal` usa isto hoje.
+  final String? simulationCollectionName;
   final String? successTitle;
   final String? successDescription;
   final AuditExportKind? auditExport;
@@ -2123,12 +2133,6 @@ const operationalFeatures = <FeatureDefinition>[
     status: FeatureStatus.hardware,
     fields: [
       FeatureField(
-        id: 'identificacao',
-        label: 'Identificação animal',
-        isRequired: true,
-        placeholder: 'Brinco ou ID',
-      ),
-      FeatureField(
         id: 'responsavel',
         label: 'Responsável',
         type: FeatureFieldType.select,
@@ -2136,9 +2140,7 @@ const operationalFeatures = <FeatureDefinition>[
         options: catalogoResponsaveis,
       ),
       // fidelidade-contrato (onda 3): texto livre vira `select` sobre
-      // `catalogoLotes` — a identificação do animal (acima) continua texto:
-      // é o campo-alvo da simulação de RFID, não um select. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 3.
+      // `catalogoLotes`.
       FeatureField(
         id: 'lote-atual',
         label: 'Lote atual',
@@ -2146,11 +2148,15 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoLotes,
       ),
+      // fidelidade-esteira (onda 13): `novo-lote` deixa de ser sempre
+      // obrigatório — só quando `destino-unico` = "Sim" (um lote só para
+      // todos). Quando "Não", cada animal da coleção abaixo tem o seu
+      // próprio destino (`isCollectionItemFieldRequired`). Ver
+      // `functional_journey_engine.dart`.
       FeatureField(
         id: 'novo-lote',
-        label: 'Novo lote',
+        label: 'Novo lote (todos os animais)',
         type: FeatureFieldType.select,
-        isRequired: true,
         options: catalogoLotes,
       ),
       // fidelidade-campos (onda 3): `same_batch` é a flag required de
@@ -2165,14 +2171,45 @@ const operationalFeatures = <FeatureDefinition>[
         options: ['Sim', 'Não'],
       ),
     ],
+    // fidelidade-esteira (onda 13): `animal_transfer_animal_farm` no dump é
+    // pivô puro (`animal_id`, `transfer_animal_farm_id`) — o contrato real
+    // aceita **destino por animal**, não um destino único para o lote
+    // inteiro. A captura por RFID/scanner deixa de sobrescrever um campo
+    // escalar `identificacao` e passa a empilhar um item aqui a cada
+    // leitura (`simulationCollectionName` abaixo); quando `destino-unico` =
+    // "Não", cada item ganha seu próprio `novo-lote`.
+    collections: [
+      FeatureCollection(
+        name: 'Animais transferidos',
+        itemLabel: 'Animal',
+        isRequired: true,
+        titleField: 'identificacao',
+        subtitleFields: ['novo-lote'],
+        fields: [
+          FeatureField(
+            id: 'identificacao',
+            label: 'Identificação animal',
+            isRequired: true,
+            placeholder: 'Brinco ou ID',
+          ),
+          FeatureField(
+            id: 'novo-lote',
+            label: 'Novo lote',
+            type: FeatureFieldType.select,
+            options: catalogoLotes,
+          ),
+        ],
+      ),
+    ],
     capabilities: ['Balança', 'RFID', 'Scanner SISBOV'],
     primaryAction: 'Salvar transferência',
     listMode: true,
     createAction: 'Nova transferência de animal',
-    recordTitleField: 'identificacao',
-    recordDescriptionFields: ['lote-atual', 'novo-lote'],
+    recordTitleField: 'lote-atual',
+    recordDescriptionFields: ['novo-lote', 'destino-unico'],
     simulation: HardwareSimulationKind.rfid,
     simulationTargetField: 'identificacao',
+    simulationCollectionName: 'Animais transferidos',
   ),
   FeatureDefinition(
     id: 'scanner-sisbov',

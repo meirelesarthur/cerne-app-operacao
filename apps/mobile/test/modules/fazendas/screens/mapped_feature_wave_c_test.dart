@@ -63,6 +63,29 @@ void main() {
           _fillRequiredFields(controller, feature);
 
           final target = feature.simulationTargetField ?? '_hardware';
+          // fidelidade-esteira (onda 13): `transferencia-animal` empilha a
+          // captura numa coleção (`simulationCollectionName`) em vez de um
+          // campo escalar — "sem hardware" aqui é a coleção vazia, e
+          // "concluir com simulação" é ter ao menos um item capturado.
+          final collectionName = feature.simulationCollectionName;
+          if (collectionName != null) {
+            // `destino-unico` = "Não" evita o `novo-lote` de cabeçalho
+            // (XOR contra o `novo-lote` por item, que não é validado no
+            // `submit()` — só no formulário de item da coleção).
+            controller.setValue('destino-unico', 'Não');
+            expect(controller.submit(), isNull, reason: id);
+            expect(
+              featureSimulationError(feature, controller.form),
+              isNotNull,
+              reason: id,
+            );
+
+            controller.addGroupItem(collectionName, {target: 'BRINCO 2048'});
+            expect(controller.submit(), isNotNull, reason: id);
+            expect(controller.mode, FunctionalJourneyMode.success, reason: id);
+            continue;
+          }
+
           controller.setValue(target, '');
           expect(controller.submit(), isNull, reason: id);
           expect(
@@ -123,17 +146,30 @@ void main() {
 
       await tester.tap(findCta('Salvar transferência'));
       await tester.pump();
+      // fidelidade-esteira (onda 13): a captura empilha numa coleção — sem
+      // nenhum animal capturado, a mensagem é a de coleção vazia, não mais a
+      // de campo escalar sem valor.
       expect(
-        find.text('Capture ou informe a identificação manualmente.'),
+        find.text('Capture ao menos um animal para continuar.'),
         findsOneWidget,
       );
 
+      // multiCapture: digitar não confirma a leitura sozinho — precisa do
+      // botão "Adicionar leitura manual" ao lado do campo.
       await tester.enterText(find.byType(TextFormField).first, 'BRINCO 2048');
       await tester.pump();
       expect(
-        find.text('Capture ou informe a identificação manualmente.'),
+        find.text('Capture ao menos um animal para continuar.'),
+        findsOneWidget,
+      );
+
+      await tester.tap(find.bySemanticsLabel('Adicionar leitura manual'));
+      await tester.pump();
+      expect(
+        find.text('Capture ao menos um animal para continuar.'),
         findsNothing,
       );
+      expect(find.text('BRINCO 2048'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

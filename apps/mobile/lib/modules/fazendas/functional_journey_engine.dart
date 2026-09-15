@@ -253,6 +253,13 @@ bool isFeatureFieldRequired(
       return tipoLancamento == 'Por lote';
     }
   }
+  // fidelidade-esteira (onda 13): `same_batch` decide entre um destino único
+  // (`novo-lote` de cabeçalho, aqui) ou um destino por animal (`novo-lote`
+  // dentro de cada item de "Animais transferidos",
+  // [isCollectionItemFieldRequired] abaixo) — nunca os dois.
+  if (feature.id == 'transferencia-animal' && field.id == 'novo-lote') {
+    return (values['destino-unico']?.trim() ?? '') == 'Sim';
+  }
   return false;
 }
 
@@ -265,8 +272,9 @@ bool isCollectionItemFieldRequired(
   FeatureDefinition feature,
   FeatureCollection collection,
   FeatureField field,
-  Map<String, String> values,
-) {
+  Map<String, String> values, [
+  Map<String, String> formValues = const {},
+]) {
   if (field.isRequired) return true;
   // fidelidade-contrato (onda 6): `pastagens."Serviços"` — o executor é
   // `employee`/`function`/`provider` no contrato; "Função" já é a resposta
@@ -287,6 +295,15 @@ bool isCollectionItemFieldRequired(
     final tipoItem = values['tipo']?.trim() ?? '';
     if (field.id == 'produto') return tipoItem == 'Produto';
     if (field.id == 'servico') return tipoItem == 'Serviço';
+  }
+  // fidelidade-esteira (onda 13): `transferencia-animal."Animais
+  // transferidos"` — diferente dos dois casos acima, o XOR aqui depende de
+  // um campo do **cabeçalho** (`destino-unico`), não de outro campo do
+  // próprio item; por isso o parâmetro extra `formValues`.
+  if (feature.id == 'transferencia-animal' &&
+      collection.name == 'Animais transferidos' &&
+      field.id == 'novo-lote') {
+    return (formValues['destino-unico']?.trim() ?? '') == 'Não';
   }
   return false;
 }
@@ -322,10 +339,17 @@ String? collectionItemFieldError(
   FeatureDefinition feature,
   FeatureCollection collection,
   FeatureField field,
-  Map<String, String> values,
-) {
+  Map<String, String> values, [
+  Map<String, String> formValues = const {},
+]) {
   final value = values[field.id]?.trim() ?? '';
-  if (isCollectionItemFieldRequired(feature, collection, field, values) &&
+  if (isCollectionItemFieldRequired(
+        feature,
+        collection,
+        field,
+        values,
+        formValues,
+      ) &&
       value.isEmpty) {
     return 'Campo obrigatório.';
   }
@@ -343,9 +367,12 @@ String? collectionItemFieldError(
 bool isCollectionItemValidFor(
   FeatureDefinition feature,
   FeatureCollection collection,
-  Map<String, String> values,
-) => collection.fields.every(
-  (field) => collectionItemFieldError(feature, collection, field, values) == null,
+  Map<String, String> values, [
+  Map<String, String> formValues = const {},
+]) => collection.fields.every(
+  (field) =>
+      collectionItemFieldError(feature, collection, field, values, formValues) ==
+      null,
 );
 
 /// Título da linha de um item já adicionado.
@@ -427,6 +454,14 @@ String? featureFieldError(
       return 'Informe o material reprodutivo usado no lote.';
     }
   }
+  // fidelidade-esteira (onda 13): mesmo XOR de cabeçalho × item descrito em
+  // [isFeatureFieldRequired].
+  if (feature.id == 'transferencia-animal' &&
+      field.id == 'novo-lote' &&
+      value.isEmpty &&
+      (values['destino-unico']?.trim() ?? '') == 'Sim') {
+    return 'Selecione o novo lote.';
+  }
   return null;
 }
 
@@ -481,6 +516,13 @@ String? featureSimulationError(
   FunctionalFormState state,
 ) {
   if (feature.simulation == null) return null;
+  // fidelidade-esteira (onda 13): quando a captura empilha numa coleção
+  // (`transferencia-animal`), "concluir a simulação" passa a ser "ter
+  // capturado pelo menos um animal" — não mais um campo escalar preenchido.
+  if (feature.simulationCollectionName case final collectionName?) {
+    final count = state.groupCounts[collectionName] ?? 0;
+    return count > 0 ? null : 'Capture ao menos um animal para continuar.';
+  }
   final target = feature.simulationTargetField ?? '_hardware';
   if (state.values[target]?.trim().isNotEmpty ?? false) return null;
   return feature.simulationTargetField == null

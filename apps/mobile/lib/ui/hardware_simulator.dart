@@ -11,6 +11,7 @@ import 'button.dart';
 import 'card.dart';
 import 'chip.dart';
 import 'form_field.dart';
+import 'icon_button.dart';
 import 'text_input.dart';
 
 enum AppHardwareSimulationKind { devices, scale, rfid, scanner }
@@ -24,6 +25,7 @@ class AppHardwareSimulator extends StatefulWidget {
     this.error,
     this.manualEntryLabel,
     this.manualEntryPlaceholder,
+    this.multiCapture = false,
   });
 
   final AppHardwareSimulationKind kind;
@@ -33,6 +35,15 @@ class AppHardwareSimulator extends StatefulWidget {
   final String? manualEntryPlaceholder;
   final ValueChanged<String> onCapture;
 
+  /// fidelidade-esteira (onda 13): quando `true`, cada captura (botão ou
+  /// entrada manual) é uma **leitura empilhável**, não um valor único que
+  /// fica preso na tela — `onCapture` dispara uma vez por leitura completa
+  /// (nunca por tecla digitada) e o simulador volta a ficar pronto para a
+  /// próxima leitura imediatamente. Usado por `transferencia-animal`, onde
+  /// cada leitura de RFID é um animal novo numa lista, não a substituição de
+  /// um campo escalar.
+  final bool multiCapture;
+
   @override
   State<AppHardwareSimulator> createState() => _AppHardwareSimulatorState();
 }
@@ -40,6 +51,11 @@ class AppHardwareSimulator extends StatefulWidget {
 class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
   bool _devicesFound = false;
   late final TextEditingController _manualController;
+
+  /// Só usado quando [AppHardwareSimulator.multiCapture] é `true` — cada
+  /// leitura simulada ganha um sufixo distinto, para a lista de itens
+  /// capturados não mostrar o mesmo código repetido em todas as linhas.
+  int _captureCount = 0;
 
   @override
   void initState() {
@@ -98,7 +114,9 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
   String get _captureValue => switch (widget.kind) {
     AppHardwareSimulationKind.devices => 'Balança BT-42 + Leitor RFID CERNE',
     AppHardwareSimulationKind.scale => '482,6 kg',
-    AppHardwareSimulationKind.rfid => 'RFID 982 000123456789',
+    AppHardwareSimulationKind.rfid => widget.multiCapture
+        ? 'RFID 982 ${(100123456789 + _captureCount)}'
+        : 'RFID 982 000123456789',
     AppHardwareSimulationKind.scanner => 'SISBOV BR 105 621 784 003',
   };
 
@@ -112,7 +130,17 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
       setState(() => _devicesFound = true);
       return;
     }
+    if (widget.multiCapture) {
+      setState(() => _captureCount += 1);
+    }
     widget.onCapture(_captureValue);
+  }
+
+  void _submitManualEntry() {
+    final value = _manualController.text.trim();
+    if (value.isEmpty) return;
+    widget.onCapture(value);
+    _manualController.clear();
   }
 
   @override
@@ -285,12 +313,36 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
               label: widget.manualEntryLabel!,
               required: true,
               error: widget.error,
-              child: AppTextInput(
-                controller: _manualController,
-                placeholder: widget.manualEntryPlaceholder,
-                invalid: widget.error != null,
-                onChanged: widget.onCapture,
-              ),
+              // fidelidade-esteira (onda 13): em `multiCapture`, digitar não
+              // dispara `onCapture` a cada tecla (viraria um item novo por
+              // caractere) — o botão ao lado confirma a leitura inteira.
+              child: widget.multiCapture
+                  ? Row(
+                      children: [
+                        Expanded(
+                          child: AppTextInput(
+                            controller: _manualController,
+                            placeholder: widget.manualEntryPlaceholder,
+                            invalid: widget.error != null,
+                            onChanged: (_) {},
+                            onSubmitted: (_) => _submitManualEntry(),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.space2),
+                        AppIconButton(
+                          icon: const AppIcon(AppIcons.plus),
+                          label: 'Adicionar leitura manual',
+                          variant: AppIconButtonVariant.solid,
+                          onPressed: _submitManualEntry,
+                        ),
+                      ],
+                    )
+                  : AppTextInput(
+                      controller: _manualController,
+                      placeholder: widget.manualEntryPlaceholder,
+                      invalid: widget.error != null,
+                      onChanged: widget.onCapture,
+                    ),
             ),
           ],
         ],
@@ -333,6 +385,13 @@ WidgetbookComponent buildHardwareSimulatorWidgetbookComponent() {
           name: kind.name,
           builder: (context) => _HardwareSimulatorUseCase(kind: kind),
         ),
+      // fidelidade-esteira (onda 13): `multiCapture` empilha leituras numa
+      // lista (`transferencia-animal`), em vez de sobrescrever um campo
+      // único — este caso mostra a lista crescendo a cada captura.
+      WidgetbookUseCase(
+        name: 'rfid-multi-capture',
+        builder: (context) => const _HardwareSimulatorMultiCaptureUseCase(),
+      ),
     ],
   );
 }
@@ -359,6 +418,49 @@ class _HardwareSimulatorUseCaseState extends State<_HardwareSimulatorUseCase> {
           kind: widget.kind,
           value: _value,
           onCapture: (value) => setState(() => _value = value),
+        ),
+      ),
+    );
+  }
+}
+
+class _HardwareSimulatorMultiCaptureUseCase extends StatefulWidget {
+  const _HardwareSimulatorMultiCaptureUseCase();
+
+  @override
+  State<_HardwareSimulatorMultiCaptureUseCase> createState() =>
+      _HardwareSimulatorMultiCaptureUseCaseState();
+}
+
+class _HardwareSimulatorMultiCaptureUseCaseState
+    extends State<_HardwareSimulatorMultiCaptureUseCase> {
+  final List<String> _captured = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox(
+        width: AppSpacing.space20 * 5,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            AppHardwareSimulator(
+              kind: AppHardwareSimulationKind.rfid,
+              multiCapture: true,
+              manualEntryLabel: 'Identificação animal',
+              manualEntryPlaceholder: 'Brinco ou ID',
+              onCapture: (value) => setState(() => _captured.add(value)),
+            ),
+            if (_captured.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.space4),
+              Text(
+                '${_captured.length} animal(is) capturado(s)',
+                style: const TextStyle(fontWeight: AppTypography.weightBold),
+              ),
+              for (final value in _captured) Text('• $value'),
+            ],
+          ],
         ),
       ),
     );
