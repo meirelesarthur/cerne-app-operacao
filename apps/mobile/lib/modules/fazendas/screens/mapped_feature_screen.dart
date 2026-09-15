@@ -669,12 +669,14 @@ class _RecordsListState extends State<_RecordsList> {
   /// Agora abre como tela funda — o dado usa a altura inteira e o retorno é o
   /// voltar do cabeçalho, o mesmo gesto de qualquer outra tela.
   ///
-  /// Quando o cadastro de origem declarou etapas, os campos do registro não
-  /// entram numa lista só: [_recordStepGroups] os separa de volta pelas
-  /// mesmas etapas do preenchimento e a tela vira [AppReviewTabs] — a régua
-  /// que orientou quem preencheu orienta também quem lê depois.
+  /// Os campos aparecem como o próprio controle do cadastro (desabilitado,
+  /// com o valor gravado dentro) — não como uma lista de texto rótulo/valor à
+  /// parte. Quando o cadastro de origem declarou etapas, [_recordFieldGroups]
+  /// separa os campos de volta pelas mesmas etapas do preenchimento e a tela
+  /// vira abas ([_RecordFieldTabs]) — a régua que orientou quem preencheu
+  /// orienta também quem lê depois.
   void _showRecord(BuildContext context, PrototypeRecord record) {
-    final stepGroups = _recordStepGroups(widget.feature, record);
+    final fieldGroups = _recordFieldGroups(widget.feature, record);
 
     showAppDetailPage<void>(
       context,
@@ -694,20 +696,15 @@ class _RecordsListState extends State<_RecordsList> {
             alignment: Alignment.centerLeft,
             child: AppChip(child: Text(_statusLabel(record.status))),
           ),
-          const SizedBox(height: AppSpacing.space3),
-          // `AppReviewList`/`AppReviewTabs`, não `AppMenuItem`: a linha de
-          // menu é branca com sombra e, sobre a folha branca da tela funda,
-          // some. O par rótulo/valor em cartão abafado se lê sobre branco —
-          // e é o que um detalhe de registro realmente é, não um item
-          // navegável.
-          if (stepGroups != null)
-            AppReviewTabs(groups: stepGroups)
+          const SizedBox(height: AppSpacing.space4),
+          if (fieldGroups != null)
+            _RecordFieldTabs(groups: fieldGroups)
           else
-            AppReviewList(
-              items: [
-                for (final entry in record.details.entries)
-                  AppReviewItem(label: entry.key, value: entry.value),
-              ],
+            ..._recordFieldWidgets(
+              widget.feature,
+              record,
+              fields: widget.feature.fields,
+              sectionNames: widget.feature.sections,
             ),
         ],
       ),
@@ -715,41 +712,181 @@ class _RecordsListState extends State<_RecordsList> {
   }
 }
 
-/// Reagrupa `record.details` (um `Map<String, String>` já achatado — ver
-/// `buildPrototypeRecordDraft`) pelas etapas do cadastro de origem, para
-/// alimentar [AppReviewTabs]. `null` quando a funcionalidade não declara
+/// Um controle do cadastro (`_FeatureFieldControl`), desabilitado e
+/// pré-preenchido com o valor gravado do registro — a leitura reaproveita o
+/// mesmo widget que o preenchimento usou, em vez de uma linha de texto solta.
+Widget _disabledRecordField(FeatureField field, String value) {
+  return _FeatureFieldControl(
+    field: field,
+    value: value,
+    isRequired: false,
+    enabled: false,
+    onChanged: (_) {},
+  );
+}
+
+/// O registro salvo não guarda os itens de uma coleção um a um — só o resumo
+/// que [buildPrototypeRecordDraft] compõe (contagem + títulos, ver
+/// `_resumoColecao` em `functional_journey_engine.dart`). A visualização
+/// mostra esse resumo dentro do mesmo tipo de campo do cadastro (uma área de
+/// texto desabilitada) para continuar parecendo parte do formulário, mesmo
+/// sem poder reabrir cada item individualmente.
+Widget _disabledRecordCollection(FeatureCollection collection, String value) {
+  return AppFormField(
+    label: collection.name,
+    child: AppTextarea(
+      initialValue: value,
+      enabled: false,
+      minLines: 1,
+      maxLines: 4,
+    ),
+  );
+}
+
+/// Monta os controles desabilitados de um grupo de campos/coleções do
+/// registro, na ordem declarada — pulando o que ficou em branco (campo
+/// opcional não respondido, coleção sem item lançado).
+///
+/// Uma consulta somente leitura (`feature.fields`/`sections` vazios — não há
+/// cadastro para espelhar) ainda pode ter `record.details` preenchido pelo
+/// dado demonstrativo/sincronizado. Sem [FeatureField] para saber o tipo do
+/// controle, essas sobras continuam como [AppReviewItem] — a mesma leitura de
+/// antes —, para não desaparecerem da tela.
+///
+/// [includeLeftover] só vale para a chamada única (sem etapas — `fields`/
+/// `sectionNames` já são os da funcionalidade inteira). Por etapa
+/// ([_recordFieldGroups]), cada chamada só enxerga os campos *daquela* etapa;
+/// tratar como "sobra" o que pertence às outras etapas vazaria, por exemplo,
+/// o valor de "Marcação" dentro da aba "Identificação". A invariante de
+/// catálogo (todo campo aparece em exatamente uma etapa) garante que, somadas
+/// todas as etapas, nada fica de fora — então ali a sobra é sempre vazia.
+List<Widget> _recordFieldWidgets(
+  FeatureDefinition feature,
+  PrototypeRecord record, {
+  required List<FeatureField> fields,
+  required List<String> sectionNames,
+  bool includeLeftover = true,
+}) {
+  final widgets = <Widget>[];
+  final consumedLabels = <String>{};
+
+  for (final field in fields) {
+    consumedLabels.add(field.label);
+    final value = record.details[field.label];
+    if (value == null || value.trim().isEmpty) continue;
+    if (widgets.isNotEmpty) {
+      widgets.add(const SizedBox(height: AppSpacing.space4));
+    }
+    widgets.add(_disabledRecordField(field, value));
+  }
+  for (final sectionName in sectionNames) {
+    consumedLabels.add(sectionName);
+    final collection = feature.collectionByName(sectionName);
+    final value = record.details[sectionName];
+    if (collection == null || value == null || value.trim().isEmpty) continue;
+    if (widgets.isNotEmpty) {
+      widgets.add(const SizedBox(height: AppSpacing.space4));
+    }
+    widgets.add(_disabledRecordCollection(collection, value));
+  }
+
+  if (includeLeftover) {
+    final leftover = [
+      for (final entry in record.details.entries)
+        if (!consumedLabels.contains(entry.key))
+          AppReviewItem(label: entry.key, value: entry.value),
+    ];
+    if (leftover.isNotEmpty) {
+      if (widgets.isNotEmpty) {
+        widgets.add(const SizedBox(height: AppSpacing.space4));
+      }
+      widgets.add(AppReviewList(items: leftover));
+    }
+  }
+
+  return widgets;
+}
+
+/// Os controles desabilitados de uma etapa do cadastro original, sob uma aba
+/// de [_RecordFieldTabs].
+class _RecordFieldGroup {
+  const _RecordFieldGroup({required this.label, required this.children});
+
+  /// Rótulo da aba — o título da etapa ([FeatureFormStep.title]).
+  final String label;
+  final List<Widget> children;
+}
+
+/// Reagrupa os campos do registro pelas etapas do cadastro de origem, para
+/// alimentar [_RecordFieldTabs]. `null` quando a funcionalidade não declara
 /// etapas: aí quem chama usa a lista única, como sempre.
 ///
 /// A etapa de revisão ([isFeatureReviewStep]) nunca vira grupo — não tem
 /// campo nem coleção própria, é só a tela de conferência do preenchimento.
 /// Uma etapa cujos campos ficaram todos em branco (opcionais não
 /// respondidos) também não vira aba vazia: só entra grupo com conteúdo.
-List<AppReviewTabGroup>? _recordStepGroups(
+List<_RecordFieldGroup>? _recordFieldGroups(
   FeatureDefinition feature,
   PrototypeRecord record,
 ) {
   if (feature.steps.isEmpty) return null;
 
-  final groups = <AppReviewTabGroup>[];
+  final groups = <_RecordFieldGroup>[];
   for (var index = 0; index < feature.steps.length; index++) {
     if (isFeatureReviewStep(feature, index)) continue;
 
-    final labels = <String>{
-      for (final field in featureStepFields(feature, index)) field.label,
-      ...featureStepSections(feature, index),
-    };
-    final items = [
-      for (final entry in record.details.entries)
-        if (labels.contains(entry.key))
-          AppReviewItem(label: entry.key, value: entry.value),
-    ];
-    if (items.isNotEmpty) {
+    final children = _recordFieldWidgets(
+      feature,
+      record,
+      fields: featureStepFields(feature, index),
+      sectionNames: featureStepSections(feature, index),
+      includeLeftover: false,
+    );
+    if (children.isNotEmpty) {
       groups.add(
-        AppReviewTabGroup(label: feature.steps[index].title, items: items),
+        _RecordFieldGroup(
+          label: feature.steps[index].title,
+          children: children,
+        ),
       );
     }
   }
   return groups.isEmpty ? null : groups;
+}
+
+/// Abas por etapa do cadastro original, cada uma com os controles reais
+/// (desabilitados) daquela etapa.
+class _RecordFieldTabs extends StatefulWidget {
+  const _RecordFieldTabs({required this.groups});
+
+  final List<_RecordFieldGroup> groups;
+
+  @override
+  State<_RecordFieldTabs> createState() => _RecordFieldTabsState();
+}
+
+class _RecordFieldTabsState extends State<_RecordFieldTabs> {
+  int _index = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final groups = widget.groups;
+    if (groups.isEmpty) return const SizedBox.shrink();
+    final index = _index.clamp(0, groups.length - 1);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppSegmentedTabs(
+          labels: [for (final group in groups) group.label],
+          selectedIndex: index,
+          onChanged: (next) => setState(() => _index = next),
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        ...groups[index].children,
+      ],
+    );
+  }
 }
 
 List<PrototypeRecord> _recordsWithMinimumSample(
@@ -1032,6 +1169,7 @@ class _FeatureFieldControl extends StatelessWidget {
     required this.isRequired,
     required this.onChanged,
     this.error,
+    this.enabled = true,
   });
 
   final FeatureField field;
@@ -1039,6 +1177,11 @@ class _FeatureFieldControl extends StatelessWidget {
   final bool isRequired;
   final String? error;
   final ValueChanged<String> onChanged;
+
+  /// `false` na visualização de um registro já gravado: o mesmo controle do
+  /// cadastro, com o valor gravado dentro, desabilitado — não uma lista de
+  /// texto à parte. Ver `_recordFieldGroups`/`_recordFieldWidgets`.
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -1054,11 +1197,13 @@ class _FeatureFieldControl extends StatelessWidget {
             for (final option in field.options)
               AppFormSelectOption(value: option, label: option),
           ],
+          enabled: enabled,
           onChanged: (next) => onChanged(next ?? ''),
         ),
         FeatureFieldType.textarea => AppTextarea(
           initialValue: value,
           placeholder: field.placeholder,
+          enabled: enabled,
           onChanged: onChanged,
         ),
         FeatureFieldType.number => AppTextInput(
@@ -1066,17 +1211,20 @@ class _FeatureFieldControl extends StatelessWidget {
           placeholder: field.placeholder,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           invalid: error != null,
+          enabled: enabled,
           onChanged: onChanged,
         ),
         FeatureFieldType.date => AppDateInput(
           initialValue: value.isEmpty ? null : value,
           invalid: error != null,
+          enabled: enabled,
           onChanged: onChanged,
         ),
         FeatureFieldType.text || null => AppTextInput(
           initialValue: value,
           placeholder: field.placeholder,
           invalid: error != null,
+          enabled: enabled,
           onChanged: onChanged,
         ),
       },
