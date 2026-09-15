@@ -1226,6 +1226,12 @@ class _FeatureFieldControl extends StatelessWidget {
           enabled: enabled,
           onChanged: onChanged,
         ),
+        FeatureFieldType.color => AppColorInput(
+          initialValue: value.isEmpty ? null : value,
+          invalid: error != null,
+          enabled: enabled,
+          onChanged: onChanged,
+        ),
         FeatureFieldType.text || null => AppTextInput(
           initialValue: value,
           placeholder: field.placeholder,

@@ -8,7 +8,10 @@ enum FeatureProfile { administration, operational }
 
 enum FeatureStatus { ready, mapped, hardware }
 
-enum FeatureFieldType { text, number, date, select, textarea }
+// fidelidade-esteira (onda 11): `color` é hex real (`AppColorInput`), não um
+// `select` sobre rótulos de cor — o dump de produção mostra mais de 150 hex
+// distintos em uso em `areas.color`, um seletor livre, não um enum fechado.
+enum FeatureFieldType { text, number, date, select, textarea, color }
 
 enum HardwareSimulationKind { devices, scale, rfid, scanner }
 
@@ -890,18 +893,19 @@ const operationalFeatures = <FeatureDefinition>[
       // `color` é required no contrato — é a cor com que a área aparece no
       // mapa, sem ela o desenho da fazenda não se distingue.
       //
-      // TODO(banco-real) — fidelidade-contrato (onda 2b): `AreaColor` real
-      // são 14 hex; a auditoria de 14/09 só confirma que `Roxo` **não**
-      // existe nesse domínio (removido abaixo). Os 5 restantes não têm
-      // confirmação de que batem 1:1 com os hex reais — pedir a lista
-      // completa ao time web antes de recompor. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2b.
+      // fidelidade-esteira (onda 11): o TODO(banco-real) de "paleta
+      // incompleta" (fidelidade-contrato, onda 2b) foi superado pelo dado
+      // real — `areas.color` no dump de produção é `varchar(7)` com mais de
+      // 150 hex distintos em uso, não um enum de 14 nomes. `cor` vira campo
+      // de cor real (`AppColorInput`); `#f6c23e` é o `DEFAULT` do banco
+      // (documentado aqui — o motor genérico não semeia valor inicial em
+      // nenhum tipo de campo, mesmo padrão de `select`/`text`).
       FeatureField(
         id: 'cor',
         label: 'Cor no mapa',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.color,
         isRequired: true,
-        options: ['Verde', 'Amarelo', 'Vermelho', 'Azul', 'Cinza'],
+        placeholder: 'F6C23E',
       ),
       FeatureField(
         id: 'matricula',
@@ -1526,12 +1530,18 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
+      // fidelidade-esteira (onda 11): mesma correção de `cadastrar-area.cor`
+      // — `areas.color` no dump real é hex livre, não enum. A lista antiga
+      // ('Roxo' incluso) era mantida à mão e divergia da de
+      // `cadastrar-area` (sem 'Roxo'); o campo de cor real elimina essa
+      // inconsistência de vez, as duas telas usam o mesmo componente e o
+      // mesmo domínio (qualquer hex).
       FeatureField(
         id: 'cor',
         label: 'Cor no mapa',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.color,
         isRequired: true,
-        options: ['Verde', 'Amarelo', 'Vermelho', 'Azul', 'Roxo'],
+        placeholder: 'F6C23E',
       ),
       FeatureField(
         id: 'funcionario',

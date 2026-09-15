@@ -112,6 +112,7 @@ que ninguém confirmou.
 | 8 | Fluxos dedicados | ⏸️ não iniciada — ver justificativa na própria onda |
 | 9 | `consulta-produtos` | ✅ documentação registrada |
 | 10 | Revisão manual fechada com dado real (`estacao-monta`/`abastecimentos`/`compras-animais`) | ✅ fechada |
+| 11 | Cor: `FeatureFieldType.color` + `AppColorInput` | ✅ fechada |
 
 Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
 com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
@@ -392,6 +393,31 @@ extrair os 2GB pro disco. `NOT NULL` no dump é o piso de evidência mais forte 
       `categoria`, `quantidade` e `valor-unitario` do cabeçalho; `recordDescriptionFields` trocado
       para `especie`/`forma-pagamento`/`data` (nenhum dos três campos removidos era o
       `recordTitleField`, que é `fornecedor`).
+
+## Onda 11 — Cor: campo hex real, não select de rótulo
+
+`gbcerne.areas.color` no dump de produção (`varchar(7)`, `DEFAULT '#f6c23e'`) devolveu mais de
+150 valores hex distintos em uso real — não é um enum fechado, é um seletor de cor livre. Isso
+supera de vez o `TODO(banco-real)` de "paleta incompleta" da fidelidade-contrato (onda 2b).
+
+- [x] Novo `FeatureFieldType.color` no motor (`functional_catalog.dart`).
+- [x] Novo componente `AppColorInput` em `apps/mobile/lib/ui/color_input.dart` — swatch circular
+      (preview ao vivo do hex, toque abre uma grade de atalho com a paleta 500 do design system)
+      + campo de texto com prefixo `#` e máscara hexadecimal, mesma `AppFieldCapsule` dos demais
+      campos. Registrado no barrel `ui.dart` e com caso próprio no Widgetbook
+      (`buildColorInputWidgetbookComponent`, pasta Catálogo/Formulário) — Lei 1 do `CLAUDE.md`.
+- [x] `cadastrar-area.cor` e `marcacao.cor` trocam `select` com lista de rótulo por
+      `FeatureFieldType.color`, eliminando a inconsistência entre as duas telas ('Roxo' existia
+      só numa). `#f6c23e` documentado como o `DEFAULT` do banco (comentário — o motor genérico não
+      semeia valor inicial em nenhum tipo de campo).
+- [x] `case FeatureFieldType.color` novo em `mapped_feature_screen.dart` (`_FeatureFieldControl`).
+- [x] Amostras semeadas (`area-1`/`area-2`) atualizadas para hex (`#22C55E`/`#F59E0B`).
+- [x] Verificado visualmente em build release + servidor estático: hex digitado formata em
+      maiúsculas, o swatch reflete a cor ao vivo, e a grade de atalho (toque no swatch) aplica o
+      preset e fecha a folha.
+- [x] `npm run tokens:verify` rodado (Onda 11 toca a família de campos do design system) — sem
+      diff: nenhum token novo foi necessário, `AppColorInput` reaproveita `AppColors`/`AppRadius`/
+      `AppSpacing`/`AppTypography` gerados.
 
 ---
 

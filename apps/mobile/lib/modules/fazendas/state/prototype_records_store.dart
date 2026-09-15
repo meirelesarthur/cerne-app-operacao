@@ -287,7 +287,9 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Cultura / cobertura': 'Braquiária',
         // fidelidade-campos (onda 3): campos de `/areas` que a consulta
         // passou a documentar — a amostra mostra o que a tela agora conhece.
-        'Cor no mapa': 'Verde',
+        // fidelidade-esteira (onda 11): hex real (`areas.color` no banco
+        // real é `varchar(7)` livre, não um rótulo de enum).
+        'Cor no mapa': '#22C55E',
         'Matrícula': '18.472',
         'Atividade': 'Agricultura',
         'Proprietário': 'Fazenda Cerne S/A',
@@ -310,7 +312,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Carga animal (UA/ha)': '1,8',
         'Unidade': 'ha',
         'Localização': 'Setor Leste',
-        'Cor no mapa': 'Amarelo',
+        'Cor no mapa': '#F59E0B',
         'Atividade': 'Pecuária',
         'Área de recreio': 'Não',
         'Ativa': 'Sim',

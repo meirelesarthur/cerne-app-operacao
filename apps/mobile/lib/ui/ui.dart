@@ -26,6 +26,7 @@ export 'checkbox.dart';
 export 'chip.dart';
 export 'code_preview.dart';
 export 'collection_list.dart';
+export 'color_input.dart';
 export 'dashboard_card.dart';
 export 'date_input.dart';
 export 'discovery_tile.dart';
