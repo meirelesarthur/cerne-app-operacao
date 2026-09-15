@@ -134,7 +134,6 @@ class PerfilConfigPage extends ConsumerWidget {
                       icon: AppIcons.user,
                       label: 'Informações pessoais',
                       description: 'Atualize seus dados cadastrais',
-                      surface: AppMenuItemSurface.subtle,
                       showShadow: false,
                       onTap: () => context.go('/perfil'),
                     ),
@@ -145,7 +144,6 @@ class PerfilConfigPage extends ConsumerWidget {
                       icon: AppIcons.bell,
                       label: 'Notificações',
                       description: 'Gerencie seus avisos',
-                      surface: AppMenuItemSurface.subtle,
                       showShadow: false,
                       trailing: shell.unreadCount > 0
                           ? AppBadge(child: Text('${shell.unreadCount}'))
@@ -159,7 +157,6 @@ class PerfilConfigPage extends ConsumerWidget {
                       description: isGbMode
                           ? 'GB Mode (escuro)'
                           : 'Light (claro)',
-                      surface: AppMenuItemSurface.subtle,
                       showShadow: false,
                       onTap: () =>
                           ref.read(themeVariantProvider.notifier).toggle(),
@@ -172,7 +169,6 @@ class PerfilConfigPage extends ConsumerWidget {
                       icon: AppIcons.shieldCheck,
                       label: 'Segurança',
                       description: 'PIN, biometria e sessões',
-                      surface: AppMenuItemSurface.subtle,
                       showShadow: false,
                       trailing: AppTag(child: Text('Em breve')),
                     ),
@@ -181,7 +177,6 @@ class PerfilConfigPage extends ConsumerWidget {
                       icon: AppIcons.helpCircle,
                       label: 'Central de ajuda',
                       description: 'Fale com o suporte',
-                      surface: AppMenuItemSurface.subtle,
                       showShadow: false,
                       trailing: AppTag(child: Text('Em breve')),
                     ),
@@ -190,7 +185,6 @@ class PerfilConfigPage extends ConsumerWidget {
                       icon: AppIcons.logOut,
                       label: 'Sair',
                       tone: AppMenuItemTone.danger,
-                      surface: AppMenuItemSurface.subtle,
                       showShadow: false,
                       onTap: () {
                         ref.read(prototypeSessionProvider.notifier).logout();
