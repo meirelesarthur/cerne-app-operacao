@@ -58,16 +58,25 @@ class AppActionBar extends StatelessWidget {
   /// conteúdo — e o que cabe ali varia por fluxo.
   final Widget? summary;
 
+  /// `xl` só existe para o CTA flutuante de listagem (ver doc de
+  /// [primarySize]) — nesse caso a barra não tem fundo nem sombra própria: é
+  /// só o botão-pílula flutuando sobre o que já está atrás dele. A superfície
+  /// cinza + sombra continua só no rodapé fixo de cadastro (`lg`, com ou sem
+  /// resumo/ação secundária).
+  bool get _isFloatingCta => primarySize == AppButtonSize.xl;
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Container(
       width: double.infinity,
-      decoration: BoxDecoration(
-        color: semantic.bgSheet,
-        boxShadow: AppShadows.actionBar,
-      ),
+      decoration: _isFloatingCta
+          ? null
+          : BoxDecoration(
+              color: semantic.bgSheet,
+              boxShadow: AppShadows.actionBar,
+            ),
       child: SafeArea(
         top: false,
         child: Padding(
