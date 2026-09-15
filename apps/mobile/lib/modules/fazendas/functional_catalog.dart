@@ -3208,7 +3208,40 @@ const operationalFeatures = <FeatureDefinition>[
       ),
     ],
     // `products[]` — cada palheta/dose tem armazém e produto próprios.
+    // fidelidade-esteira (onda 12): `animal_bull_seed_season` no dump é
+    // pivô puro (`animal_id`, `bull_seed_season_id`, timestamps) — confirma
+    // que o contrato real é só um array de referências a animal, sem campo
+    // extra por item. O plano original previa um `select` sobre "o catálogo
+    // de animais existente", mas este catálogo não existe no protótipo
+    // (animais são muitos e individuais, não uma lista fechada como
+    // categorias/lotes) — reusa o padrão real já em uso para referenciar um
+    // animal específico sem inventar UUID sintético
+    // (`tipo-identificacao`+`identificacao`, mesmo par de `lote-animais`.
+    // "Animais do lote"/`registrar-animal`."Identificações"), não o
+    // `select` de campo único que o plano assumia.
     collections: [
+      FeatureCollection(
+        name: 'Animais',
+        itemLabel: 'Animal',
+        isRequired: true,
+        titleField: 'identificacao',
+        subtitleFields: ['tipo-identificacao'],
+        fields: [
+          FeatureField(
+            id: 'tipo-identificacao',
+            label: 'Modo de identificação',
+            type: FeatureFieldType.select,
+            isRequired: true,
+            options: catalogoIdentificacaoAnimal,
+          ),
+          FeatureField(
+            id: 'identificacao',
+            label: 'Identificação',
+            isRequired: true,
+            placeholder: 'Brinco, RFID ou SISBOV',
+          ),
+        ],
+      ),
       FeatureCollection(
         name: 'Produtos (armazém e sêmen)',
         itemLabel: 'Produto reprodutivo',

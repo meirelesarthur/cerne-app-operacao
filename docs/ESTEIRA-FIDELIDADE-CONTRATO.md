@@ -113,6 +113,7 @@ que ninguém confirmou.
 | 9 | `consulta-produtos` | ✅ documentação registrada |
 | 10 | Revisão manual fechada com dado real (`estacao-monta`/`abastecimentos`/`compras-animais`) | ✅ fechada |
 | 11 | Cor: `FeatureFieldType.color` + `AppColorInput` | ✅ fechada |
+| 12 | `material-reprodutivo.animals[]` | ✅ fechada |
 
 Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
 com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
@@ -418,6 +419,25 @@ supera de vez o `TODO(banco-real)` de "paleta incompleta" da fidelidade-contrato
 - [x] `npm run tokens:verify` rodado (Onda 11 toca a família de campos do design system) — sem
       diff: nenhum token novo foi necessário, `AppColorInput` reaproveita `AppColors`/`AppRadius`/
       `AppSpacing`/`AppTypography` gerados.
+
+## Onda 12 — `material-reprodutivo.animals[]` (antes bloqueado, agora resolvido)
+
+`animal_bull_seed_season` no dump é uma tabela pivô pura (`animal_id`, `bull_seed_season_id`,
+timestamps) — confirma que o contrato real é só um array de referências a animal, sem campo
+extra por item.
+
+- [x] Nova `FeatureCollection` "Animais" em `material-reprodutivo`, `isRequired: true` (o vínculo
+      não existe sem pelo menos um animal).
+- [x] **Ambiguidade resolvida**: o plano original previa "campo único `animal_uuids` (select
+      sobre o catálogo de animais existente)", mesmo padrão de coleção de um campo só da Onda 5
+      (`category_uuids[]`/`batches[]`). Esse padrão funciona quando o domínio é uma lista fechada
+      e pequena (categorias, lotes) — mas não existe, neste protótipo, nenhum catálogo de animais
+      individuais como lista fechada (são muitos e cada um é único), então um `select` de campo
+      único inventaria uma lista falsa. Em vez disso a coleção reusa o padrão real já em uso em
+      todo o catálogo para referenciar **um animal específico sem UUID sintético**
+      (`tipo-identificacao` + `identificacao`, o mesmo par de `lote-animais`."Animais do lote" e
+      `registrar-animal`."Identificações", fidelidade-contrato Onda 3) — dois campos, não um, mas
+      é o padrão consistente já estabelecido no resto do catálogo para este exato problema.
 
 ---
 

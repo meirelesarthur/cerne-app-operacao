@@ -231,7 +231,10 @@ void main() {
       // (`batches[]`), reusando o motor de coleção em vez de um multi-select
       // novo: 29+2=31 seções. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
       // Onda 5.
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(31));
+      // fidelidade-esteira (onda 12): `material-reprodutivo` ganha "Animais"
+      // (coleção `min:1`, confirmada pivô puro no dump real): 31+1=32
+      // seções. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 12.
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(32));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
@@ -314,7 +317,9 @@ void main() {
       // `manutencao-frota` ganha "Mão de obra" (4 campos): 28+1=29.
       // fidelidade-contrato (onda 5): `lote-animais` ganha "Categorias do
       // lote" e `apartacao` ganha "Lotes de origem" (1 campo cada): 29+2=31.
-      expect(colecoes, hasLength(31));
+      // fidelidade-esteira (onda 12): `material-reprodutivo` ganha "Animais":
+      // 31+1=32.
+      expect(colecoes, hasLength(32));
 
       final comCampos = colecoes
           .where((par) => par.collection.fields.isNotEmpty)
@@ -341,7 +346,9 @@ void main() {
       // 26+1=27.
       // fidelidade-contrato (onda 5): +2 (`lote-animais`/`apartacao`):
       // 27+2=29.
-      expect(comCampos, hasLength(29));
+      // fidelidade-esteira (onda 12): +1 (`material-reprodutivo` "Animais"):
+      // 29+1=30.
+      expect(comCampos, hasLength(30));
       expect(
         colecoes
             .where((par) => par.collection.fields.isEmpty)
@@ -372,12 +379,14 @@ void main() {
       // abastecimento"` perde o `medidor` duplicado — o banco real
       // (`appropriation_supply`) tem horímetro/hodômetro únicos no
       // cabeçalho do evento, não por item: 118-1=117.
+      // fidelidade-esteira (onda 12): `material-reprodutivo."Animais"` +2
+      // (`tipo-identificacao`, `identificacao`): 117+2=119.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        117,
+        119,
       );
 
       for (final par in comCampos) {
@@ -419,6 +428,10 @@ void main() {
       // fidelidade-contrato (onda 5): `lote-animais`/`apartacao` entram —
       // mesmo motor de coleção, sem multi-select novo. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Ondas 4-5.
+      // fidelidade-esteira (onda 12): `material-reprodutivo` entra —
+      // `animal_bull_seed_season` no dump real é pivô puro, confirmando que
+      // a coleção "Animais" é `min:1` (sem ela o vínculo não existe). Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 12.
       expect(
         {
           for (final feature in allFeatures)
@@ -431,6 +444,7 @@ void main() {
           'lotes-reproducao': ['Lotes vinculados'],
           'lote-animais': ['Categorias do lote'],
           'apartacao': ['Lotes de origem'],
+          'material-reprodutivo': ['Animais'],
         },
       );
     });
