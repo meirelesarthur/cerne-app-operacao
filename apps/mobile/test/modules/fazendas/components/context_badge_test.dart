@@ -78,5 +78,25 @@ void main() {
 
       expect(find.text('Ativa'), findsOneWidget);
     });
+
+    // fidelidade-esteira: "a troca de fazenda precisa de um search também".
+    testWidgets('o seletor filtra a lista pela busca', (tester) async {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      await tester.pumpWidget(_wrap(container));
+
+      await tester.tap(find.text('Lançando em: Fazenda São Pedro'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Fazenda Santa Rita'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextFormField), 'São Pedro');
+      await tester.pumpAndSettle();
+
+      expect(find.text('Fazenda São Pedro'), findsOneWidget);
+      expect(find.text('Fazenda Santa Rita'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
   });
 }
