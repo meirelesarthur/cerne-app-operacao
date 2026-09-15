@@ -200,8 +200,21 @@ void main() {
       // `area`/`modulo` (o contrato quer exatamente um dos três, não os
       // dois sempre): 247+1=248 campos; 188-2+1=187 obrigatórios. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 6.
-      expect(fields, hasLength(248));
-      expect(fields.where((field) => field.isRequired), hasLength(187));
+      // fidelidade-esteira (onda 10) — revisão manual fechada com dado real
+      // do dump: `compras-animais` perde `categoria`/`quantidade`/
+      // `valor-unitario` do cabeçalho (vivem só em "Itens da compra", já
+      // existentes) -3 campos, -3 obrigatórios. `estacao-monta` ganha
+      // `descricao` (obrigatório, distinto de `observacao`) +1/+1.
+      // `abastecimentos` troca `tipo-medidor`+`medidor` por dois campos
+      // escalares opcionais `horimetro`/`hodometro` no cabeçalho (+0
+      // campos, -1 obrigatório) e perde o `medidor` duplicado da coleção
+      // "Itens do abastecimento" (-1 campo). 248-2=246 campos (a soma dos
+      // -3/+1 de cabeçalho já estava aplicada antes desta sessão, sem
+      // atualizar este teste; -1 da coleção é o delta novo);
+      // 187-3+1-1=184 obrigatórios. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
+      // Onda 10.
+      expect(fields, hasLength(246));
+      expect(fields.where((field) => field.isRequired), hasLength(184));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
@@ -355,12 +368,16 @@ void main() {
       // entram — XOR empregado/função/prestador, condicional em
       // functional_journey_engine.dart): -1+2=+1. 117+1=118. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 6.
+      // fidelidade-esteira (onda 10): `abastecimentos."Itens do
+      // abastecimento"` perde o `medidor` duplicado — o banco real
+      // (`appropriation_supply`) tem horímetro/hodômetro únicos no
+      // cabeçalho do evento, não por item: 118-1=117.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        118,
+        117,
       );
 
       for (final par in comCampos) {

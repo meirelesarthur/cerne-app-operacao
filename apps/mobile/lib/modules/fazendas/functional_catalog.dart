@@ -525,13 +525,12 @@ const adminFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['Bovino', 'Bubalino', 'Ovino'],
       ),
-      FeatureField(id: 'categoria', label: 'Categoria', isRequired: true),
-      FeatureField(
-        id: 'quantidade',
-        label: 'Quantidade de animais',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
+      // fidelidade-esteira (onda 10): `movement_purchases` (cabeçalho real,
+      // dump) só tem campos de nota fiscal/pagamento — `categoria`,
+      // `quantidade` e `valor-unitario` vivem apenas em
+      // `item_movement_purchases` (coleção "Itens da compra", abaixo).
+      // Nenhum dos três é o `recordTitleField` desta tela (`fornecedor`),
+      // então nenhum permanece como escalar de cabeçalho.
       FeatureField(
         id: 'valor-total',
         label: 'Valor total (R\$)',
@@ -579,20 +578,15 @@ const adminFeatures = <FeatureDefinition>[
         isRequired: true,
       ),
       FeatureField(
-        id: 'valor-unitario',
-        label: 'Valor unitário por animal (R\$)',
-        type: FeatureFieldType.number,
-        isRequired: true,
-      ),
-      FeatureField(
         id: 'vendedor',
         label: 'Vendedor',
         type: FeatureFieldType.select,
         options: catalogoFornecedores,
       ),
     ],
-    // `items[]` traz lote, pasto e centro de custo de cada grupo comprado;
-    // `financial[]` é o parcelamento. Duas coleções, nenhuma no protótipo.
+    // `items[]` traz categoria, quantidade, valor unitário, lote, pasto e
+    // centro de custo de cada grupo comprado; `financial[]` é o
+    // parcelamento. Duas coleções, nenhuma no protótipo.
     collections: [
       FeatureCollection(
         name: 'Itens da compra',
@@ -682,7 +676,7 @@ const adminFeatures = <FeatureDefinition>[
         'O formulário não foi aberto; os campos são premissas funcionais do protótipo frontend.',
     listMode: true,
     recordTitleField: 'fornecedor',
-    recordDescriptionFields: ['quantidade', 'categoria', 'data'],
+    recordDescriptionFields: ['especie', 'forma-pagamento', 'data'],
   ),
   // banco-real (onda 1): em Confinamento, "Vender Animais" já é exclusiva do
   // ADM — o catálogo geral ainda contradizia isso com `existingRoute` para
@@ -3124,6 +3118,10 @@ const operationalFeatures = <FeatureDefinition>[
           'Transferência de embrião',
         ],
       ),
+      // fidelidade-esteira (onda 10): `breeding_seasons.description` é
+      // varchar(191) NOT NULL no banco real — campo distinto de
+      // `observacao` (textarea opcional, abaixo).
+      FeatureField(id: 'descricao', label: 'Descrição', isRequired: true),
       FeatureField(
         id: 'observacao',
         label: 'Observação',
@@ -3823,21 +3821,20 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
-      // fidelidade-campos (onda 5): o "medidor" cobria horímetro e hodômetro
-      // no mesmo campo — quem lê o número não sabia qual estava informando.
-      // O tipo agora é explícito, e a unidade (`items.*.measurement_uuid`) é
-      // required no contrato e faltava.
+      // fidelidade-esteira (onda 10): `appropriation_supply` no banco real
+      // mostra um evento só, com `hour_meter` e `mileage` como dois campos
+      // numéricos independentes no mesmo nível — não um par
+      // tipo-medidor/medidor genérico (fidelidade-campos onda 5, superado
+      // pelo dado real).
       FeatureField(
-        id: 'tipo-medidor',
-        label: 'Tipo de medidor',
-        type: FeatureFieldType.select,
-        options: ['Hodômetro', 'Horímetro'],
+        id: 'horimetro',
+        label: 'Horímetro',
+        type: FeatureFieldType.number,
       ),
       FeatureField(
-        id: 'medidor',
-        label: 'Leitura do medidor',
+        id: 'hodometro',
+        label: 'Hodômetro',
         type: FeatureFieldType.number,
-        isRequired: true,
       ),
       FeatureField(
         id: 'unidade',
@@ -3901,11 +3898,9 @@ const operationalFeatures = <FeatureDefinition>[
               'kg',
             ],
           ),
-          FeatureField(
-            id: 'medidor',
-            label: 'Leitura do medidor',
-            type: FeatureFieldType.number,
-          ),
+          // fidelidade-esteira (onda 10): "medidor" removido daqui — o
+          // banco real (`appropriation_supply`) tem horímetro/hodômetro
+          // como campos únicos no cabeçalho do evento, não por item.
           FeatureField(
             id: 'observacao',
             label: 'Observação',

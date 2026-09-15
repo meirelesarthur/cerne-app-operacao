@@ -111,10 +111,18 @@ que ninguém confirmou.
 | 7 | Resíduo estrutural de `pastagens` | ✅ quase completa (coleção de imagens geo fica de fora — motor + câmera simulada) |
 | 8 | Fluxos dedicados | ⏸️ não iniciada — ver justificativa na própria onda |
 | 9 | `consulta-produtos` | ✅ documentação registrada |
+| 10 | Revisão manual fechada com dado real (`estacao-monta`/`abastecimentos`/`compras-animais`) | ✅ fechada |
 
 Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
 com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
 mudança de contagem.
+
+Catálogo ao fim da onda 10: **246 campos de cabeçalho** (184 obrigatórios), **31 coleções** (29
+com item real), **117 campos de item**. Delta desde a onda 7: `compras-animais` perde
+`categoria`/`quantidade`/`valor-unitario` do cabeçalho (-3/-3, ficam só em "Itens da compra"),
+`estacao-monta` ganha `descricao` obrigatório (+1/+1), `abastecimentos` troca
+`tipo-medidor`+`medidor` por `horimetro`+`hodometro` opcionais no cabeçalho (+0/-1) e perde o
+`medidor` duplicado da coleção "Itens do abastecimento" (-1 campo de item).
 
 **Verificação real, não só estrutural**: o SDK Flutter (3.44.6, a versão do `CLAUDE.md`) foi
 baixado nesta sessão e `npm run lint`/`npm run test`/`npm run quality:functional` rodaram de
@@ -359,6 +367,32 @@ grande demais para entrar de uma vez sem decisão de produto.
       quer `category_uuid`/`measurement_uuid`) registrada no ponto — correção real fica para
       quando/se a expansão de campos acontecer.
 
+## Onda 10 — Revisão manual fechada com dado real (`functional_catalog.dart`)
+
+As três divergências marcadas "revisão manual" nas ondas 1-9 (sem Form Request real disponível)
+foram fechadas com base num dump real do Postgres de produção (schema `gbcerne`), streamado sem
+extrair os 2GB pro disco. `NOT NULL` no dump é o piso de evidência mais forte disponível — não é
+100% equivalente ao `rules()` real do Laravel, mas substitui a suposição por dado.
+
+- [x] `estacao-monta`: `breeding_seasons.description` é `varchar(191) NOT NULL` no dump — campo
+      real e obrigatório, distinto de `observacao` (textarea opcional, que já existia). Adicionado
+      `FeatureField(id: 'descricao', ...)`.
+- [x] `abastecimentos`: `appropriation_supply` no dump é um evento só, com `hour_meter`
+      (horímetro) e `mileage` (hodômetro) como dois campos numéricos independentes no mesmo
+      nível — não um par `tipo-medidor`+`medidor` genérico, nem um `medidor` por item de coleção.
+      Colapsados os dois campos de cabeçalho (`tipo-medidor`/`medidor`) em `horimetro`/
+      `hodometro` (escalares, opcionais — o dump não confirma qual dos dois é sempre exigido).
+      `medidor` também removido da coleção "Itens do abastecimento" (era o mesmo dado duplicado);
+      os demais campos da coleção (`veiculo`, `combustivel`, `quantidade`, `unidade`,
+      `observacao`) continuam — mapeiam a campos reais de item (equipamento/produto/quantidade
+      por abastecimento múltiplo), não são artefato do `medidor`.
+- [x] `compras-animais`: `movement_purchases` (cabeçalho real) só tem campos de nota fiscal/
+      pagamento — nenhum `category`/`quantity`/`value_unit`. Esses três vivem só em
+      `item_movement_purchases` (coleção "Itens da compra", que já os tinha). Removidos
+      `categoria`, `quantidade` e `valor-unitario` do cabeçalho; `recordDescriptionFields` trocado
+      para `especie`/`forma-pagamento`/`data` (nenhum dos três campos removidos era o
+      `recordTitleField`, que é `fornecedor`).
+
 ---
 
 ## Cadastro a cadastro (referência completa da auditoria de 14/09)
@@ -399,20 +433,20 @@ Tabela de trabalho — cada linha é uma issue do relatório, com a onda que a f
 | `apartacao` | alta | `batches[]` × escalar | 5 |
 | `consulta-produtos` | alta | contrato de escrita maior; FK como rótulo | 9 |
 | `compras-animais` | media | `fornecedor`/`vendedor` texto × FK | 3 |
-| `compras-animais` | media | duplicação cabeçalho×item | revisão manual |
+| `compras-animais` | media | duplicação cabeçalho×item | 10 (fechada) |
 | `compras-animais` | media | fiscais/`has_financial` ausentes | backlog (baixo valor) |
 | `batidas` | media | 3 required por item opcionais | 4 |
 | `batidas` | media | `items.*.measurement_uuid` ausente | 4 |
 | `formulacoes` | media | enum `tipo` P/U | 2b |
-| `abastecimentos` | media | `medidor` funde dois campos do contrato | revisão manual |
-| `abastecimentos` | media | required de cabeçalho × nullable | revisão manual |
+| `abastecimentos` | media | `medidor` funde dois campos do contrato | 10 (fechada) |
+| `abastecimentos` | media | required de cabeçalho × nullable | 10 (fechada) |
 | `lote-animais` | media | categoria escalar × array | 5 |
 | `lote-animais` | media | item por texto × `animal_uuids[]` | 3 |
 | `transferencia-animal` | media | identificação escalar × array | 5 |
 | `transferencia-animal` | media | destino por índice não modelado | 5 |
 | `transferencia-lote-area` | media | XOR três destinos | 6 |
 | `transferencia-lote-area` | media | curral rótulo × FK | 3 |
-| `estacao-monta` | media | `description` mapeado a campo opcional | revisão manual |
+| `estacao-monta` | media | `description` mapeado a campo opcional | 10 (fechada) |
 | `lotes-reproducao` | media | `lote` escalar × `batch_uuids[]` | 4 |
 | `registrar-animal` | baixa | `preco-kg` opcional | 1 |
 | `perdas` | baixa | `lote` required no form × nullable no contrato | revisão manual (form mais estrito — ok manter) |
@@ -442,10 +476,11 @@ Tabela de trabalho — cada linha é uma issue do relatório, com a onda que a f
   campo-alvo da simulação de RFID: convertê-lo para `animal_uuids[]` exige redesenhar a
   captura por hardware simulado para empilhar leituras numa coleção, não só declarar o campo.
   Mesmo tipo de esforço da Onda 8 (fluxo dedicado), fica para lá ou para uma onda própria.
-- **`compras-animais`/`abastecimentos`/`estacao-monta`** têm issues marcadas "revisão manual"
+- ~~**`compras-animais`/`abastecimentos`/`estacao-monta`** têm issues marcadas "revisão manual"
   na tabela — o relatório aponta a divergência mas não dá dado suficiente (enum completo, nome
   exato do campo-destino) para fechar sem olhar o Form Request real; não incluídas em onda
-  numerada até essa confirmação.
+  numerada até essa confirmação.~~ — fechadas na Onda 10 com dado real de um dump do Postgres de
+  produção (schema `gbcerne`).
 - ~~**`flutter analyze`/`flutter test` não rodam neste ambiente**~~ — resolvido nesta sessão:
   SDK Flutter 3.44.6 baixado, `npm run lint`/`npm run quality:functional`/`npm test`
   (544 testes) rodaram de verdade. 3 bugs reais corrigidos (ver "Verificação real" no topo).

@@ -120,8 +120,6 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
       details: {
         'Responsável': 'João Oliveira',
         'Espécie': 'Bovino',
-        'Categoria': 'Novilha',
-        'Quantidade': '36',
         'Documento': 'NF 008421',
         // fidelidade-campos (onda 5): o bloco financeiro required de
         // `/movement-purchases`, que a consulta passou a documentar.
@@ -130,7 +128,9 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Frete (R\$)': '4.200,00',
         'Outros valores (R\$)': '0,00',
         'Desconto (R\$)': '2.600,00',
-        'Valor unitário por animal (R\$)': '5.511,11',
+        // fidelidade-esteira (onda 10): categoria/quantidade/valor unitário
+        // saíram do cabeçalho — vivem só em "Itens da compra" (dump real:
+        // `item_movement_purchases`), não em `movement_purchases`.
         'Vendedor': 'Corretora Campo Alto',
         'Itens da compra': '2 item(ns)',
         'Parcelas': '3 item(ns)',
