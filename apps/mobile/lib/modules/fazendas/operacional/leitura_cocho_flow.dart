@@ -69,9 +69,11 @@ class _AvaliacaoDraft {
   final String curralId;
   EscoreCocho escore;
   double ajustePct;
-  // fidelidade-esteira (onda 14): `diet_id`/`feed_intake` são `required` no
-  // contrato real de `/trough-readings` — sem dieta e consumo a leitura não
-  // diz o que o cocho estava recebendo quando foi avaliado.
+  // fidelidade-contrato (re-auditoria 3ª avaliação): NÃO existe contrato
+  // `/trough-readings` na GB.Cerne.Api — a leitura de cocho (escore, sobras,
+  // ocorrências) é um GAP DE BACKEND, endpoint ainda a criar. Dieta e consumo
+  // são capturados como premissa do protótipo (sem POST real), documentando o
+  // que o cocho recebia quando foi avaliado.
   String? dietaId;
   num consumoKg = 0;
   num sobrasKg = 0;
