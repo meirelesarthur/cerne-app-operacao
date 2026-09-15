@@ -4,6 +4,7 @@ import 'package:cerne_app/design/theme/theme_provider.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 
 import '../../support/router_test_harness.dart';
+import '../../support/test_viewport.dart';
 
 void main() {
   late RouterTestHarness harness;
@@ -16,11 +17,12 @@ void main() {
 
   group('PerfilConfigPage', () {
     testWidgets('mostra o usuário do shellStore sem exceção', (tester) async {
+      await setTallSurface(tester);
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       expect(find.text('Silvio Ventura'), findsOneWidget);
-      expect(find.text('Editar perfil'), findsOneWidget);
+      expect(find.text('Informações pessoais'), findsOneWidget);
       expect(find.text('Notificações'), findsOneWidget);
       expect(find.text('Sair'), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -47,6 +49,7 @@ void main() {
     });
 
     testWidgets('tocar em "Sair" navega para a seleção de ambiente', (tester) async {
+      await setTallSurface(tester);
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
