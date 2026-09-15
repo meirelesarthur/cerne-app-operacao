@@ -9,45 +9,67 @@ import 'package:cerne_app/design/generated/app_motion.dart';
 class _OnboardingSlide {
   const _OnboardingSlide({
     required this.icon,
-    required this.image,
     required this.title,
     required this.desc,
   });
 
+  /// Fallback do hero enquanto a foto do slide não existe — ver
+  /// `AppIllustrationSlot(fullBleed: true)`.
   final AppIconData icon;
-  final String image;
   final String title;
   final String desc;
 }
 
-/// Slides do onboarding — ilustrações em `assets/images/` (ícones ficam como fallback).
+/// Slides do onboarding — hero full-bleed em `assets/images/`, ainda por
+/// gerar (fotos fotorealistas); até lá cada slide cai no fallback tokenizado
+/// (ícone sobre `AppSemanticColors.inkBg`). Caminho de imagem pretendido, na
+/// ordem: `onboard_campo.png`, `onboard_paineis.png`, `onboard_bank.png`,
+/// `onboard_credito.png`, `onboard_marketplace.png` — wire via `src:` em
+/// `AppIllustrationSlot` assim que as fotos existirem.
+///
+/// Cinco slides, um por capacidade mais atrativa do superapp (levantamento de
+/// 15/09/2026): campo offline-first, painéis de decisão, banco, crédito e
+/// marketplace/armazém. Substitui o carrossel anterior de 3 slides, que
+/// fundia banco+crédito e marketplace+armazém e não cobria os painéis
+/// administrativos.
 const _slides = [
   _OnboardingSlide(
     icon: AppIcons.sprout,
-    image: 'assets/images/onboard1.png',
     title: 'Sua fazenda na palma da mão',
     desc:
-        'Dashboards gerenciais e lançamentos de campo, mesmo sem sinal — tudo sincroniza quando a conexão volta.',
+        'Lance arraçoamento, pesagem e manejo direto do curral — mesmo sem sinal, tudo sincroniza quando a conexão voltar.',
+  ),
+  _OnboardingSlide(
+    icon: AppIcons.layoutDashboard,
+    title: 'Decisão na tela, não na planilha',
+    desc:
+        'Resultado, confinamento, suprimentos e ativos consolidados em painéis que viram decisão na hora.',
   ),
   _OnboardingSlide(
     icon: AppIcons.landmark,
-    image: 'assets/images/onboard2.png',
-    title: 'Banco e crédito do produtor',
+    title: 'Seu banco, dentro da fazenda',
     desc:
-        'Conta digital, Pix, pagamentos e crédito pré-aprovado para a safra, direto no app.',
+        'Conta digital, Pix, pagamentos e cartões do produtor — sem trocar de app para cuidar do financeiro.',
+  ),
+  _OnboardingSlide(
+    icon: AppIcons.handCoins,
+    title: 'Crédito sob medida pra sua safra',
+    desc:
+        'Simule e contrate crédito pré-aprovado, acompanhe propostas e contratos direto pelo celular.',
   ),
   _OnboardingSlide(
     icon: AppIcons.shoppingBag,
-    image: 'assets/images/onboard3.png',
-    title: 'Compre, venda e armazene',
+    title: 'Compre, venda e armazene sem sair do app',
     desc:
-        'Marketplace de insumos e gestão do armazém integrados à operação, sem sair do superapp.',
+        'Marketplace de insumos e máquinas integrado ao controle de estoque e logística do armazém.',
   ),
 ];
 
-/// Onboarding do Shell — espelha `Onboarding.tsx`: carrossel de 3 telas
-/// (ilustração + título + descrição), com dots, Pular e Próximo; o último
-/// slide convida a começar. Suporta swipe via `PageView`.
+/// Onboarding do Shell: carrossel de 5 telas (hero full-bleed + título +
+/// descrição), com dots, Pular e Próximo; o último slide convida a começar.
+/// Suporta swipe via `PageView`. A imagem encosta nas bordas — inclusive sob
+/// a status bar — só com raio nos cantos inferiores; texto e ações ficam na
+/// folha abaixo, dentro da área segura.
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
@@ -83,93 +105,117 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     return Scaffold(
       backgroundColor: semantic.bgCanvas,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppSpacing.space6,
-            AppSpacing.space10,
-            AppSpacing.space6,
-            AppSpacing.space8,
-          ),
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  controller: _controller,
-                  itemCount: _slides.length,
-                  onPageChanged: (index) => setState(() => _slide = index),
-                  itemBuilder: (context, index) {
-                    final slide = _slides[index];
-                    return SingleChildScrollView(
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView.builder(
+              controller: _controller,
+              itemCount: _slides.length,
+              onPageChanged: (index) => setState(() => _slide = index),
+              itemBuilder: (context, index) {
+                final slide = _slides[index];
+                return Column(
+                  children: [
+                    // Full-bleed: encosta no topo real da tela (sob a status
+                    // bar), não na área segura — só a folha de texto abaixo
+                    // respeita o SafeArea.
+                    Expanded(
+                      flex: 6,
+                      child: AppIllustrationSlot(
+                        alt: slide.title,
+                        icon: slide.icon,
+                        fullBleed: true,
+                      ),
+                    ),
+                    Expanded(
+                      flex: 5,
                       child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AppIllustrationSlot(
-                              alt: slide.title,
-                              icon: slide.icon,
-                              src: slide.image,
-                            ),
-                            const SizedBox(height: AppSpacing.space8),
-                            AppPageDots(
-                              count: _slides.length,
-                              active: _slide,
-                              onSelect: (i) => _controller.animateToPage(
-                                i,
-                                duration: AppMotion.medium,
-                                curve: Curves.easeOut,
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppSpacing.space6,
+                            vertical: AppSpacing.space4,
+                          ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AppPageDots(
+                                count: _slides.length,
+                                active: _slide,
+                                onSelect: (i) => _controller.animateToPage(
+                                  i,
+                                  duration: AppMotion.medium,
+                                  curve: Curves.easeOut,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: AppSpacing.space3),
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 280),
-                              child: AppHeading(
-                                level: AppHeadingLevel.h1,
+                              const SizedBox(height: AppSpacing.space3),
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 300,
+                                ),
+                                child: AppHeading(
+                                  level: AppHeadingLevel.h1,
+                                  child: Text(
+                                    slide.title,
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: AppSpacing.space2),
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 320,
+                                ),
                                 child: Text(
-                                  slide.title,
+                                  slide.desc,
                                   textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: semantic.fgMuted,
+                                    height: 1.4,
+                                  ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(height: AppSpacing.space2),
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 300),
-                              child: Text(
-                                slide.desc,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: semantic.fgMuted,
-                                  height: 1.4,
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: AppSpacing.space4),
-              AppButton(
-                fullWidth: true,
-                size: AppButtonSize.lg,
-                onPressed: _next,
-                child: Text(_isLast ? 'Começar' : 'Próximo'),
-              ),
-              if (!_isLast) ...[
-                const SizedBox(height: AppSpacing.space2),
-                AppButton(
-                  fullWidth: true,
-                  size: AppButtonSize.lg,
-                  variant: AppButtonVariant.ghost,
-                  onPressed: _finish,
-                  child: const Text('Pular'),
-                ),
-              ],
-            ],
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
-        ),
+          SafeArea(
+            top: false,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.space6,
+                0,
+                AppSpacing.space6,
+                AppSpacing.space6,
+              ),
+              child: Column(
+                children: [
+                  AppButton(
+                    fullWidth: true,
+                    size: AppButtonSize.lg,
+                    onPressed: _next,
+                    child: Text(_isLast ? 'Começar' : 'Próximo'),
+                  ),
+                  if (!_isLast) ...[
+                    const SizedBox(height: AppSpacing.space2),
+                    AppButton(
+                      fullWidth: true,
+                      size: AppButtonSize.lg,
+                      variant: AppButtonVariant.ghost,
+                      onPressed: _finish,
+                      child: const Text('Pular'),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

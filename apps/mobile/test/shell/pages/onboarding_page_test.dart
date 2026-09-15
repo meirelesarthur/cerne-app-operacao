@@ -22,7 +22,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('"Próximo" avança os slides até "Começar" no último', (
+    testWidgets('"Próximo" avança os 5 slides até "Começar" no último', (
       tester,
     ) async {
       await tester.pumpWidget(harness.buildApp());
@@ -30,11 +30,22 @@ void main() {
 
       await tester.tap(find.text('Próximo'));
       await tester.pumpAndSettle();
-      expect(find.text('Banco e crédito do produtor'), findsOneWidget);
+      expect(find.text('Decisão na tela, não na planilha'), findsOneWidget);
 
       await tester.tap(find.text('Próximo'));
       await tester.pumpAndSettle();
-      expect(find.text('Compre, venda e armazene'), findsOneWidget);
+      expect(find.text('Seu banco, dentro da fazenda'), findsOneWidget);
+
+      await tester.tap(find.text('Próximo'));
+      await tester.pumpAndSettle();
+      expect(find.text('Crédito sob medida pra sua safra'), findsOneWidget);
+
+      await tester.tap(find.text('Próximo'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Compre, venda e armazene sem sair do app'),
+        findsOneWidget,
+      );
       expect(find.text('Começar'), findsOneWidget);
       expect(find.text('Pular'), findsNothing);
     });
@@ -46,7 +57,7 @@ void main() {
       await tester.tap(find.text('Pular'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Bem-vindo!'), findsOneWidget);
+      expect(find.text('Bem-vindo de volta!'), findsOneWidget);
     });
 
     testWidgets('"Começar" no último slide também leva ao login', (
@@ -55,14 +66,14 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Próximo'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Próximo'));
-      await tester.pumpAndSettle();
+      for (var i = 0; i < 4; i++) {
+        await tester.tap(find.text('Próximo'));
+        await tester.pumpAndSettle();
+      }
       await tester.tap(find.text('Começar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Bem-vindo!'), findsOneWidget);
+      expect(find.text('Bem-vindo de volta!'), findsOneWidget);
     });
   });
 }

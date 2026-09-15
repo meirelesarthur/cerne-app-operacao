@@ -33,5 +33,26 @@ void main() {
 
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('renderiza hero full-bleed com fallback sem exceções', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const SizedBox(
+            height: 240,
+            child: AppIllustrationSlot(
+              alt: 'Onboarding — hero',
+              icon: AppIcons.sprout,
+              fullBleed: true,
+            ),
+          ),
+        ),
+      );
+
+      expect(find.byType(AppIllustrationSlot), findsOneWidget);
+      expect(find.bySemanticsLabel('Onboarding — hero'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
   });
 }

@@ -16,6 +16,7 @@ class AppIllustrationSlot extends StatelessWidget {
     required this.alt,
     this.icon,
     this.maxSize = 280,
+    this.fullBleed = false,
   });
 
   /// Caminho do asset da ilustração gerada (ex.: `assets/illustrations/onboarding-1.png`).
@@ -30,20 +31,44 @@ class AppIllustrationSlot extends StatelessWidget {
 
   final double maxSize;
 
+  /// Hero full-bleed (onboarding): preenche a largura e a altura do espaço
+  /// disponível, encostada nas bordas, com raio só nos cantos inferiores —
+  /// em vez do cartão centralizado de [maxSize] com raio nos 4 cantos (empty
+  /// states). Sem [src], cai no mesmo fallback tokenizado, esticado no quadro.
+  final bool fullBleed;
+
   @override
   Widget build(BuildContext context) {
-    if (src != null) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
+    if (fullBleed) {
       return Semantics(
         label: alt,
         image: true,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: maxSize),
-          child: Image.asset(src!, fit: BoxFit.contain, width: double.infinity),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(AppRadius.surface),
+            bottomRight: Radius.circular(AppRadius.surface),
+          ),
+          child: SizedBox.expand(
+            child: src != null
+                ? Image.asset(src!, fit: BoxFit.cover)
+                : ColoredBox(
+                    color: semantic.inkBg,
+                    child: icon == null
+                        ? null
+                        : Center(
+                            child: AppIcon(
+                              icon,
+                              size: AppSize.iconXxl,
+                              color: semantic.ctaBg,
+                            ),
+                          ),
+                  ),
+          ),
         ),
       );
     }
-
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Semantics(
       label: alt,
@@ -52,27 +77,41 @@ class AppIllustrationSlot extends StatelessWidget {
         constraints: BoxConstraints(maxWidth: maxSize),
         child: AspectRatio(
           aspectRatio: 1,
-          child: Center(
-            child: icon == null
-                ? const SizedBox.shrink()
-                : Container(
-                    height: 96,
-                    width: 96,
-                    decoration: BoxDecoration(
-                      color: semantic.inkBg,
-                      borderRadius: BorderRadius.circular(AppRadius.xl4),
-                      boxShadow: semantic.shadowCard,
-                    ),
-                    alignment: Alignment.center,
-                    // O traço vem de `AppSize.iconStroke` (1.2) como em todo o app —
-                    // `AppIcon` o aplica; nenhuma tela ou componente define o seu.
-                    child: AppIcon(
-                      icon,
-                      size: AppSize.iconXxl,
-                      color: semantic.ctaBg,
-                    ),
+          child: src != null
+              // Foto real: recorte em cartão (raio + sombra do tema), não a
+              // ilustração autocontida de antes — a arte agora preenche o
+              // quadro em vez de flutuar sobre fundo transparente.
+              ? Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(AppRadius.xl3),
+                    boxShadow: semantic.shadowCard,
                   ),
-          ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(AppRadius.xl3),
+                    child: Image.asset(src!, fit: BoxFit.cover),
+                  ),
+                )
+              : Center(
+                  child: icon == null
+                      ? const SizedBox.shrink()
+                      : Container(
+                          height: 96,
+                          width: 96,
+                          decoration: BoxDecoration(
+                            color: semantic.inkBg,
+                            borderRadius: BorderRadius.circular(AppRadius.xl4),
+                            boxShadow: semantic.shadowCard,
+                          ),
+                          alignment: Alignment.center,
+                          // O traço vem de `AppSize.iconStroke` (1.2) como em todo o app —
+                          // `AppIcon` o aplica; nenhuma tela ou componente define o seu.
+                          child: AppIcon(
+                            icon,
+                            size: AppSize.iconXxl,
+                            color: semantic.ctaBg,
+                          ),
+                        ),
+                ),
         ),
       ),
     );
@@ -96,6 +135,17 @@ WidgetbookComponent buildIllustrationSlotWidgetbookComponent() {
         name: 'Sem ícone (vazio)',
         builder: (context) =>
             const Center(child: AppIllustrationSlot(alt: 'Estado vazio')),
+      ),
+      WidgetbookUseCase(
+        name: 'Hero full-bleed (onboarding)',
+        builder: (context) => const SizedBox(
+          height: 260,
+          child: AppIllustrationSlot(
+            alt: 'Onboarding — hero em tela cheia',
+            icon: AppIcons.sprout,
+            fullBleed: true,
+          ),
+        ),
       ),
     ],
   );
