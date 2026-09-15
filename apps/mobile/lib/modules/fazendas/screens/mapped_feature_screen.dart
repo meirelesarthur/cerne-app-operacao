@@ -754,11 +754,6 @@ class _RecordsListState extends State<_RecordsList> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: AppChip(child: Text(_statusLabel(record.status))),
-          ),
-          const SizedBox(height: AppSpacing.space4),
           if (fieldGroups != null)
             _RecordFieldTabs(groups: fieldGroups)
           else
