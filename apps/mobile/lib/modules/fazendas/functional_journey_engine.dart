@@ -576,15 +576,24 @@ PrototypeRecordDraft buildPrototypeRecordDraft(
           state.itemsOf(collection.name),
         ),
   };
+  final fieldsById = {for (final field in feature.fields) field.id: field};
   final titleField = feature.recordTitleField ?? 'nome';
-  final title = state.values[titleField]?.trim();
+  final titleRaw = state.values[titleField]?.trim() ?? '';
+  final titleFieldDef = fieldsById[titleField];
+  final title = titleFieldDef == null
+      ? titleRaw
+      : featureFieldDisplay(titleFieldDef, titleRaw);
   final description = feature.recordDescriptionFields
-      .map((id) => state.values[id]?.trim() ?? '')
+      .map((id) {
+        final raw = state.values[id]?.trim() ?? '';
+        final field = fieldsById[id];
+        return field == null ? raw : featureFieldDisplay(field, raw);
+      })
       .where((value) => value.isNotEmpty)
       .join(' · ');
 
   return PrototypeRecordDraft(
-    title: title?.isNotEmpty ?? false ? title! : feature.title,
+    title: title.isNotEmpty ? title : feature.title,
     description: description.isEmpty ? 'Registro criado agora' : description,
     status: _statusFor(feature.id),
     details: details,

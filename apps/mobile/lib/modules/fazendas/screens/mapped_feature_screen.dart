@@ -870,7 +870,9 @@ List<Widget> _recordFieldWidgets(
     if (widgets.isNotEmpty) {
       widgets.add(const SizedBox(height: AppSpacing.space4));
     }
-    widgets.add(_disabledRecordField(field, value));
+    // Resolve value→label para campos com selectOptions/colorPalette (o
+    // registro guarda o valor emitido; aqui exibe o rótulo humano).
+    widgets.add(_disabledRecordField(field, featureFieldDisplay(field, value)));
   }
   for (final sectionName in sectionNames) {
     consumedLabels.add(sectionName);
@@ -1308,10 +1310,15 @@ class _FeatureFieldControl extends StatelessWidget {
         FeatureFieldType.select => AppFormSelect(
           value: value.isEmpty ? null : value,
           placeholder: 'Selecione',
-          options: [
-            for (final option in field.options)
-              AppFormSelectOption(value: option, label: option),
-          ],
+          options: field.selectOptions.isNotEmpty
+              ? [
+                  for (final option in field.selectOptions)
+                    AppFormSelectOption(value: option.value, label: option.label),
+                ]
+              : [
+                  for (final option in field.options)
+                    AppFormSelectOption(value: option, label: option),
+                ],
           enabled: enabled,
           onChanged: (next) => onChanged(next ?? ''),
         ),
@@ -1325,10 +1332,18 @@ class _FeatureFieldControl extends StatelessWidget {
             child: AppSearchSelect(
               value: value.isEmpty ? null : value,
               label: field.label,
-              options: [
-                for (final option in field.options)
-                  AppSearchSelectOption(value: option, label: option),
-              ],
+              options: field.selectOptions.isNotEmpty
+                  ? [
+                      for (final option in field.selectOptions)
+                        AppSearchSelectOption(
+                          value: option.value,
+                          label: option.label,
+                        ),
+                    ]
+                  : [
+                      for (final option in field.options)
+                        AppSearchSelectOption(value: option, label: option),
+                    ],
               onChanged: onChanged,
             ),
           ),

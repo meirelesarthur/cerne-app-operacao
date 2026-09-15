@@ -49,6 +49,7 @@ class FeatureField {
     this.placeholder,
     this.options = const [],
     this.colorPalette = const [],
+    this.selectOptions = const [],
   });
 
   final String id;
@@ -58,11 +59,34 @@ class FeatureField {
   final String? placeholder;
   final List<String> options;
 
+  /// Opções value/label de um `select`/`searchSelect` cujo VALOR emitido
+  /// difere do rótulo exibido — espelho de um enum backed da API (ex.
+  /// `WeaningType` 1/2, `AnimalIdentificationMode` single/no_id,
+  /// `type_payment` código ≤2). Vazio mantém [options] (value == label). O
+  /// `state` guarda o valor; a exibição resolve o rótulo via
+  /// [featureFieldDisplay].
+  final List<({String value, String label})> selectOptions;
+
   /// Paleta fechada de um campo `FeatureFieldType.color`. Quando não-vazia,
   /// o campo só aceita estas cores (espelho de um enum de cor da API, ex.
   /// `AreaColor`/`MarkingColorEnum`) e submete o `value` hex EXATO — vazia
   /// mantém o comportamento de hex livre.
   final List<({String value, String label})> colorPalette;
+}
+
+/// Rótulo de exibição de um valor armazenado: resolve
+/// [FeatureField.selectOptions]/[FeatureField.colorPalette] (value → label)
+/// quando o valor emitido difere do rótulo. Fora esses casos, devolve o
+/// próprio valor. O `state` sempre guarda o valor (para submissão/round-trip);
+/// só a apresentação usa o rótulo.
+String featureFieldDisplay(FeatureField field, String value) {
+  for (final option in field.selectOptions) {
+    if (option.value == value) return option.label;
+  }
+  for (final option in field.colorPalette) {
+    if (option.value == value) return option.label;
+  }
+  return value;
 }
 
 /// Paleta fechada de `Area` — espelho EXATO de `App\Enums\AreaColor`
