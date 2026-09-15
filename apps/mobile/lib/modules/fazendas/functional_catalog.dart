@@ -11,7 +11,11 @@ enum FeatureStatus { ready, mapped, hardware }
 // fidelidade-esteira (onda 11): `color` é hex real (`AppColorInput`), não um
 // `select` sobre rótulos de cor — o dump de produção mostra mais de 150 hex
 // distintos em uso em `areas.color`, um seletor livre, não um enum fechado.
-enum FeatureFieldType { text, number, date, select, textarea, color }
+// fidelidade-esteira (onda 15): `boolean` é um switch de verdade
+// (`AppToggleSwitch`), não mais simulado com `select` Sim/Não —
+// `has_lot`/`is_equipment`/`is_enabled`/`control_stock`/`allow_pointing` em
+// `consulta-produtos` são a primeira aplicação real.
+enum FeatureFieldType { text, number, date, select, textarea, color, boolean }
 
 enum HardwareSimulationKind { devices, scale, rfid, scanner }
 
@@ -312,6 +316,89 @@ const catalogoFornecedores = <String>[
   'Agropecuária Vale Verde',
 ];
 
+// fidelidade-esteira (onda 15): domínios novos da expansão fiscal de
+// `consulta-produtos` — curadoria representativa (mesmo critério das listas
+// acima), não o domínio federal/tributário inteiro. `group_uuid` é uma FK
+// distinta de `category_uuid` (`categoria`, já existente): grupo é a
+// classificação contábil/fiscal do produto, categoria é a classificação
+// operacional (Nutrição, Sanitário...) já usada pelo resto do catálogo.
+const catalogoGruposProdutos = <String>[
+  'Insumo agropecuário',
+  'Matéria-prima',
+  'Peça e equipamento',
+  'Combustível e lubrificante',
+  'Produto acabado',
+];
+
+const catalogoNcm = <String>[
+  '2309.90.90 — Preparações para alimentação animal',
+  '3808.91.90 — Inseticidas',
+  '3004.90.99 — Medicamentos veterinários',
+  '2710.19.21 — Óleo diesel',
+  '3105.20.10 — Adubos NPK',
+];
+
+const catalogoCategoriasFinanceiras = <String>[
+  'Insumos agrícolas',
+  'Insumos pecuários',
+  'Manutenção e peças',
+  'Combustíveis',
+  'Ativo imobilizado',
+];
+
+// CST/CSOSN do Simples Nacional e do regime normal convivem na mesma coluna
+// no dump (`products.cst_csosn`) — curadoria dos códigos mais comuns dos dois
+// regimes, não a tabela CST completa.
+const catalogoCstCsosn = <String>[
+  '00 — Tributada integralmente',
+  '20 — Com redução de base de cálculo',
+  '40 — Isenta',
+  '60 — ICMS cobrado por substituição tributária',
+  '102 — Simples Nacional, sem permissão de crédito',
+  '500 — ICMS cobrado anteriormente por ST (Simples Nacional)',
+];
+
+const catalogoCstPisCofins = <String>[
+  '01 — Tributável, alíquota básica',
+  '04 — Tributável, alíquota zero',
+  '06 — Tributável, alíquota zero (monofásica)',
+  '07 — Isenta',
+  '08 — Sem incidência',
+  '49 — Outras operações de saída',
+];
+
+const catalogoCstIpi = <String>[
+  '00 — Entrada tributada com alíquota zero',
+  '49 — Outras entradas',
+  '50 — Saída tributada',
+  '99 — Outras saídas',
+];
+
+const catalogoCfop = <String>[
+  '5102 — Venda de mercadoria dentro do estado',
+  '6102 — Venda de mercadoria fora do estado',
+  '5101 — Venda de produção do estabelecimento',
+  '6101 — Venda de produção fora do estado',
+];
+
+const catalogoOrigemMercadoria = <String>[
+  '0 — Nacional',
+  '1 — Estrangeira, importação direta',
+  '2 — Estrangeira, adquirida no mercado interno',
+  '3 — Nacional, conteúdo de importação acima de 40%',
+  '5 — Nacional, conteúdo de importação até 40%',
+];
+
+// fidelidade-esteira (onda 15): campos da reforma tributária (IBS/CBS/IS) —
+// muitos e recentes no dump; curadoria mínima só para não deixar o bloco
+// vazio, sem pretensão de cobrir a tabela completa do novo regime.
+const catalogoCstIbsCbs = <String>[
+  '000 — Tributação integral',
+  '200 — Alíquota reduzida',
+  '400 — Imunidade',
+  '800 — Suspensão',
+];
+
 const adminFeatures = <FeatureDefinition>[
   // Auditoria dos painéis (docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2):
   // `painel-pecuario` fundiu aqui. Os dois painéis mostravam o mesmo P&L e o
@@ -423,28 +510,32 @@ const adminFeatures = <FeatureDefinition>[
     // outro campo "produto" do catálogo busca em `catalogoProdutos` acima, em
     // vez de aceitar texto livre — fonte real: `products` (543.983 linhas).
     //
-    // fidelidade-contrato (onda 9): esta tela já é criação de verdade
-    // (`createAction`/`primaryAction`, sem `readOnly`) — a auditoria de
-    // 14/09 a descreve como consulta, mas o catálogo aqui a declara editável
-    // desde a onda 2 do banco-real. O contrato real de `POST /products` tem
-    // ~40 campos fiscais; 6 são `required` e faltam por completo:
-    // `group_uuid`, `has_lot`, `is_equipment`, `is_enabled`, `control_stock`,
-    // `las_price`. Três desses (`is_equipment`/`is_enabled`/`control_stock`)
-    // são booleanos — `FeatureFieldType` não tem esse tipo hoje (só
-    // `select` simula Sim/Não), então declará-los exige a mesma decisão de
-    // motor da coleção de imagens da Onda 7, não é só adicionar campo.
-    // `categoria`/`unidade` (abaixo) são rótulo onde o contrato quer
-    // `category_uuid`/`measurement_uuid` (categoria C) — mesma correção de
-    // `catalogoLotes`/`catalogoFornecedores` se algum dia entrar. Nada disso
-    // fechado nesta leva: expandir ~40 campos numa tela que hoje tem 4 é
-    // decisão de escopo de produto, não fidelidade pontual. Ver
-    // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 9.
+    // fidelidade-esteira (onda 15): expansão completa dos ~40 campos fiscais
+    // do contrato de escrita real (`POST /products`, 72 colunas no dump),
+    // fechando o que a onda 9 só documentou. Quatro `FeatureFieldType.boolean`
+    // novos (`has-lot`/`is-equipment`/`is-enabled`/`control-stock`, os 4 dos
+    // 6 required que são booleanos de verdade — `control_stock` é
+    // `smallint`, mesma família) e `group-uuid`/`las-price`, os outros 2
+    // required. `categoria`/`unidade` já eram `select` sobre um domínio
+    // (Categoria C fechada antes desta onda); `group-uuid` é uma FK
+    // **distinta** de categoria (classificação contábil/fiscal, não
+    // operacional). Campos organizados em etapas (arquétipo `Cadastro
+    // steps`), mesmo padrão dos fluxos dedicados — 39 campos numa rolagem só
+    // esconderia o fim do formulário. Ver
+    // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 15.
     fields: [
       FeatureField(
         id: 'nome-produto',
         label: 'Nome do produto',
         isRequired: true,
         placeholder: 'Ex.: Ração Engorda 18%',
+      ),
+      FeatureField(
+        id: 'group-uuid',
+        label: 'Grupo do produto',
+        type: FeatureFieldType.select,
+        isRequired: true,
+        options: catalogoGruposProdutos,
       ),
       FeatureField(
         id: 'categoria',
@@ -467,10 +558,267 @@ const adminFeatures = <FeatureDefinition>[
         options: ['kg', 't', 'L', 'unidade', 'saca', 'dose', 'frasco'],
       ),
       FeatureField(
+        id: 'barcode',
+        label: 'Código de barras',
+        placeholder: 'EAN/GTIN',
+      ),
+      FeatureField(
+        id: 'reference',
+        label: 'Código de referência interno',
+      ),
+      FeatureField(
+        id: 'active-principle',
+        label: 'Princípio ativo',
+        placeholder: 'Produtos sanitários/veterinários',
+      ),
+      // Estoque e controle — `has_lot`/`is_equipment`/`is_enabled`/
+      // `control_stock` são os 4 required booleanos; `allow_pointing` é
+      // opcional, mesma família de tipo (smallint no dump).
+      FeatureField(
+        id: 'has-lot',
+        label: 'Controla lote',
+        type: FeatureFieldType.boolean,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'is-equipment',
+        label: 'É equipamento',
+        type: FeatureFieldType.boolean,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'is-enabled',
+        label: 'Produto ativo',
+        type: FeatureFieldType.boolean,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'control-stock',
+        label: 'Controla estoque',
+        type: FeatureFieldType.boolean,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'allow-pointing',
+        label: 'Permite apontamento',
+        type: FeatureFieldType.boolean,
+      ),
+      FeatureField(
+        id: 'default-warehouse-uuid',
+        label: 'Armazém padrão',
+        type: FeatureFieldType.select,
+        options: catalogoArmazens,
+      ),
+      FeatureField(
+        id: 'default-cost-center-uuid',
+        label: 'Centro de custo padrão',
+        type: FeatureFieldType.select,
+        options: catalogoCentrosCusto,
+      ),
+      FeatureField(
+        id: 'min-stock',
+        label: 'Estoque mínimo',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
         id: 'custo-medio',
         label: 'Custo médio (R\$)',
         type: FeatureFieldType.number,
       ),
+      FeatureField(
+        id: 'las-price',
+        label: 'Último preço de compra (R\$)',
+        type: FeatureFieldType.number,
+        isRequired: true,
+      ),
+      FeatureField(
+        id: 'purchase-price',
+        label: 'Preço de compra (R\$)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'market-price',
+        label: 'Preço de mercado (R\$)',
+        type: FeatureFieldType.number,
+      ),
+      // Tributação — NCM, CFOP, CST/CSOSN e percentuais de ICMS/PIS/COFINS/
+      // IPI do regime tributário atual.
+      FeatureField(
+        id: 'ncm-uuid',
+        label: 'NCM',
+        type: FeatureFieldType.select,
+        options: catalogoNcm,
+      ),
+      FeatureField(
+        id: 'financial-category-uuid',
+        label: 'Categoria financeira',
+        type: FeatureFieldType.select,
+        options: catalogoCategoriasFinanceiras,
+      ),
+      FeatureField(
+        id: 'cfop-saida-interno',
+        label: 'CFOP saída — dentro do estado',
+        type: FeatureFieldType.select,
+        options: catalogoCfop,
+      ),
+      FeatureField(
+        id: 'cfop-saida-externo',
+        label: 'CFOP saída — fora do estado',
+        type: FeatureFieldType.select,
+        options: catalogoCfop,
+      ),
+      FeatureField(
+        id: 'cst-csosn',
+        label: 'CST/CSOSN',
+        type: FeatureFieldType.select,
+        options: catalogoCstCsosn,
+      ),
+      FeatureField(
+        id: 'cst-pis',
+        label: 'CST PIS',
+        type: FeatureFieldType.select,
+        options: catalogoCstPisCofins,
+      ),
+      FeatureField(
+        id: 'cst-cofins',
+        label: 'CST COFINS',
+        type: FeatureFieldType.select,
+        options: catalogoCstPisCofins,
+      ),
+      FeatureField(
+        id: 'cst-ipi',
+        label: 'CST IPI',
+        type: FeatureFieldType.select,
+        options: catalogoCstIpi,
+      ),
+      FeatureField(
+        id: 'perc-icms',
+        label: '% ICMS',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'perc-pis',
+        label: '% PIS',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'perc-cofins',
+        label: '% COFINS',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(id: 'perc-ipi', label: '% IPI', type: FeatureFieldType.number),
+      FeatureField(
+        id: 'origem',
+        label: 'Origem da mercadoria',
+        type: FeatureFieldType.select,
+        options: catalogoOrigemMercadoria,
+      ),
+      FeatureField(
+        id: 'cest',
+        label: 'CEST',
+        placeholder: '7 dígitos',
+      ),
+      // Reforma tributária (IBS/CBS/IS) — campos recentes e numerosos no
+      // dump; curadoria mínima (`catalogoCstIbsCbs`), não a tabela completa
+      // do novo regime. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 15.
+      FeatureField(
+        id: 'cst-ibs-cbs',
+        label: 'CST IBS/CBS',
+        type: FeatureFieldType.select,
+        options: catalogoCstIbsCbs,
+      ),
+      FeatureField(
+        id: 'perc-ibs-uf',
+        label: '% IBS (UF)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'perc-ibs-mun',
+        label: '% IBS (Município)',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'perc-cbs',
+        label: '% CBS',
+        type: FeatureFieldType.number,
+      ),
+      FeatureField(
+        id: 'cst-is',
+        label: 'CST Imposto Seletivo',
+        type: FeatureFieldType.select,
+        options: catalogoCstIbsCbs,
+      ),
+      FeatureField(
+        id: 'perc-is',
+        label: '% Imposto Seletivo',
+        type: FeatureFieldType.number,
+      ),
+    ],
+    steps: [
+      FeatureFormStep(
+        title: 'Dados básicos',
+        hint: 'Identificação do produto no catálogo.',
+        fields: [
+          'nome-produto',
+          'group-uuid',
+          'categoria',
+          'unidade',
+          'barcode',
+          'reference',
+          'active-principle',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Estoque e controle',
+        hint: 'Como o produto se comporta no estoque e no apontamento.',
+        fields: [
+          'has-lot',
+          'is-equipment',
+          'is-enabled',
+          'control-stock',
+          'allow-pointing',
+          'default-warehouse-uuid',
+          'default-cost-center-uuid',
+          'min-stock',
+          'custo-medio',
+          'las-price',
+          'purchase-price',
+          'market-price',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Tributação',
+        hint: 'NCM, CFOP, CST/CSOSN e percentuais do regime atual.',
+        fields: [
+          'ncm-uuid',
+          'financial-category-uuid',
+          'cfop-saida-interno',
+          'cfop-saida-externo',
+          'cst-csosn',
+          'cst-pis',
+          'cst-cofins',
+          'cst-ipi',
+          'perc-icms',
+          'perc-pis',
+          'perc-cofins',
+          'perc-ipi',
+          'origem',
+          'cest',
+        ],
+      ),
+      FeatureFormStep(
+        title: 'Reforma tributária',
+        hint: 'Campos do IBS/CBS/Imposto Seletivo.',
+        fields: [
+          'cst-ibs-cbs',
+          'perc-ibs-uf',
+          'perc-ibs-mun',
+          'perc-cbs',
+          'cst-is',
+          'perc-is',
+        ],
+      ),
+      FeatureFormStep(title: 'Revisão'),
     ],
     primaryAction: 'Salvar produto',
     listMode: true,

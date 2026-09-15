@@ -116,6 +116,7 @@ que ninguém confirmou.
 | 12 | `material-reprodutivo.animals[]` | ✅ fechada |
 | 13 | `transferencia-animal`: captura RFID empilhada em coleção | ✅ fechada |
 | 14 | Fluxos dedicados (`apontamento`/`batelada`/`leitura-cocho`) | ✅ fechada (inequívoco); matriz de qualidade e máquina de estados de mão de obra ficam de fora por decisão |
+| 15 | `consulta-produtos`: expansão fiscal completa (~40 campos) + `FeatureFieldType.boolean` | ✅ fechada |
 
 Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
 com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
@@ -508,6 +509,39 @@ não confirmada (matriz de qualidade, máquina de estados de mão de obra).
       presença do campo de armazém por item foram invertidos para `findsNothing`, refletindo a
       correção do gap.
 
+## Onda 15 — `consulta-produtos`: expansão completa (~40 campos fiscais)
+
+Fecha o que a Onda 9 só documentou. `gbcerne.products` no dump tem 72 colunas; 35 campos novos
+(6 `required`, confirmados na Onda 9) organizados em 4 etapas + revisão (arquétipo `Cadastro
+steps`), mesmo padrão dos fluxos dedicados — 39 campos numa rolagem só esconderia o fim do
+formulário.
+
+- [x] Novo `FeatureFieldType.boolean` no motor (`functional_catalog.dart`) + `case` em
+      `mapped_feature_screen.dart` (`_FeatureFieldControl`), usando o componente já existente
+      `AppToggleSwitch` — nenhum componente novo de `ui/` foi necessário, a lacuna era só de
+      motor. Usado por `has-lot`/`is-equipment`/`is-enabled`/`control-stock` (os 4 dos 6
+      required que são booleanos — `control_stock` é `smallint`, mesma família) e
+      `allow-pointing` (opcional).
+- [x] Os outros 2 required não booleanos: `group-uuid` (select sobre `catalogoGruposProdutos`,
+      nova FK distinta de `categoria` — classificação contábil/fiscal, não operacional) e
+      `las-price` (número).
+- [x] Restante dos ~40 campos fiscais, agrupados em blocos: "Dados básicos" (nome, grupo,
+      categoria, unidade, código de barras, referência, princípio ativo), "Estoque e controle"
+      (os 5 booleanos, armazém/centro de custo padrão, estoque mínimo, custo médio, preços),
+      "Tributação" (NCM, categoria financeira, CFOP, CST/CSOSN, percentuais de ICMS/PIS/COFINS/
+      IPI, origem, CEST) e "Reforma tributária" (IBS/CBS/Imposto Seletivo, curadoria mínima —
+      campos recentes e numerosos no dump). Novos domínios curados (`catalogoGruposProdutos`,
+      `catalogoNcm`, `catalogoCategoriasFinanceiras`, `catalogoCstCsosn`,
+      `catalogoCstPisCofins`, `catalogoCstIpi`, `catalogoCfop`, `catalogoOrigemMercadoria`,
+      `catalogoCstIbsCbs`) — mesmo critério de curadoria representativa das listas já existentes
+      (`catalogoProdutos`, `catalogoFornecedores`...), não o domínio federal/tributário inteiro.
+- [x] `categoria`/`unidade` já eram `select` sobre um domínio (fechado antes desta onda) —
+      nenhuma mudança de tipo necessária, só a nova FK `group-uuid` ao lado.
+- [x] Verificado visualmente em build release + servidor estático: a etapa "Dados básicos"
+      mostra os 7 campos e o `select` "Grupo do produto" com o domínio novo; avançando para
+      "Estoque e controle", os 4 switches booleanos aparecem desligados por padrão e alternam
+      corretamente ao toque (`AppToggleSwitch` já existente, sem regressão visual).
+
 ---
 
 ## Cadastro a cadastro (referência completa da auditoria de 14/09)
@@ -580,8 +614,10 @@ Tabela de trabalho — cada linha é uma issue do relatório, com a onda que a f
 
 ## Pendências conhecidas desta esteira
 
-- **Enums sem domínio completo no relatório** (`AreaColor` 14 hex, `FoodTypeEnum` P/U) ficam
-  `TODO(banco-real)` — não travar rótulo sem confirmar com o time web (Onda 2b).
+- ~~**Enums sem domínio completo no relatório** (`AreaColor` 14 hex, `FoodTypeEnum` P/U) ficam
+  `TODO(banco-real)` — não travar rótulo sem confirmar com o time web (Onda 2b).~~ — `AreaColor`
+  fechado: virou campo de cor real na Onda 11 (o dump mostra hex livre, não um enum de 14
+  nomes). `FoodTypeEnum` segue `TODO(banco-real)` até a Onda 16.
 - **Tipo de campo "imagem" não existe no catálogo** (`FeatureFieldType`) — necessário para a
   coleção geo de `pastagens.occurrences[]` (Onda 7). É decisão de motor, não só de dado;
   revisar antes de codar.

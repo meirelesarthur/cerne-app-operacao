@@ -1270,6 +1270,20 @@ class _FeatureFieldControl extends StatelessWidget {
           enabled: enabled,
           onChanged: onChanged,
         ),
+        // fidelidade-esteira (onda 15): switch de verdade — `value` guarda
+        // 'true'/'false' como qualquer outro campo (o motor só conhece
+        // `Map<String, String>`), não um booleano nativo.
+        FeatureFieldType.boolean => Align(
+          alignment: Alignment.centerLeft,
+          child: AppToggleSwitch(
+            checked: value == 'true',
+            onChanged: enabled
+                ? (checked) => onChanged(checked.toString())
+                : (_) {},
+            label: field.label,
+            disabled: !enabled,
+          ),
+        ),
         FeatureFieldType.text || null => AppTextInput(
           initialValue: value,
           placeholder: field.placeholder,

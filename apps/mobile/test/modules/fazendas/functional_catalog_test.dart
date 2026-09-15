@@ -219,8 +219,14 @@ void main() {
       // obrigatório (agora XOR contra o `novo-lote` por item, condicional em
       // `destino-unico`): 246-1=245 campos; 184-2=182 obrigatórios. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
-      expect(fields, hasLength(245));
-      expect(fields.where((field) => field.isRequired), hasLength(182));
+      // fidelidade-esteira (onda 15): `consulta-produtos` ganha os ~40 campos
+      // fiscais do contrato real (`POST /products`, 72 colunas no dump) —
+      // 35 campos novos (6 obrigatórios: `group-uuid`, `has-lot`,
+      // `is-equipment`, `is-enabled`, `control-stock`, `las-price`):
+      // 245+35=280 campos; 182+6=188 obrigatórios. Ver
+      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 15.
+      expect(fields, hasLength(280));
+      expect(fields.where((field) => field.isRequired), hasLength(188));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
@@ -263,7 +269,10 @@ void main() {
       // acasalamento, diagnóstico de gestação e manutenção — os formulários
       // de 11 campos ou mais. Abastecimentos ficou de fora de propósito: com
       // 10 campos, uma tela só é mais rápida em campo do que quatro.
-      expect(comEtapas, hasLength(8));
+      // fidelidade-esteira (onda 15): `consulta-produtos` entra — com ~40
+      // campos fiscais novos, a rolagem única esconderia o fim do
+      // formulário: 8+1=9.
+      expect(comEtapas, hasLength(9));
 
       for (final feature in comEtapas) {
         final camposEmEtapas = [
