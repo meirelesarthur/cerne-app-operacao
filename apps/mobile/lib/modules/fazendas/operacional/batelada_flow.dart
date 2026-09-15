@@ -20,6 +20,14 @@ const _vagoes = <AppFormSelectOption>[
   AppFormSelectOption(value: 'v2', label: 'Vagão Misturador 02'),
 ];
 
+// `diet_beats.measurement_uuid` — unidade de medida da produção, required no
+// contrato `DietBeatRequest`. Catálogo de medidas (mock, tipo peso).
+const _medidas = <AppFormSelectOption>[
+  AppFormSelectOption(value: 'kg', label: 'Quilograma (kg)'),
+  AppFormSelectOption(value: 'ton', label: 'Tonelada (t)'),
+  AppFormSelectOption(value: 'g', label: 'Grama (g)'),
+];
+
 /// Produzir Batelada (spec §4.3): escolhida a Dieta e a quantidade a
 /// produzir, o app escala automaticamente cada ingrediente
 /// (`quantidade original × produzida ÷ referência`) — o operador só confirma
@@ -38,6 +46,10 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
   // confirmam `warehouse_id` NOT NULL no cabeçalho de abastecimento de
   // dieta — campo real que faltava aqui (só existia por ingrediente).
   String? _armazemCabecalho;
+  // fidelidade-contrato (re-auditoria 3ª avaliação): `DietBeatRequest` exige
+  // `date` e `measurement_uuid` no cabeçalho — ambos faltavam no fluxo.
+  String _data = '';
+  String? _unidadeMedida;
   num _quantidadeProduzida = 1000;
 
   /// Por produto: armazém escolhido e quantidade realizada digitada.
@@ -62,6 +74,11 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
           armazem: _armazens[ing.produto] ?? '',
           quantidadePrevista: ing.quantidade * escala,
           quantidadeRealizada: _realizados[ing.produto]?.toDouble(),
+          // Campos required do item no contrato, derivados da formulação da
+          // dieta (não pedem novo dado da pessoa).
+          dryMatter: ing.percentualMs,
+          custoValor: ing.valorUnitario,
+          percentual: ing.quantidade / dieta.quantidadeReferencia * 100,
         ),
     ];
   }
@@ -70,6 +87,8 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
       _dietaId != null &&
       _vagao != null &&
       _armazemCabecalho != null &&
+      _data.isNotEmpty &&
+      _unidadeMedida != null &&
       _quantidadeProduzida > 0 &&
       _dieta!.ingredientes.every(
         (ing) =>
@@ -86,6 +105,8 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
       dietaId: _dietaId!,
       vagaoDestino: _vagoes.firstWhere((v) => v.value == _vagao).label,
       quantidadeProduzida: _quantidadeProduzida.toDouble(),
+      data: _data,
+      unidadeMedida: _unidadeMedida,
       itens: _itens,
     );
     ref.read(confinamentoStoreProvider.notifier).registrarBatelada(batelada);
@@ -149,6 +170,16 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
           ),
           const SizedBox(height: AppSpacing.space4),
           AppFormField(
+            label: 'Data da produção',
+            required: true,
+            error: _attempted && _data.isEmpty ? 'Informe a data.' : null,
+            child: AppDateInput(
+              initialValue: _data.isEmpty ? null : _data,
+              onChanged: (v) => setState(() => _data = v),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space4),
+          AppFormField(
             label: 'Vagão destino',
             required: true,
             error: _attempted && _vagao == null ? 'Selecione o vagão.' : null,
@@ -171,6 +202,20 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
               value: _armazemCabecalho,
               placeholder: 'Selecione o armazém',
               onChanged: (v) => setState(() => _armazemCabecalho = v),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space4),
+          AppFormField(
+            label: 'Unidade de medida',
+            required: true,
+            error: _attempted && _unidadeMedida == null
+                ? 'Selecione a unidade.'
+                : null,
+            child: AppFormSelect(
+              options: _medidas,
+              value: _unidadeMedida,
+              placeholder: 'Selecione a unidade',
+              onChanged: (v) => setState(() => _unidadeMedida = v),
             ),
           ),
           const SizedBox(height: AppSpacing.space4),
@@ -207,11 +252,12 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
                       const SizedBox(height: AppSpacing.space1),
                       Text(
                         'Previsto: ${(ing.quantidade * _quantidadeProduzida / dieta.quantidadeReferencia).toStringAsFixed(1)} ${dieta.unidade}'
-                        // fidelidade-esteira (onda 14): `food_feedstocks.percentage`
-                        // — único campo de negócio real por ingrediente no
-                        // dump, além de `warehouse_id`/`measurement_id` do
-                        // cabeçalho. Derivado da proporção já cadastrada na
-                        // dieta (não pede novo dado da pessoa).
+                        // fidelidade-contrato (re-auditoria 3ª avaliação): o
+                        // item exige `dry_matter`, `cost_value` e `percentage`
+                        // no payload (`DietBeatRequest`). Todos derivam da
+                        // formulação da dieta e são transportados no
+                        // `ItemBatelada` (não pedem novo dado da pessoa);
+                        // aqui a proporção também é exibida.
                         ' · ${(ing.quantidade / dieta.quantidadeReferencia * 100).toStringAsFixed(1)}% da dieta',
                         style: TextStyle(
                           fontSize: AppTypography.sm,
