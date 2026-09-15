@@ -81,20 +81,28 @@ class AppContentSheet extends StatelessWidget {
 
     if (header == null) return sheet;
 
-    // `ColoredBox` externo em `bgSurface`: sem ele, a quina arredondada da
-    // folha revela o que quer que o widget-pai pinte atrás (o `bgCanvas` do
-    // Shell) — e como esse cinza é quase idêntico ao `bgSheet`, o raio ficava
-    // opticamente invisível, lendo como uma quina reta. A referência do Figma
-    // mostra a quina revelando branco (a mesma faixa do seletor de fazenda),
-    // criando o "detalhe" de camada — não uma terceira cor de fundo.
+    // `ColoredBox` externo: sem ele, a quina arredondada da folha revela o
+    // que quer que o widget-pai pinte atrás (o `bgCanvas` do Shell) — e no
+    // tema claro esse cinza é quase idêntico ao `bgSheet`, o raio ficava
+    // opticamente invisível, lendo como uma quina reta. A referência do
+    // Figma mostra a quina revelando branco (a mesma faixa do seletor de
+    // fazenda), criando o "detalhe" de camada — não uma terceira cor de
+    // fundo. No gbMode, porém, `bgSurface` é idêntico a `bgSheet` (mesmo
+    // verde escuro) — o branco do Figma não existe nesse tema, então a
+    // faixa precisa da própria cor que o comentário acima descreve como
+    // fallback natural (`bgCanvas`, mais escura) para não se fundir com a
+    // folha abaixo.
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final headerBg = isDark ? semantic.bgCanvas : semantic.bgSurface;
+
     return ColoredBox(
-      color: semantic.bgSurface,
+      color: headerBg,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
           AppInputSurface(
-            backgroundColor: semantic.bgSurface,
+            backgroundColor: headerBg,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
                 contentInset,
