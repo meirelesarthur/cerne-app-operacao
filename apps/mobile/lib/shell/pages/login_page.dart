@@ -124,19 +124,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         children: [
                           Column(
                             children: [
-                              const AppHeading(child: Text('Bem-vindo!')),
+                              const AppHeading(
+                                child: Text('Bem-vindo de volta!'),
+                              ),
                               const SizedBox(height: AppSpacing.space1),
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                children: [
-                                  const Text('Primeira vez por aqui?'),
-                                  AppButton(
-                                    variant: AppButtonVariant.link,
-                                    onPressed: () => context.go('/onboarding'),
-                                    child: const Text('Conhecer o app'),
-                                  ),
-                                ],
+                              Text(
+                                'Preencha suas credenciais para acessar',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: semantic.fgMuted),
                               ),
                             ],
                           ),
@@ -158,11 +153,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               placeholder: 'Digite sua senha',
                             ),
                           ),
-                          const SizedBox(height: AppSpacing.space4),
-                          Wrap(
-                            alignment: WrapAlignment.spaceBetween,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            runSpacing: AppSpacing.space1,
+                          const SizedBox(height: AppSpacing.space2),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: AppSpacing.space1,
+                                ),
+                                // Mock — recuperação de senha fora do escopo do protótipo.
+                                child: AppButton(
+                                  variant: AppButtonVariant.link,
+                                  onPressed: () {},
+                                  child: const Text('Esqueceu a senha?'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
                             children: [
                               AppCheckbox(
                                 checked: _manterConectado,
@@ -170,15 +177,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                     setState(() => _manterConectado = v),
                                 label: 'Manter conectado',
                               ),
-                              // Mock — recuperação de senha fora do escopo do protótipo.
-                              AppButton(
-                                variant: AppButtonVariant.link,
-                                onPressed: () {},
-                                child: const Text('Esqueceu a senha?'),
-                              ),
                             ],
                           ),
-                          const SizedBox(height: AppSpacing.space3),
+                          const SizedBox(height: AppSpacing.space4),
                           Text(
                             ambiente == UserAccessProfile.administration
                                 ? 'Acesso administrativo'
@@ -198,14 +199,30 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: AppSpacing.space6),
-                    child: Text(
-                      'GB CERNE · Superapp corporativo do agronegócio',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: AppTypography.xs,
-                        color: semantic.fgInverse.withValues(alpha: 0.7),
-                      ),
+                    padding: const EdgeInsets.fromLTRB(
+                      AppSpacing.space5,
+                      0,
+                      AppSpacing.space5,
+                      AppSpacing.space6,
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'GB CERNE · Superapp corporativo do agronegócio',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: AppTypography.xs,
+                            color: semantic.fgInverse.withValues(alpha: 0.7),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.space4),
+                        AppButton(
+                          variant: AppButtonVariant.onDark,
+                          fullWidth: true,
+                          onPressed: () => context.go('/onboarding'),
+                          child: const Text('Tour pelo app'),
+                        ),
+                      ],
                     ),
                   ),
                 ],

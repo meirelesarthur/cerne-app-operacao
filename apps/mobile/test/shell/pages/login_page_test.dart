@@ -20,18 +20,21 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.bySemanticsLabel('GB CERNE'), findsOneWidget);
-      expect(find.text('Bem-vindo!'), findsOneWidget);
+      expect(find.text('Bem-vindo de volta!'), findsOneWidget);
       expect(find.text('Entrar'), findsOneWidget);
       expect(find.text('Login Administração'), findsNothing);
       expect(find.text('Login Operacional'), findsNothing);
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('"Conhecer o app" navega para o onboarding', (tester) async {
+    testWidgets('"Tour pelo app" navega para o onboarding', (tester) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Conhecer o app'));
+      final tour = find.text('Tour pelo app');
+      await tester.ensureVisible(tour);
+      await tester.pumpAndSettle();
+      await tester.tap(tour);
       await tester.pumpAndSettle();
 
       expect(find.text('Sua fazenda na palma da mão'), findsOneWidget);
