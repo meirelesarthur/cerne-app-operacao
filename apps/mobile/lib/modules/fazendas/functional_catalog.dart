@@ -8,9 +8,12 @@ enum FeatureProfile { administration, operational }
 
 enum FeatureStatus { ready, mapped, hardware }
 
-// fidelidade-esteira (onda 11): `color` é hex real (`AppColorInput`), não um
-// `select` sobre rótulos de cor — o dump de produção mostra mais de 150 hex
-// distintos em uso em `areas.color`, um seletor livre, não um enum fechado.
+// fidelidade-contrato (re-auditoria 3ª avaliação): `color` é uma paleta
+// FECHADA (`AppColorInput` com `colorPalette`) — a API valida com
+// `Rule::enum` (`AreaColor` em `/areas`, `MarkingColorEnum` em `/markings`),
+// então hex livre daria 422. A onda 11 tinha lido o dump de produção (150+
+// hex em repouso) como "seletor livre", mas isso é dado acumulado, não o
+// contrato de escrita novo. Ver [areaColorPalette]/[markingColorPalette].
 // fidelidade-esteira (onda 15): `boolean` é um switch de verdade
 // (`AppToggleSwitch`), não mais simulado com `select` Sim/Não —
 // `has_lot`/`is_equipment`/`is_enabled`/`control_stock`/`allow_pointing` em
@@ -41,6 +44,7 @@ class FeatureField {
     this.isRequired = false,
     this.placeholder,
     this.options = const [],
+    this.colorPalette = const [],
   });
 
   final String id;
@@ -49,7 +53,60 @@ class FeatureField {
   final bool isRequired;
   final String? placeholder;
   final List<String> options;
+
+  /// Paleta fechada de um campo `FeatureFieldType.color`. Quando não-vazia,
+  /// o campo só aceita estas cores (espelho de um enum de cor da API, ex.
+  /// `AreaColor`/`MarkingColorEnum`) e submete o `value` hex EXATO — vazia
+  /// mantém o comportamento de hex livre.
+  final List<({String value, String label})> colorPalette;
 }
+
+/// Paleta fechada de `Area` — espelho EXATO de `App\Enums\AreaColor`
+/// (`GB.Cerne.Api/app/Enums/AreaColor.php`, 14 cores, hex minúsculo).
+/// `AreaRequest::rules()` valida `color` com `Rule::enum(AreaColor)`, logo
+/// hex livre (o antigo `AppColorInput` sem paleta) dava 422. Valores verbatim
+/// — NÃO normalizar case.
+const List<({String value, String label})> areaColorPalette = [
+  (value: '#ffffff', label: 'Branco'),
+  (value: '#0074d9', label: 'Azul'),
+  (value: '#000000', label: 'Preto'),
+  (value: '#2ecc40', label: 'Verde'),
+  (value: '#ffdc00', label: 'Amarelo'),
+  (value: '#ff4136', label: 'Vermelho'),
+  (value: '#aaaaaa', label: 'Cinza'),
+  (value: '#dddddd', label: 'Cinza Claro'),
+  (value: '#7fdbff', label: 'Azul Claro'),
+  (value: '#001f3f', label: 'Azul Escuro'),
+  (value: '#39cccc', label: 'Turquesa'),
+  (value: '#3d9970', label: 'Verde Escuro'),
+  (value: '#01ff70', label: 'Verde Claro'),
+  (value: '#ff851b', label: 'Laranja'),
+];
+
+/// Paleta fechada de `Marking` — espelho EXATO de `App\Enums\MarkingColorEnum`
+/// (`GB.Cerne.Api/app/Enums/MarkingColorEnum.php`, 16 cores). Case É
+/// SIGNIFICATIVO: 5 valores são MAIÚSCULOS (`#FF99FF`, `#FF69B4`, `#FBE7A1`,
+/// `#00008B`, `#003366`) e `Rule::enum(MarkingColorEnum)` faz match exato de
+/// string — normalizar case quebra a submissão (422). Distinta de
+/// [areaColorPalette]: `/markings` NÃO usa `AreaColor`.
+const List<({String value, String label})> markingColorPalette = [
+  (value: '#ffee58', label: 'Amarelo'),
+  (value: '#81d4fa', label: 'Azul claro'),
+  (value: '#e0e0e0', label: 'Branco'),
+  (value: '#a1887f', label: 'Marrom'),
+  (value: '#212121', label: 'Preto'),
+  (value: '#ec407a', label: 'Rosa'),
+  (value: '#8e24aa', label: 'Roxo'),
+  (value: '#4caf50', label: 'Verde'),
+  (value: '#d32f2f', label: 'Vermelho'),
+  (value: '#FF99FF', label: 'Rosa Claro'),
+  (value: '#FF69B4', label: 'Rosa Pink'),
+  (value: '#FBE7A1', label: 'Palha'),
+  (value: '#00008B', label: 'Azul Escuro'),
+  (value: '#003366', label: 'Azul Marinho'),
+  (value: '#f75900', label: 'Laranja'),
+  (value: '#0072c0', label: 'Azul Royal'),
+];
 
 /// Uma coleção de itens de um cadastro — `items[]`, `products[]`,
 /// `identifications[]` e companhia no contrato real.
@@ -1398,19 +1455,20 @@ const operationalFeatures = <FeatureDefinition>[
       // `color` é required no contrato — é a cor com que a área aparece no
       // mapa, sem ela o desenho da fazenda não se distingue.
       //
-      // fidelidade-esteira (onda 11): o TODO(banco-real) de "paleta
-      // incompleta" (fidelidade-contrato, onda 2b) foi superado pelo dado
-      // real — `areas.color` no dump de produção é `varchar(7)` com mais de
-      // 150 hex distintos em uso, não um enum de 14 nomes. `cor` vira campo
-      // de cor real (`AppColorInput`); `#f6c23e` é o `DEFAULT` do banco
-      // (documentado aqui — o motor genérico não semeia valor inicial em
-      // nenhum tipo de campo, mesmo padrão de `select`/`text`).
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `AreaRequest::rules()`
+      // valida `color` com `Rule::enum(AreaColor)` — 14 cores fechadas. A onda
+      // 11 tinha aberto isto para hex livre lendo o dump de produção (`varchar`
+      // com 150+ hex), mas dado-em-repouso acumulado ≠ contrato de escrita: o
+      // POST novo rejeita qualquer hex fora do enum (422). Volta a ser paleta
+      // fechada — agora via [areaColorPalette], não a lista de nomes à mão da
+      // onda 2b. O antigo `DEFAULT '#f6c23e'` do banco NÃO está no enum; o
+      // motor não semeia valor inicial, então nenhuma cor inválida entra.
       FeatureField(
         id: 'cor',
         label: 'Cor no mapa',
         type: FeatureFieldType.color,
         isRequired: true,
-        placeholder: 'F6C23E',
+        colorPalette: areaColorPalette,
       ),
       FeatureField(
         id: 'matricula',
@@ -1798,18 +1856,19 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
-      // fidelidade-esteira (onda 11): mesma correção de `cadastrar-area.cor`
-      // — `areas.color` no dump real é hex livre, não enum. A lista antiga
-      // ('Roxo' incluso) era mantida à mão e divergia da de
-      // `cadastrar-area` (sem 'Roxo'); o campo de cor real elimina essa
-      // inconsistência de vez, as duas telas usam o mesmo componente e o
-      // mesmo domínio (qualquer hex).
+      // fidelidade-contrato (re-auditoria 3ª avaliação): a cor de `/markings`
+      // é validada por `MarkingRequest::rules()` com
+      // `Rule::enum(MarkingColorEnum)` — 16 cores, DISTINTAS das de Área
+      // (`/markings` NÃO usa `AreaColor`; o comentário anterior desta tela,
+      // que dizia escrever em `areas.color` no "mesmo domínio", estava
+      // errado). Paleta fechada própria via [markingColorPalette]. Atenção:
+      // 5 valores são MAIÚSCULOS e o enum casa string exata — não normalizar.
       FeatureField(
         id: 'cor',
         label: 'Cor no mapa',
         type: FeatureFieldType.color,
         isRequired: true,
-        placeholder: 'F6C23E',
+        colorPalette: markingColorPalette,
       ),
       FeatureField(
         id: 'funcionario',

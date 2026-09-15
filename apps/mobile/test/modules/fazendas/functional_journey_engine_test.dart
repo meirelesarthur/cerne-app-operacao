@@ -82,9 +82,10 @@ void main() {
       // fidelidade-campos (onda 3): `color` é required em `/areas` — a cor
       // com que a área aparece no mapa. Ver
       // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 3.
-      // fidelidade-esteira (onda 11): `cor` virou campo de cor real (hex) —
-      // o dump de produção mostra `areas.color` como valor livre, não enum.
-      ..setValue('cor', '#22C55E')
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `cor` é paleta
+      // fechada (`Rule::enum(AreaColor)`); o valor precisa ser um hex do
+      // enum (`#2ecc40` = Verde), não um hex livre qualquer.
+      ..setValue('cor', '#2ecc40')
       // fidelidade-contrato (onda 1): `productive_area`/`unproductive_area`/
       // `recreation_area`/`is_enabled` voltaram a `required`. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.

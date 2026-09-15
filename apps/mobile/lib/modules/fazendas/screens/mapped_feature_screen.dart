@@ -1355,6 +1355,12 @@ class _FeatureFieldControl extends StatelessWidget {
         ),
         FeatureFieldType.color => AppColorInput(
           initialValue: value.isEmpty ? null : value,
+          palette: field.colorPalette.isEmpty
+              ? null
+              : [
+                  for (final option in field.colorPalette)
+                    AppColorOption(value: option.value, label: option.label),
+                ],
           invalid: error != null,
           enabled: enabled,
           onChanged: onChanged,
