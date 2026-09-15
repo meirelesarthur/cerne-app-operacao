@@ -117,6 +117,7 @@ que ninguém confirmou.
 | 13 | `transferencia-animal`: captura RFID empilhada em coleção | ✅ fechada |
 | 14 | Fluxos dedicados (`apontamento`/`batelada`/`leitura-cocho`) | ✅ fechada (inequívoco); matriz de qualidade e máquina de estados de mão de obra ficam de fora por decisão |
 | 15 | `consulta-produtos`: expansão fiscal completa (~40 campos) + `FeatureFieldType.boolean` | ✅ fechada |
+| 16 | `formulacoes.tipo` (P/U) — rótulo confirmado pelo usuário | ✅ fechada |
 
 Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
 com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
@@ -542,6 +543,22 @@ formulário.
       "Estoque e controle", os 4 switches booleanos aparecem desligados por padrão e alternam
       corretamente ao toque (`AppToggleSwitch` já existente, sem regressão visual).
 
+## Onda 16 — Pendências que continuavam `TODO(banco-real)`
+
+- [x] `formulacoes.tipo` (P/U) — **fechado nesta sessão**: o usuário confirmou o rótulo em
+      português (`P` = "Porcentagem", `U` = "Unidade") depois que o plano original foi escrito
+      (que mantinha `TODO(banco-real)` por falta dessa confirmação). `options` do campo `tipo`
+      em `formulacoes` trocado de `['Estoque', 'Formulação']` (conflate de `diets.type`/
+      `diets.objective`, nunca foi o campo `FoodTypeEnum` de verdade) para `['Porcentagem',
+      'Unidade']`; amostras seedadas (`formulacao-1`/`formulacao-2`) atualizadas. O `tipo` de
+      `batidas` (mesma anotação "mesmo campo tipo de formulacoes" no código, mas outra coluna —
+      `item_diet_beats.type`) não foi tocado: a confirmação do usuário nomeou especificamente
+      `formulacoes.tipo`, e o comentário original já registrava os dois como conflates
+      distintos, não o mesmo enum replicado.
+- [x] Qualquer campo que dependa do Form Request PHP real (não presente no dump) para saber a
+      obrigatoriedade exata continua marcado como inferido de `NOT NULL`, não confirmado 1:1 —
+      nenhuma mudança nesta esteira.
+
 ---
 
 ## Cadastro a cadastro (referência completa da auditoria de 14/09)
@@ -586,7 +603,7 @@ Tabela de trabalho — cada linha é uma issue do relatório, com a onda que a f
 | `compras-animais` | media | fiscais/`has_financial` ausentes | backlog (baixo valor) |
 | `batidas` | media | 3 required por item opcionais | 4 |
 | `batidas` | media | `items.*.measurement_uuid` ausente | 4 |
-| `formulacoes` | media | enum `tipo` P/U | 2b |
+| `formulacoes` | media | enum `tipo` P/U | 2b → 16 (fechada) |
 | `abastecimentos` | media | `medidor` funde dois campos do contrato | 10 (fechada) |
 | `abastecimentos` | media | required de cabeçalho × nullable | 10 (fechada) |
 | `lote-animais` | media | categoria escalar × array | 5 |
@@ -615,9 +632,10 @@ Tabela de trabalho — cada linha é uma issue do relatório, com a onda que a f
 ## Pendências conhecidas desta esteira
 
 - ~~**Enums sem domínio completo no relatório** (`AreaColor` 14 hex, `FoodTypeEnum` P/U) ficam
-  `TODO(banco-real)` — não travar rótulo sem confirmar com o time web (Onda 2b).~~ — `AreaColor`
-  fechado: virou campo de cor real na Onda 11 (o dump mostra hex livre, não um enum de 14
-  nomes). `FoodTypeEnum` segue `TODO(banco-real)` até a Onda 16.
+  `TODO(banco-real)` — não travar rótulo sem confirmar com o time web (Onda 2b).~~ — os dois
+  fechados: `AreaColor` virou campo de cor real na Onda 11 (o dump mostra hex livre, não um
+  enum de 14 nomes); `FoodTypeEnum` teve o rótulo confirmado pelo usuário na Onda 16
+  (`P` = "Porcentagem", `U` = "Unidade").
 - **Tipo de campo "imagem" não existe no catálogo** (`FeatureFieldType`) — necessário para a
   coleção geo de `pastagens.occurrences[]` (Onda 7). É decisão de motor, não só de dado;
   revisar antes de codar.

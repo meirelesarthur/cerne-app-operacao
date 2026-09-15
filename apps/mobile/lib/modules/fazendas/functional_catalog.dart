@@ -1411,24 +1411,18 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['kg', 't', 'L'],
       ),
-      // TODO(banco-real): este campo conflate `diets.type` e `diets.objective`
-      // (duas colunas distintas no banco, ambas sem tabela de domínio no dump).
-      // Confirmar com o time web se devem virar dois selects separados e quais
-      // os valores válidos. Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md,
-      // seção C.
-      //
-      // fidelidade-contrato (onda 2b): a auditoria de 14/09 confirma que o
-      // enum real (`FoodTypeEnum`, aplicado a `/foods` — não a este campo
-      // conflatado) tem 2 códigos, `P`/`U`, sem rótulo em português
-      // confirmado. Não trocar `Estoque`/`Formulação` sem essa confirmação —
-      // arriscaria inverter o sentido dos dois. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2b.
+      // fidelidade-esteira (onda 16): rótulo confirmado pelo usuário —
+      // `FoodTypeEnum` (`P`/`U`) é `P` = "Porcentagem", `U` = "Unidade". O
+      // TODO(banco-real) anterior (mantido por falta de confirmação do
+      // rótulo) foi resolvido; supera também a nota de categoria 2b da
+      // fidelidade-contrato. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
+      // Onda 16.
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Estoque', 'Formulação'],
+        options: ['Porcentagem', 'Unidade'],
       ),
       FeatureField(
         id: 'materia-prima',
