@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../design/generated/app_colors.dart';
 import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
@@ -32,20 +31,6 @@ class CerneAppFolderPage extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Image.asset('assets/images/login_bg.png', fit: BoxFit.cover),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0, 0.5, 0.82],
-                colors: [
-                  AppComponentColors.loginHeroScrimFrom,
-                  AppComponentColors.loginHeroScrimMid,
-                  AppComponentColors.loginHeroScrimTo,
-                ],
-              ),
-            ),
-          ),
           SafeArea(
             child: Column(
               children: [
