@@ -68,7 +68,7 @@ class AppChip extends StatelessWidget {
       decoration: BoxDecoration(
         color: colors.bg,
         border: Border.all(color: colors.border),
-        borderRadius: BorderRadius.circular(AppRadius.full),
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

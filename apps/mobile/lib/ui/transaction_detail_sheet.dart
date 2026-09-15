@@ -101,7 +101,7 @@ class _TransactionDetailBodyState extends State<_TransactionDetailBody> {
                 height: AppSpacing.space12,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
                   color: isIn ? semantic.accentSubtle : semantic.bgSubtle,
                 ),
                 child: AppIcon(

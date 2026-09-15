@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'app_icon.dart';
+import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -46,7 +47,7 @@ class AppQuickAction extends StatelessWidget {
               width: AppSpacing.space14,
               height: AppSpacing.space14,
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(AppRadius.xl2),
                 color: semantic.bgSurface,
                 boxShadow: semantic.shadowCard,
               ),

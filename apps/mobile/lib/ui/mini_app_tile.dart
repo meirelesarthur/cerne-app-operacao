@@ -70,7 +70,7 @@ class AppMiniAppTile extends StatelessWidget {
                         height: AppSpacing.space10,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          shape: BoxShape.circle,
+                          borderRadius: BorderRadius.circular(AppRadius.lg),
                           color: semantic.accentSubtle,
                           border: Border.all(color: semantic.borderTint),
                         ),

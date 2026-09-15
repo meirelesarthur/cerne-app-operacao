@@ -16,12 +16,21 @@ import 'spinner.dart';
 /// `dangerOutline` é o "Cancelar" do padrão global (Figma 54349:2089):
 /// contorno e rótulo vermelhos sobre superfície transparente. Distinto de
 /// `danger`, que é o vermelho sólido de uma ação destrutiva confirmada.
-enum AppButtonVariant { primary, secondary, ghost, danger, dangerOutline, link }
+enum AppButtonVariant {
+  primary,
+  secondary,
+  ghost,
+  danger,
+  dangerOutline,
+  link,
 
-// fidelidade-esteira: `xl` é o CTA flutuante fixo no rodapé de listagens
-// (56px de altura, raio `AppRadius.tile` — não `full` como os demais
-// tamanhos) — anatomia própria pedida pelo usuário, distinta do `lg` do
-// padrão global de formulário.
+  /// Bolha translúcida sobre fundo escuro/arte (ex.: CTA secundário na tela
+  /// de login, sobre a foto de fundo) — mesmos tokens `inkBubble`/`inkFg` já
+  /// usados por `AppIconButton` (variant `onDark`), agora também disponíveis
+  /// como botão de texto.
+  onDark,
+}
+
 enum AppButtonSize { sm, md, lg, xl }
 
 class AppButton extends StatelessWidget {
@@ -55,8 +64,16 @@ class AppButton extends StatelessWidget {
     AppButtonSize.xl => AppSpacing.space14,
   };
 
-  double get _borderRadius =>
-      size == AppButtonSize.xl ? AppRadius.tile : AppRadius.full;
+  // fidelidade-esteira: raio "squircle" (quadrado-arredondado), não mais
+  // pílula (`AppRadius.full`) — pedido do usuário para todo o catálogo.
+  // Escala com a altura do botão em vez de um valor único, mesma proporção
+  // já usada por `AppAppIconTile`/`field_capsule` (~0.32–0.36 do lado).
+  double get _borderRadius => switch (size) {
+    AppButtonSize.sm => AppRadius.lg,
+    AppButtonSize.md => AppRadius.lg,
+    AppButtonSize.lg => AppRadius.lgPlus,
+    AppButtonSize.xl => AppRadius.tile,
+  };
 
   double get _horizontalPadding => switch (size) {
     AppButtonSize.sm => AppSpacing.space4,
@@ -108,6 +125,11 @@ class AppButton extends StatelessWidget {
           bg: AppColors.transparent,
           fg: s.accentDefault,
           border: null,
+        ),
+        AppButtonVariant.onDark => (
+          bg: s.inkBubble,
+          fg: s.inkFg,
+          border: AppColors.neutral0.withValues(alpha: 0.3),
         ),
       };
 

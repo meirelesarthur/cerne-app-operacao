@@ -3,12 +3,14 @@ import 'package:widgetbook/widgetbook.dart';
 
 import 'app_icon.dart';
 import '../design/generated/app_layout.dart';
+import '../design/generated/app_radius.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_spacing.dart';
 
-/// Espelha `IconButton.tsx` do protótipo React — bolha circular com touch target
-/// generoso. `label` é obrigatório (acessibilidade: vira `Semantics`/`Tooltip`).
+/// Espelha `IconButton.tsx` do protótipo React — bolha squircle (quadrado-
+/// arredondado, não mais circular) com touch target generoso. `label` é
+/// obrigatório (acessibilidade: vira `Semantics`/`Tooltip`).
 enum AppIconButtonSize { sm, md, lg }
 
 enum AppIconButtonVariant { ghost, solid, onDark }
@@ -37,6 +39,10 @@ class AppIconButton extends StatelessWidget {
     AppIconButtonSize.md => AppSize.iconBtnMd,
     AppIconButtonSize.lg => AppSize.iconBtnLg,
   };
+
+  // fidelidade-esteira: raio squircle — os três tamanhos (44/44/48px) caem
+  // na mesma faixa proporcional, mesmo token para os três.
+  static const double _borderRadius = AppRadius.xl;
 
   ({Color bg, Color fg, List<BoxShadow> shadow}) _colors(AppSemanticColors s) =>
       switch (variant) {
@@ -70,15 +76,19 @@ class AppIconButton extends StatelessWidget {
         enabled: onPressed != null,
         child: Container(
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(_borderRadius),
             boxShadow: colors.shadow,
           ),
           child: Material(
             color: colors.bg,
-            shape: const CircleBorder(),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(_borderRadius),
+            ),
             child: InkWell(
               onTap: onPressed,
-              customBorder: const CircleBorder(),
+              customBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(_borderRadius),
+              ),
               child: SizedBox(
                 width: _dimension,
                 height: _dimension,

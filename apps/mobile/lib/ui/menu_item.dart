@@ -130,7 +130,7 @@ class AppMenuItem extends StatelessWidget {
                   width: AppSpacing.space10,
                   decoration: BoxDecoration(
                     color: iconBubbleColor,
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                   ),
                   alignment: Alignment.center,
                   child: AppIcon(icon, size: AppSize.iconMd, color: iconColor),
@@ -177,7 +177,7 @@ class AppMenuItem extends StatelessWidget {
                   margin: const EdgeInsets.only(left: AppSpacing.space2),
                   decoration: BoxDecoration(
                     color: chevronBubbleColor,
-                    shape: BoxShape.circle,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   alignment: Alignment.center,
                   child: AppIcon(

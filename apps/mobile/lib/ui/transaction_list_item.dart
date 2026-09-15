@@ -67,7 +67,7 @@ class AppTransactionListItem extends StatelessWidget {
           height: AppSpacing.space10,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(AppRadius.lg),
             color: isIn ? semantic.accentSubtle : semantic.bgSubtle,
           ),
           child: AppIcon(

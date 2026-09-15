@@ -16,9 +16,10 @@ enum AppTagTone { neutral, success, warning, danger }
 
 /// Espelha `Tag.tsx` — rótulo compacto de metadado ou de status.
 ///
-/// Anatomia do padrão global: pílula de **contorno** (fundo transparente),
-/// `px 8 / py 3`, raio total, rótulo de 10 px Medium na cor do tom, e um ícone
-/// opcional de 14 px à esquerda (o `PartyPopperIcon` do "Aprovado").
+/// Anatomia do padrão global: rótulo de **contorno** (fundo transparente),
+/// `px 8 / py 3`, raio squircle (não mais pílula), rótulo de 10 px Medium na
+/// cor do tom, e um ícone opcional de 14 px à esquerda (o `PartyPopperIcon`
+/// do "Aprovado").
 ///
 /// Diferente do `AppChip`, que é preenchido e maior — o chip é filtro e estado
 /// de tela; a tag é uma anotação dentro de outro bloco.
@@ -58,7 +59,7 @@ class AppTag extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         border: Border.all(color: borderColor),
-        borderRadius: BorderRadius.circular(AppRadius.full),
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

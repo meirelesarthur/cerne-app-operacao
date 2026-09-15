@@ -89,9 +89,9 @@ class AppDashboardCard extends StatelessWidget {
                     width: AppSpacing.space10,
                     height: AppSpacing.space10,
                     alignment: Alignment.center,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: AppColors.neutral200,
-                      shape: BoxShape.circle,
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
                     ),
                     child: AppIcon(
                       icon,
@@ -172,7 +172,7 @@ class AppDashboardCard extends StatelessWidget {
                 height: AppSpacing.space10,
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                   color: _dark
                       ? AppColors.neutral0.withValues(alpha: 0.15)
                       : semantic.accentSubtle,

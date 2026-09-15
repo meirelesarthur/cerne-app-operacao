@@ -127,7 +127,7 @@ class AppGreetingHeader extends StatelessWidget {
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: semantic.bgSurface,
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(AppRadius.xl),
             boxShadow: AppShadows.bubble,
           ),
           child: AppIcon(
@@ -175,7 +175,7 @@ class AppGreetingHeader extends StatelessWidget {
               ? '$notificationsLabel, há novas'
               : notificationsLabel,
           onPressed: onNotifications,
-          borderRadius: BorderRadius.circular(AppRadius.full),
+          borderRadius: BorderRadius.circular(AppRadius.xl),
           child: bell,
         ),
         if (trailing != null) ...[

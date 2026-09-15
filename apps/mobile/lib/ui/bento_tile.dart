@@ -84,7 +84,7 @@ class AppBentoTile extends StatelessWidget {
                   color: _isAccent
                       ? AppColors.neutral0.withValues(alpha: 0.15)
                       : semantic.accentSubtle,
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(AppRadius.xl),
                   border: _isAccent
                       ? null
                       : Border.all(color: semantic.borderTint),
@@ -144,7 +144,7 @@ class AppBentoTile extends StatelessWidget {
                 width: AppSpacing.space8,
                 decoration: BoxDecoration(
                   color: AppColors.neutral0.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 alignment: Alignment.center,
                 child: const AppIcon(
