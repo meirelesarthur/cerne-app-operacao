@@ -107,6 +107,7 @@ Future<void> _adicionarInsumo(WidgetTester tester) async {
   await tester.tap(_addButtonForGroup(2));
   await tester.pumpAndSettle();
   await _selectSearchOption(tester, 'Ração Engorda 18%');
+  await _selectOption(tester, 'Armazém de origem', 'Armazém A');
   await _selectOption(tester, 'Unidade', 'kg');
   await tester.ensureVisible(find.text('Adicionar').last);
   await tester.tap(find.text('Adicionar').last);
@@ -222,12 +223,13 @@ void main() {
       expect(find.text('Insumo'), findsOneWidget);
       expect(find.text('Produto'), findsOneWidget);
       expect(find.text('Unidade'), findsOneWidget);
-      // fidelidade-esteira (onda 14): `appropriation_stock` não tem
-      // `warehouse_uuid` próprio no dump real — o item sempre herda o
-      // armazém de insumo do cabeçalho, sem campo por item.
-      expect(find.text('Armazém de origem'), findsNothing);
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `stock_items.*`
+      // exige `warehouse_uuid` por item (`required_with:stock_items`) — o
+      // armazém volta a ser campo por item.
+      expect(find.text('Armazém de origem'), findsOneWidget);
 
       await _selectSearchOption(tester, 'Ração Engorda 18%');
+      await _selectOption(tester, 'Armazém de origem', 'Armazém A');
       await _selectOption(tester, 'Unidade', 'kg');
       await tester.ensureVisible(find.text('Adicionar').last);
   await tester.tap(find.text('Adicionar').last);
@@ -263,6 +265,37 @@ void main() {
 
       expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
       expect(find.text('Semente de Braquiária'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('mão de obra exige o tipo e o alvo do tipo escolhido', (
+      tester,
+    ) async {
+      await setTallSurface(tester, height: 3200);
+      await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+      await tester.pumpAndSettle();
+
+      await _irParaLancamentos(tester);
+      // Mão de obra é o primeiro grupo (índice 0).
+      await tester.tap(_addButtonForGroup(0));
+      await tester.pumpAndSettle();
+
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `labor_items.*.type`
+      // é required — o sheet abre pedindo o discriminante.
+      expect(find.text('Tipo'), findsOneWidget);
+
+      // Tipo=Função revela o select de função (o alvo required_if do tipo).
+      await _selectOption(tester, 'Tipo', 'Função');
+      expect(_fieldByLabel('Função exercida'), findsOneWidget);
+      await _selectOption(tester, 'Função exercida', 'Tratorista Agrícola');
+      await _selectOption(tester, 'Unidade', 'Dia');
+      await _enterText(tester, 'Valor unitário (R\$)', '150');
+      await tester.ensureVisible(find.text('Adicionar').last);
+      await tester.tap(find.text('Adicionar').last);
+      await tester.pumpAndSettle();
+
+      // O item entra rotulado pelo tipo + alvo.
+      expect(find.text('Função: Tratorista Agrícola'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

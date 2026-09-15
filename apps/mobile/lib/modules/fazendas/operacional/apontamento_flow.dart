@@ -193,17 +193,50 @@ T _byValue<T>(List<T> values, String value) =>
 String _optionLabel(List<AppFormSelectOption> options, String value) =>
     options.firstWhere((o) => o.value == value).label;
 
+// Mão de obra "3-em-1" — `appropriation_employee` guarda três FKs mutuamente
+// exclusivas (`functions`, `employees`, `providers`) discriminadas por
+// `labor_items.*.type` (espelho de `App\Enums\Appropriation\LaborType`:
+// 1=Funcionário, 2=Função, 3=Prestador). `AppropriationRequest::rules()` exige
+// `type` (`required_with:labor_items`) e, por `required_if`, a FK do tipo
+// escolhido — sem o discriminante o POST dá 422.
+enum _TipoMaoDeObra { funcionario, funcao, prestador }
+
+extension on _TipoMaoDeObra {
+  String get label => switch (this) {
+    _TipoMaoDeObra.funcionario => 'Funcionário',
+    _TipoMaoDeObra.funcao => 'Função',
+    _TipoMaoDeObra.prestador => 'Prestador de Serviço',
+  };
+
+  /// Rótulo do alvo (a FK exigida por `required_if` para este `type`).
+  String get alvoLabel => switch (this) {
+    _TipoMaoDeObra.funcionario => 'Funcionário',
+    _TipoMaoDeObra.funcao => 'Função',
+    _TipoMaoDeObra.prestador => 'Prestador',
+  };
+}
+
+const _tiposMaoDeObra = <AppFormSelectOption>[
+  AppFormSelectOption(value: 'funcionario', label: 'Funcionário'),
+  AppFormSelectOption(value: 'funcao', label: 'Função'),
+  AppFormSelectOption(value: 'prestador', label: 'Prestador de Serviço'),
+];
+
 class _MaoDeObraItem {
   const _MaoDeObraItem({
-    required this.funcao,
-    required this.colaborador,
+    required this.tipo,
+    required this.alvo,
     required this.quantidade,
     required this.unidade,
     required this.valorUnitario,
   });
 
-  final String funcao;
-  final String colaborador;
+  /// Discriminante `labor_items.*.type`.
+  final _TipoMaoDeObra tipo;
+
+  /// Alvo do tipo escolhido, já resolvido para rótulo humano: a função (quando
+  /// [tipo] == funcao) ou o nome do funcionário/prestador.
+  final String alvo;
   final num quantidade;
   final String unidade;
   final num valorUnitario;
@@ -228,11 +261,16 @@ class _MaquinaItem {
 class _InsumoItem {
   const _InsumoItem({
     required this.produto,
+    required this.armazem,
     required this.quantidade,
     required this.unidade,
   });
 
   final String produto;
+
+  /// `stock_items.*.warehouse_uuid` — armazém de origem POR item (tipo
+  /// Insumos), `required_with:stock_items` no contrato real.
+  final String armazem;
   final num quantidade;
   final String unidade;
 }
@@ -637,9 +675,9 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
         ),
         for (final item in _maoDeObra)
           _ItemRow(
-            title: _optionLabel(_funcoes, item.funcao),
+            title: '${item.tipo.label}: ${item.alvo}',
             subtitle:
-                '${item.colaborador} · ${item.quantidade} ${_optionLabel(_unidadesMaoDeObra, item.unidade)} · R\$ ${item.valorUnitario}',
+                '${item.quantidade} ${_optionLabel(_unidadesMaoDeObra, item.unidade)} · R\$ ${item.valorUnitario}',
             onRemove: () => setState(() => _maoDeObra.remove(item)),
           ),
         const SizedBox(height: AppSpacing.space5),
@@ -665,7 +703,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
           _ItemRow(
             title: item.produto,
             subtitle:
-                '${item.quantidade} ${_optionLabel(_unidadesInsumo, item.unidade)}',
+                '${item.quantidade} ${_optionLabel(_unidadesInsumo, item.unidade)} · ${_optionLabel(_armazens, item.armazem)}',
             onRemove: () => setState(() => _insumos.remove(item)),
           ),
         const SizedBox(height: AppSpacing.space5),
@@ -717,11 +755,19 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   }
 
   void _adicionarMaoDeObra(BuildContext context) {
+    _TipoMaoDeObra? tipo;
     String? funcao;
-    var colaborador = '';
+    var alvoNome = '';
     num quantidade = 1;
     String? unidade;
     var valor = '';
+
+    // Alvo preenchido conforme o tipo: `funcao` (select) quando tipo=Função,
+    // `alvoNome` (texto) quando tipo=Funcionário/Prestador. Espelha o
+    // `required_if:labor_items.*.type,N` do contrato.
+    bool alvoPreenchido() => tipo == _TipoMaoDeObra.funcao
+        ? funcao != null
+        : (tipo != null && alvoNome.isNotEmpty);
 
     showAppBottomSheet<void>(
       context,
@@ -732,24 +778,43 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppFormField(
-              label: 'Função',
+              label: 'Tipo',
               required: true,
               child: AppFormSelect(
-                options: _funcoes,
-                value: funcao,
-                placeholder: 'Selecione a função',
-                onChanged: (v) => setSheetState(() => funcao = v),
+                options: _tiposMaoDeObra,
+                value: tipo?.name,
+                placeholder: 'Funcionário, função ou prestador',
+                onChanged: (v) => setSheetState(() {
+                  tipo = v == null
+                      ? null
+                      : _TipoMaoDeObra.values.byName(v);
+                  // Troca de tipo zera o alvo do tipo anterior.
+                  funcao = null;
+                  alvoNome = '';
+                }),
               ),
             ),
             const SizedBox(height: AppSpacing.space3),
-            AppFormField(
-              label: 'Colaborador / prestador',
-              required: true,
-              child: AppTextInput(
-                onChanged: (v) => colaborador = v,
-                placeholder: 'Nome do colaborador ou prestador',
+            if (tipo == _TipoMaoDeObra.funcao)
+              AppFormField(
+                label: 'Função exercida',
+                required: true,
+                child: AppFormSelect(
+                  options: _funcoes,
+                  value: funcao,
+                  placeholder: 'Selecione a função',
+                  onChanged: (v) => setSheetState(() => funcao = v),
+                ),
+              )
+            else
+              AppFormField(
+                label: tipo?.alvoLabel ?? 'Funcionário / prestador',
+                required: true,
+                child: AppTextInput(
+                  onChanged: (v) => setSheetState(() => alvoNome = v),
+                  placeholder: 'Nome do funcionário ou prestador',
+                ),
               ),
-            ),
             const SizedBox(height: AppSpacing.space3),
             AppFormField(
               label: 'Quantidade',
@@ -785,14 +850,16 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
             const SizedBox(height: AppSpacing.space4),
             AppButton(
               fullWidth: true,
-              onPressed: funcao == null || colaborador.isEmpty || unidade == null
+              onPressed: !alvoPreenchido() || unidade == null
                   ? null
                   : () {
                       setState(
                         () => _maoDeObra.add(
                           _MaoDeObraItem(
-                            funcao: funcao!,
-                            colaborador: colaborador,
+                            tipo: tipo!,
+                            alvo: tipo == _TipoMaoDeObra.funcao
+                                ? _optionLabel(_funcoes, funcao!)
+                                : alvoNome,
                             quantidade: quantidade,
                             unidade: unidade!,
                             valorUnitario: num.tryParse(
@@ -911,13 +978,15 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
     );
   }
 
-  // fidelidade-esteira (onda 14): `appropriation_stock` no dump real não tem
-  // `warehouse_uuid` próprio — o item herda sempre o armazém de insumo do
-  // cabeçalho. O campo de armazém por item que existia aqui descrevia o
-  // sentido invertido do gap (o relatório original pedia o campo; o dado
-  // real mostra que ele não existe no contrato).
+  // fidelidade-contrato (re-auditoria 3ª avaliação): `stock_items.*` no
+  // contrato real (`AppropriationRequest::rules()`) EXIGE `warehouse_uuid` por
+  // item (`required_with:stock_items`, tipo Insumos) — o comentário anterior
+  // (onda 14) afirmava o oposto e contradizia o `rules()`. O armazém volta a
+  // ser campo por item; o "Armazém de insumo" do cabeçalho pré-seleciona o
+  // valor, mas cada insumo carrega o seu.
   void _adicionarInsumo(BuildContext context) {
     String? produto;
+    String? armazem = _armazemInsumo;
     num quantidade = 1;
     String? unidade;
 
@@ -945,6 +1014,17 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
             ),
             const SizedBox(height: AppSpacing.space3),
             AppFormField(
+              label: 'Armazém de origem',
+              required: true,
+              child: AppFormSelect(
+                options: _armazens,
+                value: armazem,
+                placeholder: 'Selecione o armazém',
+                onChanged: (v) => setSheetState(() => armazem = v),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.space3),
+            AppFormField(
               label: 'Quantidade',
               required: true,
               child: AppStepper(
@@ -966,13 +1046,14 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
             const SizedBox(height: AppSpacing.space4),
             AppButton(
               fullWidth: true,
-              onPressed: produto == null || unidade == null
+              onPressed: produto == null || armazem == null || unidade == null
                   ? null
                   : () {
                       setState(
                         () => _insumos.add(
                           _InsumoItem(
                             produto: produto!,
+                            armazem: armazem!,
                             quantidade: quantidade,
                             unidade: unidade!,
                           ),
