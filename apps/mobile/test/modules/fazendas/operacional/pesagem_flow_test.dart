@@ -35,5 +35,38 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.text('Depósito de destino'), findsOneWidget);
     });
+
+    testWidgets('campo Animal só aparece depois de selecionar o lote', (
+      tester,
+    ) async {
+      await tester.pumpWidget(_wrap(const PesagemFlow()));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Animal'), findsNothing);
+
+      await tester.tap(find.text('Lote 42'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Animal'), findsOneWidget);
+      expect(find.text('Brinco 4201'), findsOneWidget);
+    });
+
+    testWidgets('trocar o lote limpa o animal selecionado', (tester) async {
+      await tester.pumpWidget(_wrap(const PesagemFlow()));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Lote 42'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Brinco 4201'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Lote 19'));
+      await tester.pumpAndSettle();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text('Brinco 4201'), findsNothing);
+      expect(find.text('Brinco 1901'), findsOneWidget);
+    });
   });
 }

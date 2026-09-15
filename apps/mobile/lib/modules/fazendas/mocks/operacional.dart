@@ -37,6 +37,40 @@ const List<AppSearchSelectOption> lotesOpcoes = [
   ),
 ];
 
+/// Animais mockados por lote, para fluxos operacionais que pesam ou
+/// identificam um animal específico dentro de um lote já selecionado (ex.
+/// `PesagemFlow`). Espelha o mesmo estilo de identificação (brinco/RFID)
+/// usado no catálogo funcional (`catalogoIdentificacaoAnimal`).
+const Map<String, List<AppSearchSelectOption>> animaisPorLote = {
+  'l42': [
+    AppSearchSelectOption(value: 'a4201', label: 'Brinco 4201', detail: 'Nelore · 24 meses'),
+    AppSearchSelectOption(value: 'a4202', label: 'Brinco 4202', detail: 'Nelore · 22 meses'),
+    AppSearchSelectOption(value: 'a4203', label: 'RFID 982000123456120', detail: 'Nelore · 24 meses'),
+  ],
+  'l19': [
+    AppSearchSelectOption(value: 'a1901', label: 'Brinco 1901', detail: 'Angus · 18 meses'),
+    AppSearchSelectOption(value: 'a1902', label: 'Brinco 1902', detail: 'Angus · 19 meses'),
+  ],
+  'l07': [
+    AppSearchSelectOption(value: 'a0701', label: 'Brinco 0701', detail: 'Nelore · 30 meses'),
+    AppSearchSelectOption(value: 'a0702', label: 'Brinco 0702', detail: 'Nelore · 28 meses'),
+    AppSearchSelectOption(value: 'a0703', label: 'Brinco 0703', detail: 'Nelore · 30 meses'),
+  ],
+  'l33': [
+    AppSearchSelectOption(value: 'a3301', label: 'Brinco 3301', detail: 'Brahman · 20 meses'),
+    AppSearchSelectOption(value: 'a3302', label: 'Brinco 3302', detail: 'Brahman · 21 meses'),
+  ],
+  'l51': [
+    AppSearchSelectOption(value: 'a5101', label: 'Brinco 5101', detail: 'Nelore · 16 meses'),
+    AppSearchSelectOption(value: 'a5102', label: 'Brinco 5102', detail: 'Nelore · 17 meses'),
+  ],
+  'l88': [
+    AppSearchSelectOption(value: 'a8801', label: 'Brinco 8801', detail: 'Nelore · 26 meses'),
+    AppSearchSelectOption(value: 'a8802', label: 'Brinco 8802', detail: 'Nelore · 25 meses'),
+    AppSearchSelectOption(value: 'a8803', label: 'RFID 982000123456331', detail: 'Nelore · 27 meses'),
+  ],
+};
+
 const List<AppFormSelectOption> dietas = [
   AppFormSelectOption(value: 'd1', label: 'Dieta Engorda'),
   AppFormSelectOption(value: 'd2', label: 'Dieta Recria'),

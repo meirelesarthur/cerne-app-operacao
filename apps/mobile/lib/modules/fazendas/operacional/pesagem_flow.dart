@@ -25,6 +25,7 @@ class PesagemFlow extends ConsumerStatefulWidget {
 
 class _PesagemFlowState extends ConsumerState<PesagemFlow> {
   String? _lote;
+  String? _animal;
   String _peso = '';
   String? _deposito;
   bool? _queued;
@@ -35,7 +36,8 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
 
   bool get _pesoValido =>
       (double.tryParse(_peso.replaceAll(',', '.')) ?? 0) > 0;
-  bool get _valid => _lote != null && _pesoValido && _deposito != null;
+  bool get _valid =>
+      _lote != null && _animal != null && _pesoValido && _deposito != null;
 
   void _confirmar() {
     if (!_valid) {
@@ -49,12 +51,21 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
       final loteLabel = lotesOpcoes
           .firstWhere((l) => l.value == _lote, orElse: () => lotesOpcoes.first)
           .label;
+      final animalOpcoes = animaisPorLote[_lote] ?? const [];
+      final animalLabel = animalOpcoes
+          .firstWhere(
+            (a) => a.value == _animal,
+            orElse: () => animalOpcoes.isNotEmpty
+                ? animalOpcoes.first
+                : const AppSearchSelectOption(value: '', label: ''),
+          )
+          .label;
       ref
           .read(fazendasStoreProvider.notifier)
           .enqueueSync(
             SyncItem(
-              id: 'pes-$_lote',
-              label: 'Pesagem $loteLabel',
+              id: 'pes-$_lote-$_animal',
+              label: 'Pesagem $loteLabel · $animalLabel',
               detail: '$_peso kg',
               kind: ActivityKind.pesagem,
             ),
@@ -91,10 +102,29 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
-              onChanged: (v) => setState(() => _lote = v),
+              onChanged: (v) => setState(() {
+                _lote = v;
+                _animal = null;
+              }),
               placeholder: 'Buscar lote...',
             ),
           ),
+          if (_lote != null) ...[
+            const SizedBox(height: AppSpacing.space4),
+            AppFormField(
+              label: 'Animal',
+              required: true,
+              error: _attempted && _animal == null
+                  ? 'Selecione o animal.'
+                  : null,
+              child: AppSearchSelect(
+                options: animaisPorLote[_lote] ?? const [],
+                value: _animal,
+                onChanged: (v) => setState(() => _animal = v),
+                placeholder: 'Buscar animal (brinco ou RFID)...',
+              ),
+            ),
+          ],
           const SizedBox(height: AppSpacing.space4),
           const AppSectionTitle(child: Text('Peso')),
           const SizedBox(height: AppSpacing.space2),
