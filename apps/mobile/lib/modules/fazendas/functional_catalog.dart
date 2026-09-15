@@ -3834,10 +3834,15 @@ const operationalFeatures = <FeatureDefinition>[
             isRequired: true,
             placeholder: 'Palheta, dose ou embrião',
           ),
+          // fidelidade-contrato (re-auditoria 3ª avaliação):
+          // `products.*.quantity` é `required_with:products.*` no
+          // `BullSeedSeasonRequest` — obrigatória por item de produto (estava
+          // opcional; um item sem quantidade daria 422).
           FeatureField(
             id: 'quantidade',
             label: 'Quantidade',
             type: FeatureFieldType.number,
+            isRequired: true,
           ),
         ],
       ),
@@ -4321,21 +4326,11 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
-      // fidelidade-esteira (onda 10): `appropriation_supply` no banco real
-      // mostra um evento só, com `hour_meter` e `mileage` como dois campos
-      // numéricos independentes no mesmo nível — não um par
-      // tipo-medidor/medidor genérico (fidelidade-campos onda 5, superado
-      // pelo dado real).
-      FeatureField(
-        id: 'horimetro',
-        label: 'Horímetro',
-        type: FeatureFieldType.number,
-      ),
-      FeatureField(
-        id: 'hodometro',
-        label: 'Hodômetro',
-        type: FeatureFieldType.number,
-      ),
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `SupplyRequest` põe
+      // `hour_meter`/`mileage` em `items.*` (por item), não no cabeçalho — a
+      // leitura de onda 10 (`appropriation_supply` no cabeçalho) era do dump
+      // legado, não do contrato de escrita novo. Os medidores foram para a
+      // coleção "Itens do abastecimento" abaixo.
       FeatureField(
         id: 'unidade',
         label: 'Unidade',
@@ -4398,9 +4393,21 @@ const operationalFeatures = <FeatureDefinition>[
               'kg',
             ],
           ),
-          // fidelidade-esteira (onda 10): "medidor" removido daqui — o
-          // banco real (`appropriation_supply`) tem horímetro/hodômetro
-          // como campos únicos no cabeçalho do evento, não por item.
+          // fidelidade-contrato (re-auditoria 3ª avaliação): `items.*.hour_meter`
+          // (numeric) e `items.*.mileage` (integer) são POR item no
+          // `SupplyRequest` — voltam para cá. `mileage` é integer no contrato;
+          // o motor de campos ainda não tem tipo `integer` (usa `number`) —
+          // limitação registrada para adequar quando o tipo existir.
+          FeatureField(
+            id: 'horimetro',
+            label: 'Horímetro',
+            type: FeatureFieldType.number,
+          ),
+          FeatureField(
+            id: 'hodometro',
+            label: 'Hodômetro',
+            type: FeatureFieldType.number,
+          ),
           FeatureField(
             id: 'observacao',
             label: 'Observação',

@@ -225,7 +225,12 @@ void main() {
       // `is-equipment`, `is-enabled`, `control-stock`, `las-price`):
       // 245+35=280 campos; 182+6=188 obrigatórios. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 15.
-      expect(fields, hasLength(280));
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `abastecimentos`
+      // move `horimetro`/`hodometro` do cabeçalho para a coleção "Itens do
+      // abastecimento" (contrato `SupplyRequest`: `items.*.hour_meter`/
+      // `mileage`, por item), ambos opcionais: 280-2=278 campos de cabeçalho;
+      // obrigatórios inalterados (os dois eram opcionais).
+      expect(fields, hasLength(278));
       expect(fields.where((field) => field.isRequired), hasLength(188));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
@@ -405,12 +410,16 @@ void main() {
       // (`tipo-identificacao`, `identificacao`): 117+2=119.
       // fidelidade-esteira (onda 13): `transferencia-animal."Animais
       // transferidos"` +2 (`identificacao`, `novo-lote`): 119+2=121.
+      // fidelidade-contrato (re-auditoria 3ª avaliação):
+      // `abastecimentos."Itens do abastecimento"` recebe `horimetro`/
+      // `hodometro` de volta (contrato `SupplyRequest`: `items.*.hour_meter`/
+      // `mileage`, por item): 121+2=123.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        121,
+        123,
       );
 
       for (final par in comCampos) {

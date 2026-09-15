@@ -259,9 +259,10 @@ void main() {
         await tester.tap(findCta('Registrar abastecimento'));
         await tester.pumpAndSettle();
 
-        // fidelidade-esteira (onda 10): `appropriation_supply` no banco real
-        // mostra horímetro/hodômetro como dois campos numéricos opcionais e
-        // independentes — 7 obrigatórios (sem o "medidor" único de antes).
+        // fidelidade-contrato (re-auditoria 3ª avaliação): horímetro/hodômetro
+        // saíram do cabeçalho para a coleção "Itens do abastecimento"
+        // (contrato `SupplyRequest`, `items.*`); os 7 obrigatórios do
+        // cabeçalho seguem iguais (os medidores sempre foram opcionais).
         expect(find.text('Campo obrigatório.'), findsNWidgets(7));
         expect(tester.takeException(), isNull);
 
@@ -274,7 +275,6 @@ void main() {
         );
         await _selectFieldOption(tester, 'Combustível', 'Diesel S10');
         await _enterFieldText(tester, 'Quantidade (L)', '120');
-        await _enterFieldText(tester, 'Horímetro', '5400');
         await _selectFieldOption(tester, 'Unidade', 'L');
         await _enterFieldText(tester, 'Posto / tanque de origem', 'Posto A');
         expect(tester.takeException(), isNull);
