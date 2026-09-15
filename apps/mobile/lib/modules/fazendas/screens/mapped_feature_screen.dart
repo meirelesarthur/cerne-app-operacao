@@ -1347,6 +1347,16 @@ class _FeatureFieldControl extends StatelessWidget {
           enabled: enabled,
           onChanged: onChanged,
         ),
+        // Inteiro: teclado sem casas decimais; a validação do motor recusa
+        // valores não-inteiros (ex. `mileage`/hodômetro do SupplyRequest).
+        FeatureFieldType.integer => AppTextInput(
+          initialValue: value,
+          placeholder: field.placeholder,
+          keyboardType: TextInputType.number,
+          invalid: error != null,
+          enabled: enabled,
+          onChanged: onChanged,
+        ),
         FeatureFieldType.date => AppDateInput(
           initialValue: value.isEmpty ? null : value,
           invalid: error != null,

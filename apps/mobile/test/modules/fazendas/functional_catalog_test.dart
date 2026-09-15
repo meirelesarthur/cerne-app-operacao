@@ -228,9 +228,11 @@ void main() {
       // fidelidade-contrato (re-auditoria 3ª avaliação): `abastecimentos`
       // move `horimetro`/`hodometro` do cabeçalho para a coleção "Itens do
       // abastecimento" (contrato `SupplyRequest`: `items.*.hour_meter`/
-      // `mileage`, por item), ambos opcionais: 280-2=278 campos de cabeçalho;
-      // obrigatórios inalterados (os dois eram opcionais).
-      expect(fields, hasLength(278));
+      // `mileage`, por item), ambos opcionais: 280-2=278 campos de cabeçalho.
+      // `consulta-produtos` ganha `cultivation-uuid` (required_if grupo =
+      // Produção, condicional — não estático): 278+1=279 campos de cabeçalho;
+      // obrigatórios inalterados (medidores e cultivo não são required fixos).
+      expect(fields, hasLength(279));
       expect(fields.where((field) => field.isRequired), hasLength(188));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(

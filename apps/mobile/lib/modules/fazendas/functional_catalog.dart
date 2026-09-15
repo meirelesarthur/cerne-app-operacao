@@ -24,6 +24,10 @@ enum FeatureStatus { ready, mapped, hardware }
 enum FeatureFieldType {
   text,
   number,
+  // fidelidade-contrato (re-auditoria 3ª avaliação): `integer` distingue o
+  // número inteiro (ex. `mileage`/hodômetro no `SupplyRequest`) do decimal
+  // (`number`) — só dígitos, sem casas decimais.
+  integer,
   date,
   select,
   searchSelect,
@@ -397,6 +401,24 @@ const catalogoGruposProdutos = <String>[
   'Peça e equipamento',
   'Combustível e lubrificante',
   'Produto acabado',
+  // fidelidade-contrato (re-auditoria 3ª avaliação): o grupo "Produção"
+  // (`GroupProduct::PRODUCTION_GROUP_ID`, seed 8, description = 'Produção')
+  // é o que torna `cultivation_uuid`/`ncm_uuid` obrigatórios no
+  // `ProductRequest`. Faltava na lista — sem ele o gate condicional nunca
+  // dispararia. O rótulo precisa ser exatamente 'Produção' (usado pela
+  // condição em functional_journey_engine.dart).
+  'Produção',
+];
+
+// fidelidade-contrato (re-auditoria 3ª avaliação): cultivos (lavouras) —
+// destino de `cultivation_uuid` em `consulta-produtos`, required quando o
+// grupo é 'Produção'. Lista mock por instância de cultivo (safra + área),
+// análoga ao FK `cultivations` do contrato.
+const catalogoCultivos = <String>[
+  'Soja 2025/2026 — Talhão 01',
+  'Milho 2ª safra 2025/2026 — Talhão 02',
+  'Algodão 2025/2026 — Pivô Central',
+  'Café 2025/2026 — Setor Sul',
 ];
 
 const catalogoNcm = <String>[
@@ -592,6 +614,16 @@ const adminFeatures = <FeatureDefinition>[
         type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoGruposProdutos,
+      ),
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `cultivation_uuid` é
+      // `required_if` grupo = Produção no `ProductRequest`. Não é obrigatório
+      // estático — a exigência condicional vive em
+      // functional_journey_engine.dart (mesma via de `ncm-uuid`).
+      FeatureField(
+        id: 'cultivation-uuid',
+        label: 'Cultivo (lavoura)',
+        type: FeatureFieldType.searchSelect,
+        options: catalogoCultivos,
       ),
       FeatureField(
         id: 'categoria',
@@ -817,6 +849,7 @@ const adminFeatures = <FeatureDefinition>[
         fields: [
           'nome-produto',
           'group-uuid',
+          'cultivation-uuid',
           'categoria',
           'unidade',
           'barcode',
@@ -1037,6 +1070,10 @@ const adminFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `especie` NÃO existe
+      // no `MovementPurchaseRequest` — é premissa do protótipo (não-contratual)
+      // para orientar a escolha de categoria/animal. O contrato ignora este
+      // campo; mantido só como apoio de UI.
       FeatureField(
         id: 'especie',
         label: 'Espécie',
@@ -4395,9 +4432,8 @@ const operationalFeatures = <FeatureDefinition>[
           ),
           // fidelidade-contrato (re-auditoria 3ª avaliação): `items.*.hour_meter`
           // (numeric) e `items.*.mileage` (integer) são POR item no
-          // `SupplyRequest` — voltam para cá. `mileage` é integer no contrato;
-          // o motor de campos ainda não tem tipo `integer` (usa `number`) —
-          // limitação registrada para adequar quando o tipo existir.
+          // `SupplyRequest`. `horimetro` é decimal (`number`); `hodometro` é
+          // inteiro (`integer`, teclado sem casas decimais + validação inteira).
           FeatureField(
             id: 'horimetro',
             label: 'Horímetro',
@@ -4406,7 +4442,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'hodometro',
             label: 'Hodômetro',
-            type: FeatureFieldType.number,
+            type: FeatureFieldType.integer,
           ),
           FeatureField(
             id: 'observacao',

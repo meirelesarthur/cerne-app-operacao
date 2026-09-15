@@ -260,6 +260,14 @@ bool isFeatureFieldRequired(
   if (feature.id == 'transferencia-animal' && field.id == 'novo-lote') {
     return (values['destino-unico']?.trim() ?? '') == 'Sim';
   }
+  // fidelidade-contrato (re-auditoria 3ª avaliação): `ProductRequest` torna
+  // `cultivation_uuid`/`ncm_uuid` obrigatórios via `required_if` quando o
+  // grupo é "Produção" (`GroupProduct::PRODUCTION_GROUP_ID`). O gate vive no
+  // grupo escolhido, não num asterisco fixo.
+  if (feature.id == 'consulta-produtos' &&
+      (field.id == 'cultivation-uuid' || field.id == 'ncm-uuid')) {
+    return (values['group-uuid']?.trim() ?? '') == 'Produção';
+  }
   return false;
 }
 
@@ -320,6 +328,12 @@ String? featureItemFieldError(FeatureField field, Map<String, String> values) {
       return 'Informe um valor maior que zero.';
     }
   }
+  if (field.type == FeatureFieldType.integer && value.isNotEmpty) {
+    final inteiro = int.tryParse(value);
+    if (inteiro == null || inteiro <= 0) {
+      return 'Informe um número inteiro maior que zero.';
+    }
+  }
   return null;
 }
 
@@ -357,6 +371,12 @@ String? collectionItemFieldError(
     final number = double.tryParse(value.replaceAll(',', '.'));
     if (number == null || number <= 0) {
       return 'Informe um valor maior que zero.';
+    }
+  }
+  if (field.type == FeatureFieldType.integer && value.isNotEmpty) {
+    final inteiro = int.tryParse(value);
+    if (inteiro == null || inteiro <= 0) {
+      return 'Informe um número inteiro maior que zero.';
     }
   }
   return null;
@@ -461,6 +481,14 @@ String? featureFieldError(
       value.isEmpty &&
       (values['destino-unico']?.trim() ?? '') == 'Sim') {
     return 'Selecione o novo lote.';
+  }
+  // fidelidade-contrato (re-auditoria 3ª avaliação): `cultivation_uuid`/
+  // `ncm_uuid` são `required_if` grupo = Produção no `ProductRequest`.
+  if (feature.id == 'consulta-produtos' &&
+      value.isEmpty &&
+      (values['group-uuid']?.trim() ?? '') == 'Produção') {
+    if (field.id == 'cultivation-uuid') return 'Selecione o cultivo (lavoura).';
+    if (field.id == 'ncm-uuid') return 'Selecione o NCM.';
   }
   return null;
 }
