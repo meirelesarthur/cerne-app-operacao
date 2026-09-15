@@ -34,6 +34,10 @@ class BateladaFlow extends ConsumerStatefulWidget {
 class _BateladaFlowState extends ConsumerState<BateladaFlow> {
   String? _dietaId;
   String? _vagao;
+  // fidelidade-esteira (onda 14): `appropriation_supply`/`food_feedstocks`
+  // confirmam `warehouse_id` NOT NULL no cabeçalho de abastecimento de
+  // dieta — campo real que faltava aqui (só existia por ingrediente).
+  String? _armazemCabecalho;
   num _quantidadeProduzida = 1000;
 
   /// Por produto: armazém escolhido e quantidade realizada digitada.
@@ -65,6 +69,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
   bool get _valid =>
       _dietaId != null &&
       _vagao != null &&
+      _armazemCabecalho != null &&
       _quantidadeProduzida > 0 &&
       _dieta!.ingredientes.every(
         (ing) =>
@@ -156,6 +161,20 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
           ),
           const SizedBox(height: AppSpacing.space4),
           AppFormField(
+            label: 'Armazém de retirada',
+            required: true,
+            error: _attempted && _armazemCabecalho == null
+                ? 'Selecione o armazém.'
+                : null,
+            child: AppFormSelect(
+              options: depositos,
+              value: _armazemCabecalho,
+              placeholder: 'Selecione o armazém',
+              onChanged: (v) => setState(() => _armazemCabecalho = v),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space4),
+          AppFormField(
             label: 'Quantidade produzida',
             required: true,
             child: AppStepper(
@@ -187,7 +206,13 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
                       ),
                       const SizedBox(height: AppSpacing.space1),
                       Text(
-                        'Previsto: ${(ing.quantidade * _quantidadeProduzida / dieta.quantidadeReferencia).toStringAsFixed(1)} ${dieta.unidade}',
+                        'Previsto: ${(ing.quantidade * _quantidadeProduzida / dieta.quantidadeReferencia).toStringAsFixed(1)} ${dieta.unidade}'
+                        // fidelidade-esteira (onda 14): `food_feedstocks.percentage`
+                        // — único campo de negócio real por ingrediente no
+                        // dump, além de `warehouse_id`/`measurement_id` do
+                        // cabeçalho. Derivado da proporção já cadastrada na
+                        // dieta (não pede novo dado da pessoa).
+                        ' · ${(ing.quantidade / dieta.quantidadeReferencia * 100).toStringAsFixed(1)}% da dieta',
                         style: TextStyle(
                           fontSize: AppTypography.sm,
                           color: semantic.fgMuted,

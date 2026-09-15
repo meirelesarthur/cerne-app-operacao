@@ -200,8 +200,10 @@ void main() {
       expect(find.text('Insumo'), findsOneWidget);
       expect(find.text('Produto'), findsOneWidget);
       expect(find.text('Unidade'), findsOneWidget);
-      // `appropriation_stock.warehouse_uuid` é do item, não do cabeçalho.
-      expect(find.text('Armazém de origem'), findsOneWidget);
+      // fidelidade-esteira (onda 14): `appropriation_stock` não tem
+      // `warehouse_uuid` próprio no dump real — o item sempre herda o
+      // armazém de insumo do cabeçalho, sem campo por item.
+      expect(find.text('Armazém de origem'), findsNothing);
 
       await _selectOption(tester, 'Produto', 'Ração Engorda 18%');
       await _selectOption(tester, 'Unidade', 'kg');
@@ -225,7 +227,10 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Produto colhido'), findsOneWidget);
-      expect(find.text('Armazém de destino'), findsOneWidget);
+      // fidelidade-esteira (onda 14): `appropriation_production` também não
+      // tem `warehouse_uuid` próprio — destino é sempre o armazém de
+      // produção do cabeçalho.
+      expect(find.text('Armazém de destino'), findsNothing);
 
       await _selectOption(tester, 'Produto colhido', 'Semente de Braquiária');
       await _selectOption(tester, 'Unidade', 'Saco');

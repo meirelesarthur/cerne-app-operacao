@@ -115,6 +115,7 @@ que ninguém confirmou.
 | 11 | Cor: `FeatureFieldType.color` + `AppColorInput` | ✅ fechada |
 | 12 | `material-reprodutivo.animals[]` | ✅ fechada |
 | 13 | `transferencia-animal`: captura RFID empilhada em coleção | ✅ fechada |
+| 14 | Fluxos dedicados (`apontamento`/`batelada`/`leitura-cocho`) | ✅ fechada (inequívoco); matriz de qualidade e máquina de estados de mão de obra ficam de fora por decisão |
 
 Catálogo ao fim da onda 7: **248 campos de cabeçalho** (187 obrigatórios), **31 coleções** (29
 com item real), **118 campos de item**, **5 coleções obrigatórias** — 53 funcionalidades sem
@@ -332,25 +333,17 @@ auditoria não detalha** (os valores reais de `percentage`/`difference`/`amount`
 qualidade) — inventar a forma exata seria o mesmo erro que a curadoria já vetou para enums sem
 domínio completo (Onda 2b), agora em código de tela em vez de `options`.
 
-- [ ] `apontamento_flow.dart` — as 11 inversões de obrigatoriedade da Onda 1 e o bloco de mão
-      de obra (`labor`: hoje função+texto livre; contrato é máquina de estados
-      `type → employee/function/provider`, a mesma família de XOR de executor de `sanitario`/
-      `pastagens`) e a matriz de qualidade da produção (13 colunas do contrato, reduzida a 4
-      campos hoje). Arquivo maior e de maior risco desta onda — pede sessão própria, com
-      alguém rodando `flutter test` a cada mudança.
-- [ ] `batelada_flow.dart` (`producao-batelada`) — `date` no topo é a única peça
-      inequívoca (as demais dependem de fórmula de negócio não confirmada); mesmo assim,
-      nenhum fluxo dedicado do módulo hoje tem campo de data (são todos "operação de hoje"
-      implícita) — inserir um quebraria esse padrão sem um pedido explícito de UX. `[nenhuma
-      mudança]`. Os 5 required de `feedstocks[]`
-      (`quantity`/`percentage`/`difference`/`amount`/`total`) e `warehouse_uuid` no topo
-      continuam ausentes; `'vagão'` inventado fica (padrão ③). Baixo valor imediato — o fluxo é
-      mock local, não chama a API.
-- [ ] `leitura_cocho_flow.dart` — fora de escopo de campo: o núcleo da funcionalidade (escore/
-      sobras/aspecto/comportamento/ocorrências) não tem endpoint real. Só o bloco consumo/dieta
-      é auditável (`diet_id`/`feed_intake`, ambos `required`, ausentes no fluxo) — fechar só
-      esse bloco; o resto é gap de backend (ver Pendências). Mesma reserva de risco/verificação
-      do item acima.
+- [x] `apontamento_flow.dart` — ~~as 11 inversões de obrigatoriedade da Onda 1~~ (já corrigidas
+      numa leva anterior a esta sessão — conferido contra o código, os cinco campos citados no
+      texto original já estavam `required`) ~~e o bloco de mão de obra~~ (mantido como está, por
+      decisão — ver Onda 14). Armazém por item corrigido na Onda 14 (era o sentido invertido do
+      gap). Matriz de qualidade segue de fora, por decisão.
+- [x] `batelada_flow.dart` (`producao-batelada`) — `warehouse_uuid` de cabeçalho e `percentage`
+      por ingrediente fechados na Onda 14. `date` continua de fora (decisão de UX válida — ver
+      Onda 14). `quantity`/`difference`/`amount`/`total` continuam sem campo (não confirmados).
+- [x] `leitura_cocho_flow.dart` — bloco `diet_id`/`feed_intake` fechado na Onda 14. Núcleo
+      (escore/sobras/aspecto/comportamento/ocorrências) continua fora — gap de backend, não de
+      campo.
 
 ## Onda 9 — `consulta-produtos` (documentação, sem expandir a tela)
 
@@ -481,6 +474,39 @@ inteiro. Maior risco de UI desta esteira: mexe na simulação de captura por RFI
       não tocada nesta onda) pelo mesmo caminho, confirmando que não é uma regressão desta
       mudança. A navegação por toque direto no grid de módulo (`context.go`) funciona normalmente
       neste mesmo ambiente.
+
+## Onda 14 — Fluxos dedicados (fecha a Onda 8 do arquivo original)
+
+Grounded em `appropriations` + `appropriation_employee/equipment/stock/production/occurrences` e
+`food_feedstocks`/`appropriation_supply` do dump. Só o inequívoco — nada de fórmula de negócio
+não confirmada (matriz de qualidade, máquina de estados de mão de obra).
+
+- [x] `apontamento_flow.dart`: as inversões de obrigatoriedade citadas na Onda 1 original
+      (`area_id`/`operation_id`/`activity_id`/`used_area`) já estavam `required: true` no
+      código — conferidas, nenhuma mudança necessária ali. O gap real, na direção oposta à
+      descrita originalmente: `appropriation_stock`/`appropriation_production` **não têm**
+      `warehouse_uuid` próprio no dump — o formulário pedia um campo "Armazém de origem"/
+      "Armazém de destino" por item de Insumo/Produção que não existe no contrato; removido.
+      Os dois grupos passam a herdar sempre o armazém de insumo/produção do cabeçalho, como o
+      dado real exige. Mão de obra e matriz de qualidade da produção não mudam, por decisão do
+      Contexto (fórmula de negócio/rótulo não confirmados).
+- [x] `batelada_flow.dart`: `warehouse_uuid` (novo campo "Armazém de retirada" no cabeçalho,
+      `required`) e `percentage` por ingrediente (exibido junto do previsto, derivado da
+      proporção já cadastrada na dieta — `food_feedstocks.percentage` não pede dado novo da
+      pessoa). `date` continua fora (decisão de UX válida — nenhum fluxo dedicado do módulo tem
+      campo de data hoje). `quantity`/`difference`/`amount`/`total` continuam sem campo —
+      `food_feedstocks` só confirma `percentage` como campo de negócio real no dump.
+- [x] `leitura_cocho_flow.dart`: bloco `diet_id`/`feed_intake` fechado — novos campos "Dieta"
+      (`required`, select sobre o catálogo real de dietas do confinamento) e "Consumo (kg)"
+      (`required`) por curral avaliado. `AvaliacaoCurral` ganha `dietaId`/`consumoKg` opcionais
+      no model (para não quebrar as amostras de `mocks.dart`); a tela de captura exige os dois
+      via validação própria. Núcleo (escore/sobras/aspecto/comportamento/ocorrências) continua
+      fora — gap de backend, não de campo.
+- [x] Verificação: `npm run lint` limpo e suíte completa (555 testes) sem regressão, incluindo
+      os testes de ponta a ponta dos três fluxos (`apontamento_flow_test.dart`,
+      `batelada_flow_test.dart`, `leitura_cocho_flow_test.dart`) — dois casos que verificavam a
+      presença do campo de armazém por item foram invertidos para `findsNothing`, refletindo a
+      correção do gap.
 
 ---
 

@@ -230,18 +230,11 @@ class _InsumoItem {
     required this.produto,
     required this.quantidade,
     required this.unidade,
-    this.armazem,
   });
 
   final String produto;
   final num quantidade;
   final String unidade;
-
-  /// `appropriation_stock.warehouse_uuid` — no contrato o armazém é **do
-  /// item**, não do cabeçalho. Fica opcional aqui: em branco, o item herda o
-  /// "Armazém de insumo" do cabeçalho, que é o caso comum de um apontamento
-  /// tirando tudo do mesmo depósito.
-  final String? armazem;
 }
 
 class _ProducaoItem {
@@ -249,16 +242,11 @@ class _ProducaoItem {
     required this.produto,
     required this.quantidade,
     required this.unidade,
-    this.armazem,
   });
 
   final String produto;
   final num quantidade;
   final String unidade;
-
-  /// Destino da produção; em branco herda o "Armazém de produção" do
-  /// cabeçalho.
-  final String? armazem;
 }
 
 class _OcorrenciaItem {
@@ -676,12 +664,8 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
         for (final item in _insumos)
           _ItemRow(
             title: item.produto,
-            subtitle: [
-              '${item.quantidade} '
-                  '${_optionLabel(_unidadesInsumo, item.unidade)}',
-              if (item.armazem case final armazem?)
-                _optionLabel(_armazens, armazem),
-            ].join(' · '),
+            subtitle:
+                '${item.quantidade} ${_optionLabel(_unidadesInsumo, item.unidade)}',
             onRemove: () => setState(() => _insumos.remove(item)),
           ),
         const SizedBox(height: AppSpacing.space5),
@@ -693,12 +677,8 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
         for (final item in _producoes)
           _ItemRow(
             title: item.produto,
-            subtitle: [
-              '${item.quantidade} '
-                  '${_optionLabel(_unidadesProducao, item.unidade)}',
-              if (item.armazem case final armazem?)
-                _optionLabel(_armazens, armazem),
-            ].join(' · '),
+            subtitle:
+                '${item.quantidade} ${_optionLabel(_unidadesProducao, item.unidade)}',
             onRemove: () => setState(() => _producoes.remove(item)),
           ),
         const SizedBox(height: AppSpacing.space5),
@@ -931,11 +911,15 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
     );
   }
 
+  // fidelidade-esteira (onda 14): `appropriation_stock` no dump real não tem
+  // `warehouse_uuid` próprio — o item herda sempre o armazém de insumo do
+  // cabeçalho. O campo de armazém por item que existia aqui descrevia o
+  // sentido invertido do gap (o relatório original pedia o campo; o dado
+  // real mostra que ele não existe no contrato).
   void _adicionarInsumo(BuildContext context) {
     String? produto;
     num quantidade = 1;
     String? unidade;
-    String? armazem;
 
     showAppBottomSheet<void>(
       context,
@@ -978,19 +962,6 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
                 onChanged: (v) => setSheetState(() => unidade = v),
               ),
             ),
-            const SizedBox(height: AppSpacing.space3),
-            // `appropriation_stock.warehouse_uuid` é do item. Opcional: em
-            // branco o item sai do armazém de insumo do cabeçalho.
-            AppFormField(
-              label: 'Armazém de origem',
-              hint: 'Em branco, usa o armazém de insumo do cabeçalho.',
-              child: AppFormSelect(
-                options: _armazens,
-                value: armazem,
-                placeholder: 'Selecione',
-                onChanged: (v) => setSheetState(() => armazem = v),
-              ),
-            ),
             const SizedBox(height: AppSpacing.space4),
             AppButton(
               fullWidth: true,
@@ -1003,7 +974,6 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
                             produto: produto!,
                             quantidade: quantidade,
                             unidade: unidade!,
-                            armazem: armazem,
                           ),
                         ),
                       );
@@ -1018,14 +988,15 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   }
 
   /// `appropriation_production` — o que a operação gerou. Mesma anatomia do
-  /// formulário de insumo (produto do catálogo real, quantidade no stepper,
-  /// unidade e armazém), porque para quem preenche é a mesma pergunta com o
-  /// sinal invertido: ali o que saiu, aqui o que entrou.
+  /// formulário de insumo (produto do catálogo real, quantidade no stepper e
+  /// unidade — sem armazém por item: `appropriation_production` também não
+  /// tem `warehouse_uuid` próprio no dump, o destino é sempre o "Armazém de
+  /// produção" do cabeçalho), porque para quem preenche é a mesma pergunta
+  /// com o sinal invertido: ali o que saiu, aqui o que entrou.
   void _adicionarProducao(BuildContext context) {
     String? produto;
     num quantidade = 1;
     String? unidade;
-    String? armazem;
 
     showAppBottomSheet<void>(
       context,
@@ -1068,17 +1039,6 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
                 onChanged: (v) => setSheetState(() => unidade = v),
               ),
             ),
-            const SizedBox(height: AppSpacing.space3),
-            AppFormField(
-              label: 'Armazém de destino',
-              hint: 'Em branco, usa o armazém de produção do cabeçalho.',
-              child: AppFormSelect(
-                options: _armazens,
-                value: armazem,
-                placeholder: 'Selecione',
-                onChanged: (v) => setSheetState(() => armazem = v),
-              ),
-            ),
             const SizedBox(height: AppSpacing.space4),
             AppButton(
               fullWidth: true,
@@ -1091,7 +1051,6 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
                             produto: produto!,
                             quantidade: quantidade,
                             unidade: unidade!,
-                            armazem: armazem,
                           ),
                         ),
                       );

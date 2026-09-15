@@ -432,6 +432,8 @@ class AvaliacaoCurral {
     required this.curralId,
     required this.escore,
     required this.ajusteProximoTratoPct,
+    this.dietaId,
+    this.consumoKg,
     this.sobrasKg,
     this.sobrasPct,
     this.aspecto,
@@ -443,6 +445,14 @@ class AvaliacaoCurral {
   final String curralId;
   final EscoreCocho escore;
   final double ajusteProximoTratoPct;
+
+  // fidelidade-esteira (onda 14): `diet_id`/`feed_intake` — o único bloco
+  // auditável de `leitura_cocho_flow.dart` (núcleo escore/sobras/aspecto
+  // continua sem endpoint real confirmado). Opcionais no model para não
+  // quebrar as amostras existentes (`mocks.dart`); a tela de captura exige
+  // os dois via validação própria.
+  final String? dietaId;
+  final double? consumoKg;
   final double? sobrasKg;
   final double? sobrasPct;
   final AspectoSobras? aspecto;

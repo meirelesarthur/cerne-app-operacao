@@ -69,6 +69,11 @@ class _AvaliacaoDraft {
   final String curralId;
   EscoreCocho escore;
   double ajustePct;
+  // fidelidade-esteira (onda 14): `diet_id`/`feed_intake` são `required` no
+  // contrato real de `/trough-readings` — sem dieta e consumo a leitura não
+  // diz o que o cocho estava recebendo quando foi avaliado.
+  String? dietaId;
+  num consumoKg = 0;
   num sobrasKg = 0;
   num sobrasPct = 0;
   AspectoSobras? aspecto;
@@ -76,10 +81,14 @@ class _AvaliacaoDraft {
   String observacoes = '';
   final List<Ocorrencia> ocorrencias = [];
 
+  bool get valido => dietaId != null && consumoKg > 0;
+
   AvaliacaoCurral toModel() => AvaliacaoCurral(
     curralId: curralId,
     escore: escore,
     ajusteProximoTratoPct: ajustePct,
+    dietaId: dietaId,
+    consumoKg: consumoKg.toDouble(),
     sobrasKg: sobrasKg.toDouble(),
     sobrasPct: sobrasPct.toDouble(),
     aspecto: aspecto,
@@ -105,7 +114,10 @@ class _LeituraCochoFlowState extends ConsumerState<LeituraCochoFlow> {
   bool? _queued;
   bool _attempted = false;
 
-  bool get _valid => _responsavel != null && _avaliacoes.isNotEmpty;
+  bool get _valid =>
+      _responsavel != null &&
+      _avaliacoes.isNotEmpty &&
+      _avaliacoes.every((d) => d.valido);
 
   void _confirmar() {
     if (!_valid) {
@@ -207,6 +219,7 @@ class _LeituraCochoFlowState extends ConsumerState<LeituraCochoFlow> {
                 curralNome: confinamento_mocks.currais
                     .firstWhere((c) => c.id == draft.curralId)
                     .nome,
+                attempted: _attempted,
                 onChanged: () => setState(() {}),
                 onRemover: () => setState(() => _avaliacoes.remove(draft)),
               ),
@@ -221,12 +234,14 @@ class _AvaliacaoCard extends StatelessWidget {
   const _AvaliacaoCard({
     required this.draft,
     required this.curralNome,
+    required this.attempted,
     required this.onChanged,
     required this.onRemover,
   });
 
   final _AvaliacaoDraft draft;
   final String curralNome;
+  final bool attempted;
   final VoidCallback onChanged;
   final VoidCallback onRemover;
 
@@ -259,6 +274,42 @@ class _AvaliacaoCard extends StatelessWidget {
                 onPressed: onRemover,
               ),
             ],
+          ),
+          const SizedBox(height: AppSpacing.space3),
+          AppFormField(
+            label: 'Dieta',
+            required: true,
+            error: attempted && draft.dietaId == null
+                ? 'Selecione a dieta.'
+                : null,
+            child: AppFormSelect(
+              options: [
+                for (final d in confinamento_mocks.dietas)
+                  AppFormSelectOption(value: d.id, label: d.produto),
+              ],
+              value: draft.dietaId,
+              placeholder: 'Selecione a dieta',
+              onChanged: (v) {
+                draft.dietaId = v;
+                onChanged();
+              },
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space3),
+          AppFormField(
+            label: 'Consumo (kg)',
+            required: true,
+            error: attempted && draft.consumoKg <= 0
+                ? 'Informe o consumo.'
+                : null,
+            child: AppStepper(
+              value: draft.consumoKg,
+              onChanged: (v) {
+                draft.consumoKg = v;
+                onChanged();
+              },
+              suffix: 'kg',
+            ),
           ),
           const SizedBox(height: AppSpacing.space3),
           AppFormField(
