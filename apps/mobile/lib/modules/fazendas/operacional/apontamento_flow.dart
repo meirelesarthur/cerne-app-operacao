@@ -932,13 +932,13 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
             AppFormField(
               label: 'Produto',
               required: true,
-              child: AppFormSelect(
+              child: AppSearchSelect(
                 options: [
                   for (final p in catalogoProdutos)
-                    AppFormSelectOption(value: p, label: p),
+                    AppSearchSelectOption(value: p, label: p),
                 ],
                 value: produto,
-                placeholder: 'Selecione o produto',
+                placeholder: 'Buscar produto...',
                 onChanged: (v) => setSheetState(() => produto = v),
               ),
             ),
@@ -1009,13 +1009,13 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
             AppFormField(
               label: 'Produto colhido',
               required: true,
-              child: AppFormSelect(
+              child: AppSearchSelect(
                 options: [
                   for (final p in catalogoProdutos)
-                    AppFormSelectOption(value: p, label: p),
+                    AppSearchSelectOption(value: p, label: p),
                 ],
                 value: produto,
-                placeholder: 'Selecione o produto',
+                placeholder: 'Buscar produto...',
                 onChanged: (v) => setSheetState(() => produto = v),
               ),
             ),

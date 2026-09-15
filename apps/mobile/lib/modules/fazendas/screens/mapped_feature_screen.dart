@@ -1244,6 +1244,22 @@ class _FeatureFieldControl extends StatelessWidget {
           enabled: enabled,
           onChanged: (next) => onChanged(next ?? ''),
         ),
+        // fidelidade-esteira: todo campo de Lote é dropdown com busca, não
+        // select simples — `AppSearchSelect` em vez de `AppFormSelect`.
+        FeatureFieldType.searchSelect => IgnorePointer(
+          ignoring: !enabled,
+          child: Opacity(
+            opacity: enabled ? 1 : 0.5,
+            child: AppSearchSelect(
+              value: value.isEmpty ? null : value,
+              options: [
+                for (final option in field.options)
+                  AppSearchSelectOption(value: option, label: option),
+              ],
+              onChanged: onChanged,
+            ),
+          ),
+        ),
         FeatureFieldType.textarea => AppTextarea(
           initialValue: value,
           placeholder: field.placeholder,

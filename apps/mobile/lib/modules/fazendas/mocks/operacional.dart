@@ -96,11 +96,13 @@ const List<AppFormSelectOption> ciclos = [
   AppFormSelectOption(value: 'ci2', label: 'Safrinha 25'),
 ];
 
-const List<AppFormSelectOption> insumos = [
-  AppFormSelectOption(value: 'in1', label: 'Herbicida Glifosato'),
-  AppFormSelectOption(value: 'in2', label: 'Fertilizante NPK'),
-  AppFormSelectOption(value: 'in3', label: 'Inseticida'),
-  AppFormSelectOption(value: 'in4', label: 'Calcário'),
+// fidelidade-esteira: `AppSearchSelectOption` (não `AppFormSelectOption`) —
+// todo campo Produto é dropdown com busca.
+const List<AppSearchSelectOption> insumos = [
+  AppSearchSelectOption(value: 'in1', label: 'Herbicida Glifosato'),
+  AppSearchSelectOption(value: 'in2', label: 'Fertilizante NPK'),
+  AppSearchSelectOption(value: 'in3', label: 'Inseticida'),
+  AppSearchSelectOption(value: 'in4', label: 'Calcário'),
 ];
 
 const List<AppFormSelectOption> causasMorte = [

@@ -147,11 +147,11 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
           if (_tipo == _Lancamento.aplicacao) ...[
             AppFormField(
               label: 'Produto / insumo',
-              child: AppFormSelect(
+              child: AppSearchSelect(
                 options: insumos,
                 value: _insumo,
                 onChanged: (v) => setState(() => _insumo = v),
-                placeholder: 'Selecione o insumo',
+                placeholder: 'Buscar produto...',
               ),
             ),
             const SizedBox(height: AppSpacing.space4),

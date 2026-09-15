@@ -40,9 +40,25 @@ Future<void> _selectFieldOption(
     of: _fieldByLabel(label),
     matching: find.byType(DropdownButtonFormField<String>),
   );
+  await tester.ensureVisible(dropdown);
   await tester.tap(dropdown);
   await tester.pumpAndSettle();
   await tester.tap(find.text(option).last);
+  await tester.pumpAndSettle();
+}
+
+/// `AppSearchSelect` (`FeatureFieldType.searchSelect` — fidelidade-esteira:
+/// todo campo Lote/Produto é dropdown com busca) já mostra a lista inline,
+/// sem precisar abrir nada antes de tocar na opção. A lista inline é alta o
+/// bastante para empurrar o resto do formulário para fora da viewport, por
+/// isso o `ensureVisible` antes de tocar.
+Future<void> _selectSearchFieldOption(
+  WidgetTester tester,
+  String option,
+) async {
+  final target = find.text(option).last;
+  await tester.ensureVisible(target);
+  await tester.tap(target);
   await tester.pumpAndSettle();
 }
 
@@ -329,7 +345,7 @@ void main() {
 
       // A folha abre com o rótulo do item, não com o nome da coleção.
       expect(find.text('Insumo'), findsOneWidget);
-      await _selectFieldOption(tester, 'Produto', 'Ração Engorda 18%');
+      await _selectSearchFieldOption(tester, 'Ração Engorda 18%');
       // fidelidade-campos (onda 9 — re-auditoria 11/09): `estoque` entrou
       // como required (`inputs.*.stock_uuid`).
       await _selectFieldOption(
@@ -400,7 +416,7 @@ void main() {
         ),
       );
       await tester.pumpAndSettle();
-      await _selectFieldOption(tester, 'Produto', 'Ração Engorda 18%');
+      await _selectSearchFieldOption(tester, 'Ração Engorda 18%');
       await _selectFieldOption(
         tester,
         'Item de estoque',

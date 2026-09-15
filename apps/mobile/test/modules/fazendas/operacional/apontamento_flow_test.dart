@@ -28,9 +28,26 @@ Future<void> _selectOption(
     of: _fieldByLabel(label),
     matching: find.byType(DropdownButtonFormField<String>),
   );
+  await tester.ensureVisible(dropdown);
   await tester.tap(dropdown);
   await tester.pumpAndSettle();
   await tester.tap(find.text(option).last);
+  await tester.pumpAndSettle();
+}
+
+/// `AppSearchSelect` (campos Produto — fidelidade-esteira: dropdown com
+/// busca) já mostra a lista inline, sem precisar abrir nada antes de tocar
+/// na opção — diferente de `_selectOption`, que abre o
+/// `DropdownButtonFormField` primeiro. A lista inline é alta o bastante para
+/// empurrar o resto da folha para fora da viewport, por isso o
+/// `ensureVisible` antes de tocar.
+Future<void> _selectSearchOption(
+  WidgetTester tester,
+  String option,
+) async {
+  final target = find.text(option).last;
+  await tester.ensureVisible(target);
+  await tester.tap(target);
   await tester.pumpAndSettle();
 }
 
@@ -85,8 +102,9 @@ Future<void> _adicionarInsumo(WidgetTester tester) async {
   // Insumos(2), Produção(3), Ocorrências(4).
   await tester.tap(_addButtonForGroup(2));
   await tester.pumpAndSettle();
-  await _selectOption(tester, 'Produto', 'Ração Engorda 18%');
+  await _selectSearchOption(tester, 'Ração Engorda 18%');
   await _selectOption(tester, 'Unidade', 'kg');
+  await tester.ensureVisible(find.text('Adicionar').last);
   await tester.tap(find.text('Adicionar').last);
   await tester.pumpAndSettle();
 }
@@ -205,9 +223,10 @@ void main() {
       // armazém de insumo do cabeçalho, sem campo por item.
       expect(find.text('Armazém de origem'), findsNothing);
 
-      await _selectOption(tester, 'Produto', 'Ração Engorda 18%');
+      await _selectSearchOption(tester, 'Ração Engorda 18%');
       await _selectOption(tester, 'Unidade', 'kg');
-      await tester.tap(find.text('Adicionar').last);
+      await tester.ensureVisible(find.text('Adicionar').last);
+  await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
 
       expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
@@ -232,9 +251,10 @@ void main() {
       // produção do cabeçalho.
       expect(find.text('Armazém de destino'), findsNothing);
 
-      await _selectOption(tester, 'Produto colhido', 'Semente de Braquiária');
+      await _selectSearchOption(tester, 'Semente de Braquiária');
       await _selectOption(tester, 'Unidade', 'Saco');
-      await tester.tap(find.text('Adicionar').last);
+      await tester.ensureVisible(find.text('Adicionar').last);
+  await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
 
       expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);

@@ -15,7 +15,19 @@ enum FeatureStatus { ready, mapped, hardware }
 // (`AppToggleSwitch`), não mais simulado com `select` Sim/Não —
 // `has_lot`/`is_equipment`/`is_enabled`/`control_stock`/`allow_pointing` em
 // `consulta-produtos` são a primeira aplicação real.
-enum FeatureFieldType { text, number, date, select, textarea, color, boolean }
+// fidelidade-esteira: `searchSelect` é um `select` com busca (`AppSearchSelect`)
+// em vez de dropdown simples (`AppFormSelect`) — todo campo de Lote usa este
+// tipo, nunca `select` puro nem texto livre (pedido explícito do usuário).
+enum FeatureFieldType {
+  text,
+  number,
+  date,
+  select,
+  searchSelect,
+  textarea,
+  color,
+  boolean,
+}
 
 enum HardwareSimulationKind { devices, scale, rfid, scanner }
 
@@ -987,6 +999,8 @@ const adminFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'lote',
             label: 'Lote de destino',
+            type: FeatureFieldType.searchSelect,
+            options: catalogoLotes,
           ),
           FeatureField(
             id: 'pasto',
@@ -1102,7 +1116,13 @@ const adminFeatures = <FeatureDefinition>[
       // `recordTitleField`, fora do escopo desta onda); a coleção abaixo
       // documenta a cardinalidade correta. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
-      FeatureField(id: 'lote', label: 'Lote', isRequired: true),
+      FeatureField(
+        id: 'lote',
+        label: 'Lote',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
       FeatureField(
         id: 'finalidade',
         label: 'Finalidade',
@@ -1128,7 +1148,7 @@ const adminFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'lote',
             label: 'Lote',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoLotes,
           ),
@@ -1394,7 +1414,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'produto',
         label: 'Produto',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoProdutos,
       ),
@@ -1570,7 +1590,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'produto',
         label: 'Produto',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoProdutos,
       ),
@@ -1637,7 +1657,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'produto',
             label: 'Produto',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoProdutos,
           ),
@@ -2486,7 +2506,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'lote-atual',
         label: 'Lote atual',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoLotes,
       ),
@@ -2498,7 +2518,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'novo-lote',
         label: 'Novo lote (todos os animais)',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         options: catalogoLotes,
       ),
       // fidelidade-campos (onda 3): `same_batch` é a flag required de
@@ -2537,7 +2557,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'novo-lote',
             label: 'Novo lote',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoLotes,
           ),
         ],
@@ -2582,7 +2602,13 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoResponsaveis,
       ),
-      FeatureField(id: 'lote', label: 'Lote', isRequired: true),
+      FeatureField(
+        id: 'lote',
+        label: 'Lote',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
       FeatureField(
         id: 'local-atual',
         label: 'Área / módulo atual',
@@ -2670,7 +2696,13 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
-      FeatureField(id: 'lote', label: 'Lote atual', isRequired: true),
+      FeatureField(
+        id: 'lote',
+        label: 'Lote atual',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
       FeatureField(id: 'causa', label: 'Motivo da perda', isRequired: true),
       FeatureField(
         id: 'observacao',
@@ -2713,7 +2745,13 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoResponsaveis,
       ),
-      FeatureField(id: 'lote', label: 'Lote', isRequired: true),
+      FeatureField(
+        id: 'lote',
+        label: 'Lote',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
       FeatureField(
         id: 'data',
         label: 'Data do manejo',
@@ -2727,6 +2765,12 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['Vacinação', 'Vermifugação', 'Tratamento', 'Exame'],
       ),
+      // fidelidade-esteira: fica de fora da regra "todo campo Produto é
+      // dropdown com busca" de propósito — o rótulo é dual ("Produto /
+      // procedimento") porque cobre tanto um item de `catalogoProdutos`
+      // quanto um procedimento sem produto associado (ex. "Exame de casco"),
+      // que não existe nesse catálogo. Forçar `catalogoProdutos` aqui
+      // impediria registrar procedimentos reais.
       FeatureField(
         id: 'produto',
         label: 'Produto / procedimento',
@@ -2773,6 +2817,8 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'lote',
             label: 'Lote',
+            type: FeatureFieldType.searchSelect,
+            options: catalogoLotes,
           ),
         ],
       ),
@@ -2785,7 +2831,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'produto',
             label: 'Produto',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoProdutos,
           ),
@@ -2935,7 +2981,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'lote',
         label: 'Lote',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoLotes,
       ),
@@ -2956,7 +3002,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'lote-destino',
         label: 'Lote de destino dos bezerros',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         options: catalogoLotes,
       ),
     ],
@@ -2976,6 +3022,8 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'lote',
             label: 'Lote',
+            type: FeatureFieldType.searchSelect,
+            options: catalogoLotes,
           ),
         ],
       ),
@@ -3015,7 +3063,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'lote-origem',
         label: 'Lote de origem',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoLotes,
       ),
@@ -3029,7 +3077,7 @@ const operationalFeatures = <FeatureDefinition>[
       FeatureField(
         id: 'lote-destino',
         label: 'Lote de destino',
-        type: FeatureFieldType.select,
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
         options: catalogoLotes,
       ),
@@ -3055,7 +3103,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'lote',
             label: 'Lote',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoLotes,
           ),
@@ -3176,7 +3224,12 @@ const operationalFeatures = <FeatureDefinition>[
           'Rotação de piquete',
         ],
       ),
-      FeatureField(id: 'lote', label: 'Lote'),
+      FeatureField(
+        id: 'lote',
+        label: 'Lote',
+        type: FeatureFieldType.searchSelect,
+        options: catalogoLotes,
+      ),
       FeatureField(
         id: 'animal',
         label: 'Animal',
@@ -3262,7 +3315,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'produto',
             label: 'Produto',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoProdutos,
           ),
           // fidelidade-campos (onda 9 — re-auditoria 11/09):
@@ -3305,7 +3358,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'produto',
             label: 'Produto colhido',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoProdutos,
           ),
@@ -3637,6 +3690,11 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             options: catalogoArmazens,
           ),
+          // fidelidade-esteira: fica de fora da regra "todo campo Produto é
+          // dropdown com busca" de propósito — aqui "Produto" é a
+          // identificação de uma palheta/dose/embrião específica (material
+          // reprodutivo por instância, como `identificacao` de animal), não
+          // uma seleção sobre `catalogoProdutos` (insumos genéricos).
           FeatureField(
             id: 'produto',
             label: 'Produto',
@@ -3733,7 +3791,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'produto',
             label: 'Produto',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             options: catalogoProdutos,
           ),
           // fidelidade-contrato (onda 4): `items.*.service` é o valor do
@@ -3821,7 +3879,13 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
-      FeatureField(id: 'lote', label: 'Lote de matrizes', isRequired: true),
+      FeatureField(
+        id: 'lote',
+        label: 'Lote de matrizes',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
       FeatureField(id: 'touro', label: 'Touro / reprodutor', isRequired: true),
       // fidelidade-campos (onda 4): `type` e `launch_type` são required em
       // `/breeding-matings` e controlam o modo inteiro do registro — o
@@ -3913,6 +3977,8 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'lote',
             label: 'Lote',
+            type: FeatureFieldType.searchSelect,
+            options: catalogoLotes,
           ),
         ],
       ),
@@ -4055,7 +4121,13 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
-      FeatureField(id: 'lote', label: 'Lote', isRequired: true),
+      FeatureField(
+        id: 'lote',
+        label: 'Lote',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoLotes,
+      ),
       FeatureField(
         id: 'resultado',
         label: 'Resultado',
@@ -4452,7 +4524,7 @@ const operationalFeatures = <FeatureDefinition>[
           FeatureField(
             id: 'produto',
             label: 'Produto / peça',
-            type: FeatureFieldType.select,
+            type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoProdutos,
           ),
