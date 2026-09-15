@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_spacing.dart';
+import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/prototype_session_store.dart';
 import '../../../ui/ui.dart';
@@ -74,6 +76,21 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   /// submissão foi uma criação. Só existe para diferenciar a mensagem do
   /// painel de sucesso ("atualizado" vs. "salvo").
   String? _lastEditedTitle;
+
+  /// Notificações de rolagem borbulham só para ANCESTRAIS do `Scrollable`
+  /// que as dispara — a `ListView` real fica aqui, um nível acima de
+  /// `_RecordsList` (que é só mais um item dela). Por isso o gatilho de
+  /// "carregar mais" mora neste nível e é repassado por `GlobalKey`, em vez
+  /// de um `NotificationListener` dentro do próprio `_RecordsList` (que
+  /// nunca veria nada — notificação não desce, só sobe).
+  final _recordsListKey = GlobalKey<_RecordsListState>();
+
+  bool _handleScroll(ScrollNotification notification) {
+    if (notification.metrics.axis == Axis.vertical) {
+      _recordsListKey.currentState?.maybeLoadMore(notification.metrics);
+    }
+    return false;
+  }
 
   FeatureDefinition get feature => widget.feature;
   String get dataSourceId => feature.dataSourceId ?? feature.id;
@@ -292,9 +309,15 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     // concluir a simulação ficava inacessível. Ver
     // docs/ESTEIRA-FIDELIDADE-CONTRATO.md.
     final isForm = _journey.mode == FunctionalJourneyMode.form;
-    final showingForm =
-        feature.auditExport == null &&
-        !(feature.listMode && _journey.mode == FunctionalJourneyMode.list);
+    final isRecordsList =
+        feature.listMode && _journey.mode == FunctionalJourneyMode.list;
+    final showingForm = feature.auditExport == null && !isRecordsList;
+    // banco-real: administração pode criar quando a própria tela declara
+    // campos (ex.: Produtos) — deixou de ser exclusivo do perfil
+    // operacional. `readOnly` bloqueia mesmo com `fields` preenchidos —
+    // cadastro estruturante ou decisão que pertence ao desktop, o app só
+    // consulta. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
+    final canCreateRecords = feature.fields.isNotEmpty && !feature.readOnly;
     // Dentro de um formulário em etapas, o voltar do cabeçalho recua uma etapa
     // em vez de abandonar o preenchimento: sair perdendo tudo o que já foi
     // digitado é o pior desfecho possível num cadastro longo.
@@ -324,10 +347,12 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
       onAction: showingForm ? () => _showFormDetails(context) : null,
       totalSteps: step != null ? _journey.stepCount : null,
       currentStep: _journey.stepIndex + 1,
-      // Cadastro: a folha é a superfície branca e os campos assentam direto
-      // nela. Listagem e introdução seguem na folha cinza, onde é o cinza que
-      // separa um `AppCard` do outro.
-      sheetColor: showingForm
+      // Cadastro e listagem (fidelidade-esteira: padrão de listagens — topo
+      // cinza, card branco, itens da listagem em cinza): a folha é a
+      // superfície branca. Só a introdução (tela sem lista, sem cadastro —
+      // hardware simulado, consulta) segue na folha cinza, onde é o cinza
+      // que separa um `AppCard` do outro.
+      sheetColor: showingForm || isRecordsList
           ? null
           : Theme.of(context).extension<AppSemanticColors>()!.bgSheet,
       scrollable: false,
@@ -354,61 +379,64 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   ? _showList
                   : null,
             )
-          : null,
-      child: ListView(
-        padding: const EdgeInsets.all(AppSpacing.space4),
-        children: [
-          if (!isForm) ...[
-            _FeatureIntroduction(feature: feature),
-            const SizedBox(height: AppSpacing.space4),
-          ],
-          // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
-          // daqui (ver plano de UX): quando a função usa hardware simulado, o
-          // próprio `AppHardwareSimulator` já mostra isso mais abaixo, na hora
-          // de usar — listar de novo antes, em termos técnicos, só adiantava
-          // jargão sem ajudar a decisão.
-          if (feature.auditExport case final auditExport?)
-            _AuditExportJourney(kind: auditExport)
-          else if (feature.listMode &&
-              _journey.mode == FunctionalJourneyMode.list)
-            _RecordsList(
-              feature: feature,
-              records: ref
-                  .watch(prototypeRecordsProvider)
-                  .recordsFor(dataSourceId),
-              // banco-real: administração pode criar quando a própria tela
-              // declara campos (ex.: Produtos) — deixou de ser exclusivo do
-              // perfil operacional. Ver
-              // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
-              // banco-real (onda 1): `readOnly` bloqueia a criação mesmo com
-              // `fields` preenchidos — cadastro estruturante ou decisão que
-              // pertence ao desktop, o app só consulta. Ver
-              // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-              canCreate: feature.fields.isNotEmpty && !feature.readOnly,
-              onCreate: _startForm,
-              // RBAC da visualização: só o perfil operacional edita um
-              // registro já gravado — administração consulta em modo
-              // somente leitura, sem ação de editar na ficha do registro.
-              // Mesma condição de `canCreate`, porque só há campo para
-              // editar quando também há campo para criar.
-              canEdit:
-                  ref.watch(prototypeSessionProvider).profile ==
-                      UserAccessProfile.operational &&
-                  feature.fields.isNotEmpty &&
-                  !feature.readOnly,
-              onEdit: _editRecord,
+          : isRecordsList && canCreateRecords
+          ? AppActionBar(
+              primaryLabel: feature.createAction ?? 'Novo registro',
+              primaryIcon: AppIcons.plus,
+              primarySize: AppButtonSize.xl,
+              onPrimary: _startForm,
             )
-          else
-            _FeatureForm(
-              feature: feature,
-              journey: _journey,
-              onValueChanged: _setValue,
-              onAddCollectionItem: (collection) =>
-                  _addCollectionItem(context, collection),
-              onRemoveCollectionItem: _removeCollectionItem,
-              onCaptureCollectionItem: _captureCollectionItem,
-            ),
-        ],
+          : null,
+      child: NotificationListener<ScrollNotification>(
+        onNotification: _handleScroll,
+        child: ListView(
+          padding: const EdgeInsets.all(AppSpacing.space4),
+          children: [
+            if (!isForm) ...[
+              _FeatureIntroduction(feature: feature),
+              const SizedBox(height: AppSpacing.space4),
+            ],
+            // O card "Recursos envolvidos" (Bluetooth/RFID/Balança...) saiu
+            // daqui (ver plano de UX): quando a função usa hardware simulado, o
+            // próprio `AppHardwareSimulator` já mostra isso mais abaixo, na hora
+            // de usar — listar de novo antes, em termos técnicos, só adiantava
+            // jargão sem ajudar a decisão.
+            if (feature.auditExport case final auditExport?)
+              _AuditExportJourney(kind: auditExport)
+            else if (feature.listMode &&
+                _journey.mode == FunctionalJourneyMode.list)
+              _RecordsList(
+                key: _recordsListKey,
+                feature: feature,
+                records: ref
+                    .watch(prototypeRecordsProvider)
+                    .recordsFor(dataSourceId),
+                canCreate: canCreateRecords,
+                onCreate: _startForm,
+                // RBAC da visualização: só o perfil operacional edita um
+                // registro já gravado — administração consulta em modo
+                // somente leitura, sem ação de editar na ficha do registro.
+                // Mesma condição de `canCreate`, porque só há campo para
+                // editar quando também há campo para criar.
+                canEdit:
+                    ref.watch(prototypeSessionProvider).profile ==
+                        UserAccessProfile.operational &&
+                    feature.fields.isNotEmpty &&
+                    !feature.readOnly,
+                onEdit: _editRecord,
+              )
+            else
+              _FeatureForm(
+                feature: feature,
+                journey: _journey,
+                onValueChanged: _setValue,
+                onAddCollectionItem: (collection) =>
+                    _addCollectionItem(context, collection),
+                onRemoveCollectionItem: _removeCollectionItem,
+                onCaptureCollectionItem: _captureCollectionItem,
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -517,6 +545,7 @@ class _FeatureIntroduction extends StatelessWidget {
 
 class _RecordsList extends StatefulWidget {
   const _RecordsList({
+    super.key,
     required this.feature,
     required this.records,
     required this.canCreate,
@@ -542,9 +571,13 @@ class _RecordsList extends StatefulWidget {
 
 class _RecordsListState extends State<_RecordsList> {
   static const _pageSize = 5;
+  // fidelidade-esteira: gatilho de "carregar mais" a 200px do fim da
+  // rolagem — perto o bastante para o próximo lote já estar pronto quando a
+  // pessoa chega ao fim visível, sem disparar no primeiro pixel de rolagem.
+  static const _loadMoreThreshold = 200.0;
   late final TextEditingController _searchController;
   var _query = '';
-  var _page = 0;
+  var _visibleCount = _pageSize;
 
   @override
   void initState() {
@@ -560,37 +593,57 @@ class _RecordsListState extends State<_RecordsList> {
 
   void _setQuery(String value) => setState(() {
     _query = value;
-    _page = 0;
+    _visibleCount = _pageSize;
   });
+
+  /// Sem paginação (fidelidade-esteira: "a busca ao deslizar para baixo vai
+  /// trazendo mais registros"). Chamado de fora (`_MappedFeatureJourneyState`,
+  /// via `GlobalKey`): esta lista nasce sem `Scrollable` próprio — é só mais
+  /// um item da `ListView` real, um nível acima — e notificação de rolagem
+  /// borbulha só para ANCESTRAIS de quem a dispara, nunca para baixo.
+  void maybeLoadMore(ScrollMetrics metrics) {
+    final filteredCount = _filteredRecords().length;
+    if (_visibleCount >= filteredCount) return;
+    if (metrics.pixels >= metrics.maxScrollExtent - _loadMoreThreshold) {
+      setState(
+        () =>
+            _visibleCount = (_visibleCount + _pageSize).clamp(0, filteredCount),
+      );
+    }
+  }
+
+  List<PrototypeRecord> _filteredRecords() {
+    final records = _recordsWithMinimumSample(widget.feature, widget.records);
+    final query = _query.trim().toLowerCase();
+    if (query.isEmpty) return records;
+    return records
+        .where((record) {
+          final searchable = [
+            record.title,
+            record.description,
+            ...record.details.keys,
+            ...record.details.values,
+          ].join(' ').toLowerCase();
+          return searchable.contains(query);
+        })
+        .toList(growable: false);
+  }
 
   @override
   Widget build(BuildContext context) {
     final records = _recordsWithMinimumSample(widget.feature, widget.records);
     final query = _query.trim().toLowerCase();
-    final filteredRecords = query.isEmpty
-        ? records
-        : records
-              .where((record) {
-                final searchable = [
-                  record.title,
-                  record.description,
-                  ...record.details.keys,
-                  ...record.details.values,
-                ].join(' ').toLowerCase();
-                return searchable.contains(query);
-              })
-              .toList(growable: false);
-    final pageCount = (filteredRecords.length / _pageSize).ceil().clamp(1, 999);
-    final page = _page.clamp(0, pageCount - 1);
-    final start = page * _pageSize;
-    final end = (start + _pageSize).clamp(0, filteredRecords.length);
-    final visibleRecords = filteredRecords.sublist(start, end);
+    final filteredRecords = _filteredRecords();
+    final visibleRecords = filteredRecords.sublist(
+      0,
+      _visibleCount.clamp(0, filteredRecords.length),
+    );
 
-    // Sem `AppCard` embrulhando a listagem inteira: a folha cinza já é a
-    // superfície da página e as linhas brancas são o que se destaca contra
-    // ela. O cartão só empilhava mais uma superfície em volta de tudo e
-    // comia 40 px de largura em recuo — era ele que truncava o título dos
-    // registros ("Registrar animal · Registr…").
+    // fidelidade-esteira: padrão de listagens — a folha já é branca
+    // (`sheetColor` em `MappedFeatureScreen`) e cada linha usa
+    // `AppMenuItemSurface.subtle` (cinza, sem sombra) para se destacar
+    // contra ela — o inverso do que valia antes desta esteira (linhas
+    // brancas sobre folha cinza), pedido explícito do usuário.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -639,6 +692,8 @@ class _RecordsListState extends State<_RecordsList> {
               icon: AppIcons.fileCheck2,
               label: visibleRecords[index].title,
               description: visibleRecords[index].description,
+              surface: AppMenuItemSurface.subtle,
+              showShadow: false,
               trailing: AppChip(
                 tone:
                     visibleRecords[index].status ==
@@ -652,26 +707,14 @@ class _RecordsListState extends State<_RecordsList> {
             if (index < visibleRecords.length - 1)
               const SizedBox(height: AppSpacing.space2),
           ],
-        if (filteredRecords.isNotEmpty) ...[
+        if (visibleRecords.length < filteredRecords.length) ...[
           const SizedBox(height: AppSpacing.space3),
-          AppPagination(
-            page: page,
-            totalItems: filteredRecords.length,
-            pageSize: _pageSize,
-            onPageChanged: (nextPage) => setState(() => _page = nextPage),
-          ),
+          const _SlideForMoreHint(),
         ],
-
-        if (widget.canCreate) ...[
-          const SizedBox(height: AppSpacing.space4),
-          AppButton(
-            fullWidth: true,
-            size: AppButtonSize.lg,
-            leftIcon: const AppIcon(AppIcons.plus, size: AppSpacing.space5),
-            onPressed: widget.onCreate,
-            child: Text(widget.feature.createAction ?? 'Novo registro'),
-          ),
-        ],
+        // O CTA "novo registro" agora é o rodapé flutuante fixo
+        // (`AppActionBar` em `MappedFeatureScreen`) — não some ao rolar a
+        // listagem, nem precisa da folga inline que este espaço reservava.
+        if (widget.canCreate) const SizedBox(height: AppSpacing.space4),
       ],
     );
   }
@@ -727,6 +770,33 @@ class _RecordsListState extends State<_RecordsList> {
             ),
         ],
       ),
+    );
+  }
+}
+
+/// Dica de rolagem infinita (fidelidade-esteira: "a busca ao deslizar para
+/// baixo vai trazendo mais registros" — sem paginação). Espelha o rótulo e o
+/// chevron centralizados da referência.
+class _SlideForMoreHint extends StatelessWidget {
+  const _SlideForMoreHint();
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
+    return Column(
+      children: [
+        AppIcon(
+          AppIcons.chevronUp,
+          size: AppSize.iconXs,
+          color: semantic.fgMuted,
+        ),
+        const SizedBox(height: AppSpacing.space1),
+        Text(
+          'Deslize para exibir mais',
+          style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+        ),
+      ],
     );
   }
 }
@@ -993,7 +1063,8 @@ class _FeatureForm extends StatelessWidget {
     // simulador nunca fica "pronto" com um valor parado na tela — cada
     // leitura já sai direto para a lista, e o campo-alvo (`identificacao`)
     // não existe mais em `feature.fields`/`journey.form.values`.
-    final simulationValue = simulation == null || simulationCollectionName != null
+    final simulationValue =
+        simulation == null || simulationCollectionName != null
         ? null
         : journey.form.values[simulationTarget ?? '_hardware'] ?? '';
     final simulationError = journey.form.attempted

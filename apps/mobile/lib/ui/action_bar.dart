@@ -33,10 +33,16 @@ class AppActionBar extends StatelessWidget {
     this.secondaryLabel,
     this.onSecondary,
     this.summary,
+    this.primarySize = AppButtonSize.lg,
   });
 
   final String primaryLabel;
   final VoidCallback? onPrimary;
+
+  /// `lg` é o CTA padrão de formulário; listagens (fidelidade-esteira) usam
+  /// `xl` — 56px, raio `AppRadius.tile` — para o botão flutuante fixo no
+  /// rodapé.
+  final AppButtonSize primarySize;
 
   /// Ícone à direita do rótulo — o `SaveAllIcon` do Figma (54349:2070).
   final AppIconData? primaryIcon;
@@ -83,7 +89,7 @@ class AppActionBar extends StatelessWidget {
               Semantics(
                 label: primaryLabel,
                 child: AppButton(
-                  size: AppButtonSize.lg,
+                  size: primarySize,
                   fullWidth: true,
                   loading: primaryLoading,
                   onPressed: onPrimary,
@@ -226,6 +232,18 @@ WidgetbookComponent buildActionBarWidgetbookComponent() {
         builder: (context) => const Align(
           alignment: Alignment.bottomCenter,
           child: AppActionBar(primaryLabel: 'Salvar', primaryLoading: true),
+        ),
+      ),
+      WidgetbookUseCase(
+        name: 'Listagem (CTA flutuante)',
+        builder: (context) => Align(
+          alignment: Alignment.bottomCenter,
+          child: AppActionBar(
+            primaryLabel: 'Adicionar registro',
+            primaryIcon: AppIcons.plus,
+            primarySize: AppButtonSize.xl,
+            onPrimary: () {},
+          ),
         ),
       ),
     ],

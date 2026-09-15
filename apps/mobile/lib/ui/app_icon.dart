@@ -91,6 +91,9 @@ class AppIcons {
   static const AppIconData chevronDown = AppIconData.glyph(
     HugeIcons.strokeRoundedArrowDown01,
   );
+  static const AppIconData chevronUp = AppIconData.glyph(
+    HugeIcons.strokeRoundedArrowUp01,
+  );
 
   // --- Estado, validacao e feedback ----------------------------------------
   static const AppIconData check = AppIconData.glyph(

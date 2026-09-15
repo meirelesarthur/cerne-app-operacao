@@ -18,6 +18,12 @@ enum AppMenuItemTone { standard, danger }
 /// Espelha `MenuItemVariant` (`'light' | 'onDark'`) de `MenuItem.tsx`.
 enum AppMenuItemVariant { light, onDark }
 
+// fidelidade-esteira: padrão de listagens — topo cinza (header), card branco
+// (folha) e itens da listagem em cinza. `surface` (padrão) é a linha branca
+// com sombra usada em menus/navegação; `subtle` é a linha cinza plana
+// (`bgSubtle`, sem sombra) para dentro de uma folha branca.
+enum AppMenuItemSurface { surface, subtle }
+
 /// Item de menu/navegação: linha-cápsula com bolha de ícone à esquerda,
 /// título + descrição e chevron em círculo à direita.
 /// Touch target ≥ 56px (`AppSpacing.space14`), espelhando `min-h-14` do React.
@@ -35,6 +41,7 @@ class AppMenuItem extends StatelessWidget {
     this.active = false,
     this.tone = AppMenuItemTone.standard,
     this.variant = AppMenuItemVariant.light,
+    this.surface = AppMenuItemSurface.surface,
     this.showShadow = true,
     this.onTap,
   });
@@ -46,6 +53,7 @@ class AppMenuItem extends StatelessWidget {
   final bool active;
   final AppMenuItemTone tone;
   final AppMenuItemVariant variant;
+  final AppMenuItemSurface surface;
 
   /// Sombra do card quando `light`/inativo (`shadowCard`). Telas com muitos
   /// itens em sequência (ex.: `GroupFeaturesScreen`) podem desligar para uma
@@ -64,7 +72,15 @@ class AppMenuItem extends StatelessWidget {
         ? (_isOnDark
               ? AppColors.neutral0.withValues(alpha: 0.15)
               : semantic.accentSubtle)
-        : (_isOnDark ? semantic.inkBubble : semantic.bgSurface);
+        : (_isOnDark
+              ? semantic.inkBubble
+              // `bgSubtle` é branco no tema claro (mesmo valor de
+              // `bgSurface` — reservado para outro uso); `bgSheet` é o
+              // cinza real (#F0F0F0) já usado como fundo de página, por
+              // isso é ele que dá contraste contra a folha branca aqui.
+              : (surface == AppMenuItemSurface.subtle
+                    ? semantic.bgSheet
+                    : semantic.bgSurface));
 
     final labelColor = _isDanger
         ? (_isOnDark ? AppColors.red400 : AppColors.feedbackErrorText)
@@ -75,7 +91,11 @@ class AppMenuItem extends StatelessWidget {
     final descriptionColor = _isOnDark ? semantic.inkMuted : semantic.fgMuted;
     final iconBubbleColor = _isDanger
         ? AppColors.red500.withValues(alpha: 0.1)
-        : (_isOnDark ? semantic.inkBubble : semantic.bgSubtle);
+        : (_isOnDark
+              ? semantic.inkBubble
+              : (surface == AppMenuItemSurface.subtle
+                    ? AppColors.transparent
+                    : semantic.bgSubtle));
     final iconColor = _isDanger
         ? AppColors.red500
         : (_isOnDark ? semantic.inkFg : semantic.fgMuted);
@@ -203,6 +223,34 @@ WidgetbookComponent buildMenuItemWidgetbookComponent() {
                 icon: AppIcons.logOut,
                 label: 'Sair',
                 tone: AppMenuItemTone.danger,
+                onTap: () {},
+              ),
+            ],
+          ),
+        ),
+      ),
+      WidgetbookUseCase(
+        name: 'Listagem (subtle, sem sombra)',
+        builder: (context) => Padding(
+          padding: const EdgeInsets.all(AppSpacing.space4),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppMenuItem(
+                icon: AppIcons.fileCheck2,
+                label: 'Erosão na curva de nível',
+                description: 'Ponto de atenção · Talhão 02',
+                surface: AppMenuItemSurface.subtle,
+                showShadow: false,
+                onTap: () {},
+              ),
+              const SizedBox(height: AppSpacing.space2),
+              AppMenuItem(
+                icon: AppIcons.fileCheck2,
+                label: 'Erosão na curva de nível',
+                description: 'Ponto de atenção · Talhão 02',
+                surface: AppMenuItemSurface.subtle,
+                showShadow: false,
                 onTap: () {},
               ),
             ],

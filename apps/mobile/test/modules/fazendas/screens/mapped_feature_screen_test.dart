@@ -233,9 +233,12 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Registros'), findsOneWidget);
-        expect(find.text('Novo abastecimento'), findsOneWidget);
+        // fidelidade-esteira: o CTA de criar migrou para o rodapé flutuante
+        // fixo (`AppActionBar`), que espelha o rótulo em caixa alta — mesma
+        // regra do resto do app (formulários), agora também nas listagens.
+        expect(find.text('NOVO ABASTECIMENTO'), findsOneWidget);
 
-        await tester.tap(find.text('Novo abastecimento'));
+        await tester.tap(find.text('NOVO ABASTECIMENTO'));
         await tester.pumpAndSettle();
 
         expect(find.text('Dados do registro'), findsOneWidget);
@@ -304,7 +307,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Novo manejo de pastagem'));
+      // fidelidade-esteira: CTA no rodapé flutuante fixo, rótulo em caixa alta.
+      await tester.tap(find.text('NOVO MANEJO DE PASTAGEM'));
       await tester.pumpAndSettle();
 
       // Etapa 1 — identificação. A área é escolhida antes do destino: com o
@@ -392,7 +396,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Novo manejo de pastagem'));
+      // fidelidade-esteira: CTA no rodapé flutuante fixo, rótulo em caixa alta.
+      await tester.tap(find.text('NOVO MANEJO DE PASTAGEM'));
       await tester.pumpAndSettle();
       await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
       await _enterFieldText(tester, 'Data do manejo', '2026-09-08');

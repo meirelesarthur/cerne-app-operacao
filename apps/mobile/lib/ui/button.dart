@@ -18,7 +18,11 @@ import 'spinner.dart';
 /// `danger`, que é o vermelho sólido de uma ação destrutiva confirmada.
 enum AppButtonVariant { primary, secondary, ghost, danger, dangerOutline, link }
 
-enum AppButtonSize { sm, md, lg }
+// fidelidade-esteira: `xl` é o CTA flutuante fixo no rodapé de listagens
+// (56px de altura, raio `AppRadius.tile` — não `full` como os demais
+// tamanhos) — anatomia própria pedida pelo usuário, distinta do `lg` do
+// padrão global de formulário.
+enum AppButtonSize { sm, md, lg, xl }
 
 class AppButton extends StatelessWidget {
   const AppButton({
@@ -48,12 +52,17 @@ class AppButton extends StatelessWidget {
     AppButtonSize.sm => AppSize.btnSm,
     AppButtonSize.md => AppSize.btnMd,
     AppButtonSize.lg => AppSize.btnLg,
+    AppButtonSize.xl => AppSpacing.space14,
   };
+
+  double get _borderRadius =>
+      size == AppButtonSize.xl ? AppRadius.tile : AppRadius.full;
 
   double get _horizontalPadding => switch (size) {
     AppButtonSize.sm => AppSpacing.space4,
     AppButtonSize.md => AppSpacing.space5,
     AppButtonSize.lg => AppSpacing.space6,
+    AppButtonSize.xl => AppSpacing.space6,
   };
 
   /// `lg` é o CTA do padrão global (Figma 54349:2068): 48 px de altura e
@@ -64,10 +73,13 @@ class AppButton extends StatelessWidget {
     AppButtonSize.sm => AppTypography.sm,
     AppButtonSize.md => AppTypography.md,
     AppButtonSize.lg => AppTypography.md,
+    AppButtonSize.xl => AppTypography.md,
   };
 
   double get _spinnerSize =>
-      size == AppButtonSize.lg ? AppSize.iconMd : AppSize.iconSm;
+      size == AppButtonSize.lg || size == AppButtonSize.xl
+      ? AppSize.iconMd
+      : AppSize.iconSm;
 
   ({Color bg, Color fg, Color? border}) _colors(AppSemanticColors s) =>
       switch (variant) {
@@ -164,7 +176,7 @@ class AppButton extends StatelessWidget {
       child: Material(
         color: colors.bg,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.full),
+          borderRadius: BorderRadius.circular(_borderRadius),
           side: colors.border != null
               ? BorderSide(color: colors.border!)
               : BorderSide.none,
@@ -172,7 +184,7 @@ class AppButton extends StatelessWidget {
         child: InkWell(
           onTap: _disabled ? null : onPressed,
           canRequestFocus: !_disabled,
-          borderRadius: BorderRadius.circular(AppRadius.full),
+          borderRadius: BorderRadius.circular(_borderRadius),
           child: Container(
             height: _height,
             width: fullWidth ? double.infinity : null,
@@ -271,7 +283,8 @@ AppButton(variant: AppButtonVariant.link, ...)''',
             code:
                 "AppButton(size: AppButtonSize.sm, onPressed: () {}, child: Text('Small'))\n"
                 "AppButton(onPressed: () {}, child: Text('Medium')) // padrão: md\n"
-                "AppButton(size: AppButtonSize.lg, onPressed: () {}, child: Text('Large'))",
+                "AppButton(size: AppButtonSize.lg, onPressed: () {}, child: Text('Large'))\n"
+                "AppButton(size: AppButtonSize.xl, onPressed: () {}, child: Text('Extra large')) // CTA flutuante de listagem",
             child: Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -287,6 +300,11 @@ AppButton(variant: AppButtonVariant.link, ...)''',
                   size: AppButtonSize.lg,
                   onPressed: () {},
                   child: const Text('Large'),
+                ),
+                AppButton(
+                  size: AppButtonSize.xl,
+                  onPressed: () {},
+                  child: const Text('Extra large'),
                 ),
               ],
             ),

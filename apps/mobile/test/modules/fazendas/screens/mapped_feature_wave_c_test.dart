@@ -139,7 +139,8 @@ void main() {
       await tester.pumpWidget(_wrap(container, 'transferencia-animal'));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Nova transferência de animal'));
+      // fidelidade-esteira: CTA no rodapé flutuante fixo, rótulo em caixa alta.
+      await tester.tap(find.text('NOVA TRANSFERÊNCIA DE ANIMAL'));
       await tester.pumpAndSettle();
       expect(find.byType(AppHardwareSimulator), findsOneWidget);
       expect(find.text('ou informe manualmente'), findsOneWidget);

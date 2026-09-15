@@ -152,36 +152,47 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('cadastros começam populados e permitem busca com paginação', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      await tester.pumpWidget(
-        _wrap(
-          container,
-          featureId: 'sanitario',
-          profile: FeatureProfile.operational,
-        ),
-      );
-      await tester.pumpAndSettle();
+    testWidgets(
+      'cadastros começam populados e permitem busca com carregamento ao rolar',
+      (tester) async {
+        // Superfície baixa de propósito (não a `setTallSurface` padrão,
+        // 3000px): o carregamento ao rolar só existe para testar se a lista
+        // de fato precisar rolar — numa superfície gigante os 5 itens
+        // iniciais cabem inteiros e o arrasto não tem o que revelar.
+        await setTallSurface(tester, height: 700);
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        await tester.pumpWidget(
+          _wrap(
+            container,
+            featureId: 'sanitario',
+            profile: FeatureProfile.operational,
+          ),
+        );
+        await tester.pumpAndSettle();
 
-      expect(find.text('6'), findsOneWidget);
-      expect(find.text('Sanitário · Registro 1'), findsOneWidget);
-      expect(find.text('Sanitário · Registro 6'), findsNothing);
-      expect(find.byType(AppPagination), findsOneWidget);
+        expect(find.text('6'), findsOneWidget);
+        expect(find.text('Sanitário · Registro 1'), findsOneWidget);
+        // fidelidade-esteira: sem paginação — "a busca ao deslizar para
+        // baixo vai trazendo mais registros". O 6º item só aparece depois
+        // de rolar até perto do fim (ver `_RecordsListState._handleScroll`).
+        expect(find.text('Sanitário · Registro 6'), findsNothing);
 
-      await tester.tap(find.bySemanticsLabel('Próxima página'));
-      await tester.pumpAndSettle();
-      expect(find.text('Sanitário · Registro 6'), findsOneWidget);
+        // `scrollUntilVisible` reavalia o finder a cada passo do arrasto —
+        // instável aqui porque cada rolagem pode disparar `setState` (mais
+        // itens entram na árvore) no meio do próprio gesto. Um arrasto
+        // único + settle evita conferir o finder num frame intermediário.
+        await tester.drag(find.byType(Scrollable).first, const Offset(0, -2000));
+        await tester.pumpAndSettle();
+        expect(find.text('Sanitário · Registro 6'), findsOneWidget);
 
-      await tester.enterText(find.byType(TextFormField), 'Registro 3');
-      await tester.pumpAndSettle();
-      expect(find.text('Sanitário · Registro 3'), findsOneWidget);
-      expect(find.text('Sanitário · Registro 6'), findsNothing);
-      expect(tester.takeException(), isNull);
-    });
+        await tester.enterText(find.byType(TextFormField), 'Registro 3');
+        await tester.pumpAndSettle();
+        expect(find.text('Sanitário · Registro 3'), findsOneWidget);
+        expect(find.text('Sanitário · Registro 6'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('saldo de estoque abre dados demonstrativos e detalhe', (
       tester,
