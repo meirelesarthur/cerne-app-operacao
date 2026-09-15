@@ -130,13 +130,6 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
           const SizedBox(height: AppSpacing.space4),
           const AppSectionTitle(child: Text('Peso')),
           const SizedBox(height: AppSpacing.space2),
-          const AppBanner(
-            icon: AppIcon(AppIcons.info, size: AppSize.iconXs),
-            child: Text(
-              'Leitura da balança não disponível neste app — informe o peso manualmente ou use um leitor Bluetooth quando integrado.',
-            ),
-          ),
-          const SizedBox(height: AppSpacing.space3),
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
