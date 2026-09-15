@@ -6,7 +6,6 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/functional_journey_engine.dart';
 import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
-import 'package:cerne_app/ui/ui.dart';
 
 import '../../../support/test_viewport.dart';
 
@@ -172,7 +171,12 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('6'), findsOneWidget);
-        expect(find.text('Sanitário · Registro 1'), findsOneWidget);
+        // fidelidade-esteira (onda 16 — visualização de abas): `sanitario`
+        // ganhou 3 registros manuais reais (ver `prototype_records_store.dart`)
+        // — a lista mistura esses 3 com o preenchimento genérico de
+        // `_recordsWithMinimumSample` até completar 6, então o 1º item
+        // visível passa a ser o 1º registro manual, não mais "Registro 1".
+        expect(find.text('Vacinação Lote Recria 02'), findsOneWidget);
         // fidelidade-esteira: sem paginação — "a busca ao deslizar para
         // baixo vai trazendo mais registros". O 6º item só aparece depois
         // de rolar até perto do fim (ver `_RecordsListState._handleScroll`).
@@ -186,9 +190,9 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('Sanitário · Registro 6'), findsOneWidget);
 
-        await tester.enterText(find.byType(TextFormField), 'Registro 3');
+        await tester.enterText(find.byType(TextFormField), 'Matrizes');
         await tester.pumpAndSettle();
-        expect(find.text('Sanitário · Registro 3'), findsOneWidget);
+        expect(find.text('Exame de casco Lote Matrizes 01'), findsOneWidget);
         expect(find.text('Sanitário · Registro 6'), findsNothing);
         expect(tester.takeException(), isNull);
       },
