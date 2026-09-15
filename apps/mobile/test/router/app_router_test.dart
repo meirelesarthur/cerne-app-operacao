@@ -1,12 +1,9 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:cerne_app/design/theme/theme_provider.dart';
 import 'package:cerne_app/modules/fazendas/components/context_badge.dart';
 import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
 import 'package:cerne_app/shell/components/context_tabs.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
-import 'package:cerne_app/shell/state/shell_store.dart';
 import 'package:cerne_app/ui/module_tile.dart';
 import 'package:cerne_app/ui/pressable.dart';
 import 'package:cerne_app/ui/search_field.dart';
@@ -224,26 +221,28 @@ void main() {
       },
     );
 
-    testWidgets('menu operacional lista módulos-pai e a seção de conta', (
-      tester,
-    ) async {
-      harness.dispose();
-      harness = RouterTestHarness(profile: UserAccessProfile.operational);
-      harness.router.go('/fazendas/operacional');
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'navbar operacional de Fazendas troca o Menu por Confinamento (uso mais frequente)',
+      (tester) async {
+        harness.dispose();
+        harness = RouterTestHarness(profile: UserAccessProfile.operational);
+        harness.router.go('/fazendas/operacional');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.byTooltip('Menu'));
-      await tester.pumpAndSettle();
+        // fidelidade-esteira: o Menu (RevealMenu) saiu da navbar operacional
+        // de Fazendas — redundante com a grade de módulos da própria Home —
+        // e deu lugar a Confinamento, o grupo de uso diário mais frequente.
+        expect(find.byTooltip('Menu'), findsNothing);
+        expect(find.byTooltip('Confinamento'), findsOneWidget);
 
-      expect(find.text('MÓDULOS'), findsOneWidget);
-      expect(find.text('Início'), findsOneWidget);
-      expect(find.text('Bank'), findsOneWidget);
-      expect(find.text('Crédito'), findsOneWidget);
-      expect(find.text('Marketplace'), findsOneWidget);
-      expect(find.text('Armazém'), findsOneWidget);
-      expect(find.text('CONTA'), findsOneWidget);
-    });
+        await tester.tap(find.byTooltip('Confinamento'));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(AppContextTabs), findsNothing);
+        expect(find.byType(AppModuleTile), findsNWidgets(7));
+      },
+    );
 
     testWidgets(
       'central interna mantém fazenda e navbar, mas remove o perfil e as abas',
@@ -296,57 +295,6 @@ void main() {
         expect(find.text('Silvio Ventura'), findsOneWidget);
         expect(find.text('Resumo da sua conta GB Bank.'), findsOneWidget);
         expect(find.byType(AppBottomTabBar), findsOneWidget);
-      },
-    );
-
-    testWidgets('tocar em "Menu" abre o RevealMenu operacional', (
-      tester,
-    ) async {
-      harness.dispose();
-      harness = RouterTestHarness(profile: UserAccessProfile.operational);
-      harness.router.go('/fazendas/operacional');
-      await tester.pumpWidget(harness.buildApp());
-      await _settleHubTimers(tester);
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byTooltip('Menu'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Sair'), findsOneWidget);
-    });
-
-    testWidgets(
-      'tocar em um item do RevealMenu (Modo GB) alterna o tema — não fecha o menu por engano',
-      (tester) async {
-        // Regressão: um overlay "tocar fora fecha o menu" cobrindo a tela inteira
-        // por cima do RevealMenu bloqueava os toques nos próprios itens do menu.
-        harness.dispose();
-        harness = RouterTestHarness(profile: UserAccessProfile.operational);
-        harness.router.go('/fazendas/operacional');
-        await tester.pumpWidget(harness.buildApp());
-        await _settleHubTimers(tester);
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.byTooltip('Menu'));
-        await tester.pumpAndSettle();
-        expect(harness.container.read(shellStoreProvider).menuOpen, isTrue);
-
-        // "Modo GB" pode estar abaixo do fold do painel rolável.
-        await tester.scrollUntilVisible(
-          find.text('Modo GB'),
-          200,
-          scrollable: find.descendant(
-            of: find.byKey(const ValueKey('reveal-menu-scroll')),
-            matching: find.byType(Scrollable),
-          ),
-        );
-        await tester.tap(find.text('Modo GB'));
-        await tester.pumpAndSettle();
-
-        expect(
-          harness.container.read(themeVariantProvider),
-          AppThemeVariant.gbMode,
-        );
       },
     );
 

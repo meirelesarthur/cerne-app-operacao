@@ -89,15 +89,27 @@ class ModuleDef {
   final List<ModuleMenuSection>? menuSections;
 }
 
-/// Navegação primária da entrada operacional. Pecuária e Agricultura apontam
-/// diretamente para seus módulos-pai; as demais rotinas continuam acessíveis
-/// pela grade e pelo menu lateral.
+/// Navegação primária da entrada operacional. Pecuária, Agricultura e
+/// Confinamento apontam diretamente para seus grupos; as demais rotinas
+/// continuam acessíveis pela grade da tela inicial.
+///
+/// fidelidade-esteira: o "Menu" (RevealMenu) saiu daqui — redundante com a
+/// grade de módulos que a própria Home operacional já mostra, e o essencial
+/// do dia a dia da equipe de campo é ficar dentro de Fazendas, não trocar de
+/// módulo. Confinamento entrou no lugar por ser o grupo de uso diário mais
+/// frequente (mesmo critério de `group_icons.dart`).
 const List<BottomTab> operationalBottomTabs = [
   BottomTab(
     id: 'home',
     label: 'Home',
     icon: AppIcons.home,
     path: 'operacional',
+  ),
+  BottomTab(
+    id: 'confinamento',
+    label: 'Confinamento',
+    icon: AppIcons.confinamento,
+    path: 'operacional/grupo/confinamento',
   ),
   BottomTab(
     id: 'pecuaria',
@@ -110,13 +122,6 @@ const List<BottomTab> operationalBottomTabs = [
     label: 'Agricultura',
     icon: AppIcons.agricultura,
     path: 'operacional/grupo/agricultura',
-  ),
-  BottomTab(
-    id: 'menu',
-    label: 'Menu',
-    icon: AppIcons.menu,
-    path: '',
-    action: 'menu',
   ),
 ];
 
