@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
@@ -70,10 +71,12 @@ const _slides = [
 ];
 
 /// Onboarding do Shell: carrossel de 5 telas (hero full-bleed + título +
-/// descrição), com dots, Pular e Próximo; o último slide convida a começar.
+/// descrição), com Pular e Próximo; o último slide convida a começar.
 /// Suporta swipe via `PageView`. A imagem encosta nas bordas — inclusive sob
-/// a status bar — só com raio nos cantos inferiores; texto e ações ficam na
-/// folha abaixo, dentro da área segura.
+/// a status bar — retangular, sem raio próprio; a folha branca de texto é
+/// quem tem raio (só no topo) e sobrepõe levemente a base da imagem, dentro
+/// da área segura. Título limitado a 2 linhas (trunca com reticências) para
+/// não quebrar o layout da folha.
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
@@ -119,10 +122,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
               itemBuilder: (context, index) {
                 final slide = _slides[index];
                 return Column(
+                  // `Clip.none` (padrão do Flex) é o que permite a folha
+                  // abaixo pintar por cima da base da imagem — ver o
+                  // `Transform.translate` nela.
                   children: [
                     // Full-bleed: encosta no topo real da tela (sob a status
                     // bar), não na área segura — só a folha de texto abaixo
-                    // respeita o SafeArea.
+                    // respeita o SafeArea. Retangular: o raio agora é da
+                    // folha branca que sobrepõe a base dela, não da imagem.
                     Expanded(
                       flex: 7,
                       child: AppIllustrationSlot(
@@ -134,56 +141,74 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                     Expanded(
                       flex: 4,
-                      // Sem `Center`: o texto encosta no topo da folha, logo
-                      // abaixo da imagem — só rola se não couber, não fica
-                      // flutuando no meio de um vão vazio (pedido do usuário
-                      // após ver o hero com folga demais da folha de texto).
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.space6,
-                          vertical: AppSpacing.space4,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AppPageDots(
-                              count: _slides.length,
-                              active: _slide,
-                              onSelect: (i) => _controller.animateToPage(
-                                i,
-                                duration: AppMotion.medium,
-                                curve: Curves.easeOut,
-                              ),
+                      // `Transform.translate` (não `margin`, que o Container
+                      // recusa negativo) sobrepõe a folha levemente sobre a
+                      // base da imagem — como a folha é opaca, só os cantos
+                      // arredondados "recortam" e revelam a imagem atrás,
+                      // deixando o raio aparente contra o fundo fotográfico
+                      // (pedido do usuário; antes o raio ficava na imagem,
+                      // contra o fundo já branco da folha — pouco visível).
+                      child: Transform.translate(
+                        offset: const Offset(0, -AppSpacing.space5),
+                        child: Container(
+                          clipBehavior: Clip.antiAlias,
+                          decoration: BoxDecoration(
+                            color: semantic.bgSurface,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(AppRadius.surface),
+                              topRight: Radius.circular(AppRadius.surface),
                             ),
-                            const SizedBox(height: AppSpacing.space3),
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 300),
-                              child: AppHeading(
-                                level: AppHeadingLevel.h1,
-                                // +8px sobre o h1 do padrão global (pedido do
-                                // usuário só para o hero do onboarding).
-                                style: const TextStyle(
-                                  fontSize: AppTypography.xlPlus2 + 8,
-                                ),
-                                child: Text(
-                                  slide.title,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
+                          ),
+                          // Sem `Center`: o texto encosta no topo da folha, logo
+                          // abaixo da imagem — só rola se não couber, não fica
+                          // flutuando no meio de um vão vazio (pedido do usuário
+                          // após ver o hero com folga demais da folha de texto).
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(
+                              AppSpacing.space6,
+                              AppSpacing.space4 + AppSpacing.space5,
+                              AppSpacing.space6,
+                              AppSpacing.space4,
                             ),
-                            const SizedBox(height: AppSpacing.space2),
-                            ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 320),
-                              child: Text(
-                                slide.desc,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: semantic.fgMuted,
-                                  height: 1.4,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 340,
+                                  ),
+                                  child: AppHeading(
+                                    level: AppHeadingLevel.h1,
+                                    // +8px sobre o h1 do padrão global (pedido do
+                                    // usuário só para o hero do onboarding).
+                                    style: const TextStyle(
+                                      fontSize: AppTypography.xlPlus2 + 8,
+                                    ),
+                                    child: Text(
+                                      slide.title,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                const SizedBox(height: AppSpacing.space2),
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 320,
+                                  ),
+                                  child: Text(
+                                    slide.desc,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: semantic.fgMuted,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),

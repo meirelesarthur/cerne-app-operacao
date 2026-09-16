@@ -32,9 +32,10 @@ class AppIllustrationSlot extends StatelessWidget {
   final double maxSize;
 
   /// Hero full-bleed (onboarding): preenche a largura e a altura do espaço
-  /// disponível, encostada nas bordas, com raio só nos cantos inferiores —
-  /// em vez do cartão centralizado de [maxSize] com raio nos 4 cantos (empty
-  /// states). Sem [src], cai no mesmo fallback tokenizado, esticado no quadro.
+  /// disponível, encostada nas bordas — sem raio próprio, retangular. O raio
+  /// fica por conta da folha branca que sobrepõe a base da imagem (ver
+  /// `OnboardingPage`), não da própria ilustração. Sem [src], cai no mesmo
+  /// fallback tokenizado, esticado no quadro.
   final bool fullBleed;
 
   @override
@@ -45,27 +46,21 @@ class AppIllustrationSlot extends StatelessWidget {
       return Semantics(
         label: alt,
         image: true,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(AppRadius.surface),
-            bottomRight: Radius.circular(AppRadius.surface),
-          ),
-          child: SizedBox.expand(
-            child: src != null
-                ? Image.asset(src!, fit: BoxFit.cover)
-                : ColoredBox(
-                    color: semantic.inkBg,
-                    child: icon == null
-                        ? null
-                        : Center(
-                            child: AppIcon(
-                              icon,
-                              size: AppSize.iconXxl,
-                              color: semantic.ctaBg,
-                            ),
+        child: SizedBox.expand(
+          child: src != null
+              ? Image.asset(src!, fit: BoxFit.cover)
+              : ColoredBox(
+                  color: semantic.inkBg,
+                  child: icon == null
+                      ? null
+                      : Center(
+                          child: AppIcon(
+                            icon,
+                            size: AppSize.iconXxl,
+                            color: semantic.ctaBg,
                           ),
-                  ),
-          ),
+                        ),
+                ),
         ),
       );
     }

@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:cerne_app/ui/ui.dart';
+
 import '../../support/router_test_harness.dart';
 
 void main() {
@@ -12,13 +14,16 @@ void main() {
   });
 
   group('OnboardingPage', () {
-    testWidgets('mostra o primeiro slide, os dots e as ações', (tester) async {
+    testWidgets('mostra o primeiro slide e as ações, sem dots de step', (
+      tester,
+    ) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       expect(find.text('Sua fazenda na palma da mão'), findsOneWidget);
       expect(find.text('Próximo'), findsOneWidget);
       expect(find.text('Pular'), findsOneWidget);
+      expect(find.byType(AppPageDots), findsNothing);
       expect(tester.takeException(), isNull);
     });
 
