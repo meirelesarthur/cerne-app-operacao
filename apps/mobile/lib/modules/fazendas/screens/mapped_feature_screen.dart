@@ -1154,7 +1154,9 @@ class _FeatureForm extends StatelessWidget {
             // agora aparece como campo obrigatório de verdade — antes toda
             // coleção era opcional e um protocolo sem etapa nenhuma podia
             // ser salvo. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
-            required: sections.any(feature.requiredSections.contains),
+            required: sections.any(
+              effectiveRequiredSections(feature, journey.form.values).contains,
+            ),
             error: journey.form.attempted
                 ? _sectionError(feature, journey, sections)
                 : null,
@@ -1236,7 +1238,7 @@ String? _sectionError(
   FunctionalJourneyController journey,
   List<String> sections,
 ) {
-  for (final section in feature.requiredSections) {
+  for (final section in effectiveRequiredSections(feature, journey.form.values)) {
     if (!sections.contains(section)) continue;
     if ((journey.form.groupCounts[section] ?? 0) < 1) {
       return 'Adicione ao menos um item em "$section".';
