@@ -239,8 +239,12 @@ void main() {
       // Correção das médias: perdas.lote, transferencia-lote-area.responsavel e
       // .local-atual deixam de ser required (contrato nullable/não-contratual):
       // 196-3=193.
+      // Correção das baixas: lote-animais.responsavel deixa de ser required
+      // (employee_uuid nullable): 193-1=192. (marcacao.quantidade muda de tipo
+      // number→integer, segue required; pastagens.Máquinas.quantidade é campo
+      // de coleção, não conta aqui.)
       expect(fields, hasLength(283));
-      expect(fields.where((field) => field.isRequired), hasLength(193));
+      expect(fields.where((field) => field.isRequired), hasLength(192));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),

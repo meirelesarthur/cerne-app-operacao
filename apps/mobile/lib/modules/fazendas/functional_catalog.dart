@@ -1351,11 +1351,12 @@ const operationalFeatures = <FeatureDefinition>[
     // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
     readOnly: true,
     fields: [
+      // fidelidade-contrato (re-auditoria 3ª avaliação): employee_uuid é
+      // nullable no AnimalBatchRequest — o app exigia a mais.
       FeatureField(
         id: 'responsavel',
         label: 'Responsável',
         type: FeatureFieldType.select,
-        isRequired: true,
         options: catalogoResponsaveis,
       ),
       FeatureField(
@@ -1961,10 +1962,12 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         placeholder: 'Nº da semana',
       ),
+      // fidelidade-contrato (re-auditoria 3ª avaliação): quantity é integer|min:1
+      // em /markings.
       FeatureField(
         id: 'quantidade',
         label: 'Quantidade',
-        type: FeatureFieldType.number,
+        type: FeatureFieldType.integer,
         isRequired: true,
       ),
       // fidelidade-contrato (re-auditoria 3ª avaliação): a cor de `/markings`
@@ -2768,11 +2771,13 @@ const operationalFeatures = <FeatureDefinition>[
             isRequired: true,
             options: catalogoEquipamentos,
           ),
+          // fidelidade-contrato (re-auditoria 3ª avaliação): equipments.* do
+          // PastureRequest não tem `quantity` — o campo é extra; deixa de ser
+          // obrigatório para não exigir algo que o contrato ignora.
           FeatureField(
             id: 'quantidade',
             label: 'Quantidade',
             type: FeatureFieldType.number,
-            isRequired: true,
           ),
           FeatureField(
             id: 'unidade',

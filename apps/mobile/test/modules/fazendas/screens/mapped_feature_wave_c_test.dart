@@ -34,7 +34,8 @@ void _fillRequiredFields(
       field.id,
       field.options.isNotEmpty
           ? field.options.first
-          : field.type == FeatureFieldType.number
+          : (field.type == FeatureFieldType.number ||
+                field.type == FeatureFieldType.integer)
           ? '1'
           : field.type == FeatureFieldType.date
           ? '2026-08-16'
