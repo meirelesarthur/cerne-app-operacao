@@ -1692,12 +1692,14 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoResponsaveis,
       ),
+      // fidelidade-contrato (re-auditoria pós-fix): is_enabled é required|boolean
+      // — emite 'true'/'false' (selectOptions), exibe Sim/Não.
       FeatureField(
         id: 'ativo',
         label: 'Ativo',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Sim', 'Não'],
+        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
       ),
       FeatureField(
         id: 'produto',
@@ -2094,12 +2096,14 @@ const operationalFeatures = <FeatureDefinition>[
       //
       // fidelidade-contrato (onda 1): `time_control` é required no contrato
       // real, não opcional. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
+      // fidelidade-contrato (re-auditoria pós-fix): time_control é
+      // required|boolean — emite 'true'/'false' (selectOptions), exibe Sim/Não.
       FeatureField(
         id: 'controle-por-tempo',
         label: 'Controle por tempo (carência)',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Sim', 'Não'],
+        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
       ),
       FeatureField(
         id: 'observacao',
@@ -2209,15 +2213,17 @@ const operationalFeatures = <FeatureDefinition>[
           // exato de `functions` — "Função" é a tradução literal, mas pode
           // não ser o termo usado para tipo de mão de obra em campo. Ver
           // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2.
+          // fidelidade-contrato (re-auditoria pós-fix): labor.*.func_type é
+          // in:[1,2,3] — emite o int (selectOptions), exibe o rótulo.
           FeatureField(
             id: 'tipo',
             label: 'Tipo',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'Empregado',
-              'Função',
-              'Prestador',
+            selectOptions: [
+              (value: '1', label: 'Empregado'),
+              (value: '2', label: 'Função'),
+              (value: '3', label: 'Prestador'),
             ],
           ),
           FeatureField(
@@ -2375,9 +2381,12 @@ const operationalFeatures = <FeatureDefinition>[
     // `items[]` — cada ingrediente da batida tem estoque, matéria seca, custo
     // e porcentagem próprios; é onde o desvio da batida aparece.
     collections: [
+      // fidelidade-contrato (re-auditoria pós-fix): items é required|array|min:1
+      // no DietBeatRequest — trava ≥1 (mesmo padrão de producao-batelada).
       FeatureCollection(
         name: 'Itens da batida',
         itemLabel: 'Item da batida',
+        isRequired: true,
         titleField: 'produto',
         subtitleFields: ['quantidade', 'porcentagem'],
         fields: [
@@ -2502,12 +2511,15 @@ const operationalFeatures = <FeatureDefinition>[
       // `/animals/batch-transfer` — decide se todos os animais vão para um
       // lote só ou se cada um tem o seu destino. Sem ela o backend não sabe
       // como interpretar o resto da submissão.
+      // fidelidade-contrato (re-auditoria pós-fix): same_batch é required|boolean
+      // — emite 'true'/'false' (selectOptions), exibe Sim/Não. Os condicionais
+      // do motor comparam contra 'true'/'false'.
       FeatureField(
         id: 'destino-unico',
         label: 'Mesmo lote para todos',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Sim', 'Não'],
+        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
       ),
     ],
     // fidelidade-esteira (onda 13): `animal_transfer_animal_farm` no dump é
@@ -2943,15 +2955,17 @@ const operationalFeatures = <FeatureDefinition>[
         titleField: 'diagnostico',
         subtitleFields: ['prioridade'],
         fields: [
+          // fidelidade-contrato (re-auditoria pós-fix): occurrences.*.priority é
+          // in:[0,1,2] — emite o código (selectOptions), exibe o rótulo.
           FeatureField(
             id: 'prioridade',
             label: 'Prioridade',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'Baixa',
-              'Média',
-              'Alta',
+            selectOptions: [
+              (value: '0', label: 'Baixa'),
+              (value: '1', label: 'Média'),
+              (value: '2', label: 'Alta'),
             ],
           ),
           FeatureField(
@@ -3158,9 +3172,14 @@ const operationalFeatures = <FeatureDefinition>[
       ),
     ],
     collections: [
+      // fidelidade-contrato (re-auditoria pós-fix): animal_uuids é
+      // required|array|min:1 no WeaningRequest — a coleção (que mapeia o array)
+      // trava ≥1 animal. O escalar de cabeçalho segue como identificação
+      // primária.
       FeatureCollection(
         name: 'Identificações adicionais',
         itemLabel: 'Identificação',
+        isRequired: true,
         titleField: 'identificacao',
         subtitleFields: ['lote'],
         fields: [
@@ -4130,19 +4149,31 @@ const operationalFeatures = <FeatureDefinition>[
       // não foi tocado: a auditoria não o aponta como divergente (é campo
       // descritivo da estação, não validado contra este mesmo enum). Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2.
+      // fidelidade-contrato (re-auditoria pós-fix): type e launch_type são
+      // int-backed (BreedingMatingType NATURAL=1/IATF=2/FIV=3;
+      // BreedingMatingLaunchType NORMAL=1/SIMPLIFICADO=2) e Rule::enum valida o
+      // backing — emitem o int (selectOptions), exibem o rótulo. Os condicionais
+      // por-modo do motor comparam contra esses valores ('1'..'3' / '1','2').
       FeatureField(
         id: 'tipo',
         label: 'Tipo de acasalamento',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Monta natural', 'IATF', 'FIV'],
+        selectOptions: [
+          (value: '1', label: 'Monta natural'),
+          (value: '2', label: 'IATF'),
+          (value: '3', label: 'FIV'),
+        ],
       ),
       FeatureField(
         id: 'tipo-lancamento',
         label: 'Tipo de lançamento',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Por lote', 'Animal por animal'],
+        selectOptions: [
+          (value: '1', label: 'Por lote'),
+          (value: '2', label: 'Animal por animal'),
+        ],
       ),
       FeatureField(id: 'estacao-monta', label: 'Estação de monta'),
       FeatureField(

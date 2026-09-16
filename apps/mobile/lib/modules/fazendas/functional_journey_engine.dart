@@ -253,8 +253,10 @@ bool isFeatureFieldRequired(
     // Simplificado (BreedingMatingLaunchType). breeding_season_uuid é required
     // fora do Simplificado; protocol_uuid/protocol_identification quando não
     // é natural e é Normal.
-    final normal = tipoLancamento == 'Por lote';
-    final naoNatural = tipo != 'Monta natural';
+    // type: 1=Monta natural, 2=IATF, 3=FIV; launch_type: 1=Normal(Por lote),
+    // 2=Simplificado(Animal por animal) — backing int do contrato.
+    final normal = tipoLancamento == '1';
+    final naoNatural = tipo != '1';
     if (field.id == 'estacao-monta') return normal;
     if (field.id == 'protocolo') return naoNatural && normal;
     if (field.id == 'identificacao-protocolo') return naoNatural && normal;
@@ -265,7 +267,7 @@ bool isFeatureFieldRequired(
   // dentro de cada item de "Animais transferidos",
   // [isCollectionItemFieldRequired] abaixo) — nunca os dois.
   if (feature.id == 'transferencia-animal' && field.id == 'novo-lote') {
-    return (values['destino-unico']?.trim() ?? '') == 'Sim';
+    return (values['destino-unico']?.trim() ?? '') == 'true';
   }
   // fidelidade-contrato (re-auditoria 3ª avaliação): `ProductRequest` torna
   // `cultivation_uuid`/`ncm_uuid` obrigatórios via `required_if` quando o
@@ -321,7 +323,7 @@ bool isCollectionItemFieldRequired(
   if (feature.id == 'transferencia-animal' &&
       collection.name == 'Animais transferidos' &&
       field.id == 'novo-lote') {
-    return (formValues['destino-unico']?.trim() ?? '') == 'Não';
+    return (formValues['destino-unico']?.trim() ?? '') == 'false';
   }
   // fidelidade-contrato (re-auditoria 3ª avaliação): em `/maintenances` o
   // executor é employee XOR provider; `provider_total` é required_if o tipo é
@@ -486,8 +488,8 @@ String? featureFieldError(
   // lançamento é por lote inteiro (não por animal).
   if (feature.id == 'monta-natural' && value.isEmpty) {
     final tipo = values['tipo']?.trim() ?? '';
-    final normal = (values['tipo-lancamento']?.trim() ?? '') == 'Por lote';
-    final naoNatural = tipo != 'Monta natural';
+    final normal = (values['tipo-lancamento']?.trim() ?? '') == '1';
+    final naoNatural = tipo != '1';
     if (field.id == 'estacao-monta' && normal) {
       return 'Selecione a estação de monta.';
     }
@@ -506,7 +508,7 @@ String? featureFieldError(
   if (feature.id == 'transferencia-animal' &&
       field.id == 'novo-lote' &&
       value.isEmpty &&
-      (values['destino-unico']?.trim() ?? '') == 'Sim') {
+      (values['destino-unico']?.trim() ?? '') == 'true') {
     return 'Selecione o novo lote.';
   }
   // fidelidade-contrato (re-auditoria 3ª avaliação): `cultivation_uuid`/
@@ -535,13 +537,14 @@ List<String> effectiveRequiredSections(
   }
   if (feature.id == 'monta-natural') {
     final tipo = values['tipo']?.trim() ?? '';
-    final normal = (values['tipo-lancamento']?.trim() ?? '') == 'Por lote';
+    final normal = (values['tipo-lancamento']?.trim() ?? '') == '1';
+    // type: 1=NATURAL; launch_type: 1=Normal, 2=Simplificado (backing int).
     // natural.cow_uuids min:1 quando type=NATURAL.
-    if (tipo == 'Monta natural') req('Vacas do acasalamento');
+    if (tipo == '1') req('Vacas do acasalamento');
     // simplified_animals min:1 no Simplificado (Animal por animal).
     if (!normal) req('Animais (lançamento simplificado)');
     // protocol_animals min:1 no Protocolo Normal (por lote, não natural).
-    if (normal && tipo != 'Monta natural') req('Animais do protocolo');
+    if (normal && tipo != '1') req('Animais do protocolo');
   }
   return sections;
 }
