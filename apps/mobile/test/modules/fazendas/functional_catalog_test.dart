@@ -246,8 +246,10 @@ void main() {
       // Correção pós-fix (médias+baixas): 6 over-requires alinhados ao contrato
       // (nullable) — registrar.nascimento, compras.documento, pastagens.armazem-
       // insumos/producao, monta.lote/bull-seed-season: 192-6=186.
+      // Correção pós-fix (baixas, FK texto→select): perdas.responsavel deixa de
+      // ser required (não-contratual, servidor usa Auth): 186-1=185.
       expect(fields, hasLength(283));
-      expect(fields.where((field) => field.isRequired), hasLength(186));
+      expect(fields.where((field) => field.isRequired), hasLength(185));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),

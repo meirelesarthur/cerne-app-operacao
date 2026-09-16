@@ -404,6 +404,33 @@ const catalogoLotes = <String>[
   'Lote Receptoras 03',
 ];
 
+// fidelidade-contrato (re-auditoria pós-fix): catálogos fechados para FKs que
+// ainda eram texto livre — dropdown de conjunto conhecido em vez de campo
+// aberto. O valor emitido segue sendo o rótulo (③ uuid×rótulo só some com
+// persistência), mas o campo deixa de aceitar texto arbitrário.
+const catalogoAreas = <String>[
+  'Talhão 01',
+  'Talhão 02',
+  'Talhão 03',
+  'Pasto Norte',
+  'Pasto Sul',
+  'Reserva Legal',
+];
+const catalogoModulos = <String>[
+  'Módulo A',
+  'Módulo B',
+  'Módulo C',
+];
+const catalogoEstacoesMonta = <String>[
+  'Estação 2025/2026',
+  'Estação 2026/2027',
+];
+const catalogoTouros = <String>[
+  'Touro Nelore 4210',
+  'Touro Angus 1180',
+  'Touro Brahman 3055',
+];
+
 // Compartilhado por `compras-animais` (fornecedor e vendedor).
 const catalogoFornecedores = <String>[
   'Fazenda Boa Vista',
@@ -1011,7 +1038,13 @@ const adminFeatures = <FeatureDefinition>[
       // required no POST de `/breeding-batches` e era o único required ainda
       // faltando desta leva — ficou de fora quando `codigo`/`data` entraram.
       FeatureField(id: 'descricao', label: 'Descrição', isRequired: true),
-      FeatureField(id: 'estacao', label: 'Estação de monta', isRequired: true),
+      FeatureField(
+        id: 'estacao',
+        label: 'Estação de monta',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoEstacoesMonta,
+      ),
       // fidelidade-contrato (onda 4): o contrato real é `batch_uuids[]`
       // (array de UUID, min:1) — este escalar permanece só para título e
       // descrição do registro nesta consulta (remover exigiria redesenhar
@@ -1910,7 +1943,13 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoResponsaveis,
       ),
-      FeatureField(id: 'area', label: 'Área', isRequired: true),
+      FeatureField(
+        id: 'area',
+        label: 'Área',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoAreas,
+      ),
       // fidelidade-campos (onda 2): `date` não vem marcado como required em
       // `/markings`, mas toda marcação nasce de um dia de campo e todos os
       // demais lançamentos do catálogo pedem a data — mantida obrigatória.
@@ -2619,8 +2658,18 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['Área', 'Módulo', 'Curral'],
       ),
-      FeatureField(id: 'area', label: 'Nova área'),
-      FeatureField(id: 'modulo', label: 'Novo módulo'),
+      FeatureField(
+        id: 'area',
+        label: 'Nova área',
+        type: FeatureFieldType.searchSelect,
+        options: catalogoAreas,
+      ),
+      FeatureField(
+        id: 'modulo',
+        label: 'Novo módulo',
+        type: FeatureFieldType.searchSelect,
+        options: catalogoModulos,
+      ),
       // fidelidade-campos (onda 3): `date` é required em
       // `/batch-module-area-transfers`, e o curral de confinamento é o
       // terceiro destino possível, em XOR com área e módulo.
@@ -3473,11 +3522,12 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         placeholder: 'Brinco ou ID',
       ),
+      // fidelidade-contrato (re-auditoria pós-fix): LossAnimalRequest não tem
+      // campo de responsável (o servidor usa Auth) — deixa de ser required.
       FeatureField(
         id: 'responsavel',
         label: 'Responsável',
         type: FeatureFieldType.select,
-        isRequired: true,
         options: catalogoResponsaveis,
       ),
       FeatureField(
@@ -3848,7 +3898,13 @@ const operationalFeatures = <FeatureDefinition>[
         options: catalogoResponsaveis,
       ),
       FeatureField(id: 'nome', label: 'Nome do protocolo', isRequired: true),
-      FeatureField(id: 'estacao', label: 'Estação de monta', isRequired: true),
+      FeatureField(
+        id: 'estacao',
+        label: 'Estação de monta',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoEstacoesMonta,
+      ),
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
@@ -4151,7 +4207,13 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.searchSelect,
         options: catalogoLotes,
       ),
-      FeatureField(id: 'touro', label: 'Touro / reprodutor', isRequired: true),
+      FeatureField(
+        id: 'touro',
+        label: 'Touro / reprodutor',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoTouros,
+      ),
       // fidelidade-campos (onda 4): `type` e `launch_type` são required em
       // `/breeding-matings` e controlam o modo inteiro do registro — o
       // primeiro diz se é monta natural, IA, IATF ou TE; o segundo, se o
