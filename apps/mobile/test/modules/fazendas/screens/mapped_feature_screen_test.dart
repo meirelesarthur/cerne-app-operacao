@@ -393,11 +393,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Etapa 3 — estoque.
-      await _selectSearchFieldOption(
-        tester,
-        'Armazém de insumos',
-        'Armazém A',
-      );
+      await _selectSearchFieldOption(tester, 'Armazém de insumos', 'Armazém A');
       await _selectSearchFieldOption(
         tester,
         'Armazém de produção',
@@ -439,11 +435,14 @@ void main() {
       expect(find.text('20 · kg'), findsOneWidget);
       expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
 
-      // Etapa 5 — revisão: a coleção diz quantos e quais.
+      // Etapa 5 — revisão: a coleção aparece por extenso, item a item, na
+      // mesma caixa da etapa de preenchimento — não mais um resumo achatado.
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
       expect(find.text('Revisão'), findsWidgets);
-      expect(find.text('1 item(ns) · Ração Engorda 18%'), findsOneWidget);
+      expect(find.text('Insumos'), findsOneWidget);
+      expect(find.text('Ração Engorda 18%'), findsOneWidget);
+      expect(find.text('20 · kg'), findsOneWidget);
       expect(find.text('Roçada'), findsOneWidget);
 
       await tester.tap(findCta('Salvar pastagem'));
@@ -481,11 +480,7 @@ void main() {
       await _selectFieldOption(tester, 'Atividade', 'Roçada');
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
-      await _selectSearchFieldOption(
-        tester,
-        'Armazém de insumos',
-        'Armazém A',
-      );
+      await _selectSearchFieldOption(tester, 'Armazém de insumos', 'Armazém A');
       await _selectSearchFieldOption(
         tester,
         'Armazém de produção',

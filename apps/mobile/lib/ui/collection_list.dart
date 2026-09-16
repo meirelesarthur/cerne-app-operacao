@@ -5,6 +5,7 @@ import 'addable_group_list.dart';
 import 'app_icon.dart';
 import 'icon_button.dart';
 import '../design/generated/app_layout.dart';
+import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -19,7 +20,7 @@ class AppCollectionItemView {
 }
 
 /// Uma coleção de itens de um cadastro — a faixa "Adicionar" seguida das
-/// linhas já lançadas, cada uma removível.
+/// linhas já lançadas, cada uma em sua própria caixa, editável e removível.
 ///
 /// Compõe [AppAddableGroupList] em vez de redesenhar a faixa: o cabeçalho
 /// (nome, "N item(ns) adicionado(s)", contador e botão) é o mesmo pixel, e
@@ -28,15 +29,20 @@ class AppCollectionItemView {
 /// (`_ItemRow` em `apontamento_flow.dart`) e que o motor genérico de cadastros
 /// não tinha, o que obrigava toda coleção a viver como um contador cego.
 ///
-/// Sem [onRemove] as linhas ficam apenas legíveis — é o caso das consultas
-/// somente leitura.
+/// Sem [onAdd] (`null`) a faixa de ação também some — sobra só o nome da
+/// coleção como rótulo simples e as linhas, ambos apenas de leitura. É o modo
+/// usado na revisão do cadastro (confirmação antes de salvar) e em fichas de
+/// registro já gravado: mesma caixa por item, sem "Adicionar" nem editar
+/// nem remover.
 class AppCollectionList extends StatelessWidget {
   const AppCollectionList({
     super.key,
     required this.name,
     required this.items,
-    required this.onAdd,
+    this.onAdd,
+    this.onEdit,
     this.onRemove,
+    this.editLabel = 'Editar item',
     this.removeLabel = 'Remover item',
   });
 
@@ -45,29 +51,51 @@ class AppCollectionList extends StatelessWidget {
 
   final List<AppCollectionItemView> items;
 
-  final VoidCallback onAdd;
+  /// `null` (padrão da revisão/ficha) esconde a faixa "Adicionar" — a lista
+  /// vira somente leitura de ponta a ponta (ver [onEdit]/[onRemove]).
+  final VoidCallback? onAdd;
 
-  /// Recebe o índice da linha a remover. Nulo deixa as linhas só de leitura.
+  /// Recebe o índice da linha a editar. Nulo deixa as linhas sem o ícone de
+  /// editar — é o caso das consultas somente leitura.
+  final void Function(int index)? onEdit;
+
+  /// Recebe o índice da linha a remover. Nulo deixa as linhas sem o ícone de
+  /// remover — é o caso das consultas somente leitura.
   final void Function(int index)? onRemove;
 
+  final String editLabel;
   final String removeLabel;
 
   @override
   Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppAddableGroupList(
-          groups: [name],
-          counts: {name: items.length},
-          onAdd: (_) => onAdd(),
-        ),
+        if (onAdd case final add?)
+          AppAddableGroupList(
+            groups: [name],
+            counts: {name: items.length},
+            onAdd: (_) => add(),
+          )
+        else
+          Text(
+            name,
+            style: TextStyle(
+              fontSize: AppTypography.sm,
+              fontWeight: AppTypography.weightSemibold,
+              color: semantic.fgMuted,
+            ),
+          ),
         for (var index = 0; index < items.length; index++)
           Padding(
             padding: const EdgeInsets.only(top: AppSpacing.space2),
             child: _CollectionRow(
               item: items[index],
+              editLabel: editLabel,
               removeLabel: removeLabel,
+              onEdit: onEdit == null ? null : () => onEdit!(index),
               onRemove: onRemove == null ? null : () => onRemove!(index),
             ),
           ),
@@ -79,51 +107,69 @@ class AppCollectionList extends StatelessWidget {
 class _CollectionRow extends StatelessWidget {
   const _CollectionRow({
     required this.item,
+    required this.editLabel,
     required this.removeLabel,
+    this.onEdit,
     this.onRemove,
   });
 
   final AppCollectionItemView item;
+  final String editLabel;
   final String removeLabel;
+  final VoidCallback? onEdit;
   final VoidCallback? onRemove;
 
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.title,
-                style: TextStyle(
-                  fontSize: AppTypography.sm,
-                  fontWeight: AppTypography.weightSemibold,
-                  color: semantic.fgDefault,
-                ),
-              ),
-              if (item.subtitle case final subtitle?)
+    return Container(
+      padding: const EdgeInsets.all(AppSpacing.space3),
+      decoration: BoxDecoration(
+        color: semantic.bgSubtle,
+        borderRadius: BorderRadius.circular(AppRadius.xl2),
+        border: Border.all(color: semantic.borderDefault),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 Text(
-                  subtitle,
+                  item.title,
                   style: TextStyle(
-                    fontSize: AppTypography.xs,
-                    color: semantic.fgMuted,
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightSemibold,
+                    color: semantic.fgDefault,
                   ),
                 ),
-            ],
+                if (item.subtitle case final subtitle?)
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: AppTypography.xs,
+                      color: semantic.fgMuted,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        if (onRemove case final remove?)
-          AppIconButton(
-            icon: const AppIcon(AppIcons.x, size: AppSize.iconXs),
-            label: removeLabel,
-            onPressed: remove,
-          ),
-      ],
+          if (onEdit case final edit?)
+            AppIconButton(
+              icon: const AppIcon(AppIcons.pencil, size: AppSize.iconXs),
+              label: editLabel,
+              onPressed: edit,
+            ),
+          if (onRemove case final remove?)
+            AppIconButton(
+              icon: const AppIcon(AppIcons.x, size: AppSize.iconXs),
+              label: removeLabel,
+              onPressed: remove,
+            ),
+        ],
+      ),
     );
   }
 }
@@ -137,7 +183,7 @@ WidgetbookComponent buildCollectionListWidgetbookComponent() {
         builder: (context) => const _CollectionListUseCase(),
       ),
       WidgetbookUseCase(
-        name: 'Somente leitura',
+        name: 'Somente leitura (revisão/ficha)',
         builder: (context) => const Padding(
           padding: EdgeInsets.all(AppSpacing.space4),
           child: AppCollectionList(
@@ -148,15 +194,12 @@ WidgetbookComponent buildCollectionListWidgetbookComponent() {
                 subtitle: '2026-09-01 · 1 dose · Farmácia',
               ),
             ],
-            onAdd: _noop,
           ),
         ),
       ),
     ],
   );
 }
-
-void _noop() {}
 
 class _CollectionListUseCase extends StatefulWidget {
   const _CollectionListUseCase();
@@ -186,6 +229,12 @@ class _CollectionListUseCaseState extends State<_CollectionListUseCase> {
               title: 'Sal Mineral Proteinado',
               subtitle: '50 kg · Depósito B',
             ),
+          ),
+        ),
+        onEdit: (index) => setState(
+          () => _items[index] = AppCollectionItemView(
+            title: _items[index].title,
+            subtitle: '${_items[index].subtitle} (editado)',
           ),
         ),
         onRemove: (index) => setState(() => _items.removeAt(index)),

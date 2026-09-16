@@ -155,13 +155,41 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   /// que o contrato define para o item e a linha entra na lista com o dado
   /// verdadeiro. Coleção sem campos declarados continua só contando.
   void _addCollectionItem(BuildContext context, FeatureCollection collection) {
+    _openCollectionItemSheet(context, collection);
+  }
+
+  /// Mesma folha de [_addCollectionItem], pré-preenchida com o item em
+  /// [index] — "Editar" no lugar de "Adicionar", substitui o item ao salvar
+  /// em vez de acrescentar um novo. Coleção sem campos declarados não tem o
+  /// que editar (o item é `{}`), então o ícone de editar nem aparece nesse
+  /// caso — ver o `onEdit` condicional no `AppCollectionList`.
+  void _editCollectionItem(
+    BuildContext context,
+    FeatureCollection collection,
+    int index,
+  ) {
+    _openCollectionItemSheet(
+      context,
+      collection,
+      editIndex: index,
+      initialValues: _journey.form.itemsOf(collection.name)[index],
+    );
+  }
+
+  void _openCollectionItemSheet(
+    BuildContext context,
+    FeatureCollection collection, {
+    int? editIndex,
+    Map<String, String>? initialValues,
+  }) {
     if (collection.fields.isEmpty) {
       setState(() => _journey.addGroupItem(collection.name));
       return;
     }
 
-    final values = <String, String>{};
+    final values = <String, String>{...?initialValues};
     var attempted = false;
+    final isEditing = editIndex != null;
 
     showAppBottomSheet<void>(
       context,
@@ -213,12 +241,18 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   setSheetState(() => attempted = true);
                   return;
                 }
-                setState(
-                  () => _journey.addGroupItem(collection.name, {...values}),
-                );
+                setState(() {
+                  if (isEditing) {
+                    _journey.updateGroupItem(collection.name, editIndex, {
+                      ...values,
+                    });
+                  } else {
+                    _journey.addGroupItem(collection.name, {...values});
+                  }
+                });
                 Navigator.of(context).pop();
               },
-              child: const Text('Adicionar'),
+              child: Text(isEditing ? 'Salvar' : 'Adicionar'),
             ),
           ],
         ),
@@ -432,6 +466,8 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                 onValueChanged: _setValue,
                 onAddCollectionItem: (collection) =>
                     _addCollectionItem(context, collection),
+                onEditCollectionItem: (collection, index) =>
+                    _editCollectionItem(context, collection, index),
                 onRemoveCollectionItem: _removeCollectionItem,
                 onCaptureCollectionItem: _captureCollectionItem,
               ),
@@ -1028,6 +1064,7 @@ class _FeatureForm extends StatelessWidget {
     required this.journey,
     required this.onValueChanged,
     required this.onAddCollectionItem,
+    required this.onEditCollectionItem,
     required this.onRemoveCollectionItem,
     required this.onCaptureCollectionItem,
   });
@@ -1036,6 +1073,8 @@ class _FeatureForm extends StatelessWidget {
   final FunctionalJourneyController journey;
   final void Function(String fieldId, String value) onValueChanged;
   final ValueChanged<FeatureCollection> onAddCollectionItem;
+  final void Function(FeatureCollection collection, int index)
+  onEditCollectionItem;
   final void Function(String group, int index) onRemoveCollectionItem;
   final void Function(String collectionName, String fieldId, String value)
   onCaptureCollectionItem;
@@ -1174,6 +1213,9 @@ class _FeatureForm extends StatelessWidget {
                           ),
                       ],
                       onAdd: () => onAddCollectionItem(collection),
+                      onEdit: collection.fields.isEmpty
+                          ? null
+                          : (item) => onEditCollectionItem(collection, item),
                       onRemove: (item) =>
                           onRemoveCollectionItem(collection.name, item),
                     ),
@@ -1193,6 +1235,24 @@ class _FeatureForm extends StatelessWidget {
               ],
               const SizedBox(height: AppSpacing.space3),
               AppReviewList(items: _reviewItems(feature, journey)),
+              // Coleções na íntegra, item a item — mesma caixa da etapa de
+              // preenchimento, só que sem "Adicionar" nem editar/remover
+              // (pedido do usuário: a revisão é conferência, não edição).
+              for (final collection in feature.collections)
+                if (journey.form.itemsOf(collection.name) case final itens
+                    when itens.isNotEmpty) ...[
+                  const SizedBox(height: AppSpacing.space4),
+                  AppCollectionList(
+                    name: collection.name,
+                    items: [
+                      for (final item in itens)
+                        AppCollectionItemView(
+                          title: collectionItemTitle(collection, item),
+                          subtitle: collectionItemSubtitle(collection, item),
+                        ),
+                    ],
+                  ),
+                ],
             ],
           ),
         ],
@@ -1212,28 +1272,16 @@ String? _fieldError(
   return featureFieldError(feature, field, journey.form.values);
 }
 
-/// Na revisão, a coleção mostra quantos itens e quais — a contagem sozinha não
-/// diz se a pessoa lançou o insumo certo.
-String _resumoRevisao(
-  FeatureCollection collection,
-  FunctionalJourneyController journey,
-) {
-  final itens = journey.form.itemsOf(collection.name);
-  final contagem = '${itens.length} item(ns)';
-  if (collection.fields.isEmpty) return contagem;
-  final titulos = itens
-      .map((item) => collectionItemTitle(collection, item))
-      .join(', ');
-  return '$contagem · $titulos';
-}
-
 /// Primeira coleção obrigatória vazia entre as visíveis nesta etapa.
 String? _sectionError(
   FeatureDefinition feature,
   FunctionalJourneyController journey,
   List<String> sections,
 ) {
-  for (final section in effectiveRequiredSections(feature, journey.form.values)) {
+  for (final section in effectiveRequiredSections(
+    feature,
+    journey.form.values,
+  )) {
     if (!sections.contains(section)) continue;
     if ((journey.form.groupCounts[section] ?? 0) < 1) {
       return 'Adicione ao menos um item em "$section".';
@@ -1242,9 +1290,10 @@ String? _sectionError(
   return null;
 }
 
-/// O que a pessoa já respondeu, na ordem do catálogo — campos preenchidos
-/// primeiro, coleções depois (destacadas, porque são o que mais se esquece de
-/// conferir antes de salvar).
+/// O que a pessoa já respondeu nos campos simples, na ordem do catálogo. As
+/// coleções ("Itens vinculados") não entram aqui — a revisão as mostra com o
+/// próprio `AppCollectionList` somente leitura, item a item, em vez de um
+/// resumo achatado em texto (ver o `for` de coleções no `build` acima).
 List<AppReviewItem> _reviewItems(
   FeatureDefinition feature,
   FunctionalJourneyController journey,
@@ -1254,13 +1303,6 @@ List<AppReviewItem> _reviewItems(
     for (final field in feature.fields)
       if ((values[field.id]?.trim() ?? '').isNotEmpty)
         AppReviewItem(label: field.label, value: values[field.id]!.trim()),
-    for (final collection in feature.collections)
-      if (journey.form.itemsOf(collection.name).isNotEmpty)
-        AppReviewItem(
-          label: collection.name,
-          value: _resumoRevisao(collection, journey),
-          emphasis: true,
-        ),
   ];
 }
 
@@ -1310,7 +1352,10 @@ class _FeatureFieldControl extends StatelessWidget {
           options: field.selectOptions.isNotEmpty
               ? [
                   for (final option in field.selectOptions)
-                    AppFormSelectOption(value: option.value, label: option.label),
+                    AppFormSelectOption(
+                      value: option.value,
+                      label: option.label,
+                    ),
                 ]
               : [
                   for (final option in field.options)

@@ -49,7 +49,9 @@ class FunctionalJourneyController {
   /// e por isso não são reconstituídos aqui — a pessoa os refaz ao editar,
   /// como já acontece em qualquer campo opcional não respondido.
   void startEditing(PrototypeRecord record) {
-    final idByLabel = {for (final field in feature.fields) field.label: field.id};
+    final idByLabel = {
+      for (final field in feature.fields) field.label: field.id,
+    };
     final values = <String, String>{
       for (final entry in record.details.entries)
         ?idByLabel[entry.key]: entry.value,
@@ -72,6 +74,10 @@ class FunctionalJourneyController {
 
   void removeGroupItem(String group, int index) {
     form = form.removeGroupItem(group, index);
+  }
+
+  void updateGroupItem(String group, int index, Map<String, String> item) {
+    form = form.updateGroupItem(group, index, item);
   }
 
   /// Avança uma etapa. Devolve `false` quando a etapa atual tem pendência —
@@ -172,16 +178,29 @@ class FunctionalFormState {
     );
   }
 
+  FunctionalFormState updateGroupItem(
+    String group,
+    int index,
+    Map<String, String> item,
+  ) {
+    final atuais = [...itemsOf(group)];
+    if (index < 0 || index >= atuais.length) return this;
+    atuais[index] = item;
+    return FunctionalFormState(
+      values: values,
+      groupItems: {...groupItems, group: atuais},
+      attempted: attempted,
+    );
+  }
+
   FunctionalFormState markAttempted() => FunctionalFormState(
     values: values,
     groupItems: groupItems,
     attempted: true,
   );
 
-  FunctionalFormState clearAttempted() => FunctionalFormState(
-    values: values,
-    groupItems: groupItems,
-  );
+  FunctionalFormState clearAttempted() =>
+      FunctionalFormState(values: values, groupItems: groupItems);
 }
 
 /// Campos de uma etapa, na ordem declarada. Campos citados na etapa que não
@@ -191,9 +210,7 @@ List<FeatureField> featureStepFields(FeatureDefinition feature, int index) {
   if (feature.steps.isEmpty) return feature.fields;
   final step = feature.steps[index.clamp(0, feature.steps.length - 1)];
   final byId = {for (final field in feature.fields) field.id: field};
-  return [
-    for (final id in step.fields) ?byId[id],
-  ];
+  return [for (final id in step.fields) ?byId[id]];
 }
 
 /// Coleções de uma etapa. Sem etapas declaradas, todas as coleções da
@@ -333,7 +350,8 @@ bool isCollectionItemFieldRequired(
   // vive DENTRO de `items.*` (coleção "Peças / Insumos"). `executor_type` é
   // nullable; quando informado, o alvo e o valor do tipo escolhido viram
   // obrigatórios: employee → executor + horas; provider → executor + total.
-  if (feature.id == 'manutencao-frota' && collection.name == 'Peças / Insumos') {
+  if (feature.id == 'manutencao-frota' &&
+      collection.name == 'Peças / Insumos') {
     final tipoExecutor = values['tipo-executor']?.trim() ?? '';
     if (field.id == 'executor') {
       return tipoExecutor == 'employee' || tipoExecutor == 'provider';
@@ -419,7 +437,13 @@ bool isCollectionItemValidFor(
   Map<String, String> formValues = const {},
 ]) => collection.fields.every(
   (field) =>
-      collectionItemFieldError(feature, collection, field, values, formValues) ==
+      collectionItemFieldError(
+        feature,
+        collection,
+        field,
+        values,
+        formValues,
+      ) ==
       null,
 );
 
@@ -548,6 +572,7 @@ List<String> effectiveRequiredSections(
   void req(String name) {
     if (!sections.contains(name)) sections.add(name);
   }
+
   if (feature.id == 'monta-natural') {
     final tipo = values['tipo']?.trim() ?? '';
     final normal = (values['tipo-lancamento']?.trim() ?? '') == '1';
@@ -581,9 +606,10 @@ bool isFeatureStepValid(
   FunctionalFormState state,
   int index,
 ) {
-  final fieldsValid = featureStepFields(feature, index).every(
-    (field) => featureFieldError(feature, field, state.values) == null,
-  );
+  final fieldsValid = featureStepFields(
+    feature,
+    index,
+  ).every((field) => featureFieldError(feature, field, state.values) == null);
   if (!fieldsValid) return false;
   final sections = featureStepSections(feature, index);
   for (final section in effectiveRequiredSections(feature, state.values)) {
@@ -691,11 +717,7 @@ PrototypeRecordStatus _statusFor(String featureId) {
     'configuracoes-misturador',
     'marcacao',
   };
-  const scheduled = {
-    'manutencao-frota',
-    'estacao-monta',
-    'protocolos-estacao',
-  };
+  const scheduled = {'manutencao-frota', 'estacao-monta', 'protocolos-estacao'};
   if (scheduled.contains(featureId)) return PrototypeRecordStatus.scheduled;
   if (active.contains(featureId)) return PrototypeRecordStatus.active;
   return PrototypeRecordStatus.completed;
