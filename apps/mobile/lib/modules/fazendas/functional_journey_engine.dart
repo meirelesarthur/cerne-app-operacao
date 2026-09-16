@@ -310,6 +310,9 @@ bool isCollectionItemFieldRequired(
     final tipoItem = values['tipo']?.trim() ?? '';
     if (field.id == 'produto') return tipoItem == 'Produto';
     if (field.id == 'servico') return tipoItem == 'Serviço';
+    // measurement_uuid é required_with:product_uuid — só a linha de Produto
+    // exige a unidade.
+    if (field.id == 'unidade') return tipoItem == 'Produto';
   }
   // fidelidade-esteira (onda 13): `transferencia-animal."Animais
   // transferidos"` — diferente dos dois casos acima, o XOR aqui depende de

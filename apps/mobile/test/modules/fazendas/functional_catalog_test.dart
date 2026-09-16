@@ -236,8 +236,11 @@ void main() {
       // status-reprodutivo (+3) e rebanho-inicial ganha modo-registro (+1):
       // 279+4=283. Obrigatórios: registrar-animal (modo-registro + preco-arroba
       // + valor-unitario + ua = +4) e rebanho-inicial (mesmos 4 = +4): 188+8=196.
+      // Correção das médias: perdas.lote, transferencia-lote-area.responsavel e
+      // .local-atual deixam de ser required (contrato nullable/não-contratual):
+      // 196-3=193.
       expect(fields, hasLength(283));
-      expect(fields.where((field) => field.isRequired), hasLength(196));
+      expect(fields.where((field) => field.isRequired), hasLength(193));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
@@ -420,12 +423,14 @@ void main() {
       // `abastecimentos."Itens do abastecimento"` recebe `horimetro`/
       // `hodometro` de volta (contrato `SupplyRequest`: `items.*.hour_meter`/
       // `mileage`, por item): 121+2=123.
+      // Correção das médias: diagnostico-gestacao."Animais diagnosticados"
+      // ganha resync/lote/observacao (campos `present` do contrato): 123+3=126.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        123,
+        126,
       );
 
       for (final par in comCampos) {
@@ -484,16 +489,19 @@ void main() {
         {
           // fidelidade-contrato (re-auditoria 3ª avaliação): coleções `min:1`
           // do contrato que faltavam travar — sanitario (animal_uuids/items),
-          // compras (items), manutencao (items).
+          // compras (items), manutencao (items), abastecimentos (items),
+          // formulacoes (feedstocks). material-reprodutivo SAIU: animals não
+          // tem min:1 no contrato (GAP-BSS-06), app estava mais restrito.
           'compras-animais': ['Itens da compra'],
           'sanitario': ['Animais alvo', 'Itens de estoque'],
+          'formulacoes': ['Matérias-primas'],
           'protocolos-estacao': ['Etapas do protocolo'],
           'diagnostico-gestacao': ['Animais diagnosticados'],
           'lotes-reproducao': ['Lotes vinculados'],
           'lote-animais': ['Categorias do lote'],
           'apartacao': ['Lotes de origem'],
-          'material-reprodutivo': ['Animais'],
           'transferencia-animal': ['Animais transferidos'],
+          'abastecimentos': ['Itens do abastecimento'],
           'manutencao-frota': ['Peças / Insumos'],
         },
       );

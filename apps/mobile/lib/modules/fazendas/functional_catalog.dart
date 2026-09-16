@@ -456,6 +456,18 @@ const catalogoEstagiosReprodutivos = <String>[
   'Receptora',
 ];
 
+// fidelidade-contrato (re-auditoria 3ª avaliação): causas de perda/morte (FK
+// `death_losses` de `cause_uuid`). Lista fechada mock — melhora sobre o texto
+// livre (que nunca casaria no `exists`); o mapeamento para uuid é ③.
+const catalogoCausasPerda = <String>[
+  'Doença',
+  'Predação',
+  'Acidente',
+  'Intoxicação',
+  'Parto',
+  'Causa desconhecida',
+];
+
 const catalogoNcm = <String>[
   '2309.90.90 — Preparações para alimentação animal',
   '3808.91.90 — Inseticidas',
@@ -1478,12 +1490,18 @@ const operationalFeatures = <FeatureDefinition>[
       // pecuária…) já mora em "Atividade", mais abaixo — este campo é outra
       // dimensão do contrato (se a área produz ou é reserva). Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 2.
+      // fidelidade-contrato (re-auditoria 3ª avaliação): AreaType é int-backed
+      // (PRODUCTIVE=1, RESERVE=2) e Rule::enum valida o backing — o campo
+      // emite o int (selectOptions) e exibe o rótulo.
       FeatureField(
         id: 'tipo',
         label: 'Tipo de uso',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Produtiva', 'Reserva'],
+        selectOptions: [
+          (value: '1', label: 'Produtiva'),
+          (value: '2', label: 'Reserva'),
+        ],
       ),
       FeatureField(
         id: 'area-total',
@@ -1569,22 +1587,23 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Proprietário',
         placeholder: 'Pessoa ou empresa titular',
       ),
-      // fidelidade-contrato (onda 1): `recreation_area` e `is_enabled` são
-      // required em `/areas` e entraram opcionais. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.
+      // fidelidade-contrato (re-auditoria 3ª avaliação): recreation_area e
+      // is_enabled são `required|boolean` — 'Sim'/'Não' não passa na regra
+      // boolean. Emitem 'true'/'false' (aceitos por `boolean` do Laravel) via
+      // selectOptions, exibindo Sim/Não.
       FeatureField(
         id: 'area-recreio',
         label: 'Área de recreio',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Sim', 'Não'],
+        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
       ),
       FeatureField(
         id: 'ativo',
         label: 'Ativa',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Sim', 'Não'],
+        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
       ),
       // fidelidade-campos (onda 9 — re-auditoria 11/09): `farm_uuid` é
       // required no POST de `/areas` (a fazenda dona da área) e `coordinates`
@@ -1705,12 +1724,18 @@ const operationalFeatures = <FeatureDefinition>[
       // rótulo) foi resolvido; supera também a nota de categoria 2b da
       // fidelidade-contrato. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
       // Onda 16.
+      // fidelidade-contrato (re-auditoria 3ª avaliação): FoodTypeEnum é
+      // string-backed 'P'/'U' e Rule::enum valida o backing — o campo emite
+      // 'P'/'U' (selectOptions) e exibe o rótulo.
       FeatureField(
         id: 'tipo',
         label: 'Tipo',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: ['Porcentagem', 'Unidade'],
+        selectOptions: [
+          (value: 'P', label: 'Porcentagem'),
+          (value: 'U', label: 'Unidade'),
+        ],
       ),
       FeatureField(
         id: 'materia-prima',
@@ -1768,9 +1793,12 @@ const operationalFeatures = <FeatureDefinition>[
       ),
     ],
     collections: [
+      // fidelidade-contrato (re-auditoria 3ª avaliação): feedstocks é
+      // required|array|min:1 no FoodRequest — trava ≥1.
       FeatureCollection(
         name: 'Matérias-primas',
         itemLabel: 'Matéria-prima',
+        isRequired: true,
         titleField: 'materia-prima',
         subtitleFields: ['porcentagem', 'unidade'],
         fields: [
@@ -2527,11 +2555,12 @@ const operationalFeatures = <FeatureDefinition>[
     objective: 'Alterar a localização de um lote entre área e módulo.',
     status: FeatureStatus.ready,
     fields: [
+      // fidelidade-contrato (re-auditoria 3ª avaliação): employee_uuid é
+      // nullable no BatchModuleAreaTransferRequest — o app exigia a mais.
       FeatureField(
         id: 'responsavel',
         label: 'Responsável',
         type: FeatureFieldType.select,
-        isRequired: true,
         options: catalogoResponsaveis,
       ),
       FeatureField(
@@ -2541,10 +2570,12 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: catalogoLotes,
       ),
+      // fidelidade-contrato (re-auditoria 3ª avaliação): 'local-atual' não
+      // existe no contrato (o Request não tem origem) — deixa de ser required
+      // para não exigir um campo não-contratual.
       FeatureField(
         id: 'local-atual',
         label: 'Área / módulo atual',
-        isRequired: true,
       ),
       // fidelidade-contrato (onda 6): o contrato exige **exatamente um**
       // destino — área, módulo ou curral — nunca área e módulo ao mesmo
@@ -3416,14 +3447,24 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
+      // fidelidade-contrato (re-auditoria 3ª avaliação): batch_uuid é nullable
+      // no LossAnimalRequest — o app exigia a mais. Lote vira opcional.
       FeatureField(
         id: 'lote',
         label: 'Lote atual',
         type: FeatureFieldType.searchSelect,
-        isRequired: true,
         options: catalogoLotes,
       ),
-      FeatureField(id: 'causa', label: 'Motivo da perda', isRequired: true),
+      // fidelidade-contrato (re-auditoria 3ª avaliação): cause_uuid é required
+      // + exists:death_losses — texto livre nunca casaria. Vira lista fechada
+      // (o mapeamento para uuid é ③).
+      FeatureField(
+        id: 'causa',
+        label: 'Motivo da perda',
+        type: FeatureFieldType.searchSelect,
+        isRequired: true,
+        options: catalogoCausasPerda,
+      ),
       FeatureField(
         id: 'observacao',
         label: 'Observação',
@@ -3825,23 +3866,28 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.searchSelect,
             options: catalogoProdutos,
           ),
-          // fidelidade-contrato (onda 4): `items.*.service` é o valor do
-          // serviço quando `tipo = Serviço` — faltava por completo (só
-          // `produto` existia). TODO(banco-real): o enum real de serviço não
-          // está confirmado; entra como texto até o time web confirmar os
-          // valores. A exigência XOR produto⊕serviço fica para a Onda 6. Ver
-          // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
+          // fidelidade-contrato (re-auditoria 3ª avaliação): `items.*.service`
+          // é `ProtocolItemServiceEnum` int-backed (1..4) — o texto livre não
+          // casava. Emite o valor int (selectOptions) e exibe o rótulo.
           FeatureField(
             id: 'servico',
             label: 'Serviço',
-            placeholder: 'Descrição do serviço',
+            type: FeatureFieldType.select,
+            selectOptions: [
+              (value: '1', label: 'Inseminação'),
+              (value: '2', label: 'Ultrassom'),
+              (value: '3', label: 'Diagnóstico de gestação'),
+              (value: '4', label: 'Remoção de implante'),
+            ],
           ),
-          // `items.*.measurement_uuid` é required — faltava.
+          // fidelidade-contrato (re-auditoria 3ª avaliação):
+          // `items.*.measurement_uuid` é required_with:product_uuid — só a
+          // linha de Produto exige unidade (condicional no motor), não a de
+          // Serviço.
           FeatureField(
             id: 'unidade',
             label: 'Unidade',
             type: FeatureFieldType.select,
-            isRequired: true,
             options: catalogoUnidades,
           ),
           FeatureField(
@@ -3949,10 +3995,13 @@ const operationalFeatures = <FeatureDefinition>[
     // "Animais do lote"/`registrar-animal`."Identificações"), não o
     // `select` de campo único que o plano assumia.
     collections: [
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `animals` NÃO tem
+      // min:1 no BullSeedSeasonRequest (GAP-BSS-06, `present` sem `min`) — o
+      // app estava mais restrito que o contrato. Coleção deixa de ser
+      // obrigatória (aceita registro sem animais, como o contrato).
       FeatureCollection(
         name: 'Animais',
         itemLabel: 'Animal',
-        isRequired: true,
         titleField: 'identificacao',
         subtitleFields: ['tipo-identificacao'],
         fields: [
@@ -4385,10 +4434,12 @@ const operationalFeatures = <FeatureDefinition>[
               'Reavaliar',
             ],
           ),
+          // fidelidade-contrato (re-auditoria 3ª avaliação): dias_gestation é
+          // integer|min:0 no PregnancyDiagnosisRequest.
           FeatureField(
             id: 'dias-gestacao',
             label: 'Dias de gestação',
-            type: FeatureFieldType.number,
+            type: FeatureFieldType.integer,
           ),
           FeatureField(
             id: 'touro',
@@ -4405,6 +4456,26 @@ const operationalFeatures = <FeatureDefinition>[
             id: 'veterinario',
             label: 'Veterinário responsável',
             isRequired: true,
+          ),
+          // fidelidade-contrato (re-auditoria 3ª avaliação): resync/note/
+          // batch_uuid são `present, nullable` por item — a regra `present`
+          // falha se a chave não for enviada. Capturados como opcionais para
+          // que a chave exista no payload.
+          FeatureField(
+            id: 'resync',
+            label: 'Ressincronizar',
+            type: FeatureFieldType.select,
+            selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
+          ),
+          FeatureField(
+            id: 'lote',
+            label: 'Lote',
+            type: FeatureFieldType.searchSelect,
+            options: catalogoLotes,
+          ),
+          FeatureField(
+            id: 'observacao',
+            label: 'Observação',
           ),
         ],
       ),
@@ -4516,9 +4587,12 @@ const operationalFeatures = <FeatureDefinition>[
     // `/supplies` é multi-item: um abastecimento pode encher mais de um
     // equipamento na mesma ida ao tanque.
     collections: [
+      // fidelidade-contrato (re-auditoria 3ª avaliação): items é
+      // required|array|min:1 no SupplyRequest — trava ≥1.
       FeatureCollection(
         name: 'Itens do abastecimento',
         itemLabel: 'Item do abastecimento',
+        isRequired: true,
         titleField: 'veiculo',
         subtitleFields: ['quantidade', 'unidade'],
         fields: [

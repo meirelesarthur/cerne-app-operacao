@@ -279,6 +279,60 @@ void main() {
         await _enterFieldText(tester, 'Posto / tanque de origem', 'Posto A');
         expect(tester.takeException(), isNull);
 
+        // fidelidade-contrato (re-auditoria 3ª avaliação): items é min:1 no
+        // SupplyRequest — adiciona um item de abastecimento (finders escopados
+        // ao sheet, já que item e cabeçalho compartilham rótulos).
+        await tester.tap(
+          find.descendant(
+            of: find.byType(AppAddableGroupList).first,
+            matching: find.text('Adicionar'),
+          ),
+        );
+        await tester.pumpAndSettle();
+        Finder itemField(String label) => find.ancestor(
+          of: find.text(label).last,
+          matching: find.byType(AppFormField),
+        );
+        await tester.tap(
+          find.descendant(
+            of: itemField('Veículo / equipamento'),
+            matching: find.byType(AppSearchSelect),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byType(TextField).last, 'Pulverizador');
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Pulverizador').last);
+        await tester.pumpAndSettle();
+        await tester.tap(
+          find.descendant(
+            of: itemField('Combustível'),
+            matching: find.byType(DropdownButtonFormField<String>),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Diesel S10').last);
+        await tester.pumpAndSettle();
+        await tester.enterText(
+          find.descendant(
+            of: itemField('Quantidade'),
+            matching: find.byType(TextFormField),
+          ),
+          '80',
+        );
+        await tester.tap(
+          find.descendant(
+            of: itemField('Unidade'),
+            matching: find.byType(DropdownButtonFormField<String>),
+          ),
+        );
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('L').last);
+        await tester.pumpAndSettle();
+        await tester.ensureVisible(find.text('Adicionar').last);
+        await tester.tap(find.text('Adicionar').last);
+        await tester.pumpAndSettle();
+
         await tester.ensureVisible(findCta('Registrar abastecimento'));
         await tester.tap(findCta('Registrar abastecimento'));
         await tester.pumpAndSettle();
