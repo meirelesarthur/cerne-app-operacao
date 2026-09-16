@@ -146,7 +146,13 @@ const dtcg = {
   gbMode: mapThemePalette('gbMode'),
   component: {
     dashboardTile: mapColors(component.dashboardTile),
-    login: { heroScrim: mapColors(component.login.heroScrim) },
+    login: {
+      heroScrim: mapColors(component.login.heroScrim),
+      card: {
+        fill: color(component.login.card.fill),
+        blur: dimension(component.login.card.blur),
+      },
+    },
     hub: {
       bankCard: mapColors(component.hub.bankCard),
       glass: mapColors(component.hub.glass),

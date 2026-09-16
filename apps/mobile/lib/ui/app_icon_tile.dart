@@ -28,6 +28,7 @@ class AppAppIconTile extends StatelessWidget {
     this.showLabel = true,
     this.iconColor,
     this.tileColor,
+    this.labelColor,
     this.onTap,
   });
 
@@ -42,6 +43,11 @@ class AppAppIconTile extends StatelessWidget {
   final bool showLabel;
   final Color? iconColor;
   final Color? tileColor;
+
+  /// Sobrescreve a cor do rótulo — padrão `fgInverse` (área de trabalho/dock,
+  /// sempre sobre fundo escuro). Telas com o tile sobre cartão claro (pasta
+  /// "CERNE App" em vidro fosco) passam `fgDefault`.
+  final Color? labelColor;
   final VoidCallback? onTap;
 
   double get _tileSize => switch (size) {
@@ -92,7 +98,7 @@ class AppAppIconTile extends StatelessWidget {
                 style: TextStyle(
                   fontSize: AppTypography.xs,
                   fontWeight: AppTypography.weightSemibold,
-                  color: semantic.fgInverse,
+                  color: labelColor ?? semantic.fgInverse,
                 ),
               ),
             ],

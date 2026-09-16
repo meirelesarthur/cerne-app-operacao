@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../design/generated/app_radius.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
+import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Simula abrir a pasta "CERNE App" na tela inicial Android — mostra os dois
@@ -53,57 +53,54 @@ class CerneAppFolderPage extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.space6,
-                  ),
+                Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: AppSpacing.space6,
-                    vertical: AppSpacing.space8,
                   ),
-                  decoration: BoxDecoration(
-                    color: semantic.inkBg.withValues(alpha: 0.35),
-                    borderRadius: BorderRadius.circular(AppRadius.xl4),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'CERNE App',
-                        style: TextStyle(
-                          fontSize: AppTypography.md,
-                          fontWeight: AppTypography.weightSemibold,
-                          color: semantic.fgInverse.withValues(alpha: 0.8),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.space1),
-                      Text(
-                        'Escolha o ambiente para abrir',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: AppTypography.sm,
-                          color: semantic.fgInverse.withValues(alpha: 0.6),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.space8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          AppAppIconTile(
-                            icon: AppIcons.shieldCheck,
-                            label: 'CERNE ADM',
-                            onTap: () =>
-                                context.push('/login?ambiente=administracao'),
+                  // Vidro fosco sobre a arte (Figma T003, node 6:52) — troca o
+                  // bloco escuro translúcido anterior pelo mesmo `AppCard`
+                  // glass do cartão de login (Lei 1/2: fonte única).
+                  child: AppCard(
+                    variant: AppCardVariant.glass,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const AppBrandLogo(),
+                        const SizedBox(height: AppSpacing.space2),
+                        Text(
+                          'Escolha o ambiente para abrir',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: AppTypography.sm,
+                            color: semantic.fgMuted,
                           ),
-                          AppAppIconTile(
-                            icon: AppIcons.tractor,
-                            label: 'CERNE Operação',
-                            onTap: () =>
-                                context.push('/login?ambiente=operacional'),
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(height: AppSpacing.space8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            AppAppIconTile(
+                              icon: AppIcons.shieldCheck,
+                              label: 'Administrativo',
+                              tileColor: semantic.accentDefault,
+                              iconColor: AppColors.neutral0,
+                              labelColor: semantic.fgDefault,
+                              onTap: () =>
+                                  context.push('/login?ambiente=administracao'),
+                            ),
+                            AppAppIconTile(
+                              icon: AppIcons.tractor,
+                              label: 'Operacional',
+                              tileColor: semantic.accentDefault,
+                              iconColor: AppColors.neutral0,
+                              labelColor: semantic.fgDefault,
+                              onTap: () =>
+                                  context.push('/login?ambiente=operacional'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const Spacer(flex: 2),

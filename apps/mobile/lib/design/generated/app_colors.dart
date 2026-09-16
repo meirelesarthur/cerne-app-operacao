@@ -242,6 +242,7 @@ class AppComponentColors {
   static const Color loginHeroScrimFrom = Color(0xB809291A);
   static const Color loginHeroScrimMid = Color(0x38064E3B);
   static const Color loginHeroScrimTo = Color(0x00065F46);
+  static const Color loginCardFill = Color(0xCCFFFFFF);
   static const Color hubBankCardFrom = Color(0xFF064E3B);
   static const Color hubBankCardTo = Color(0xFF022C22);
   static const Color hubBankCardGlow = Color(0x334ADE80);

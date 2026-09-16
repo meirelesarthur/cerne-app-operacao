@@ -47,6 +47,7 @@ class AppSize {
 class AppComponentMetrics {
   AppComponentMetrics._();
 
+  static const double loginCardBlur = 8;
   static const double hubGlassBlur = 14;
   static const double revealMenuAppScale = 0.78;
   static const double revealMenuAppShiftX = -58; // valor percentual original

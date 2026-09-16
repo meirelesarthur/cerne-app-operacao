@@ -120,6 +120,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       AppSpacing.space8,
                     ),
                     child: AppCard(
+                      variant: AppCardVariant.glass,
                       child: Column(
                         children: [
                           Column(

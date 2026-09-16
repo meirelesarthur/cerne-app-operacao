@@ -57,9 +57,9 @@ void main() {
       await tester.pumpAndSettle();
 
       // Logout volta para a seleção de ambiente (simula "fechar o app"), não
-      // direto para o formulário de login — reforça a separação CERNE ADM/Operação.
-      expect(find.text('CERNE ADM'), findsOneWidget);
-      expect(find.text('CERNE Operação'), findsOneWidget);
+      // direto para o formulário de login — reforça a separação Administrativo/Operacional.
+      expect(find.text('Administrativo'), findsOneWidget);
+      expect(find.text('Operacional'), findsOneWidget);
       expect(
         harness.container.read(prototypeSessionProvider).isAuthenticated,
         isFalse,

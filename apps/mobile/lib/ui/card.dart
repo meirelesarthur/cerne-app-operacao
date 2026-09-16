@@ -1,6 +1,9 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
+import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_shadows.dart';
 import '../design/generated/app_spacing.dart';
@@ -26,7 +29,12 @@ import 'field_capsule.dart';
 /// sozinha não sustenta a separação. O cinza sobre branco já é o idioma dos
 /// campos do app (a cápsula de input é exatamente isso), então o bloco entra
 /// no vocabulário que o usuário já lê, em vez de inventar um terceiro nível.
-enum AppCardVariant { surface, ink, inset }
+///
+/// `glass` é o vidro fosco do formulário de login (Figma T003, node 6:100):
+/// branco translúcido (`AppComponentColors.loginCardFill`) com blur do que
+/// está atrás (`AppLayout.loginCardBlur`) — só faz sentido flutuando sobre
+/// uma arte de fundo, nunca sobre a folha lisa das telas de cadastro.
+enum AppCardVariant { surface, ink, inset, glass }
 
 class AppCard extends StatelessWidget {
   const AppCard({
@@ -49,10 +57,12 @@ class AppCard extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final isInk = variant == AppCardVariant.ink;
     final isInset = variant == AppCardVariant.inset;
+    final isGlass = variant == AppCardVariant.glass;
     final bg = switch (variant) {
       AppCardVariant.ink => semantic.inkBg,
       AppCardVariant.inset => semantic.bgSheet,
       AppCardVariant.surface => semantic.bgRaised,
+      AppCardVariant.glass => AppComponentColors.loginCardFill,
     };
     final fg = isInk ? semantic.inkFg : null;
 
@@ -75,20 +85,32 @@ class AppCard extends StatelessWidget {
 
     final radius = BorderRadius.circular(AppRadius.surface);
 
+    final material = Material(
+      color: isGlass ? bg : AppColors.transparent,
+      child: interactive && onTap != null
+          ? InkWell(onTap: onTap, child: content)
+          : content,
+    );
+
     return Container(
       decoration: BoxDecoration(
-        color: bg,
+        color: isGlass ? null : bg,
         borderRadius: radius,
         boxShadow: isInset ? null : AppShadows.tile,
       ),
       child: ClipRRect(
         borderRadius: radius,
-        child: Material(
-          color: AppColors.transparent,
-          child: interactive && onTap != null
-              ? InkWell(onTap: onTap, child: content)
-              : content,
-        ),
+        // Vidro fosco: o blur precisa ficar dentro do clip, senão vaza para
+        // fora do raio do cartão.
+        child: isGlass
+            ? BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: AppComponentMetrics.loginCardBlur,
+                  sigmaY: AppComponentMetrics.loginCardBlur,
+                ),
+                child: material,
+              )
+            : material,
       ),
     );
   }

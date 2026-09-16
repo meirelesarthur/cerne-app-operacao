@@ -558,6 +558,13 @@ export const component = {
       mid: 'rgba(6,78,59,0.22)',
       to: 'rgba(6,95,70,0)',
     },
+    /** cartão de "Bem-vindo de volta!" em vidro fosco sobre a arte de fundo
+     *  (Figma T003, node 6:100): branco 80% + blur — em vez do `AppCard`
+     *  opaco, deixa a fotografia respirar por trás do formulário. */
+    card: {
+      fill: 'rgba(255,255,255,0.80)',
+      blur: '8px',
+    },
   },
   // New-UI — hub agregador do superapp (módulo Início) com Banking central
   hub: {

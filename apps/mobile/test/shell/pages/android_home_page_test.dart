@@ -22,29 +22,30 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('tocar em "CERNE App" abre a pasta com CERNE ADM/CERNE Operação', (
-      tester,
-    ) async {
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'tocar em "CERNE App" abre a pasta com Administrativo/Operacional',
+      (tester) async {
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text('CERNE App'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('CERNE App'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('CERNE ADM'), findsOneWidget);
-      expect(find.text('CERNE Operação'), findsOneWidget);
-    });
+        expect(find.text('Administrativo'), findsOneWidget);
+        expect(find.text('Operacional'), findsOneWidget);
+      },
+    );
   });
 
   group('CerneAppFolderPage', () {
     testWidgets(
-      'tocar em "CERNE ADM" empilha um único login administrativo',
+      'tocar em "Administrativo" empilha um único login administrativo',
       (tester) async {
         harness.router.go('/desktop/cerne-app');
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('CERNE ADM'));
+        await tester.tap(find.text('Administrativo'));
         await tester.pumpAndSettle();
 
         expect(find.text('Entrar'), findsOneWidget);
@@ -55,13 +56,13 @@ void main() {
     );
 
     testWidgets(
-      'tocar em "CERNE Operação" empilha o login (voltar retorna à pasta)',
+      'tocar em "Operacional" empilha o login (voltar retorna à pasta)',
       (tester) async {
         harness.router.go('/desktop/cerne-app');
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        await tester.tap(find.text('CERNE Operação'));
+        await tester.tap(find.text('Operacional'));
         await tester.pumpAndSettle();
 
         expect(find.text('Entrar'), findsOneWidget);

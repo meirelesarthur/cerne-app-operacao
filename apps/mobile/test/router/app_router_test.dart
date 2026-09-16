@@ -311,8 +311,8 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.text('CERNE ADM'), findsOneWidget);
-        expect(find.text('CERNE Operação'), findsOneWidget);
+        expect(find.text('Administrativo'), findsOneWidget);
+        expect(find.text('Operacional'), findsOneWidget);
         expect(find.text('Login Administração'), findsNothing);
       },
     );
@@ -326,8 +326,8 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.text('CERNE ADM'), findsOneWidget);
-        expect(find.text('CERNE Operação'), findsOneWidget);
+        expect(find.text('Administrativo'), findsOneWidget);
+        expect(find.text('Operacional'), findsOneWidget);
       },
     );
 
