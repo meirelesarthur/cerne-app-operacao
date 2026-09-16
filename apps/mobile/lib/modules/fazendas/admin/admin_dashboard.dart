@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../screens/em_section.dart';
 import 'dash_ativos.dart';
+import 'dash_apontamentos.dart';
 import 'dash_confinamento.dart';
 import 'dash_consultas.dart';
+import 'dash_ordem_servico.dart';
 import 'dash_resultado.dart';
 import 'dash_suprimentos.dart';
 import 'dash_uso.dart';
@@ -21,6 +23,8 @@ Widget buildAdminDashboard(String dashId) {
     'suprimentos' => const DashSuprimentos(),
     'uso' => const DashUso(),
     'consultas' => const DashConsultas(),
+    'ordem-servico' => const DashOrdemServico(),
+    'apontamentos' => const DashApontamentos(),
     _ => const EmSection(title: 'Dashboard'),
   };
 }

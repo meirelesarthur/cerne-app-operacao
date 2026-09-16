@@ -132,11 +132,26 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     // folha branca que sobrepõe a base dela, não da imagem.
                     Expanded(
                       flex: 7,
-                      child: AppIllustrationSlot(
-                        alt: slide.title,
-                        icon: slide.icon,
-                        src: slide.image,
-                        fullBleed: true,
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          AppIllustrationSlot(
+                            alt: slide.title,
+                            icon: slide.icon,
+                            src: slide.image,
+                            fullBleed: true,
+                          ),
+                          const Positioned(
+                            top: AppSpacing.space4,
+                            left: AppSpacing.space6,
+                            child: SafeArea(
+                              bottom: false,
+                              child: AppBrandLogo(
+                                variant: AppBrandLogoVariant.onDark,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Expanded(

@@ -100,7 +100,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 260),
                           child: Text(
-                            'Fazendas, banco, crédito e mercado — o agro inteiro em um só app.',
+                            'O agro inteiro em um só app: fazendas, banco, crédito e mercado.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: semantic.fgInverse.withValues(alpha: 0.7),
@@ -123,18 +123,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       variant: AppCardVariant.glass,
                       child: Column(
                         children: [
-                          Column(
-                            children: [
-                              const AppHeading(
-                                child: Text('Bem-vindo de volta!'),
-                              ),
-                              const SizedBox(height: AppSpacing.space1),
-                              Text(
-                                'Preencha suas credenciais para acessar',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: semantic.fgMuted),
-                              ),
-                            ],
+                          SizedBox(
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const AppHeading(
+                                  child: Text('Bem-vindo de volta!'),
+                                ),
+                                const SizedBox(height: AppSpacing.space1),
+                                Text(
+                                  'Preencha suas credenciais para acessar',
+                                  style: TextStyle(color: semantic.fgMuted),
+                                ),
+                              ],
+                            ),
                           ),
                           const SizedBox(height: AppSpacing.space6),
                           AppFormField(

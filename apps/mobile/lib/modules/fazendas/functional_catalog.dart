@@ -1370,6 +1370,51 @@ const adminFeatures = <FeatureDefinition>[
         'Período e formatos CSV/JSON são premissas funcionais do protótipo frontend.',
     auditExport: AuditExportKind.pecuaria,
   ),
+  // Espelha `minhas-os`, mas para o Administrativo: só visualização, com as
+  // duas ações que o perfil pode tomar enquanto a OS não foi encerrada pelo
+  // Operacional (avaliar, cancelar) — `admin/dash_ordem_servico.dart`. Grupo
+  // 'Consultas e auditoria' (não 'Ordem de serviço', exclusivo do
+  // operacional): as abas Gestão/Consultas da home administrativa são
+  // travadas em `focusGroup` fixo (`responsibility_workspace.dart`), então um
+  // grupo novo ficaria inalcançável — mesmo padrão de `vendas`/`compras-animais`.
+  FeatureDefinition(
+    id: 'consulta-os',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Ordem de Serviço',
+    objective:
+        'Consultar todas as ordens de serviço da fazenda, avaliar o andamento '
+        'ou cancelar uma OS ainda não encerrada pelo Operacional.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/dashboards/ordem-servico',
+    emptyLabel: 'Nenhuma ordem de serviço registrada.',
+    sourceDetail:
+        'Consulta demonstrativa de todas as ordens de serviço registradas nesta sessão.',
+    readOnly: true,
+    listMode: true,
+  ),
+  // Mesmo padrão de `consulta-os`: o cadastro (`ApontamentoFlow`) é
+  // Operacional e tem fluxo dedicado (fora do motor genérico), então a
+  // consulta administrativa também é `existingRoute` — os campos exibidos em
+  // `DashApontamentos` são os mesmos 12 campos de cabeçalho + as 5 coleções
+  // do cadastro (nenhum campo genérico à parte).
+  FeatureDefinition(
+    id: 'consulta-apontamentos',
+    profile: FeatureProfile.administration,
+    group: 'Consultas e auditoria',
+    title: 'Apontamentos agrícolas',
+    objective:
+        'Consultar os apontamentos agrícolas lançados pelo Operacional, com '
+        'identificação, dados da operação e os recursos/produção/ocorrências '
+        'registrados.',
+    status: FeatureStatus.ready,
+    existingRoute: '/fazendas/dashboards/apontamentos',
+    emptyLabel: 'Nenhum apontamento registrado.',
+    sourceDetail:
+        'Consulta demonstrativa de todos os apontamentos registrados nesta sessão.',
+    readOnly: true,
+    listMode: true,
+  ),
 ];
 
 const operationalFeatures = <FeatureDefinition>[
@@ -2515,7 +2560,7 @@ const operationalFeatures = <FeatureDefinition>[
     id: 'nutricoes',
     profile: FeatureProfile.operational,
     group: 'Pecuária',
-    title: 'Nutrições',
+    title: 'Arraçoamento',
     objective: 'Registrar produtos, quantidade, área, módulo e cocho.',
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/campo/arracoamento',
@@ -4995,20 +5040,22 @@ const operationalFeatures = <FeatureDefinition>[
     recordTitleField: 'descricao',
     recordDescriptionFields: ['tipo', 'equipamento', 'data'],
   ),
-  // TODO(banco-real): quando esta tela ganhar filtro/campo de categoria ou
-  // status, checar `service_orders.category`/`service_orders.status` — sem
-  // tabela de domínio no dump; hoje esta tela ainda não expõe esses campos
-  // (o status mostrado vem de `PrototypeRecordStatus`, genérico do protótipo,
-  // não do banco). Ver docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md,
-  // seção C.
+  // Tela dedicada (`operacional/minhas_os_screen.dart`, via
+  // `campo/:flowId`): motor genérico não cobre o ciclo de ação da OS
+  // (iniciar/pausar/retomar/entregar/refazer), só listagem read-only. Ver
+  // docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md, seção C, para o
+  // mapeamento com `service_orders.category`/`service_orders.status` quando
+  // o banco real existir.
   FeatureDefinition(
     id: 'minhas-os',
     profile: FeatureProfile.operational,
     group: 'Ordem de serviço',
     title: 'Minhas OS',
     objective:
-        'Consultar ordens de serviço vinculadas ao funcionário e à fazenda.',
+        'Consultar ordens de serviço vinculadas ao funcionário e à fazenda, '
+        'e conduzir a execução (iniciar, pausar, entregar ou marcar como refeita).',
     status: FeatureStatus.ready,
+    existingRoute: '/fazendas/campo/minhas-os',
     emptyLabel: 'Nenhuma ordem de serviço atribuída.',
     sourceDetail:
         'Consulta demonstrativa das ordens atribuídas ao funcionário e à fazenda ativa.',

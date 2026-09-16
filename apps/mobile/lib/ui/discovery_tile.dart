@@ -23,8 +23,8 @@ class AppDiscoveryTile extends StatelessWidget {
     required this.icon,
     required this.label,
     this.onTap,
-    this.width = 128,
-    this.height = 132,
+    this.width = 105,
+    this.height = 88,
     this.selected = false,
   });
 
@@ -50,7 +50,7 @@ class AppDiscoveryTile extends StatelessWidget {
       child: Container(
         width: width,
         height: height,
-        padding: const EdgeInsets.all(AppSpacing.space4),
+        padding: const EdgeInsets.all(AppSpacing.space2),
         decoration: BoxDecoration(
           color: selected ? semantic.accentSubtle : semantic.bgSubtle,
           borderRadius: BorderRadius.circular(AppRadius.tile),
@@ -65,7 +65,7 @@ class AppDiscoveryTile extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: AppTypography.xl,
+                fontSize: AppTypography.sm,
                 fontWeight: AppTypography.weightMedium,
                 height: AppTypography.lineHeightTight,
                 color: labelColor,
@@ -85,7 +85,7 @@ WidgetbookComponent buildDiscoveryTileWidgetbookComponent() {
       WidgetbookUseCase(
         name: 'Trilho de produtos',
         builder: (context) => SizedBox(
-          height: 132,
+          height: 88,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: 4,
@@ -112,7 +112,7 @@ WidgetbookComponent buildDiscoveryTileWidgetbookComponent() {
       WidgetbookUseCase(
         name: 'Trilho seletor (uma seção ativa)',
         builder: (context) => SizedBox(
-          height: 132,
+          height: 88,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             itemCount: 4,

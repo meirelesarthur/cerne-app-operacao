@@ -1399,32 +1399,6 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
       },
     ),
   ],
-  'minhas-os': [
-    PrototypeRecord(
-      id: 'os-1',
-      title: 'OS #1048 · Cerca do Talhão 02',
-      description: 'Em andamento · prioridade alta',
-      status: PrototypeRecordStatus.active,
-      details: {
-        'Responsável': 'João Oliveira',
-        'Fazenda': 'Fazenda São Pedro',
-        'Prioridade': 'Alta',
-        'Prazo': '18/08/2026',
-      },
-    ),
-    PrototypeRecord(
-      id: 'os-2',
-      title: 'OS #1039 · Inspeção do bebedouro',
-      description: 'Programada · prioridade média',
-      status: PrototypeRecordStatus.scheduled,
-      details: {
-        'Responsável': 'João Oliveira',
-        'Fazenda': 'Fazenda São Pedro',
-        'Prioridade': 'Média',
-        'Prazo': '20/08/2026',
-      },
-    ),
-  ],
 };
 
 class PrototypeRecordsState {

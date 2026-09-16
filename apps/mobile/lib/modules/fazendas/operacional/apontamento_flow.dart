@@ -10,6 +10,7 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 import '../functional_catalog.dart' show catalogoProdutos;
 import '../state/fazendas_store.dart';
 import '../types.dart';
+import 'apontamento_registro.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
 
@@ -395,8 +396,8 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   void _confirmar() {
     final isOnline = ref.read(shellStoreProvider).isOnline;
     final queued = !isOnline;
+    final atividade = _optionLabel(_atividades, _atividade!);
     if (queued) {
-      final atividade = _optionLabel(_atividades, _atividade!);
       ref
           .read(fazendasStoreProvider.notifier)
           .enqueueSync(
@@ -417,6 +418,56 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
             ),
           );
     }
+    // Registro estruturado para a consulta administrativa (`DashApontamentos`)
+    // — mesmos campos e rótulos do cadastro, independente de estar online ou
+    // na fila de sincronização (o apontamento já foi lançado nesta sessão).
+    ref.read(apontamentoRegistroStoreProvider.notifier).add(
+          ApontamentoRegistro(
+            id: 'apt-${DateTime.now().microsecondsSinceEpoch}',
+            responsavel: _optionLabel(_responsaveis, _responsavel!),
+            area: _optionLabel(_areas, _area!),
+            operacao: _optionLabel(_operacoes, _operacao!),
+            atividade: atividade,
+            data: _data,
+            areaTotal: _areaTotal,
+            areaUtilizada: _areaUtilizada,
+            armazemProducao: _optionLabel(_armazens, _armazemProducao!),
+            cultura: _cultura == null ? null : _optionLabel(_culturas, _cultura!),
+            safra: _safra == null ? null : _optionLabel(_safras, _safra!),
+            armazemInsumo: _armazemInsumo == null
+                ? null
+                : _optionLabel(_armazens, _armazemInsumo!),
+            descricao: _descricao,
+            registradoEm: DateTime.now(),
+            maoDeObra: [
+              for (final item in _maoDeObra)
+                '${item.tipo.label}: ${item.alvo} — ${item.quantidade} '
+                    '${_optionLabel(_unidadesMaoDeObra, item.unidade)} · '
+                    'R\$ ${item.valorUnitario}',
+            ],
+            maquinas: [
+              for (final item in _maquinas)
+                '${_optionLabel(_equipamentos, item.equipamento)} — '
+                    '${item.quantidade} ${_optionLabel(_unidadesMaquina, item.unidade)} · '
+                    'horímetro ${item.horimetroInicial}→${item.horimetroFinal}',
+            ],
+            insumos: [
+              for (final item in _insumos)
+                '${item.produto} — ${item.quantidade} '
+                    '${_optionLabel(_unidadesInsumo, item.unidade)} · '
+                    '${_optionLabel(_armazens, item.armazem)}',
+            ],
+            producoes: [
+              for (final item in _producoes)
+                '${item.produto} — ${item.quantidade} '
+                    '${_optionLabel(_unidadesProducao, item.unidade)}',
+            ],
+            ocorrencias: [
+              for (final item in _ocorrencias)
+                '${item.prioridade.label}: ${item.diagnostico}',
+            ],
+          ),
+        );
     setState(() => _queued = queued);
   }
 

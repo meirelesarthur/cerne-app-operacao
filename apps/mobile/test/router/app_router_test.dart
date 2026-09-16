@@ -156,7 +156,7 @@ void main() {
         expect(find.text('Central de gestão'), findsNothing);
         expect(find.text('Consultas gerenciais'), findsOneWidget);
         expect(find.text('Exportar log de estoque'), findsOneWidget);
-        expect(find.byType(AppModuleTile), findsNWidgets(10));
+        expect(find.byType(AppModuleTile), findsNWidgets(12));
 
         await tester.tap(find.text('Consultas gerenciais'));
         await tester.pumpAndSettle();

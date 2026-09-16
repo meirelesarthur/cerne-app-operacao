@@ -114,7 +114,7 @@ class _DashConsultasState extends State<DashConsultas> {
           // da busca global (Lei 2 — fonte única): ícone em destaque, rótulo
           // na base e rolagem horizontal, em vez de um grid com borda própria.
           SizedBox(
-            height: 132,
+            height: 88,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _hub.length,

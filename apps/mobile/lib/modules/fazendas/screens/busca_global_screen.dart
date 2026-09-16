@@ -183,7 +183,7 @@ class _SearchDiscoveryRail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 132,
+      height: 88,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: items.length,

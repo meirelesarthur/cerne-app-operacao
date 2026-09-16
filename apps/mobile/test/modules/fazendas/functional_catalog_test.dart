@@ -43,9 +43,17 @@ void main() {
       // perdeu ao tirá-la foi a documentação do contrato
       // `/breeding-batches`: 14+1=15 administrativas, 15+38=53 no total. Ver
       // docs/ESTEIRA-FIDELIDADE-CAMPOS.md.
-      expect(adminFeatures, hasLength(15));
+      // ordem-de-servico (consulta ADM): `consulta-os` entra como o espelho
+      // administrativo de `minhas-os` (só visualização + avaliar/cancelar,
+      // spec web de OS de 16/09/2026) — 15+1=16 administrativas, 16+38=54 no
+      // total.
+      // apontamento (consulta ADM): `consulta-apontamentos` entra como o
+      // espelho administrativo do cadastro `ApontamentoFlow` (só
+      // visualização, mesmo padrão de `consulta-os`) — 16+1=17
+      // administrativas, 17+38=55 no total.
+      expect(adminFeatures, hasLength(17));
       expect(operationalFeatures, hasLength(38));
-      expect(allFeatures, hasLength(53));
+      expect(allFeatures, hasLength(55));
 
       expect(
         adminFeatures.every(
@@ -80,9 +88,11 @@ void main() {
       // reprodução: `lotes-reproducao` (ready) saiu do catálogo — 47-1=46.
       // fidelidade-campos (onda 4): `lotes-reproducao` (ready) volta como
       // consulta administrativa — 46+1=47.
+      // ordem-de-servico (consulta ADM): `consulta-os` (ready) — 47+1=48.
+      // apontamento (consulta ADM): `consulta-apontamentos` (ready) — 48+1=49.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(47),
+        hasLength(49),
       );
       expect(
         allFeatures.where(
@@ -250,10 +260,17 @@ void main() {
       // ser required (não-contratual, servidor usa Auth): 186-1=185.
       expect(fields, hasLength(283));
       expect(fields.where((field) => field.isRequired), hasLength(185));
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
+      // ordem-de-servico: `consulta-os` (nova, listMode) — 30+1=31.
+      // apontamento: `consulta-apontamentos` (nova, listMode) — 31+1=32.
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(32));
+      // ordem-de-servico: `minhas-os` ganha `existingRoute` (tela dedicada,
+      // motor genérico não cobre o ciclo de ação da OS) e `consulta-os`
+      // nasce com `existingRoute` — 17+2=19.
+      // apontamento: `consulta-apontamentos` nasce com `existingRoute` —
+      // 19+1=20.
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(17),
+        hasLength(20),
       );
       // fidelidade-contrato (onda 4) — `lotes-reproducao` ganha a coleção
       // obrigatória "Lotes vinculados" (`batch_uuids[]`, o escalar `lote`
