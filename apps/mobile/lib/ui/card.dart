@@ -163,6 +163,24 @@ WidgetbookComponent buildCardWidgetbookComponent() {
                   ),
                 ),
               ),
+              const SizedBox(height: AppSpacing.space4),
+              // `glass` só faz sentido sobre uma arte de fundo (login, seleção
+              // de ambiente) — aqui um gradiente simula essa arte.
+              Container(
+                width: 280,
+                padding: const EdgeInsets.all(AppSpacing.space4),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [AppColors.brand700, AppColors.amber600],
+                  ),
+                ),
+                child: const AppCard(
+                  variant: AppCardVariant.glass,
+                  child: Text('Card glass (vidro fosco sobre arte)'),
+                ),
+              ),
             ],
           ),
         ),
