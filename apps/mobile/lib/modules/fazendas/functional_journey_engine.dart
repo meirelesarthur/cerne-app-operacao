@@ -245,20 +245,41 @@ bool isFeatureFieldRequired(
   // acasalamento por protocolo exige o protocolo; um lançamento por lote
   // (não por animal) exige o material reprodutivo usado no lote inteiro.
   if (feature.id == 'monta-natural') {
+    final tipo = values['tipo']?.trim() ?? '';
     final tipoLancamento = values['tipo-lancamento']?.trim() ?? '';
-    if (field.id == 'protocolo') {
-      return (values['tipo']?.trim() ?? '') == 'IATF';
-    }
-    if (field.id == 'material-reprodutivo') {
-      return tipoLancamento == 'Por lote';
-    }
+    // fidelidade-contrato (re-auditoria 3ª avaliação): BreedingMatingRequest
+    // amarra a obrigatoriedade ao par type/launch_type. Interpretação do
+    // launch_type no app: 'Por lote' ≈ Normal, 'Animal por animal' ≈
+    // Simplificado (BreedingMatingLaunchType). breeding_season_uuid é required
+    // fora do Simplificado; protocol_uuid/protocol_identification quando não
+    // é natural e é Normal.
+    // type: 1=Monta natural, 2=IATF, 3=FIV; launch_type: 1=Normal(Por lote),
+    // 2=Simplificado(Animal por animal) — backing int do contrato.
+    final normal = tipoLancamento == '1';
+    final naoNatural = tipo != '1';
+    if (field.id == 'estacao-monta') return normal;
+    if (field.id == 'protocolo') return naoNatural && normal;
+    if (field.id == 'identificacao-protocolo') return naoNatural && normal;
+    if (field.id == 'material-reprodutivo') return normal;
+    // breeding_batch_uuid (lote) e bull_seed_season_uuid: nullable no
+    // Simplificado, required no Normal.
+    if (field.id == 'lote') return normal;
+    if (field.id == 'bull-seed-season') return normal;
   }
   // fidelidade-esteira (onda 13): `same_batch` decide entre um destino único
   // (`novo-lote` de cabeçalho, aqui) ou um destino por animal (`novo-lote`
   // dentro de cada item de "Animais transferidos",
   // [isCollectionItemFieldRequired] abaixo) — nunca os dois.
   if (feature.id == 'transferencia-animal' && field.id == 'novo-lote') {
-    return (values['destino-unico']?.trim() ?? '') == 'Sim';
+    return (values['destino-unico']?.trim() ?? '') == 'true';
+  }
+  // fidelidade-contrato (re-auditoria 3ª avaliação): `ProductRequest` torna
+  // `cultivation_uuid`/`ncm_uuid` obrigatórios via `required_if` quando o
+  // grupo é "Produção" (`GroupProduct::PRODUCTION_GROUP_ID`). O gate vive no
+  // grupo escolhido, não num asterisco fixo.
+  if (feature.id == 'consulta-produtos' &&
+      (field.id == 'cultivation-uuid' || field.id == 'ncm-uuid')) {
+    return (values['group-uuid']?.trim() ?? '') == 'Produção';
   }
   return false;
 }
@@ -295,6 +316,9 @@ bool isCollectionItemFieldRequired(
     final tipoItem = values['tipo']?.trim() ?? '';
     if (field.id == 'produto') return tipoItem == 'Produto';
     if (field.id == 'servico') return tipoItem == 'Serviço';
+    // measurement_uuid é required_with:product_uuid — só a linha de Produto
+    // exige a unidade.
+    if (field.id == 'unidade') return tipoItem == 'Produto';
   }
   // fidelidade-esteira (onda 13): `transferencia-animal."Animais
   // transferidos"` — diferente dos dois casos acima, o XOR aqui depende de
@@ -303,7 +327,19 @@ bool isCollectionItemFieldRequired(
   if (feature.id == 'transferencia-animal' &&
       collection.name == 'Animais transferidos' &&
       field.id == 'novo-lote') {
-    return (formValues['destino-unico']?.trim() ?? '') == 'Não';
+    return (formValues['destino-unico']?.trim() ?? '') == 'false';
+  }
+  // fidelidade-contrato (re-auditoria pós-fix): em `/maintenances` o executor
+  // vive DENTRO de `items.*` (coleção "Peças / Insumos"). `executor_type` é
+  // nullable; quando informado, o alvo e o valor do tipo escolhido viram
+  // obrigatórios: employee → executor + horas; provider → executor + total.
+  if (feature.id == 'manutencao-frota' && collection.name == 'Peças / Insumos') {
+    final tipoExecutor = values['tipo-executor']?.trim() ?? '';
+    if (field.id == 'executor') {
+      return tipoExecutor == 'employee' || tipoExecutor == 'provider';
+    }
+    if (field.id == 'horas') return tipoExecutor == 'employee';
+    if (field.id == 'total') return tipoExecutor == 'provider';
   }
   return false;
 }
@@ -318,6 +354,12 @@ String? featureItemFieldError(FeatureField field, Map<String, String> values) {
     final number = double.tryParse(value.replaceAll(',', '.'));
     if (number == null || number <= 0) {
       return 'Informe um valor maior que zero.';
+    }
+  }
+  if (field.type == FeatureFieldType.integer && value.isNotEmpty) {
+    final inteiro = int.tryParse(value);
+    if (inteiro == null || inteiro <= 0) {
+      return 'Informe um número inteiro maior que zero.';
     }
   }
   return null;
@@ -357,6 +399,12 @@ String? collectionItemFieldError(
     final number = double.tryParse(value.replaceAll(',', '.'));
     if (number == null || number <= 0) {
       return 'Informe um valor maior que zero.';
+    }
+  }
+  if (field.type == FeatureFieldType.integer && value.isNotEmpty) {
+    final inteiro = int.tryParse(value);
+    if (inteiro == null || inteiro <= 0) {
+      return 'Informe um número inteiro maior que zero.';
     }
   }
   return null;
@@ -446,12 +494,26 @@ String? featureFieldError(
   // quando o tipo é IATF; material reprodutivo é exigido quando o
   // lançamento é por lote inteiro (não por animal).
   if (feature.id == 'monta-natural' && value.isEmpty) {
-    if (field.id == 'protocolo' && (values['tipo']?.trim() ?? '') == 'IATF') {
+    final tipo = values['tipo']?.trim() ?? '';
+    final normal = (values['tipo-lancamento']?.trim() ?? '') == '1';
+    final naoNatural = tipo != '1';
+    if (field.id == 'estacao-monta' && normal) {
+      return 'Selecione a estação de monta.';
+    }
+    if (field.id == 'protocolo' && naoNatural && normal) {
       return 'Selecione o protocolo da estação.';
     }
-    if (field.id == 'material-reprodutivo' &&
-        (values['tipo-lancamento']?.trim() ?? '') == 'Por lote') {
+    if (field.id == 'identificacao-protocolo' && naoNatural && normal) {
+      return 'Informe a identificação do protocolo.';
+    }
+    if (field.id == 'material-reprodutivo' && normal) {
       return 'Informe o material reprodutivo usado no lote.';
+    }
+    if (field.id == 'lote' && normal) {
+      return 'Selecione o lote de matrizes.';
+    }
+    if (field.id == 'bull-seed-season' && normal) {
+      return 'Selecione o touro / sêmen da estação.';
     }
   }
   // fidelidade-esteira (onda 13): mesmo XOR de cabeçalho × item descrito em
@@ -459,20 +521,54 @@ String? featureFieldError(
   if (feature.id == 'transferencia-animal' &&
       field.id == 'novo-lote' &&
       value.isEmpty &&
-      (values['destino-unico']?.trim() ?? '') == 'Sim') {
+      (values['destino-unico']?.trim() ?? '') == 'true') {
     return 'Selecione o novo lote.';
+  }
+  // fidelidade-contrato (re-auditoria 3ª avaliação): `cultivation_uuid`/
+  // `ncm_uuid` são `required_if` grupo = Produção no `ProductRequest`.
+  if (feature.id == 'consulta-produtos' &&
+      value.isEmpty &&
+      (values['group-uuid']?.trim() ?? '') == 'Produção') {
+    if (field.id == 'cultivation-uuid') return 'Selecione o cultivo (lavoura).';
+    if (field.id == 'ncm-uuid') return 'Selecione o NCM.';
   }
   return null;
 }
 
+/// Seções obrigatórias efetivas: as estáticas ([FeatureDefinition.requiredSections])
+/// mais as condicionais por-feature. Em `monta-natural` a coleção exigida
+/// depende do par type/launch_type (natural.cow_uuids, simplified_animals,
+/// protocol_animals) — mesma ideia condicional de [isFeatureFieldRequired],
+/// mas para `min:1` de coleção.
+List<String> effectiveRequiredSections(
+  FeatureDefinition feature,
+  Map<String, String> values,
+) {
+  final sections = [...feature.requiredSections];
+  void req(String name) {
+    if (!sections.contains(name)) sections.add(name);
+  }
+  if (feature.id == 'monta-natural') {
+    final tipo = values['tipo']?.trim() ?? '';
+    final normal = (values['tipo-lancamento']?.trim() ?? '') == '1';
+    // type: 1=NATURAL; launch_type: 1=Normal, 2=Simplificado (backing int).
+    // natural.cow_uuids min:1 quando type=NATURAL.
+    if (tipo == '1') req('Vacas do acasalamento');
+    // simplified_animals min:1 no Simplificado (Animal por animal).
+    if (!normal) req('Animais (lançamento simplificado)');
+    // protocol_animals min:1 no Protocolo Normal (por lote, não natural).
+    if (normal && tipo != '1') req('Animais do protocolo');
+  }
+  return sections;
+}
+
 /// Pendência de coleção obrigatória (`min:1` no contrato real). Devolve a
-/// primeira coleção vazia entre as declaradas em
-/// [FeatureDefinition.requiredSections].
+/// primeira coleção vazia entre as seções obrigatórias efetivas.
 String? featureCollectionError(
   FeatureDefinition feature,
   FunctionalFormState state,
 ) {
-  for (final section in feature.requiredSections) {
+  for (final section in effectiveRequiredSections(feature, state.values)) {
     if ((state.groupCounts[section] ?? 0) < 1) {
       return 'Adicione ao menos um item em "$section".';
     }
@@ -490,7 +586,7 @@ bool isFeatureStepValid(
   );
   if (!fieldsValid) return false;
   final sections = featureStepSections(feature, index);
-  for (final section in feature.requiredSections) {
+  for (final section in effectiveRequiredSections(feature, state.values)) {
     if (sections.contains(section) && (state.groupCounts[section] ?? 0) < 1) {
       return false;
     }
@@ -548,15 +644,24 @@ PrototypeRecordDraft buildPrototypeRecordDraft(
           state.itemsOf(collection.name),
         ),
   };
+  final fieldsById = {for (final field in feature.fields) field.id: field};
   final titleField = feature.recordTitleField ?? 'nome';
-  final title = state.values[titleField]?.trim();
+  final titleRaw = state.values[titleField]?.trim() ?? '';
+  final titleFieldDef = fieldsById[titleField];
+  final title = titleFieldDef == null
+      ? titleRaw
+      : featureFieldDisplay(titleFieldDef, titleRaw);
   final description = feature.recordDescriptionFields
-      .map((id) => state.values[id]?.trim() ?? '')
+      .map((id) {
+        final raw = state.values[id]?.trim() ?? '';
+        final field = fieldsById[id];
+        return field == null ? raw : featureFieldDisplay(field, raw);
+      })
       .where((value) => value.isNotEmpty)
       .join(' · ');
 
   return PrototypeRecordDraft(
-    title: title?.isNotEmpty ?? false ? title! : feature.title,
+    title: title.isNotEmpty ? title : feature.title,
     description: description.isEmpty ? 'Registro criado agora' : description,
     status: _statusFor(feature.id),
     details: details,

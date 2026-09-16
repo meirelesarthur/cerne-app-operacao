@@ -256,12 +256,27 @@ class ItemBatelada {
     required this.armazem,
     required this.quantidadePrevista,
     this.quantidadeRealizada,
+    this.dryMatter,
+    this.custoValor,
+    this.percentual,
   });
 
   final String produto;
   final String armazem;
   final double quantidadePrevista;
   final double? quantidadeRealizada;
+
+  /// `item_diet_beats.dry_matter` — %MS do ingrediente, derivado da dieta
+  /// (required no contrato `DietBeatRequest`, transportado no payload).
+  final double? dryMatter;
+
+  /// `item_diet_beats.cost_value` — custo unitário do ingrediente, derivado da
+  /// dieta (required no contrato).
+  final double? custoValor;
+
+  /// `item_diet_beats.percentage` — proporção do ingrediente na dieta,
+  /// derivada da quantidade de referência (required no contrato).
+  final double? percentual;
 
   /// % de desvio entre realizado e previsto; `null` enquanto não pesado.
   double? get diferencaPct => quantidadeRealizada == null
@@ -281,6 +296,8 @@ class Batelada {
     required this.vagaoDestino,
     required this.quantidadeProduzida,
     required this.itens,
+    this.data,
+    this.unidadeMedida,
   });
 
   final String id;
@@ -288,6 +305,13 @@ class Batelada {
   final String vagaoDestino;
   final double quantidadeProduzida;
   final List<ItemBatelada> itens;
+
+  /// `diet_beats.date` — data da produção (required no contrato).
+  final String? data;
+
+  /// `diet_beats.measurement_uuid` — unidade de medida da produção (required
+  /// no contrato).
+  final String? unidadeMedida;
 
   double get pesoPrevisto => itens.fold(0, (s, i) => s + i.quantidadePrevista);
 

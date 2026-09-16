@@ -865,7 +865,9 @@ List<Widget> _recordFieldWidgets(
     if (widgets.isNotEmpty) {
       widgets.add(const SizedBox(height: AppSpacing.space4));
     }
-    widgets.add(_disabledRecordField(field, value));
+    // Resolve value→label para campos com selectOptions/colorPalette (o
+    // registro guarda o valor emitido; aqui exibe o rótulo humano).
+    widgets.add(_disabledRecordField(field, featureFieldDisplay(field, value)));
   }
   for (final sectionName in sectionNames) {
     consumedLabels.add(sectionName);
@@ -1147,7 +1149,9 @@ class _FeatureForm extends StatelessWidget {
             // agora aparece como campo obrigatório de verdade — antes toda
             // coleção era opcional e um protocolo sem etapa nenhuma podia
             // ser salvo. Ver docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
-            required: sections.any(feature.requiredSections.contains),
+            required: sections.any(
+              effectiveRequiredSections(feature, journey.form.values).contains,
+            ),
             error: journey.form.attempted
                 ? _sectionError(feature, journey, sections)
                 : null,
@@ -1229,7 +1233,7 @@ String? _sectionError(
   FunctionalJourneyController journey,
   List<String> sections,
 ) {
-  for (final section in feature.requiredSections) {
+  for (final section in effectiveRequiredSections(feature, journey.form.values)) {
     if (!sections.contains(section)) continue;
     if ((journey.form.groupCounts[section] ?? 0) < 1) {
       return 'Adicione ao menos um item em "$section".';
@@ -1303,10 +1307,15 @@ class _FeatureFieldControl extends StatelessWidget {
         FeatureFieldType.select => AppFormSelect(
           value: value.isEmpty ? null : value,
           placeholder: 'Selecione',
-          options: [
-            for (final option in field.options)
-              AppFormSelectOption(value: option, label: option),
-          ],
+          options: field.selectOptions.isNotEmpty
+              ? [
+                  for (final option in field.selectOptions)
+                    AppFormSelectOption(value: option.value, label: option.label),
+                ]
+              : [
+                  for (final option in field.options)
+                    AppFormSelectOption(value: option, label: option),
+                ],
           enabled: enabled,
           onChanged: (next) => onChanged(next ?? ''),
         ),
@@ -1320,10 +1329,18 @@ class _FeatureFieldControl extends StatelessWidget {
             child: AppSearchSelect(
               value: value.isEmpty ? null : value,
               label: field.label,
-              options: [
-                for (final option in field.options)
-                  AppSearchSelectOption(value: option, label: option),
-              ],
+              options: field.selectOptions.isNotEmpty
+                  ? [
+                      for (final option in field.selectOptions)
+                        AppSearchSelectOption(
+                          value: option.value,
+                          label: option.label,
+                        ),
+                    ]
+                  : [
+                      for (final option in field.options)
+                        AppSearchSelectOption(value: option, label: option),
+                    ],
               onChanged: onChanged,
             ),
           ),
@@ -1342,6 +1359,16 @@ class _FeatureFieldControl extends StatelessWidget {
           enabled: enabled,
           onChanged: onChanged,
         ),
+        // Inteiro: teclado sem casas decimais; a validação do motor recusa
+        // valores não-inteiros (ex. `mileage`/hodômetro do SupplyRequest).
+        FeatureFieldType.integer => AppTextInput(
+          initialValue: value,
+          placeholder: field.placeholder,
+          keyboardType: TextInputType.number,
+          invalid: error != null,
+          enabled: enabled,
+          onChanged: onChanged,
+        ),
         FeatureFieldType.date => AppDateInput(
           initialValue: value.isEmpty ? null : value,
           invalid: error != null,
@@ -1350,6 +1377,12 @@ class _FeatureFieldControl extends StatelessWidget {
         ),
         FeatureFieldType.color => AppColorInput(
           initialValue: value.isEmpty ? null : value,
+          palette: field.colorPalette.isEmpty
+              ? null
+              : [
+                  for (final option in field.colorPalette)
+                    AppColorOption(value: option.value, label: option.label),
+                ],
           invalid: error != null,
           enabled: enabled,
           onChanged: onChanged,

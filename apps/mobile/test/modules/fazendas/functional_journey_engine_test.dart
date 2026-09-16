@@ -21,6 +21,60 @@ void main() {
     );
   });
 
+  test('consulta-produtos: cultivo/NCM são required_if grupo = Produção', () {
+    final feature = featureById('consulta-produtos')!;
+    final cultivo = feature.fields.firstWhere(
+      (field) => field.id == 'cultivation-uuid',
+    );
+    final ncm = feature.fields.firstWhere((field) => field.id == 'ncm-uuid');
+
+    // Grupo diferente de Produção: opcionais (sem asterisco, sem erro).
+    const outroGrupo = {'group-uuid': 'Insumo agropecuário'};
+    expect(isFeatureFieldRequired(feature, cultivo, outroGrupo), isFalse);
+    expect(featureFieldError(feature, cultivo, outroGrupo), isNull);
+
+    // Grupo = Produção: os dois viram obrigatórios.
+    const producao = {'group-uuid': 'Produção'};
+    expect(isFeatureFieldRequired(feature, cultivo, producao), isTrue);
+    expect(isFeatureFieldRequired(feature, ncm, producao), isTrue);
+    expect(
+      featureFieldError(feature, cultivo, producao),
+      'Selecione o cultivo (lavoura).',
+    );
+    expect(featureFieldError(feature, ncm, producao), 'Selecione o NCM.');
+    // Preenchido, não erra.
+    expect(
+      featureFieldError(feature, cultivo, const {
+        'group-uuid': 'Produção',
+        'cultivation-uuid': 'Soja 2025/2026 — Talhão 01',
+      }),
+      isNull,
+    );
+  });
+
+  test('campo integer recusa decimal e exige inteiro positivo', () {
+    final feature = featureById('abastecimentos')!;
+    final itens = feature.collections.firstWhere(
+      (collection) => collection.name == 'Itens do abastecimento',
+    );
+    final hodometro = itens.fields.firstWhere(
+      (field) => field.id == 'hodometro',
+    );
+
+    expect(hodometro.type, FeatureFieldType.integer);
+    expect(
+      featureItemFieldError(hodometro, const {'hodometro': '12,5'}),
+      'Informe um número inteiro maior que zero.',
+    );
+    expect(
+      featureItemFieldError(hodometro, const {'hodometro': '0'}),
+      'Informe um número inteiro maior que zero.',
+    );
+    expect(featureItemFieldError(hodometro, const {'hodometro': '48210'}), isNull);
+    // Opcional: vazio não erra.
+    expect(featureItemFieldError(hodometro, const {}), isNull);
+  });
+
   test('hardware exige captura mesmo quando não há campo-alvo', () {
     final feature = featureById('conexao-aparelhos')!;
 
@@ -82,9 +136,10 @@ void main() {
       // fidelidade-campos (onda 3): `color` é required em `/areas` — a cor
       // com que a área aparece no mapa. Ver
       // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 3.
-      // fidelidade-esteira (onda 11): `cor` virou campo de cor real (hex) —
-      // o dump de produção mostra `areas.color` como valor livre, não enum.
-      ..setValue('cor', '#22C55E')
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `cor` é paleta
+      // fechada (`Rule::enum(AreaColor)`); o valor precisa ser um hex do
+      // enum (`#2ecc40` = Verde), não um hex livre qualquer.
+      ..setValue('cor', '#2ecc40')
       // fidelidade-contrato (onda 1): `productive_area`/`unproductive_area`/
       // `recreation_area`/`is_enabled` voltaram a `required`. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 1.

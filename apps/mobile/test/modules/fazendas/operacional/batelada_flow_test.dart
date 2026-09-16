@@ -45,6 +45,20 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('cabeçalho pede data e unidade de medida (contrato)', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(_wrap(const BateladaFlow()));
+      await tester.pumpAndSettle();
+
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `DietBeatRequest`
+      // exige `date` e `measurement_uuid` no cabeçalho.
+      expect(find.text('Data da produção'), findsOneWidget);
+      expect(find.text('Unidade de medida'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('sem preencher, valida os campos obrigatórios ao registrar', (
       tester,
     ) async {

@@ -225,8 +225,31 @@ void main() {
       // `is-equipment`, `is-enabled`, `control-stock`, `las-price`):
       // 245+35=280 campos; 182+6=188 obrigatórios. Ver
       // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 15.
-      expect(fields, hasLength(280));
-      expect(fields.where((field) => field.isRequired), hasLength(188));
+      // fidelidade-contrato (re-auditoria 3ª avaliação): `abastecimentos`
+      // move `horimetro`/`hodometro` do cabeçalho para a coleção "Itens do
+      // abastecimento" (contrato `SupplyRequest`: `items.*.hour_meter`/
+      // `mileage`, por item), ambos opcionais: 280-2=278 campos de cabeçalho.
+      // `consulta-produtos` ganha `cultivation-uuid` (required_if grupo =
+      // Produção, condicional — não estático): 278+1=279 campos de cabeçalho.
+      // fidelidade-contrato (re-auditoria 3ª avaliação, correção de altas):
+      // registrar-animal ganha modo-registro + estagio-reprodutivo +
+      // status-reprodutivo (+3) e rebanho-inicial ganha modo-registro (+1):
+      // 279+4=283. Obrigatórios: registrar-animal (modo-registro + preco-arroba
+      // + valor-unitario + ua = +4) e rebanho-inicial (mesmos 4 = +4): 188+8=196.
+      // Correção das médias: perdas.lote, transferencia-lote-area.responsavel e
+      // .local-atual deixam de ser required (contrato nullable/não-contratual):
+      // 196-3=193.
+      // Correção das baixas: lote-animais.responsavel deixa de ser required
+      // (employee_uuid nullable): 193-1=192. (marcacao.quantidade muda de tipo
+      // number→integer, segue required; pastagens.Máquinas.quantidade é campo
+      // de coleção, não conta aqui.)
+      // Correção pós-fix (médias+baixas): 6 over-requires alinhados ao contrato
+      // (nullable) — registrar.nascimento, compras.documento, pastagens.armazem-
+      // insumos/producao, monta.lote/bull-seed-season: 192-6=186.
+      // Correção pós-fix (baixas, FK texto→select): perdas.responsavel deixa de
+      // ser required (não-contratual, servidor usa Auth): 186-1=185.
+      expect(fields, hasLength(283));
+      expect(fields.where((field) => field.isRequired), hasLength(185));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
@@ -249,7 +272,10 @@ void main() {
       // fidelidade-esteira (onda 13): `transferencia-animal` ganha "Animais
       // transferidos" (coleção `min:1`, alvo da captura de RFID empilhada):
       // 32+1=33. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(33));
+      // Correção pós-fix: manutencao-frota funde a coleção "Mão de obra"
+      // dentro de "Peças / Insumos" (executor por item, como o contrato) —
+      // uma coleção a menos: 33-1=32.
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(32));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
@@ -339,7 +365,7 @@ void main() {
       // 31+1=32.
       // fidelidade-esteira (onda 13): `transferencia-animal` ganha "Animais
       // transferidos": 32+1=33.
-      expect(colecoes, hasLength(33));
+      expect(colecoes, hasLength(32));
 
       final comCampos = colecoes
           .where((par) => par.collection.fields.isNotEmpty)
@@ -370,7 +396,7 @@ void main() {
       // 29+1=30.
       // fidelidade-esteira (onda 13): +1 (`transferencia-animal` "Animais
       // transferidos"): 30+1=31.
-      expect(comCampos, hasLength(31));
+      expect(comCampos, hasLength(30));
       expect(
         colecoes
             .where((par) => par.collection.fields.isEmpty)
@@ -405,12 +431,18 @@ void main() {
       // (`tipo-identificacao`, `identificacao`): 117+2=119.
       // fidelidade-esteira (onda 13): `transferencia-animal."Animais
       // transferidos"` +2 (`identificacao`, `novo-lote`): 119+2=121.
+      // fidelidade-contrato (re-auditoria 3ª avaliação):
+      // `abastecimentos."Itens do abastecimento"` recebe `horimetro`/
+      // `hodometro` de volta (contrato `SupplyRequest`: `items.*.hour_meter`/
+      // `mileage`, por item): 121+2=123.
+      // Correção das médias: diagnostico-gestacao."Animais diagnosticados"
+      // ganha resync/lote/observacao (campos `present` do contrato): 123+3=126.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        121,
+        126,
       );
 
       for (final par in comCampos) {
@@ -467,13 +499,24 @@ void main() {
               feature.id: feature.requiredSections,
         },
         {
+          // fidelidade-contrato (re-auditoria 3ª avaliação): coleções `min:1`
+          // do contrato que faltavam travar — sanitario (animal_uuids/items),
+          // compras (items), manutencao (items), abastecimentos (items),
+          // formulacoes (feedstocks). material-reprodutivo SAIU: animals não
+          // tem min:1 no contrato (GAP-BSS-06), app estava mais restrito.
+          'compras-animais': ['Itens da compra'],
+          'sanitario': ['Animais alvo', 'Itens de estoque'],
+          'formulacoes': ['Matérias-primas'],
+          'batidas': ['Itens da batida'],
           'protocolos-estacao': ['Etapas do protocolo'],
           'diagnostico-gestacao': ['Animais diagnosticados'],
+          'desmama': ['Identificações adicionais'],
           'lotes-reproducao': ['Lotes vinculados'],
           'lote-animais': ['Categorias do lote'],
           'apartacao': ['Lotes de origem'],
-          'material-reprodutivo': ['Animais'],
           'transferencia-animal': ['Animais transferidos'],
+          'abastecimentos': ['Itens do abastecimento'],
+          'manutencao-frota': ['Peças / Insumos'],
         },
       );
     });
