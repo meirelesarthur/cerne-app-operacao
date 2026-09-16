@@ -1234,7 +1234,10 @@ class _FeatureForm extends StatelessWidget {
                 Text(hint, style: Theme.of(context).textTheme.bodySmall),
               ],
               const SizedBox(height: AppSpacing.space3),
-              AppReviewList(items: _reviewItems(feature, journey)),
+              AppReviewList(
+                items: _reviewItems(feature, journey),
+                style: AppReviewStyle.inputCapsule,
+              ),
               // Coleções na íntegra, item a item — mesma caixa da etapa de
               // preenchimento, só que sem "Adicionar" nem editar/remover
               // (pedido do usuário: a revisão é conferência, não edição).
