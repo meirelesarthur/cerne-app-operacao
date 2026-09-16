@@ -29,6 +29,12 @@ enum AppButtonVariant {
   /// usados por `AppIconButton` (variant `onDark`), agora também disponíveis
   /// como botão de texto.
   onDark,
+
+  /// Preenchimento neutro leve (`bgCanvas`, o mesmo tom de fundo de input) —
+  /// para uma ação secundária lado a lado com um `primary`, quando `ghost`
+  /// (sem preenchimento algum) deixa esse lado sem "corpo" e desequilibra o
+  /// par visualmente (ex.: "Pular" ao lado de "Próximo" no onboarding).
+  subtle,
 }
 
 enum AppButtonSize { sm, md, lg, xl }
@@ -140,6 +146,11 @@ class AppButton extends StatelessWidget {
           bg: s.inkBubble,
           fg: s.inkFg,
           border: AppColors.neutral0.withValues(alpha: 0.3),
+        ),
+        AppButtonVariant.subtle => (
+          bg: s.bgCanvas,
+          fg: s.fgDefault,
+          border: null,
         ),
       };
 
@@ -275,6 +286,7 @@ AppButton(
 )
 
 AppButton(variant: AppButtonVariant.ghost, ...)
+AppButton(variant: AppButtonVariant.subtle, ...)
 AppButton(variant: AppButtonVariant.danger, ...)
 AppButton(variant: AppButtonVariant.link, ...)''',
             child: Wrap(
@@ -291,6 +303,11 @@ AppButton(variant: AppButtonVariant.link, ...)''',
                   variant: AppButtonVariant.ghost,
                   onPressed: () {},
                   child: const Text('Ghost'),
+                ),
+                AppButton(
+                  variant: AppButtonVariant.subtle,
+                  onPressed: () {},
+                  child: const Text('Subtle'),
                 ),
                 AppButton(
                   variant: AppButtonVariant.danger,

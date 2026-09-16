@@ -244,7 +244,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             fullWidth: true,
                             height: 52,
                             size: AppButtonSize.lg,
-                            variant: AppButtonVariant.ghost,
+                            variant: AppButtonVariant.subtle,
                             onPressed: _finish,
                             child: const Text('Pular'),
                           ),
