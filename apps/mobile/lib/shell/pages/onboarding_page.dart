@@ -201,28 +201,41 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 AppSpacing.space6,
                 AppSpacing.space6,
               ),
-              child: Column(
-                children: [
-                  AppButton(
-                    width: 345,
-                    height: 52,
-                    size: AppButtonSize.lg,
-                    onPressed: _next,
-                    child: Text(_isLast ? 'Começar' : 'Próximo'),
-                  ),
-                  if (!_isLast) ...[
-                    const SizedBox(height: AppSpacing.space2),
-                    AppButton(
+              // Lado a lado (Pular + Próximo) em todo step intermediário; no
+              // último, só "Começar" ocupa a largura toda — não há mais o que
+              // pular.
+              child: _isLast
+                  ? AppButton(
                       width: 345,
                       height: 52,
                       size: AppButtonSize.lg,
-                      variant: AppButtonVariant.ghost,
-                      onPressed: _finish,
-                      child: const Text('Pular'),
+                      onPressed: _next,
+                      child: const Text('Começar'),
+                    )
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: AppButton(
+                            fullWidth: true,
+                            height: 52,
+                            size: AppButtonSize.lg,
+                            variant: AppButtonVariant.ghost,
+                            onPressed: _finish,
+                            child: const Text('Pular'),
+                          ),
+                        ),
+                        const SizedBox(width: AppSpacing.space2),
+                        Expanded(
+                          child: AppButton(
+                            fullWidth: true,
+                            height: 52,
+                            size: AppButtonSize.lg,
+                            onPressed: _next,
+                            child: const Text('Próximo'),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ],
-              ),
             ),
           ),
         ],
