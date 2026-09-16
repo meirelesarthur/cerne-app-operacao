@@ -1140,10 +1140,11 @@ const adminFeatures = <FeatureDefinition>[
         type: FeatureFieldType.number,
         isRequired: true,
       ),
+      // fidelidade-contrato (re-auditoria pós-fix): number (nota) é
+      // sometimes|nullable no MovementPurchaseRequest — o app exigia a mais.
       FeatureField(
         id: 'documento',
         label: 'Nota / documento de origem',
-        isRequired: true,
       ),
       // fidelidade-campos (onda 5): `/movement-purchases` exige o bloco
       // financeiro inteiro de cabeçalho — forma de pagamento, total de
@@ -1617,12 +1618,20 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
         options: ['Fazenda São Pedro', 'Fazenda Boa Vista'],
       ),
+      // fidelidade-contrato (re-auditoria pós-fix): `coordinates` é
+      // `required|array` (polígono). É uma interação de MAPA/localização —
+      // que o CLAUDE.md declara SIMULADA no protótipo ("não apresentar
+      // localização como integração nativa concluída"), na mesma categoria do
+      // hardware (RFID/balança). Fica como captura simulada (placeholder do
+      // polígono desenhado no desktop), não um textarea de conteúdo livre; a
+      // materialização como array acontece na integração com o mapa real. Tela
+      // readOnly no protótipo (não submete).
       FeatureField(
         id: 'coordenadas',
-        label: 'Coordenadas (polígono)',
+        label: 'Coordenadas (polígono — mapa)',
         type: FeatureFieldType.textarea,
         isRequired: true,
-        placeholder: 'Desenhado no mapa da área, no cadastro do desktop',
+        placeholder: 'Polígono desenhado no mapa (captura simulada no protótipo)',
       ),
       FeatureField(
         id: 'observacao',
@@ -1631,7 +1640,12 @@ const operationalFeatures = <FeatureDefinition>[
         placeholder: 'Informações adicionais',
       ),
     ],
-    // `infrastructure[]` — cercas, bebedouros, currais e benfeitorias da área.
+    // `infrastructure[]` — no contrato é um array de UUID de markers (tipo
+    // INFRASTRUCTURE) POSICIONADOS no mapa da área — outra interação de
+    // localização SIMULADA pelo protótipo (CLAUDE.md). A coleção representa o
+    // array (cardinalidade fiel); cada item captura o marcador de forma
+    // descritiva (tipo/descrição/qtd) em vez do UUID do marker no mapa — a
+    // resolução para marker_uuid acontece na integração com o mapa real (③).
     collections: [
       FeatureCollection(
         name: 'Infraestrutura',
@@ -2746,18 +2760,18 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Animal',
         placeholder: 'Brinco ou ID — só quando o manejo é de um animal',
       ),
+      // fidelidade-contrato (re-auditoria pós-fix): inputs/productions_warehouse_uuid
+      // são nullable no PastureRequest — o app exigia a mais.
       FeatureField(
         id: 'armazem-insumos',
         label: 'Armazém de insumos',
         type: FeatureFieldType.searchSelect,
-        isRequired: true,
         options: ['Armazém A', 'Depósito B'],
       ),
       FeatureField(
         id: 'armazem-producao',
         label: 'Armazém de produção',
         type: FeatureFieldType.searchSelect,
-        isRequired: true,
         options: ['Armazém A', 'Depósito B'],
       ),
       FeatureField(
@@ -3255,11 +3269,12 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
+      // fidelidade-contrato (re-auditoria pós-fix): birth_date é nullable no
+      // AnimalRequest — o app exigia a mais.
       FeatureField(
         id: 'nascimento',
         label: 'Data de nascimento',
         type: FeatureFieldType.date,
-        isRequired: true,
       ),
       // fidelidade-contrato (re-auditoria 3ª avaliação): quantity é integer no
       // AnimalRequest (sometimes|integer|min:1).
@@ -4127,11 +4142,13 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.date,
         isRequired: true,
       ),
+      // fidelidade-contrato (re-auditoria pós-fix): breeding_batch_uuid (lote) e
+      // bull_seed_season_uuid são nullable no Simplificado — obrigatoriedade
+      // condicional ao modo (required no Normal), no motor.
       FeatureField(
         id: 'lote',
         label: 'Lote de matrizes',
         type: FeatureFieldType.searchSelect,
-        isRequired: true,
         options: catalogoLotes,
       ),
       FeatureField(id: 'touro', label: 'Touro / reprodutor', isRequired: true),
@@ -4191,7 +4208,6 @@ const operationalFeatures = <FeatureDefinition>[
         id: 'bull-seed-season',
         label: 'Touro / sêmen da estação',
         type: FeatureFieldType.select,
-        isRequired: true,
         options: ['BSS-2026-007', 'BSS-2026-012'],
       ),
       FeatureField(id: 'protocolo', label: 'Protocolo'),
@@ -4854,41 +4870,36 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Hodômetro',
             type: FeatureFieldType.integer,
           ),
-        ],
-      ),
-      // fidelidade-contrato (onda 4): `executor_type` + `employee`/
-      // `provider` + `quantidade`/`total` — bloco de mão de obra **por
-      // item**, ausente por completo (o form só tinha `horas-mao-de-obra` no
-      // cabeçalho, um total sem executor).
-      FeatureCollection(
-        name: 'Mão de obra',
-        itemLabel: 'Mão de obra',
-        titleField: 'executor',
-        subtitleFields: ['tipo', 'quantidade'],
-        fields: [
+          // fidelidade-contrato (re-auditoria pós-fix): o contrato tem UM
+          // `items[]` que combina peça + leituras + EXECUTOR na mesma linha
+          // (`items.*.executor_type`/`employee_uuid`/`provider_uuid`/
+          // `employee_quantity`/`provider_total`). O executor deixa de ser uma
+          // coleção separada e passa a viver dentro do item. `executor_type` é
+          // nullable (item pode ser só peça); quando informado, o alvo e o
+          // valor viram obrigatórios por item (condicional no motor).
           FeatureField(
-            id: 'tipo',
-            label: 'Tipo',
+            id: 'tipo-executor',
+            label: 'Executor (opcional)',
             type: FeatureFieldType.select,
-            isRequired: true,
-            options: ['Empregado', 'Prestador'],
+            selectOptions: [
+              (value: 'employee', label: 'Empregado'),
+              (value: 'provider', label: 'Prestador'),
+            ],
           ),
           FeatureField(
             id: 'executor',
-            label: 'Executor',
-            type: FeatureFieldType.select,
-            isRequired: true,
+            label: 'Nome do executor',
+            type: FeatureFieldType.searchSelect,
             options: catalogoResponsaveis,
           ),
           FeatureField(
-            id: 'quantidade',
-            label: 'Horas',
+            id: 'horas',
+            label: 'Horas (empregado)',
             type: FeatureFieldType.number,
-            isRequired: true,
           ),
           FeatureField(
             id: 'total',
-            label: 'Total (R\$)',
+            label: 'Total do prestador (R\$)',
             type: FeatureFieldType.number,
           ),
         ],
@@ -4907,9 +4918,9 @@ const operationalFeatures = <FeatureDefinition>[
       ),
       FeatureFormStep(
         title: 'Medidores e peças',
-        hint: 'Leitura do equipamento e o que será consumido.',
+        hint: 'Leitura do equipamento e o que será consumido (peça + executor por item).',
         fields: ['horimetro', 'hodometro', 'horas-mao-de-obra', 'observacao'],
-        sections: ['Peças / Insumos', 'Mão de obra'],
+        sections: ['Peças / Insumos'],
       ),
       FeatureFormStep(
         title: 'Revisão',

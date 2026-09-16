@@ -243,8 +243,11 @@ void main() {
       // (employee_uuid nullable): 193-1=192. (marcacao.quantidade muda de tipo
       // number→integer, segue required; pastagens.Máquinas.quantidade é campo
       // de coleção, não conta aqui.)
+      // Correção pós-fix (médias+baixas): 6 over-requires alinhados ao contrato
+      // (nullable) — registrar.nascimento, compras.documento, pastagens.armazem-
+      // insumos/producao, monta.lote/bull-seed-season: 192-6=186.
       expect(fields, hasLength(283));
-      expect(fields.where((field) => field.isRequired), hasLength(192));
+      expect(fields.where((field) => field.isRequired), hasLength(186));
       expect(allFeatures.where((feature) => feature.listMode), hasLength(30));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
@@ -267,7 +270,10 @@ void main() {
       // fidelidade-esteira (onda 13): `transferencia-animal` ganha "Animais
       // transferidos" (coleção `min:1`, alvo da captura de RFID empilhada):
       // 32+1=33. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(33));
+      // Correção pós-fix: manutencao-frota funde a coleção "Mão de obra"
+      // dentro de "Peças / Insumos" (executor por item, como o contrato) —
+      // uma coleção a menos: 33-1=32.
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(32));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
@@ -357,7 +363,7 @@ void main() {
       // 31+1=32.
       // fidelidade-esteira (onda 13): `transferencia-animal` ganha "Animais
       // transferidos": 32+1=33.
-      expect(colecoes, hasLength(33));
+      expect(colecoes, hasLength(32));
 
       final comCampos = colecoes
           .where((par) => par.collection.fields.isNotEmpty)
@@ -388,7 +394,7 @@ void main() {
       // 29+1=30.
       // fidelidade-esteira (onda 13): +1 (`transferencia-animal` "Animais
       // transferidos"): 30+1=31.
-      expect(comCampos, hasLength(31));
+      expect(comCampos, hasLength(30));
       expect(
         colecoes
             .where((par) => par.collection.fields.isEmpty)

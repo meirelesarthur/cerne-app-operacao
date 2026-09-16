@@ -261,6 +261,10 @@ bool isFeatureFieldRequired(
     if (field.id == 'protocolo') return naoNatural && normal;
     if (field.id == 'identificacao-protocolo') return naoNatural && normal;
     if (field.id == 'material-reprodutivo') return normal;
+    // breeding_batch_uuid (lote) e bull_seed_season_uuid: nullable no
+    // Simplificado, required no Normal.
+    if (field.id == 'lote') return normal;
+    if (field.id == 'bull-seed-season') return normal;
   }
   // fidelidade-esteira (onda 13): `same_batch` decide entre um destino único
   // (`novo-lote` de cabeçalho, aqui) ou um destino por animal (`novo-lote`
@@ -325,14 +329,17 @@ bool isCollectionItemFieldRequired(
       field.id == 'novo-lote') {
     return (formValues['destino-unico']?.trim() ?? '') == 'false';
   }
-  // fidelidade-contrato (re-auditoria 3ª avaliação): em `/maintenances` o
-  // executor é employee XOR provider; `provider_total` é required_if o tipo é
-  // Prestador (o total do serviço terceirizado). Empregado usa `quantidade`
-  // (horas), já obrigatória.
-  if (feature.id == 'manutencao-frota' &&
-      collection.name == 'Mão de obra' &&
-      field.id == 'total') {
-    return (values['tipo']?.trim() ?? '') == 'Prestador';
+  // fidelidade-contrato (re-auditoria pós-fix): em `/maintenances` o executor
+  // vive DENTRO de `items.*` (coleção "Peças / Insumos"). `executor_type` é
+  // nullable; quando informado, o alvo e o valor do tipo escolhido viram
+  // obrigatórios: employee → executor + horas; provider → executor + total.
+  if (feature.id == 'manutencao-frota' && collection.name == 'Peças / Insumos') {
+    final tipoExecutor = values['tipo-executor']?.trim() ?? '';
+    if (field.id == 'executor') {
+      return tipoExecutor == 'employee' || tipoExecutor == 'provider';
+    }
+    if (field.id == 'horas') return tipoExecutor == 'employee';
+    if (field.id == 'total') return tipoExecutor == 'provider';
   }
   return false;
 }
@@ -501,6 +508,12 @@ String? featureFieldError(
     }
     if (field.id == 'material-reprodutivo' && normal) {
       return 'Informe o material reprodutivo usado no lote.';
+    }
+    if (field.id == 'lote' && normal) {
+      return 'Selecione o lote de matrizes.';
+    }
+    if (field.id == 'bull-seed-season' && normal) {
+      return 'Selecione o touro / sêmen da estação.';
     }
   }
   // fidelidade-esteira (onda 13): mesmo XOR de cabeçalho × item descrito em
