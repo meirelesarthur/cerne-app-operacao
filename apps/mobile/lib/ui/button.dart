@@ -44,6 +44,8 @@ class AppButton extends StatelessWidget {
     this.fullWidth = false,
     this.leftIcon,
     this.rightIcon,
+    this.width,
+    this.height,
   });
 
   final Widget child;
@@ -54,6 +56,14 @@ class AppButton extends StatelessWidget {
   final bool fullWidth;
   final Widget? leftIcon;
   final Widget? rightIcon;
+
+  /// Sobrescreve a largura do botão (padrão: intrínseca, ou `double.infinity`
+  /// com [fullWidth]). Para telas com medida fixa no Figma que não coincide
+  /// com nenhum breakpoint de largura total.
+  final double? width;
+
+  /// Sobrescreve a altura do botão (padrão: a de [size]).
+  final double? height;
 
   bool get _disabled => onPressed == null || loading;
 
@@ -208,8 +218,8 @@ class AppButton extends StatelessWidget {
           canRequestFocus: !_disabled,
           borderRadius: BorderRadius.circular(_borderRadius),
           child: Container(
-            height: _height,
-            width: fullWidth ? double.infinity : null,
+            height: height ?? _height,
+            width: width ?? (fullWidth ? double.infinity : null),
             padding: EdgeInsets.symmetric(horizontal: _horizontalPadding),
             alignment: Alignment.center,
             child: content,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../design/generated/app_spacing.dart';
+import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_motion.dart';
@@ -107,7 +108,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
     return Scaffold(
-      backgroundColor: semantic.bgCanvas,
+      backgroundColor: semantic.bgSurface,
       body: Column(
         children: [
           Expanded(
@@ -159,6 +160,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
                               constraints: const BoxConstraints(maxWidth: 300),
                               child: AppHeading(
                                 level: AppHeadingLevel.h1,
+                                // +8px sobre o h1 do padrão global (pedido do
+                                // usuário só para o hero do onboarding).
+                                style: const TextStyle(
+                                  fontSize: AppTypography.xlPlus2 + 8,
+                                ),
                                 child: Text(
                                   slide.title,
                                   textAlign: TextAlign.center,
@@ -198,7 +204,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
               child: Column(
                 children: [
                   AppButton(
-                    fullWidth: true,
+                    width: 345,
+                    height: 52,
                     size: AppButtonSize.lg,
                     onPressed: _next,
                     child: Text(_isLast ? 'Começar' : 'Próximo'),
@@ -206,7 +213,8 @@ class _OnboardingPageState extends State<OnboardingPage> {
                   if (!_isLast) ...[
                     const SizedBox(height: AppSpacing.space2),
                     AppButton(
-                      fullWidth: true,
+                      width: 345,
+                      height: 52,
                       size: AppButtonSize.lg,
                       variant: AppButtonVariant.ghost,
                       onPressed: _finish,
