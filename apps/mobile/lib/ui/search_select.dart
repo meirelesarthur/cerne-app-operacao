@@ -27,7 +27,7 @@ class AppSearchSelectOption {
 /// massivos em produção, então a lista não pode ficar sempre inline dentro do
 /// formulário (empurrando o resto do cadastro fora da viewport). O campo
 /// mostra o valor selecionado como um dropdown fechado e, ao ser tocado, abre
-/// [showAppSearchSelectDock] — um bottom sheet a 60% da altura da tela com
+/// [showAppSearchSelectDock] — um bottom sheet a 75% da altura da tela com
 /// busca no topo e a lista rolável ocupando o espaço restante. Selecionar um
 /// item fecha o dock e devolve o valor por `onChanged`, liberando o cadastro.
 class AppSearchSelect extends StatelessWidget {
@@ -106,11 +106,13 @@ class AppSearchSelect extends StatelessWidget {
   }
 }
 
-/// Abre o dock de seleção com busca: bottom sheet fixo em 60% da altura da
-/// tela (`maxHeightFraction: 0.6`, `expand: true` — a lista preenche esse
+/// Abre o dock de seleção com busca: bottom sheet fixo em 75% da altura da
+/// tela (`maxHeightFraction: 0.75`, `expand: true` — a lista preenche esse
 /// espaço em vez de crescer com o conteúdo), com o campo de busca no topo e a
 /// lista rolável abaixo. Tocar numa opção fecha o dock devolvendo o valor;
-/// tocar fora ou no fechar devolve `null` (sem mudança).
+/// tocar fora ou no fechar devolve `null` (sem mudança). A busca não recebe
+/// foco automático ao abrir — só ao ser tocada — para não estourar o teclado
+/// por cima do dock inteiro assim que ele aparece.
 Future<String?> showAppSearchSelectDock(
   BuildContext context, {
   required List<AppSearchSelectOption> options,
@@ -121,7 +123,7 @@ Future<String?> showAppSearchSelectDock(
   return showAppBottomSheet<String>(
     context,
     title: title,
-    maxHeightFraction: 0.6,
+    maxHeightFraction: 0.75,
     expand: true,
     child: _SearchSelectDockContent(
       options: options,
@@ -193,7 +195,6 @@ class _SearchSelectDockContentState extends State<_SearchSelectDockContent> {
           child: TextField(
             controller: _queryController,
             focusNode: _queryFocusNode,
-            autofocus: true,
             onChanged: (v) => setState(() => _query = v),
             style: TextStyle(
               fontFamily: AppTypography.fontFamily,
