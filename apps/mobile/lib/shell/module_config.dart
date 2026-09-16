@@ -233,11 +233,17 @@ const List<ModuleDef> modules = [
         path: 'consultas',
         profiles: {UserAccessProfile.administration},
       ),
+      // Substitui a antiga aba "Atividades": a Administração passa a ter os
+      // mesmos cadastros operacionais que a equipe de campo usa (Confinamento,
+      // Pecuária, Agricultura, Ordem de Serviço, Reprodução, Consultas, Gestão
+      // de Frota, Sincronização) — mesma rota/tela de `rotinas`, só que
+      // acessível também pelo perfil administração, sem atrapalhar as demais
+      // abas. Ver `redirectForSession` em `router/app_router.dart`.
       BottomTab(
-        id: 'atividades',
-        label: 'Atividades',
-        icon: AppIcons.activity,
-        path: 'atividades',
+        id: 'operacional-adm',
+        label: 'Operacional',
+        icon: AppIcons.clipboardList,
+        path: 'operacional',
         profiles: {UserAccessProfile.administration},
       ),
       BottomTab(
@@ -252,8 +258,8 @@ const List<ModuleDef> modules = [
     // que já existe em outro lugar — "Central de gestão/rotinas" é a própria
     // aba de contexto ativa; os 7 "Dashboards gerenciais" já são o grupo
     // "Painéis de decisão"/"Consultas e auditoria" da central; "Fila de
-    // sincronização" já é o grupo "Sincronização"; "Todas as atividades" já é
-    // a aba "Atividades". Dois caminhos para o mesmo destino não é
+    // sincronização" já é o grupo "Sincronização"; os cadastros operacionais
+    // já são a aba "Operacional". Dois caminhos para o mesmo destino não é
     // conveniência, é a pessoa não saber se são a mesma coisa.
     menuSections: [],
   ),

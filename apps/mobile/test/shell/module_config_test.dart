@@ -116,7 +116,7 @@ void main() {
       expect(adminTabs.map((tab) => tab.id), isNot(contains('rotinas')));
       expect(
         adminTabs.where((tab) => tab.action == null).map((tab) => tab.label),
-        ['Gestão', 'Consultas', 'Atividades'],
+        ['Gestão', 'Consultas', 'Operacional'],
       );
       expect(operationalTabs.map((tab) => tab.id), contains('rotinas'));
       expect(

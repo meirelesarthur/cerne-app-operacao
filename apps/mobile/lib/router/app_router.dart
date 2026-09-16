@@ -174,13 +174,13 @@ String? redirectForSession(String path, PrototypeSessionState session) {
       path.startsWith('/fazendas/dashboards') ||
       path.startsWith('/fazendas/consultas') ||
       path == '/fazendas/financeiro';
-  final isOperationalRoute =
-      path.startsWith('/fazendas/operacional') ||
-      path.startsWith('/fazendas/campo');
 
-  if (profile == UserAccessProfile.administration && isOperationalRoute) {
-    return profile.landingRoute;
-  }
+  // A Administração passou a ter os mesmos cadastros operacionais que a
+  // equipe de campo (aba "Operacional", ver `module_config.dart`) — simula o
+  // ADM acumulando poderes de operacional sem deixar de ser administração.
+  // Por isso as rotas operacionais não são mais bloqueadas para esse perfil;
+  // o bloqueio inverso (Operacional não acessa rotas administrativas)
+  // continua valendo.
   if (profile == UserAccessProfile.operational && isAdministrationRoute) {
     return profile.landingRoute;
   }

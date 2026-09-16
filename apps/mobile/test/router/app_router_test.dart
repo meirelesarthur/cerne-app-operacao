@@ -98,7 +98,10 @@ void main() {
           findsOneWidget,
         );
         expect(
-          find.descendant(of: contextTabs, matching: find.text('Atividades')),
+          find.descendant(
+            of: contextTabs,
+            matching: find.text('Operacional'),
+          ),
           findsOneWidget,
         );
         expect(
@@ -122,14 +125,14 @@ void main() {
             matching: find.byType(AppPressable),
           ),
         );
-        final activitiesTab = tester.getRect(
+        final operationalTab = tester.getRect(
           find.ancestor(
-            of: find.text('Atividades'),
+            of: find.text('Operacional'),
             matching: find.byType(AppPressable),
           ),
         );
         expect(managementTab.width, closeTo(consultsTab.width, 0.1));
-        expect(managementTab.width, closeTo(activitiesTab.width, 0.1));
+        expect(managementTab.width, closeTo(operationalTab.width, 0.1));
         expect(find.text('Painéis de decisão'), findsOneWidget);
         expect(find.text('Resultado'), findsOneWidget);
         // Abas do Início não devem aparecer.
@@ -168,7 +171,10 @@ void main() {
     );
 
     testWidgets(
-      'aba Atividades não repete o título da central administrativa',
+      // A aba de contexto não aponta mais para cá (ver aba "Operacional"
+      // abaixo), mas a rota continua servindo o link "Ver todas" da home
+      // administrativa ("Atividades recentes").
+      '/fazendas/atividades continua acessível e não repete o título da central administrativa',
       (tester) async {
         await setTallSurface(tester);
         harness.router.go('/fazendas/atividades');
@@ -176,6 +182,44 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Atividades'), findsWidgets);
+        expect(find.text('Central de gestão'), findsNothing);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'aba Operacional dá à Administração os mesmos cadastros do perfil operacional',
+      (tester) async {
+        await setTallSurface(tester);
+        harness.router.go('/fazendas');
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        final contextTabs = find.byType(AppContextTabs);
+        await tester.tap(
+          find.descendant(
+            of: contextTabs,
+            matching: find.text('Operacional'),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Mesma grade de grupos que a equipe de campo vê em "Rotinas"
+        // (`/fazendas/operacional`), agora acessível também à Administração.
+        expect(find.text('Confinamento'), findsOneWidget);
+        expect(find.text('Pecuária'), findsOneWidget);
+        expect(find.text('Agricultura'), findsOneWidget);
+        expect(find.text('Ordem de Serviço'), findsOneWidget);
+        expect(find.text('Reprodução'), findsOneWidget);
+        expect(find.text('Gestão de Frota'), findsOneWidget);
+        expect(find.text('Sincronizar aplicativo'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+
+        await tester.tap(find.text('Confinamento'));
+        await tester.pumpAndSettle();
+
+        // Não é redirecionado para a central administrativa — a Administração
+        // navega normalmente dentro das rotas operacionais.
         expect(find.text('Central de gestão'), findsNothing);
         expect(tester.takeException(), isNull);
       },
@@ -354,16 +398,17 @@ void main() {
       expect(find.text('Resumo financeiro'), findsNothing);
     });
 
-    testWidgets('administrador não acessa fluxo de entrada operacional', (
-      tester,
-    ) async {
-      harness.router.go('/fazendas/campo/pesagem');
+    testWidgets(
+      'administrador também acessa fluxo de entrada operacional (aba Operacional)',
+      (tester) async {
+        harness.router.go('/fazendas/campo/pesagem');
 
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      expect(find.text('Conta GB Banking'), findsOneWidget);
-      expect(find.text('Nova pesagem'), findsNothing);
-    });
+        expect(find.text('Conta GB Banking'), findsNothing);
+        expect(find.text('Pesagem'), findsWidgets);
+      },
+    );
   });
 }
