@@ -4,63 +4,14 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 53 funcionalidades e a divisão por perfil', () {
-      // banco-real (onda 2): +1 funcionalidade administrativa ("Produtos" —
-      // consulta ao catálogo real de products, 543.983 linhas no dump gbcerne).
-      // Ver docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
-      // confinamento (onda 1): +5 funcionalidades operacionais do submódulo de
-      // Confinamento (Meus currais, Produzir batelada, Trato diário, Leitura
-      // de cocho, Ordens pendentes) — ver docs/ESTEIRA-PERFIS-AGRO365.md.
-      // banco-real (onda 1 — fronteira operação/gestão): `vendas` e
-      // `compras-animais` sobem do operacional para o administrativo (decisão
-      // comercial/financeira, o ADM só visualiza) e `colheita-frutas` sai do
-      // escopo — 13+2=15 administrativas, 46-2-1=43 operacionais, 15+43=58
-      // no total. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-      // Auditoria dos painéis administrativos: `painel-pecuario` fundiu em
-      // `painel-financeiro` (mesmo P&L; o bloco produtivo passou a ser servido
-      // por `lotacao-currais`, onde há dado real) — 15-1=14 administrativas,
-      // 14+43=57 no total. Ver docs/ESTEIRA-DASHBOARDS-ADM.md, seção 2.
-      // confinamento (onda 2): o Confinamento absorveu o que restava do
-      // extinto grupo "Misturador" — `carga`, `descarga` e `balanca` deixaram
-      // de existir como funcionalidades (a produção/distribuição de batelada
-      // já é coberta por `producao-batelada`/`trato-diario`) e `nota-cocho`
-      // saiu por ser duplicata exata de `leitura-cocho-confinamento` — 4
-      // funcionalidades a menos: 43-4=39 operacionais, 14+39=53 no total.
-      // reprodução (simplificação de grupo): `lotes-reproducao` saiu do
-      // catálogo; Reprodução passa a ter só Acasalamento (ex-"Monta
-      // natural") e Diagnóstico de gestação — 39-1=38 operacionais,
-      // 14+38=52 no total.
-      // `pastagens` sai do operacional e vira consulta administrativa
-      // (fronteira operação/gestão, mesmo critério de `vendas`/
-      // `compras-animais`) — 38-1=37 operacionais, 14+1=15
-      // administrativas, 15+37=52 no total (sem mudança na soma).
-      // fidelidade-campos (onda 1): `pastagens` volta ao operacional —
-      // registrar recursos e serviços aplicados na pastagem é lançamento de
-      // campo, do mesmo gênero do apontamento agrícola: 15-1=14
-      // administrativas, 37+1=38 operacionais, total 52 (sem mudança na
-      // soma). fidelidade-campos (onda 4): `lotes-reproducao` volta ao
-      // catálogo, mas como consulta administrativa somente leitura — o que se
-      // perdeu ao tirá-la foi a documentação do contrato
-      // `/breeding-batches`: 14+1=15 administrativas, 15+38=53 no total. Ver
-      // docs/ESTEIRA-FIDELIDADE-CAMPOS.md.
-      // ordem-de-servico (consulta ADM): `consulta-os` entra como o espelho
-      // administrativo de `minhas-os` (só visualização + avaliar/cancelar,
-      // spec web de OS de 16/09/2026) — 15+1=16 administrativas, 16+38=54 no
-      // total.
-      // apontamento (consulta ADM): `consulta-apontamentos` entra como o
-      // espelho administrativo do cadastro `ApontamentoFlow` (só
-      // visualização, mesmo padrão de `consulta-os`) — 16+1=17
-      // administrativas, 17+38=55 no total.
-      expect(adminFeatures, hasLength(17));
+    test('preserva as 38 funcionalidades, todas do perfil operacional', () {
+      // Repo CERNE Operação: o perfil Administração e o catálogo
+      // `adminFeatures` (17 funcionalidades administrativas) foram removidos
+      // por completo — só resta o catálogo operacional.
       expect(operationalFeatures, hasLength(38));
-      expect(allFeatures, hasLength(55));
+      expect(allFeatures, hasLength(38));
+      expect(allFeatures, same(operationalFeatures));
 
-      expect(
-        adminFeatures.every(
-          (feature) => feature.profile == FeatureProfile.administration,
-        ),
-        isTrue,
-      );
       expect(
         operationalFeatures.every(
           (feature) => feature.profile == FeatureProfile.operational,
@@ -79,20 +30,12 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 47 ready, 6 hardware e zero mapped', () {
-      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
-      // (ready) saiu do escopo — 52-1=51. Auditoria dos painéis:
-      // `painel-pecuario` (ready) fundiu em `painel-financeiro` — 51-1=50.
-      // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` (ready)
-      // saíram do catálogo — 50-3=47; `balanca` (hardware) saiu junto — 7-1=6.
-      // reprodução: `lotes-reproducao` (ready) saiu do catálogo — 47-1=46.
-      // fidelidade-campos (onda 4): `lotes-reproducao` (ready) volta como
-      // consulta administrativa — 46+1=47.
-      // ordem-de-servico (consulta ADM): `consulta-os` (ready) — 47+1=48.
-      // apontamento (consulta ADM): `consulta-apontamentos` (ready) — 48+1=49.
+    test('preserva a maturidade 32 ready, 6 hardware e zero mapped', () {
+      // Catálogo só operacional (repo CERNE Operação): 32 funcionalidades
+      // `ready`, 6 `hardware`, nenhuma `mapped`.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(49),
+        hasLength(32),
       );
       expect(
         allFeatures.where(
@@ -109,190 +52,14 @@ void main() {
     test('preserva as invariantes estruturais do catálogo congelado', () {
       final fields = allFeatures.expand((feature) => feature.fields).toList();
 
-      // banco-real (onda 1): +11 campos opcionais para alinhar o catálogo ao
-      // schema real do dump gbcerne. banco-real (produto-busca): +4 campos em
-      // consulta-produtos (a única criação em campo livre; +3 obrigatórios)
-      // para virar a fonte de busca dos demais campos "produto". Ver
-      // docs/ajustes-banco-real/00-ESTEIRA-AJUSTES-BANCO-REAL.md.
-      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
-      // saiu do catálogo com seus 4 campos (todos obrigatórios) — 183-4=179
-      // campos; 159-4=155 obrigatórios. `vendas` ganhou `listMode` ao virar
-      // consulta pelo motor genérico sem `existingRoute` (que saiu por
-      // apontar para uma rota `/fazendas/campo/*` bloqueada para
-      // administração) — 33+1=34 com `listMode`, 18-1=17 com
-      // `existingRoute`. `colheita-frutas` saiu com sua 1 seção — 15-1=14.
-      // Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-      // banco-real (onda 2 — apontamento): -3 campos (`prazo`,
-      // `resultado-esperado`, `criterio-sucesso`, nenhum obrigatório) e +4
-      // campos (`data-apontamento` obrigatório, `descricao`,
-      // `cultura-variedade`, `safra` opcionais) — 179-3+4=180 campos;
-      // 155+1=156 obrigatórios. `apontamento` perdeu 2 seções
-      // (`Abastecimentos` e `Produção`) — 14-2=12. Ver
-      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 2.
-      // banco-real (onda 3 — duplicações): `carga` (6 campos, 6
-      // obrigatórios), `descarga` (6 campos, 6 obrigatórios) e `nota-cocho`
-      // (5 campos, 4 obrigatórios) viraram redirecionamento —
-      // 180-17=163 campos; 156-16=140 obrigatórios. As três ganharam
-      // `existingRoute` e perderam `listMode` — 34-3=31 com `listMode`;
-      // 17+3=20 com `existingRoute`. Ver
-      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 3.
-      // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` saíram do
-      // catálogo (já não tinham `fields`/`listMode` próprios, então essas
-      // contagens não mudam) — cada uma levou seu `existingRoute`: 19-3=16.
-      // `balanca` saiu com suas 2 capabilities (`Bluetooth`, `Balança`):
-      // 25-2=23.
-      // banco-real (onda 4 — apontamento): fonte real é `appropriations` +
-      // tabelas filhas, não `service_orders` — motor genérico trocado por
-      // fluxo dedicado (`ApontamentoFlow`). Saem os 12 campos (8
-      // obrigatórios) e as 4 seções do `apontamento` — 163-12=151 campos;
-      // 140-8=132 obrigatórios; 12-4=8 seções. Perde `listMode` e ganha
-      // `existingRoute` — 31-1=30 com `listMode`; 16+1=17 com
-      // `existingRoute`. Ver docs/ajustes-banco-real/04-apontamento-appropriations.md.
-      // reprodução: `lotes-reproducao` saiu com seus 5 campos (5
-      // obrigatórios) e seu `listMode` — 151-5=146 campos; 132-5=127
-      // obrigatórios; 30-1=29 com `listMode`.
-      // `pastagens` muda de perfil mas mantém os mesmos 3 campos (3
-      // obrigatórios) e `listMode` — sem mudança nessas contagens; perde
-      // as 3 seções (eram do fluxo de criação, que não existe mais numa
-      // consulta somente leitura) — 8-3=5.
-      // fidelidade-campos: a leva soma, cadastro a cadastro, os campos que o
-      // contrato real tem e o protótipo não mostrava. Ver
-      // docs/ESTEIRA-FIDELIDADE-CAMPOS.md.
-      // Onda 1 — `pastagens` sai do ADM com 3 campos (3 obrigatórios) e
-      // volta ao operacional com 12 (7) e 5 coleções: 146+9=155 campos;
-      // 127+4=131 obrigatórios; 5+5=10 seções.
-      // Onda 2 — `marcacao` +8 campos (1 obrigatório): 155+8=163; 131+1=132.
-      // Onda 3 — `registrar-animal` +13 (3), `rebanho-inicial` +8 (1),
-      // `cadastrar-area` +6 (1), `lote-animais` +3 (1), `desmama` +2 (1),
-      // `transferencia-lote-area` +2 (1), `transferencia-animal` +1 (1):
-      // 163+35=198 campos; 132+9=141 obrigatórios. Coleções novas em
-      // `registrar-animal`, `rebanho-inicial`, `cadastrar-area`,
-      // `lote-animais` (1 cada) e `sanitario` (3): 10+7=17 seções.
-      // Onda 4 — `estacao-monta` +2 (2), `material-reprodutivo` +4 (4),
-      // `protocolos-estacao` +2 (1), `acasalamento` +6 (2),
-      // `diagnostico-gestacao` +3 (1) e `lotes-reproducao` de volta com 7
-      // (7): 198+24=222 campos; 141+17=158 obrigatórios. Coleções em
-      // `material-reprodutivo` (1), `acasalamento` (2) e
-      // `diagnostico-gestacao` (1): 17+4=21 seções. `lotes-reproducao` traz
-      // seu `listMode` de volta — 29+1=30.
-      // Onda 5 — `compras-animais` +7 (6), `batidas` +3 (3), `formulacoes`
-      // +4 (1), `abastecimentos` +3 (1) e `manutencao-frota` +3 (0):
-      // 222+20=242 campos; 158+11=169 obrigatórios. Coleções em
-      // `compras-animais` (2), `batidas`, `abastecimentos` e
-      // `manutencao-frota` (1 cada): 21+5=26 seções.
-      // Onda 9 (re-auditoria 11/09) — resíduos de campo **escalar** de
-      // cabeçalho: `cadastrar-area` +2 (2, `fazenda`/`coordenadas`),
-      // `lotes-reproducao` +1 (1, `descricao`) e `rebanho-inicial` +1 (0,
-      // `preco-kg` opcional, espelha `registrar-animal`): 242+4=246 campos;
-      // 169+3=172 obrigatórios. Nenhuma coleção nova nestes três — os
-      // residuais de **item** (`pastagens.inputs[]`/`services[]`,
-      // `sanitario.items[]`, `compras-animais.items[]`,
-      // `batidas.items[]`, `manutencao-frota.items[]`) entram nos campos da
-      // coleção, não nos do cabeçalho. `monta-natural` troca 1 coleção
-      // genérica por 2 do contrato (`simplified_animals[]`/
-      // `protocol_animals[]`): 26+1=27 seções. Ver
-      // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
-      // fidelidade-contrato (onda 1) — flips de obrigatoriedade sem ambiguidade
-      // de valor, contra o `rules()` real (categoria A da re-auditoria de
-      // 14/09): `marcacao` +0 campo (5 flips), `rebanho-inicial` +0 (4:
-      // `data-entrada`/`raca`/`peso-medio`/`preco-kg`), `registrar-animal` +0
-      // (1: `preco-kg`), `cadastrar-area` +0 (4: `area-produtiva`/
-      // `area-nao-produtiva`/`area-recreio`/`ativo`), `sanitario` +0 (1:
-      // `controle-por-tempo`) — 15 flips, nenhum campo novo de cabeçalho.
-      // `monta-natural` +1 campo, +1 obrigatório (`bull-seed-season`, era
-      // ausente por completo). `material-reprodutivo` reverte 1 (o item
-      // `products.*.armazem` era `required` por engano — o contrato real o
-      // marca opcional; não conta aqui, é campo de coleção, ver o teste de
-      // coleções abaixo). 246+1=247 campos; 172+15+1=188 obrigatórios.
-      // fidelidade-contrato (onda 6): `transferencia-lote-area` ganha
-      // `destino` (o XOR de três destinos — área/módulo/curral — mesmo
-      // padrão de `pastagens.destino`) e perde o `isRequired` fixo de
-      // `area`/`modulo` (o contrato quer exatamente um dos três, não os
-      // dois sempre): 247+1=248 campos; 188-2+1=187 obrigatórios. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 6.
-      // fidelidade-esteira (onda 10) — revisão manual fechada com dado real
-      // do dump: `compras-animais` perde `categoria`/`quantidade`/
-      // `valor-unitario` do cabeçalho (vivem só em "Itens da compra", já
-      // existentes) -3 campos, -3 obrigatórios. `estacao-monta` ganha
-      // `descricao` (obrigatório, distinto de `observacao`) +1/+1.
-      // `abastecimentos` troca `tipo-medidor`+`medidor` por dois campos
-      // escalares opcionais `horimetro`/`hodometro` no cabeçalho (+0
-      // campos, -1 obrigatório) e perde o `medidor` duplicado da coleção
-      // "Itens do abastecimento" (-1 campo). 248-2=246 campos (a soma dos
-      // -3/+1 de cabeçalho já estava aplicada antes desta sessão, sem
-      // atualizar este teste; -1 da coleção é o delta novo);
-      // 187-3+1-1=184 obrigatórios. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
-      // Onda 10.
-      // fidelidade-esteira (onda 13): `transferencia-animal` perde o campo
-      // escalar `identificacao` (obrigatório, vira campo de item da nova
-      // coleção "Animais transferidos") e `novo-lote` deixa de ser sempre
-      // obrigatório (agora XOR contra o `novo-lote` por item, condicional em
-      // `destino-unico`): 246-1=245 campos; 184-2=182 obrigatórios. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
-      // fidelidade-esteira (onda 15): `consulta-produtos` ganha os ~40 campos
-      // fiscais do contrato real (`POST /products`, 72 colunas no dump) —
-      // 35 campos novos (6 obrigatórios: `group-uuid`, `has-lot`,
-      // `is-equipment`, `is-enabled`, `control-stock`, `las-price`):
-      // 245+35=280 campos; 182+6=188 obrigatórios. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 15.
-      // fidelidade-contrato (re-auditoria 3ª avaliação): `abastecimentos`
-      // move `horimetro`/`hodometro` do cabeçalho para a coleção "Itens do
-      // abastecimento" (contrato `SupplyRequest`: `items.*.hour_meter`/
-      // `mileage`, por item), ambos opcionais: 280-2=278 campos de cabeçalho.
-      // `consulta-produtos` ganha `cultivation-uuid` (required_if grupo =
-      // Produção, condicional — não estático): 278+1=279 campos de cabeçalho.
-      // fidelidade-contrato (re-auditoria 3ª avaliação, correção de altas):
-      // registrar-animal ganha modo-registro + estagio-reprodutivo +
-      // status-reprodutivo (+3) e rebanho-inicial ganha modo-registro (+1):
-      // 279+4=283. Obrigatórios: registrar-animal (modo-registro + preco-arroba
-      // + valor-unitario + ua = +4) e rebanho-inicial (mesmos 4 = +4): 188+8=196.
-      // Correção das médias: perdas.lote, transferencia-lote-area.responsavel e
-      // .local-atual deixam de ser required (contrato nullable/não-contratual):
-      // 196-3=193.
-      // Correção das baixas: lote-animais.responsavel deixa de ser required
-      // (employee_uuid nullable): 193-1=192. (marcacao.quantidade muda de tipo
-      // number→integer, segue required; pastagens.Máquinas.quantidade é campo
-      // de coleção, não conta aqui.)
-      // Correção pós-fix (médias+baixas): 6 over-requires alinhados ao contrato
-      // (nullable) — registrar.nascimento, compras.documento, pastagens.armazem-
-      // insumos/producao, monta.lote/bull-seed-season: 192-6=186.
-      // Correção pós-fix (baixas, FK texto→select): perdas.responsavel deixa de
-      // ser required (não-contratual, servidor usa Auth): 186-1=185.
-      expect(fields, hasLength(283));
-      expect(fields.where((field) => field.isRequired), hasLength(185));
-      // ordem-de-servico: `consulta-os` (nova, listMode) — 30+1=31.
-      // apontamento: `consulta-apontamentos` (nova, listMode) — 31+1=32.
-      expect(allFeatures.where((feature) => feature.listMode), hasLength(32));
-      // ordem-de-servico: `minhas-os` ganha `existingRoute` (tela dedicada,
-      // motor genérico não cobre o ciclo de ação da OS) e `consulta-os`
-      // nasce com `existingRoute` — 17+2=19.
-      // apontamento: `consulta-apontamentos` nasce com `existingRoute` —
-      // 19+1=20.
+      expect(fields, hasLength(223));
+      expect(fields.where((field) => field.isRequired), hasLength(158));
+      expect(allFeatures.where((feature) => feature.listMode), hasLength(23));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(20),
+        hasLength(12),
       );
-      // fidelidade-contrato (onda 4) — `lotes-reproducao` ganha a coleção
-      // obrigatória "Lotes vinculados" (`batch_uuids[]`, o escalar `lote`
-      // permanece só para título/descrição do registro): 27+1=28. E
-      // `manutencao-frota` ganha "Mão de obra" (bloco de executor por item,
-      // ausente por completo): 28+1=29 seções. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 4.
-      // fidelidade-contrato (onda 5) — `lote-animais` ganha "Categorias do
-      // lote" (`category_uuids[]`) e `apartacao` ganha "Lotes de origem"
-      // (`batches[]`), reusando o motor de coleção em vez de um multi-select
-      // novo: 29+2=31 seções. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md,
-      // Onda 5.
-      // fidelidade-esteira (onda 12): `material-reprodutivo` ganha "Animais"
-      // (coleção `min:1`, confirmada pivô puro no dump real): 31+1=32
-      // seções. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 12.
-      // fidelidade-esteira (onda 13): `transferencia-animal` ganha "Animais
-      // transferidos" (coleção `min:1`, alvo da captura de RFID empilhada):
-      // 32+1=33. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
-      // Correção pós-fix: manutencao-frota funde a coleção "Mão de obra"
-      // dentro de "Peças / Insumos" (executor por item, como o contrato) —
-      // uma coleção a menos: 33-1=32.
-      expect(allFeatures.expand((feature) => feature.sections), hasLength(32));
+      expect(allFeatures.expand((feature) => feature.sections), hasLength(27));
       expect(
         allFeatures.expand((feature) => feature.capabilities),
         hasLength(23),
@@ -312,10 +79,7 @@ void main() {
       // acasalamento, diagnóstico de gestação e manutenção — os formulários
       // de 11 campos ou mais. Abastecimentos ficou de fora de propósito: com
       // 10 campos, uma tela só é mais rápida em campo do que quatro.
-      // fidelidade-esteira (onda 15): `consulta-produtos` entra — com ~40
-      // campos fiscais novos, a rolagem única esconderia o fim do
-      // formulário: 8+1=9.
-      expect(comEtapas, hasLength(9));
+      expect(comEtapas, hasLength(8));
 
       for (final feature in comEtapas) {
         final camposEmEtapas = [
@@ -373,93 +137,27 @@ void main() {
             (feature: feature, collection: collection),
       ];
 
-      // fidelidade-contrato (onda 4): `lotes-reproducao` ganha "Lotes
-      // vinculados" (1 campo, `batch_uuids[]`): 27+1=28.
-      // `manutencao-frota` ganha "Mão de obra" (4 campos): 28+1=29.
-      // fidelidade-contrato (onda 5): `lote-animais` ganha "Categorias do
-      // lote" e `apartacao` ganha "Lotes de origem" (1 campo cada): 29+2=31.
-      // fidelidade-esteira (onda 12): `material-reprodutivo` ganha "Animais":
-      // 31+1=32.
-      // fidelidade-esteira (onda 13): `transferencia-animal` ganha "Animais
-      // transferidos": 32+1=33.
-      expect(colecoes, hasLength(32));
+      expect(colecoes, hasLength(27));
 
       final comCampos = colecoes
           .where((par) => par.collection.fields.isNotEmpty)
           .toList(growable: false);
-      // 25 coleções reais do contrato. As 2 restantes são as "seções" de
-      // `processamentos` — rótulos de agrupamento (Pendentes/Concluídos), não
-      // coleções de item; seguem como contador de propósito.
-      //
-      // fidelidade-campos (onda 9 — re-auditoria 11/09): `monta-natural`
-      // troca a coleção genérica "Animais por linha" (4 campos) pelas duas
-      // do contrato — "Animais (lançamento simplificado)" (5 campos:
-      // identificação, armazém, estoque, unidade, quantidade — os
-      // `simplified_animals.*` required) e "Animais do protocolo" (3
-      // campos: identificação, hora, elegível — os `protocol_animals.*`
-      // required) — +1 coleção, +4 campos de item. Mais 1 campo de item em
-      // cada uma de `pastagens.inputs[]` (estoque), `pastagens.services[]`
-      // (unidade), `sanitario.items[]` (estoque), `compras-animais.items[]`
-      // (subtotal), `batidas.items[]` (quantidade realizada) e
-      // `manutencao-frota.items[]` (equipamento): 24+1=25 coleções com
-      // campo; 93+10=103 campos de item. Ver
-      // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
-      // fidelidade-contrato (onda 4): +1 coleção com campo (`lotes-reproducao`
-      // "Lotes vinculados"): 25+1=26. +1 (`manutencao-frota` "Mão de obra"):
-      // 26+1=27.
-      // fidelidade-contrato (onda 5): +2 (`lote-animais`/`apartacao`):
-      // 27+2=29.
-      // fidelidade-esteira (onda 12): +1 (`material-reprodutivo` "Animais"):
-      // 29+1=30.
-      // fidelidade-esteira (onda 13): +1 (`transferencia-animal` "Animais
-      // transferidos"): 30+1=31.
-      expect(comCampos, hasLength(30));
+      // Todas as coleções do catálogo operacional declaram os campos do item
+      // — nenhuma ficou no modelo antigo de contador puro.
+      expect(comCampos, hasLength(27));
       expect(
         colecoes
             .where((par) => par.collection.fields.isEmpty)
             .map((par) => par.feature.id)
             .toSet(),
-        {'processamentos'},
+        isEmpty,
       );
-      // fidelidade-contrato (onda 3): `lote-animais."Animais do lote"` ganha
-      // `tipo-identificacao` — a identificação por texto vira modo +
-      // número, mesmo padrão de `identifications[]` de `registrar-animal`,
-      // documentando a intenção de FK (`animal_uuids[]`) sem UUID sintético.
-      // 103+1=104.
-      // fidelidade-contrato (onda 4): `batidas.items[]` +1 (unidade),
-      // `protocolos-estacao.items[]` +2 (servico, unidade),
-      // `diagnostico-gestacao."Animais diagnosticados"` +1 (veterinario),
-      // `lotes-reproducao."Lotes vinculados"` +1 (lote): 104+5=109.
-      // `manutencao-frota."Peças / Insumos"` +2 (horimetro, hodometro) e a
-      // nova coleção "Mão de obra" +4 (tipo, executor, quantidade, total):
-      // 109+6=115.
-      // fidelidade-contrato (onda 5): `lote-animais."Categorias do lote"` +1
-      // e `apartacao."Lotes de origem"` +1: 115+2=117.
-      // fidelidade-contrato (onda 6): `pastagens."Serviços"` recompõe o
-      // executor (`prestador` texto livre sai, `tipo-executor`+`executor`
-      // entram — XOR empregado/função/prestador, condicional em
-      // functional_journey_engine.dart): -1+2=+1. 117+1=118. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 6.
-      // fidelidade-esteira (onda 10): `abastecimentos."Itens do
-      // abastecimento"` perde o `medidor` duplicado — o banco real
-      // (`appropriation_supply`) tem horímetro/hodômetro únicos no
-      // cabeçalho do evento, não por item: 118-1=117.
-      // fidelidade-esteira (onda 12): `material-reprodutivo."Animais"` +2
-      // (`tipo-identificacao`, `identificacao`): 117+2=119.
-      // fidelidade-esteira (onda 13): `transferencia-animal."Animais
-      // transferidos"` +2 (`identificacao`, `novo-lote`): 119+2=121.
-      // fidelidade-contrato (re-auditoria 3ª avaliação):
-      // `abastecimentos."Itens do abastecimento"` recebe `horimetro`/
-      // `hodometro` de volta (contrato `SupplyRequest`: `items.*.hour_meter`/
-      // `mileage`, por item): 121+2=123.
-      // Correção das médias: diagnostico-gestacao."Animais diagnosticados"
-      // ganha resync/lote/observacao (campos `present` do contrato): 123+3=126.
       expect(
         comCampos.fold<int>(
           0,
           (total, par) => total + par.collection.fields.length,
         ),
-        126,
+        115,
       );
 
       for (final par in comCampos) {
@@ -493,22 +191,10 @@ void main() {
       }
 
       // `protocolos-estacao.items[]`, `diagnostico-gestacao.animals[]`,
-      // `lotes-reproducao.batch_uuids[]`, `lote-animais.category_uuids[]` e
-      // `apartacao.batches[]` são as cinco coleções `min:1` do contrato real:
-      // em todos os casos a coleção **é** o registro (ou parte essencial
-      // dele), e salvar sem nenhum item não registra nada.
-      // fidelidade-contrato (onda 4): `lotes-reproducao` entra.
-      // fidelidade-contrato (onda 5): `lote-animais`/`apartacao` entram —
-      // mesmo motor de coleção, sem multi-select novo. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Ondas 4-5.
-      // fidelidade-esteira (onda 12): `material-reprodutivo` entra —
-      // `animal_bull_seed_season` no dump real é pivô puro, confirmando que
-      // a coleção "Animais" é `min:1` (sem ela o vínculo não existe). Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 12.
-      // fidelidade-esteira (onda 13): `transferencia-animal` entra —
-      // `animal_transfer_animal_farm` também é pivô puro; sem nenhum animal
-      // capturado não há o que transferir. Ver
-      // docs/ESTEIRA-FIDELIDADE-CONTRATO.md, Onda 13.
+      // `lote-animais.category_uuids[]` e `apartacao.batches[]` são coleções
+      // `min:1` do contrato real: em todos os casos a coleção **é** o
+      // registro (ou parte essencial dele), e salvar sem nenhum item não
+      // registra nada.
       expect(
         {
           for (final feature in allFeatures)
@@ -516,19 +202,12 @@ void main() {
               feature.id: feature.requiredSections,
         },
         {
-          // fidelidade-contrato (re-auditoria 3ª avaliação): coleções `min:1`
-          // do contrato que faltavam travar — sanitario (animal_uuids/items),
-          // compras (items), manutencao (items), abastecimentos (items),
-          // formulacoes (feedstocks). material-reprodutivo SAIU: animals não
-          // tem min:1 no contrato (GAP-BSS-06), app estava mais restrito.
-          'compras-animais': ['Itens da compra'],
           'sanitario': ['Animais alvo', 'Itens de estoque'],
           'formulacoes': ['Matérias-primas'],
           'batidas': ['Itens da batida'],
           'protocolos-estacao': ['Etapas do protocolo'],
           'diagnostico-gestacao': ['Animais diagnosticados'],
           'desmama': ['Identificações adicionais'],
-          'lotes-reproducao': ['Lotes vinculados'],
           'lote-animais': ['Categorias do lote'],
           'apartacao': ['Lotes de origem'],
           'transferencia-animal': ['Animais transferidos'],
@@ -618,30 +297,24 @@ void main() {
       });
     });
 
-    test('preserva consultas compartilhadas e exportações de auditoria', () {
-      expect(featureById('areas')?.dataSourceId, 'cadastrar-area');
+    test('não conserva funcionalidades administrativas ou legadas', () {
+      // O perfil Administração e o catálogo `adminFeatures` foram removidos
+      // por completo deste repo (CERNE Operação): nenhuma consulta/exportação
+      // administrativa sobrevive no catálogo.
+      expect(featureById('areas'), isNull);
+      expect(featureById('lotes-reproducao'), isNull);
+      expect(featureById('compras-animais'), isNull);
+      expect(featureById('vendas'), isNull);
+      expect(featureById('processamentos'), isNull);
+      expect(featureById('exportar-log-estoque'), isNull);
+      expect(featureById('exportar-log-pecuaria'), isNull);
       // confinamento (onda 2): `carga`, `descarga`, `balanca` e `nota-cocho`
       // saíram do catálogo — o Confinamento absorveu o que restava do
       // Misturador. Ver comentário em `functional_catalog.dart`.
       expect(featureById('carga'), isNull);
-      // fidelidade-campos (onda 4): `lotes-reproducao` voltou — agora como
-      // consulta administrativa somente leitura.
-      expect(featureById('lotes-reproducao')?.readOnly, isTrue);
-      expect(
-        featureById('lotes-reproducao')?.profile,
-        FeatureProfile.administration,
-      );
       expect(featureById('descarga'), isNull);
       expect(featureById('balanca'), isNull);
       expect(featureById('nota-cocho'), isNull);
-      expect(
-        featureById('exportar-log-estoque')?.auditExport,
-        AuditExportKind.estoque,
-      );
-      expect(
-        featureById('exportar-log-pecuaria')?.auditExport,
-        AuditExportKind.pecuaria,
-      );
     });
   });
 }

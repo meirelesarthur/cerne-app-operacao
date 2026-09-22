@@ -33,7 +33,7 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       final notifier = container.read(prototypeSessionProvider.notifier);
-      notifier.loginAs(UserAccessProfile.administration);
+      notifier.loginAs(UserAccessProfile.operational);
 
       notifier.logout();
 

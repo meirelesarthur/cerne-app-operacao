@@ -6,8 +6,8 @@ import 'package:cerne_app/ui/app_icon.dart';
 
 void main() {
   group('module_config', () {
-    test('todos os 6 módulos existem com bottomTabs não vazios', () {
-      expect(modules.length, 6);
+    test('todos os 3 módulos existem com bottomTabs não vazios', () {
+      expect(modules.length, 3);
       for (final m in modules) {
         expect(m.bottomTabs, isNotEmpty);
       }
@@ -26,22 +26,13 @@ void main() {
         ).map((module) => module.id),
         ['inicio', 'fazendas', 'armazem'],
       );
-      expect(modules.map((module) => module.id), hasLength(6));
-    });
-
-    test('getMenuSections usa menuSections quando definido', () {
-      final bank = getModule('bank')!;
-      final sections = getMenuSections(bank);
-      expect(
-        sections.map((s) => s.title),
-        contains('Pagamentos e transferências'),
-      );
+      expect(modules.map((module) => module.id), hasLength(3));
     });
 
     test(
       'getMenuSections cai no fallback derivado das bottomTabs quando ausente',
       () {
-        // Nenhum dos 6 módulos reais deixa `menuSections` ausente hoje (ver
+        // Nenhum dos 3 módulos reais deixa `menuSections` ausente hoje (ver
         // teste abaixo) — o fallback só existe como rede de segurança para um
         // módulo futuro sem seção própria. Testado aqui com um `ModuleDef`
         // sintético, não com um módulo real.
@@ -64,10 +55,10 @@ void main() {
               path: 'apps',
             ),
             BottomTab(
-              id: 'carteira',
-              label: 'Carteira',
-              icon: AppIcons.wallet,
-              path: 'carteira',
+              id: 'estoque',
+              label: 'Estoque',
+              icon: AppIcons.boxes,
+              path: 'estoque',
             ),
             BottomTab(
               id: 'menu',
@@ -84,7 +75,7 @@ void main() {
         // 'menu' tem action e é excluído; '' (home) também é excluído por path vazio.
         expect(
           sections.first.items.map((i) => i.id),
-          containsAll(['apps', 'carteira']),
+          containsAll(['apps', 'estoque']),
         );
         expect(sections.first.items.map((i) => i.id), isNot(contains('menu')));
       },
@@ -101,42 +92,13 @@ void main() {
       },
     );
 
-    test('Fazendas filtra abas e menus pelo perfil da sessão', () {
+    test('Fazendas só entrega a aba operacional (perfil único do app)', () {
       final fazendas = getModule('fazendas')!;
-      final adminTabs = visibleBottomTabs(
-        fazendas,
-        UserAccessProfile.administration,
-      );
-      final operationalTabs = visibleBottomTabs(
-        fazendas,
-        UserAccessProfile.operational,
-      );
+      final tabs = visibleBottomTabs(fazendas, UserAccessProfile.operational);
 
-      expect(adminTabs.map((tab) => tab.id), contains('dashboard'));
-      expect(adminTabs.map((tab) => tab.id), isNot(contains('rotinas')));
       expect(
-        adminTabs.where((tab) => tab.action == null).map((tab) => tab.label),
-        ['Gestão', 'Consultas', 'Ordens de Serviço'],
-      );
-      expect(operationalTabs.map((tab) => tab.id), contains('rotinas'));
-      expect(
-        operationalTabs.map((tab) => tab.id),
-        isNot(contains('dashboard')),
-      );
-      expect(
-        operationalTabs
-            .where((tab) => tab.action == null)
-            .map((tab) => tab.label),
+        tabs.where((tab) => tab.action == null).map((tab) => tab.label),
         ['Rotinas'],
-      );
-
-      final operationalItems = getMenuSections(
-        fazendas,
-        profile: UserAccessProfile.operational,
-      ).expand((section) => section.items);
-      expect(
-        operationalItems.map((item) => item.route),
-        isNot(contains('/fazendas/dashboards/financeiro')),
       );
     });
   });

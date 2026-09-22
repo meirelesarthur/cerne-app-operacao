@@ -29,7 +29,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           container,
-          AppRevealMenu(module: getModule('bank')!, onNavigate: (_) {}),
+          AppRevealMenu(module: getModule('armazem')!, onNavigate: (_) {}),
         ),
       );
       await tester.pump();
@@ -55,7 +55,7 @@ void main() {
           _wrap(
             container,
             AppRevealMenu(
-              module: getModule('bank')!,
+              module: getModule('armazem')!,
               onNavigate: (route) => navigatedTo = route,
             ),
           ),
@@ -66,7 +66,7 @@ void main() {
         expect(find.text('Silvio Ventura'), findsOneWidget);
         // O título da seção é exibido em caixa alta (equivalente ao `uppercase`
         // do Tailwind no React — transformação puramente visual).
-        expect(find.text('PAGAMENTOS E TRANSFERÊNCIAS'), findsOneWidget);
+        expect(find.text('OPERAÇÃO'), findsOneWidget);
         expect(find.text('Sair'), findsOneWidget);
         expect(tester.takeException(), isNull);
 
@@ -94,7 +94,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           container,
-          AppRevealMenu(module: getModule('bank')!, onNavigate: (_) {}),
+          AppRevealMenu(module: getModule('armazem')!, onNavigate: (_) {}),
         ),
       );
       await tester.pump(const Duration(milliseconds: 600));
@@ -122,7 +122,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           container,
-          AppRevealMenu(module: getModule('bank')!, onNavigate: (_) {}),
+          AppRevealMenu(module: getModule('armazem')!, onNavigate: (_) {}),
         ),
       );
       await tester.pump(const Duration(milliseconds: 600));

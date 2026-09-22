@@ -6,9 +6,6 @@ import 'package:cerne_app/shell/state/prototype_session_store.dart';
 void main() {
   group('política funcional de acesso', () {
     const signedOut = PrototypeSessionState.signedOut();
-    const administration = PrototypeSessionState.signedIn(
-      UserAccessProfile.administration,
-    );
     const operational = PrototypeSessionState.signedIn(
       UserAccessProfile.operational,
     );
@@ -24,10 +21,9 @@ void main() {
         for (final path in [
           '/',
           '/inicio',
-          '/bank/extrato',
           '/perfil',
           '/notificacoes',
-          '/fazendas/administracao',
+          '/fazendas/operacional',
           '/fazendas/operacional/carga',
         ]) {
           expect(
@@ -39,74 +35,37 @@ void main() {
       },
     );
 
-    test('administração bloqueia todas as famílias de entrada operacional', () {
+    test('rotas operacionais e de campo continuam livres com sessão ativa', () {
       for (final path in [
         '/fazendas/operacional',
         '/fazendas/operacional/carga',
         '/fazendas/campo/pesagem',
         '/fazendas/campo/sincronizacao',
       ]) {
-        expect(
-          redirectForSession(path, administration),
-          UserAccessProfile.administration.landingRoute,
-          reason: path,
-        );
+        expect(redirectForSession(path, operational), isNull, reason: path);
       }
-
-      expect(
-        redirectForSession('/fazendas/dashboards/financeiro', administration),
-        isNull,
-      );
-      expect(redirectForSession('/fazendas/ordem-servico', administration), isNull);
-      expect(redirectForSession('/bank/extrato', administration), isNull);
-    });
-
-    test('operação bloqueia todas as famílias de supervisão', () {
-      for (final path in [
-        '/fazendas/administracao',
-        '/fazendas/administracao/saldo-estoque',
-        '/fazendas/dashboards/financeiro',
-        '/fazendas/financeiro',
-        '/fazendas/ordem-servico',
-      ]) {
-        expect(
-          redirectForSession(path, operational),
-          UserAccessProfile.operational.landingRoute,
-          reason: path,
-        );
-      }
-
-      expect(
-        redirectForSession('/fazendas/operacional/carga', operational),
-        isNull,
-      );
-      expect(
-        redirectForSession('/fazendas/campo/pesagem', operational),
-        isNull,
-      );
     });
 
     test('raiz, login e atalhos neutros retornam à central do perfil', () {
-      for (final profile in UserAccessProfile.values) {
-        final session = PrototypeSessionState.signedIn(profile);
-        for (final path in ['/', '/login', '/desktop', '/desktop/cerne-app']) {
-          expect(
-            redirectForSession(path, session),
-            profile.landingRoute,
-            reason: '${profile.name}: $path',
-          );
-        }
+      const profile = UserAccessProfile.operational;
+      const session = operational;
+      for (final path in ['/', '/login', '/desktop', '/desktop/cerne-app']) {
         expect(
-          redirectForSession('/fazendas', session),
-          profile.homeRoute,
-          reason: '${profile.name}: /fazendas',
-        );
-        expect(
-          redirectForSession('/fazendas/mais', session),
-          profile.homeRoute,
-          reason: '${profile.name}: /fazendas/mais',
+          redirectForSession(path, session),
+          profile.landingRoute,
+          reason: path,
         );
       }
+      expect(
+        redirectForSession('/fazendas', session),
+        profile.homeRoute,
+        reason: '/fazendas',
+      );
+      expect(
+        redirectForSession('/fazendas/mais', session),
+        profile.homeRoute,
+        reason: '/fazendas/mais',
+      );
     });
   });
 }

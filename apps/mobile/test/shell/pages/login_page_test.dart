@@ -53,7 +53,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('login padrão inicia sessão administrativa no Banking', (
+    testWidgets('login inicia a sessão operacional e abre a central de rotinas', (
       tester,
     ) async {
       await setTallSurface(tester);
@@ -63,48 +63,12 @@ void main() {
       await tester.tap(find.text('Entrar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Conta GB Banking'), findsOneWidget);
-      expect(
-        harness.container.read(prototypeSessionProvider).profile,
-        UserAccessProfile.administration,
-      );
-    });
-
-    testWidgets('login sinalizado como operacional abre central de rotinas', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      harness.router.go('/login?ambiente=operacional');
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Entrar'));
-      await tester.pumpAndSettle();
-
-      // "O que fazer hoje" saiu da central operacional quando o shell passou
-      // a montar fazenda/saudação/busca globalmente
-      // (`ResponsibilityWorkspace(showLocalContext: false)`) — ver
-      // `app_router_test.dart`, que já confere `findsNothing` na mesma rota.
-      // A saudação do shell é o marcador estável de que o login levou ao
-      // ambiente operacional certo.
       expect(find.text('Boa tarde,'), findsOneWidget);
       expect(
         harness.container.read(prototypeSessionProvider).profile,
         UserAccessProfile.operational,
       );
     });
-
-    testWidgets(
-      '?ambiente=administracao (vindo da pasta CERNE App) mantém o destino administrativo',
-      (tester) async {
-        harness.router.go('/login?ambiente=administracao');
-        await tester.pumpWidget(harness.buildApp());
-        await tester.pumpAndSettle();
-
-        expect(find.text('Acesso administrativo'), findsOneWidget);
-        expect(find.text('Login Operacional'), findsNothing);
-      },
-    );
 
     testWidgets(
       '?ambiente=operacional (vindo da pasta CERNE App) mantém o destino operacional',

@@ -47,15 +47,6 @@ void main() {
     );
   });
 
-  testWidgets('home administrativa', (tester) async {
-    await capturar(
-      tester,
-      nome: 'home-administrativa',
-      rota: '/fazendas/administracao',
-      perfil: UserAccessProfile.administration,
-    );
-  });
-
   testWidgets('grupo de funcoes', (tester) async {
     await capturar(
       tester,
@@ -71,24 +62,6 @@ void main() {
       nome: 'fluxo-campo',
       rota: '/fazendas/campo/pesagem',
       perfil: UserAccessProfile.operational,
-    );
-  });
-
-  testWidgets('dashboard administrativo', (tester) async {
-    await capturar(
-      tester,
-      nome: 'dashboard-adm',
-      rota: '/fazendas/dashboards/resultado',
-      perfil: UserAccessProfile.administration,
-    );
-  });
-
-  testWidgets('home do bank', (tester) async {
-    await capturar(
-      tester,
-      nome: 'home-bank',
-      rota: '/bank',
-      perfil: UserAccessProfile.administration,
     );
   });
 }

@@ -47,14 +47,14 @@ void main() {
       expect(searchFeatures('', sessionProfile: null), isEmpty);
     });
 
-    test('encontra nos dois perfis', () {
+    test('encontra no catálogo único (só perfil operacional)', () {
       final resultados = searchFeatures(
         'a',
         sessionProfile: UserAccessProfile.operational,
       );
       final perfis = resultados.map((r) => r.feature.profile).toSet();
 
-      expect(perfis, containsAll(FeatureProfile.values));
+      expect(perfis, {FeatureProfile.operational});
     });
 
     test('acha sem acento o que está acentuado no catálogo', () {
@@ -86,23 +86,14 @@ void main() {
       expect(porGrupo.map((r) => r.feature.id), contains(feature.id));
     });
 
-    test('só o perfil da sessão é abrível, e ele vem primeiro', () {
+    test('com sessão iniciada, tudo do catálogo é abrível', () {
       final resultados = searchFeatures(
         'a',
         sessionProfile: UserAccessProfile.operational,
       );
 
-      for (final r in resultados) {
-        expect(
-          r.openable,
-          r.feature.profile == FeatureProfile.operational,
-          reason: '${r.feature.id} classificado errado',
-        );
-      }
-
-      final primeiroBloqueado = resultados.indexWhere((r) => !r.openable);
-      final ultimoAberto = resultados.lastIndexWhere((r) => r.openable);
-      expect(primeiroBloqueado, greaterThan(ultimoAberto));
+      expect(resultados, isNotEmpty);
+      expect(resultados.every((r) => r.openable), isTrue);
     });
 
     test('sessão sem perfil não abre nada', () {
@@ -120,18 +111,11 @@ void main() {
       expect(featureDestination(comRota), comRota.existingRoute);
     });
 
-    test('cai no segmento do perfil da própria função', () {
-      final admin = allFeatures.firstWhere(
-        (f) =>
-            f.existingRoute == null &&
-            f.profile == FeatureProfile.administration,
-      );
+    test('cai no segmento operacional quando não há rota própria', () {
       final operacional = allFeatures.firstWhere(
-        (f) =>
-            f.existingRoute == null && f.profile == FeatureProfile.operational,
+        (f) => f.existingRoute == null,
       );
 
-      expect(featureDestination(admin), '/fazendas/administracao/${admin.id}');
       expect(
         featureDestination(operacional),
         '/fazendas/operacional/${operacional.id}',
@@ -151,18 +135,6 @@ void main() {
       expect(find.text('Histórico'), findsOneWidget);
       expect(find.byType(AppDiscoveryTile), findsNWidgets(8));
       expect(find.byType(AppMenuItem), findsNothing);
-    });
-
-    testWidgets('usa a mesma busca otimizada no administrativo', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_app(tester, UserAccessProfile.administration));
-      await tester.pump();
-
-      expect(find.text('Seus Produtos'), findsOneWidget);
-      expect(find.text('Open Finance'), findsWidgets);
-      expect(find.text('Histórico'), findsOneWidget);
-      expect(find.byType(AppDiscoveryTile), findsNWidgets(8));
     });
 
     testWidgets('lista o que encontrou com o ícone do módulo', (tester) async {
@@ -186,53 +158,6 @@ void main() {
 
       expect(find.text('Nenhuma função encontrada'), findsOneWidget);
       expect(find.byType(AppMenuItem), findsNothing);
-    });
-
-    testWidgets('função do outro perfil aparece marcada e não é tocável', (
-      tester,
-    ) async {
-      // Termo de uma função administrativa específica: buscar algo genérico
-      // encheria a lista de resultados operacionais e os bloqueados — que vão
-      // para o fim — ficariam fora do viewport, sem serem construídos.
-      final adminFeature = adminFeatures.first;
-      await tester.pumpWidget(_app(tester, UserAccessProfile.operational));
-      await tester.pump();
-      await _buscar(tester, adminFeature.title);
-
-      final itens = tester
-          .widgetList<AppMenuItem>(find.byType(AppMenuItem))
-          .toList();
-      final bloqueados = itens.where((i) => i.onTap == null).toList();
-
-      expect(
-        bloqueados,
-        isNotEmpty,
-        reason: 'nenhuma função administrativa apareceu para o operador',
-      );
-      for (final item in bloqueados) {
-        expect(item.trailing, isNotNull, reason: 'bloqueado sem marcação');
-      }
-      expect(find.text('Administração'), findsWidgets);
-    });
-
-    testWidgets('a mesma busca troca de lado conforme o perfil da sessão', (
-      tester,
-    ) async {
-      AppMenuItem itemDe(String titulo) => tester
-          .widgetList<AppMenuItem>(find.byType(AppMenuItem))
-          .firstWhere((i) => i.label == titulo);
-
-      final adminFeature = adminFeatures.first;
-
-      await tester.pumpWidget(_app(tester, UserAccessProfile.operational));
-      await tester.pump();
-      await _buscar(tester, adminFeature.title);
-      expect(itemDe(adminFeature.title).onTap, isNull);
-
-      await tester.pumpWidget(_app(tester, UserAccessProfile.administration));
-      await tester.pump();
-      await _buscar(tester, adminFeature.title);
-      expect(itemDe(adminFeature.title).onTap, isNotNull);
     });
   });
 }

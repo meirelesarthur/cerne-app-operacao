@@ -10,7 +10,7 @@ void main() {
   late RouterTestHarness harness;
 
   setUp(() {
-    harness = RouterTestHarness(profile: UserAccessProfile.administration);
+    harness = RouterTestHarness(profile: UserAccessProfile.operational);
     addTearDown(harness.dispose);
     harness.router.go('/perfil');
   });
@@ -57,8 +57,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // Logout volta para a seleção de ambiente (simula "fechar o app"), não
-      // direto para o formulário de login — reforça a separação Administrativo/Operacional.
-      expect(find.text('Administrativo'), findsOneWidget);
+      // direto para o formulário de login.
       expect(find.text('Operacional'), findsOneWidget);
       expect(
         harness.container.read(prototypeSessionProvider).isAuthenticated,

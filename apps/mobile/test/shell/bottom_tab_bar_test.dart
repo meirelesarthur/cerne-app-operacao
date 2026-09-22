@@ -11,16 +11,13 @@ Widget _wrap(Widget child) => MaterialApp(
 
 void main() {
   group('AppBottomTabBar', () {
-    testWidgets('renderiza os 6 módulos sem exceção', (tester) async {
+    testWidgets('renderiza os 3 módulos sem exceção', (tester) async {
       await tester.pumpWidget(
         _wrap(AppBottomTabBar(activeId: 'inicio', onModuleSelected: (_) {})),
       );
 
       expect(find.byTooltip('Início'), findsOneWidget);
       expect(find.byTooltip('Fazendas'), findsOneWidget);
-      expect(find.byTooltip('Bank'), findsOneWidget);
-      expect(find.byTooltip('Crédito'), findsOneWidget);
-      expect(find.byTooltip('Marketplace'), findsOneWidget);
       expect(find.byTooltip('Armazém'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });

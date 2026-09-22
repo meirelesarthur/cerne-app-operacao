@@ -14,10 +14,6 @@ GoRouter _buildRouter() => GoRouter(
       path: '/armazem',
       builder: (context, state) => const Scaffold(body: ArmazemHomeScreen()),
     ),
-    GoRoute(
-      path: '/marketplace',
-      builder: (context, state) => const Scaffold(body: Text('Marketplace')),
-    ),
   ],
 );
 
@@ -80,25 +76,6 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Detalhe da movimentação'), findsOneWidget);
-    });
-
-    testWidgets('CTA "Reponha insumos" navega para o Marketplace', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      await tester.pumpWidget(
-        MaterialApp.router(
-          theme: buildAppTheme(AppThemeVariant.light),
-          routerConfig: _buildRouter(),
-        ),
-      );
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Reponha insumos no Marketplace'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Marketplace'), findsOneWidget);
     });
   });
 }

@@ -21,37 +21,6 @@ void main() {
     );
   });
 
-  test('consulta-produtos: cultivo/NCM são required_if grupo = Produção', () {
-    final feature = featureById('consulta-produtos')!;
-    final cultivo = feature.fields.firstWhere(
-      (field) => field.id == 'cultivation-uuid',
-    );
-    final ncm = feature.fields.firstWhere((field) => field.id == 'ncm-uuid');
-
-    // Grupo diferente de Produção: opcionais (sem asterisco, sem erro).
-    const outroGrupo = {'group-uuid': 'Insumo agropecuário'};
-    expect(isFeatureFieldRequired(feature, cultivo, outroGrupo), isFalse);
-    expect(featureFieldError(feature, cultivo, outroGrupo), isNull);
-
-    // Grupo = Produção: os dois viram obrigatórios.
-    const producao = {'group-uuid': 'Produção'};
-    expect(isFeatureFieldRequired(feature, cultivo, producao), isTrue);
-    expect(isFeatureFieldRequired(feature, ncm, producao), isTrue);
-    expect(
-      featureFieldError(feature, cultivo, producao),
-      'Selecione o cultivo (lavoura).',
-    );
-    expect(featureFieldError(feature, ncm, producao), 'Selecione o NCM.');
-    // Preenchido, não erra.
-    expect(
-      featureFieldError(feature, cultivo, const {
-        'group-uuid': 'Produção',
-        'cultivation-uuid': 'Soja 2025/2026 — Talhão 01',
-      }),
-      isNull,
-    );
-  });
-
   test('campo integer recusa decimal e exige inteiro positivo', () {
     final feature = featureById('abastecimentos')!;
     final itens = feature.collections.firstWhere(

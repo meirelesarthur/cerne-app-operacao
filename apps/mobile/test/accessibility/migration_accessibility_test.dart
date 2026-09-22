@@ -175,8 +175,8 @@ void main() {
       for (final feature in [
         ('configuracoes-misturador', FeatureProfile.operational),
         ('transferencia-animal', FeatureProfile.operational),
-        ('saldo-estoque', FeatureProfile.administration),
-        ('exportar-log-estoque', FeatureProfile.administration),
+        ('cadastrar-area', FeatureProfile.operational),
+        ('formulacoes', FeatureProfile.operational),
       ]) {
         await tester.pumpWidget(
           UncontrolledProviderScope(
@@ -199,7 +199,7 @@ void main() {
         ProviderScope(
           child: _app(
             const ResponsibilityWorkspace(
-              profile: FeatureProfile.administration,
+              profile: FeatureProfile.operational,
             ),
           ),
         ),

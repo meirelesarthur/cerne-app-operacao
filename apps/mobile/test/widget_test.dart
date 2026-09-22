@@ -13,7 +13,6 @@ void main() {
 
     // Porta de entrada real do protótipo: a seleção de ambiente, não a home
     // Android intermediária nem o formulário de login (ver `initialLocation`).
-    expect(find.text('Administrativo'), findsOneWidget);
     expect(find.text('Operacional'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });

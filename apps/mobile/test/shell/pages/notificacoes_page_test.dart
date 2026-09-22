@@ -9,7 +9,7 @@ void main() {
   late RouterTestHarness harness;
 
   setUp(() {
-    harness = RouterTestHarness(profile: UserAccessProfile.administration);
+    harness = RouterTestHarness(profile: UserAccessProfile.operational);
     addTearDown(harness.dispose);
     harness.router.go('/notificacoes');
   });
@@ -22,7 +22,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Pesagem registrada'), findsOneWidget);
-      expect(find.text('Crédito pré-aprovado'), findsOneWidget);
+      expect(find.text('Movimentação de estoque registrada'), findsOneWidget);
       expect(find.text('Marcar lidas'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });

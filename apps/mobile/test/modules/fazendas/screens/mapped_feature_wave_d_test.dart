@@ -92,25 +92,14 @@ void main() {
       }
     });
 
-    test('todas as 47 funcionalidades Ready têm destino executável', () {
+    test('todas as 32 funcionalidades Ready têm destino executável', () {
       final ready = allFeatures.where(
         (feature) => feature.status == FeatureStatus.ready,
       );
 
-      // confinamento (onda 1): +5 funcionalidades operacionais Ready — ver
+      // Catálogo só operacional (repo CERNE Operação) — ver
       // functional_catalog_test.dart.
-      // banco-real (onda 1 — fronteira operação/gestão): `colheita-frutas`
-      // (ready) saiu do escopo — 52-1=51. Ver
-      // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
-      // Auditoria dos painéis: `painel-pecuario` (ready) fundiu em
-      // `painel-financeiro` — 51-1=50. Ver docs/ESTEIRA-DASHBOARDS-ADM.md.
-      // confinamento (onda 2): `carga`, `descarga` e `nota-cocho` (ready)
-      // saíram do catálogo — 50-3=47. reprodução: `lotes-reproducao`
-      // (ready) saiu do catálogo — 47-1=46 (`pastagens` continua ready,
-      // só muda de perfil). fidelidade-campos (onda 4): `lotes-reproducao`
-      // voltou como consulta administrativa — 46+1=47. Ver
-      // functional_catalog_test.dart.
-      expect(ready, hasLength(47));
+      expect(ready, hasLength(32));
       for (final feature in ready) {
         final handledByMappedScreen =
             feature.auditExport != null ||
@@ -200,66 +189,6 @@ void main() {
       },
     );
 
-    testWidgets('saldo de estoque abre dados demonstrativos e detalhe', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      await tester.pumpWidget(
-        _wrap(
-          container,
-          featureId: 'saldo-estoque',
-          profile: FeatureProfile.administration,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Ração Engorda'), findsOneWidget);
-      expect(find.text('Sal Mineral'), findsOneWidget);
-      expect(find.text('Vacina Aftosa'), findsOneWidget);
-      expect(find.text('Novo registro'), findsNothing);
-
-      await tester.tap(find.text('Ração Engorda'));
-      await tester.pumpAndSettle();
-      expect(find.text('12.400 kg'), findsWidgets);
-      expect(find.text('1.000 kg'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
-
-    testWidgets('auditoria alterna para JSON e prepara três registros', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      await tester.pumpWidget(
-        _wrap(
-          container,
-          featureId: 'exportar-log-estoque',
-          profile: FeatureProfile.administration,
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Preparar arquivo de auditoria'), findsOneWidget);
-      expect(find.text('Baixar CSV'), findsOneWidget);
-
-      final selects = find.byType(DropdownButtonFormField<String>);
-      await tester.tap(selects.at(1));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('JSON').last);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Baixar JSON'));
-      await tester.pump();
-
-      expect(
-        find.text('auditoria-estoque-30-dias.json preparado com 3 registros.'),
-        findsOneWidget,
-      );
-      expect(tester.takeException(), isNull);
-    });
-
     testWidgets('Minhas OS é consulta operacional sem ação de criação', (
       tester,
     ) async {
@@ -275,8 +204,8 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('OS #1048'), findsOneWidget);
-      expect(find.textContaining('OS #1039'), findsOneWidget);
+      expect(find.textContaining('Minhas OS · Registro 1'), findsOneWidget);
+      expect(find.textContaining('Minhas OS · Registro 2'), findsOneWidget);
       expect(find.text('Novo registro'), findsNothing);
       expect(tester.takeException(), isNull);
     });

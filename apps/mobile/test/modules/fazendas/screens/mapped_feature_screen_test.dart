@@ -516,39 +516,6 @@ void main() {
       expect(find.text('Nenhum item adicionado'), findsNWidgets(5));
       expect(tester.takeException(), isNull);
     });
-
-    testWidgets('consulta administrativa lê registro criado no operacional', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      container
-          .read(prototypeRecordsProvider.notifier)
-          .addRecord(
-            featureId: 'cadastrar-area',
-            title: 'Talhão Integração',
-            description: 'Agricultura · 24 ha',
-            status: PrototypeRecordStatus.active,
-            details: const {'Localização': 'Setor Sul'},
-          );
-
-      await tester.pumpWidget(
-        _wrap(
-          container,
-          const MappedFeatureScreen(
-            featureId: 'areas',
-            profile: FeatureProfile.administration,
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      expect(find.text('Talhão Integração'), findsOneWidget);
-      expect(find.text('Agricultura · 24 ha'), findsOneWidget);
-      expect(find.text('Novo registro'), findsNothing);
-      expect(tester.takeException(), isNull);
-    });
   });
 
   group('MappedFeatureScreen — etapas viram abas na visualização', () {

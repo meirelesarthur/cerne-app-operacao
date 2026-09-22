@@ -23,7 +23,7 @@ void main() {
     });
 
     testWidgets(
-      'tocar em "CERNE App" abre a pasta com Administrativo/Operacional',
+      'tocar em "CERNE App" abre a pasta com o único ambiente Operacional',
       (tester) async {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
@@ -31,30 +31,12 @@ void main() {
         await tester.tap(find.text('CERNE App'));
         await tester.pumpAndSettle();
 
-        expect(find.text('Administrativo'), findsOneWidget);
         expect(find.text('Operacional'), findsOneWidget);
       },
     );
   });
 
   group('CerneAppFolderPage', () {
-    testWidgets(
-      'tocar em "Administrativo" empilha um único login administrativo',
-      (tester) async {
-        harness.router.go('/desktop/cerne-app');
-        await tester.pumpWidget(harness.buildApp());
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.text('Administrativo'));
-        await tester.pumpAndSettle();
-
-        expect(find.text('Entrar'), findsOneWidget);
-        expect(find.text('Acesso administrativo'), findsOneWidget);
-        expect(find.text('Login Administração'), findsNothing);
-        expect(find.text('Login Operacional'), findsNothing);
-      },
-    );
-
     testWidgets(
       'tocar em "Operacional" empilha o login (voltar retorna à pasta)',
       (tester) async {
