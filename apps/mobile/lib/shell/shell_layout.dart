@@ -141,8 +141,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     final menuOpen = state.menuOpen;
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    final isOperationalModule =
-        module.id == 'fazendas' && profile == UserAccessProfile.operational;
+    final isOperationalModule = module.id == 'fazendas';
     final showGlobalContext = !hideChrome && profile != null;
     final currentPath = GoRouterState.of(context).uri.path;
 

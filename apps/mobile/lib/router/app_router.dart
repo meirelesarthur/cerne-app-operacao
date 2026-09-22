@@ -3,12 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../modules/armazem/armazem_module.dart';
-import '../modules/bank/bank_module.dart';
-import '../modules/credito/credito_module.dart';
 import '../modules/fazendas/fazendas_module.dart';
 import '../modules/fazendas/screens/busca_global_screen.dart';
 import '../modules/hub/hub_module.dart';
-import '../modules/marketplace/marketplace_module.dart';
 import '../shell/module_config.dart';
 import '../shell/pages/android_home_page.dart';
 import '../shell/pages/cerne_app_folder_page.dart';
@@ -66,9 +63,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           buildHubModuleRoute(),
           buildFazendasModuleRoute(),
-          buildBankModuleRoute(),
-          buildCreditoModuleRoute(),
-          buildMarketplaceModuleRoute(),
           buildArmazemModuleRoute(),
           for (final module in modules.where(
             (m) => !_wiredModules.contains(m.id),
@@ -169,27 +163,6 @@ String? redirectForSession(String path, PrototypeSessionState session) {
   if (path == '/fazendas/mais') return profile.homeRoute;
   if (path == '/onboarding') return null;
 
-  final isAdministrationRoute =
-      path.startsWith('/fazendas/administracao') ||
-      path.startsWith('/fazendas/dashboards') ||
-      path.startsWith('/fazendas/consultas') ||
-      path.startsWith('/fazendas/ordem-servico') ||
-      path == '/fazendas/financeiro';
-  final isOperationalRoute =
-      path.startsWith('/fazendas/operacional') ||
-      path.startsWith('/fazendas/campo');
-
-  // A Administração não acumula mais os cadastros operacionais de campo (a
-  // aba "Operacional" virou "Ordens de Serviço", só consulta) — volta a ser
-  // bloqueada nas rotas operacionais, como o Operacional é bloqueado nas
-  // rotas administrativas.
-  if (profile == UserAccessProfile.administration && isOperationalRoute) {
-    return profile.landingRoute;
-  }
-  if (profile == UserAccessProfile.operational && isAdministrationRoute) {
-    return profile.landingRoute;
-  }
-
   return null;
 }
 
@@ -199,9 +172,6 @@ String? redirectForSession(String path, PrototypeSessionState session) {
 const _wiredModules = {
   'inicio',
   'fazendas',
-  'bank',
-  'credito',
-  'marketplace',
   'armazem',
 };
 

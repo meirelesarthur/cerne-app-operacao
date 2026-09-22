@@ -7,17 +7,15 @@ import '../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 
-/// Simula abrir a pasta "CERNE App" na tela inicial Android — mostra os dois
-/// apps que compõem o protótipo, com responsabilidades **extremamente
-/// separadas** desde a entrada: **CERNE ADM** (administração/gestão) e
-/// **CERNE Operação** (rotinas de campo).
+/// Simula abrir a pasta "CERNE App" na tela inicial Android — mostra o único
+/// app deste protótipo: **CERNE Operação** (rotinas de campo).
 ///
-/// Cada ícone leva ao login existente (decisão já validada com o time — não
-/// pula a etapa de login), com o ambiente escolhido sinalizado por query
-/// param (`?ambiente=administracao|operacional`) para o login saber qual app
-/// abrir depois do único botão "Entrar". Usa `context.push` (não `go`) — mantém
-/// esta tela na pilha para o voltar (gesto/botão do sistema) retornar aqui em
-/// vez de pular direto para a home Android.
+/// O ícone leva ao login existente (decisão já validada com o time — não pula
+/// a etapa de login), com o ambiente sinalizado por query param
+/// (`?ambiente=operacional`) para o login saber qual app abrir depois do único
+/// botão "Entrar". Usa `context.push` (não `go`) — mantém esta tela na pilha
+/// para o voltar (gesto/botão do sistema) retornar aqui em vez de pular direto
+/// para a home Android.
 class CerneAppFolderPage extends StatelessWidget {
   const CerneAppFolderPage({super.key});
 
@@ -68,7 +66,7 @@ class CerneAppFolderPage extends StatelessWidget {
                         const AppBrandLogo(),
                         const SizedBox(height: AppSpacing.space2),
                         Text(
-                          'Escolha o ambiente para abrir',
+                          'Entrar no CERNE Operação',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: AppTypography.sm,
@@ -79,15 +77,6 @@ class CerneAppFolderPage extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            AppAppIconTile(
-                              icon: AppIcons.shieldCheck,
-                              label: 'Administrativo',
-                              tileColor: semantic.accentDefault,
-                              iconColor: AppColors.neutral0,
-                              labelColor: semantic.fgDefault,
-                              onTap: () =>
-                                  context.push('/login?ambiente=administracao'),
-                            ),
                             AppAppIconTile(
                               icon: AppIcons.tractor,
                               label: 'Operacional',

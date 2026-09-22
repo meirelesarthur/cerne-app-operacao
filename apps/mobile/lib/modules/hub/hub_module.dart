@@ -1,7 +1,6 @@
 import 'package:go_router/go_router.dart';
 
 import 'screens/apps_screen.dart';
-import 'screens/carteira_screen.dart';
 import 'screens/hub_home_screen.dart';
 
 /// Rotas do módulo Início — espelha `HubModule.tsx`. Registrado no `ShellRoute`
@@ -12,10 +11,6 @@ GoRoute buildHubModuleRoute() {
     builder: (context, state) => const HubHomeScreen(),
     routes: [
       GoRoute(path: 'apps', builder: (context, state) => const AppsScreen()),
-      GoRoute(
-        path: 'carteira',
-        builder: (context, state) => const CarteiraScreen(),
-      ),
     ],
   );
 }

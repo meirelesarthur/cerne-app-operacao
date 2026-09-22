@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import 'admin/admin_dashboard.dart';
 import 'components/sync_banner.dart';
 import 'functional_catalog.dart';
 import 'operacional/campo_flow.dart';
@@ -17,44 +16,13 @@ import 'screens/responsibility_workspace.dart';
 /// Registrado no `ShellRoute` principal (`lib/router/app_router.dart`), no
 /// mesmo padrão de `buildHubModuleRoute()`.
 ///
-/// A troca de fazenda ativa vive na tela dedicada (tab "Fazendas"). O perfil
-/// da sessão define se o ambiente é Administração ou Operacional.
+/// A troca de fazenda ativa vive na tela dedicada (tab "Fazendas"). O app tem
+/// só o perfil Operacional.
 GoRoute buildFazendasModuleRoute() {
   return GoRoute(
     path: '/fazendas',
     builder: (context, state) => const _FazendasScaffold(child: FazendasHome()),
     routes: [
-      GoRoute(
-        path: 'administracao',
-        builder: (context, state) => const _FazendasScaffold(
-          child: ResponsibilityWorkspace(
-            profile: FeatureProfile.administration,
-            showLocalContext: false,
-            focusGroup: 'Painéis de decisão',
-          ),
-        ),
-        routes: [
-          GoRoute(
-            path: 'grupo/:group',
-            builder: (context, state) => _FazendasScaffold(
-              child: GroupFeaturesScreen(
-                groupSlug: state.pathParameters['group']!,
-                profile: FeatureProfile.administration,
-                embedded: true,
-              ),
-            ),
-          ),
-          GoRoute(
-            path: ':featureId',
-            builder: (context, state) => _FazendasScaffold(
-              child: MappedFeatureScreen(
-                featureId: state.pathParameters['featureId']!,
-                profile: FeatureProfile.administration,
-              ),
-            ),
-          ),
-        ],
-      ),
       GoRoute(
         path: 'operacional',
         builder: (context, state) => const _FazendasScaffold(
@@ -96,79 +64,9 @@ GoRoute buildFazendasModuleRoute() {
             const _FazendasScaffold(child: FarmListScreen()),
       ),
       GoRoute(
-        path: 'financeiro',
-        // Atalho legado; hoje resolve no painel Resultado, mesma tela do dashId
-        // `resultado` (e dos aliases `financeiro`/`pecuaria`).
-        builder: (context, state) =>
-            _FazendasScaffold(child: buildAdminDashboard('resultado')),
-      ),
-      GoRoute(
         path: 'mais',
         builder: (context, state) =>
             const _FazendasScaffold(child: MaisScreen()),
-      ),
-      // Consultas Gerenciais e 100% leitura, sem indicador e sem acao: e um
-      // console de consulta, nao um painel de decisao. Fica fora de
-      // `dashboards/` para o menu nao ensinar errado o que e painel — o dashId
-      // antigo continua resolvendo pelo dispatcher, para links salvos.
-      // Ver docs/ESTEIRA-DASHBOARDS-ADM.md, secao 2.
-      GoRoute(
-        path: 'consultas',
-        builder: (context, state) => const _FazendasScaffold(
-          child: ResponsibilityWorkspace(
-            profile: FeatureProfile.administration,
-            showLocalContext: false,
-            focusGroup: 'Consultas e auditoria',
-          ),
-        ),
-        routes: [
-          GoRoute(
-            path: 'gerenciais',
-            builder: (context, state) =>
-                _FazendasScaffold(child: buildAdminDashboard('consultas')),
-          ),
-          GoRoute(
-            path: ':featureId',
-            builder: (context, state) => _FazendasScaffold(
-              child: MappedFeatureScreen(
-                featureId: state.pathParameters['featureId']!,
-                profile: FeatureProfile.administration,
-                centerRoute: '/fazendas/consultas',
-              ),
-            ),
-          ),
-        ],
-      ),
-      // Aba "Ordens de Serviço" da Administração: 100% leitura, sem
-      // cadastros operacionais — só as duas consultas (`consulta-os`,
-      // `consulta-apontamentos`) do grupo 'Ordem de serviço' do catálogo.
-      GoRoute(
-        path: 'ordem-servico',
-        builder: (context, state) => const _FazendasScaffold(
-          child: ResponsibilityWorkspace(
-            profile: FeatureProfile.administration,
-            showLocalContext: false,
-            focusGroup: 'Ordem de serviço',
-          ),
-        ),
-        routes: [
-          GoRoute(
-            path: ':featureId',
-            builder: (context, state) => _FazendasScaffold(
-              child: MappedFeatureScreen(
-                featureId: state.pathParameters['featureId']!,
-                profile: FeatureProfile.administration,
-                centerRoute: '/fazendas/ordem-servico',
-              ),
-            ),
-          ),
-        ],
-      ),
-      GoRoute(
-        path: 'dashboards/:dashId',
-        builder: (context, state) => _FazendasScaffold(
-          child: buildAdminDashboard(state.pathParameters['dashId']!),
-        ),
       ),
       GoRoute(
         path: 'campo/:flowId',

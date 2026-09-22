@@ -23,47 +23,9 @@ class _Group {
 }
 
 const _groups = [
-  // Cinco paineis de decisao, na ordem em que o administrador pergunta:
-  // dinheiro, rebanho, compra, patrimonio, governanca. Ver
-  // docs/ESTEIRA-DASHBOARDS-ADM.md, secao 2.
   _Group(
-    title: 'Painéis de decisão',
+    title: 'Consultas',
     items: [
-      _LinkItem(
-        label: 'Resultado',
-        icon: AppIcons.wallet,
-        to: '/fazendas/dashboards/resultado',
-      ),
-      _LinkItem(
-        label: 'Rebanho & Confinamento',
-        icon: AppIcons.warehouse,
-        to: '/fazendas/dashboards/confinamento',
-      ),
-      _LinkItem(
-        label: 'Suprimentos',
-        icon: AppIcons.boxes,
-        to: '/fazendas/dashboards/suprimentos',
-      ),
-      _LinkItem(
-        label: 'Ativos & Manutenção',
-        icon: AppIcons.package,
-        to: '/fazendas/dashboards/ativos',
-      ),
-      _LinkItem(
-        label: 'Adoção & Governança',
-        icon: AppIcons.users,
-        to: '/fazendas/dashboards/uso',
-      ),
-    ],
-  ),
-  _Group(
-    title: 'Consultas e auditoria',
-    items: [
-      _LinkItem(
-        label: 'Consultas gerenciais',
-        icon: AppIcons.search,
-        to: '/fazendas/consultas',
-      ),
       _LinkItem(
         label: 'Todas as atividades',
         icon: AppIcons.activity,

@@ -1,30 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Perfis disponíveis na sessão demonstrativa do protótipo.
-enum UserAccessProfile { administration, operational }
+/// Perfil disponível na sessão demonstrativa do protótipo — só o Operacional,
+/// única entrada do CERNE Operação.
+enum UserAccessProfile { operational }
 
 extension UserAccessProfileLabels on UserAccessProfile {
-  String get label => switch (this) {
-    UserAccessProfile.administration => 'Administração',
-    UserAccessProfile.operational => 'Operacional',
-  };
+  String get label => 'Operacional';
 
-  String get roleLabel => switch (this) {
-    UserAccessProfile.administration => 'Administrador',
-    UserAccessProfile.operational => 'Operador',
-  };
+  String get roleLabel => 'Operador';
 
-  String get homeRoute => switch (this) {
-    UserAccessProfile.administration => '/fazendas/administracao',
-    UserAccessProfile.operational => '/fazendas/operacional',
-  };
+  String get homeRoute => '/fazendas/operacional';
 
-  /// Primeira tela depois do login escolhido na pasta de apps. Administração
-  /// abre o hub Banking; Operação entra direto na rotina de campo.
-  String get landingRoute => switch (this) {
-    UserAccessProfile.administration => '/inicio',
-    UserAccessProfile.operational => homeRoute,
-  };
+  /// Primeira tela depois do login escolhido na pasta de apps: a central de
+  /// campo.
+  String get landingRoute => homeRoute;
 }
 
 class PrototypeSessionState {

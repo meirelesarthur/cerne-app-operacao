@@ -172,7 +172,7 @@ String moduleHomeRoute(ModuleDef module, UserAccessProfile? profile) {
 }
 
 const List<ModuleDef> modules = [
-  // New-UI — hub agregador: porta de entrada do superapp, Banking central.
+  // New-UI — hub agregador: porta de entrada do app.
   ModuleDef(
     id: 'inicio',
     label: 'Início',
@@ -180,12 +180,6 @@ const List<ModuleDef> modules = [
     homeRoute: '/inicio',
     bottomTabs: [
       BottomTab(id: 'home', label: 'Início', icon: AppIcons.home, path: ''),
-      BottomTab(
-        id: 'carteira',
-        label: 'Carteira',
-        icon: AppIcons.wallet,
-        path: 'carteira',
-      ),
       BottomTab(
         id: 'apps',
         label: 'Apps',
@@ -202,8 +196,8 @@ const List<ModuleDef> modules = [
     ],
     // Vazio, não omitido (ver plano de UX): sem isso, o menu "reveal" cai no
     // fallback de `getMenuSections` — que deriva a lista das próprias
-    // `bottomTabs` — e mostra de novo "Apps"/"Carteira" ali dentro, que já são
-    // abas visíveis no topo. O menu "Mais" deste módulo vira só a seção CONTA.
+    // `bottomTabs` — e mostra de novo "Apps" ali dentro, que já é aba visível
+    // no topo. O menu "Mais" deste módulo vira só a seção CONTA.
     menuSections: [],
   ),
   ModuleDef(
@@ -213,37 +207,10 @@ const List<ModuleDef> modules = [
     homeRoute: '/fazendas',
     bottomTabs: [
       BottomTab(
-        id: 'dashboard',
-        label: 'Gestão',
-        icon: AppIcons.layoutDashboard,
-        path: 'administracao',
-        profiles: {UserAccessProfile.administration},
-      ),
-      BottomTab(
         id: 'rotinas',
         label: 'Rotinas',
         icon: AppIcons.clipboardList,
         path: 'operacional',
-        profiles: {UserAccessProfile.operational},
-      ),
-      BottomTab(
-        id: 'consultas',
-        label: 'Consultas',
-        icon: AppIcons.search,
-        path: 'consultas',
-        profiles: {UserAccessProfile.administration},
-      ),
-      // Substitui a antiga aba "Operacional": a Administração não acessa mais
-      // os cadastros operacionais de campo por aqui — só a consulta,
-      // 100% leitura, das Ordens de Serviço e dos Apontamentos agrícolas
-      // lançados pelo Operacional (`admin/dash_ordem_servico.dart`,
-      // `admin/dash_apontamentos.dart`).
-      BottomTab(
-        id: 'ordem-servico-adm',
-        label: 'Ordens de Serviço',
-        icon: AppIcons.fileText,
-        path: 'ordem-servico',
-        profiles: {UserAccessProfile.administration},
       ),
       BottomTab(
         id: 'mais',
@@ -261,186 +228,6 @@ const List<ModuleDef> modules = [
     // Serviço já é a aba "Ordens de Serviço". Dois caminhos para o mesmo
     // destino não é conveniência, é a pessoa não saber se são a mesma coisa.
     menuSections: [],
-  ),
-  ModuleDef(
-    id: 'bank',
-    label: 'Bank',
-    icon: AppIcons.landmark,
-    homeRoute: '/bank',
-    bottomTabs: [
-      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
-      BottomTab(
-        id: 'extrato',
-        label: 'Extrato',
-        icon: AppIcons.receipt,
-        path: 'extrato',
-      ),
-      BottomTab(
-        id: 'pagamentos',
-        label: 'Pagamentos',
-        icon: AppIcons.arrowLeftRight,
-        path: 'pagamentos',
-      ),
-      BottomTab(
-        id: 'cartoes',
-        label: 'Cartões',
-        icon: AppIcons.creditCard,
-        path: 'cartoes',
-      ),
-      BottomTab(
-        id: 'mais',
-        label: 'Mais',
-        icon: AppIcons.moreHorizontal,
-        path: 'mais',
-        action: 'menu',
-      ),
-    ],
-    menuSections: [
-      // Pix não é aba (só Extrato/Pagamentos/Cartões são) — fica. Pagamentos,
-      // Extrato e Cartões saíram daqui: já são abas de contexto visíveis no
-      // topo, repeti-las no menu "Mais" era o mesmo destino duas vezes.
-      ModuleMenuSection(
-        title: 'Pagamentos e transferências',
-        items: [
-          ModuleMenuItem(
-            id: 'pix',
-            label: 'Pix',
-            icon: AppIcons.zap,
-            route: '/bank/pix',
-          ),
-        ],
-      ),
-      ModuleMenuSection(
-        title: 'Cartão',
-        items: [
-          ModuleMenuItem(
-            id: 'limites',
-            label: 'Limites',
-            icon: AppIcons.slidersHorizontal,
-            route: '/bank/limites',
-          ),
-        ],
-      ),
-      ModuleMenuSection(
-        title: 'Suporte',
-        items: [
-          ModuleMenuItem(
-            id: 'ajuda',
-            label: 'Ajuda',
-            icon: AppIcons.helpCircle,
-            route: '/bank/ajuda',
-          ),
-        ],
-      ),
-    ],
-  ),
-  ModuleDef(
-    id: 'credito',
-    label: 'Crédito',
-    icon: AppIcons.handCoins,
-    homeRoute: '/credito',
-    bottomTabs: [
-      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
-      BottomTab(
-        id: 'propostas',
-        label: 'Minhas Propostas',
-        icon: AppIcons.fileText,
-        path: 'propostas',
-      ),
-      BottomTab(
-        id: 'simular',
-        label: 'Simular',
-        icon: AppIcons.calculator,
-        path: 'simular',
-      ),
-      BottomTab(
-        id: 'mais',
-        label: 'Mais',
-        icon: AppIcons.moreHorizontal,
-        path: 'mais',
-        action: 'menu',
-      ),
-    ],
-    menuSections: [
-      // Simular e Propostas saíram: já são abas de contexto no topo.
-      // Contratos não é aba — fica.
-      ModuleMenuSection(
-        title: 'Crédito',
-        items: [
-          ModuleMenuItem(
-            id: 'contratos',
-            label: 'Contratos',
-            icon: AppIcons.fileSignature,
-            route: '/credito/contratos',
-          ),
-        ],
-      ),
-      ModuleMenuSection(
-        title: 'Suporte',
-        items: [
-          ModuleMenuItem(
-            id: 'ajuda',
-            label: 'Ajuda',
-            icon: AppIcons.helpCircle,
-            route: '/credito/ajuda',
-          ),
-        ],
-      ),
-    ],
-  ),
-  ModuleDef(
-    id: 'marketplace',
-    label: 'Marketplace',
-    icon: AppIcons.shoppingBag,
-    homeRoute: '/marketplace',
-    bottomTabs: [
-      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
-      BottomTab(
-        id: 'categorias',
-        label: 'Categorias',
-        icon: AppIcons.listOrdered,
-        path: 'categorias',
-      ),
-      BottomTab(
-        id: 'pedidos',
-        label: 'Pedidos',
-        icon: AppIcons.receipt,
-        path: 'pedidos',
-      ),
-      BottomTab(
-        id: 'mais',
-        label: 'Mais',
-        icon: AppIcons.moreHorizontal,
-        path: 'mais',
-        action: 'menu',
-      ),
-    ],
-    menuSections: [
-      // Categorias e Pedidos saíram: já são abas de contexto no topo.
-      // Favoritos não é aba — fica.
-      ModuleMenuSection(
-        title: 'Compras',
-        items: [
-          ModuleMenuItem(
-            id: 'favoritos',
-            label: 'Favoritos',
-            icon: AppIcons.heart,
-            route: '/marketplace/favoritos',
-          ),
-        ],
-      ),
-      ModuleMenuSection(
-        title: 'Suporte',
-        items: [
-          ModuleMenuItem(
-            id: 'ajuda',
-            label: 'Ajuda',
-            icon: AppIcons.helpCircle,
-            route: '/marketplace/ajuda',
-          ),
-        ],
-      ),
-    ],
   ),
   ModuleDef(
     id: 'armazem',
@@ -502,15 +289,7 @@ final Map<String, ModuleDef> moduleMap = {for (final m in modules) m.id: m};
 
 ModuleDef? getModule(String? id) => id == null ? null : moduleMap[id];
 
-/// Módulos exibidos no dock global para o perfil da sessão (ver plano de
-/// melhorias de UX): o perfil operacional (mão de obra de campo) só precisa
-/// de Início, Fazendas e Armazém como atalhos persistentes. Bank, Crédito e
-/// Marketplace continuam disponíveis no menu lateral, que não deve herdar a
-/// limitação visual do dock. Administração continua vendo todos os módulos no
-/// dock, igual a hoje.
-const _operationalDockIds = {'inicio', 'fazendas', 'armazem'};
-
-List<ModuleDef> visibleModulesFor(UserAccessProfile? profile) {
-  if (profile != UserAccessProfile.operational) return modules;
-  return modules.where((m) => _operationalDockIds.contains(m.id)).toList();
-}
+/// Módulos exibidos no dock global (ver plano de melhorias de UX): o app tem
+/// só o perfil operacional (mão de obra de campo), que usa Início, Fazendas e
+/// Armazém como atalhos persistentes — os únicos módulos do app.
+List<ModuleDef> visibleModulesFor(UserAccessProfile? profile) => modules;

@@ -37,15 +37,12 @@ class GroupFeaturesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isAdministration = profile == FeatureProfile.administration;
-    final segment = isAdministration ? 'administracao' : 'operacional';
+    const segment = 'operacional';
     final centerRoute = '/fazendas/$segment';
     final group = groupFromSlug(groupSlug);
     final allFeatures = group == null
         ? const <FeatureDefinition>[]
-        : (isAdministration ? adminFeatures : operationalFeatures)
-              .where((f) => f.group == group)
-              .toList();
+        : operationalFeatures.where((f) => f.group == group).toList();
     final title = group ?? groupSlug;
 
     final content = ListView(

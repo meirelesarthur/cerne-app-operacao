@@ -27,10 +27,7 @@ class MappedFeatureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final feature = featureById(featureId);
-    final fallbackCenterRoute = profile == FeatureProfile.administration
-        ? '/fazendas/administracao'
-        : '/fazendas/operacional';
-    final resolvedCenterRoute = centerRoute ?? fallbackCenterRoute;
+    final resolvedCenterRoute = centerRoute ?? '/fazendas/operacional';
 
     if (feature == null || feature.profile != profile) {
       return AppEmptyState(

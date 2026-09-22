@@ -30,28 +30,6 @@ const List<HubApp> hubApps = [
     route: '/fazendas',
   ),
   HubApp(
-    id: 'bank',
-    icon: AppIcons.landmark,
-    name: 'GB Bank',
-    description: 'Conta, Pix, pagamentos e cartões',
-    route: '/bank',
-    badge: AppMiniAppTileBadge.novo,
-  ),
-  HubApp(
-    id: 'credito',
-    icon: AppIcons.handCoins,
-    name: 'Crédito',
-    description: 'Simule e contrate crédito para a safra',
-    route: '/credito',
-  ),
-  HubApp(
-    id: 'marketplace',
-    icon: AppIcons.shoppingBag,
-    name: 'Marketplace',
-    description: 'Insumos, máquinas e serviços',
-    route: '/marketplace',
-  ),
-  HubApp(
     id: 'armazem',
     icon: AppIcons.warehouse,
     name: 'Armazém',
@@ -80,13 +58,6 @@ const List<HubApp> appsEmBreve = [
     icon: AppIcons.headset,
     name: 'Consultoria',
     description: 'Especialistas GB a um toque',
-    badge: AppMiniAppTileBadge.breve,
-  ),
-  HubApp(
-    id: 'seguros',
-    icon: AppIcons.shieldCheck,
-    name: 'Seguros',
-    description: 'Proteção de safra e patrimônio',
     badge: AppMiniAppTileBadge.breve,
   ),
 ];

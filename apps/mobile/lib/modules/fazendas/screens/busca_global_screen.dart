@@ -143,10 +143,7 @@ class _BuscaGlobalScreenState extends ConsumerState<BuscaGlobalScreen> {
     );
   }
 
-  String _profileLabel(FeatureDefinition feature) =>
-      feature.profile == FeatureProfile.administration
-      ? 'Administração'
-      : 'Operação';
+  String _profileLabel(FeatureDefinition feature) => 'Operação';
 }
 
 class _SearchSectionHeader extends StatelessWidget {
@@ -264,36 +261,11 @@ class _SearchShortcut {
 }
 
 List<_SearchShortcut> _productsFor(UserAccessProfile? profile) {
-  if (profile == UserAccessProfile.operational) {
-    return const [
-      _SearchShortcut(
-        label: 'Fazendas',
-        icon: AppIcons.sprout,
-        route: '/fazendas/operacional',
-      ),
-      _SearchShortcut(
-        label: 'Gestão de Estoque',
-        icon: AppIcons.boxes,
-        route: '/armazem/estoque',
-      ),
-      _SearchShortcut(
-        label: 'Confinamento',
-        icon: AppIcons.warehouse,
-        route: '/fazendas/operacional/grupo/confinamento',
-      ),
-      _SearchShortcut(
-        label: 'Agricultura',
-        icon: AppIcons.sprout,
-        route: '/fazendas/operacional/grupo/agricultura',
-      ),
-    ];
-  }
-
   return const [
     _SearchShortcut(
       label: 'Fazendas',
       icon: AppIcons.sprout,
-      route: '/fazendas/administracao',
+      route: '/fazendas/operacional',
     ),
     _SearchShortcut(
       label: 'Gestão de Estoque',
@@ -301,59 +273,34 @@ List<_SearchShortcut> _productsFor(UserAccessProfile? profile) {
       route: '/armazem/estoque',
     ),
     _SearchShortcut(
-      label: 'Marketplace',
-      icon: AppIcons.store,
-      route: '/marketplace',
+      label: 'Confinamento',
+      icon: AppIcons.warehouse,
+      route: '/fazendas/operacional/grupo/confinamento',
     ),
     _SearchShortcut(
-      label: 'Open Finance',
-      icon: AppIcons.openFinance,
-      route: '/bank',
+      label: 'Agricultura',
+      icon: AppIcons.sprout,
+      route: '/fazendas/operacional/grupo/agricultura',
     ),
   ];
 }
 
 List<_SearchShortcut> _recentFor(UserAccessProfile? profile) {
-  if (profile == UserAccessProfile.operational) {
-    return const [
-      _SearchShortcut(
-        label: 'Confinamento',
-        icon: AppIcons.warehouse,
-        route: '/fazendas/operacional/grupo/confinamento',
-      ),
-      _SearchShortcut(
-        label: 'Agricultura',
-        icon: AppIcons.sprout,
-        route: '/fazendas/operacional/grupo/agricultura',
-      ),
-      _SearchShortcut(
-        label: 'Fazendas',
-        icon: AppIcons.sprout,
-        route: '/fazendas/operacional',
-      ),
-      _SearchShortcut(
-        label: 'Gestão de Estoque',
-        icon: AppIcons.boxes,
-        route: '/armazem/estoque',
-      ),
-    ];
-  }
-
   return const [
     _SearchShortcut(
-      label: 'Open Finance',
-      icon: AppIcons.openFinance,
-      route: '/bank',
+      label: 'Confinamento',
+      icon: AppIcons.warehouse,
+      route: '/fazendas/operacional/grupo/confinamento',
     ),
     _SearchShortcut(
-      label: 'Marketplace',
-      icon: AppIcons.store,
-      route: '/marketplace',
+      label: 'Agricultura',
+      icon: AppIcons.sprout,
+      route: '/fazendas/operacional/grupo/agricultura',
     ),
     _SearchShortcut(
       label: 'Fazendas',
       icon: AppIcons.sprout,
-      route: '/fazendas/administracao',
+      route: '/fazendas/operacional',
     ),
     _SearchShortcut(
       label: 'Gestão de Estoque',
@@ -364,71 +311,36 @@ List<_SearchShortcut> _recentFor(UserAccessProfile? profile) {
 }
 
 List<_SearchShortcut> _historyFor(UserAccessProfile? profile) {
-  if (profile == UserAccessProfile.operational) {
-    return const [
-      _SearchShortcut(
-        label: 'Trato diário',
-        icon: AppIcons.tractor,
-        route: '/fazendas/campo/trato-diario',
-      ),
-      _SearchShortcut(
-        label: 'Pesagens',
-        icon: AppIcons.scale,
-        route: '/fazendas/campo/pesagem',
-      ),
-      _SearchShortcut(
-        label: 'Leitura de cocho',
-        icon: AppIcons.scanLine,
-        route: '/fazendas/operacional/leitura-cocho-confinamento',
-      ),
-      _SearchShortcut(
-        label: 'Ordens pendentes',
-        icon: AppIcons.clock,
-        route: '/fazendas/operacional/ordens-pendentes',
-      ),
-      _SearchShortcut(
-        label: 'Sincronizar aplicativo',
-        icon: AppIcons.refreshCw,
-        route: '/fazendas/campo/sincronizacao',
-      ),
-      _SearchShortcut(
-        label: 'Consultas de campo',
-        icon: AppIcons.bookOpen,
-        route: '/fazendas/operacional',
-      ),
-    ];
-  }
-
   return const [
     _SearchShortcut(
-      label: 'Empréstimos e Financiamentos',
-      icon: AppIcons.handCoins,
-      route: '/credito',
+      label: 'Trato diário',
+      icon: AppIcons.tractor,
+      route: '/fazendas/campo/trato-diario',
     ),
     _SearchShortcut(
-      label: 'Seguros, Consórcios e Capitalização',
-      icon: AppIcons.shieldCheck,
-      route: '/credito',
+      label: 'Pesagens',
+      icon: AppIcons.scale,
+      route: '/fazendas/campo/pesagem',
     ),
     _SearchShortcut(
-      label: 'Open Finance',
-      icon: AppIcons.openFinance,
-      route: '/bank',
+      label: 'Leitura de cocho',
+      icon: AppIcons.scanLine,
+      route: '/fazendas/operacional/leitura-cocho-confinamento',
     ),
     _SearchShortcut(
-      label: 'Transações',
-      icon: AppIcons.receipt,
-      route: '/bank/extrato',
+      label: 'Ordens pendentes',
+      icon: AppIcons.clock,
+      route: '/fazendas/operacional/ordens-pendentes',
     ),
     _SearchShortcut(
-      label: 'Autorizações',
-      icon: AppIcons.shieldCheck,
-      route: '/bank/pagamentos',
+      label: 'Sincronizar aplicativo',
+      icon: AppIcons.refreshCw,
+      route: '/fazendas/campo/sincronizacao',
     ),
     _SearchShortcut(
-      label: 'Dashboards da Fazenda',
-      icon: AppIcons.layoutDashboard,
-      route: '/fazendas/administracao',
+      label: 'Consultas de campo',
+      icon: AppIcons.bookOpen,
+      route: '/fazendas/operacional',
     ),
   ];
 }
@@ -496,17 +408,12 @@ List<FeatureSearchResult> searchFeatures(
 
 /// Perfil do catálogo correspondente ao perfil da sessão.
 FeatureProfile featureProfileOf(UserAccessProfile profile) =>
-    profile == UserAccessProfile.administration
-    ? FeatureProfile.administration
-    : FeatureProfile.operational;
+    FeatureProfile.operational;
 
 /// Rota de uma funcionalidade — mesma regra de [GroupFeaturesScreen]: a função
 /// mapeada mora sob o segmento do seu próprio perfil, salvo quando já tem rota
 /// própria (`existingRoute`, ex. `/fazendas/campo/pesagem`).
 String featureDestination(FeatureDefinition feature) {
   if (feature.existingRoute case final route?) return route;
-  final segment = feature.profile == FeatureProfile.administration
-      ? 'administracao'
-      : 'operacional';
-  return '/fazendas/$segment/${feature.id}';
+  return '/fazendas/operacional/${feature.id}';
 }

@@ -3,6 +3,11 @@
 O Flutter em `apps/mobile` é a única aplicação oficial deste repositório. O runtime React foi
 removido na M13 e existe apenas na tag de rollback `react-rollback-final-2026-08-17`.
 
+Este repositório é o **CERNE Operação**: só o perfil Operacional existe aqui. O perfil
+Administração e os módulos Bank, Crédito e Marketplace (exclusivos daquele perfil) foram removidos
+por completo — login, rotas, catálogo funcional, testes e Widgetbook conhecem só o perfil
+Operacional.
+
 ## Stack oficial
 
 - Flutter `3.44.6` e Dart 3.
@@ -17,7 +22,7 @@ removido na M13 e existe apenas na tag de rollback `react-rollback-final-2026-08
 npm run dev                # Flutter Web no Chrome
 npm run lint               # flutter analyze --fatal-infos
 npm test                   # suíte Flutter completa
-npm run quality:functional # gates de arquitetura, acesso e catálogo 53/53
+npm run quality:functional # gates de arquitetura, acesso e catálogo
 npm run tokens:verify      # design/tokens.ts → DTCG → Dart
 npm run build              # app + Widgetbook em apps/mobile/build/site
 npm run smoke:deploy       # rotas e fallbacks do Worker
@@ -29,7 +34,7 @@ npm run smoke:deploy       # rotas e fallbacks do Worker
 - `apps/mobile/lib/design/`: temas e arquivos Dart gerados.
 - `apps/mobile/lib/router/`: roteamento e política de acesso.
 - `apps/mobile/lib/shell/`: shell, sessão demonstrativa e navegação global.
-- `apps/mobile/lib/modules/`: Início, Fazendas, Bank, Crédito, Marketplace e Armazém.
+- `apps/mobile/lib/modules/`: Início, Fazendas e Armazém — os únicos módulos do app.
 - `design/tokens.ts`: fonte única neutra dos tokens.
 - `tokens/tokens.json`: exportação W3C DTCG.
 - `workers/index.js`: fallbacks separados do app e Widgetbook.

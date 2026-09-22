@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -210,63 +209,6 @@ class ArmazemHomeScreen extends StatelessWidget {
                 ),
               ),
             ],
-          ),
-        ),
-        const SizedBox(height: AppSpacing.space6),
-
-        RiseIn(
-          index: 4,
-          child: AppCard(
-            interactive: true,
-            onTap: () => context.go('/marketplace'),
-            child: Row(
-              children: [
-                Container(
-                  height: AppSpacing.space10 + AppSpacing.space1,
-                  width: AppSpacing.space10 + AppSpacing.space1,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: semantic.accentDefault,
-                  ),
-                  child: const AppIcon(
-                    AppIcons.shoppingBag,
-                    size: AppSize.iconMd,
-                    color: AppColors.neutral0,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.space3),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Reponha insumos no Marketplace',
-                        style: TextStyle(
-                          fontWeight: AppTypography.weightSemibold,
-                          color: semantic.fgDefault,
-                        ),
-                      ),
-                      Text(
-                        'Compre direto dos fornecedores parceiros',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: AppTypography.sm,
-                          color: semantic.fgMuted,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                AppIcon(
-                  AppIcons.arrowRight,
-                  size: AppSize.iconSmPlus,
-                  color: semantic.accentDefault,
-                ),
-              ],
-            ),
           ),
         ),
       ],

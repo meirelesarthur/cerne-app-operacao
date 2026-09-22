@@ -8,8 +8,6 @@ import '../../ui/ui.dart';
 /// — `functional_catalog.dart` não deve depender de UI), então o mapeamento
 /// fica aqui, isolado do catálogo.
 AppIconData groupIcon(String group) => switch (group) {
-  'Painéis de decisão' => AppIcons.layoutDashboard,
-  'Consultas e auditoria' => AppIcons.search,
   'Cadastros' => AppIcons.clipboardList,
   'Estoque' => AppIcons.boxes,
   'Agricultura' => AppIcons.sprout,
@@ -55,7 +53,7 @@ String groupDisplayLabel(String group) => switch (group) {
 /// diário mais frequente da equipe de campo; Consultas vem depois de tudo que
 /// é lançamento, porque é material de apoio, não tarefa do dia.
 const List<String> _groupDisplayOrder = [
-  // Operacional — do mais frequente ao mais esporádico.
+  // Do mais frequente ao mais esporádico.
   'Confinamento',
   'Pecuária',
   'Agricultura',
@@ -64,9 +62,6 @@ const List<String> _groupDisplayOrder = [
   'Consultas',
   'Gestão de frota',
   'Sincronização',
-  // Administração.
-  'Painéis de decisão',
-  'Consultas e auditoria',
 ];
 
 /// Posição do grupo na ordem de exibição. Grupos fora da lista (ex.: um grupo
@@ -84,8 +79,6 @@ int groupOrder(String group) {
 /// caminho de forma inconsistente, quebrando um `Uri.decodeComponent` extra
 /// no lado da leitura. Um slug ASCII fixo não tem esse problema.
 const Map<String, String> _groupSlugs = {
-  'Painéis de decisão': 'paineis-de-decisao',
-  'Consultas e auditoria': 'consultas-e-auditoria',
   'Cadastros': 'cadastros',
   'Estoque': 'estoque',
   'Agricultura': 'agricultura',

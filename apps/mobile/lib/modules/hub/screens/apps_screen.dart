@@ -30,7 +30,7 @@ class AppsScreen extends StatelessWidget {
               ),
               const SizedBox(height: AppSpacing.space1),
               Text(
-                'Um só lugar para toda a operação — do campo ao banco.',
+                'Um só lugar para toda a operação de campo.',
                 style: TextStyle(
                   fontSize: AppTypography.sm,
                   color: semantic.fgMuted,

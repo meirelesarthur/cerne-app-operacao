@@ -68,9 +68,7 @@ class ResponsibilityWorkspace extends ConsumerWidget {
     final activeFarm = ref.watch(
       fazendasStoreProvider.select((s) => s.activeFarm),
     );
-    final allFeatures = profile == FeatureProfile.administration
-        ? adminFeatures
-        : operationalFeatures;
+    final allFeatures = operationalFeatures;
     final features = focusGroup == null
         ? allFeatures
         : allFeatures.where((feature) => feature.group == focusGroup).toList();
@@ -89,8 +87,7 @@ class ResponsibilityWorkspace extends ConsumerWidget {
         if (byOrder != 0) return byOrder;
         return insertionOrder.indexOf(a).compareTo(insertionOrder.indexOf(b));
       });
-    final isAdministration = profile == FeatureProfile.administration;
-    final segment = isAdministration ? 'administracao' : 'operacional';
+    const segment = 'operacional';
     final isFocusedGroup = focusGroup != null;
 
     final content = <Widget>[
@@ -102,8 +99,6 @@ class ResponsibilityWorkspace extends ConsumerWidget {
         const SizedBox(height: AppSpacing.space3),
         AppSearchField(onTap: () => context.push('/busca')),
         const SizedBox(height: AppSpacing.space4),
-      ],
-      if (showLocalContext && !isAdministration) ...[
         const AppHeading(child: Text('O que fazer hoje')),
         const SizedBox(height: AppSpacing.space4),
       ],
@@ -157,9 +152,6 @@ class ResponsibilityWorkspace extends ConsumerWidget {
 
   String _featureRoute(FeatureDefinition feature, String segment) {
     if (feature.existingRoute case final route?) return route;
-    final routeSegment = focusGroup == 'Consultas e auditoria'
-        ? 'consultas'
-        : segment;
-    return '/fazendas/$routeSegment/${feature.id}';
+    return '/fazendas/$segment/${feature.id}';
   }
 }

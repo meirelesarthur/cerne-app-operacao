@@ -12,9 +12,7 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 /// Login do Shell (mock, sem autenticação real) — espelha `Login.tsx`: arte de
 /// campo em tela cheia como fundo fixo, véu escuro só no topo para a marca
 /// clara, e cartão de boas-vindas com o formulário flutuando sobre a arte.
-/// A tela é compartilhada pelos dois apps, mas o destino é definido pelo
-/// ambiente enviado pela pasta `CERNE App`: Administração abre o hub Banking e
-/// Operação abre a central de campo. Não há duas ações de login nesta tela.
+/// O único ambiente do app é a Operação — entra direto na central de campo.
 ///
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -40,17 +38,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     context.go(profile.landingRoute);
   }
 
-  /// Ambiente sinalizado pela pasta "CERNE App" (`?ambiente=administracao|
-  /// operacional`). Um `/login` direto cai no administrativo, que é a porta
-  /// padrão do superapp.
-  UserAccessProfile get _ambienteFromQuery {
-    final value = GoRouterState.of(context).uri.queryParameters['ambiente'];
-    return switch (value) {
-      'administracao' => UserAccessProfile.administration,
-      'operacional' => UserAccessProfile.operational,
-      _ => UserAccessProfile.administration,
-    };
-  }
+  /// Único ambiente do app: CERNE Operação.
+  UserAccessProfile get _ambienteFromQuery => UserAccessProfile.operational;
 
   @override
   Widget build(BuildContext context) {
@@ -185,9 +174,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           ),
                           const SizedBox(height: AppSpacing.space4),
                           Text(
-                            ambiente == UserAccessProfile.administration
-                                ? 'Acesso administrativo'
-                                : 'Acesso operacional',
+                            'Acesso operacional',
                             textAlign: TextAlign.center,
                             style: TextStyle(color: semantic.fgMuted),
                           ),
