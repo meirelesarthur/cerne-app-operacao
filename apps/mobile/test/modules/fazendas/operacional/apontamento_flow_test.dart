@@ -63,14 +63,28 @@ Future<void> _enterText(WidgetTester tester, String label, String value) async {
   await tester.enterText(input.first, value);
 }
 
-/// Cada grupo (Mão de obra, Máquinas, Insumos, Ocorrências) é seu próprio
-/// `AppAddableGroupList` — não uma lista combinada — então "Adicionar" só é
-/// único dentro do grupo pelo índice de posição na tela (0..3, na ordem em
-/// que os grupos aparecem).
-Finder _addButtonForGroup(int index) => find.descendant(
-  of: find.byType(AppAddableGroupList).at(index),
+/// A etapa de lançamentos vira uma grade 2x2 de cards quadrados — um por
+/// grupo (Mão de obra, Máquinas, Insumos, Produção, Ocorrências), cada card
+/// identificado pelo nome do grupo. O "Adicionar" mora dentro do card, mais
+/// perto do rótulo do grupo do que qualquer outro "Adicionar" na tela.
+Finder _cardForGroup(String group) =>
+    find.ancestor(of: find.text(group), matching: find.byType(Column)).first;
+
+Finder _addButtonForGroup(String group) => find.descendant(
+  of: _cardForGroup(group),
   matching: find.text('Adicionar'),
 );
+
+/// Contador do card — "editar" só liga quando o grupo tem ao menos 1 item,
+/// então a listagem serve tanto para conferir a contagem quanto para abrir a
+/// listagem de itens lançados (edição/exclusão), sem expor o item solto na
+/// tela de lançamentos.
+Future<void> _abrirGerenciador(WidgetTester tester, String group) async {
+  final icon = find.byTooltip('Ver e editar itens de $group');
+  await tester.ensureVisible(icon);
+  await tester.tap(icon);
+  await tester.pumpAndSettle();
+}
 
 /// fidelidade-campos (onda 2): o apontamento passou a ter três etapas
 /// (Identificação, Operação, Lançamentos) — cada teste que precisa das
@@ -102,9 +116,7 @@ Future<void> _irParaLancamentos(WidgetTester tester) async {
 }
 
 Future<void> _adicionarInsumo(WidgetTester tester) async {
-  // Insumos é o terceiro grupo da etapa: Mão de obra(0), Máquinas(1),
-  // Insumos(2), Produção(3), Ocorrências(4).
-  await tester.tap(_addButtonForGroup(2));
+  await tester.tap(_addButtonForGroup('Insumos'));
   await tester.pumpAndSettle();
   await _selectSearchOption(tester, 'Ração Engorda 18%');
   await _selectOption(tester, 'Armazém de origem', 'Armazém A');
@@ -170,25 +182,32 @@ void main() {
       },
     );
 
-    testWidgets('a terceira etapa traz as cinco coleções do contrato', (
-      tester,
-    ) async {
-      await setTallSurface(tester, height: 3200);
-      await tester.pumpWidget(_wrap(const ApontamentoFlow()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'a terceira etapa traz as cinco coleções em cards quadrados 2x2',
+      (tester) async {
+        await setTallSurface(tester, height: 3200);
+        await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+        await tester.pumpAndSettle();
 
-      await _irParaLancamentos(tester);
+        await _irParaLancamentos(tester);
 
-      // Grupos reais (`appropriation_employee/equipment/stock/production/
-      // occurrences`), não uma tabela plana — cada um é coleção própria.
-      expect(find.text('Mão de obra / Serviços'), findsOneWidget);
-      expect(find.text('Máquinas / Implementos'), findsOneWidget);
-      expect(find.text('Insumos'), findsOneWidget);
-      expect(find.text('Produção'), findsOneWidget);
-      expect(find.text('Ocorrências'), findsOneWidget);
-      expect(find.text('Nenhum item adicionado'), findsNWidgets(5));
-      expect(tester.takeException(), isNull);
-    });
+        // Grupos reais (`appropriation_employee/equipment/stock/production/
+        // occurrences`), não uma tabela plana — cada um é o seu próprio card.
+        expect(find.text('Mão de obra / Serviços'), findsOneWidget);
+        expect(find.text('Máquinas / Implementos'), findsOneWidget);
+        expect(find.text('Insumos'), findsOneWidget);
+        expect(find.text('Produção'), findsOneWidget);
+        expect(find.text('Ocorrências'), findsOneWidget);
+        expect(find.byType(AppSquareGroupGrid), findsOneWidget);
+        expect(find.text('Nenhum item'), findsNWidgets(5));
+        // Sem itens lançados, "editar" ainda não aparece habilitado.
+        expect(
+          find.byTooltip('Ver e editar itens de Insumos'),
+          findsOneWidget,
+        );
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('voltar recua a etapa e preserva o que foi preenchido', (
       tester,
@@ -209,36 +228,83 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('adicionar um insumo abre formulário real e soma ao grupo', (
-      tester,
-    ) async {
-      await setTallSurface(tester, height: 3200);
-      await tester.pumpWidget(_wrap(const ApontamentoFlow()));
-      await tester.pumpAndSettle();
+    testWidgets(
+      'adicionar um insumo soma ao card e aparece na listagem de gerenciar',
+      (tester) async {
+        await setTallSurface(tester, height: 3200);
+        await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+        await tester.pumpAndSettle();
 
-      await _irParaLancamentos(tester);
-      await tester.tap(_addButtonForGroup(2));
-      await tester.pumpAndSettle();
+        await _irParaLancamentos(tester);
+        await tester.tap(_addButtonForGroup('Insumos'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Insumo'), findsOneWidget);
-      expect(find.text('Produto'), findsOneWidget);
-      expect(find.text('Unidade'), findsOneWidget);
-      // fidelidade-contrato (re-auditoria 3ª avaliação): `stock_items.*`
-      // exige `warehouse_uuid` por item (`required_with:stock_items`) — o
-      // armazém volta a ser campo por item.
-      expect(find.text('Armazém de origem'), findsOneWidget);
+        expect(find.text('Insumo'), findsOneWidget);
+        expect(find.text('Produto'), findsOneWidget);
+        expect(find.text('Unidade'), findsOneWidget);
+        // fidelidade-contrato (re-auditoria 3ª avaliação): `stock_items.*`
+        // exige `warehouse_uuid` por item (`required_with:stock_items`) — o
+        // armazém volta a ser campo por item.
+        expect(find.text('Armazém de origem'), findsOneWidget);
 
-      await _selectSearchOption(tester, 'Ração Engorda 18%');
-      await _selectOption(tester, 'Armazém de origem', 'Armazém A');
-      await _selectOption(tester, 'Unidade', 'kg');
-      await tester.ensureVisible(find.text('Adicionar').last);
-  await tester.tap(find.text('Adicionar').last);
-      await tester.pumpAndSettle();
+        await _selectSearchOption(tester, 'Ração Engorda 18%');
+        await _selectOption(tester, 'Armazém de origem', 'Armazém A');
+        await _selectOption(tester, 'Unidade', 'kg');
+        await tester.ensureVisible(find.text('Adicionar').last);
+        await tester.tap(find.text('Adicionar').last);
+        await tester.pumpAndSettle();
 
-      expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
-      expect(find.text('Ração Engorda 18%'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        // O item lançado não fica solto na tela — só o contador do card.
+        expect(
+          find.descendant(
+            of: _cardForGroup('Insumos'),
+            matching: find.text('1'),
+          ),
+          findsOneWidget,
+        );
+        expect(find.text('Ração Engorda 18%'), findsNothing);
+
+        await _abrirGerenciador(tester, 'Insumos');
+
+        expect(find.text('Ração Engorda 18%'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'gerenciar um grupo permite editar e excluir o item lançado',
+      (tester) async {
+        await setTallSurface(tester, height: 3200);
+        await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+        await tester.pumpAndSettle();
+
+        await _irParaLancamentos(tester);
+        await _adicionarInsumo(tester);
+        await _abrirGerenciador(tester, 'Insumos');
+
+        // Editar reabre o formulário pré-preenchido — troca a unidade e
+        // salva sem reabrir a busca de produto.
+        await tester.tap(find.byTooltip('Editar item'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Editar insumo'), findsOneWidget);
+        await _selectOption(tester, 'Unidade', 'Saco');
+        await tester.ensureVisible(find.text('Salvar'));
+        await tester.tap(find.text('Salvar'));
+        await tester.pumpAndSettle();
+
+        await _abrirGerenciador(tester, 'Insumos');
+        expect(find.textContaining('Saco'), findsOneWidget);
+
+        // Excluir tira o item da listagem, sem fechar o sheet.
+        await tester.tap(find.byTooltip('Remover item'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Ração Engorda 18%'), findsNothing);
+        expect(find.text('Nenhum item adicionado'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('a coleção de produção registra o que a operação gerou', (
       tester,
@@ -248,7 +314,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await _irParaLancamentos(tester);
-      await tester.tap(_addButtonForGroup(3));
+      await tester.tap(_addButtonForGroup('Produção'));
       await tester.pumpAndSettle();
 
       expect(find.text('Produto colhido'), findsOneWidget);
@@ -260,10 +326,18 @@ void main() {
       await _selectSearchOption(tester, 'Semente de Braquiária');
       await _selectOption(tester, 'Unidade', 'Saco');
       await tester.ensureVisible(find.text('Adicionar').last);
-  await tester.tap(find.text('Adicionar').last);
+      await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
 
-      expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: _cardForGroup('Produção'),
+          matching: find.text('1'),
+        ),
+        findsOneWidget,
+      );
+
+      await _abrirGerenciador(tester, 'Produção');
       expect(find.text('Semente de Braquiária'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
@@ -276,8 +350,7 @@ void main() {
       await tester.pumpAndSettle();
 
       await _irParaLancamentos(tester);
-      // Mão de obra é o primeiro grupo (índice 0).
-      await tester.tap(_addButtonForGroup(0));
+      await tester.tap(_addButtonForGroup('Mão de obra / Serviços'));
       await tester.pumpAndSettle();
 
       // fidelidade-contrato (re-auditoria 3ª avaliação): `labor_items.*.type`
@@ -294,7 +367,8 @@ void main() {
       await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
 
-      // O item entra rotulado pelo tipo + alvo.
+      // O item entra rotulado pelo tipo + alvo, visível na listagem.
+      await _abrirGerenciador(tester, 'Mão de obra / Serviços');
       expect(find.text('Função: Tratorista Agrícola'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
