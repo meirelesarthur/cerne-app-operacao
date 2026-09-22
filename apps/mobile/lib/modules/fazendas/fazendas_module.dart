@@ -139,6 +139,31 @@ GoRoute buildFazendasModuleRoute() {
           ),
         ],
       ),
+      // Aba "Ordens de Serviço" da Administração: 100% leitura, sem
+      // cadastros operacionais — só as duas consultas (`consulta-os`,
+      // `consulta-apontamentos`) do grupo 'Ordem de serviço' do catálogo.
+      GoRoute(
+        path: 'ordem-servico',
+        builder: (context, state) => const _FazendasScaffold(
+          child: ResponsibilityWorkspace(
+            profile: FeatureProfile.administration,
+            showLocalContext: false,
+            focusGroup: 'Ordem de serviço',
+          ),
+        ),
+        routes: [
+          GoRoute(
+            path: ':featureId',
+            builder: (context, state) => _FazendasScaffold(
+              child: MappedFeatureScreen(
+                featureId: state.pathParameters['featureId']!,
+                profile: FeatureProfile.administration,
+                centerRoute: '/fazendas/ordem-servico',
+              ),
+            ),
+          ),
+        ],
+      ),
       GoRoute(
         path: 'dashboards/:dashId',
         builder: (context, state) => _FazendasScaffold(

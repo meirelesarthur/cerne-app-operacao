@@ -100,7 +100,7 @@ void main() {
         expect(
           find.descendant(
             of: contextTabs,
-            matching: find.text('Operacional'),
+            matching: find.text('Ordens de Serviço'),
           ),
           findsOneWidget,
         );
@@ -125,14 +125,14 @@ void main() {
             matching: find.byType(AppPressable),
           ),
         );
-        final operationalTab = tester.getRect(
+        final ordemServicoTab = tester.getRect(
           find.ancestor(
-            of: find.text('Operacional'),
+            of: find.text('Ordens de Serviço'),
             matching: find.byType(AppPressable),
           ),
         );
         expect(managementTab.width, closeTo(consultsTab.width, 0.1));
-        expect(managementTab.width, closeTo(operationalTab.width, 0.1));
+        expect(managementTab.width, closeTo(ordemServicoTab.width, 0.1));
         expect(find.text('Painéis de decisão'), findsOneWidget);
         expect(find.text('Resultado'), findsOneWidget);
         // Abas do Início não devem aparecer.
@@ -159,7 +159,7 @@ void main() {
         expect(find.text('Central de gestão'), findsNothing);
         expect(find.text('Consultas gerenciais'), findsOneWidget);
         expect(find.text('Exportar log de estoque'), findsOneWidget);
-        expect(find.byType(AppModuleTile), findsNWidgets(12));
+        expect(find.byType(AppModuleTile), findsNWidgets(10));
 
         await tester.tap(find.text('Consultas gerenciais'));
         await tester.pumpAndSettle();
@@ -171,9 +171,9 @@ void main() {
     );
 
     testWidgets(
-      // A aba de contexto não aponta mais para cá (ver aba "Operacional"
-      // abaixo), mas a rota continua servindo o link "Ver todas" da home
-      // administrativa ("Atividades recentes").
+      // A aba de contexto não aponta mais para cá (ver aba "Ordens de
+      // Serviço" abaixo), mas a rota continua servindo o link "Ver todas" da
+      // home administrativa ("Atividades recentes").
       '/fazendas/atividades continua acessível e não repete o título da central administrativa',
       (tester) async {
         await setTallSurface(tester);
@@ -188,7 +188,7 @@ void main() {
     );
 
     testWidgets(
-      'aba Operacional dá à Administração os mesmos cadastros do perfil operacional',
+      'aba Ordens de Serviço só entrega as duas consultas, sem os cadastros operacionais',
       (tester) async {
         await setTallSurface(tester);
         harness.router.go('/fazendas');
@@ -199,27 +199,28 @@ void main() {
         await tester.tap(
           find.descendant(
             of: contextTabs,
-            matching: find.text('Operacional'),
+            matching: find.text('Ordens de Serviço'),
           ),
         );
         await tester.pumpAndSettle();
 
-        // Mesma grade de grupos que a equipe de campo vê em "Rotinas"
-        // (`/fazendas/operacional`), agora acessível também à Administração.
-        expect(find.text('Confinamento'), findsOneWidget);
-        expect(find.text('Pecuária'), findsOneWidget);
-        expect(find.text('Agricultura'), findsOneWidget);
+        // Só as duas consultas somente-leitura do grupo 'Ordem de serviço'
+        // (`admin/dash_ordem_servico.dart`, `admin/dash_apontamentos.dart') —
+        // nenhum cadastro operacional de campo aparece mais aqui.
         expect(find.text('Ordem de Serviço'), findsOneWidget);
-        expect(find.text('Reprodução'), findsOneWidget);
-        expect(find.text('Gestão de Frota'), findsOneWidget);
-        expect(find.text('Sincronizar aplicativo'), findsOneWidget);
+        expect(find.text('Apontamentos agrícolas'), findsOneWidget);
+        expect(find.byType(AppModuleTile), findsNWidgets(2));
+        expect(find.text('Confinamento'), findsNothing);
+        expect(find.text('Pecuária'), findsNothing);
+        expect(find.text('Agricultura'), findsNothing);
+        expect(find.text('Reprodução'), findsNothing);
+        expect(find.text('Gestão de Frota'), findsNothing);
+        expect(find.text('Sincronizar aplicativo'), findsNothing);
         expect(tester.takeException(), isNull);
 
-        await tester.tap(find.text('Confinamento'));
+        await tester.tap(find.text('Ordem de Serviço'));
         await tester.pumpAndSettle();
 
-        // Não é redirecionado para a central administrativa — a Administração
-        // navega normalmente dentro das rotas operacionais.
         expect(find.text('Central de gestão'), findsNothing);
         expect(tester.takeException(), isNull);
       },
@@ -398,17 +399,16 @@ void main() {
       expect(find.text('Resumo financeiro'), findsNothing);
     });
 
-    testWidgets(
-      'administrador também acessa fluxo de entrada operacional (aba Operacional)',
-      (tester) async {
-        harness.router.go('/fazendas/campo/pesagem');
+    testWidgets('administrador não acessa fluxo de entrada operacional', (
+      tester,
+    ) async {
+      harness.router.go('/fazendas/campo/pesagem');
 
-        await tester.pumpWidget(harness.buildApp());
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
 
-        expect(find.text('Conta GB Banking'), findsNothing);
-        expect(find.text('Pesagem'), findsWidgets);
-      },
-    );
+      expect(find.text('Conta GB Banking'), findsOneWidget);
+      expect(find.text('Nova pesagem'), findsNothing);
+    });
   });
 }

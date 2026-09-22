@@ -1373,14 +1373,13 @@ const adminFeatures = <FeatureDefinition>[
   // Espelha `minhas-os`, mas para o Administrativo: só visualização, com as
   // duas ações que o perfil pode tomar enquanto a OS não foi encerrada pelo
   // Operacional (avaliar, cancelar) — `admin/dash_ordem_servico.dart`. Grupo
-  // 'Consultas e auditoria' (não 'Ordem de serviço', exclusivo do
-  // operacional): as abas Gestão/Consultas da home administrativa são
-  // travadas em `focusGroup` fixo (`responsibility_workspace.dart`), então um
-  // grupo novo ficaria inalcançável — mesmo padrão de `vendas`/`compras-animais`.
+  // 'Ordem de serviço': aba própria da Administração (`focusGroup` em
+  // `fazendas_module.dart`), reaproveitando ícone/rótulo/ordem já definidos
+  // para o mesmo nome de grupo no operacional (`group_icons.dart`).
   FeatureDefinition(
     id: 'consulta-os',
     profile: FeatureProfile.administration,
-    group: 'Consultas e auditoria',
+    group: 'Ordem de serviço',
     title: 'Ordem de Serviço',
     objective:
         'Consultar todas as ordens de serviço da fazenda, avaliar o andamento '
@@ -1401,7 +1400,7 @@ const adminFeatures = <FeatureDefinition>[
   FeatureDefinition(
     id: 'consulta-apontamentos',
     profile: FeatureProfile.administration,
-    group: 'Consultas e auditoria',
+    group: 'Ordem de serviço',
     title: 'Apontamentos agrícolas',
     objective:
         'Consultar os apontamentos agrícolas lançados pelo Operacional, com '

@@ -39,29 +39,27 @@ void main() {
       },
     );
 
-    test(
-      'administração também acessa as famílias de entrada operacional '
-      '(aba "Operacional" dá à Administração os mesmos cadastros)',
-      () {
-        for (final path in [
-          '/fazendas/operacional',
-          '/fazendas/operacional/carga',
-          '/fazendas/campo/pesagem',
-          '/fazendas/campo/sincronizacao',
-        ]) {
-          expect(redirectForSession(path, administration), isNull, reason: path);
-        }
-
+    test('administração bloqueia todas as famílias de entrada operacional', () {
+      for (final path in [
+        '/fazendas/operacional',
+        '/fazendas/operacional/carga',
+        '/fazendas/campo/pesagem',
+        '/fazendas/campo/sincronizacao',
+      ]) {
         expect(
-          redirectForSession(
-            '/fazendas/dashboards/financeiro',
-            administration,
-          ),
-          isNull,
+          redirectForSession(path, administration),
+          UserAccessProfile.administration.landingRoute,
+          reason: path,
         );
-        expect(redirectForSession('/bank/extrato', administration), isNull);
-      },
-    );
+      }
+
+      expect(
+        redirectForSession('/fazendas/dashboards/financeiro', administration),
+        isNull,
+      );
+      expect(redirectForSession('/fazendas/ordem-servico', administration), isNull);
+      expect(redirectForSession('/bank/extrato', administration), isNull);
+    });
 
     test('operação bloqueia todas as famílias de supervisão', () {
       for (final path in [
@@ -69,6 +67,7 @@ void main() {
         '/fazendas/administracao/saldo-estoque',
         '/fazendas/dashboards/financeiro',
         '/fazendas/financeiro',
+        '/fazendas/ordem-servico',
       ]) {
         expect(
           redirectForSession(path, operational),
