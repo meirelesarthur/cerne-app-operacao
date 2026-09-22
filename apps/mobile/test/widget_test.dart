@@ -11,9 +11,8 @@ void main() {
     await tester.pumpWidget(const ProviderScope(child: CerneApp()));
     await tester.pumpAndSettle();
 
-    // Porta de entrada real do protótipo: a seleção de ambiente, não a home
-    // Android intermediária nem o formulário de login (ver `initialLocation`).
-    expect(find.text('Operacional'), findsOneWidget);
+    // Porta de entrada real do protótipo: o login (ver `initialLocation`).
+    expect(find.text('Bem-vindo de volta!'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

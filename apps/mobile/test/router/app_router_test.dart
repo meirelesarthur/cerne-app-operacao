@@ -104,47 +104,30 @@ void main() {
       expect(find.byTooltip('Mais opções'), findsOneWidget);
     });
 
-    testWidgets(
-      'deep link sem sessão retorna à seleção de ambiente (não ao login)',
-      (tester) async {
-        // Regressão: a seleção de ambiente (`/desktop/cerne-app`) é a porta de
-        // entrada real do protótipo — sem sessão, qualquer rota protegida cai
-        // nela, não direto no formulário de login.
-        harness.dispose();
-        harness = RouterTestHarness();
-        harness.router.go('/fazendas/operacional');
+    testWidgets('deep link sem sessão retorna ao login', (tester) async {
+      // Regressão: o login é a porta de entrada real do protótipo — sem
+      // sessão, qualquer rota protegida cai nele.
+      harness.dispose();
+      harness = RouterTestHarness();
+      harness.router.go('/fazendas/operacional');
 
-        await tester.pumpWidget(harness.buildApp());
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
 
-        expect(find.text('Operacional'), findsOneWidget);
-        expect(find.text('Login Administração'), findsNothing);
-      },
-    );
+      expect(find.text('Bem-vindo de volta!'), findsOneWidget);
+    });
 
-    testWidgets(
-      'rota inicial sem navegação explícita é a seleção de ambiente',
-      (tester) async {
-        harness.dispose();
-        harness = RouterTestHarness();
+    testWidgets('rota inicial sem navegação explícita é o login', (
+      tester,
+    ) async {
+      harness.dispose();
+      harness = RouterTestHarness();
 
-        await tester.pumpWidget(harness.buildApp());
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
 
-        expect(find.text('Operacional'), findsOneWidget);
-        expect(find.text('Entrar no CERNE Operação'), findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      'sessão autenticada em "/desktop" é redirecionada para a central do perfil',
-      (tester) async {
-        harness.router.go('/desktop');
-        await tester.pumpWidget(harness.buildApp());
-        await tester.pumpAndSettle();
-
-        expect(find.text('Boa tarde,'), findsOneWidget);
-      },
-    );
+      expect(find.text('Bem-vindo de volta!'), findsOneWidget);
+      expect(find.text('Entrar'), findsOneWidget);
+    });
   });
 }

@@ -48,7 +48,7 @@ void main() {
       );
     });
 
-    testWidgets('tocar em "Sair" navega para a seleção de ambiente', (tester) async {
+    testWidgets('tocar em "Sair" navega para o login', (tester) async {
       await setTallSurface(tester);
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
@@ -56,9 +56,7 @@ void main() {
       await tester.tap(find.text('Sair'));
       await tester.pumpAndSettle();
 
-      // Logout volta para a seleção de ambiente (simula "fechar o app"), não
-      // direto para o formulário de login.
-      expect(find.text('Operacional'), findsOneWidget);
+      expect(find.text('Bem-vindo de volta!'), findsOneWidget);
       expect(
         harness.container.read(prototypeSessionProvider).isAuthenticated,
         isFalse,
