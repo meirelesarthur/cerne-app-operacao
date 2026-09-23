@@ -331,9 +331,8 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                   '${_lastCreated?.title ?? feature.title} salvo',
         description: Text(
           wasEditing
-              ? 'As alterações foram salvas e já estão disponíveis nesta sessão.'
-              : feature.successDescription ??
-                    'O registro foi incluído no protótipo e já está disponível nesta sessão.',
+              ? 'As alterações foram salvas.'
+              : feature.successDescription ?? 'O registro foi salvo.',
         ),
         actions: Column(
           mainAxisSize: MainAxisSize.min,

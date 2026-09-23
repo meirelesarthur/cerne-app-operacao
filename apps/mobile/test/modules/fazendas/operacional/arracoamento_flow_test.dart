@@ -36,7 +36,7 @@ void main() {
       await tester.tap(find.bySemanticsLabel('Aumentar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('550'), findsOneWidget);
+      expect(find.text('50'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

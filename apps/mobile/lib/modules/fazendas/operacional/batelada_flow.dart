@@ -135,7 +135,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
         title: 'Batelada registrada',
         queued: _queued!,
         effects:
-            'O estoque dos armazéns informados será baixado pelas quantidades realizadas.',
+            'Os ingredientes usados saíram do estoque dos armazéns.',
       );
     }
 

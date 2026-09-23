@@ -59,7 +59,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Pesagem'), findsWidgets);
-      expect(find.text('Lote / carga'), findsOneWidget);
+      expect(find.text('Lote'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
@@ -69,10 +69,10 @@ void main() {
       await tester.pumpWidget(_wrap(const PesagemFlow()));
       await tester.pumpAndSettle();
 
-      await _selectSearchField(tester, 'Lote / carga', 'Lote 42');
+      await _selectSearchField(tester, 'Lote', 'Lote 42');
 
       expect(tester.takeException(), isNull);
-      expect(find.text('Depósito de destino'), findsOneWidget);
+      expect(find.text('Armazém de destino'), findsOneWidget);
     });
 
     testWidgets('campo Animal só aparece depois de selecionar o lote', (
@@ -83,7 +83,7 @@ void main() {
 
       expect(find.text('Animal'), findsNothing);
 
-      await _selectSearchField(tester, 'Lote / carga', 'Lote 42');
+      await _selectSearchField(tester, 'Lote', 'Lote 42');
 
       expect(tester.takeException(), isNull);
       expect(find.text('Animal'), findsOneWidget);
@@ -97,9 +97,9 @@ void main() {
       await tester.pumpWidget(_wrap(const PesagemFlow()));
       await tester.pumpAndSettle();
 
-      await _selectSearchField(tester, 'Lote / carga', 'Lote 42');
+      await _selectSearchField(tester, 'Lote', 'Lote 42');
       await _selectSearchField(tester, 'Animal', 'Brinco 4201');
-      await _selectSearchField(tester, 'Lote / carga', 'Lote 19');
+      await _selectSearchField(tester, 'Lote', 'Lote 19');
 
       expect(tester.takeException(), isNull);
       // O campo fechado volta ao placeholder — o animal do lote antigo some.

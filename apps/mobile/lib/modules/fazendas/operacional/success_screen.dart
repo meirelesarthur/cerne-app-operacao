@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
@@ -20,6 +21,8 @@ class SuccessScreen extends ConsumerWidget {
     required this.title,
     required this.effects,
     this.queued = false,
+    this.nextLabel,
+    this.onNext,
   });
 
   final String title;
@@ -29,6 +32,12 @@ class SuccessScreen extends ConsumerWidget {
 
   /// Verdadeiro quando o lançamento foi para a fila offline.
   final bool queued;
+
+  /// Ação principal de repetição ("Pesar próximo animal"): em lançamentos
+  /// feitos em série, voltar ao início a cada item obrigava a reabrir o fluxo.
+  /// Com ela, "Voltar ao início" desce para ação secundária.
+  final String? nextLabel;
+  final VoidCallback? onNext;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,11 +60,29 @@ class SuccessScreen extends ConsumerWidget {
                         'esperando para sincronizar. $effects'
                   : effects,
             ),
-            actions: AppButton(
-              fullWidth: true,
-              size: AppButtonSize.lg,
-              onPressed: () => context.go('/fazendas'),
-              child: const Text('Voltar ao início'),
+            actions: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (nextLabel != null && onNext != null) ...[
+                  AppButton(
+                    fullWidth: true,
+                    size: AppButtonSize.lg,
+                    onPressed: onNext,
+                    child: Text(nextLabel!),
+                  ),
+                  const SizedBox(height: AppSpacing.space2),
+                ],
+                AppButton(
+                  fullWidth: true,
+                  size: AppButtonSize.lg,
+                  variant: nextLabel != null
+                      ? AppButtonVariant.subtle
+                      : AppButtonVariant.primary,
+                  onPressed: () => context.go('/fazendas'),
+                  child: const Text('Voltar ao início'),
+                ),
+              ],
             ),
           ),
         ),

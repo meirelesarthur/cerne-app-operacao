@@ -401,9 +401,8 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
         title: 'Apontamento registrado',
         queued: _queued!,
         effects:
-            'Mão de obra, máquinas e insumos caem no centro de custo do lote; '
-            'os insumos baixam do estoque de origem e a produção lançada entra '
-            'no armazém de destino.',
+            'Os insumos usados saíram do estoque e a produção entrou no '
+            'armazém de destino.',
       );
     }
 

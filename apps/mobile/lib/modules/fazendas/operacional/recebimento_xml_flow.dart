@@ -59,7 +59,7 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
         title: 'Entrada processada',
         queued: _queued!,
         effects:
-            'Movimento de compra será processado e um título a pagar será gerado no financeiro.',
+            'A entrada foi salva e os produtos já contam no estoque.',
       );
     }
 

@@ -34,7 +34,7 @@ void main() {
       await tester.tap(find.text('Nascimento'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Animal-mãe / lote'), findsOneWidget);
+      expect(find.text('Lote da mãe'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

@@ -85,7 +85,7 @@ class _VendaFlowState extends ConsumerState<VendaFlow> {
       return SuccessScreen(
         title: 'Venda registrada',
         queued: _queued!,
-        effects: 'Isso vai gerar NF-e + GTA e um título a receber.',
+        effects: 'A venda foi salva e o escritório emite os documentos.',
       );
     }
 

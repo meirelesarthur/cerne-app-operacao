@@ -23,7 +23,9 @@ class ArracoamentoFlow extends ConsumerStatefulWidget {
 class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
   String? _lote;
   String? _dieta;
-  num _qtd = 500;
+  // Começa em zero: um valor inventado (antes 500) virava registro falso
+  // quando a pessoa confirmava sem olhar.
+  num _qtd = 0;
   String? _deposito;
   bool? _queued;
   bool _attempted = false;
@@ -60,7 +62,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
         title: 'Arraçoamento registrado',
         queued: _queued!,
         effects:
-            'A quantidade fornecida será baixada do estoque do depósito de origem.',
+            'A ração saiu do estoque do armazém escolhido.',
       );
     }
 
@@ -86,7 +88,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
           ),
           const SizedBox(height: AppSpacing.space4),
           AppFormField(
-            label: 'Dieta / produto',
+            label: 'Dieta',
             required: true,
             error: _attempted && _dieta == null ? 'Selecione a dieta.' : null,
             child: AppFormSelect(
@@ -100,7 +102,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
           AppFormField(
             label: 'Quantidade fornecida',
             required: true,
-            hint: 'Sem cálculo de rateio de custo nesta fase.',
+            hint: 'Quanto de ração foi colocado no cocho.',
             error: _attempted && _qtd <= 0
                 ? 'Informe uma quantidade maior que zero.'
                 : null,
@@ -113,16 +115,16 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
           ),
           const SizedBox(height: AppSpacing.space4),
           AppFormField(
-            label: 'Depósito de origem',
+            label: 'Armazém de origem',
             required: true,
             error: _attempted && _deposito == null
-                ? 'Selecione o depósito.'
+                ? 'Selecione o armazém.'
                 : null,
             child: AppFormSelect(
               options: depositos,
               value: _deposito,
               onChanged: (v) => setState(() => _deposito = v),
-              placeholder: 'Selecione o depósito',
+              placeholder: 'Selecione o armazém',
             ),
           ),
         ],

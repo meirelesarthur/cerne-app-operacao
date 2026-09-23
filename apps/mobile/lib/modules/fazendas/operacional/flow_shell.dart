@@ -77,7 +77,7 @@ class FlowShell extends ConsumerWidget {
             alignment: Alignment.centerLeft,
             child: AppChip(
               tone: AppChipTone.amber,
-              child: Text('Sem conexão — será enfileirado para sincronização'),
+              child: Text('Sem internet: fica guardado e é enviado depois'),
             ),
           );
 
