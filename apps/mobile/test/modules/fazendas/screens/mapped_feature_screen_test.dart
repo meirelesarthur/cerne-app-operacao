@@ -262,8 +262,16 @@ void main() {
         // fidelidade-contrato (re-auditoria 3ª avaliação): horímetro/hodômetro
         // saíram do cabeçalho para a coleção "Itens do abastecimento"
         // (contrato `SupplyRequest`, `items.*`); os 7 obrigatórios do
-        // cabeçalho seguem iguais (os medidores sempre foram opcionais).
-        expect(find.text('Campo obrigatório.'), findsNWidgets(7));
+        // cabeçalho seguem iguais (os medidores sempre foram opcionais). A
+        // data já vem com hoje, então só 6 dos 7 acusam erro.
+        expect(
+          find.textContaining(
+            RegExp(
+              r'^(Preencha o campo|Escolha uma opção em|Informe a data em) "',
+            ),
+          ),
+          findsNWidgets(6),
+        );
         expect(tester.takeException(), isNull);
 
         await _selectFieldOption(tester, 'Responsável', 'João Oliveira');

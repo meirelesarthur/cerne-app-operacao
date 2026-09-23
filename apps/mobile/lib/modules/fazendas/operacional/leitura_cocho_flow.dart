@@ -439,7 +439,13 @@ class _AvaliacaoCard extends StatelessWidget {
                       OcorrenciaPrioridade.media => AppChipTone.amber,
                       OcorrenciaPrioridade.baixa => AppChipTone.neutral,
                     },
-                    child: Text(o.prioridade.name),
+                    // Rótulo em português ("Média"), não o nome interno do
+                    // enum ("media").
+                    child: Text(
+                      _prioridades
+                          .firstWhere((p) => p.value == o.prioridade.name)
+                          .label,
+                    ),
                   ),
                   const SizedBox(width: AppSpacing.space2),
                   Expanded(

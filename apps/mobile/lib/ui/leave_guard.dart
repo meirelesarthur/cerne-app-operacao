@@ -5,13 +5,31 @@ import '../design/generated/app_spacing.dart';
 import 'button.dart';
 import 'modal.dart';
 
+/// A pergunta de [AppLeaveGuard] avulsa, para saídas que não passam pelo
+/// Navigator (ex.: voltar do formulário para a lista dentro da mesma rota).
+/// Devolve `true` quando a pessoa escolhe sair sem salvar.
+Future<bool> confirmAppLeave(
+  BuildContext context, {
+  String title = 'Sair sem salvar?',
+  String message = 'O que você preencheu nesta tela será perdido.',
+  String confirmLabel = 'Sair sem salvar',
+  String cancelLabel = 'Continuar preenchendo',
+}) => showAppConfirm(
+  context,
+  title: title,
+  message: message,
+  confirmLabel: confirmLabel,
+  cancelLabel: cancelLabel,
+  danger: true,
+);
+
 /// Protege uma tela com dados preenchidos contra a saída acidental: com
 /// [active] ligado, voltar (botão da barra, gesto ou botão do sistema)
 /// pergunta antes de descartar o que a pessoa digitou.
 ///
 /// Só intercepta saídas que passam por `Navigator.maybePop` — é o que o botão
-/// voltar da faixa, o gesto e o botão do sistema usam. Um "Cancelar" de tela
-/// deve chamar `Navigator.maybePop(context)` para cair na mesma pergunta.
+/// voltar da faixa, o gesto e o botão do sistema usam. Saídas que trocam de
+/// estado dentro da mesma rota usam [confirmAppLeave] direto.
 class AppLeaveGuard extends StatelessWidget {
   const AppLeaveGuard({
     super.key,
@@ -37,13 +55,12 @@ class AppLeaveGuard extends StatelessWidget {
       canPop: !active,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        final leave = await showAppConfirm(
+        final leave = await confirmAppLeave(
           context,
           title: title,
           message: message,
           confirmLabel: confirmLabel,
           cancelLabel: cancelLabel,
-          danger: true,
         );
         // `pop` direto (e não `maybePop`) para não reabrir a pergunta.
         if (leave && context.mounted) Navigator.of(context).pop(result);

@@ -75,7 +75,8 @@ const widgetbookChangelog = <WidgetbookRelease>[
       (
         'Novo',
         'LeaveGuard (AppLeaveGuard): pergunta "Sair sem salvar?" ao voltar com '
-            'dados preenchidos; PageScaffold/PageBody ganham hasUnsavedChanges.',
+            'dados preenchidos; PageScaffold/PageBody ganham hasUnsavedChanges; '
+            'confirmAppLeave() para saídas dentro da mesma rota.',
       ),
       (
         'Mudou',

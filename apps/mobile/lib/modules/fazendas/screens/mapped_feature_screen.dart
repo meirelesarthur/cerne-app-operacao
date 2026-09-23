@@ -100,13 +100,38 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     _journey = FunctionalJourneyController(feature);
   }
 
-  void _startForm() => setState(_journey.startForm);
+  /// Valores do formulário logo ao abrir (vazio, datas de hoje ou o registro
+  /// em edição) — diferença contra isto é o que conta como "não salvo".
+  Map<String, String> _formBaseline = const {};
+
+  void _startForm() => setState(() {
+    _journey.startForm();
+    _formBaseline = Map.of(_journey.form.values);
+  });
+
+  bool get _hasUnsavedChanges {
+    if (_journey.mode != FunctionalJourneyMode.form) return false;
+    final form = _journey.form;
+    if (form.groupItems.values.any((items) => items.isNotEmpty)) return true;
+    final keys = {...form.values.keys, ..._formBaseline.keys};
+    return keys.any(
+      (k) => (form.values[k] ?? '').trim() != (_formBaseline[k] ?? '').trim(),
+    );
+  }
+
+  /// Sai do formulário perguntando antes quando há algo preenchido.
+  Future<void> _leaveForm(VoidCallback leave) async {
+    if (_hasUnsavedChanges && !await confirmAppLeave(context)) return;
+    if (mounted) leave();
+  }
 
   /// Abre o cadastro pré-preenchido com os dados de [record] — a ação
   /// "Editar" que a visualização do registro oferece ao perfil operacional.
   /// Ver [FunctionalJourneyController.startEditing].
-  void _editRecord(PrototypeRecord record) =>
-      setState(() => _journey.startEditing(record));
+  void _editRecord(PrototypeRecord record) => setState(() {
+    _journey.startEditing(record);
+    _formBaseline = Map.of(_journey.form.values);
+  });
 
   void _showList() => setState(_journey.showList);
 
@@ -397,8 +422,9 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
       onBack: inStep
           ? _retreat
           : backToRecords
-          ? _showList
-          : () => context.go(widget.centerRoute),
+          ? () => _leaveForm(_showList)
+          : () => _leaveForm(() => context.go(widget.centerRoute)),
+      hasUnsavedChanges: _hasUnsavedChanges,
       actionIcon: showingForm ? AppIcons.moreVertical : null,
       actionLabel: showingForm ? 'Mais opções' : null,
       onAction: showingForm ? () => _showFormDetails(context) : null,
@@ -433,7 +459,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
               onSecondary: inStep
                   ? _retreat
                   : feature.listMode
-                  ? _showList
+                  ? () => _leaveForm(_showList)
                   : null,
             )
           : isRecordsList && canCreateRecords

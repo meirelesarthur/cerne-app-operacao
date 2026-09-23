@@ -10,7 +10,11 @@ void main() {
     final name = feature.fields.firstWhere((field) => field.id == 'nome');
     final area = feature.fields.firstWhere((field) => field.id == 'area-total');
 
-    expect(featureFieldError(feature, name, const {}), 'Campo obrigatório.');
+    // A mensagem diz qual campo falta, não só "Campo obrigatório.".
+    expect(
+      featureFieldError(feature, name, const {}),
+      'Preencha o campo "${name.label}".',
+    );
     expect(
       featureFieldError(feature, area, const {'area-total': '0'}),
       'Informe um valor maior que zero.',
@@ -39,7 +43,10 @@ void main() {
       featureItemFieldError(hodometro, const {'hodometro': '0'}),
       'Informe um número inteiro maior que zero.',
     );
-    expect(featureItemFieldError(hodometro, const {'hodometro': '48210'}), isNull);
+    expect(
+      featureItemFieldError(hodometro, const {'hodometro': '48210'}),
+      isNull,
+    );
     // Opcional: vazio não erra.
     expect(featureItemFieldError(hodometro, const {}), isNull);
   });
@@ -222,7 +229,7 @@ void main() {
     );
     expect(
       featureItemFieldError(estoqueField, const {}),
-      'Campo obrigatório.',
+      featureRequiredMessage(estoqueField),
     );
 
     // fidelidade-campos (onda 9 — re-auditoria 11/09): `estoque` entrou como
@@ -297,10 +304,7 @@ void main() {
     });
     final salvo = controller.submit();
     expect(salvo, isNotNull);
-    expect(
-      salvo!.details['Animais diagnosticados'],
-      '1 item(ns) · BR 1042',
-    );
+    expect(salvo!.details['Animais diagnosticados'], '1 item(ns) · BR 1042');
   });
 
   // fidelidade-contrato (onda 6): XOR de três destinos, mesmo padrão do XOR
@@ -348,7 +352,7 @@ void main() {
     );
     expect(
       collectionItemFieldError(feature, etapas, produto, itemProduto),
-      'Campo obrigatório.',
+      featureRequiredMessage(produto),
     );
 
     const itemServico = {'tipo': 'Serviço', 'servico': 'Vacinação em massa'};

@@ -24,7 +24,7 @@ void main() {
       expect(find.text('Ordens pendentes'), findsOneWidget);
       expect(find.text('Transferência de lote'), findsOneWidget);
       expect(find.text('Troca de dieta'), findsOneWidget);
-      expect(find.text('Confirmar execução'), findsNWidgets(2));
+      expect(find.text('Já fiz no curral'), findsNWidgets(2));
       expect(tester.takeException(), isNull);
     });
 
@@ -35,10 +35,15 @@ void main() {
       await tester.pumpWidget(_wrap(const OrdensPendentesScreen()));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Confirmar execução').first);
+      await tester.tap(find.text('Já fiz no curral').first);
       await tester.pumpAndSettle();
 
-      expect(find.text('Confirmar execução'), findsOneWidget);
+      // Gravar pede confirmação explícita antes.
+      expect(find.text('Você já fez isso no curral?'), findsOneWidget);
+      await tester.tap(find.text('Sim, já fiz'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Já fiz no curral'), findsOneWidget);
       expect(find.text('Confirmada'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
