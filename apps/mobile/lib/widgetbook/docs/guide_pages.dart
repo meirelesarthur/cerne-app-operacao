@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.4.0';
+const kWidgetbookVersion = '2.5.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,19 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.5.0',
+    date: '2026-09-23',
+    summary: 'Login: CTA em caixa alta e ambiente no rodapé.',
+    changes: [
+      (
+        'Mudou',
+        'Padrão Login: botão "ENTRAR" em caixa alta (leitor de tela mantém '
+            '"Entrar"); a indicação do ambiente sai do card e vai para o '
+            'rodapé, abaixo do tour, por ser informação de protótipo.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.4.0',
     date: '2026-09-23',

@@ -172,18 +172,15 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: AppSpacing.space4),
-                          Text(
-                            'Acesso operacional',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: semantic.fgMuted),
-                          ),
-                          const SizedBox(height: AppSpacing.space3),
+                          const SizedBox(height: AppSpacing.space5),
                           AppButton(
                             fullWidth: true,
                             size: AppButtonSize.lg,
                             onPressed: () => _loginAs(ambiente),
-                            child: const Text('Entrar'),
+                            child: const Text(
+                              'ENTRAR',
+                              semanticsLabel: 'Entrar',
+                            ),
                           ),
                         ],
                       ),
@@ -212,6 +209,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           fullWidth: true,
                           onPressed: () => context.go('/onboarding'),
                           child: const Text('Tour pelo app'),
+                        ),
+                        // Indicação do ambiente — informação de protótipo, fora
+                        // do card de login: fica no rodapé, na mesma voz
+                        // discreta da assinatura acima do tour.
+                        const SizedBox(height: AppSpacing.space3),
+                        Text(
+                          'Acesso operacional',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: AppTypography.xs,
+                            color: semantic.fgInverse.withValues(alpha: 0.7),
+                          ),
                         ),
                       ],
                     ),
