@@ -4,10 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../modules/fazendas/fazendas_module.dart';
 import '../modules/fazendas/screens/busca_global_screen.dart';
-import '../modules/hub/hub_module.dart';
-import '../shell/module_config.dart';
 import '../shell/pages/login_page.dart';
-import '../shell/pages/module_placeholder_screen.dart';
 import '../shell/pages/notificacoes_page.dart';
 import '../shell/pages/onboarding_page.dart';
 import '../shell/pages/perfil_config_page.dart';
@@ -36,11 +33,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       return redirectForSession(state.uri.path, session);
     },
     routes: [
-      GoRoute(path: '/', redirect: (context, state) => '/inicio'),
+      GoRoute(
+        path: '/',
+        redirect: (context, state) => UserAccessProfile.operational.homeRoute,
+      ),
       ShellRoute(
         builder: (context, state, child) {
           final segments = state.uri.pathSegments;
-          final moduleId = segments.isNotEmpty ? segments.first : 'inicio';
+          final moduleId = segments.isNotEmpty ? segments.first : 'fazendas';
           final tab = segments.length > 1 ? segments[1] : '';
           // A central de um grupo é um estado intermediário: mantém o
           // seletor de fazenda e o dock operacional, mas remove a saudação e
@@ -57,32 +57,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             child: child,
           );
         },
-        routes: [
-          buildHubModuleRoute(),
-          buildFazendasModuleRoute(),
-          for (final module in modules.where(
-            (m) => !_wiredModules.contains(m.id),
-          ))
-            GoRoute(
-              path: '/${module.id}',
-              builder: (context, state) => ModulePlaceholderScreen(
-                moduleLabel: module.label,
-                tabLabel: _tabLabel(module, ''),
-              ),
-              routes: [
-                GoRoute(
-                  path: ':tab',
-                  builder: (context, state) {
-                    final tab = state.pathParameters['tab']!;
-                    return ModulePlaceholderScreen(
-                      moduleLabel: module.label,
-                      tabLabel: _tabLabel(module, tab),
-                    );
-                  },
-                ),
-              ],
-            ),
-        ],
+        routes: [buildFazendasModuleRoute()],
       ),
       GoRoute(
         path: '/perfil',
@@ -135,19 +110,4 @@ String? redirectForSession(String path, PrototypeSessionState session) {
   if (path == '/onboarding') return null;
 
   return null;
-}
-
-/// Módulos com rota real registrada (todos, após a F4) — o loop genérico de
-/// `ModulePlaceholderScreen` abaixo só existe como rede de segurança para um
-/// módulo futuro sem tela própria ainda.
-const _wiredModules = {
-  'inicio',
-  'fazendas',
-};
-
-String _tabLabel(ModuleDef module, String tabPath) {
-  for (final tab in module.bottomTabs) {
-    if (tab.path == tabPath) return tab.label;
-  }
-  return tabPath;
 }

@@ -27,11 +27,9 @@ class _OnboardingSlide {
 /// Slides do onboarding — hero full-bleed com foto fotorealista em
 /// `assets/images/` (ícone fica como fallback se o asset falhar).
 ///
-/// Cinco slides, um por capacidade mais atrativa do superapp (levantamento de
-/// 15/09/2026): campo offline-first, painéis de decisão, banco, crédito e
-/// marketplace/armazém. Substitui o carrossel anterior de 3 slides, que
-/// fundia banco+crédito e marketplace+armazém e não cobria os painéis
-/// administrativos.
+/// Três slides, todos do trabalho de campo: lançar sem sinal, conduzir as
+/// ordens de serviço e ter cada ação registrada. As telas de banco, crédito,
+/// marketplace e painéis gerenciais saíram com o perfil Administração.
 const _slides = [
   _OnboardingSlide(
     icon: AppIcons.sprout,
@@ -41,36 +39,22 @@ const _slides = [
         'Lance arraçoamento, pesagem e manejo direto do curral — mesmo sem sinal, tudo sincroniza quando a conexão voltar.',
   ),
   _OnboardingSlide(
-    icon: AppIcons.layoutDashboard,
-    image: 'assets/images/onboard_paineis.jpg',
-    title: 'Decisão na tela, não na planilha',
+    icon: AppIcons.fileText,
+    image: 'assets/images/onboard_os.jpg',
+    title: 'Suas ordens de serviço em dia',
     desc:
-        'Resultado, confinamento, suprimentos e ativos consolidados em painéis que viram decisão na hora.',
+        'Veja o que fazer primeiro e inicie, pause ou entregue cada OS com poucos toques.',
   ),
   _OnboardingSlide(
-    icon: AppIcons.landmark,
-    image: 'assets/images/onboard_bank.jpg',
-    title: 'Seu banco, dentro da fazenda',
+    icon: AppIcons.clipboardList,
+    image: 'assets/images/onboard_registro.jpg',
+    title: 'Tudo registrado, nada se perde',
     desc:
-        'Conta digital, Pix, pagamentos e cartões do produtor — sem trocar de app para cuidar do financeiro.',
-  ),
-  _OnboardingSlide(
-    icon: AppIcons.handCoins,
-    image: 'assets/images/onboard_credito.jpg',
-    title: 'Crédito sob medida pra sua safra',
-    desc:
-        'Simule e contrate crédito pré-aprovado, acompanhe propostas e contratos direto pelo celular.',
-  ),
-  _OnboardingSlide(
-    icon: AppIcons.shoppingBag,
-    image: 'assets/images/onboard_marketplace.jpg',
-    title: 'Compre, venda e armazene sem sair do app',
-    desc:
-        'Marketplace de insumos e máquinas integrado ao controle de estoque e logística do armazém.',
+        'Insumos, apontamentos e pesagens ficam guardados com data, hora e quem lançou.',
   ),
 ];
 
-/// Onboarding do Shell: carrossel de 5 telas (hero full-bleed + título +
+/// Onboarding do Shell: carrossel de 3 telas (hero full-bleed + título +
 /// descrição), com Pular e Próximo; o último slide convida a começar.
 /// Suporta swipe via `PageView`. A imagem encosta nas bordas — inclusive sob
 /// a status bar — retangular, sem raio próprio; a folha branca de texto é

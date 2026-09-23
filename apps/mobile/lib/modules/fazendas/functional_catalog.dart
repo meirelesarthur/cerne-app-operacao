@@ -4399,7 +4399,7 @@ const operationalFeatures = <FeatureDefinition>[
     group: 'Confinamento',
     title: 'Ordens pendentes',
     objective:
-        'Confirmar a execução de transferências de lote e trocas de dieta criadas pelo ADM.',
+        'Confirmar a execução de transferências de lote e trocas de dieta criadas pelo escritório.',
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/campo/ordens-pendentes',
   ),

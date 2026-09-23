@@ -133,8 +133,8 @@ class _CurralCard extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       ordensPendentes.length == 1
-                          ? '1 ordem pendente do ADM para este curral'
-                          : '${ordensPendentes.length} ordens pendentes do ADM para este curral',
+                          ? '1 ordem pendente do escritório para este curral'
+                          : '${ordensPendentes.length} ordens pendentes do escritório para este curral',
                       style: TextStyle(
                         fontSize: AppTypography.xs,
                         color: semantic.fgMuted,

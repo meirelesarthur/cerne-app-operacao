@@ -187,24 +187,7 @@ class _MenuContent extends StatelessWidget {
     final isGbMode = themeVariant == AppThemeVariant.gbMode;
     final roleLabel = profile?.roleLabel ?? 'Sessão não iniciada';
     final sections = getMenuSections(module, profile: profile);
-    final sectionItems = [for (final section in sections) ...section.items];
-    final listedRoutes = {for (final item in sectionItems) item.route};
-    final listedLabels = {for (final item in sectionItems) item.label};
-    // O dock operacional oferece apenas atalhos de rotina, mas o menu
-    // lateral é o índice completo do app. Não reutilize `visibleModulesFor`
-    // aqui: ela expressa exclusivamente a regra do dock.
-    final menuItems = [
-      ...sectionItems,
-      for (final parentModule in modules)
-        if (!listedRoutes.contains(moduleHomeRoute(parentModule, profile)) &&
-            !listedLabels.contains(parentModule.label))
-          ModuleMenuItem(
-            id: parentModule.id,
-            label: parentModule.label,
-            icon: parentModule.icon,
-            route: moduleHomeRoute(parentModule, profile),
-          ),
-    ];
+    final menuItems = [for (final section in sections) ...section.items];
 
     var idx = 0;
     int next() => idx++;
@@ -264,16 +247,11 @@ class _MenuContent extends StatelessWidget {
       ),
       const SizedBox(height: AppSpacing.space3),
 
-      // Um único grupo "MENU": as funcionalidades do módulo atual e os
-      // módulos-pai, sem subtítulos entre eles. O público é a equipe de
+      // Um único grupo "MENU", sem subtítulos. O público é a equipe de
       // campo — divisões como "Lançamentos"/"Módulos" são vocabulário de
       // sistema, não da rotina; uma lista só, com rótulos claros, é mais
-      // fácil de percorrer. O índice é completo (repete o que a navbar já
-      // mostra); só não repete um destino idêntico nem um nome já listado —
-      // o módulo cuja tela inicial já é um item acima (Fazendas = Início do
-      // Operacional) ou que teria o mesmo rótulo de outro destino (o hub
-      // "Início" ao lado do Início do Operacional: dois "Início" levando a
-      // telas diferentes confundem).
+      // fácil de percorrer. O índice é completo: repete de propósito o que a
+      // navbar já mostra (ver `operationalMenuSections`).
       _stagger(
         next(),
         Padding(

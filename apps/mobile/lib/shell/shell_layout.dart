@@ -6,13 +6,11 @@ import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_motion.dart';
 import '../design/generated/app_radius.dart';
-import '../design/generated/app_spacing.dart';
 import '../design/theme/app_theme_extension.dart';
 import '../modules/fazendas/components/farm_picker.dart';
 import '../modules/fazendas/state/fazendas_store.dart';
 import '../ui/ui.dart';
 import 'components/bottom_tab_bar.dart';
-import 'components/context_tabs.dart';
 import 'components/reveal_menu.dart';
 import 'components/shell_header.dart';
 import 'module_config.dart';
@@ -134,7 +132,6 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
   @override
   Widget build(BuildContext context) {
     final moduleId = widget.moduleId;
-    final activeTab = widget.activeTab;
     final hideChrome = widget.hideChrome;
     final compactChrome = widget.compactChrome;
     final module = getModule(moduleId) ?? modules.first;
@@ -144,7 +141,6 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     final menuOpen = state.menuOpen;
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
-    final isOperationalModule = module.id == 'fazendas';
     final showGlobalContext = !hideChrome && profile != null;
     final currentPath = GoRouterState.of(context).uri.path;
 
@@ -253,26 +249,6 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                                       )
                                                     : null,
                                               ),
-                                              if (!isOperationalModule)
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.symmetric(
-                                                        horizontal:
-                                                            AppSpacing.space4,
-                                                      ),
-                                                  child: AppContextTabs(
-                                                    module: module,
-                                                    profile: profile,
-                                                    activePath: activeTab,
-                                                    onTabSelected: (path) => _go(
-                                                      context,
-                                                      ref,
-                                                      path.isEmpty
-                                                          ? '/${module.id}'
-                                                          : '/${module.id}/$path',
-                                                    ),
-                                                  ),
-                                                ),
                                             ],
                                           ),
                                         ),
@@ -298,41 +274,21 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                 AppComponentMetrics.tabbarInset +
                                 MediaQuery.of(context).padding.bottom,
                             child: Center(
-                              child: isOperationalModule
-                                  ? AppBottomTabBar(
-                                      navigationTabs: operationalBottomTabs,
-                                      activeId: menuOpen
-                                          ? 'menu'
-                                          : _operationalTabFor(currentPath),
-                                      onModuleSelected: (_) {},
-                                      onNavigationSelected: (tab) {
-                                        if (tab.action == 'menu') {
-                                          ref
-                                              .read(shellStoreProvider.notifier)
-                                              .toggleMenu();
-                                        } else {
-                                          _go(
-                                            context,
-                                            ref,
-                                            '/fazendas/${tab.path}',
-                                          );
-                                        }
-                                      },
-                                    )
-                                  : AppBottomTabBar(
-                                      visibleModules: visibleModulesFor(
-                                        profile,
-                                      ),
-                                      activeId: module.id,
-                                      onModuleSelected: (id) => _go(
-                                        context,
-                                        ref,
-                                        moduleHomeRoute(
-                                          getModule(id)!,
-                                          profile,
-                                        ),
-                                      ),
-                                    ),
+                              child: AppBottomTabBar(
+                                tabs: operationalBottomTabs,
+                                activeId: menuOpen
+                                    ? 'menu'
+                                    : _operationalTabFor(currentPath),
+                                onSelected: (tab) {
+                                  if (tab.action == 'menu') {
+                                    ref
+                                        .read(shellStoreProvider.notifier)
+                                        .toggleMenu();
+                                  } else {
+                                    _go(context, ref, '/fazendas/${tab.path}');
+                                  }
+                                },
+                              ),
                             ),
                           ),
                       ],

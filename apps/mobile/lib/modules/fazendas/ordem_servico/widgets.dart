@@ -451,7 +451,7 @@ class OsDetailBody extends StatelessWidget {
           ),
         if (os.avaliacao != null)
           section(
-            'Avaliação do administrativo',
+            'Avaliação do escritório',
             Container(
               padding: const EdgeInsets.all(AppSpacing.space3),
               decoration: BoxDecoration(

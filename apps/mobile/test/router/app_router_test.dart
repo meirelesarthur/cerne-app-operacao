@@ -5,7 +5,6 @@ import 'package:cerne_app/modules/fazendas/ordem_servico/models.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/state/ordem_servico_store.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/widgets.dart';
 import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
-import 'package:cerne_app/shell/components/context_tabs.dart';
 import 'package:cerne_app/shell/components/reveal_menu.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/ui/app_icon_tile.dart';
@@ -42,7 +41,6 @@ void main() {
       expect(find.text('Fazenda São Pedro'), findsOneWidget);
       expect(find.text('Procurando por algo?'), findsOneWidget);
       expect(find.text('O que fazer hoje'), findsNothing);
-      expect(find.byType(AppContextTabs), findsNothing);
       // Tela inicial: OS em andamento no topo e atalhos logo abaixo.
       expect(find.text('Minhas OS'), findsOneWidget);
       expect(find.text('Ver todas'), findsOneWidget);
@@ -252,8 +250,6 @@ void main() {
         expect(find.text('MENU'), findsOneWidget);
         await tester.tap(_noMenu('Confinamento'));
         await tester.pumpAndSettle();
-
-        expect(find.byType(AppContextTabs), findsNothing);
         expect(find.byType(AppModuleTile), findsNWidgets(7));
       },
     );
@@ -272,7 +268,6 @@ void main() {
         // e `configuracoes-misturador` do extinto grupo Misturador — 5+2=7.
         expect(find.byType(AppModuleTile), findsNWidgets(7));
         expect(find.text('Boa tarde,'), findsNothing);
-        expect(find.byType(AppContextTabs), findsNothing);
       },
     );
 

@@ -89,7 +89,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 260),
                           child: Text(
-                            'O agro inteiro em um só app: fazendas, banco, crédito e mercado.',
+                            'Lançamentos e ordens de serviço da fazenda, mesmo sem sinal.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: semantic.fgInverse.withValues(alpha: 0.7),
@@ -196,7 +196,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     child: Column(
                       children: [
                         Text(
-                          'GB CERNE · Superapp corporativo do agronegócio',
+                          'GB CERNE · Operação de campo',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: AppTypography.xs,

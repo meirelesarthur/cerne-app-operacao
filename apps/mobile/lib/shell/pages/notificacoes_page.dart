@@ -12,9 +12,7 @@ import '../module_config.dart';
 import '../state/shell_store.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 
-const Map<String, AppIconData> _moduleIcon = {
-  'fazendas': AppIcons.sprout,
-};
+const Map<String, AppIconData> _moduleIcon = {'fazendas': AppIcons.sprout};
 
 /// Notificações agregadas de todos os módulos (spec §3.1) — espelha `Notificacoes.tsx`.
 class NotificacoesPage extends ConsumerWidget {
@@ -64,7 +62,8 @@ class NotificacoesPage extends ConsumerWidget {
                           final icon =
                               _moduleIcon[n.moduleId] ?? AppIcons.sprout;
                           final destination =
-                              getModule(n.moduleId)?.homeRoute ?? '/inicio';
+                              getModule(n.moduleId)?.homeRoute ??
+                              operationalHomeRoute;
 
                           return AppCard(
                             interactive: true,

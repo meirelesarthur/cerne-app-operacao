@@ -218,40 +218,7 @@ List<BottomTab> visibleBottomTabs(
   UserAccessProfile? profile,
 ) => module.bottomTabs.where((tab) => tab.isVisibleTo(profile)).toList();
 
-String moduleHomeRoute(ModuleDef module, UserAccessProfile? profile) {
-  if (module.id == 'fazendas' && profile != null) return profile.homeRoute;
-  return module.homeRoute;
-}
-
 const List<ModuleDef> modules = [
-  // New-UI — hub agregador: porta de entrada do app.
-  ModuleDef(
-    id: 'inicio',
-    label: 'Início',
-    icon: AppIcons.home,
-    homeRoute: '/inicio',
-    bottomTabs: [
-      BottomTab(id: 'home', label: 'Início', icon: AppIcons.home, path: ''),
-      BottomTab(
-        id: 'apps',
-        label: 'Apps',
-        icon: AppIcons.layoutGrid,
-        path: 'apps',
-      ),
-      BottomTab(
-        id: 'menu',
-        label: 'Menu',
-        icon: AppIcons.menu,
-        path: 'menu',
-        action: 'menu',
-      ),
-    ],
-    // Vazio, não omitido (ver plano de UX): sem isso, o menu "reveal" cai no
-    // fallback de `getMenuSections` — que deriva a lista das próprias
-    // `bottomTabs` — e mostra de novo "Apps" ali dentro, que já é aba visível
-    // no topo. O menu "Mais" deste módulo vira só a seção CONTA.
-    menuSections: [],
-  ),
   ModuleDef(
     id: 'fazendas',
     label: 'Fazendas',
@@ -281,8 +248,3 @@ const List<ModuleDef> modules = [
 final Map<String, ModuleDef> moduleMap = {for (final m in modules) m.id: m};
 
 ModuleDef? getModule(String? id) => id == null ? null : moduleMap[id];
-
-/// Módulos exibidos no dock global (ver plano de melhorias de UX): o app tem
-/// só o perfil operacional (mão de obra de campo), que usa Início e Fazendas
-/// como atalhos persistentes — os únicos módulos do app.
-List<ModuleDef> visibleModulesFor(UserAccessProfile? profile) => modules;

@@ -36,7 +36,7 @@ class OrdensPendentesScreen extends ConsumerWidget {
                       icon: AppIcons.inbox,
                       title: 'Nenhuma ordem pendente',
                       description:
-                          'Transferências de lote e trocas de dieta criadas pelo ADM aparecem aqui.',
+                          'Transferências de lote e trocas de dieta criadas pelo escritório aparecem aqui.',
                     ),
                   )
                 : ListView.separated(

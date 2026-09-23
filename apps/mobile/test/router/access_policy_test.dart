@@ -16,7 +16,6 @@ void main() {
 
       for (final path in [
         '/',
-        '/inicio',
         '/perfil',
         '/notificacoes',
         '/fazendas/operacional',

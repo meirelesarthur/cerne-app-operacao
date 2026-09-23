@@ -9,42 +9,27 @@ import 'package:cerne_app/design/generated/app_colors.dart';
 import 'package:cerne_app/design/generated/app_spacing.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 
-/// Dock de módulos (Nova UI — referência Força Agro): cápsula flutuante
-/// **opaca** (sem blur); o ativo vira pílula expandida (ícone + rótulo) em
-/// verde de marca sólido + texto branco, os demais ficam como ícones "ghost".
-/// Espelha `BottomTabBar.tsx`.
+/// Navbar flutuante do app (Nova UI — referência Força Agro): cápsula
+/// **opaca** (sem blur); a aba ativa vira pílula expandida (ícone + rótulo)
+/// em verde de marca sólido + texto branco, as demais ficam como ícones
+/// "ghost". As abas vêm de `operationalBottomTabs` (`module_config.dart`).
 ///
-/// Autocontido (`Row`/`Container`) — este widget NÃO se posiciona sozinho de
-/// forma absoluta na base da tela (diferente do React, que usa
-/// `absolute inset-x-0 bottom-0`), para ser reutilizável em testes/Widgetbook
-/// sem depender de um `Stack` ancestral. Quem usa (o `ShellLayout`) deve
-/// envolver este widget em `Stack` + `Positioned`/`Align` na base, somando
-/// `MediaQuery.of(context).padding.bottom` (safe area) ao respiro.
+/// Autocontido (`Row`/`Container`) — este widget NÃO se posiciona sozinho na
+/// base da tela, para ser reutilizável em testes/Widgetbook sem depender de
+/// um `Stack` ancestral. Quem usa (o `ShellLayout`) envolve em `Stack` +
+/// `Positioned` na base, somando `MediaQuery.of(context).padding.bottom`
+/// (safe area) ao respiro.
 class AppBottomTabBar extends StatelessWidget {
   const AppBottomTabBar({
     super.key,
+    required this.tabs,
     required this.activeId,
-    required this.onModuleSelected,
-    this.visibleModules = modules,
-    this.navigationTabs,
-    this.onNavigationSelected,
+    required this.onSelected,
   });
 
+  final List<BottomTab> tabs;
   final String activeId;
-
-  /// Recebe o `module.id` do módulo tocado.
-  final ValueChanged<String> onModuleSelected;
-
-  /// Módulos exibidos no dock — por padrão, todos ([modules]); quem monta o
-  /// `ShellLayout` filtra por [visibleModulesFor] (ver plano de UX: o perfil
-  /// operacional não precisa ver Bank/Crédito/Marketplace no dock).
-  final List<ModuleDef> visibleModules;
-
-  /// Variante para uma barra primária contextual, como a entrada operacional.
-  /// Quando informada, substitui os módulos do superapp sem alterar o contrato
-  /// do dock global usado pelas demais áreas.
-  final List<BottomTab>? navigationTabs;
-  final ValueChanged<BottomTab>? onNavigationSelected;
+  final ValueChanged<BottomTab> onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -52,9 +37,7 @@ class AppBottomTabBar extends StatelessWidget {
 
     return Semantics(
       container: true,
-      label: navigationTabs == null
-          ? 'Módulos do superapp'
-          : 'Navegação operacional',
+      label: 'Navegação principal',
       child: Container(
         padding: const EdgeInsets.all(
           AppComponentMetrics.tabbarInset / AppSpacing.half,
@@ -65,41 +48,24 @@ class AppBottomTabBar extends StatelessWidget {
           border: Border.all(color: semantic.navBorder),
           boxShadow: semantic.shadowModal,
         ),
-        // `SingleChildScrollView` é uma rede de segurança, não o caminho
-        // esperado: com o dock já filtrado por perfil, a Row deveria caber
-        // sem rolar. Antes, sem isso, 5 ícones + a pílula ativa expandida
-        // estouravam a largura de um Android estreito (360dp) e o layout
-        // quebrava silenciosamente — a `Row` sem limite não avisa disso.
+        // Rede de segurança: com a pílula ativa expandida, a Row poderia
+        // estourar a largura de um Android estreito (360dp) sem avisar.
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const ClampingScrollPhysics(),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: navigationTabs != null
-                ? [
-                    for (final tab in navigationTabs!) ...[
-                      _ModuleButton(
-                        label: tab.label,
-                        icon: tab.icon,
-                        active: tab.id == activeId,
-                        onTap: () => onNavigationSelected?.call(tab),
-                      ),
-                      if (tab != navigationTabs!.last)
-                        const SizedBox(width: AppSpacing.space1),
-                    ],
-                  ]
-                : [
-                    for (final m in visibleModules) ...[
-                      _ModuleButton(
-                        label: m.label,
-                        icon: m.icon,
-                        active: m.id == activeId,
-                        onTap: () => onModuleSelected(m.id),
-                      ),
-                      if (m != visibleModules.last)
-                        const SizedBox(width: AppSpacing.space1),
-                    ],
-                  ],
+            children: [
+              for (final tab in tabs) ...[
+                _ModuleButton(
+                  label: tab.label,
+                  icon: tab.icon,
+                  active: tab.id == activeId,
+                  onTap: () => onSelected(tab),
+                ),
+                if (tab != tabs.last) const SizedBox(width: AppSpacing.space1),
+              ],
+            ],
           ),
         ),
       ),

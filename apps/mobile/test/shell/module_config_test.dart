@@ -6,8 +6,8 @@ import 'package:cerne_app/ui/app_icon.dart';
 
 void main() {
   group('module_config', () {
-    test('todos os 2 módulos existem com bottomTabs não vazios', () {
-      expect(modules.length, 2);
+    test('Fazendas é o único módulo, com bottomTabs não vazios', () {
+      expect(modules.map((m) => m.id), ['fazendas']);
       for (final m in modules) {
         expect(m.bottomTabs, isNotEmpty);
       }
@@ -19,20 +19,10 @@ void main() {
       expect(getModule(null), isNull);
     });
 
-    test('dock operacional mantém apenas os atalhos prioritários', () {
-      expect(
-        visibleModulesFor(
-          UserAccessProfile.operational,
-        ).map((module) => module.id),
-        ['inicio', 'fazendas'],
-      );
-      expect(modules.map((module) => module.id), hasLength(2));
-    });
-
     test(
       'getMenuSections cai no fallback derivado das bottomTabs quando ausente',
       () {
-        // Nenhum dos 2 módulos reais deixa `menuSections` ausente hoje (ver
+        // O módulo real não deixa `menuSections` ausente hoje (ver
         // teste abaixo) — o fallback só existe como rede de segurança para um
         // módulo futuro sem seção própria. Testado aqui com um `ModuleDef`
         // sintético, não com um módulo real.
@@ -78,15 +68,6 @@ void main() {
           containsAll(['apps', 'estoque']),
         );
         expect(sections.first.items.map((i) => i.id), isNot(contains('menu')));
-      },
-    );
-
-    test(
-      'Início não repete as próprias abas no menu "Mais" (ver plano de UX)',
-      () {
-        // `menuSections: []` — o menu "reveal" do Início vira só a seção
-        // CONTA (perfil/tema/conexão/sair), sem duplicar as abas do topo.
-        expect(getMenuSections(getModule('inicio')!), isEmpty);
       },
     );
 

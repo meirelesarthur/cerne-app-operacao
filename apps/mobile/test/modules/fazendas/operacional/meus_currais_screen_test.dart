@@ -54,7 +54,7 @@ void main() {
       expect(find.text('Meus currais'), findsOneWidget);
       expect(find.text('Curral 01'), findsOneWidget);
       expect(
-        find.text('1 ordem pendente do ADM para este curral'),
+        find.text('1 ordem pendente do escritório para este curral'),
         findsWidgets,
       );
       expect(tester.takeException(), isNull);
