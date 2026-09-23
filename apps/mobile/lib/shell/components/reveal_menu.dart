@@ -198,7 +198,7 @@ class _MenuContent extends StatelessWidget {
         next(),
         AppPressable(
           semanticLabel: 'Abrir perfil de ${user.name}',
-          onPressed: () => onNavigate('/perfil'),
+          onPressed: () => onPush('/perfil'),
           borderRadius: BorderRadius.circular(AppRadius.xl2),
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.space2),
@@ -326,7 +326,7 @@ class _MenuContent extends StatelessWidget {
           icon: AppIcons.bell,
           label: 'Notificações',
           trailing: unread > 0 ? AppBadge(child: Text('$unread')) : null,
-          onTap: () => onNavigate('/notificacoes'),
+          onTap: () => onPush('/notificacoes'),
         ),
       ),
       const SizedBox(height: AppSpacing.space1),
@@ -336,7 +336,7 @@ class _MenuContent extends StatelessWidget {
           variant: AppMenuItemVariant.onDark,
           icon: AppIcons.settings,
           label: 'Configurações',
-          onTap: () => onNavigate('/perfil'),
+          onTap: () => onPush('/perfil'),
         ),
       ),
       const SizedBox(height: AppSpacing.space1),

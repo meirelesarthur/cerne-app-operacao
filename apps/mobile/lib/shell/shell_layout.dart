@@ -229,16 +229,17 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                                 collapsed: _headerCollapsed,
                                                 showMenu: false,
                                                 showProfileSubtitle: false,
-                                                onOpenProfile: () => _go(
+                                                onOpenProfile: () => _push(
                                                   context,
                                                   ref,
                                                   '/perfil',
                                                 ),
-                                                onOpenNotifications: () => _go(
-                                                  context,
-                                                  ref,
-                                                  '/notificacoes',
-                                                ),
+                                                onOpenNotifications: () =>
+                                                    _push(
+                                                      context,
+                                                      ref,
+                                                      '/notificacoes',
+                                                    ),
                                                 child: showGlobalContext
                                                     ? AppSearchField(
                                                         onTap: () =>
