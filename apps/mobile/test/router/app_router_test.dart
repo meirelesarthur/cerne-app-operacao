@@ -97,7 +97,7 @@ void main() {
       expect(find.text('Detalhe da OS'), findsOneWidget);
       // Em execução: entregar é o CTA; pausar e refazer ficam no rodapé.
       expect(find.text('MARCAR COMO ENTREGUE'), findsOneWidget);
-      expect(find.text('Pausar execução'), findsOneWidget);
+      expect(find.text('PAUSAR EXECUÇÃO'), findsOneWidget);
       // Tela cheia cobre a navbar.
       expect(find.byType(AppBottomTabBar), findsNothing);
 

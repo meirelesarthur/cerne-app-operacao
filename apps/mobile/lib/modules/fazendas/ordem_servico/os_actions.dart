@@ -40,33 +40,22 @@ class OsDetailPage extends ConsumerWidget {
     ref.watch(ordemServicoStoreProvider.select((s) => s.ordens));
     final os = ref.read(ordemServicoStoreProvider.notifier).byId(osId);
 
-    Widget alternativa(String label, VoidCallback onPressed) => AppButton(
-      variant: AppButtonVariant.secondary,
-      fullWidth: true,
-      onPressed: onPressed,
-      child: Text(label),
-    );
-
     final actionBar = switch (os.status) {
       OrdemServicoStatus.aguardando => AppActionBar(
         primaryLabel: 'Iniciar execução',
         onPrimary: () => confirmarIniciarOs(context, ref, os),
       ),
       OrdemServicoStatus.emExecucao => AppActionBar(
-        summary: alternativa(
-          'Pausar execução',
-          () => abrirPausarOs(context, ref, os.id),
-        ),
+        alternativeLabel: 'Pausar execução',
+        onAlternative: () => abrirPausarOs(context, ref, os.id),
         primaryLabel: 'Marcar como entregue',
         onPrimary: () => confirmarEntregarOs(context, ref, os),
         secondaryLabel: 'Marcar como refeita',
         onSecondary: () => abrirRefazerOs(context, ref, os.id),
       ),
       OrdemServicoStatus.pausada => AppActionBar(
-        summary: alternativa(
-          'Marcar como entregue',
-          () => confirmarEntregarOs(context, ref, os),
-        ),
+        alternativeLabel: 'Marcar como entregue',
+        onAlternative: () => confirmarEntregarOs(context, ref, os),
         primaryLabel: 'Retomar execução',
         onPrimary: () => confirmarRetomarOs(context, ref, os),
         secondaryLabel: 'Marcar como refeita',
