@@ -113,7 +113,10 @@ class AppFormField extends StatelessWidget {
                 ],
               ),
             ),
-          ] else if (hint != null) ...[
+          ],
+          // A dica continua visível junto do erro: é quando a pessoa erra que
+          // ela mais precisa da instrução.
+          if (hint != null) ...[
             const SizedBox(height: AppSpacing.space2),
             Text(
               hint!,

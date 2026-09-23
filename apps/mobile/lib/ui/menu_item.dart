@@ -151,7 +151,7 @@ class AppMenuItem extends StatelessWidget {
                   children: [
                     Text(
                       label,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontSize: AppTypography.xl,
@@ -162,7 +162,7 @@ class AppMenuItem extends StatelessWidget {
                     if (description != null)
                       Text(
                         description!,
-                        maxLines: 1,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontSize: AppTypography.sm,

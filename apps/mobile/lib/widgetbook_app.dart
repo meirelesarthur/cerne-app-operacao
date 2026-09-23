@@ -190,6 +190,7 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
           buildModuleTileWidgetbookComponent(),
           buildActionBarWidgetbookComponent(),
           buildStepProgressWidgetbookComponent(),
+          buildLeaveGuardWidgetbookComponent(),
           buildLabeledDividerWidgetbookComponent(),
           buildPaginationWidgetbookComponent(),
         ],

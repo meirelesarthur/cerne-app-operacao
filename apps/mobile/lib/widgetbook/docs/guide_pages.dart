@@ -72,6 +72,34 @@ const widgetbookChangelog = <WidgetbookRelease>[
         'FieldCapsule: borda forte em repouso para o campo não sumir na folha '
             'branca.',
       ),
+      (
+        'Novo',
+        'LeaveGuard (AppLeaveGuard): pergunta "Sair sem salvar?" ao voltar com '
+            'dados preenchidos; PageScaffold/PageBody ganham hasUnsavedChanges.',
+      ),
+      (
+        'Mudou',
+        'StepProgress: "Etapa 2 de 4 · Nome" em texto acima da régua (label); '
+            'PageScaffold/PageBody repassam stepLabel.',
+      ),
+      (
+        'Mudou',
+        'BottomSheet: sobe com o teclado e aceita dismissible: false para '
+            'sheets com texto digitado.',
+      ),
+      (
+        'Mudou',
+        'Toque: SearchSelect clicável na cápsula inteira, remover arquivo e '
+            'calendário em AppIconButton 48dp, Stepper com botões de 56 e sem '
+            'saltar para o mínimo ao apagar, respiro entre editar e excluir.',
+      ),
+      (
+        'Mudou',
+        'IconButton desabilitado apagado; ToggleSwitch com trilho desligado '
+            'visível; FormField mostra erro e dica juntos; MenuItem e título '
+            'do StatusCard em até 2 linhas; StatusCard anuncia situação e '
+            'metas e mantém a ação rápida acessível.',
+      ),
     ],
   ),
   WidgetbookRelease(

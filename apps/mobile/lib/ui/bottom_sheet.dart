@@ -24,6 +24,7 @@ Future<T?> showAppBottomSheet<T>(
   double maxHeightFraction = 0.85,
   bool expand = false,
   Widget? footer,
+  bool dismissible = true,
 }) {
   return showModalBottomSheet<T>(
     context: context,
@@ -32,16 +33,26 @@ Future<T?> showAppBottomSheet<T>(
     // conteúdo na Stack do `ShellLayout`. A dock é sempre a camada de cima.
     useRootNavigator: true,
     isScrollControlled: true,
+    // Sheets com texto digitado passam `dismissible: false`: tocar fora ou
+    // arrastar para baixo não descarta o que a pessoa escreveu — só os botões
+    // do próprio sheet fecham.
+    isDismissible: dismissible,
+    enableDrag: dismissible,
     backgroundColor: AppColors.transparent,
     // bg-black/40 no React — valor arbitrário do Tailwind, não um token de
     // `tokens.ts`; preservado igual à origem.
     barrierColor: AppColors.black.withValues(alpha: 0.4),
-    builder: (context) => AppBottomSheet(
-      title: title,
-      maxHeightFraction: maxHeightFraction,
-      expand: expand,
-      footer: footer,
-      child: child,
+    // O teclado empurra o sheet para cima: sem isso ele cobria o campo e o
+    // botão Confirmar.
+    builder: (context) => Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: AppBottomSheet(
+        title: title,
+        maxHeightFraction: maxHeightFraction,
+        expand: expand,
+        footer: footer,
+        child: child,
+      ),
     ),
   );
 }
@@ -109,7 +120,7 @@ class AppBottomSheet extends StatelessWidget {
                     height: AppSpacing.space1,
                     width: AppSpacing.space10,
                     decoration: BoxDecoration(
-                      color: AppColors.neutral300,
+                      color: semantic.borderStrong,
                       borderRadius: BorderRadius.circular(AppRadius.full),
                     ),
                   ),

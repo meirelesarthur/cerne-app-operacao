@@ -199,6 +199,10 @@ class _CollectionRow extends StatelessWidget {
               label: editLabel,
               onPressed: edit,
             ),
+          // Respiro entre editar e excluir: lado a lado sem folga, o toque de
+          // luva acertava a lixeira querendo o lápis.
+          if (onEdit != null && onRemove != null)
+            const SizedBox(width: AppSpacing.space2),
           if (onRemove case final remove?)
             AppIconButton(
               icon: AppIcon(

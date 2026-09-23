@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'app_icon.dart';
+import 'icon_button.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
@@ -64,16 +65,14 @@ class AppFileUpload extends StatelessWidget {
                 ),
               ),
             ),
-            Semantics(
-              button: true,
+            // Alvo de 48dp (antes era só o glifo de 18px).
+            AppIconButton(
               label: 'Remover arquivo',
-              child: InkWell(
-                onTap: () => onChanged(null),
-                child: AppIcon(
-                  AppIcons.x,
-                  size: AppSize.iconSmPlus,
-                  color: semantic.fgSubtle,
-                ),
+              onPressed: () => onChanged(null),
+              icon: AppIcon(
+                AppIcons.x,
+                size: AppSize.iconMd,
+                color: semantic.fgMuted,
               ),
             ),
           ],
