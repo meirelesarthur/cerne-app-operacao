@@ -27,11 +27,13 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('"Tour pelo app" navega para o onboarding', (tester) async {
+    testWidgets('"Ver como o app funciona" navega para o onboarding', (
+      tester,
+    ) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      final tour = find.text('Tour pelo app');
+      final tour = find.text('Ver como o app funciona');
       await tester.ensureVisible(tour);
       await tester.pumpAndSettle();
       await tester.tap(tour);
@@ -53,22 +55,23 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('login inicia a sessão operacional e abre a central de rotinas', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'login inicia a sessão operacional e abre a central de rotinas',
+      (tester) async {
+        await setTallSurface(tester);
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      await tester.tap(find.text('ENTRAR'));
-      await tester.pumpAndSettle();
+        await tester.tap(find.text('ENTRAR'));
+        await tester.pumpAndSettle();
 
-      expect(find.text('Boa tarde,'), findsOneWidget);
-      expect(
-        harness.container.read(prototypeSessionProvider).profile,
-        UserAccessProfile.operational,
-      );
-    });
+        expect(find.text('Boa tarde,'), findsOneWidget);
+        expect(
+          harness.container.read(prototypeSessionProvider).profile,
+          UserAccessProfile.operational,
+        );
+      },
+    );
 
     testWidgets(
       '?ambiente=operacional (vindo da pasta CERNE App) mantém o destino operacional',

@@ -44,7 +44,7 @@ void main() {
       // Tela inicial: até duas OS no topo, o resto como contagem, e o menu
       // em ladrilhos logo abaixo.
       expect(find.text('Ver todas'), findsOneWidget);
-      expect(find.text('+ 4 ordens para fazer'), findsOneWidget);
+      expect(find.text('Ver mais 4 ordens'), findsOneWidget);
       expect(find.byTooltip('Início'), findsOneWidget);
       expect(find.byType(AppModuleTile), findsWidgets);
     });
@@ -222,7 +222,7 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        await tester.tap(find.byTooltip('Menu'));
+        await tester.tap(find.bySemanticsLabel('Menu'));
         await tester.pumpAndSettle();
 
         // "Sincronização" só tem uma funcionalidade — a tela de listagem do
@@ -246,13 +246,17 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.byTooltip('Confinamento'), findsNothing);
-        expect(find.byTooltip('Pecuária'), findsOneWidget);
-        expect(find.byTooltip('Agricultura'), findsOneWidget);
+        Finder aba(String label) => find.descendant(
+          of: find.byType(AppBottomTabBar),
+          matching: find.bySemanticsLabel(label),
+        );
+        expect(aba('Confinamento'), findsNothing);
+        expect(aba('Pecuária'), findsOneWidget);
+        expect(aba('Agricultura'), findsOneWidget);
 
         // O Menu abre o menu lateral com os grupos que saíram da tela
         // inicial; Confinamento, antes aba própria, agora vive ali.
-        await tester.tap(find.byTooltip('Menu'));
+        await tester.tap(find.bySemanticsLabel('Menu'));
         await tester.pumpAndSettle();
 
         expect(find.text('MENU'), findsOneWidget);

@@ -12,6 +12,7 @@ import '../../design/theme/app_theme_extension.dart';
 import '../../design/theme/theme_provider.dart';
 import '../../ui/ui.dart';
 import '../module_config.dart';
+import 'logout_confirm.dart';
 import '../state/prototype_session_store.dart';
 import '../state/shell_store.dart';
 
@@ -127,7 +128,8 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
                             semantic: semantic,
                             onNavigate: widget.onNavigate,
                             onPush: widget.onPush ?? widget.onNavigate,
-                            onLogout: () {
+                            onLogout: () async {
+                              if (!await confirmLogout(context, ref)) return;
                               ref
                                   .read(prototypeSessionProvider.notifier)
                                   .logout();

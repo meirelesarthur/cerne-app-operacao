@@ -23,11 +23,10 @@ void main() {
         ),
       );
 
+      // Todas as abas mostram o nome escrito — não só a ativa.
       for (final label in ['Início', 'Pecuária', 'Agricultura', 'Menu']) {
-        expect(find.byTooltip(label), findsOneWidget);
+        expect(find.text(label), findsOneWidget);
       }
-      // A aba ativa mostra o rótulo na pílula.
-      expect(find.text('Início'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
@@ -43,7 +42,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byTooltip('Pecuária'));
+      await tester.tap(find.text('Pecuária'));
       await tester.pump();
 
       expect(selected?.id, 'pecuaria');

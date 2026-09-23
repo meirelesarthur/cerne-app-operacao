@@ -73,7 +73,12 @@ void main() {
         expect(tester.takeException(), isNull);
 
         await tester.tap(find.text('Sair'));
-        await tester.pump();
+        await tester.pumpAndSettle();
+        expect(find.text('Sair do aplicativo?'), findsOneWidget);
+        expect(navigatedTo, isNot('/login'));
+
+        await tester.tap(find.text('Sair').last);
+        await tester.pumpAndSettle();
 
         expect(navigatedTo, '/login');
       },

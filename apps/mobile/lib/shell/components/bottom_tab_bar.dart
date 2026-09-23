@@ -11,8 +11,7 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Navbar flutuante do app (Nova UI — referência Força Agro): cápsula
 /// **opaca** (sem blur); a aba ativa vira pílula expandida (ícone + rótulo)
-/// em verde de marca sólido + texto branco, as demais ficam como ícones
-/// "ghost". As abas vêm de `operationalBottomTabs` (`module_config.dart`).
+/// em verde de marca sólido, as demais mostram o ícone com o nome embaixo. As abas vêm de `operationalBottomTabs` (`module_config.dart`).
 ///
 /// Autocontido (`Row`/`Container`) — este widget NÃO se posiciona sozinho na
 /// base da tela, para ser reutilizável em testes/Widgetbook sem depender de
@@ -90,27 +89,41 @@ class _ModuleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
 
+    // Aba inativa com o nome sempre visível embaixo do ícone (auditoria de
+    // UX): só o ícone — com o nome escondido num tooltip de toque longo —
+    // não dizia para onde a aba levava.
     if (!active) {
-      return Tooltip(
-        message: label,
-        child: Material(
-          color: AppColors.transparent,
-          shape: const CircleBorder(),
-          child: AppPressable(
-            semanticLabel: label,
-            onPressed: onTap,
-            minTouchTarget: false,
-            borderRadius: BorderRadius.circular(AppRadius.full),
-            child: SizedBox(
-              width: AppComponentMetrics.tabbarItemSize,
-              height: AppComponentMetrics.tabbarItemSize,
-              child: Center(
-                child: AppIcon(
-                  icon,
-                  size: AppSize.iconMd,
-                  color: semantic.navFg,
+      return Material(
+        color: AppColors.transparent,
+        borderRadius: BorderRadius.circular(AppRadius.full),
+        child: AppPressable(
+          semanticLabel: label,
+          onPressed: onTap,
+          minTouchTarget: false,
+          borderRadius: BorderRadius.circular(AppRadius.full),
+          child: Container(
+            height: AppComponentMetrics.tabbarItemSize,
+            constraints: const BoxConstraints(
+              minWidth: AppComponentMetrics.tabbarItemSize,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space2),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AppIcon(icon, size: AppSize.iconMd, color: semantic.navFg),
+                const SizedBox(height: AppSpacing.half),
+                Text(
+                  label,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontSize: AppTypography.sm,
+                    fontWeight: AppTypography.weightMedium,
+                    height: AppTypography.lineHeightTight,
+                    color: semantic.navFg,
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ),
@@ -141,7 +154,7 @@ class _ModuleButton extends StatelessWidget {
                 Text(
                   label,
                   style: TextStyle(
-                    fontSize: AppTypography.sm,
+                    fontSize: AppTypography.md,
                     fontWeight: AppTypography.weightSemibold,
                     color: semantic.ctaFg,
                   ),

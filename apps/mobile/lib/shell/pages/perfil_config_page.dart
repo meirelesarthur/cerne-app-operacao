@@ -7,6 +7,7 @@ import '../../design/generated/app_typography.dart';
 import '../../design/theme/app_theme_extension.dart';
 import '../../design/theme/theme_provider.dart';
 import '../../ui/ui.dart';
+import '../components/logout_confirm.dart';
 import '../components/sub_page_header.dart';
 import '../state/shell_store.dart';
 import '../state/prototype_session_store.dart';
@@ -185,9 +186,10 @@ class PerfilConfigPage extends ConsumerWidget {
                       label: 'Sair',
                       tone: AppMenuItemTone.danger,
                       showShadow: false,
-                      onTap: () {
+                      onTap: () async {
+                        if (!await confirmLogout(context, ref)) return;
                         ref.read(prototypeSessionProvider.notifier).logout();
-                        context.go('/login');
+                        if (context.mounted) context.go('/login');
                       },
                     ),
                   ],

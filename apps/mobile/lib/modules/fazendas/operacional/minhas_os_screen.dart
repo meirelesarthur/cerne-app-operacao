@@ -87,7 +87,7 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
               tone: AppEmptyStateTone.brand,
               title: 'Nenhuma OS neste filtro',
               description:
-                  'Ordens de serviço atribuídas ao funcionário e à fazenda ativa aparecem aqui.',
+                  'Quando o escritório mandar uma ordem para você, ela aparece aqui.',
             ),
           )
         : ListView.separated(

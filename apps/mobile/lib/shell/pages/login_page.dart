@@ -122,7 +122,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 ),
                                 const SizedBox(height: AppSpacing.space1),
                                 Text(
-                                  'Preencha suas credenciais para acessar',
+                                  'Digite seu e-mail e sua senha',
                                   style: TextStyle(color: semantic.fgMuted),
                                 ),
                               ],
@@ -153,10 +153,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 padding: const EdgeInsets.only(
                                   left: AppSpacing.space1,
                                 ),
-                                // Mock — recuperação de senha fora do escopo do protótipo.
+                                // A troca de senha é feita pelo escritório: o
+                                // botão diz isso em vez de não fazer nada.
                                 child: AppButton(
                                   variant: AppButtonVariant.link,
-                                  onPressed: () {},
+                                  onPressed: () => showAppModal<void>(
+                                    context,
+                                    title: 'Esqueceu a senha?',
+                                    child: const Text(
+                                      'Fale com o encarregado ou com o '
+                                      'escritório da fazenda para trocar a '
+                                      'sua senha.',
+                                    ),
+                                  ),
                                   child: const Text('Esqueceu a senha?'),
                                 ),
                               ),
@@ -208,7 +217,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           variant: AppButtonVariant.onDark,
                           fullWidth: true,
                           onPressed: () => context.go('/onboarding'),
-                          child: const Text('Tour pelo app'),
+                          child: const Text('Ver como o app funciona'),
                         ),
                         // Indicação do ambiente — informação de protótipo, fora
                         // do card de login: fica no rodapé, na mesma voz
