@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_spacing.dart';
-import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
-import 'package:cerne_app/design/generated/app_typography.dart';
 import '../functional_catalog.dart' show catalogoProdutos;
 import '../state/fazendas_store.dart';
 import '../types.dart';
@@ -177,12 +174,6 @@ extension on _Prioridade {
     _Prioridade.media => 'Média',
     _Prioridade.alta => 'Alta',
   };
-
-  AppChipTone get tone => switch (this) {
-    _Prioridade.baixa => AppChipTone.neutral,
-    _Prioridade.media => AppChipTone.amber,
-    _Prioridade.alta => AppChipTone.red,
-  };
 }
 
 T _byValue<T>(List<T> values, String value) =>
@@ -193,6 +184,12 @@ T _byValue<T>(List<T> values, String value) =>
 /// domínios reais (`.value`/`.label`).
 String _optionLabel(List<AppFormSelectOption> options, String value) =>
     options.firstWhere((o) => o.value == value).label;
+
+/// Inverso de [_optionLabel] — para pré-preencher a edição de um item cujo
+/// campo salvo já é o rótulo humano (ex.: `_MaoDeObraItem.alvo` quando
+/// `tipo == funcao`), não o `value` que o `AppFormSelect` espera de volta.
+String _optionValueForLabel(List<AppFormSelectOption> options, String label) =>
+    options.firstWhere((o) => o.label == label).value;
 
 // Mão de obra "3-em-1" — `appropriation_employee` guarda três FKs mutuamente
 // exclusivas (`functions`, `employees`, `providers`) discriminadas por
@@ -712,106 +709,155 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
     );
   }
 
-  /// Etapa 3 — as cinco coleções do contrato. Cada "Adicionar" abre um
-  /// formulário real e o item entra na lista com os dados verdadeiros.
+  static const _grupoMaoDeObra = 'Mão de obra / Serviços';
+  static const _grupoMaquinas = 'Máquinas / Implementos';
+  static const _grupoInsumos = 'Insumos';
+  static const _grupoProducao = 'Produção';
+  static const _grupoOcorrencias = 'Ocorrências';
+
+  /// Etapa 3 — as cinco coleções do contrato, em grade 2x2 de cards
+  /// quadrados: cada card só mostra o nome do grupo e um contador, nunca os
+  /// itens soltos. "Adicionar" continua abrindo o formulário direto (mesmo
+  /// comportamento do dock); "editar" abre a listagem dos itens já lançados
+  /// naquele grupo, com edição e exclusão.
   Widget _etapaLancamentos(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        AppAddableGroupList(
-          groups: const ['Mão de obra / Serviços'],
-          counts: {'Mão de obra / Serviços': _maoDeObra.length},
-          onAdd: (_) => _adicionarMaoDeObra(context),
-        ),
-        for (final item in _maoDeObra)
-          _ItemRow(
-            title: '${item.tipo.label}: ${item.alvo}',
-            subtitle:
-                '${item.quantidade} ${_optionLabel(_unidadesMaoDeObra, item.unidade)} · R\$ ${item.valorUnitario}',
-            onRemove: () => setState(() => _maoDeObra.remove(item)),
-          ),
-        const SizedBox(height: AppSpacing.space5),
-        AppAddableGroupList(
-          groups: const ['Máquinas / Implementos'],
-          counts: {'Máquinas / Implementos': _maquinas.length},
-          onAdd: (_) => _adicionarMaquina(context),
-        ),
-        for (final item in _maquinas)
-          _ItemRow(
-            title: _optionLabel(_equipamentos, item.equipamento),
-            subtitle:
-                '${item.quantidade} ${_optionLabel(_unidadesMaquina, item.unidade)} · horímetro ${item.horimetroInicial}→${item.horimetroFinal}',
-            onRemove: () => setState(() => _maquinas.remove(item)),
-          ),
-        const SizedBox(height: AppSpacing.space5),
-        AppAddableGroupList(
-          groups: const ['Insumos'],
-          counts: {'Insumos': _insumos.length},
-          onAdd: (_) => _adicionarInsumo(context),
-        ),
-        for (final item in _insumos)
-          _ItemRow(
-            title: item.produto,
-            subtitle:
-                '${item.quantidade} ${_optionLabel(_unidadesInsumo, item.unidade)} · ${_optionLabel(_armazens, item.armazem)}',
-            onRemove: () => setState(() => _insumos.remove(item)),
-          ),
-        const SizedBox(height: AppSpacing.space5),
-        AppAddableGroupList(
-          groups: const ['Produção'],
-          counts: {'Produção': _producoes.length},
-          onAdd: (_) => _adicionarProducao(context),
-        ),
-        for (final item in _producoes)
-          _ItemRow(
-            title: item.produto,
-            subtitle:
-                '${item.quantidade} ${_optionLabel(_unidadesProducao, item.unidade)}',
-            onRemove: () => setState(() => _producoes.remove(item)),
-          ),
-        const SizedBox(height: AppSpacing.space5),
-        AppAddableGroupList(
-          groups: const ['Ocorrências'],
-          counts: {'Ocorrências': _ocorrencias.length},
-          onAdd: (_) => _adicionarOcorrencia(context),
-        ),
-        for (final item in _ocorrencias)
-          Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.space2),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppChip(
-                  tone: item.prioridade.tone,
-                  child: Text(item.prioridade.label),
-                ),
-                const SizedBox(width: AppSpacing.space2),
-                Expanded(
-                  child: Text(
-                    item.diagnostico,
-                    style: const TextStyle(fontSize: AppTypography.sm),
-                  ),
-                ),
-                AppIconButton(
-                  icon: const AppIcon(AppIcons.x, size: AppSize.iconXs),
-                  label: 'Remover ocorrência',
-                  onPressed: () => setState(() => _ocorrencias.remove(item)),
-                ),
-              ],
-            ),
-          ),
+    return AppSquareGroupGrid(
+      groups: const [
+        _grupoMaoDeObra,
+        _grupoMaquinas,
+        _grupoInsumos,
+        _grupoProducao,
+        _grupoOcorrencias,
       ],
+      counts: {
+        _grupoMaoDeObra: _maoDeObra.length,
+        _grupoMaquinas: _maquinas.length,
+        _grupoInsumos: _insumos.length,
+        _grupoProducao: _producoes.length,
+        _grupoOcorrencias: _ocorrencias.length,
+      },
+      onAdd: (group) => _abrirFormularioDoGrupo(context, group),
+      onManage: (group) => _gerenciarGrupo(context, group),
     );
   }
 
-  void _adicionarMaoDeObra(BuildContext context) {
-    _TipoMaoDeObra? tipo;
-    String? funcao;
-    var alvoNome = '';
-    num quantidade = 1;
-    String? unidade;
-    var valor = '';
+  void _abrirFormularioDoGrupo(
+    BuildContext context,
+    String group, {
+    int? editIndex,
+  }) {
+    switch (group) {
+      case _grupoMaoDeObra:
+        _adicionarMaoDeObra(context, editIndex: editIndex);
+      case _grupoMaquinas:
+        _adicionarMaquina(context, editIndex: editIndex);
+      case _grupoInsumos:
+        _adicionarInsumo(context, editIndex: editIndex);
+      case _grupoProducao:
+        _adicionarProducao(context, editIndex: editIndex);
+      case _grupoOcorrencias:
+        _adicionarOcorrencia(context, editIndex: editIndex);
+    }
+  }
+
+  /// Listagem dos itens já lançados de um grupo — aberta pelo "editar" do
+  /// card. Reusa [AppCollectionList]: "editar" fecha esta listagem e reabre o
+  /// formulário do grupo pré-preenchido (via [_abrirFormularioDoGrupo] com
+  /// `editIndex`); "remover" tira o item na hora, sem fechar a listagem.
+  void _gerenciarGrupo(BuildContext context, String group) {
+    List<AppCollectionItemView> items() => switch (group) {
+      _grupoMaoDeObra => [
+        for (final item in _maoDeObra)
+          AppCollectionItemView(
+            title: '${item.tipo.label}: ${item.alvo}',
+            subtitle:
+                '${item.quantidade} ${_optionLabel(_unidadesMaoDeObra, item.unidade)} · R\$ ${item.valorUnitario}',
+          ),
+      ],
+      _grupoMaquinas => [
+        for (final item in _maquinas)
+          AppCollectionItemView(
+            title: _optionLabel(_equipamentos, item.equipamento),
+            subtitle:
+                '${item.quantidade} ${_optionLabel(_unidadesMaquina, item.unidade)} · horímetro ${item.horimetroInicial}→${item.horimetroFinal}',
+          ),
+      ],
+      _grupoInsumos => [
+        for (final item in _insumos)
+          AppCollectionItemView(
+            title: item.produto,
+            subtitle:
+                '${item.quantidade} ${_optionLabel(_unidadesInsumo, item.unidade)} · ${_optionLabel(_armazens, item.armazem)}',
+          ),
+      ],
+      _grupoProducao => [
+        for (final item in _producoes)
+          AppCollectionItemView(
+            title: item.produto,
+            subtitle:
+                '${item.quantidade} ${_optionLabel(_unidadesProducao, item.unidade)}',
+          ),
+      ],
+      _ => [
+        for (final item in _ocorrencias)
+          AppCollectionItemView(
+            title: item.prioridade.label,
+            subtitle: item.diagnostico,
+          ),
+      ],
+    };
+
+    void remover(int index) => setState(() {
+      switch (group) {
+        case _grupoMaoDeObra:
+          _maoDeObra.removeAt(index);
+        case _grupoMaquinas:
+          _maquinas.removeAt(index);
+        case _grupoInsumos:
+          _insumos.removeAt(index);
+        case _grupoProducao:
+          _producoes.removeAt(index);
+        case _grupoOcorrencias:
+          _ocorrencias.removeAt(index);
+      }
+    });
+
+    showAppBottomSheet<void>(
+      context,
+      title: group,
+      child: StatefulBuilder(
+        builder: (sheetContext, setSheetState) => AppCollectionList(
+          name: group,
+          items: items(),
+          onAdd: () {
+            Navigator.of(sheetContext).pop();
+            _abrirFormularioDoGrupo(context, group);
+          },
+          onEdit: (index) {
+            Navigator.of(sheetContext).pop();
+            _abrirFormularioDoGrupo(context, group, editIndex: index);
+          },
+          onRemove: (index) {
+            remover(index);
+            setSheetState(() {});
+          },
+        ),
+      ),
+    );
+  }
+
+  void _adicionarMaoDeObra(BuildContext context, {int? editIndex}) {
+    final existente = editIndex == null ? null : _maoDeObra[editIndex];
+    _TipoMaoDeObra? tipo = existente?.tipo;
+    String? funcao = existente != null && existente.tipo == _TipoMaoDeObra.funcao
+        ? _optionValueForLabel(_funcoes, existente.alvo)
+        : null;
+    var alvoNome = existente != null && existente.tipo != _TipoMaoDeObra.funcao
+        ? existente.alvo
+        : '';
+    num quantidade = existente?.quantidade ?? 1;
+    String? unidade = existente?.unidade;
+    var valor = existente == null ? '' : existente.valorUnitario.toString();
 
     // Alvo preenchido conforme o tipo: `funcao` (select) quando tipo=Função,
     // `alvoNome` (texto) quando tipo=Funcionário/Prestador. Espelha o
@@ -822,7 +868,9 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
 
     showAppBottomSheet<void>(
       context,
-      title: 'Mão de obra / Serviço',
+      title: editIndex == null
+          ? 'Mão de obra / Serviço'
+          : 'Editar mão de obra / serviço',
       child: StatefulBuilder(
         builder: (context, setSheetState) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -862,6 +910,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
                 label: tipo?.alvoLabel ?? 'Funcionário / prestador',
                 required: true,
                 child: AppTextInput(
+                  initialValue: alvoNome,
                   onChanged: (v) => setSheetState(() => alvoNome = v),
                   placeholder: 'Nome do funcionário ou prestador',
                 ),
@@ -891,6 +940,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
               label: 'Valor unitário (R\$)',
               required: true,
               child: AppTextInput(
+                initialValue: valor,
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
@@ -904,25 +954,28 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
               onPressed: !alvoPreenchido() || unidade == null
                   ? null
                   : () {
-                      setState(
-                        () => _maoDeObra.add(
-                          _MaoDeObraItem(
-                            tipo: tipo!,
-                            alvo: tipo == _TipoMaoDeObra.funcao
-                                ? _optionLabel(_funcoes, funcao!)
-                                : alvoNome,
-                            quantidade: quantidade,
-                            unidade: unidade!,
-                            valorUnitario: num.tryParse(
-                                  valor.replaceAll(',', '.'),
-                                ) ??
-                                0,
-                          ),
-                        ),
+                      final item = _MaoDeObraItem(
+                        tipo: tipo!,
+                        alvo: tipo == _TipoMaoDeObra.funcao
+                            ? _optionLabel(_funcoes, funcao!)
+                            : alvoNome,
+                        quantidade: quantidade,
+                        unidade: unidade!,
+                        valorUnitario: num.tryParse(
+                              valor.replaceAll(',', '.'),
+                            ) ??
+                            0,
                       );
+                      setState(() {
+                        if (editIndex == null) {
+                          _maoDeObra.add(item);
+                        } else {
+                          _maoDeObra[editIndex] = item;
+                        }
+                      });
                       Navigator.of(context).pop();
                     },
-              child: const Text('Adicionar'),
+              child: Text(editIndex == null ? 'Adicionar' : 'Salvar'),
             ),
           ],
         ),
@@ -930,16 +983,17 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
     );
   }
 
-  void _adicionarMaquina(BuildContext context) {
-    String? equipamento;
-    num horimetroInicial = 0;
-    num horimetroFinal = 0;
-    num quantidade = 1;
-    String? unidade;
+  void _adicionarMaquina(BuildContext context, {int? editIndex}) {
+    final existente = editIndex == null ? null : _maquinas[editIndex];
+    String? equipamento = existente?.equipamento;
+    num horimetroInicial = existente?.horimetroInicial ?? 0;
+    num horimetroFinal = existente?.horimetroFinal ?? 0;
+    num quantidade = existente?.quantidade ?? 1;
+    String? unidade = existente?.unidade;
 
     showAppBottomSheet<void>(
       context,
-      title: 'Máquina / Implemento',
+      title: editIndex == null ? 'Máquina / Implemento' : 'Editar máquina / implemento',
       child: StatefulBuilder(
         builder: (context, setSheetState) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -1008,20 +1062,23 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
               onPressed: equipamento == null || unidade == null
                   ? null
                   : () {
-                      setState(
-                        () => _maquinas.add(
-                          _MaquinaItem(
-                            equipamento: equipamento!,
-                            horimetroInicial: horimetroInicial,
-                            horimetroFinal: horimetroFinal,
-                            quantidade: quantidade,
-                            unidade: unidade!,
-                          ),
-                        ),
+                      final item = _MaquinaItem(
+                        equipamento: equipamento!,
+                        horimetroInicial: horimetroInicial,
+                        horimetroFinal: horimetroFinal,
+                        quantidade: quantidade,
+                        unidade: unidade!,
                       );
+                      setState(() {
+                        if (editIndex == null) {
+                          _maquinas.add(item);
+                        } else {
+                          _maquinas[editIndex] = item;
+                        }
+                      });
                       Navigator.of(context).pop();
                     },
-              child: const Text('Adicionar'),
+              child: Text(editIndex == null ? 'Adicionar' : 'Salvar'),
             ),
           ],
         ),
@@ -1035,15 +1092,16 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   // (onda 14) afirmava o oposto e contradizia o `rules()`. O armazém volta a
   // ser campo por item; o "Armazém de insumo" do cabeçalho pré-seleciona o
   // valor, mas cada insumo carrega o seu.
-  void _adicionarInsumo(BuildContext context) {
-    String? produto;
-    String? armazem = _armazemInsumo;
-    num quantidade = 1;
-    String? unidade;
+  void _adicionarInsumo(BuildContext context, {int? editIndex}) {
+    final existente = editIndex == null ? null : _insumos[editIndex];
+    String? produto = existente?.produto;
+    String? armazem = existente?.armazem ?? _armazemInsumo;
+    num quantidade = existente?.quantidade ?? 1;
+    String? unidade = existente?.unidade;
 
     showAppBottomSheet<void>(
       context,
-      title: 'Insumo',
+      title: editIndex == null ? 'Insumo' : 'Editar insumo',
       child: StatefulBuilder(
         builder: (context, setSheetState) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -1100,19 +1158,22 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
               onPressed: produto == null || armazem == null || unidade == null
                   ? null
                   : () {
-                      setState(
-                        () => _insumos.add(
-                          _InsumoItem(
-                            produto: produto!,
-                            armazem: armazem!,
-                            quantidade: quantidade,
-                            unidade: unidade!,
-                          ),
-                        ),
+                      final item = _InsumoItem(
+                        produto: produto!,
+                        armazem: armazem!,
+                        quantidade: quantidade,
+                        unidade: unidade!,
                       );
+                      setState(() {
+                        if (editIndex == null) {
+                          _insumos.add(item);
+                        } else {
+                          _insumos[editIndex] = item;
+                        }
+                      });
                       Navigator.of(context).pop();
                     },
-              child: const Text('Adicionar'),
+              child: Text(editIndex == null ? 'Adicionar' : 'Salvar'),
             ),
           ],
         ),
@@ -1126,14 +1187,15 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   /// tem `warehouse_uuid` próprio no dump, o destino é sempre o "Armazém de
   /// produção" do cabeçalho), porque para quem preenche é a mesma pergunta
   /// com o sinal invertido: ali o que saiu, aqui o que entrou.
-  void _adicionarProducao(BuildContext context) {
-    String? produto;
-    num quantidade = 1;
-    String? unidade;
+  void _adicionarProducao(BuildContext context, {int? editIndex}) {
+    final existente = editIndex == null ? null : _producoes[editIndex];
+    String? produto = existente?.produto;
+    num quantidade = existente?.quantidade ?? 1;
+    String? unidade = existente?.unidade;
 
     showAppBottomSheet<void>(
       context,
-      title: 'Produção',
+      title: editIndex == null ? 'Produção' : 'Editar produção',
       child: StatefulBuilder(
         builder: (context, setSheetState) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -1179,18 +1241,21 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
               onPressed: produto == null || unidade == null
                   ? null
                   : () {
-                      setState(
-                        () => _producoes.add(
-                          _ProducaoItem(
-                            produto: produto!,
-                            quantidade: quantidade,
-                            unidade: unidade!,
-                          ),
-                        ),
+                      final item = _ProducaoItem(
+                        produto: produto!,
+                        quantidade: quantidade,
+                        unidade: unidade!,
                       );
+                      setState(() {
+                        if (editIndex == null) {
+                          _producoes.add(item);
+                        } else {
+                          _producoes[editIndex] = item;
+                        }
+                      });
                       Navigator.of(context).pop();
                     },
-              child: const Text('Adicionar'),
+              child: Text(editIndex == null ? 'Adicionar' : 'Salvar'),
             ),
           ],
         ),
@@ -1198,15 +1263,16 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
     );
   }
 
-  void _adicionarOcorrencia(BuildContext context) {
-    var prioridade = _Prioridade.media;
-    var diagnostico = '';
-    var recomendacao = '';
-    String? foto;
+  void _adicionarOcorrencia(BuildContext context, {int? editIndex}) {
+    final existente = editIndex == null ? null : _ocorrencias[editIndex];
+    var prioridade = existente?.prioridade ?? _Prioridade.media;
+    var diagnostico = existente?.diagnostico ?? '';
+    var recomendacao = existente?.recomendacao ?? '';
+    String? foto = existente?.foto;
 
     showAppBottomSheet<void>(
       context,
-      title: 'Ocorrência',
+      title: editIndex == null ? 'Ocorrência' : 'Editar ocorrência',
       child: StatefulBuilder(
         builder: (context, setSheetState) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -1231,6 +1297,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
               label: 'Diagnóstico',
               required: true,
               child: AppTextarea(
+                initialValue: diagnostico,
                 onChanged: (v) => diagnostico = v,
                 minLines: 2,
                 maxLines: 4,
@@ -1240,6 +1307,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
             AppFormField(
               label: 'Recomendação',
               child: AppTextarea(
+                initialValue: recomendacao,
                 onChanged: (v) => recomendacao = v,
                 minLines: 2,
                 maxLines: 4,
@@ -1261,21 +1329,26 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
               onPressed: diagnostico.isEmpty
                   ? null
                   : () {
-                      setState(
-                        () => _ocorrencias.add(
-                          _OcorrenciaItem(
-                            prioridade: prioridade,
-                            diagnostico: diagnostico,
-                            recomendacao: recomendacao.isEmpty
-                                ? null
-                                : recomendacao,
-                            foto: foto,
-                          ),
-                        ),
+                      final item = _OcorrenciaItem(
+                        prioridade: prioridade,
+                        diagnostico: diagnostico,
+                        recomendacao: recomendacao.isEmpty
+                            ? null
+                            : recomendacao,
+                        foto: foto,
                       );
+                      setState(() {
+                        if (editIndex == null) {
+                          _ocorrencias.add(item);
+                        } else {
+                          _ocorrencias[editIndex] = item;
+                        }
+                      });
                       Navigator.of(context).pop();
                     },
-              child: const Text('Adicionar ocorrência'),
+              child: Text(
+                editIndex == null ? 'Adicionar ocorrência' : 'Salvar ocorrência',
+              ),
             ),
           ],
         ),
@@ -1284,58 +1357,3 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   }
 }
 
-/// Linha compacta de um item já adicionado — resumo + remover. Mesmo papel
-/// visual do cabeçalho de `_AvaliacaoCard` em `leitura_cocho_flow.dart`, sem
-/// o card inteiro em volta (aqui o item é uma linha de uma lista simples,
-/// não um formulário aninhado).
-class _ItemRow extends StatelessWidget {
-  const _ItemRow({
-    required this.title,
-    required this.subtitle,
-    required this.onRemove,
-  });
-
-  final String title;
-  final String subtitle;
-  final VoidCallback onRemove;
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-
-    return Padding(
-      padding: const EdgeInsets.only(top: AppSpacing.space2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontWeight: AppTypography.weightSemibold,
-                    color: semantic.fgDefault,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: AppTypography.sm,
-                    color: semantic.fgMuted,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          AppIconButton(
-            icon: const AppIcon(AppIcons.x, size: AppSize.iconXs),
-            label: 'Remover $title',
-            onPressed: onRemove,
-          ),
-        ],
-      ),
-    );
-  }
-}

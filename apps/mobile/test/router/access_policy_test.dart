@@ -10,30 +10,21 @@ void main() {
       UserAccessProfile.operational,
     );
 
-    test(
-      'sem sessão só login, onboarding e a seleção de ambiente permanecem públicos',
-      () {
-        expect(redirectForSession('/login', signedOut), isNull);
-        expect(redirectForSession('/onboarding', signedOut), isNull);
-        expect(redirectForSession('/desktop', signedOut), isNull);
-        expect(redirectForSession('/desktop/cerne-app', signedOut), isNull);
+    test('sem sessão só login e onboarding permanecem públicos', () {
+      expect(redirectForSession('/login', signedOut), isNull);
+      expect(redirectForSession('/onboarding', signedOut), isNull);
 
-        for (final path in [
-          '/',
-          '/inicio',
-          '/perfil',
-          '/notificacoes',
-          '/fazendas/operacional',
-          '/fazendas/operacional/carga',
-        ]) {
-          expect(
-            redirectForSession(path, signedOut),
-            '/desktop/cerne-app',
-            reason: path,
-          );
-        }
-      },
-    );
+      for (final path in [
+        '/',
+        '/inicio',
+        '/perfil',
+        '/notificacoes',
+        '/fazendas/operacional',
+        '/fazendas/operacional/carga',
+      ]) {
+        expect(redirectForSession(path, signedOut), '/login', reason: path);
+      }
+    });
 
     test('rotas operacionais e de campo continuam livres com sessão ativa', () {
       for (final path in [
@@ -46,10 +37,10 @@ void main() {
       }
     });
 
-    test('raiz, login e atalhos neutros retornam à central do perfil', () {
+    test('raiz e login retornam à central do perfil', () {
       const profile = UserAccessProfile.operational;
       const session = operational;
-      for (final path in ['/', '/login', '/desktop', '/desktop/cerne-app']) {
+      for (final path in ['/', '/login']) {
         expect(
           redirectForSession(path, session),
           profile.landingRoute,
