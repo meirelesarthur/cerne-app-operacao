@@ -107,9 +107,8 @@ class ModuleDef {
 /// menu lateral.
 ///
 /// O "Menu" (RevealMenu) voltou no lugar de Confinamento: a grade de grupos
-/// saiu da tela inicial — que agora é a de OS — e os grupos restantes
-/// (Confinamento, Reprodução, Consultas…) passaram a morar no menu lateral,
-/// em "Lançamentos" ([operationalMenuSections]).
+/// saiu da tela inicial — que agora é a de OS — e todos os grupos passaram a
+/// morar no menu lateral, em "Lançamentos" ([operationalMenuSections]).
 const List<BottomTab> operationalBottomTabs = [
   BottomTab(
     id: 'os',
@@ -139,27 +138,39 @@ const List<BottomTab> operationalBottomTabs = [
 ];
 
 /// Seção "Lançamentos" do menu lateral do Operacional: um item por grupo do
-/// catálogo, na ordem de produto. Fica de fora só "Ordem de serviço", que é a
-/// própria tela inicial (primeira aba da navbar). Pecuária e Agricultura
-/// continuam listadas: o menu é o índice completo das rotinas, e a navbar só
-/// os atalhos mais frequentes.
-List<ModuleMenuSection> operationalMenuSections() => [
-  ModuleMenuSection(
-    title: 'Lançamentos',
-    items: [
-      for (final entry in operationalGroupEntries(
-        exclude: const {'Ordem de serviço'},
-      ))
-        ModuleMenuItem(
-          id: groupToSlug(entry.group),
-          label: entry.label,
-          icon: groupIcon(entry.group),
-          route: entry.route,
-          push: entry.isFeature,
-        ),
-    ],
-  ),
-];
+/// catálogo, na ordem de produto. O menu é o índice completo das rotinas —
+/// repete de propósito o que já está na navbar (OSs, Pecuária, Agricultura).
+///
+/// "Ordem de serviço" abre primeiro e aponta para a tela inicial
+/// (`/fazendas/operacional`, a aba "OSs"), não para a rota funda da
+/// funcionalidade: é o mesmo destino da navbar.
+List<ModuleMenuSection> operationalMenuSections() {
+  const osGroup = 'Ordem de serviço';
+  final entries = operationalGroupEntries();
+  final os = entries.where((e) => e.group == osGroup);
+  return [
+    ModuleMenuSection(
+      title: 'Lançamentos',
+      items: [
+        if (os.isNotEmpty)
+          ModuleMenuItem(
+            id: groupToSlug(osGroup),
+            label: 'Ordens de serviço',
+            icon: groupIcon(osGroup),
+            route: '/fazendas/operacional',
+          ),
+        for (final entry in entries.where((e) => e.group != osGroup))
+          ModuleMenuItem(
+            id: groupToSlug(entry.group),
+            label: entry.label,
+            icon: groupIcon(entry.group),
+            route: entry.route,
+            push: entry.isFeature,
+          ),
+      ],
+    ),
+  ];
+}
 
 /// Fallback do RevealMenu: seção única derivada das abas navegáveis do módulo.
 List<ModuleMenuSection> getMenuSections(

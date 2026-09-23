@@ -97,9 +97,12 @@ void main() {
 
         expect(sections.map((s) => s.title), ['Lançamentos']);
         final labels = sections.single.items.map((i) => i.label).toList();
-        // A tela inicial já é a de OS: o grupo não se repete no menu.
-        expect(labels, isNot(contains('Ordem de Serviço')));
-        expect(labels.first, 'Confinamento');
+        // O menu é o índice completo: repete o que está na navbar, com a
+        // tela inicial de OS em primeiro.
+        expect(labels.first, 'Ordens de serviço');
+        expect(sections.single.items.first.route, '/fazendas/operacional');
+        expect(sections.single.items.first.push, isFalse);
+        expect(labels[1], 'Confinamento');
         expect(
           labels,
           containsAll(['Pecuária', 'Agricultura', 'Sincronizar aplicativo']),
@@ -110,7 +113,7 @@ void main() {
           (i) => i.label == 'Sincronizar aplicativo',
         );
         expect(sync.push, isTrue);
-        final confinamento = sections.single.items.first;
+        final confinamento = sections.single.items[1];
         expect(confinamento.push, isFalse);
         expect(confinamento.route, '/fazendas/operacional/grupo/confinamento');
       },

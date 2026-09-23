@@ -33,12 +33,36 @@ void main() {
       expect(find.byType(AppContextTabs), findsNothing);
       // A tela inicial é a de ordens de serviço, separada por andamento.
       expect(find.text('Ordens de serviço'), findsOneWidget);
-      expect(find.text('Aguardando'), findsWidgets);
-      expect(find.text('Em execução'), findsWidgets);
-      expect(find.text('Finalizadas'), findsOneWidget);
+      expect(find.text('Todas'), findsOneWidget);
       expect(find.text('OSs'), findsOneWidget);
       expect(find.byType(AppModuleTile), findsNothing);
     });
+
+    testWidgets(
+      'filtro de status da OS abre a dock inferior e filtra a lista',
+      (tester) async {
+        await setTallSurface(tester);
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        expect(find.text('OS #2201'), findsOneWidget);
+
+        await tester.tap(find.text('Todas'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Status da OS'), findsOneWidget);
+        expect(find.text('Aguardando'), findsWidgets);
+        expect(find.text('Em execução'), findsWidgets);
+
+        await tester.tap(find.text('Finalizadas'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('Status da OS'), findsNothing);
+        expect(find.text('Finalizadas'), findsOneWidget);
+        expect(find.text('OS #2201'), findsNothing);
+        expect(find.text('OS #2170'), findsOneWidget);
+      },
+    );
 
     testWidgets(
       'grupo com uma única funcionalidade abre direto pelo menu lateral',

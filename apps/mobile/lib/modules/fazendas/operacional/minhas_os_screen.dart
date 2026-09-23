@@ -31,18 +31,22 @@ class MinhasOsScreen extends ConsumerStatefulWidget {
 }
 
 class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
-  int _tab = 0;
+  String _filtro = 'todas';
 
   /// "Todas" abre a tela com o panorama do dia; os demais filtros separam
   /// por andamento (pausada conta como em execução — ainda é trabalho aberto).
-  static const _labels = ['Todas', 'Aguardando', 'Em execução', 'Finalizadas'];
+  static const _filtros = [
+    AppFormSelectOption(value: 'todas', label: 'Todas'),
+    AppFormSelectOption(value: 'aguardando', label: 'Aguardando'),
+    AppFormSelectOption(value: 'execucao', label: 'Em execução'),
+    AppFormSelectOption(value: 'finalizadas', label: 'Finalizadas'),
+  ];
 
   List<OrdemServico> _filtrar(List<OrdemServico> ordens) {
-    return switch (_tab) {
-      0 => ordens,
-      1 =>
+    return switch (_filtro) {
+      'aguardando' =>
         ordens.where((o) => o.status == OrdemServicoStatus.aguardando).toList(),
-      2 =>
+      'execucao' =>
         ordens
             .where(
               (o) =>
@@ -50,7 +54,8 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
                   o.status == OrdemServicoStatus.pausada,
             )
             .toList(),
-      _ => ordens.where((o) => o.status.encerrada).toList(),
+      'finalizadas' => ordens.where((o) => o.status.encerrada).toList(),
+      _ => ordens,
     };
   }
 
@@ -59,11 +64,18 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
     final ordens = ref.watch(ordemServicoStoreProvider.select((s) => s.ordens));
     final filtradas = _filtrar(ordens);
 
-    final tabs = AppSegmentedTabs(
-      labels: _labels,
-      selectedIndex: _tab,
-      onChanged: (i) => setState(() => _tab = i),
-      scrollable: true,
+    // Título à esquerda, filtro discreto à direita: o status escolhido abre
+    // na dock inferior, sem um trilho de abas ocupando uma faixa inteira.
+    final filterRow = Row(
+      children: [
+        const Expanded(child: AppHeading(child: Text('Ordens de serviço'))),
+        AppInlineSelect(
+          sheetTitle: 'Status da OS',
+          options: _filtros,
+          value: _filtro,
+          onChanged: (v) => setState(() => _filtro = v),
+        ),
+      ],
     );
     final list = filtradas.isEmpty
         ? const Center(
@@ -99,14 +111,7 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
               AppSpacing.space4,
               0,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const AppHeading(child: Text('Ordens de serviço')),
-                const SizedBox(height: AppSpacing.space3),
-                tabs,
-              ],
-            ),
+            child: filterRow,
           ),
           Expanded(child: list),
         ],
@@ -123,7 +128,7 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
             AppSpacing.space4,
             0,
           ),
-          child: tabs,
+          child: filterRow,
         ),
         Expanded(child: AppContentSheet(padded: false, child: list)),
       ],
