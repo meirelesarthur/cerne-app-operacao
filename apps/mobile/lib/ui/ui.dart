@@ -40,6 +40,7 @@ export 'greeting_header.dart';
 export 'hardware_simulator.dart';
 export 'heading.dart';
 export 'inline_select.dart';
+export 'labeled_divider.dart';
 export 'icon_button.dart';
 export 'illustration_slot.dart';
 export 'line_chart.dart';

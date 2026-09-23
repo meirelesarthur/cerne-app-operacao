@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.8.0';
+const kWidgetbookVersion = '2.9.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,36 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.9.0',
+    date: '2026-09-23',
+    summary: 'Peças da nova Início do Operacional.',
+    changes: [
+      (
+        'Novo',
+        'AppStatusCard ganha variant: featured (título grande, chip e metas '
+            'com ícone à direita, situação em faixa tingida ao lado da ação) '
+            'e compact (título, uma linha de apoio e chip). AppStatusCardMeta '
+            'aceita icon.',
+      ),
+      (
+        'Novo',
+        'AppModuleTileGrid aceita columns; com 3 colunas a última linha '
+            'incompleta fica centralizada. AppModuleTile dense (respiro de '
+            '8 px, rótulo de 13 px) para o ladrilho estreito.',
+      ),
+      (
+        'Novo',
+        'LabeledDivider (AppLabeledDivider): linha com rótulo no meio, '
+            'opcionalmente tocável ("+ 3 ordens para fazer").',
+      ),
+      (
+        'Novo',
+        'AppButton variant soft: cinza bgTrack, visível sobre a folha cinza '
+            'das homes ("Ver todas").',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.8.0',
     date: '2026-09-23',

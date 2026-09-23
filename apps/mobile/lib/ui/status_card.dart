@@ -19,15 +19,31 @@ class AppStatusCardMeta {
     required this.label,
     required this.value,
     this.highlight = false,
+    this.icon,
   });
 
   final String label;
   final String value;
 
+  /// Na variante [AppStatusCardVariant.featured] o ícone substitui o rótulo
+  /// escrito (calendário no lugar de "Prazo:"); o rótulo segue na semântica.
+  final AppIconData? icon;
+
   /// Destaca o valor na cor de acento — para o dado que pede atenção
   /// (prioridade alta, atraso), sem virar mais um chip.
   final bool highlight;
 }
+
+/// Anatomias do [AppStatusCard]:
+///
+/// - [standard]: a das listas — chip no topo, título, metas à direita e
+///   rodapé com situação e ação.
+/// - [featured]: o registro em destaque de uma home — título grande à
+///   esquerda com as linhas de apoio, chip e metas com ícone à direita, e a
+///   situação numa faixa tingida ao lado do botão de ação.
+/// - [compact]: o "próximo da fila" logo abaixo do destaque — título, uma
+///   linha de apoio e o chip à direita, sem metas nem rodapé.
+enum AppStatusCardVariant { standard, featured, compact }
 
 /// Tom da linha de situação de um [AppStatusCard].
 enum AppStatusCardTone { neutral, info, warning, danger, success }
@@ -87,7 +103,10 @@ class AppStatusCard extends StatelessWidget {
     this.situation,
     this.action,
     this.onTap,
+    this.variant = AppStatusCardVariant.standard,
   });
+
+  final AppStatusCardVariant variant;
 
   final String statusLabel;
   final AppChipTone statusTone;
@@ -117,10 +136,270 @@ class AppStatusCard extends StatelessWidget {
         AppStatusCardTone.success => semantic.accentDefault,
       };
 
+  Color _toneBg(AppSemanticColors semantic, AppStatusCardTone tone) =>
+      switch (tone) {
+        AppStatusCardTone.neutral => semantic.bgSheet,
+        AppStatusCardTone.info => AppColors.feedbackInfoBg,
+        AppStatusCardTone.warning => AppColors.feedbackWarningBg,
+        AppStatusCardTone.danger => AppColors.feedbackErrorBg,
+        AppStatusCardTone.success => semantic.accentSubtle,
+      };
+
+  Widget _wrap(Widget content, BorderRadius radius) {
+    if (onTap == null) return content;
+    return AppPressable(
+      semanticLabel: '$title, $statusLabel',
+      onPressed: onTap,
+      borderRadius: radius,
+      child: content,
+    );
+  }
+
+  Widget _buildCompact(AppSemanticColors semantic, BorderRadius radius) {
+    final line = subtitle ?? caption;
+    return _wrap(
+      Container(
+        padding: const EdgeInsets.all(AppSpacing.space4),
+        decoration: BoxDecoration(
+          color: semantic.bgRaised,
+          borderRadius: radius,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: AppTypography.xl,
+                      fontWeight: AppTypography.weightMedium,
+                      height: AppTypography.lineHeightSnug,
+                      color: semantic.fgHeading,
+                    ),
+                  ),
+                  if (line != null) ...[
+                    const SizedBox(height: AppSpacing.space1),
+                    Text(
+                      line,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: AppTypography.base,
+                        color: semantic.fgSubtle,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.space3),
+            AppChip(tone: statusTone, child: Text(statusLabel)),
+          ],
+        ),
+      ),
+      radius,
+    );
+  }
+
+  Widget _buildFeatured(AppSemanticColors semantic, BorderRadius radius) {
+    final lines = [?subtitle, ?caption];
+    final situation = this.situation;
+    final action = this.action;
+    return _wrap(
+      Container(
+        padding: const EdgeInsets.all(AppSpacing.space4),
+        decoration: BoxDecoration(
+          color: semantic.bgRaised,
+          borderRadius: radius,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: AppTypography.xl2,
+                          fontWeight: AppTypography.weightMedium,
+                          height: AppTypography.lineHeightTight,
+                          color: semantic.fgHeading,
+                        ),
+                      ),
+                      for (var i = 0; i < lines.length; i++) ...[
+                        const SizedBox(height: AppSpacing.space1),
+                        Text(
+                          lines[i],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: AppTypography.base,
+                            fontWeight: i == 0
+                                ? AppTypography.weightMedium
+                                : AppTypography.weightNormal,
+                            color: i == 0
+                                ? semantic.fgDefault
+                                : semantic.fgSubtle,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.space3),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppChip(tone: statusTone, child: Text(statusLabel)),
+                    for (final item in meta) ...[
+                      const SizedBox(height: AppSpacing.space2),
+                      Semantics(
+                        label: '${item.label}: ${item.value}',
+                        excludeSemantics: true,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (item.icon != null) ...[
+                              AppIcon(
+                                item.icon!,
+                                size: AppSize.iconSm,
+                                color: item.highlight
+                                    ? AppColors.feedbackErrorText
+                                    : semantic.fgMuted,
+                              ),
+                              const SizedBox(width: AppSpacing.space1),
+                            ] else
+                              Text(
+                                '${item.label}: ',
+                                style: TextStyle(
+                                  fontSize: AppTypography.md,
+                                  color: semantic.fgMuted,
+                                ),
+                              ),
+                            Text(
+                              item.value,
+                              style: TextStyle(
+                                fontSize: AppTypography.md,
+                                fontWeight: AppTypography.weightMedium,
+                                color: item.highlight
+                                    ? AppColors.feedbackErrorText
+                                    : semantic.fgDefault,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ],
+            ),
+            if (situation != null || action != null) ...[
+              const SizedBox(height: AppSpacing.space4),
+              Row(
+                children: [
+                  Expanded(
+                    child: situation == null
+                        ? const SizedBox.shrink()
+                        : Container(
+                            constraints: const BoxConstraints(
+                              minHeight: AppSpacing.space10,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.space3,
+                              vertical: AppSpacing.space2,
+                            ),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: _toneBg(semantic, situation.tone),
+                              borderRadius: BorderRadius.circular(
+                                AppRadius.mdPlus,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                AppIcon(
+                                  situation.icon,
+                                  size: AppSize.iconSm,
+                                  color: _toneColor(semantic, situation.tone),
+                                ),
+                                const SizedBox(width: AppSpacing.oneHalf),
+                                Flexible(
+                                  child: Text(
+                                    situation.label,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: AppTypography.base,
+                                      fontWeight: AppTypography.weightSemibold,
+                                      color: _toneColor(
+                                        semantic,
+                                        situation.tone,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                  ),
+                  if (action != null) ...[
+                    const SizedBox(width: AppSpacing.space3),
+                    AppButton(
+                      variant: action.primary
+                          ? AppButtonVariant.primary
+                          : AppButtonVariant.secondary,
+                      leftIcon: AppIcon(
+                        action.icon,
+                        size: AppSize.iconSm,
+                        color: action.primary
+                            ? semantic.ctaFg
+                            : semantic.fgDefault,
+                      ),
+                      onPressed: action.onPressed,
+                      child: Text(action.label),
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
+      radius,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final radius = BorderRadius.circular(AppRadius.tile);
+    switch (variant) {
+      case AppStatusCardVariant.featured:
+        return _buildFeatured(semantic, radius);
+      case AppStatusCardVariant.compact:
+        return _buildCompact(semantic, radius);
+      case AppStatusCardVariant.standard:
+        break;
+    }
 
     final content = Container(
       padding: const EdgeInsets.all(AppSpacing.space4),
@@ -344,6 +623,54 @@ WidgetbookComponent buildStatusCardWidgetbookComponent() {
               statusTone: AppChipTone.red,
               title: 'OS #2160',
               subtitle: 'Contenção emergencial de gado solto — Estrada vicinal',
+            ),
+          ],
+        ),
+      ),
+      WidgetbookUseCase(
+        name: 'Destaque e próximo da home',
+        builder: (context) => ListView(
+          padding: const EdgeInsets.all(AppSpacing.space4),
+          children: [
+            AppStatusCard(
+              variant: AppStatusCardVariant.featured,
+              statusLabel: 'Em execução',
+              statusTone: AppChipTone.blue,
+              title: 'Vacinação contra aftosa',
+              subtitle: 'Curral de manejo 2',
+              caption: 'João Oliveira · OS #2198',
+              meta: const [
+                AppStatusCardMeta(
+                  label: 'Prazo',
+                  value: '18/09',
+                  icon: AppIcons.calendar,
+                ),
+                AppStatusCardMeta(
+                  label: 'Prioridade',
+                  value: 'Média',
+                  icon: AppIcons.alertCircle,
+                ),
+              ],
+              situation: const AppStatusCardSituation(
+                icon: AppIcons.alertTriangle,
+                label: 'Atrasada há 5 dias',
+                tone: AppStatusCardTone.danger,
+              ),
+              action: AppStatusCardAction(
+                label: 'Pausar',
+                icon: AppIcons.pause,
+                primary: false,
+                onPressed: () {},
+              ),
+              onTap: () {},
+            ),
+            const SizedBox(height: AppSpacing.space3),
+            AppStatusCard(
+              variant: AppStatusCardVariant.compact,
+              statusLabel: 'Aguardando',
+              title: 'Reparo de cerca do Talhão 04',
+              subtitle: 'Talhão 04',
+              onTap: () {},
             ),
           ],
         ),

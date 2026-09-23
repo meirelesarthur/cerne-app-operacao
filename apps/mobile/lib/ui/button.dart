@@ -35,6 +35,11 @@ enum AppButtonVariant {
   /// (sem preenchimento algum) deixa esse lado sem "corpo" e desequilibra o
   /// par visualmente (ex.: "Pular" ao lado de "Próximo" no onboarding).
   subtle,
+
+  /// Cinza um tom acima da folha (`bgTrack`) — para uma ação de navegação
+  /// sobre a folha cinza das homes ("Ver todas"), onde `subtle` (`bgCanvas`)
+  /// some por ser quase o mesmo cinza da folha.
+  soft,
 }
 
 enum AppButtonSize { sm, md, lg, xl }
@@ -149,6 +154,11 @@ class AppButton extends StatelessWidget {
         ),
         AppButtonVariant.subtle => (
           bg: s.bgCanvas,
+          fg: s.fgDefault,
+          border: null,
+        ),
+        AppButtonVariant.soft => (
+          bg: s.bgTrack,
           fg: s.fgDefault,
           border: null,
         ),
@@ -299,6 +309,7 @@ AppButton(
 
 AppButton(variant: AppButtonVariant.ghost, ...)
 AppButton(variant: AppButtonVariant.subtle, ...)
+AppButton(variant: AppButtonVariant.soft, ...)
 AppButton(variant: AppButtonVariant.danger, ...)
 AppButton(variant: AppButtonVariant.link, ...)''',
             child: Wrap(
@@ -320,6 +331,11 @@ AppButton(variant: AppButtonVariant.link, ...)''',
                   variant: AppButtonVariant.subtle,
                   onPressed: () {},
                   child: const Text('Subtle'),
+                ),
+                AppButton(
+                  variant: AppButtonVariant.soft,
+                  onPressed: () {},
+                  child: const Text('Soft'),
                 ),
                 AppButton(
                   variant: AppButtonVariant.danger,
