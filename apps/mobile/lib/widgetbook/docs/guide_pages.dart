@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.2.0';
+const kWidgetbookVersion = '2.3.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,18 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.3.0',
+    date: '2026-09-23',
+    summary: 'Atalhos da tela inicial como ícones de aplicativo.',
+    changes: [
+      (
+        'Mudou',
+        'AppIconTile ganha labelMaxLines: nomes de rotina em até duas linhas '
+            'na grade de quatro colunas de atalhos da tela inicial.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.2.0',
     date: '2026-09-23',
