@@ -350,12 +350,12 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
 
 /// Aba da navbar operacional destacada para a rota atual. Grupos que só
 /// existem no menu lateral (Confinamento, Reprodução…) não acendem nenhuma
-/// aba — destacar "OSs" ali diria que a pessoa está nas ordens de serviço.
+/// aba — destacar "Início" ali diria que a pessoa está na tela inicial.
 String _operationalTabFor(String path) {
   if (path.contains('/grupo/pecuaria')) return 'pecuaria';
   if (path.contains('/grupo/agricultura')) return 'agricultura';
   if (path.contains('/grupo/')) return '';
-  return 'os';
+  return 'inicio';
 }
 
 /// Com o menu aberto, tocar em área vazia do app encolhido fecha o menu —

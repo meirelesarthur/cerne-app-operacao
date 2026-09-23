@@ -97,12 +97,16 @@ void main() {
 
         expect(sections.map((s) => s.title), ['Menu']);
         final labels = sections.single.items.map((i) => i.label).toList();
-        // O menu é o índice completo: repete o que está na navbar, com a
-        // tela inicial de OS em primeiro.
-        expect(labels.first, 'Ordens de serviço');
-        expect(sections.single.items.first.route, '/fazendas/operacional');
-        expect(sections.single.items.first.push, isFalse);
-        expect(labels[1], 'Confinamento');
+        // O menu é o índice completo: repete o que está na navbar, com o
+        // Início primeiro e a lista completa de OS logo depois.
+        final items = sections.single.items;
+        expect(labels.first, 'Início');
+        expect(items.first.route, '/fazendas/operacional');
+        expect(items.first.push, isFalse);
+        expect(labels[1], 'Ordens de serviço');
+        expect(items[1].route, '/fazendas/campo/minhas-os');
+        expect(items[1].push, isTrue);
+        expect(labels[2], 'Confinamento');
         expect(
           labels,
           containsAll(['Pecuária', 'Agricultura', 'Sincronizar aplicativo']),
@@ -113,15 +117,15 @@ void main() {
           (i) => i.label == 'Sincronizar aplicativo',
         );
         expect(sync.push, isTrue);
-        final confinamento = sections.single.items[1];
+        final confinamento = sections.single.items[2];
         expect(confinamento.push, isFalse);
         expect(confinamento.route, '/fazendas/operacional/grupo/confinamento');
       },
     );
 
-    test('navbar operacional: OSs, Pecuária, Agricultura e Menu', () {
+    test('navbar operacional: Início, Pecuária, Agricultura e Menu', () {
       expect(operationalBottomTabs.map((t) => t.label), [
-        'OSs',
+        'Início',
         'Pecuária',
         'Agricultura',
         'Menu',

@@ -102,18 +102,18 @@ class ModuleDef {
   final List<ModuleMenuSection> Function()? menuSectionsBuilder;
 }
 
-/// Navegação primária da entrada operacional: as ordens de serviço do
-/// funcionário (tela inicial), os dois grupos de lançamento mais amplos e o
-/// menu lateral.
+/// Navegação primária da entrada operacional: a tela inicial (OS em
+/// andamento + atalhos), os dois grupos de lançamento mais amplos e o menu
+/// lateral.
 ///
 /// O "Menu" (RevealMenu) voltou no lugar de Confinamento: a grade de grupos
 /// saiu da tela inicial — que agora é a de OS — e todos os grupos passaram a
 /// morar no menu lateral, no grupo único "Menu" ([operationalMenuSections]).
 const List<BottomTab> operationalBottomTabs = [
   BottomTab(
-    id: 'os',
-    label: 'OSs',
-    icon: AppIcons.fileText,
+    id: 'inicio',
+    label: 'Início',
+    icon: AppIcons.home,
     path: 'operacional',
   ),
   BottomTab(
@@ -137,32 +137,33 @@ const List<BottomTab> operationalBottomTabs = [
   ),
 ];
 
-/// Itens do menu lateral do Operacional: um item por grupo do
-/// catálogo, na ordem de produto. O menu é o índice completo das rotinas —
-/// repete de propósito o que já está na navbar (OSs, Pecuária, Agricultura).
+/// Itens do menu lateral do Operacional — e, sem o "Início", os atalhos da
+/// tela inicial (`OperacionalHomeScreen`): um item por grupo do catálogo, na
+/// ordem de produto. O menu é o índice completo das rotinas e repete de
+/// propósito o que a navbar já mostra (Início, Pecuária, Agricultura).
 ///
-/// "Ordem de serviço" abre primeiro e aponta para a tela inicial
-/// (`/fazendas/operacional`, a aba "OSs"), não para a rota funda da
-/// funcionalidade: é o mesmo destino da navbar.
+/// "Ordens de serviço" vem logo depois do Início e abre a lista completa com
+/// filtro (`/fazendas/campo/minhas-os`, empilhada), a mesma do "Ver todas".
 List<ModuleMenuSection> operationalMenuSections() {
   const osGroup = 'Ordem de serviço';
   final entries = operationalGroupEntries();
-  final os = entries.where((e) => e.group == osGroup);
   return [
     ModuleMenuSection(
       title: 'Menu',
       items: [
-        if (os.isNotEmpty)
-          ModuleMenuItem(
-            id: groupToSlug(osGroup),
-            label: 'Ordens de serviço',
-            icon: groupIcon(osGroup),
-            route: '/fazendas/operacional',
-          ),
-        for (final entry in entries.where((e) => e.group != osGroup))
+        const ModuleMenuItem(
+          id: 'inicio-operacional',
+          label: 'Início',
+          icon: AppIcons.home,
+          route: operationalHomeRoute,
+        ),
+        for (final entry in [
+          ...entries.where((e) => e.group == osGroup),
+          ...entries.where((e) => e.group != osGroup),
+        ])
           ModuleMenuItem(
             id: groupToSlug(entry.group),
-            label: entry.label,
+            label: entry.group == osGroup ? 'Ordens de serviço' : entry.label,
             icon: groupIcon(entry.group),
             route: entry.route,
             push: entry.isFeature,
@@ -171,6 +172,9 @@ List<ModuleMenuSection> operationalMenuSections() {
     ),
   ];
 }
+
+/// Tela inicial do Operacional (aba "Início" da navbar).
+const String operationalHomeRoute = '/fazendas/operacional';
 
 /// Fallback do RevealMenu: seção única derivada das abas navegáveis do módulo.
 List<ModuleMenuSection> getMenuSections(

@@ -4,13 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'components/sync_banner.dart';
 import 'functional_catalog.dart';
 import 'operacional/campo_flow.dart';
-import 'operacional/minhas_os_screen.dart';
 import 'screens/atividades_screen.dart';
 import 'screens/farm_list_screen.dart';
 import 'screens/fazendas_home.dart';
 import 'screens/group_features_screen.dart';
 import 'screens/mais_screen.dart';
 import 'screens/mapped_feature_screen.dart';
+import 'screens/operacional_home_screen.dart';
 
 /// Rotas do módulo Fazendas (ex-"Cerne") — espelha `FazendasModule.tsx`.
 /// Registrado no `ShellRoute` principal (`lib/router/app_router.dart`), no
@@ -25,11 +25,10 @@ GoRoute buildFazendasModuleRoute() {
     routes: [
       GoRoute(
         path: 'operacional',
-        // Tela inicial do Operacional: as ordens de serviço do funcionário
-        // (aba "OSs" da navbar). Os grupos do catálogo que antes formavam a
-        // grade desta tela vivem no menu lateral (`AppRevealMenu`).
+        // Tela inicial do Operacional (aba "Início"): OS em andamento no
+        // topo, quando houver, e os atalhos das rotinas logo abaixo.
         builder: (context, state) =>
-            const _FazendasScaffold(child: MinhasOsScreen(embedded: true)),
+            const _FazendasScaffold(child: OperacionalHomeScreen()),
         routes: [
           GoRoute(
             path: 'grupo/:group',

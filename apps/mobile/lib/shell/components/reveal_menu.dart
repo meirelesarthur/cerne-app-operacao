@@ -189,13 +189,15 @@ class _MenuContent extends StatelessWidget {
     final sections = getMenuSections(module, profile: profile);
     final sectionItems = [for (final section in sections) ...section.items];
     final listedRoutes = {for (final item in sectionItems) item.route};
+    final listedLabels = {for (final item in sectionItems) item.label};
     // O dock operacional oferece apenas atalhos de rotina, mas o menu
     // lateral é o índice completo do app. Não reutilize `visibleModulesFor`
     // aqui: ela expressa exclusivamente a regra do dock.
     final menuItems = [
       ...sectionItems,
       for (final parentModule in modules)
-        if (!listedRoutes.contains(moduleHomeRoute(parentModule, profile)))
+        if (!listedRoutes.contains(moduleHomeRoute(parentModule, profile)) &&
+            !listedLabels.contains(parentModule.label))
           ModuleMenuItem(
             id: parentModule.id,
             label: parentModule.label,
@@ -267,8 +269,11 @@ class _MenuContent extends StatelessWidget {
       // campo — divisões como "Lançamentos"/"Módulos" são vocabulário de
       // sistema, não da rotina; uma lista só, com rótulos claros, é mais
       // fácil de percorrer. O índice é completo (repete o que a navbar já
-      // mostra); só não repete um destino idêntico — o módulo cuja tela
-      // inicial já é um dos itens acima (ex.: Fazendas = Ordens de serviço).
+      // mostra); só não repete um destino idêntico nem um nome já listado —
+      // o módulo cuja tela inicial já é um item acima (Fazendas = Início do
+      // Operacional) ou que teria o mesmo rótulo de outro destino (o hub
+      // "Início" ao lado do Início do Operacional: dois "Início" levando a
+      // telas diferentes confundem).
       _stagger(
         next(),
         Padding(

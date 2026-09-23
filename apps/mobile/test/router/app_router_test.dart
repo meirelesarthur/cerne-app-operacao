@@ -1,16 +1,27 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/modules/fazendas/components/context_badge.dart';
+import 'package:cerne_app/modules/fazendas/ordem_servico/models.dart';
+import 'package:cerne_app/modules/fazendas/ordem_servico/state/ordem_servico_store.dart';
+import 'package:cerne_app/modules/fazendas/ordem_servico/widgets.dart';
 import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
 import 'package:cerne_app/shell/components/context_tabs.dart';
+import 'package:cerne_app/shell/components/reveal_menu.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
+import 'package:cerne_app/ui/app_icon_tile.dart';
 import 'package:cerne_app/ui/module_tile.dart';
+import 'package:cerne_app/ui/page_scaffold.dart';
 import 'package:cerne_app/ui/search_field.dart';
 
 import '../support/router_test_harness.dart';
 import '../support/test_viewport.dart';
 
 late RouterTestHarness harness;
+
+/// Rótulo dentro do menu lateral — os atalhos da tela inicial repetem os
+/// mesmos nomes atrás dele.
+Finder _noMenu(String label) =>
+    find.descendant(of: find.byType(AppRevealMenu), matching: find.text(label));
 
 void main() {
   setUp(() {
@@ -23,6 +34,7 @@ void main() {
     testWidgets('entrada operacional usa o chrome e a navegação de campo', (
       tester,
     ) async {
+      await setTallSurface(tester);
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
@@ -31,16 +43,76 @@ void main() {
       expect(find.text('Procurando por algo?'), findsOneWidget);
       expect(find.text('O que fazer hoje'), findsNothing);
       expect(find.byType(AppContextTabs), findsNothing);
-      // A tela inicial é a de ordens de serviço, separada por andamento.
-      expect(find.text('Ordens de serviço'), findsOneWidget);
-      expect(find.text('Todas'), findsOneWidget);
-      expect(find.text('OSs'), findsOneWidget);
+      // Tela inicial: OS em andamento no topo e atalhos logo abaixo.
+      expect(find.text('Minhas OS'), findsOneWidget);
+      expect(find.text('Ver todas'), findsOneWidget);
+      expect(find.text('Atalhos'), findsOneWidget);
+      expect(find.byTooltip('Início'), findsOneWidget);
       expect(find.byType(AppModuleTile), findsNothing);
+    });
+
+    testWidgets('tela inicial mostra até 3 OS, a em execução primeiro', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.byType(OsSummaryCard), findsNWidgets(3));
+      final primeira = tester.widget<OsSummaryCard>(
+        find.byType(OsSummaryCard).first,
+      );
+      expect(primeira.os.status, OrdemServicoStatus.emExecucao);
+    });
+
+    testWidgets('sem OS em andamento, a seção some e ficam só os atalhos', (
+      tester,
+    ) async {
+      final store = harness.container.read(ordemServicoStoreProvider.notifier);
+      for (final os
+          in harness.container.read(ordemServicoStoreProvider).ordens) {
+        store.cancelar(os.id, autor: 'Teste', motivo: 'Sem OS na fazenda');
+      }
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      expect(find.text('Minhas OS'), findsNothing);
+      expect(find.byType(OsSummaryCard), findsNothing);
+      expect(find.text('Atalhos'), findsOneWidget);
+      expect(find.byType(AppAppIconTile), findsWidgets);
+    });
+
+    testWidgets('tocar numa OS abre o detalhe em tela cheia com as ações', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byType(OsSummaryCard).first);
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppPageScaffold), findsOneWidget);
+      expect(find.text('Detalhe da OS'), findsOneWidget);
+      // Em execução: entregar é o CTA; pausar e refazer ficam no rodapé.
+      expect(find.text('MARCAR COMO ENTREGUE'), findsOneWidget);
+      expect(find.text('Pausar execução'), findsOneWidget);
+      // Tela cheia cobre a navbar.
+      expect(find.byType(AppBottomTabBar), findsNothing);
+
+      await tester.tap(find.text('MARCAR COMO ENTREGUE'));
+      await tester.pumpAndSettle();
+
+      // Continua na tela, agora sem ações (OS encerrada).
+      expect(find.text('Detalhe da OS'), findsOneWidget);
+      expect(find.text('MARCAR COMO ENTREGUE'), findsNothing);
     });
 
     testWidgets(
       'filtro de status da OS abre a dock inferior e filtra a lista',
       (tester) async {
+        harness.router.go('/fazendas/campo/minhas-os');
         await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
@@ -76,7 +148,7 @@ void main() {
 
         // "Sincronização" só tem uma funcionalidade — a tela de listagem do
         // grupo (que mostraria só esse card) fica de fora da navegação.
-        await tester.tap(find.text('Sincronizar aplicativo'));
+        await tester.tap(_noMenu('Sincronizar aplicativo'));
         await tester.pumpAndSettle();
 
         expect(find.text('Sincronização de dados'), findsNothing);
@@ -89,7 +161,7 @@ void main() {
     );
 
     testWidgets(
-      'navbar operacional: OSs, Pecuária, Agricultura e Menu lateral',
+      'navbar operacional: Início, Pecuária, Agricultura e Menu lateral',
       (tester) async {
         await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
@@ -105,7 +177,7 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('MENU'), findsOneWidget);
-        await tester.tap(find.text('Confinamento'));
+        await tester.tap(_noMenu('Confinamento'));
         await tester.pumpAndSettle();
 
         expect(find.byType(AppContextTabs), findsNothing);
