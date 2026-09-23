@@ -148,6 +148,7 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
           buildKpiStatCardWidgetbookComponent(),
           buildStatusCardWidgetbookComponent(),
           buildNotificationTileWidgetbookComponent(),
+          buildDetailSectionWidgetbookComponent(),
         ],
       ),
       WidgetbookFolder(

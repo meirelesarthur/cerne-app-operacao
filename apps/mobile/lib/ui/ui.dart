@@ -26,6 +26,7 @@ export 'collection_list.dart';
 export 'collection_manager_sheet.dart';
 export 'color_input.dart';
 export 'date_input.dart';
+export 'detail_section.dart';
 export 'discovery_tile.dart';
 export 'donut_chart.dart';
 export 'empty_state.dart';

@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.7.0';
+const kWidgetbookVersion = '2.8.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,25 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.8.0',
+    date: '2026-09-23',
+    summary: 'Agrupadores com ícone e bloco cinza para o detalhe da OS.',
+    changes: [
+      (
+        'Novo',
+        'DetailSection (AppDetailSection): ícone em bolha, título de 16 px e '
+            'bloco cinza sobre a folha branca, com contagem opcional e tons '
+            'de atenção (segurança) e perigo (cancelamento, retrabalho).',
+      ),
+      (
+        'Novo',
+        'AppDetailFields (rótulo acima, valor grande, data de apoio; uma ou '
+            'duas colunas), AppDetailList (um item por linha com marcador) e '
+            'AppDetailText (texto corrido) para o conteúdo do bloco.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.7.0',
     date: '2026-09-23',
