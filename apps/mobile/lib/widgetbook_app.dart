@@ -8,19 +8,30 @@ import 'design/generated/app_spacing.dart';
 import 'design/generated/app_typography.dart';
 import 'design/theme/app_theme.dart';
 import 'design/theme/app_theme_extension.dart';
-import 'shared/url_strategy.dart';
 import 'ui/ui.dart';
+import 'widgetbook/docs/guide_pages.dart';
+import 'widgetbook/patterns/collection_pattern.dart';
 import 'widgetbook/patterns/crud_pattern.dart';
 import 'widgetbook/patterns/listing_pattern.dart';
 import 'widgetbook/patterns/login_pattern.dart';
 import 'widgetbook/patterns/menu_pattern.dart';
 import 'design/generated/app_layout.dart';
 
-/// Ponto de entrada da galeria de componentes (F2.5) e da auditoria de tema (F1.4).
+/// Ponto de entrada do Widgetbook — catálogo vivo de `lib/ui`, padrões de
+/// tela, fundamentos de tema e documentação (Documentação → Guia).
+///
 /// Rodar: `flutter run -t lib/widgetbook_app.dart -d chrome`.
-/// Hospedado no Cloudflare Pages em `/storybook` (ver `tool/cf_pages_build.sh`).
+/// Publicado em `/storybook/` pelo `npm run build`
+/// (`scripts/build-flutter-site.mjs`), sem a moldura de celular do app.
+/// Conferir o build de release localmente: `flutter build web --release -t
+/// lib/widgetbook_app.dart --base-href /storybook/ -o build/widgetbook/storybook`
+/// e abrir `/storybook/` pela configuração `widgetbook-static`.
+///
+/// Diferente do app, o Widgetbook usa a estratégia de URL padrão (hash): o
+/// roteador do pacote lê o caso selecionado do fragmento
+/// (`/storybook/#/?path=catálogo/...`), o que torna cada caso um link
+/// compartilhável. Com `usePathUrlStrategy` o deep link era descartado.
 void main() {
-  configureUrlStrategy();
   runApp(const CerneWidgetbook());
 }
 
@@ -30,6 +41,12 @@ class CerneWidgetbook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Widgetbook.material(
+      // Tela inicial (sem caso selecionado) = guia "Comece aqui". A home fica
+      // fora do addon de tema, então recebe o tema do app explicitamente.
+      home: Theme(
+        data: buildAppTheme(AppThemeVariant.light),
+        child: const Material(child: WidgetbookIntroductionPage()),
+      ),
       addons: [
         MaterialThemeAddon(
           themes: [
@@ -44,163 +61,194 @@ class CerneWidgetbook extends StatelessWidget {
           ],
         ),
       ],
-      directories: [
-        WidgetbookComponent(
-          name: 'Tema',
-          useCases: [
-            WidgetbookUseCase(
-              name: 'Cores',
-              builder: (context) => const _ColorAuditPage(),
-            ),
-            WidgetbookUseCase(
-              name: 'Espaçamento e raio',
-              builder: (context) => const _SpacingAuditPage(),
-            ),
-            WidgetbookUseCase(
-              name: 'Tipografia',
-              builder: (context) => const _TypographyAuditPage(),
-            ),
-          ],
-        ),
-        WidgetbookFolder(
-          name: 'Documentação',
-          children: [buildCodePreviewWidgetbookComponent()],
-        ),
-        WidgetbookFolder(
-          name: 'Padrões',
-          children: [
-            buildLoginPatternWidgetbookComponent(),
-            buildListingPatternWidgetbookComponent(),
-            buildMenuPatternWidgetbookComponent(),
-            buildCrudPatternWidgetbookComponent(),
-          ],
-        ),
-        WidgetbookFolder(
-          name: 'Catálogo',
-          children: [
-            WidgetbookFolder(
-              name: 'Ações',
-              children: [
-                buildButtonWidgetbookComponent(),
-                buildIconButtonWidgetbookComponent(),
-                buildQuickActionWidgetbookComponent(),
-                buildAppIconTileWidgetbookComponent(),
-                buildPressableWidgetbookComponent(),
-                buildSegmentedTabsWidgetbookComponent(),
-              ],
-            ),
-            WidgetbookFolder(
-              name: 'Superfícies',
-              children: [
-                buildCardWidgetbookComponent(),
-                buildDashboardCardWidgetbookComponent(),
-                buildBentoTileWidgetbookComponent(),
-                buildMiniAppTileWidgetbookComponent(),
-                buildChartCardWidgetbookComponent(),
-                buildKpiStatCardWidgetbookComponent(),
-                buildMetricGridWidgetbookComponent(),
-                buildBalanceCardWidgetbookComponent(),
-              ],
-            ),
-            WidgetbookFolder(
-              name: 'Formulário',
-              children: [
-                buildTextInputWidgetbookComponent(),
-                buildDateInputWidgetbookComponent(),
-                buildColorInputWidgetbookComponent(),
-                buildTextareaWidgetbookComponent(),
-                buildFormFieldWidgetbookComponent(),
-                buildFormSelectWidgetbookComponent(),
-                buildSearchSelectWidgetbookComponent(),
-                buildCheckboxWidgetbookComponent(),
-                buildToggleSwitchWidgetbookComponent(),
-                buildFileUploadWidgetbookComponent(),
-                buildStepperWidgetbookComponent(),
-                buildAddableGroupListWidgetbookComponent(),
-                buildCollectionListWidgetbookComponent(),
-                buildCollectionManagerWidgetbookComponent(),
-                buildSquareGroupGridWidgetbookComponent(),
-                buildReviewListWidgetbookComponent(),
-                buildReviewTabsWidgetbookComponent(),
-              ],
-            ),
-            WidgetbookFolder(
-              name: 'Padrão global',
-              children: [
-                buildContentSheetWidgetbookComponent(),
-                buildPageScaffoldWidgetbookComponent(),
-                buildBrandLogoWidgetbookComponent(),
-                buildTopBarWidgetbookComponent(),
-                buildGreetingHeaderWidgetbookComponent(),
-                buildFarmSelectorWidgetbookComponent(),
-                buildSearchFieldWidgetbookComponent(),
-                buildDiscoveryTileWidgetbookComponent(),
-                buildModuleTileWidgetbookComponent(),
-                buildEntityRowWidgetbookComponent(),
-                buildActionBarWidgetbookComponent(),
-                buildStepProgressWidgetbookComponent(),
-                buildPaginationWidgetbookComponent(),
-              ],
-            ),
-            WidgetbookFolder(
-              name: 'Feedback',
-              children: [
-                buildAlertStripWidgetbookComponent(),
-                buildAppIconWidgetbookComponent(),
-                buildBannerWidgetbookComponent(),
-                buildEmptyStateWidgetbookComponent(),
-                buildErrorStateWidgetbookComponent(),
-                buildSuccessPanelWidgetbookComponent(),
-                buildSkeletonWidgetbookComponent(),
-                buildSpinnerWidgetbookComponent(),
-                buildTooltipWidgetbookComponent(),
-                buildProgressBarWidgetbookComponent(),
-                buildHardwareSimulatorWidgetbookComponent(),
-              ],
-            ),
-            WidgetbookFolder(
-              name: 'Overlay',
-              children: [
-                buildModalWidgetbookComponent(),
-                buildBottomSheetWidgetbookComponent(),
-                buildTransactionDetailSheetWidgetbookComponent(),
-              ],
-            ),
-            WidgetbookFolder(
-              name: 'Dados',
-              children: [
-                buildTransactionListItemWidgetbookComponent(),
-                buildMenuItemWidgetbookComponent(),
-                buildAuditExportPanelWidgetbookComponent(),
-                buildBadgeWidgetbookComponent(),
-                buildChipWidgetbookComponent(),
-                buildTagWidgetbookComponent(),
-                buildAvatarWidgetbookComponent(),
-                buildScreenHeaderWidgetbookComponent(),
-                buildHeadingWidgetbookComponent(),
-                buildPageDotsWidgetbookComponent(),
-                buildIllustrationSlotWidgetbookComponent(),
-              ],
-            ),
-            WidgetbookFolder(
-              name: 'Gráficos',
-              children: [
-                buildBarChartWidgetbookComponent(),
-                buildDonutChartWidgetbookComponent(),
-                buildLineChartWidgetbookComponent(),
-                buildStackedBarWidgetbookComponent(),
-                buildGaugeWidgetbookComponent(),
-                buildBulletChartWidgetbookComponent(),
-                buildChartLegendWidgetbookComponent(),
-                buildSparklineAreaWidgetbookComponent(),
-              ],
-            ),
-          ],
-        ),
-      ],
+      directories: buildWidgetbookDirectories(),
     );
   }
 }
+
+/// Árvore do Widgetbook — função própria para o inventário
+/// ([WidgetbookInventoryPage]) e os testes lerem exatamente o que está
+/// registrado, sem lista paralela para manter.
+List<WidgetbookNode> buildWidgetbookDirectories() => [
+  WidgetbookFolder(
+    name: 'Documentação',
+    children: [
+      WidgetbookComponent(
+        name: 'Guia',
+        useCases: [
+          WidgetbookUseCase(
+            name: 'Comece aqui',
+            builder: (context) => const WidgetbookIntroductionPage(),
+          ),
+          WidgetbookUseCase(
+            name: 'Inventário do catálogo',
+            builder: (context) =>
+                WidgetbookInventoryPage(nodes: buildWidgetbookDirectories()),
+          ),
+          WidgetbookUseCase(
+            name: 'Novidades (v$kWidgetbookVersion)',
+            builder: (context) => const WidgetbookChangelogPage(),
+          ),
+        ],
+      ),
+      buildCodePreviewWidgetbookComponent(),
+    ],
+  ),
+  WidgetbookFolder(
+    name: 'Fundamentos',
+    children: [
+      WidgetbookComponent(
+        name: 'Tema',
+        useCases: [
+          WidgetbookUseCase(
+            name: 'Cores',
+            builder: (context) => const _ColorAuditPage(),
+          ),
+          WidgetbookUseCase(
+            name: 'Espaçamento e raio',
+            builder: (context) => const _SpacingAuditPage(),
+          ),
+          WidgetbookUseCase(
+            name: 'Tipografia',
+            builder: (context) => const _TypographyAuditPage(),
+          ),
+        ],
+      ),
+    ],
+  ),
+  WidgetbookFolder(
+    name: 'Padrões',
+    children: [
+      buildLoginPatternWidgetbookComponent(),
+      buildListingPatternWidgetbookComponent(),
+      buildMenuPatternWidgetbookComponent(),
+      buildCrudPatternWidgetbookComponent(),
+      buildCollectionPatternWidgetbookComponent(),
+    ],
+  ),
+  WidgetbookFolder(
+    name: 'Catálogo',
+    children: [
+      WidgetbookFolder(
+        name: 'Ações',
+        children: [
+          buildButtonWidgetbookComponent(),
+          buildIconButtonWidgetbookComponent(),
+          buildQuickActionWidgetbookComponent(),
+          buildAppIconTileWidgetbookComponent(),
+          buildPressableWidgetbookComponent(),
+          buildSegmentedTabsWidgetbookComponent(),
+        ],
+      ),
+      WidgetbookFolder(
+        name: 'Superfícies',
+        children: [
+          buildCardWidgetbookComponent(),
+          buildDashboardCardWidgetbookComponent(),
+          buildBentoTileWidgetbookComponent(),
+          buildMiniAppTileWidgetbookComponent(),
+          buildChartCardWidgetbookComponent(),
+          buildKpiStatCardWidgetbookComponent(),
+          buildMetricGridWidgetbookComponent(),
+          buildBalanceCardWidgetbookComponent(),
+        ],
+      ),
+      WidgetbookFolder(
+        name: 'Formulário',
+        children: [
+          buildTextInputWidgetbookComponent(),
+          buildDateInputWidgetbookComponent(),
+          buildColorInputWidgetbookComponent(),
+          buildTextareaWidgetbookComponent(),
+          buildFormFieldWidgetbookComponent(),
+          buildFormSelectWidgetbookComponent(),
+          buildSearchSelectWidgetbookComponent(),
+          buildCheckboxWidgetbookComponent(),
+          buildToggleSwitchWidgetbookComponent(),
+          buildFileUploadWidgetbookComponent(),
+          buildStepperWidgetbookComponent(),
+          buildAddableGroupListWidgetbookComponent(),
+          buildCollectionListWidgetbookComponent(),
+          buildCollectionManagerWidgetbookComponent(),
+          buildSquareGroupGridWidgetbookComponent(),
+          buildReviewListWidgetbookComponent(),
+          buildReviewTabsWidgetbookComponent(),
+        ],
+      ),
+      WidgetbookFolder(
+        name: 'Padrão global',
+        children: [
+          buildContentSheetWidgetbookComponent(),
+          buildPageScaffoldWidgetbookComponent(),
+          buildBrandLogoWidgetbookComponent(),
+          buildTopBarWidgetbookComponent(),
+          buildGreetingHeaderWidgetbookComponent(),
+          buildFarmSelectorWidgetbookComponent(),
+          buildSearchFieldWidgetbookComponent(),
+          buildDiscoveryTileWidgetbookComponent(),
+          buildModuleTileWidgetbookComponent(),
+          buildEntityRowWidgetbookComponent(),
+          buildActionBarWidgetbookComponent(),
+          buildStepProgressWidgetbookComponent(),
+          buildPaginationWidgetbookComponent(),
+        ],
+      ),
+      WidgetbookFolder(
+        name: 'Feedback',
+        children: [
+          buildAlertStripWidgetbookComponent(),
+          buildAppIconWidgetbookComponent(),
+          buildBannerWidgetbookComponent(),
+          buildEmptyStateWidgetbookComponent(),
+          buildErrorStateWidgetbookComponent(),
+          buildSuccessPanelWidgetbookComponent(),
+          buildSkeletonWidgetbookComponent(),
+          buildSpinnerWidgetbookComponent(),
+          buildTooltipWidgetbookComponent(),
+          buildProgressBarWidgetbookComponent(),
+          buildHardwareSimulatorWidgetbookComponent(),
+        ],
+      ),
+      WidgetbookFolder(
+        name: 'Overlay',
+        children: [
+          buildModalWidgetbookComponent(),
+          buildBottomSheetWidgetbookComponent(),
+          buildTransactionDetailSheetWidgetbookComponent(),
+        ],
+      ),
+      WidgetbookFolder(
+        name: 'Dados',
+        children: [
+          buildTransactionListItemWidgetbookComponent(),
+          buildMenuItemWidgetbookComponent(),
+          buildAuditExportPanelWidgetbookComponent(),
+          buildBadgeWidgetbookComponent(),
+          buildChipWidgetbookComponent(),
+          buildTagWidgetbookComponent(),
+          buildAvatarWidgetbookComponent(),
+          buildScreenHeaderWidgetbookComponent(),
+          buildHeadingWidgetbookComponent(),
+          buildPageDotsWidgetbookComponent(),
+          buildIllustrationSlotWidgetbookComponent(),
+        ],
+      ),
+      WidgetbookFolder(
+        name: 'Gráficos',
+        children: [
+          buildBarChartWidgetbookComponent(),
+          buildDonutChartWidgetbookComponent(),
+          buildLineChartWidgetbookComponent(),
+          buildStackedBarWidgetbookComponent(),
+          buildGaugeWidgetbookComponent(),
+          buildBulletChartWidgetbookComponent(),
+          buildChartLegendWidgetbookComponent(),
+          buildSparklineAreaWidgetbookComponent(),
+        ],
+      ),
+    ],
+  ),
+];
 
 class _AuditScaffold extends StatelessWidget {
   const _AuditScaffold({required this.title, required this.children});

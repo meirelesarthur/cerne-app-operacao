@@ -35,6 +35,14 @@
       "runtimeArgs": ["run", "-t", "lib/widgetbook_app.dart", "-d", "web-server", "--web-port=5177", "--web-hostname=127.0.0.1"],
       "port": 5177,
       "cwd": "apps/mobile"
+    },
+    {
+      "name": "widgetbook-static",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["tool/serve_web_build.mjs"],
+      "env": { "BUILD_DIR": "build/widgetbook", "PORT": "5179" },
+      "port": 5179,
+      "cwd": "apps/mobile"
     }
   ]
 }

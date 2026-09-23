@@ -19,7 +19,10 @@ const MIME = {
 }
 
 createServer(async (req, res) => {
-  const path = req.url === '/' ? '/index.html' : req.url
+  // Ignora a query string e resolve diretórios para index.html — o
+  // Widgetbook buildado com `--base-href /storybook/` abre em /storybook/.
+  const { pathname } = new URL(req.url, 'http://localhost')
+  const path = pathname.endsWith('/') ? `${pathname}index.html` : pathname
   try {
     const data = await readFile(join(ROOT, path))
     res.writeHead(200, { 'Content-Type': MIME[extname(path)] ?? 'application/octet-stream' })

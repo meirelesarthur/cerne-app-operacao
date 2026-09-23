@@ -1,0 +1,414 @@
+import 'package:flutter/material.dart';
+import 'package:widgetbook/widgetbook.dart';
+
+import '../../design/generated/app_layout.dart';
+import '../../design/generated/app_radius.dart';
+import '../../design/generated/app_spacing.dart';
+import '../../design/generated/app_typography.dart';
+import '../../design/theme/app_theme_extension.dart';
+import '../../ui/ui.dart';
+import 'doc_page.dart';
+
+/// Versão do Widgetbook — sobe junto de cada entrada nova em
+/// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
+const kWidgetbookVersion = '2.0.0';
+
+/// Uma entrada do changelog do catálogo.
+class WidgetbookRelease {
+  const WidgetbookRelease({
+    required this.version,
+    required this.date,
+    required this.summary,
+    required this.changes,
+  });
+
+  final String version;
+  final String date;
+  final String summary;
+
+  /// `(tipo, descrição)` — tipo: Novo, Mudou, Docs, Removido.
+  final List<(String, String)> changes;
+}
+
+/// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
+/// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
+const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.0.0',
+    date: '2026-09-23',
+    summary:
+        'Cards-gaveta para coleções, gerenciador de itens e documentação '
+        'viva do catálogo.',
+    changes: [
+      (
+        'Novo',
+        'CollectionManager (showAppCollectionManager): lista os itens de uma '
+            'coleção com linha clicável para editar, lixeira com "Desfazer", '
+            '"Adicionar" fixo no rodapé e reabertura automática após salvar.',
+      ),
+      (
+        'Mudou',
+        'SquareGroupGrid v2: card inteiro clicável; vazio com borda '
+            'tracejada, com itens com "N itens incluídos", resumo agregado e '
+            '"Ver itens"; grupo largo (wide); altura estável de 1 a 10 itens. '
+            'API passou a receber List<AppSquareGroup>.',
+      ),
+      (
+        'Mudou',
+        'CollectionList: lixeira no lugar do "×", linha inteira abre a '
+            'edição, showHeader e highlightIndex.',
+      ),
+      (
+        'Mudou',
+        'BottomSheet ganha footer fixo; Pressable ganha excludeSemantics para '
+            'superfícies clicáveis com botões internos.',
+      ),
+      (
+        'Docs',
+        'Pasta Documentação → Guia: "Comece aqui", inventário gerado da '
+            'própria árvore do catálogo e este changelog. Tema passou para '
+            'Fundamentos.',
+      ),
+      (
+        'Docs',
+        'Padrões → Coleções em cadastro: quando usar cada componente de '
+            'coleção, com exemplo vivo.',
+      ),
+      (
+        'Mudou',
+        'Widgetbook publicado ocupa a tela inteira (sem a moldura de celular '
+            'do app) e cada caso tem link direto (/storybook/#/?path=...).',
+      ),
+    ],
+  ),
+  WidgetbookRelease(
+    version: '1.0.0',
+    date: 'antes de 2026-09-23',
+    summary:
+        'Catálogo component-first inicial (F2.5), sem versionamento formal.',
+    changes: [
+      (
+        'Novo',
+        'Catálogo por família (Ações, Superfícies, Formulário, Padrão global, '
+            'Feedback, Overlay, Dados, Gráficos), padrões de tela e auditoria '
+            'de tema (cores, espaçamento, tipografia).',
+      ),
+    ],
+  ),
+];
+
+/// Documentação → Guia → Comece aqui.
+class WidgetbookIntroductionPage extends StatelessWidget {
+  const WidgetbookIntroductionPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const DocPage(
+      eyebrow: 'GB CERNE · Widgetbook v$kWidgetbookVersion',
+      title: 'Comece aqui',
+      lead:
+          'O catálogo vivo dos componentes do CERNE Operação. Tudo o que '
+          'aparece aqui é o widget real de lib/ui — o mesmo código que as '
+          'telas do app usam.',
+      children: [
+        DocSection(
+          title: 'Como navegar',
+          children: [
+            DocBullets([
+              (
+                'Documentação',
+                'este guia, o inventário do catálogo e o changelog.',
+              ),
+              (
+                'Fundamentos',
+                'tokens de cor, espaçamento, raio e tipografia (Outfit).',
+              ),
+              (
+                'Padrões',
+                'composições de tela prontas: login, listagem, menu, CRUD e '
+                    'coleções em cadastro.',
+              ),
+              (
+                'Catálogo',
+                'cada componente público, agrupado por família, com um caso '
+                    'por estado relevante.',
+              ),
+            ]),
+            DocText(
+              'Use o addon de tema no painel lateral para alternar entre '
+              'Light e GB Mode. Casos marcados com "(knob)" têm controles '
+              'interativos no painel de knobs.',
+            ),
+          ],
+        ),
+        DocSection(
+          title: 'As leis do catálogo',
+          children: [
+            DocBullets([
+              (
+                'Component-first',
+                'todo controle visível reutilizável nasce em lib/ui antes de '
+                    'ser usado por uma tela.',
+              ),
+              (
+                'Fonte única',
+                'variações entram como props do widget compartilhado — nunca '
+                    'como cópia ou ajuste local numa tela.',
+              ),
+              (
+                'Tokens e tipografia',
+                'cores, espaços, raios, sombras e movimento vêm de '
+                    'design/generated; Outfit é a única família.',
+              ),
+              (
+                'Pipeline DTCG',
+                'design/tokens.ts → tokens.json → Dart gerado; valor novo '
+                    'entra primeiro na fonte.',
+              ),
+            ]),
+          ],
+        ),
+        DocSection(
+          title: 'Checklist para um componente novo',
+          children: [
+            DocBullets([
+              ('1', 'Criar lib/ui/<nome>.dart com o widget App<Nome>.'),
+              ('2', 'Exportar no barrel lib/ui/ui.dart.'),
+              (
+                '3',
+                'Escrever build<Nome>WidgetbookComponent() no mesmo arquivo, '
+                    'com um caso por estado: vazio, preenchido, limite (ex.: '
+                    '10 itens), erro/desabilitado quando existir.',
+              ),
+              (
+                '4',
+                'Registrar o builder na família certa em widgetbook_app.dart '
+                    '(o teste component_first_test falha se faltar).',
+              ),
+              ('5', 'Cobrir comportamento em test/ui/<nome>_test.dart.'),
+              (
+                '6',
+                'Adicionar a mudança em widgetbook/docs/guide_pages.dart '
+                    '(changelog) e subir kWidgetbookVersion.',
+              ),
+            ]),
+            DocCallout(
+              title: 'O inventário se atualiza sozinho',
+              text:
+                  'Documentação → Guia → Inventário é gerado da própria árvore '
+                  'do Widgetbook. Registrou o builder, ele aparece lá — não há '
+                  'lista manual para manter.',
+              icon: AppIcons.refreshCw,
+            ),
+          ],
+        ),
+        DocSection(
+          title: 'Como nomear os casos',
+          children: [
+            DocText(
+              'O nome do caso descreve o estado ou o uso, não a '
+              'implementação: "Vazio (primeiro acesso)", "Lista longa (10 '
+              'itens)", "Somente leitura (revisão/ficha)". Casos interativos '
+              'começam com "Interativo".',
+            ),
+            DocText(
+              'Cada caso tem link direto — copie a URL da barra do navegador '
+              '(/storybook/#/?path=...) para compartilhar em revisão ou '
+              'handoff. Por isso nomes de caso não usam "+", "&", "#", "?" '
+              'nem "%".',
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+/// Documentação → Guia → Novidades: o changelog renderizado.
+class WidgetbookChangelogPage extends StatelessWidget {
+  const WidgetbookChangelogPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    return DocPage(
+      eyebrow: 'Changelog',
+      title: 'Novidades do catálogo',
+      lead:
+          'O que mudou em cada versão do Widgetbook, da mais recente para a '
+          'mais antiga.',
+      children: [
+        for (final release in widgetbookChangelog)
+          DocSection(
+            title: 'v${release.version} · ${release.date}',
+            children: [
+              DocText(release.summary),
+              for (final (kind, text) in release.changes)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: AppSpacing.space2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: AppSpacing.space20,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: AppChip(
+                            tone: switch (kind) {
+                              'Novo' => AppChipTone.brand,
+                              'Removido' => AppChipTone.red,
+                              _ => AppChipTone.neutral,
+                            },
+                            child: Text(kind),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: AppSpacing.space3),
+                      Expanded(
+                        child: Text(
+                          text,
+                          style: TextStyle(
+                            fontSize: AppTypography.sm,
+                            height: 1.5,
+                            color: semantic.fgDefault,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+/// Documentação → Guia → Inventário: gerado da árvore real do Widgetbook,
+/// então nunca desatualiza em relação aos componentes registrados.
+class WidgetbookInventoryPage extends StatelessWidget {
+  const WidgetbookInventoryPage({super.key, required this.nodes});
+
+  final List<WidgetbookNode> nodes;
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final catalog = nodes.firstWhere(
+      (node) => node.name == 'Catálogo',
+      orElse: () => WidgetbookFolder(name: 'Catálogo', children: const []),
+    );
+    final families = [
+      for (final node in catalog.children ?? const <WidgetbookNode>[])
+        if (node is WidgetbookFolder) node,
+    ];
+
+    List<WidgetbookComponent> componentsOf(WidgetbookNode node) => [
+      for (final child in node.children ?? const <WidgetbookNode>[])
+        if (child is WidgetbookComponent) child else ...componentsOf(child),
+    ];
+
+    final all = componentsOf(catalog);
+    final useCases = all.fold<int>(0, (sum, c) => sum + c.useCases.length);
+    final single = [
+      for (final component in all)
+        if (component.useCases.length == 1) component.name,
+    ];
+
+    return DocPage(
+      eyebrow: 'Inventário',
+      title: 'O que existe no catálogo',
+      lead:
+          'Gerado a partir da árvore registrada em widgetbook_app.dart — '
+          'componentes novos aparecem aqui assim que são registrados.',
+      children: [
+        Wrap(
+          spacing: AppSpacing.space3,
+          runSpacing: AppSpacing.space3,
+          children: [
+            _Stat(label: 'Famílias', value: '${families.length}'),
+            _Stat(label: 'Componentes', value: '${all.length}'),
+            _Stat(label: 'Casos de uso', value: '$useCases'),
+            _Stat(label: 'Com um só caso', value: '${single.length}'),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.space8),
+        for (final family in families)
+          DocSection(
+            title: '${family.name} · ${componentsOf(family).length}',
+            children: [
+              DocTable(
+                header: const ['Componente', 'Casos de uso'],
+                rows: [
+                  for (final component in componentsOf(family))
+                    [
+                      component.name,
+                      component.useCases.map((u) => u.name).join(' · '),
+                    ],
+                ],
+              ),
+            ],
+          ),
+        if (single.isNotEmpty)
+          DocSection(
+            title: 'Oportunidades de documentação',
+            children: [
+              const DocText(
+                'Componentes com um único caso de uso — candidatos a ganhar '
+                'casos de estado (vazio, limite, erro, desabilitado):',
+              ),
+              Text(
+                single.join(' · '),
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  height: 1.6,
+                  color: semantic.fgMuted,
+                ),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
+class _Stat extends StatelessWidget {
+  const _Stat({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    return Container(
+      width: AppSize.drawer / 2,
+      padding: const EdgeInsets.all(AppSpacing.space4),
+      decoration: BoxDecoration(
+        color: semantic.bgSurface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: semantic.borderDefault),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: AppTypography.xl2,
+              fontWeight: AppTypography.weightBold,
+              color: semantic.fgDefault,
+            ),
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: AppTypography.sm,
+              color: semantic.fgMuted,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

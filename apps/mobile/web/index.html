@@ -88,8 +88,30 @@
           0 0 0 13px #3a3a3c,
           0 30px 60px rgba(0, 0, 0, 0.35);
       }
+
+      /* Widgetbook (/storybook/) é ferramenta de desktop: painel lateral,
+         knobs e páginas de documentação precisam da viewport inteira. */
+      .no-phone-frame #phone-frame {
+        background: #f5f5f5;
+        padding: 0;
+      }
+
+      .no-phone-frame #flutter-target {
+        width: 100%;
+        height: 100%;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+      }
     }
   </style>
+  <script>
+    // O mesmo index.html serve o app (/) e o Widgetbook (/storybook/, via
+    // `--base-href`); só o app roda dentro da moldura de celular.
+    if (new URL(document.baseURI).pathname.startsWith('/storybook')) {
+      document.documentElement.classList.add('no-phone-frame');
+    }
+  </script>
 </head>
 <body>
   <div id="phone-frame">
