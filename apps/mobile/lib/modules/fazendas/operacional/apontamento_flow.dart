@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design/generated/app_spacing.dart';
+import '../../../design/generated/app_typography.dart';
+import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import '../cadastros_vinculados.dart';
@@ -725,53 +727,115 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   static const _grupoProducao = 'Produção';
   static const _grupoOcorrencias = 'Ocorrências';
 
-  /// Etapa 3 — as cinco coleções do contrato, em grade 2x2 de cards
-  /// quadrados: cada card só mostra o nome do grupo e um contador, nunca os
-  /// itens soltos. "Adicionar" abre o formulário direto; "editar" abre a
-  /// listagem dos itens já lançados naquele grupo, com edição e exclusão.
+  /// Etapa 3 — as cinco coleções do contrato, cada uma um card-gaveta: o card
+  /// mostra quantos itens tem e um resumo agregado (nunca os itens soltos).
+  /// Card vazio → tocar adiciona; card com itens → tocar abre o gerenciador
+  /// (listar, editar, remover com desfazer, adicionar).
   Widget _etapaLancamentos(BuildContext context) {
-    return AppSquareGroupGrid(
-      groups: const [
-        _grupoMaoDeObra,
-        _grupoMaquinas,
-        _grupoInsumos,
-        _grupoProducao,
-        _grupoOcorrencias,
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const AppHeading(
+          level: AppHeadingLevel.h3,
+          child: Text('Recursos do apontamento'),
+        ),
+        const SizedBox(height: AppSpacing.space1),
+        Text(
+          'Adicione o que foi utilizado ou produzido. Toque num card para ver '
+          'e editar o que já foi incluído.',
+          style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+        ),
+        const SizedBox(height: AppSpacing.space4),
+        AppSquareGroupGrid(
+          groups: [
+            AppSquareGroup(
+              name: _grupoMaoDeObra,
+              icon: AppIcons.users,
+              count: _maoDeObra.length,
+              summary: _resumoDoGrupo(_grupoMaoDeObra),
+            ),
+            AppSquareGroup(
+              name: _grupoMaquinas,
+              icon: AppIcons.tractor,
+              count: _maquinas.length,
+              summary: _resumoDoGrupo(_grupoMaquinas),
+            ),
+            AppSquareGroup(
+              name: _grupoInsumos,
+              icon: AppIcons.package,
+              count: _insumos.length,
+              summary: _resumoDoGrupo(_grupoInsumos),
+            ),
+            AppSquareGroup(
+              name: _grupoProducao,
+              icon: AppIcons.wheat,
+              count: _producoes.length,
+              summary: _resumoDoGrupo(_grupoProducao),
+            ),
+            AppSquareGroup(
+              name: _grupoOcorrencias,
+              icon: AppIcons.triangleAlert,
+              count: _ocorrencias.length,
+              summary: _resumoDoGrupo(_grupoOcorrencias),
+              wide: true,
+            ),
+          ],
+          onAdd: (group) => _abrirFormularioDoGrupo(context, group),
+          onOpen: (group) => _gerenciarGrupo(context, group),
+        ),
       ],
-      counts: {
-        _grupoMaoDeObra: _maoDeObra.length,
-        _grupoMaquinas: _maquinas.length,
-        _grupoInsumos: _insumos.length,
-        _grupoProducao: _producoes.length,
-        _grupoOcorrencias: _ocorrencias.length,
-      },
-      onAdd: (group) => _abrirFormularioDoGrupo(context, group),
-      onManage: (group) => _gerenciarGrupo(context, group),
     );
   }
 
-  void _abrirFormularioDoGrupo(
-    BuildContext context,
-    String group, {
-    int? editIndex,
-  }) {
+  /// Resumo agregado do grupo, sem nome de item: custo somado para recursos
+  /// com valor, quantidade por unidade para produção e a maior prioridade
+  /// para ocorrências. `null` quando o grupo está vazio.
+  String? _resumoDoGrupo(String group) {
+    String? custo(Iterable<num> valores) => valores.isEmpty
+        ? null
+        : formatarReais(valores.fold<num>(0, (soma, v) => soma + v));
+
     switch (group) {
       case _grupoMaoDeObra:
-        _adicionarMaoDeObra(context, editIndex: editIndex);
+        return custo(_maoDeObra.map((item) => item.total));
       case _grupoMaquinas:
-        _adicionarMaquina(context, editIndex: editIndex);
+        return custo(_maquinas.map((item) => item.total));
       case _grupoInsumos:
-        _adicionarInsumo(context, editIndex: editIndex);
+        return custo(_insumos.map((item) => item.custoTotal));
       case _grupoProducao:
-        _adicionarProducao(context, editIndex: editIndex);
-      case _grupoOcorrencias:
-        _adicionarOcorrencia(context, editIndex: editIndex);
+        final totais = <String, num>{};
+        for (final item in _producoes) {
+          totais[item.unidade] = (totais[item.unidade] ?? 0) + item.quantidade;
+        }
+        if (totais.isEmpty) return null;
+        return [
+          for (final entry in totais.entries) _qtd(entry.value, entry.key),
+        ].join(' · ');
+      default:
+        if (_ocorrencias.isEmpty) return null;
+        final maior = _ocorrencias
+            .map((item) => item.prioridade)
+            .reduce((a, b) => a.index >= b.index ? a : b);
+        return 'Prioridade ${maior.label.toLowerCase()}';
     }
   }
 
-  /// Listagem dos itens já lançados de um grupo — aberta pelo "editar" do
-  /// card. Reusa [AppCollectionList]: "editar" fecha esta listagem e reabre o
-  /// formulário do grupo pré-preenchido; "remover" tira o item na hora.
+  Future<void> _abrirFormularioDoGrupo(
+    BuildContext context,
+    String group, {
+    int? editIndex,
+  }) => switch (group) {
+    _grupoMaoDeObra => _adicionarMaoDeObra(context, editIndex: editIndex),
+    _grupoMaquinas => _adicionarMaquina(context, editIndex: editIndex),
+    _grupoInsumos => _adicionarInsumo(context, editIndex: editIndex),
+    _grupoProducao => _adicionarProducao(context, editIndex: editIndex),
+    _ => _adicionarOcorrencia(context, editIndex: editIndex),
+  };
+
+  /// O "dentro" de um card: [showAppCollectionManager] lista os itens do
+  /// grupo, abre o formulário pré-preenchido para editar (e volta para a
+  /// lista depois de salvar) e remove com "Desfazer".
   void _gerenciarGrupo(BuildContext context, String group) {
     List<AppCollectionItemView> items() => switch (group) {
       _grupoMaoDeObra => [
@@ -820,46 +884,32 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
       ],
     };
 
-    void remover(int index) => setState(() {
-      switch (group) {
-        case _grupoMaoDeObra:
-          _maoDeObra.removeAt(index);
-        case _grupoMaquinas:
-          _maquinas.removeAt(index);
-        case _grupoInsumos:
-          _insumos.removeAt(index);
-        case _grupoProducao:
-          _producoes.removeAt(index);
-        case _grupoOcorrencias:
-          _ocorrencias.removeAt(index);
-      }
-    });
+    /// Remove da lista do grupo e devolve o desfazer (reinsere no lugar).
+    VoidCallback remover<T>(List<T> lista, int index) {
+      final removido = lista.removeAt(index);
+      setState(() {});
+      return () => setState(() => lista.insert(index, removido));
+    }
 
-    showAppBottomSheet<void>(
+    showAppCollectionManager(
       context,
       title: group,
-      child: StatefulBuilder(
-        builder: (sheetContext, setSheetState) => AppCollectionList(
-          name: group,
-          items: items(),
-          onAdd: () {
-            Navigator.of(sheetContext).pop();
-            _abrirFormularioDoGrupo(context, group);
-          },
-          onEdit: (index) {
-            Navigator.of(sheetContext).pop();
-            _abrirFormularioDoGrupo(context, group, editIndex: index);
-          },
-          onRemove: (index) {
-            remover(index);
-            setSheetState(() {});
-          },
-        ),
-      ),
+      items: items,
+      summary: () => _resumoDoGrupo(group),
+      onAdd: () => _abrirFormularioDoGrupo(context, group),
+      onEdit: (index) =>
+          _abrirFormularioDoGrupo(context, group, editIndex: index),
+      onRemove: (index) => switch (group) {
+        _grupoMaoDeObra => remover(_maoDeObra, index),
+        _grupoMaquinas => remover(_maquinas, index),
+        _grupoInsumos => remover(_insumos, index),
+        _grupoProducao => remover(_producoes, index),
+        _ => remover(_ocorrencias, index),
+      },
     );
   }
 
-  void _adicionarMaoDeObra(BuildContext context, {int? editIndex}) {
+  Future<void> _adicionarMaoDeObra(BuildContext context, {int? editIndex}) {
     final existente = editIndex == null ? null : _maoDeObra[editIndex];
     _TipoMaoDeObra? tipo = existente?.tipo;
     String? alvo = existente?.alvo;
@@ -885,7 +935,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
       valor = formatarNumero(executor.custoHora * _fatorHora(unidade));
     }
 
-    showAppBottomSheet<void>(
+    return showAppBottomSheet<void>(
       context,
       title: editIndex == null
           ? 'Mão de obra / Serviço'
@@ -1044,7 +1094,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   /// unidade e custo-hora. Com medidor, a quantidade é a diferença entre a
   /// leitura final e a inicial (nunca digitada); sem medidor (implemento), a
   /// pessoa informa as horas.
-  void _adicionarMaquina(BuildContext context, {int? editIndex}) {
+  Future<void> _adicionarMaquina(BuildContext context, {int? editIndex}) {
     final existente = editIndex == null ? null : _maquinas[editIndex];
     EquipamentoCadastro? equipamento = existente?.equipamento;
     num leituraInicial = existente?.leituraInicial ?? 0;
@@ -1057,7 +1107,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
     num quantidade() =>
         temMedidor() ? leituraFinal - leituraInicial : horasManuais;
 
-    showAppBottomSheet<void>(
+    return showAppBottomSheet<void>(
       context,
       title: editIndex == null
           ? 'Máquina / Implemento'
@@ -1216,7 +1266,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   // escolhido (`stocks.warehouse_id`) — travado, não mais um select solto que
   // podia apontar para um armazém onde o produto não está. O "Armazém de
   // insumo" do cabeçalho prioriza o estoque daquele armazém.
-  void _adicionarInsumo(BuildContext context, {int? editIndex}) {
+  Future<void> _adicionarInsumo(BuildContext context, {int? editIndex}) {
     final existente = editIndex == null ? null : _insumos[editIndex];
     String? produto = existente?.produto;
     ItemEstoqueCadastro? estoque = existente?.estoque;
@@ -1228,7 +1278,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
         itemEstoquePorRotulo(rotulo)!,
     ];
 
-    showAppBottomSheet<void>(
+    return showAppBottomSheet<void>(
       context,
       title: editIndex == null ? 'Insumo' : 'Editar insumo',
       child: StatefulBuilder(
@@ -1383,13 +1433,13 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   /// `appropriation_production` — o que a operação gerou. A unidade é do
   /// produto (`product_um`) e o destino é sempre o "Armazém de produção" do
   /// cabeçalho (`appropriation_production` não tem `warehouse_uuid` próprio).
-  void _adicionarProducao(BuildContext context, {int? editIndex}) {
+  Future<void> _adicionarProducao(BuildContext context, {int? editIndex}) {
     final existente = editIndex == null ? null : _producoes[editIndex];
     String? produto = existente?.produto;
     num quantidade = existente?.quantidade ?? 1;
     final area = _areaUtilizadaNum ?? 0;
 
-    showAppBottomSheet<void>(
+    return showAppBottomSheet<void>(
       context,
       title: editIndex == null ? 'Produção' : 'Editar produção',
       child: StatefulBuilder(
@@ -1471,14 +1521,14 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
     );
   }
 
-  void _adicionarOcorrencia(BuildContext context, {int? editIndex}) {
+  Future<void> _adicionarOcorrencia(BuildContext context, {int? editIndex}) {
     final existente = editIndex == null ? null : _ocorrencias[editIndex];
     var prioridade = existente?.prioridade ?? _Prioridade.media;
     var diagnostico = existente?.diagnostico ?? '';
     var recomendacao = existente?.recomendacao ?? '';
     String? foto = existente?.foto;
 
-    showAppBottomSheet<void>(
+    return showAppBottomSheet<void>(
       context,
       title: editIndex == null ? 'Ocorrência' : 'Editar ocorrência',
       child: StatefulBuilder(

@@ -60,24 +60,23 @@ Future<void> _enterText(WidgetTester tester, String label, String value) async {
   await tester.enterText(input.first, value);
 }
 
-/// A etapa de lançamentos vira uma grade 2x2 de cards quadrados — um por
-/// grupo (Mão de obra, Máquinas, Insumos, Produção, Ocorrências), cada card
-/// identificado pelo nome do grupo. O "Adicionar" mora dentro do card, mais
-/// perto do rótulo do grupo do que qualquer outro "Adicionar" na tela.
+/// A etapa de lançamentos é uma grade de cards-gaveta — um por grupo (Mão de
+/// obra, Máquinas, Insumos, Produção, Ocorrências), cada um com a chave
+/// `square-group-<grupo>` do `AppSquareGroupGrid`.
 Finder _cardForGroup(String group) =>
-    find.ancestor(of: find.text(group), matching: find.byType(Column)).first;
+    find.byKey(ValueKey('square-group-$group'));
 
+/// No card vazio, o "Adicionar" é só visual (`IgnorePointer`) — o alvo é o
+/// card inteiro, então o toque vai no nome do grupo dentro do card.
 Finder _addButtonForGroup(String group) =>
-    find.descendant(of: _cardForGroup(group), matching: find.text('Adicionar'));
+    find.descendant(of: _cardForGroup(group), matching: find.text(group));
 
-/// Contador do card — "editar" só liga quando o grupo tem ao menos 1 item,
-/// então a listagem serve tanto para conferir a contagem quanto para abrir a
-/// listagem de itens lançados (edição/exclusão), sem expor o item solto na
-/// tela de lançamentos.
+/// Card com itens: tocar em qualquer lugar abre o gerenciador (listar,
+/// editar, remover com desfazer), sem expor o item solto na tela.
 Future<void> _abrirGerenciador(WidgetTester tester, String group) async {
-  final icon = find.byTooltip('Ver e editar itens de $group');
-  await tester.ensureVisible(icon);
-  await tester.tap(icon);
+  final card = _cardForGroup(group);
+  await tester.ensureVisible(card);
+  await tester.tap(find.descendant(of: card, matching: find.text(group)));
   await tester.pumpAndSettle();
 }
 
@@ -209,9 +208,11 @@ void main() {
         expect(find.text('Produção'), findsOneWidget);
         expect(find.text('Ocorrências'), findsOneWidget);
         expect(find.byType(AppSquareGroupGrid), findsOneWidget);
+        expect(find.text('Recursos do apontamento'), findsOneWidget);
+        // Tudo vazio: cada card mostra "Nenhum item" e o convite a adicionar,
+        // sem atalho de adição rápida (só existe em card com itens).
         expect(find.text('Nenhum item'), findsNWidgets(5));
-        // Sem itens lançados, "editar" ainda não aparece habilitado.
-        expect(find.byTooltip('Ver e editar itens de Insumos'), findsOneWidget);
+        expect(find.byTooltip('Adicionar em Insumos'), findsNothing);
         expect(tester.takeException(), isNull);
       },
     );
@@ -262,15 +263,25 @@ void main() {
         await tester.tap(find.text('Adicionar').last);
         await tester.pumpAndSettle();
 
-        // O item lançado não fica solto na tela — só o contador do card.
+        // O item lançado não fica solto na tela — o card diz quantos há, por
+        // extenso, e um resumo agregado (custo), nunca o nome do item.
         expect(
           find.descendant(
             of: _cardForGroup('Insumos'),
-            matching: find.text('1'),
+            matching: find.text('1 item incluído'),
+          ),
+          findsOneWidget,
+        );
+        expect(
+          find.descendant(
+            of: _cardForGroup('Insumos'),
+            matching: find.textContaining(r'R$'),
           ),
           findsOneWidget,
         );
         expect(find.text('Ração Engorda 18%'), findsNothing);
+        // Com itens, o card ganha o atalho de adição rápida.
+        expect(find.byTooltip('Adicionar em Insumos'), findsOneWidget);
 
         await _abrirGerenciador(tester, 'Insumos');
 
@@ -302,17 +313,25 @@ void main() {
       await tester.tap(find.text('Salvar'));
       await tester.pumpAndSettle();
 
-      await _abrirGerenciador(tester, 'Insumos');
+      // Salvar devolve a pessoa para a lista do grupo, sem reabrir à mão.
       // 2 kg/ha × 41,50 ha (área produtiva do Talhão 01) = 83 kg.
       expect(find.textContaining('2 kg/ha'), findsOneWidget);
       expect(find.textContaining('total 83 kg'), findsOneWidget);
 
-      // Excluir tira o item da listagem, sem fechar o sheet.
+      // Excluir tira o item da listagem, sem fechar o sheet, e oferece
+      // desfazer.
       await tester.tap(find.byTooltip('Remover item'));
       await tester.pumpAndSettle();
 
       expect(find.text('Ração Engorda 18%'), findsNothing);
-      expect(find.text('Nenhum item adicionado'), findsOneWidget);
+      expect(find.text('0 itens incluídos'), findsOneWidget);
+      expect(find.text('"Ração Engorda 18%" removido'), findsOneWidget);
+
+      await tester.tap(find.text('Desfazer'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ração Engorda 18%'), findsOneWidget);
+      expect(find.textContaining('1 item incluído'), findsWidgets);
       expect(tester.takeException(), isNull);
     });
 
@@ -343,7 +362,7 @@ void main() {
       expect(
         find.descendant(
           of: _cardForGroup('Produção'),
-          matching: find.text('1'),
+          matching: find.text('1 item incluído'),
         ),
         findsOneWidget,
       );

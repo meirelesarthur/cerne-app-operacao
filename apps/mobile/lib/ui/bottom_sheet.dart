@@ -6,6 +6,7 @@ import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
+import 'button.dart';
 import 'field_capsule.dart';
 
 /// Espelha `BottomSheet.tsx` (spec §6.11).
@@ -22,6 +23,7 @@ Future<T?> showAppBottomSheet<T>(
   String? title,
   double maxHeightFraction = 0.85,
   bool expand = false,
+  Widget? footer,
 }) {
   return showModalBottomSheet<T>(
     context: context,
@@ -34,6 +36,7 @@ Future<T?> showAppBottomSheet<T>(
       title: title,
       maxHeightFraction: maxHeightFraction,
       expand: expand,
+      footer: footer,
       child: child,
     ),
   );
@@ -49,6 +52,7 @@ class AppBottomSheet extends StatelessWidget {
     this.title,
     this.maxHeightFraction = 0.85,
     this.expand = false,
+    this.footer,
   });
 
   final Widget child;
@@ -61,6 +65,11 @@ class AppBottomSheet extends StatelessWidget {
   /// pelo dock de busca (`AppSearchSelect`/`showAppSearchSelectDock`), cuja
   /// lista interna já rola por si e precisa de altura previsível.
   final bool expand;
+
+  /// Rodapé fixo, fora da área rolável — fica sempre ao alcance do polegar
+  /// mesmo com conteúdo longo (ex.: "Adicionar" do gerenciador de coleção,
+  /// [showAppCollectionManager]). `null` mantém o sheet sem rodapé.
+  final Widget? footer;
 
   @override
   Widget build(BuildContext context) {
@@ -124,11 +133,11 @@ class AppBottomSheet extends StatelessWidget {
                 if (expand)
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(
+                      padding: EdgeInsets.fromLTRB(
                         AppSpacing.space5,
                         0,
                         AppSpacing.space5,
-                        AppSpacing.space5,
+                        footer == null ? AppSpacing.space5 : AppSpacing.space3,
                       ),
                       child: AppInputSurface(
                         backgroundColor: semantic.bgSurface,
@@ -139,16 +148,33 @@ class AppBottomSheet extends StatelessWidget {
                 else
                   Flexible(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.fromLTRB(
+                      padding: EdgeInsets.fromLTRB(
                         AppSpacing.space5,
                         0,
                         AppSpacing.space5,
-                        AppSpacing.space5,
+                        footer == null ? AppSpacing.space5 : AppSpacing.space3,
                       ),
                       child: AppInputSurface(
                         backgroundColor: semantic.bgSurface,
                         child: child,
                       ),
+                    ),
+                  ),
+                if (footer case final footer?)
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: semantic.borderSubtle),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.space5,
+                        AppSpacing.space3,
+                        AppSpacing.space5,
+                        AppSpacing.space5,
+                      ),
+                      child: footer,
                     ),
                   ),
               ],
@@ -168,7 +194,7 @@ WidgetbookComponent buildBottomSheetWidgetbookComponent() {
         name: 'Aberto (via botão)',
         builder: (context) => Center(
           child: Builder(
-            builder: (context) => ElevatedButton(
+            builder: (context) => AppButton(
               onPressed: () => showAppBottomSheet<void>(
                 context,
                 title: 'Detalhes',
@@ -183,6 +209,37 @@ WidgetbookComponent buildBottomSheetWidgetbookComponent() {
                 ),
               ),
               child: const Text('Abrir bottom sheet'),
+            ),
+          ),
+        ),
+      ),
+      WidgetbookUseCase(
+        name: 'Com rodapé fixo (conteúdo longo)',
+        builder: (context) => Center(
+          child: Builder(
+            builder: (context) => AppButton(
+              onPressed: () => showAppBottomSheet<void>(
+                context,
+                title: 'Itens incluídos',
+                footer: AppButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Ação principal fixa'),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    for (var i = 1; i <= 20; i++)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: AppSpacing.space3,
+                        ),
+                        child: Text('Linha $i — o rodapé não rola junto.'),
+                      ),
+                  ],
+                ),
+              ),
+              child: const Text('Abrir com rodapé fixo'),
             ),
           ),
         ),

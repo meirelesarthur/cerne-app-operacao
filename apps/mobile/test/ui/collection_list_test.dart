@@ -59,5 +59,41 @@ void main() {
       await tester.tap(find.byTooltip('Remover item'));
       expect(removed, 0);
     });
+
+    testWidgets('com onEdit, tocar na linha inteira também edita', (
+      tester,
+    ) async {
+      int? edited;
+      await tester.pumpWidget(
+        _wrap(
+          AppCollectionList(
+            name: 'Insumos',
+            items: _items,
+            onEdit: (index) => edited = index,
+          ),
+        ),
+      );
+
+      await tester.tap(find.text('Lote Engorda 05'));
+      expect(edited, 0);
+    });
+
+    testWidgets('highlightIndex destaca a linha e showHeader some com o topo', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        _wrap(
+          const AppCollectionList(
+            name: 'Insumos',
+            items: _items,
+            showHeader: false,
+            highlightIndex: 0,
+          ),
+        ),
+      );
+
+      expect(find.text('Insumos'), findsNothing);
+      expect(find.text('Lote Engorda 05'), findsOneWidget);
+    });
   });
 }
