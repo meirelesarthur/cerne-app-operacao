@@ -206,7 +206,12 @@ class AppButton extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                   horizontal: AppSpacing.space1,
                 ),
-                child: Center(child: content),
+                // Mesmo critério das demais variantes: só a largura do
+                // conteúdo (mín. 44), sem se esticar sobre os vizinhos.
+                child: Center(
+                  widthFactor: width == null && !fullWidth ? 1 : null,
+                  child: content,
+                ),
               ),
             ),
           ),
