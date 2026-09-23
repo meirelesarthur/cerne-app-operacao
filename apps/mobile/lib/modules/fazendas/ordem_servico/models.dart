@@ -59,7 +59,8 @@ extension OrdemServicoStatusLabel on OrdemServicoStatus {
     OrdemServicoStatus.emExecucao => 'Em execução',
     OrdemServicoStatus.pausada => 'Pausada',
     OrdemServicoStatus.entregue => 'Entregue',
-    OrdemServicoStatus.refeita => 'Refeita',
+    // "Refeita" soava como "já refiz" — é o contrário: o serviço volta.
+    OrdemServicoStatus.refeita => 'Precisa refazer',
     OrdemServicoStatus.cancelada => 'Cancelada',
   };
 

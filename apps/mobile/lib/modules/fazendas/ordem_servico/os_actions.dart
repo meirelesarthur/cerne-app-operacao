@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../ui/ui.dart';
 import 'models.dart';
@@ -9,7 +10,7 @@ import 'widgets.dart';
 
 /// Ciclo de execução da OS pelo Operacional, aberto em tela cheia a partir de
 /// qualquer lista de OS (tela inicial e "Minhas OS"): detalhe completo com
-/// iniciar, pausar/retomar, entregar ou marcar como refeita (com motivo ou
+/// iniciar, pausar/retomar, entregar ou sinalizar que precisa refazer (com motivo ou
 /// justificativa obrigatórios). Fonte única — Lei 2 — para as duas telas
 /// conduzirem a OS do mesmo jeito.
 
@@ -27,8 +28,8 @@ void abrirDetalheOs(BuildContext context, WidgetRef ref, OrdemServico os) {
 ///
 /// As ações ficam no rodapé fixo (`AppActionBar`), não no fim do conteúdo — o
 /// detalhe é longo e o próximo passo (iniciar, entregar, retomar) não pode
-/// depender de rolar até o fim. O CTA é o avanço natural do ciclo; "Marcar
-/// como refeita" é a saída em contorno vermelho; a alternativa não destrutiva
+/// depender de rolar até o fim. O CTA é o avanço natural do ciclo; "Precisa
+/// refazer" é a saída em contorno vermelho; a alternativa não destrutiva
 /// (pausar, ou entregar direto de uma pausa) vai na faixa acima do CTA.
 class OsDetailPage extends ConsumerWidget {
   const OsDetailPage({super.key, required this.osId});
@@ -48,24 +49,24 @@ class OsDetailPage extends ConsumerWidget {
       OrdemServicoStatus.emExecucao => AppActionBar(
         alternativeLabel: 'Pausar execução',
         onAlternative: () => abrirPausarOs(context, ref, os.id),
-        primaryLabel: 'Marcar como entregue',
+        primaryLabel: 'Entregar serviço',
         onPrimary: () => confirmarEntregarOs(context, ref, os),
-        secondaryLabel: 'Marcar como refeita',
+        secondaryLabel: 'Precisa refazer',
         onSecondary: () => abrirRefazerOs(context, ref, os.id),
       ),
       OrdemServicoStatus.pausada => AppActionBar(
-        alternativeLabel: 'Marcar como entregue',
+        alternativeLabel: 'Entregar serviço',
         onAlternative: () => confirmarEntregarOs(context, ref, os),
         primaryLabel: 'Retomar execução',
         onPrimary: () => confirmarRetomarOs(context, ref, os),
-        secondaryLabel: 'Marcar como refeita',
+        secondaryLabel: 'Precisa refazer',
         onSecondary: () => abrirRefazerOs(context, ref, os.id),
       ),
       _ => null,
     };
 
     return AppPageScaffold(
-      title: 'Detalhe da OS',
+      title: 'Ordem de serviço',
       onBack: () => Navigator.of(context).maybePop(),
       actionBar: actionBar,
       child: Padding(
@@ -78,91 +79,201 @@ class OsDetailPage extends ConsumerWidget {
 
 void abrirPausarOs(BuildContext context, WidgetRef ref, String osId) {
   final notifier = ref.read(ordemServicoStoreProvider.notifier);
-  final controller = TextEditingController();
 
   showAppBottomSheet<void>(
     context,
     title: 'Pausar a ${notifier.byId(osId).codigo}?',
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        AppFormField(
-          label: 'Motivo da pausa',
-          required: true,
-          hint: _registroHistorico,
-          child: AppTextarea(
-            controller: controller,
-            placeholder: 'Ex.: falta de insumo, condição climática...',
-          ),
-        ),
-        const SizedBox(height: AppSpacing.space5),
-        AppButton(
-          fullWidth: true,
-          onPressed: () {
-            final motivo = controller.text.trim();
-            if (motivo.isEmpty) return;
-            final atual = notifier.byId(osId);
-            notifier.pausar(
-              osId,
-              autor: atual.responsavelExecucao,
-              motivo: motivo,
-            );
-            // Fecha só a dock: o detalhe em tela cheia continua aberto e
-            // mostra o novo status.
-            Navigator.of(context).pop();
-          },
-          child: const Text('Confirmar pausa'),
-        ),
-      ],
+    // Com motivo sendo digitado, tocar fora não descarta o texto.
+    dismissible: false,
+    child: _MotivoSheet(
+      opcoes: motivosPausa,
+      rotuloCampo: 'Por que vai pausar?',
+      rotuloOutro: 'Conte o motivo',
+      placeholderOutro: 'Ex.: chegou uma ordem mais urgente',
+      erroSemEscolha: 'Escolha o motivo da pausa para continuar.',
+      erroOutroVazio: 'Escreva o motivo da pausa para continuar.',
+      confirmar: 'Confirmar pausa',
+      onConfirmar: (motivo) {
+        final atual = notifier.byId(osId);
+        notifier.pausar(osId, autor: atual.responsavelExecucao, motivo: motivo);
+      },
     ),
   );
 }
 
 void abrirRefazerOs(BuildContext context, WidgetRef ref, String osId) {
   final notifier = ref.read(ordemServicoStoreProvider.notifier);
-  final controller = TextEditingController();
 
   showAppBottomSheet<void>(
     context,
-    title: 'Marcar a ${notifier.byId(osId).codigo} como refeita?',
-    child: Column(
+    title: 'A ${notifier.byId(osId).codigo} precisa ser refeita?',
+    dismissible: false,
+    child: _MotivoSheet(
+      rotuloOutro: 'Por que precisa refazer?',
+      placeholderOutro: 'Ex.: a cerca ficou torta no trecho perto da porteira',
+      erroOutroVazio: 'Escreva por que o serviço precisa ser refeito.',
+      confirmar: 'Confirmar: precisa refazer',
+      perigo: true,
+      onConfirmar: (justificativa) {
+        final atual = notifier.byId(osId);
+        notifier.marcarRefeita(
+          osId,
+          autor: atual.responsavelExecucao,
+          justificativa: justificativa,
+        );
+      },
+    ),
+  );
+}
+
+/// Motivos prontos da pausa: tocar é mais rápido e mais seguro que digitar de
+/// luva. "Outro motivo" abre o campo de texto.
+const motivosPausa = [
+  'Chuva ou tempo ruim',
+  'Falta de insumo ou material',
+  'Máquina ou equipamento quebrado',
+  'Parada para refeição',
+];
+
+const _outroMotivo = 'Outro motivo';
+
+/// Corpo das docks de motivo (pausar e refazer). Com [opcoes], a pessoa toca
+/// num motivo pronto e só digita em "Outro motivo"; sem [opcoes], o texto é o
+/// próprio motivo. Confirmar sem motivo mostra o erro no campo em vez de não
+/// fazer nada.
+class _MotivoSheet extends StatefulWidget {
+  const _MotivoSheet({
+    this.opcoes = const [],
+    this.rotuloCampo,
+    required this.rotuloOutro,
+    required this.placeholderOutro,
+    this.erroSemEscolha,
+    required this.erroOutroVazio,
+    required this.confirmar,
+    required this.onConfirmar,
+    this.perigo = false,
+  });
+
+  final List<String> opcoes;
+  final String? rotuloCampo;
+  final String rotuloOutro;
+  final String placeholderOutro;
+  final String? erroSemEscolha;
+  final String erroOutroVazio;
+  final String confirmar;
+  final ValueChanged<String> onConfirmar;
+  final bool perigo;
+
+  @override
+  State<_MotivoSheet> createState() => _MotivoSheetState();
+}
+
+class _MotivoSheetState extends State<_MotivoSheet> {
+  final _controller = TextEditingController();
+  String? _escolha;
+  String? _erroEscolha;
+  String? _erroTexto;
+
+  bool get _comOpcoes => widget.opcoes.isNotEmpty;
+  bool get _digita => !_comOpcoes || _escolha == _outroMotivo;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _confirmar() {
+    if (_comOpcoes && _escolha == null) {
+      setState(() => _erroEscolha = widget.erroSemEscolha);
+      return;
+    }
+    final texto = _controller.text.trim();
+    if (_digita && texto.isEmpty) {
+      setState(() => _erroTexto = widget.erroOutroVazio);
+      return;
+    }
+    widget.onConfirmar(_digita ? texto : _escolha!);
+    // Fecha só a dock: o detalhe em tela cheia continua aberto e mostra o
+    // novo status.
+    Navigator.of(context).pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
       mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppFormField(
-          label: 'Justificativa',
-          required: true,
-          hint:
-              'Explique por que o serviço precisa ser refeito. '
-              '$_registroHistorico',
-          child: AppTextarea(
-            controller: controller,
-            placeholder: 'Descreva o que impediu a conclusão...',
+        if (_comOpcoes)
+          AppFormField(
+            label: widget.rotuloCampo ?? '',
+            required: true,
+            error: _erroEscolha,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (final opcao in [...widget.opcoes, _outroMotivo]) ...[
+                  AppMenuItem(
+                    label: opcao,
+                    active: _escolha == opcao,
+                    surface: AppMenuItemSurface.subtle,
+                    showShadow: false,
+                    trailing: _escolha == opcao
+                        ? const AppIcon(AppIcons.check, size: AppSize.iconMd)
+                        : const SizedBox.shrink(),
+                    onTap: () => setState(() {
+                      _escolha = opcao;
+                      _erroEscolha = null;
+                    }),
+                  ),
+                  const SizedBox(height: AppSpacing.space2),
+                ],
+              ],
+            ),
           ),
-        ),
+        if (_digita) ...[
+          const SizedBox(height: AppSpacing.space3),
+          AppFormField(
+            label: widget.rotuloOutro,
+            required: true,
+            error: _erroTexto,
+            hint: _registroHistorico,
+            child: AppTextarea(
+              controller: _controller,
+              minLines: 3,
+              placeholder: widget.placeholderOutro,
+              onChanged: (_) {
+                if (_erroTexto != null) setState(() => _erroTexto = null);
+              },
+            ),
+          ),
+        ] else
+          const Padding(
+            padding: EdgeInsets.only(top: AppSpacing.space1),
+            child: Text(_registroHistorico),
+          ),
         const SizedBox(height: AppSpacing.space5),
         AppButton(
           fullWidth: true,
-          variant: AppButtonVariant.danger,
-          onPressed: () {
-            final justificativa = controller.text.trim();
-            if (justificativa.isEmpty) return;
-            final atual = notifier.byId(osId);
-            notifier.marcarRefeita(
-              osId,
-              autor: atual.responsavelExecucao,
-              justificativa: justificativa,
-            );
-            // Fecha só a dock: o detalhe em tela cheia continua aberto e
-            // mostra o novo status.
-            Navigator.of(context).pop();
-          },
-          child: const Text('Confirmar retrabalho'),
+          size: AppButtonSize.lg,
+          variant: widget.perigo
+              ? AppButtonVariant.danger
+              : AppButtonVariant.primary,
+          onPressed: _confirmar,
+          child: Text(widget.confirmar),
+        ),
+        const SizedBox(height: AppSpacing.space2),
+        AppButton(
+          fullWidth: true,
+          size: AppButtonSize.lg,
+          variant: AppButtonVariant.subtle,
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancelar'),
         ),
       ],
-    ),
-  );
+    );
+  }
 }
 
 const _registroHistorico =
@@ -211,11 +322,11 @@ Future<void> confirmarEntregarOs(
 ) async {
   final ok = await showAppConfirm(
     context,
-    title: 'Marcar a ${os.codigo} como entregue?',
+    title: 'Entregar a ${os.codigo}?',
     message:
         '${os.titulo}.\n\nIsso encerra a OS e não dá para desfazer pelo '
         'aplicativo. $_registroHistorico',
-    confirmLabel: 'Marcar como entregue',
+    confirmLabel: 'Entregar serviço',
   );
   if (!ok) return;
   ref

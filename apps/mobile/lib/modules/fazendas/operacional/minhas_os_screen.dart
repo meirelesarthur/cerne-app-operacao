@@ -28,12 +28,13 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
   String _filtro = 'todas';
 
   /// "Todas" abre a tela com o panorama do dia; os demais filtros separam
-  /// por andamento (pausada conta como em execução — ainda é trabalho aberto).
+  /// por andamento (pausada conta como em andamento — ainda é trabalho
+  /// aberto, e o nome do filtro diz isso).
   static const _filtros = [
     AppFormSelectOption(value: 'todas', label: 'Todas'),
     AppFormSelectOption(value: 'aguardando', label: 'Aguardando'),
-    AppFormSelectOption(value: 'execucao', label: 'Em execução'),
-    AppFormSelectOption(value: 'finalizadas', label: 'Finalizadas'),
+    AppFormSelectOption(value: 'execucao', label: 'Em andamento'),
+    AppFormSelectOption(value: 'finalizadas', label: 'Encerradas'),
   ];
 
   List<OrdemServico> _filtrar(List<OrdemServico> ordens) {

@@ -94,24 +94,24 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AppPageScaffold), findsOneWidget);
-      expect(find.text('Detalhe da OS'), findsOneWidget);
+      expect(find.text('Ordem de serviço'), findsOneWidget);
       // Em execução: entregar é o CTA; pausar e refazer ficam no rodapé.
-      expect(find.text('MARCAR COMO ENTREGUE'), findsOneWidget);
+      expect(find.text('ENTREGAR SERVIÇO'), findsOneWidget);
       expect(find.text('PAUSAR EXECUÇÃO'), findsOneWidget);
       // Tela cheia cobre a navbar.
       expect(find.byType(AppBottomTabBar), findsNothing);
 
-      await tester.tap(find.text('MARCAR COMO ENTREGUE'));
+      await tester.tap(find.text('ENTREGAR SERVIÇO'));
       await tester.pumpAndSettle();
 
       // Encerrar exige confirmação explícita.
-      expect(find.text('Marcar a OS #2198 como entregue?'), findsOneWidget);
-      await tester.tap(find.text('Marcar como entregue'));
+      expect(find.text('Entregar a OS #2198?'), findsOneWidget);
+      await tester.tap(find.text('Entregar serviço'));
       await tester.pumpAndSettle();
 
       // Continua na tela, agora sem ações (OS encerrada).
-      expect(find.text('Detalhe da OS'), findsOneWidget);
-      expect(find.text('MARCAR COMO ENTREGUE'), findsNothing);
+      expect(find.text('Ordem de serviço'), findsOneWidget);
+      expect(find.text('ENTREGAR SERVIÇO'), findsNothing);
     });
 
     testWidgets(
@@ -184,8 +184,31 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Pausar a OS #2198?'), findsOneWidget);
-      expect(find.text('Motivo da pausa'), findsOneWidget);
+      expect(find.text('Por que vai pausar?'), findsOneWidget);
       expect(find.text('Confirmar pausa'), findsOneWidget);
+
+      // Confirmar sem motivo explica o que falta em vez de não fazer nada.
+      await tester.tap(find.text('Confirmar pausa'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Escolha o motivo da pausa para continuar.'),
+        findsOneWidget,
+      );
+
+      // Motivo pronto: um toque e confirma, sem digitar.
+      await tester.tap(find.text('Chuva ou tempo ruim'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Confirmar pausa'));
+      await tester.pumpAndSettle();
+      expect(find.text('Pausar a OS #2198?'), findsNothing);
+      expect(
+        harness.container
+            .read(ordemServicoStoreProvider)
+            .ordens
+            .firstWhere((o) => o.codigo == 'OS #2198')
+            .status,
+        OrdemServicoStatus.pausada,
+      );
     });
 
     testWidgets(
@@ -203,13 +226,13 @@ void main() {
 
         expect(find.text('Status da OS'), findsOneWidget);
         expect(find.text('Aguardando'), findsWidgets);
-        expect(find.text('Em execução'), findsWidgets);
+        expect(find.text('Em andamento'), findsWidgets);
 
-        await tester.tap(find.text('Finalizadas'));
+        await tester.tap(find.text('Encerradas'));
         await tester.pumpAndSettle();
 
         expect(find.text('Status da OS'), findsNothing);
-        expect(find.text('Finalizadas'), findsOneWidget);
+        expect(find.text('Encerradas'), findsOneWidget);
         expect(find.textContaining('OS #2201'), findsNothing);
         expect(find.textContaining('OS #2170'), findsOneWidget);
       },

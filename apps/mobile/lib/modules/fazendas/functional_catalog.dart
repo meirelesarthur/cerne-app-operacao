@@ -4345,7 +4345,7 @@ const operationalFeatures = <FeatureDefinition>[
     title: 'Minhas OS',
     objective:
         'Consultar ordens de serviço vinculadas ao funcionário e à fazenda, '
-        'e conduzir a execução (iniciar, pausar, entregar ou marcar como refeita).',
+        'e conduzir a execução (iniciar, pausar, entregar ou sinalizar que precisa refazer).',
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/campo/minhas-os',
     emptyLabel: 'Nenhuma ordem de serviço atribuída.',
