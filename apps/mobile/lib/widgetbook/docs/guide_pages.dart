@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.1.0';
+const kWidgetbookVersion = '2.2.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,19 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.2.0',
+    date: '2026-09-23',
+    summary: 'Seletor discreto de filtro com dock inferior.',
+    changes: [
+      (
+        'Novo',
+        'InlineSelect (AppInlineSelect): valor atual + chevron, sem borda '
+            'nem fundo; abre a dock inferior com as opções e marca a '
+            'escolhida. Filtro de status da tela inicial de OS.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.1.0',
     date: '2026-09-23',

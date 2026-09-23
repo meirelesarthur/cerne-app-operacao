@@ -27,6 +27,10 @@ Future<T?> showAppBottomSheet<T>(
 }) {
   return showModalBottomSheet<T>(
     context: context,
+    // Navigator raiz: dentro do `ShellRoute` o navigator mais próximo é o do
+    // shell, e a dock abria *por baixo* da navbar flutuante, que é irmã do
+    // conteúdo na Stack do `ShellLayout`. A dock é sempre a camada de cima.
+    useRootNavigator: true,
     isScrollControlled: true,
     backgroundColor: AppColors.transparent,
     // bg-black/40 no React — valor arbitrário do Tailwind, não um token de

@@ -163,6 +163,7 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
           buildTextareaWidgetbookComponent(),
           buildFormFieldWidgetbookComponent(),
           buildFormSelectWidgetbookComponent(),
+          buildInlineSelectWidgetbookComponent(),
           buildSearchSelectWidgetbookComponent(),
           buildCheckboxWidgetbookComponent(),
           buildToggleSwitchWidgetbookComponent(),
