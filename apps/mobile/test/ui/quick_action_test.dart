@@ -16,14 +16,14 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppQuickAction(
-            icon: AppIcons.wallet,
-            label: 'Carteira',
+            icon: AppIcons.scale,
+            label: 'Pesagem',
             onPressed: () {},
           ),
         ),
       );
 
-      expect(find.text('Carteira'), findsOneWidget);
+      expect(find.text('Pesagem'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
@@ -32,8 +32,8 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           AppQuickAction(
-            icon: AppIcons.wallet,
-            label: 'Carteira',
+            icon: AppIcons.scale,
+            label: 'Pesagem',
             onPressed: () => tapped = true,
           ),
         ),

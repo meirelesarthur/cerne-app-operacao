@@ -101,20 +101,20 @@ WidgetbookComponent buildTagWidgetbookComponent() {
         ),
       ),
       WidgetbookUseCase(
-        name: 'Status de crédito',
+        name: 'Status de sincronização',
         builder: (context) => const Center(
           child: Wrap(
             spacing: AppSpacing.space2,
             runSpacing: AppSpacing.space2,
             children: [
-              AppTag(tone: AppTagTone.success, child: Text('Pré-aprovado')),
-              AppTag(tone: AppTagTone.warning, child: Text('Em análise')),
+              AppTag(tone: AppTagTone.success, child: Text('Enviado')),
+              AppTag(tone: AppTagTone.warning, child: Text('Na fila')),
               AppTag(
                 tone: AppTagTone.success,
                 icon: AppIcons.partyPopper,
-                child: Text('Aprovado'),
+                child: Text('Tudo sincronizado'),
               ),
-              AppTag(tone: AppTagTone.danger, child: Text('Recusado')),
+              AppTag(tone: AppTagTone.danger, child: Text('Falhou')),
             ],
           ),
         ),

@@ -34,8 +34,6 @@ import '../state/prototype_session_store.dart';
 class AppShellHeader extends ConsumerWidget {
   const AppShellHeader({
     super.key,
-    this.onConsultMode,
-    this.consultActive = false,
     this.onOpenProfile,
     this.onOpenNotifications,
     this.collapsed = false,
@@ -43,12 +41,6 @@ class AppShellHeader extends ConsumerWidget {
     this.showProfileSubtitle = true,
     this.child,
   });
-
-  /// Callback do ícone "olho" (modo consulta) — contextual ao módulo ativo
-  /// (spec §3.3/§6.1). Quando nulo, o botão não é exibido — equivalente a
-  /// `onConsultMode &&` no React.
-  final VoidCallback? onConsultMode;
-  final bool consultActive;
 
   /// Navegação para `/perfil` — ver nota de decisão acima.
   final VoidCallback? onOpenProfile;
@@ -69,8 +61,7 @@ class AppShellHeader extends ConsumerWidget {
   final bool showProfileSubtitle;
 
   /// Slot de contexto do módulo ativo — equivalente ao `children` do React;
-  /// aqui é um único `child` porque só há um consumidor real historicamente
-  /// (a pílula de crédito, que saiu do header global — ver plano de UX).
+  /// aqui é um único `child` (o campo de busca da entrada operacional).
   /// Omitido no modo [collapsed].
   final Widget? child;
 
@@ -93,15 +84,6 @@ class AppShellHeader extends ConsumerWidget {
         : (hour < 18 ? 'Boa tarde' : 'Boa noite');
 
     final actionWidgets = <Widget>[
-      if (onConsultMode != null) ...[
-        _headerBubble(
-          icon: const AppIcon(AppIcons.eye, size: AppSize.iconMd),
-          label: consultActive ? 'Sair do modo consulta' : 'Modo consulta',
-          active: consultActive,
-          onPressed: onConsultMode,
-        ),
-        const SizedBox(width: AppSpacing.space2),
-      ],
       if (showMenu)
         _headerBubble(
           icon: const AppIcon(AppIcons.menu, size: AppSize.iconMd),

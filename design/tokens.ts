@@ -541,14 +541,6 @@ export const chart = {
  * ------------------------------------------------------------------ */
 
 export const component = {
-  // spec §2.6 — cards de dashboard escuros colorizados por categoria
-  dashboardTile: {
-    revenue: '#1b4332', // receitas/financeiro positivo
-    expense: primitive.red[900], // despesas (#7f1d1d)
-    finance: '#1e3a5f', // financeiro geral
-    production: '#14532d', // produtivo/reprodutivo
-    dark: '#1c1917', // neutro/genérico
-  },
   login: {
     /** véu em gradiente sobre a arte de fundo integral — escurece só o topo (céu claro)
      *  para o bloco branco da marca; a base da arte já é escura e dispensa véu */
@@ -565,25 +557,6 @@ export const component = {
       blur: '8px',
     },
   },
-  // New-UI — hub agregador do superapp (módulo Início) com Banking central
-  hub: {
-    /** cartão de saldo premium: gradiente institucional profundo + glow da marca */
-    bankCard: {
-      from: '#064e3b',
-      to: '#022c22',
-      glow: 'rgba(74,222,128,0.20)',
-      divider: 'rgba(255,255,255,0.14)',
-      fgMuted: 'rgba(255,255,255,0.72)',
-      skeleton: 'rgba(255,255,255,0.16)',
-    },
-    /** superfícies glass sutis para destaques sobre o canvas */
-    glass: {
-      light: 'rgba(255,255,255,0.70)',
-      dark: 'rgba(14,42,29,0.55)',
-      border: 'rgba(255,255,255,0.16)',
-    },
-    glassBlur: '14px',
-  },
   /** menu "reveal" global (aba Mais/Menu): app encolhe à esquerda, menu escuro desliza da direita */
   revealMenu: {
     appScale: 0.78,
@@ -592,26 +565,9 @@ export const component = {
     bg: '#0b2e1e', // verde floresta profundo — lê como verde, não preto (gbMode segue padrão)
     itemStagger: '30ms',
   },
-  /** header global do Shell (premium clean): gradiente verde profundo + decoração de onda */
-  header: {
-    from: '#09291a',
-    mid: '#064e3b',
-    to: '#0b5c47',
-    tabsBg: '#065f46',
-    wave: 'rgba(134,239,172,0.08)',
-    /** pílulas de contexto dentro do header (fazenda ativa, crédito) */
-    pillBg: 'rgba(255,255,255,0.09)',
-    pillBorder: 'rgba(255,255,255,0.16)',
-    creditBg: 'rgba(74,222,128,0.10)',
-    creditBorder: 'rgba(74,222,128,0.25)',
-  },
   /** cartão-herói do padrão global: só o ângulo do gradiente (as cores vivem em themePalette.hero) */
   hero: {
     angle: 233.92,
-  },
-  /** fundo levemente tintado para KPIs em cards claros */
-  kpi: {
-    bg: '#f8fffe',
   },
   /** Nova UI — tab bar flutuante em cápsula translúcida sobre o conteúdo */
   tabbar: {
@@ -621,10 +577,6 @@ export const component = {
     inset: '14px',
     /** diâmetro dos botões circulares internos */
     itemSize: '48px',
-  },
-  /** card de primeiro nível para menus extensos (mosaico 2×N com lista interna) */
-  navigationCard: {
-    height: '140px',
   },
 } as const
 

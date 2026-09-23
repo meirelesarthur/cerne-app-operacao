@@ -99,7 +99,6 @@ class ShellState {
     required this.user,
     required this.notifications,
     required this.isOnline,
-    required this.balanceHidden,
     required this.menuOpen,
   });
 
@@ -108,9 +107,6 @@ class ShellState {
 
   /// Toggle de dev — simula perda de conexão para demonstrar banners de sync.
   final bool isOnline;
-
-  /// Privacidade do Banking no hub — oculta saldo/valores em todas as telas do Início.
-  final bool balanceHidden;
 
   /// Menu "reveal" global (aba Mais/Menu).
   final bool menuOpen;
@@ -121,14 +117,12 @@ class ShellState {
     UserProfile? user,
     List<AppNotification>? notifications,
     bool? isOnline,
-    bool? balanceHidden,
     bool? menuOpen,
   }) {
     return ShellState(
       user: user ?? this.user,
       notifications: notifications ?? this.notifications,
       isOnline: isOnline ?? this.isOnline,
-      balanceHidden: balanceHidden ?? this.balanceHidden,
       menuOpen: menuOpen ?? this.menuOpen,
     );
   }
@@ -145,7 +139,6 @@ class ShellStoreNotifier extends Notifier<ShellState> {
       user: UserProfile(name: 'Silvio Ventura', initials: 'SV'),
       notifications: _mockNotifications,
       isOnline: true,
-      balanceHidden: false,
       menuOpen: false,
     );
   }
@@ -153,9 +146,6 @@ class ShellStoreNotifier extends Notifier<ShellState> {
   void setOnline(bool value) => state = state.copyWith(isOnline: value);
 
   void toggleOnline() => state = state.copyWith(isOnline: !state.isOnline);
-
-  void toggleBalanceHidden() =>
-      state = state.copyWith(balanceHidden: !state.balanceHidden);
 
   void markAllRead() {
     state = state.copyWith(

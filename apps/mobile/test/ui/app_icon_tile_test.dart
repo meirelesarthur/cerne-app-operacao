@@ -29,13 +29,13 @@ void main() {
         _wrap(
           AppAppIconTile(
             icon: AppIcons.shieldCheck,
-            label: 'CERNE ADM',
+            label: 'Pecuária',
             onTap: () => tapped = true,
           ),
         ),
       );
 
-      await tester.tap(find.text('CERNE ADM'));
+      await tester.tap(find.text('Pecuária'));
       await tester.pump();
 
       expect(tapped, isTrue);

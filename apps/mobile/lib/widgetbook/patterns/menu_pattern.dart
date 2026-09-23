@@ -7,9 +7,7 @@ import '../../ui/ui.dart';
 
 /// Padrão de tela "Menu" (Widgetbook → Padrões).
 ///
-/// Documenta a composição já usada em
-/// `modules/fazendas/screens/mais_screen.dart`: grupos com `AppSectionTitle`
-/// e linhas de navegação — mas reutilizando `AppMenuItem` (já catalogado em
+/// Grupos com `AppSectionTitle` e linhas de navegação — reutilizando `AppMenuItem` (já catalogado em
 /// `ui/menu_item.dart`) em vez de recriar a linha do zero, reforçando a Lei 1
 /// do CLAUDE.md (reuso de componente já catalogado).
 class _MenuGroup {
@@ -34,12 +32,12 @@ class _MenuLink {
 
 const _groups = [
   _MenuGroup(
-    title: 'Painéis',
+    title: 'Rotinas',
     items: [
       _MenuLink(
-        icon: AppIcons.wallet,
-        label: 'Financeiro',
-        description: 'Fluxo de caixa e contas',
+        icon: AppIcons.confinamento,
+        label: 'Confinamento',
+        description: 'Trato diário e leitura de cocho',
       ),
       _MenuLink(
         icon: AppIcons.beef,
@@ -47,9 +45,9 @@ const _groups = [
         description: 'Rebanho e ciclos',
       ),
       _MenuLink(
-        icon: AppIcons.boxes,
-        label: 'Suprimentos',
-        description: 'Estoque e insumos',
+        icon: AppIcons.fileText,
+        label: 'Ordens de serviço',
+        description: 'Serviços atribuídos a você',
       ),
     ],
   ),

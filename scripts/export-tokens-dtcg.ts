@@ -145,18 +145,12 @@ const dtcg = {
   light: mapThemePalette('light'),
   gbMode: mapThemePalette('gbMode'),
   component: {
-    dashboardTile: mapColors(component.dashboardTile),
     login: {
       heroScrim: mapColors(component.login.heroScrim),
       card: {
         fill: color(component.login.card.fill),
         blur: dimension(component.login.card.blur),
       },
-    },
-    hub: {
-      bankCard: mapColors(component.hub.bankCard),
-      glass: mapColors(component.hub.glass),
-      glassBlur: dimension(component.hub.glassBlur),
     },
     revealMenu: {
       appScale: number(component.revealMenu.appScale),
@@ -165,11 +159,8 @@ const dtcg = {
       bg: color(component.revealMenu.bg),
       itemStagger: duration(component.revealMenu.itemStagger),
     },
-    header: mapColors(component.header),
     hero: { angle: number(component.hero.angle) },
-    kpi: mapColors(component.kpi),
     tabbar: mapDimensions(component.tabbar),
-    navigationCard: mapDimensions(component.navigationCard),
   },
 } as const
 

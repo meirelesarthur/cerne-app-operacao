@@ -136,9 +136,6 @@ void main() {
         'sincronizar': AppIcons.sincronizar,
         'fazenda': AppIcons.fazenda,
         'estoque': AppIcons.estoque,
-        'marketplace': AppIcons.marketplace,
-        'openFinance': AppIcons.openFinance,
-        'banking': AppIcons.banking,
       };
 
       for (final entry in aliases.entries) {
@@ -162,7 +159,6 @@ void main() {
       expect(AppIcons.tractor.glyph, HugeIcons.strokeRoundedTractor);
       expect(AppIcons.scanHeart.glyph, HugeIcons.strokeRoundedScanHeart);
       expect(AppIcons.bookSearch.glyph, HugeIcons.strokeRoundedBookSearch);
-      expect(AppIcons.landmark.glyph, HugeIcons.strokeRoundedBank);
       expect(AppIcons.eyeOff.glyph, HugeIcons.strokeRoundedViewOff);
       expect(AppIcons.aiSearch.glyph, HugeIcons.strokeRoundedAiSearch02);
       expect(AppIcons.filter.glyph, HugeIcons.strokeRoundedFilterHorizontal);
@@ -170,10 +166,6 @@ void main() {
       expect(AppIcons.store02.glyph, HugeIcons.strokeRoundedStore02);
       expect(AppIcons.connect.glyph, HugeIcons.strokeRoundedConnect);
       expect(AppIcons.cash.glyph, HugeIcons.strokeRoundedCash02);
-      expect(
-        AppIcons.creditCardAccept.glyph,
-        HugeIcons.strokeRoundedCreditCardAccept,
-      );
     });
 
     test('os dois ícones agro vêm dos vetores autorais, não do set', () {

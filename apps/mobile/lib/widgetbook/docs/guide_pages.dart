@@ -36,6 +36,30 @@ const widgetbookChangelog = <WidgetbookRelease>[
   WidgetbookRelease(
     version: '2.5.0',
     date: '2026-09-23',
+    summary: 'Limpeza dos restos do perfil Administração e do superapp.',
+    changes: [
+      (
+        'Removido',
+        'BalanceCard, TransactionListItem, TransactionDetailSheet, EntityRow, '
+            'MetricGrid, DashboardCard, AlertStrip, MiniAppTile e BentoTile — '
+            'só serviam a Bank, Crédito, hub e painéis administrativos.',
+      ),
+      (
+        'Removido',
+        'Ícones landmark, creditCard, creditCardAccept, handCoins, '
+            'shoppingBag e os apelidos marketplace, openFinance e banking.',
+      ),
+      (
+        'Mudou',
+        'Casos de AppIconTile, SegmentedTabs, SectionTitle, Tag, ReviewList, '
+            'KpiStatCard, QuickAction, DiscoveryTile e o padrão Menu passam a '
+            'usar exemplos de campo.',
+      ),
+    ],
+  ),
+  WidgetbookRelease(
+    version: '2.5.0',
+    date: '2026-09-23',
     summary: 'Login: CTA em caixa alta e ambiente no rodapé.',
     changes: [
       (

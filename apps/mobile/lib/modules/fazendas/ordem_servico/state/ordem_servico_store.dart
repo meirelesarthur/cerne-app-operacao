@@ -4,8 +4,8 @@ import '../mocks.dart' as mocks;
 import '../models.dart';
 
 /// Store de Ordem de Serviço — guarda em memória o que o Operacional lança
-/// (iniciar/pausar/retomar/entregar/refazer) e o que o Administrativo lança
-/// (avaliar/cancelar), sem backend: mesmo padrão de
+/// (iniciar/pausar/retomar/entregar/refazer) e o que chega do escritório
+/// (cancelamento), sem backend: mesmo padrão de
 /// `confinamento/state/confinamento_store.dart` (protótipo frontend).
 class OrdemServicoState {
   const OrdemServicoState({required this.ordens});
@@ -143,41 +143,10 @@ class OrdemServicoStoreNotifier extends Notifier<OrdemServicoState> {
     );
   }
 
-  /// Ação do Administrativo: checkpoint de qualidade — só enquanto a OS
-  /// ainda está em andamento (regra de negócio: nunca sobre OS finalizada).
-  void avaliar(
-    String id, {
-    required String avaliador,
-    required int nota,
-    required String comentario,
-  }) {
-    final atual = byId(id);
-    if (atual.status.encerrada) return;
-    final agora = DateTime.now();
-    _update(
-      id,
-      (o) => o.copyWith(
-        avaliacao: AvaliacaoOs(
-          nota: nota,
-          comentario: comentario,
-          avaliador: avaliador,
-          dataHora: agora,
-        ),
-        historico: [
-          ...o.historico,
-          EventoOs(
-            dataHora: agora,
-            autor: avaliador,
-            acao: 'Avaliação registrada — nota $nota',
-            observacao: comentario,
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// Ação do Administrativo: cancela a OS — só enquanto ainda não foi
-  /// encerrada pelo Operacional (aguardando/em execução/pausada).
+  /// Cancelamento feito pelo escritório (no app web) chegando ao mobile —
+  /// só vale enquanto a OS não foi encerrada pelo Operacional. O app não
+  /// oferece essa ação ao operador; ela existe para simular o dado que viria
+  /// do banco compartilhado.
   void cancelar(String id, {required String autor, required String motivo}) {
     final atual = byId(id);
     if (atual.status.encerrada) return;

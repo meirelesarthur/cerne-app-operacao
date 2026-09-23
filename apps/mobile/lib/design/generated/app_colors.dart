@@ -234,33 +234,9 @@ class AppColorsGbMode {
 class AppComponentColors {
   AppComponentColors._();
 
-  static const Color dashboardTileRevenue = Color(0xFF1B4332);
-  static const Color dashboardTileExpense = Color(0xFF7F1D1D);
-  static const Color dashboardTileFinance = Color(0xFF1E3A5F);
-  static const Color dashboardTileProduction = Color(0xFF14532D);
-  static const Color dashboardTileDark = Color(0xFF1C1917);
   static const Color loginHeroScrimFrom = Color(0xB809291A);
   static const Color loginHeroScrimMid = Color(0x38064E3B);
   static const Color loginHeroScrimTo = Color(0x00065F46);
   static const Color loginCardFill = Color(0xCCFFFFFF);
-  static const Color hubBankCardFrom = Color(0xFF064E3B);
-  static const Color hubBankCardTo = Color(0xFF022C22);
-  static const Color hubBankCardGlow = Color(0x334ADE80);
-  static const Color hubBankCardDivider = Color(0x24FFFFFF);
-  static const Color hubBankCardFgMuted = Color(0xB8FFFFFF);
-  static const Color hubBankCardSkeleton = Color(0x29FFFFFF);
-  static const Color hubGlassLight = Color(0xB3FFFFFF);
-  static const Color hubGlassDark = Color(0x8C0E2A1D);
-  static const Color hubGlassBorder = Color(0x29FFFFFF);
   static const Color revealMenuBg = Color(0xFF0B2E1E);
-  static const Color headerFrom = Color(0xFF09291A);
-  static const Color headerMid = Color(0xFF064E3B);
-  static const Color headerTo = Color(0xFF0B5C47);
-  static const Color headerTabsBg = Color(0xFF065F46);
-  static const Color headerWave = Color(0x1486EFAC);
-  static const Color headerPillBg = Color(0x17FFFFFF);
-  static const Color headerPillBorder = Color(0x29FFFFFF);
-  static const Color headerCreditBg = Color(0x1A4ADE80);
-  static const Color headerCreditBorder = Color(0x404ADE80);
-  static const Color kpiBg = Color(0xFFF8FFFE);
 }

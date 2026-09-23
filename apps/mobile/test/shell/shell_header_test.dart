@@ -31,29 +31,6 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('sem onConsultMode não mostra o botão de modo consulta', (
-      tester,
-    ) async {
-      await tester.pumpWidget(_wrap(const AppShellHeader()));
-
-      expect(findAppIcon(AppIcons.eye), findsNothing);
-    });
-
-    testWidgets('com onConsultMode mostra e dispara o callback ao tocar', (
-      tester,
-    ) async {
-      var tapped = false;
-      await tester.pumpWidget(
-        _wrap(AppShellHeader(onConsultMode: () => tapped = true)),
-      );
-
-      expect(findAppIcon(AppIcons.eye), findsOneWidget);
-      await tester.tap(findAppIcon(AppIcons.eye));
-      await tester.pump();
-
-      expect(tapped, isTrue);
-    });
-
     testWidgets('dispara onOpenProfile ao tocar no bloco de avatar/nome', (
       tester,
     ) async {

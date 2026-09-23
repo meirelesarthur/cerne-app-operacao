@@ -25,7 +25,7 @@ class AppQuickAction extends StatelessWidget {
     this.onPressed,
   });
 
-  /// Ícone fixo — equivalente ao `icon: LucideIcon` do React (ex.: `AppIcons.wallet`).
+  /// Ícone fixo — equivalente ao `icon: LucideIcon` do React (ex.: `AppIcons.scale`).
   final AppIconData icon;
   final String label;
   final VoidCallback? onPressed;
@@ -89,18 +89,18 @@ WidgetbookComponent buildQuickActionWidgetbookComponent() {
             spacing: 20,
             children: [
               AppQuickAction(
-                icon: AppIcons.wallet,
-                label: 'Carteira',
+                icon: AppIcons.scale,
+                label: 'Pesagem',
                 onPressed: () {},
               ),
               AppQuickAction(
-                icon: AppIcons.send,
-                label: 'Transferir',
+                icon: AppIcons.fileText,
+                label: 'Minhas OS',
                 onPressed: () {},
               ),
               AppQuickAction(
                 icon: AppIcons.qrCode,
-                label: 'Pagar com QR Code',
+                label: 'Ler brinco',
                 onPressed: () {},
               ),
             ],

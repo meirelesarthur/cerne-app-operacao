@@ -4,24 +4,22 @@ import 'package:go_router/go_router.dart';
 import 'components/sync_banner.dart';
 import 'functional_catalog.dart';
 import 'operacional/campo_flow.dart';
-import 'screens/atividades_screen.dart';
-import 'screens/farm_list_screen.dart';
-import 'screens/fazendas_home.dart';
 import 'screens/group_features_screen.dart';
-import 'screens/mais_screen.dart';
 import 'screens/mapped_feature_screen.dart';
 import 'screens/operacional_home_screen.dart';
 
 /// Rotas do módulo Fazendas (ex-"Cerne") — espelha `FazendasModule.tsx`.
-/// Registrado no `ShellRoute` principal (`lib/router/app_router.dart`), no
-/// mesmo padrão de `buildHubModuleRoute()`.
+/// Registrado no `ShellRoute` principal (`lib/router/app_router.dart`).
 ///
-/// A troca de fazenda ativa vive na tela dedicada (tab "Fazendas"). O app tem
-/// só o perfil Operacional.
+/// A troca de fazenda ativa vive no seletor do topo (`openFarmPicker`). O app
+/// tem só o perfil Operacional.
 GoRoute buildFazendasModuleRoute() {
   return GoRoute(
     path: '/fazendas',
-    builder: (context, state) => const _FazendasScaffold(child: FazendasHome()),
+    // `/fazendas` sozinho não tem tela: a política de acesso já leva à tela
+    // inicial (`redirectForSession`); o redirect aqui é a rede de segurança.
+    redirect: (context, state) =>
+        state.uri.path == '/fazendas' ? '/fazendas/operacional' : null,
     routes: [
       GoRoute(
         path: 'operacional',
@@ -50,21 +48,6 @@ GoRoute buildFazendasModuleRoute() {
             ),
           ),
         ],
-      ),
-      GoRoute(
-        path: 'atividades',
-        builder: (context, state) =>
-            const _FazendasScaffold(child: AtividadesScreen()),
-      ),
-      GoRoute(
-        path: 'fazendas',
-        builder: (context, state) =>
-            const _FazendasScaffold(child: FarmListScreen()),
-      ),
-      GoRoute(
-        path: 'mais',
-        builder: (context, state) =>
-            const _FazendasScaffold(child: MaisScreen()),
       ),
       GoRoute(
         path: 'campo/:flowId',

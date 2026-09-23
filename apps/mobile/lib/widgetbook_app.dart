@@ -144,13 +144,8 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
         name: 'Superfícies',
         children: [
           buildCardWidgetbookComponent(),
-          buildDashboardCardWidgetbookComponent(),
-          buildBentoTileWidgetbookComponent(),
-          buildMiniAppTileWidgetbookComponent(),
           buildChartCardWidgetbookComponent(),
           buildKpiStatCardWidgetbookComponent(),
-          buildMetricGridWidgetbookComponent(),
-          buildBalanceCardWidgetbookComponent(),
           buildStatusCardWidgetbookComponent(),
         ],
       ),
@@ -189,7 +184,6 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
           buildSearchFieldWidgetbookComponent(),
           buildDiscoveryTileWidgetbookComponent(),
           buildModuleTileWidgetbookComponent(),
-          buildEntityRowWidgetbookComponent(),
           buildActionBarWidgetbookComponent(),
           buildStepProgressWidgetbookComponent(),
           buildPaginationWidgetbookComponent(),
@@ -198,7 +192,6 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
       WidgetbookFolder(
         name: 'Feedback',
         children: [
-          buildAlertStripWidgetbookComponent(),
           buildAppIconWidgetbookComponent(),
           buildBannerWidgetbookComponent(),
           buildEmptyStateWidgetbookComponent(),
@@ -216,13 +209,11 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
         children: [
           buildModalWidgetbookComponent(),
           buildBottomSheetWidgetbookComponent(),
-          buildTransactionDetailSheetWidgetbookComponent(),
         ],
       ),
       WidgetbookFolder(
         name: 'Dados',
         children: [
-          buildTransactionListItemWidgetbookComponent(),
           buildMenuItemWidgetbookComponent(),
           buildAuditExportPanelWidgetbookComponent(),
           buildBadgeWidgetbookComponent(),

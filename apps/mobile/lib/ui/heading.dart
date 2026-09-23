@@ -196,8 +196,8 @@ WidgetbookComponent buildHeadingWidgetbookComponent() {
           child: AppSectionTitle(
             trailing: AppIcons.chevronRight,
             onTap: () {},
-            semanticLabel: 'Ver todos os parceiros de crédito',
-            child: const Text('Parceiros de crédito'),
+            semanticLabel: 'Ver todas as ordens de serviço',
+            child: const Text('Ordens de serviço'),
           ),
         ),
       ),

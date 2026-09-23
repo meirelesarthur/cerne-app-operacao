@@ -12,20 +12,16 @@ void main() {
       final state = container.read(shellStoreProvider);
       expect(state.isOnline, isTrue);
       expect(state.menuOpen, isFalse);
-      expect(state.balanceHidden, isFalse);
       expect(state.unreadCount, 3);
     });
 
-    test('toggleOnline/toggleBalanceHidden/toggleMenu invertem o estado', () {
+    test('toggleOnline/toggleMenu invertem o estado', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       final notifier = container.read(shellStoreProvider.notifier);
 
       notifier.toggleOnline();
       expect(container.read(shellStoreProvider).isOnline, isFalse);
-
-      notifier.toggleBalanceHidden();
-      expect(container.read(shellStoreProvider).balanceHidden, isTrue);
 
       notifier.toggleMenu();
       expect(container.read(shellStoreProvider).menuOpen, isTrue);

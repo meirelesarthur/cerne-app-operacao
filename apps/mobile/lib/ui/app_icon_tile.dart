@@ -126,9 +126,9 @@ WidgetbookComponent buildAppIconTileWidgetbookComponent() {
             spacing: AppSpacing.space6,
             runSpacing: AppSpacing.space6,
             children: [
-              AppAppIconTile(icon: AppIcons.layoutGrid, label: 'CERNE App'),
-              AppAppIconTile(icon: AppIcons.shieldCheck, label: 'CERNE ADM'),
-              AppAppIconTile(icon: AppIcons.tractor, label: 'CERNE Operação'),
+              AppAppIconTile(icon: AppIcons.pecuaria, label: 'Pecuária'),
+              AppAppIconTile(icon: AppIcons.agricultura, label: 'Agricultura'),
+              AppAppIconTile(icon: AppIcons.sincronizar, label: 'Sincronizar'),
             ],
           ),
         ),

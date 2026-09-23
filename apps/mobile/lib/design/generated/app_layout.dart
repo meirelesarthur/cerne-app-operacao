@@ -48,7 +48,6 @@ class AppComponentMetrics {
   AppComponentMetrics._();
 
   static const double loginCardBlur = 8;
-  static const double hubGlassBlur = 14;
   static const double revealMenuAppScale = 0.78;
   static const double revealMenuAppShiftX = -58; // valor percentual original
   static const double revealMenuMenuWidth = 78; // valor percentual original
@@ -57,5 +56,4 @@ class AppComponentMetrics {
   static const double tabbarHeight = 68;
   static const double tabbarInset = 14;
   static const double tabbarItemSize = 48;
-  static const double navigationCardHeight = 140;
 }

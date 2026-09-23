@@ -224,24 +224,12 @@ class AppIcons {
     HugeIcons.strokeRoundedHome01,
   );
 
-  // --- Financeiro: Banking, Credito e indicadores --------------------------
+  // --- Financeiro e indicadores ------------------------------------------
   static const AppIconData wallet = AppIconData.glyph(
     HugeIcons.strokeRoundedWallet01,
   );
-  static const AppIconData landmark = AppIconData.glyph(
-    HugeIcons.strokeRoundedBank,
-  );
-  static const AppIconData creditCard = AppIconData.glyph(
-    HugeIcons.strokeRoundedCreditCard,
-  );
-  static const AppIconData creditCardAccept = AppIconData.glyph(
-    HugeIcons.strokeRoundedCreditCardAccept,
-  );
   static const AppIconData cash = AppIconData.glyph(
     HugeIcons.strokeRoundedCash02,
-  );
-  static const AppIconData handCoins = AppIconData.glyph(
-    HugeIcons.strokeRoundedHandCoins,
   );
   static const AppIconData receipt = AppIconData.glyph(
     HugeIcons.strokeRoundedInvoice01,
@@ -318,7 +306,7 @@ class AppIcons {
     HugeIcons.strokeRoundedSaveEnergy01,
   );
 
-  // --- Logistica, estoque e marketplace ------------------------------------
+  // --- Logistica e estoque ------------------------------------------------
   static const AppIconData package = AppIconData.glyph(
     HugeIcons.strokeRoundedPackage,
   );
@@ -345,9 +333,6 @@ class AppIcons {
   );
   static const AppIconData store02 = AppIconData.glyph(
     HugeIcons.strokeRoundedStore02,
-  );
-  static const AppIconData shoppingBag = AppIconData.glyph(
-    HugeIcons.strokeRoundedShoppingBag01,
   );
   static const AppIconData shoppingCart = AppIconData.glyph(
     HugeIcons.strokeRoundedShoppingCart01,
@@ -546,17 +531,8 @@ class AppIcons {
   /// Fazenda — seletor de contexto do cabeçalho global.
   static const AppIconData fazenda = barns;
 
-  /// Gestão de estoque / Armazém.
+  /// Gestão de estoque.
   static const AppIconData estoque = boxes;
-
-  /// Marketplace.
-  static const AppIconData marketplace = store02;
-
-  /// Open Finance.
-  static const AppIconData openFinance = connect;
-
-  /// Conta GB Banking.
-  static const AppIconData banking = landmark;
 }
 
 /// Renderizador único de ícone do sistema.

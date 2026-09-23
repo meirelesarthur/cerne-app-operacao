@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/screens/mapped_feature_screen.dart';
-import 'package:cerne_app/modules/fazendas/screens/responsibility_workspace.dart';
+import 'package:cerne_app/modules/fazendas/screens/operacional_home_screen.dart';
 import 'package:cerne_app/ui/ui.dart';
 
 import '../support/router_test_harness.dart';
@@ -191,22 +191,14 @@ void main() {
       }
     });
 
-    testWidgets('centrais usam layout largo sem overflow', (tester) async {
+    testWidgets('tela Início usa layout largo sem overflow', (tester) async {
       await _setViewport(tester, const Size(1024, 844));
-      // A central lê a fazenda ativa para o seletor de contexto do padrão
-      // global (E7), então precisa do escopo do Riverpod.
       await tester.pumpWidget(
-        ProviderScope(
-          child: _app(
-            const ResponsibilityWorkspace(
-              profile: FeatureProfile.operational,
-            ),
-          ),
-        ),
+        ProviderScope(child: _app(const OperacionalHomeScreen())),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Central de gestão'), findsNothing);
+      expect(find.text('Atalhos'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

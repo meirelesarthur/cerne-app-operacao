@@ -10,7 +10,6 @@ import '../cadastros_vinculados.dart';
 import '../functional_catalog.dart' show catalogoArmazens, catalogoResponsaveis;
 import '../state/fazendas_store.dart';
 import '../types.dart';
-import 'apontamento_registro.dart';
 import 'flow_shell.dart';
 import 'success_screen.dart';
 
@@ -392,56 +391,6 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
             ),
           );
     }
-    // Registro estruturado para a consulta administrativa (`DashApontamentos`)
-    // — mesmos campos e rótulos do cadastro, independente de estar online ou
-    // na fila de sincronização (o apontamento já foi lançado nesta sessão).
-    ref
-        .read(apontamentoRegistroStoreProvider.notifier)
-        .add(
-          ApontamentoRegistro(
-            id: 'apt-${DateTime.now().microsecondsSinceEpoch}',
-            responsavel: _responsavel!,
-            lote: lote.rotulo,
-            area: _talhao!,
-            operacao: _operacao!,
-            atividade: atividade,
-            data: _data,
-            areaTotal: formatarNumero(_talhaoCadastro!.areaTotal),
-            areaUtilizada: _areaUtilizada,
-            armazemProducao: _armazemProducao!,
-            cultura: '${lote.cultura} — ${lote.variedade}',
-            safra: lote.safra,
-            centroCusto: lote.centroCusto,
-            armazemInsumo: _armazemInsumo,
-            descricao: _descricao,
-            registradoEm: DateTime.now(),
-            maoDeObra: [
-              for (final item in _maoDeObra)
-                '${item.tipo.label}: ${item.alvo} — ${item.quantidade} '
-                    '${_unidadeMaoDeObraLabel(item.unidade)} · '
-                    '${formatarReais(item.total)}',
-            ],
-            maquinas: [
-              for (final item in _maquinas)
-                '${item.equipamento.nome} — '
-                    '${_qtd(item.quantidade, item.equipamento.unidadeUso)} · '
-                    '${formatarReais(item.total)}',
-            ],
-            insumos: [
-              for (final item in _insumos)
-                '${item.produto} — ${_qtd(item.quantidadeTotal, item.unidade)} · '
-                    '${item.estoque.armazem}',
-            ],
-            producoes: [
-              for (final item in _producoes)
-                '${item.produto} — ${_qtd(item.quantidade, item.unidade)}',
-            ],
-            ocorrencias: [
-              for (final item in _ocorrencias)
-                '${item.prioridade.label}: ${item.diagnostico}',
-            ],
-          ),
-        );
     setState(() => _queued = queued);
   }
 
