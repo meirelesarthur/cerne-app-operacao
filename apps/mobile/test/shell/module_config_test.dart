@@ -82,24 +82,57 @@ void main() {
     );
 
     test(
-      'Início e Fazendas não repetem as próprias abas no menu "Mais" (ver plano de UX)',
+      'Início não repete as próprias abas no menu "Mais" (ver plano de UX)',
       () {
-        // Ambos declaram `menuSections: []` — o menu "reveal" desses módulos
-        // vira só a seção CONTA (perfil/tema/conexão/sair), sem duplicar as
-        // abas de contexto já visíveis no topo.
+        // `menuSections: []` — o menu "reveal" do Início vira só a seção
+        // CONTA (perfil/tema/conexão/sair), sem duplicar as abas do topo.
         expect(getMenuSections(getModule('inicio')!), isEmpty);
-        expect(getMenuSections(getModule('fazendas')!), isEmpty);
       },
     );
+
+    test(
+      'menu lateral de Fazendas lista os grupos do catálogo em Lançamentos',
+      () {
+        final sections = getMenuSections(getModule('fazendas')!);
+
+        expect(sections.map((s) => s.title), ['Lançamentos']);
+        final labels = sections.single.items.map((i) => i.label).toList();
+        // A tela inicial já é a de OS: o grupo não se repete no menu.
+        expect(labels, isNot(contains('Ordem de Serviço')));
+        expect(labels.first, 'Confinamento');
+        expect(
+          labels,
+          containsAll(['Pecuária', 'Agricultura', 'Sincronizar aplicativo']),
+        );
+        // Grupo de uma função só abre a funcionalidade empilhada (tem
+        // "Voltar" próprio); os demais trocam para a central do grupo.
+        final sync = sections.single.items.firstWhere(
+          (i) => i.label == 'Sincronizar aplicativo',
+        );
+        expect(sync.push, isTrue);
+        final confinamento = sections.single.items.first;
+        expect(confinamento.push, isFalse);
+        expect(confinamento.route, '/fazendas/operacional/grupo/confinamento');
+      },
+    );
+
+    test('navbar operacional: OSs, Pecuária, Agricultura e Menu', () {
+      expect(operationalBottomTabs.map((t) => t.label), [
+        'OSs',
+        'Pecuária',
+        'Agricultura',
+        'Menu',
+      ]);
+      expect(operationalBottomTabs.last.action, 'menu');
+    });
 
     test('Fazendas só entrega a aba operacional (perfil único do app)', () {
       final fazendas = getModule('fazendas')!;
       final tabs = visibleBottomTabs(fazendas, UserAccessProfile.operational);
 
-      expect(
-        tabs.where((tab) => tab.action == null).map((tab) => tab.label),
-        ['Rotinas'],
-      );
+      expect(tabs.where((tab) => tab.action == null).map((tab) => tab.label), [
+        'Rotinas',
+      ]);
     });
   });
 }

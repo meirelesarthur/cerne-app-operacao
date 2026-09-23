@@ -7,6 +7,7 @@ import '../../../ui/ui.dart';
 import '../components/farm_picker.dart';
 import '../functional_catalog.dart';
 import '../group_icons.dart';
+import '../operational_groups.dart';
 import '../state/fazendas_store.dart';
 
 /// "O que fazer hoje" (operacional) / central de gestão (administração) —
@@ -72,22 +73,9 @@ class ResponsibilityWorkspace extends ConsumerWidget {
     final features = focusGroup == null
         ? allFeatures
         : allFeatures.where((feature) => feature.group == focusGroup).toList();
-    final groups = <String, List<FeatureDefinition>>{};
-    for (final feature in features) {
-      groups.putIfAbsent(feature.group, () => []).add(feature);
-    }
-    // A ordem do grid é decisão de produto (`groupOrder`), não a ordem de
-    // inserção no catálogo. O desempate pela posição original mantém o
-    // resultado determinístico: `List.sort` não é estável em Dart, então
-    // grupos ainda não listados em `_groupDisplayOrder` embaralhariam entre si.
-    final insertionOrder = groups.keys.toList();
-    final orderedGroups = [...insertionOrder]
-      ..sort((a, b) {
-        final byOrder = groupOrder(a).compareTo(groupOrder(b));
-        if (byOrder != 0) return byOrder;
-        return insertionOrder.indexOf(a).compareTo(insertionOrder.indexOf(b));
-      });
-    const segment = 'operacional';
+    // Ordem e destino de cada grupo vêm da fonte única compartilhada com o
+    // menu lateral (`operational_groups.dart`).
+    final groupEntries = operationalGroupEntries(features: features);
     final isFocusedGroup = focusGroup != null;
 
     final content = <Widget>[
@@ -114,31 +102,24 @@ class ResponsibilityWorkspace extends ConsumerWidget {
                 label: feature.title,
                 description: feature.objective,
                 layout: AppModuleTileLayout.module,
-                onTap: () => context.push(_featureRoute(feature, segment)),
+                onTap: () => context.push(operationalFeatureRoute(feature)),
               ),
           ],
         ),
       ] else
         AppModuleTileGrid(
           tiles: [
-            for (final group in orderedGroups)
+            for (final entry in groupEntries)
               AppModuleTile(
-                icon: groupIcon(group),
-                label: groupDisplayLabel(group),
+                icon: groupIcon(entry.group),
+                label: entry.label,
                 // Grupo com uma única funcionalidade (ex.: Sincronização): a
                 // tela de listagem do grupo não teria nada além do próprio
                 // card — pula direto para o destino, sem a camada
                 // intermediária que só repetiria a mesma informação.
-                onTap: () {
-                  final groupFeatures = groups[group]!;
-                  if (groupFeatures.length == 1) {
-                    context.push(_featureRoute(groupFeatures.single, segment));
-                  } else {
-                    context.go(
-                      '/fazendas/$segment/grupo/${groupToSlug(group)}',
-                    );
-                  }
-                },
+                onTap: () => entry.isFeature
+                    ? context.push(entry.route)
+                    : context.go(entry.route),
               ),
           ],
         ),
@@ -148,10 +129,5 @@ class ResponsibilityWorkspace extends ConsumerWidget {
       padding: const EdgeInsets.all(AppSpacing.space4),
       children: content,
     );
-  }
-
-  String _featureRoute(FeatureDefinition feature, String segment) {
-    if (feature.existingRoute case final route?) return route;
-    return '/fazendas/$segment/${feature.id}';
   }
 }

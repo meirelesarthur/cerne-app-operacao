@@ -1,3 +1,5 @@
+import '../modules/fazendas/group_icons.dart';
+import '../modules/fazendas/operational_groups.dart';
 import '../ui/ui.dart';
 import 'state/prototype_session_store.dart';
 
@@ -43,6 +45,7 @@ class ModuleMenuItem {
     required this.label,
     required this.icon,
     required this.route,
+    this.push = false,
     this.profiles = const {},
   });
 
@@ -52,6 +55,11 @@ class ModuleMenuItem {
 
   /// Rota absoluta do destino.
   final String route;
+
+  /// `true` quando o destino é uma tela funda com "Voltar" próprio (ex.: uma
+  /// funcionalidade aberta direto do menu): o shell empilha a rota em vez de
+  /// substituí-la, para o "Voltar" ter para onde retornar.
+  final bool push;
 
   final Set<UserAccessProfile> profiles;
 
@@ -74,6 +82,7 @@ class ModuleDef {
     required this.homeRoute,
     required this.bottomTabs,
     this.menuSections,
+    this.menuSectionsBuilder,
   });
 
   final String id;
@@ -87,29 +96,26 @@ class ModuleDef {
   /// Funcionalidades exibidas no RevealMenu (aba Mais) — contextuais ao módulo.
   /// Quando ausente, o menu deriva uma seção única das bottomTabs navegáveis.
   final List<ModuleMenuSection>? menuSections;
+
+  /// Alternativa a [menuSections] quando as seções derivam de dados em vez de
+  /// uma lista fixa (ex.: grupos do catálogo funcional). Tem precedência.
+  final List<ModuleMenuSection> Function()? menuSectionsBuilder;
 }
 
-/// Navegação primária da entrada operacional. Pecuária, Agricultura e
-/// Confinamento apontam diretamente para seus grupos; as demais rotinas
-/// continuam acessíveis pela grade da tela inicial.
+/// Navegação primária da entrada operacional: as ordens de serviço do
+/// funcionário (tela inicial), os dois grupos de lançamento mais amplos e o
+/// menu lateral.
 ///
-/// fidelidade-esteira: o "Menu" (RevealMenu) saiu daqui — redundante com a
-/// grade de módulos que a própria Home operacional já mostra, e o essencial
-/// do dia a dia da equipe de campo é ficar dentro de Fazendas, não trocar de
-/// módulo. Confinamento entrou no lugar por ser o grupo de uso diário mais
-/// frequente (mesmo critério de `group_icons.dart`).
+/// O "Menu" (RevealMenu) voltou no lugar de Confinamento: a grade de grupos
+/// saiu da tela inicial — que agora é a de OS — e os grupos restantes
+/// (Confinamento, Reprodução, Consultas…) passaram a morar no menu lateral,
+/// em "Lançamentos" ([operationalMenuSections]).
 const List<BottomTab> operationalBottomTabs = [
   BottomTab(
-    id: 'home',
-    label: 'Home',
-    icon: AppIcons.home,
+    id: 'os',
+    label: 'OSs',
+    icon: AppIcons.fileText,
     path: 'operacional',
-  ),
-  BottomTab(
-    id: 'confinamento',
-    label: 'Confinamento',
-    icon: AppIcons.confinamento,
-    path: 'operacional/grupo/confinamento',
   ),
   BottomTab(
     id: 'pecuaria',
@@ -123,6 +129,36 @@ const List<BottomTab> operationalBottomTabs = [
     icon: AppIcons.agricultura,
     path: 'operacional/grupo/agricultura',
   ),
+  BottomTab(
+    id: 'menu',
+    label: 'Menu',
+    icon: AppIcons.menu,
+    path: '',
+    action: 'menu',
+  ),
+];
+
+/// Seção "Lançamentos" do menu lateral do Operacional: um item por grupo do
+/// catálogo, na ordem de produto. Fica de fora só "Ordem de serviço", que é a
+/// própria tela inicial (primeira aba da navbar). Pecuária e Agricultura
+/// continuam listadas: o menu é o índice completo das rotinas, e a navbar só
+/// os atalhos mais frequentes.
+List<ModuleMenuSection> operationalMenuSections() => [
+  ModuleMenuSection(
+    title: 'Lançamentos',
+    items: [
+      for (final entry in operationalGroupEntries(
+        exclude: const {'Ordem de serviço'},
+      ))
+        ModuleMenuItem(
+          id: groupToSlug(entry.group),
+          label: entry.label,
+          icon: groupIcon(entry.group),
+          route: entry.route,
+          push: entry.isFeature,
+        ),
+    ],
+  ),
 ];
 
 /// Fallback do RevealMenu: seção única derivada das abas navegáveis do módulo.
@@ -130,8 +166,9 @@ List<ModuleMenuSection> getMenuSections(
   ModuleDef module, {
   UserAccessProfile? profile,
 }) {
-  if (module.menuSections != null) {
-    return module.menuSections!
+  final declared = module.menuSectionsBuilder?.call() ?? module.menuSections;
+  if (declared != null) {
+    return declared
         .map(
           (section) => ModuleMenuSection(
             title: section.title,
@@ -220,14 +257,9 @@ const List<ModuleDef> modules = [
         action: 'menu',
       ),
     ],
-    // Vazio, não omitido (ver plano de UX): toda esta lista duplicava algo
-    // que já existe em outro lugar — "Central de gestão/rotinas" é a própria
-    // aba de contexto ativa; os 7 "Dashboards gerenciais" já são o grupo
-    // "Painéis de decisão"/"Consultas e auditoria" da central; "Fila de
-    // sincronização" já é o grupo "Sincronização"; a consulta de Ordens de
-    // Serviço já é a aba "Ordens de Serviço". Dois caminhos para o mesmo
-    // destino não é conveniência, é a pessoa não saber se são a mesma coisa.
-    menuSections: [],
+    // Os grupos do catálogo operacional (antes a grade da tela inicial)
+    // entram aqui como "Lançamentos" — ver [operationalMenuSections].
+    menuSectionsBuilder: operationalMenuSections,
   ),
   ModuleDef(
     id: 'armazem',

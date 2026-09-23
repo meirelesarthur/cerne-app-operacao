@@ -35,7 +35,9 @@ String _fmtData(DateTime d) =>
 String _fmtDataHora(DateTime d) =>
     '${_fmtData(d)} às ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
-/// Card resumido da OS para as listas (Operacional/Administrativo).
+/// Card resumido da OS para as listas: o `AppStatusCard` do catálogo com o
+/// status no topo, o código em destaque, o título do serviço e prazo/local
+/// abaixo, tipo e prioridade à direita (prioridade alta/urgente em destaque).
 class OsSummaryCard extends StatelessWidget {
   const OsSummaryCard({super.key, required this.os, required this.onTap});
 
@@ -44,55 +46,25 @@ class OsSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-
-    return AppCard(
-      interactive: true,
+    return AppStatusCard(
+      statusLabel: os.avaliacao != null
+          ? '${os.status.label} · avaliada ${os.avaliacao!.nota}/5'
+          : os.status.label,
+      statusTone: osStatusTone(os.status),
+      title: os.codigo,
+      subtitle: os.titulo,
+      caption: 'Prazo ${_fmtData(os.prazo)} · ${os.areaOuTalhao}',
+      meta: [
+        AppStatusCardMeta(label: 'Tipo', value: os.tipo.label),
+        AppStatusCardMeta(
+          label: 'Prioridade',
+          value: os.prioridade.label,
+          highlight:
+              os.prioridade == PrioridadeOs.alta ||
+              os.prioridade == PrioridadeOs.urgente,
+        ),
+      ],
       onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '${os.codigo} · ${os.titulo}',
-                  style: TextStyle(
-                    fontWeight: AppTypography.weightSemibold,
-                    color: semantic.fgDefault,
-                  ),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.space2),
-              AppChip(tone: osStatusTone(os.status), child: Text(os.status.label)),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.space1),
-          Text(
-            '${os.tipo.label} · ${os.fazenda} · ${os.areaOuTalhao}',
-            style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
-          ),
-          const SizedBox(height: AppSpacing.space2),
-          Wrap(
-            spacing: AppSpacing.space2,
-            runSpacing: AppSpacing.space2,
-            children: [
-              AppChip(
-                tone: osPrioridadeTone(os.prioridade),
-                child: Text('Prioridade ${os.prioridade.label}'),
-              ),
-              AppChip(child: Text('Prazo ${_fmtData(os.prazo)}')),
-              if (os.avaliacao != null)
-                AppChip(
-                  tone: AppChipTone.brand,
-                  icon: const AppIcon(AppIcons.check, size: AppSize.iconXs),
-                  child: Text('Avaliada — nota ${os.avaliacao!.nota}'),
-                ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }
@@ -139,13 +111,19 @@ class OsDetailBody extends StatelessWidget {
             width: 132,
             child: Text(
               label,
-              style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgMuted,
+              ),
             ),
           ),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgDefault),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgDefault,
+              ),
             ),
           ),
         ],
@@ -160,7 +138,10 @@ class OsDetailBody extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: AppSpacing.space1),
             child: Text(
               '· $item',
-              style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgDefault),
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgDefault,
+              ),
             ),
           ),
       ],
@@ -182,7 +163,10 @@ class OsDetailBody extends StatelessWidget {
                 ),
               ),
             ),
-            AppChip(tone: osStatusTone(os.status), child: Text(os.status.label)),
+            AppChip(
+              tone: osStatusTone(os.status),
+              child: Text(os.status.label),
+            ),
           ],
         ),
         const SizedBox(height: AppSpacing.space1),
@@ -215,10 +199,16 @@ class OsDetailBody extends StatelessWidget {
             ),
           ),
         ),
-        section('Instruções de segurança', Text(
-          os.instrucoesSeguranca,
-          style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgDefault),
-        )),
+        section(
+          'Instruções de segurança',
+          Text(
+            os.instrucoesSeguranca,
+            style: TextStyle(
+              fontSize: AppTypography.sm,
+              color: semantic.fgDefault,
+            ),
+          ),
+        ),
         section('Mão de obra alocada', bulletList(os.maoDeObra)),
         section('Máquinas alocadas', bulletList(os.maquinas)),
         section('Insumos alocados', bulletList(os.insumos)),
@@ -235,12 +225,19 @@ class OsDetailBody extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        AppIcon(AppIcons.camera, size: AppSize.iconXs, color: semantic.fgMuted),
+                        AppIcon(
+                          AppIcons.camera,
+                          size: AppSize.iconXs,
+                          color: semantic.fgMuted,
+                        ),
                         const SizedBox(width: AppSpacing.space2),
                         Expanded(
                           child: Text(
                             '${ev.legenda} — ${_fmtDataHora(ev.dataHora)}',
-                            style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgDefault),
+                            style: TextStyle(
+                              fontSize: AppTypography.sm,
+                              color: semantic.fgDefault,
+                            ),
                           ),
                         ),
                       ],
@@ -250,20 +247,38 @@ class OsDetailBody extends StatelessWidget {
             ),
           ),
         if (os.motivoPausa != null)
-          section('Motivo da pausa', Text(
-            os.motivoPausa!,
-            style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgDefault),
-          )),
+          section(
+            'Motivo da pausa',
+            Text(
+              os.motivoPausa!,
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgDefault,
+              ),
+            ),
+          ),
         if (os.justificativaRefazer != null)
-          section('Justificativa do retrabalho', Text(
-            os.justificativaRefazer!,
-            style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgDefault),
-          )),
+          section(
+            'Justificativa do retrabalho',
+            Text(
+              os.justificativaRefazer!,
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgDefault,
+              ),
+            ),
+          ),
         if (os.motivoCancelamento != null)
-          section('Motivo do cancelamento', Text(
-            os.motivoCancelamento!,
-            style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgDefault),
-          )),
+          section(
+            'Motivo do cancelamento',
+            Text(
+              os.motivoCancelamento!,
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                color: semantic.fgDefault,
+              ),
+            ),
+          ),
         if (os.avaliacao != null)
           section(
             'Avaliação do administrativo',
@@ -286,12 +301,18 @@ class OsDetailBody extends StatelessWidget {
                   const SizedBox(height: AppSpacing.space1),
                   Text(
                     os.avaliacao!.comentario,
-                    style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+                    style: TextStyle(
+                      fontSize: AppTypography.sm,
+                      color: semantic.fgMuted,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.space1),
                   Text(
                     _fmtDataHora(os.avaliacao!.dataHora),
-                    style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                    style: TextStyle(
+                      fontSize: AppTypography.xs,
+                      color: semantic.fgMuted,
+                    ),
                   ),
                 ],
               ),
@@ -310,16 +331,25 @@ class OsDetailBody extends StatelessWidget {
                     children: [
                       Text(
                         '${evento.acao} — ${evento.autor}',
-                        style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgDefault),
+                        style: TextStyle(
+                          fontSize: AppTypography.sm,
+                          color: semantic.fgDefault,
+                        ),
                       ),
                       Text(
                         _fmtDataHora(evento.dataHora),
-                        style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                        style: TextStyle(
+                          fontSize: AppTypography.xs,
+                          color: semantic.fgMuted,
+                        ),
                       ),
                       if (evento.observacao != null)
                         Text(
                           evento.observacao!,
-                          style: TextStyle(fontSize: AppTypography.xs, color: semantic.fgMuted),
+                          style: TextStyle(
+                            fontSize: AppTypography.xs,
+                            color: semantic.fgMuted,
+                          ),
                         ),
                     ],
                   ),
@@ -329,7 +359,11 @@ class OsDetailBody extends StatelessWidget {
         ),
         if (actions.isNotEmpty) ...[
           const SizedBox(height: AppSpacing.space5),
-          Wrap(spacing: AppSpacing.space2, runSpacing: AppSpacing.space2, children: actions),
+          Wrap(
+            spacing: AppSpacing.space2,
+            runSpacing: AppSpacing.space2,
+            children: actions,
+          ),
         ],
       ],
     );

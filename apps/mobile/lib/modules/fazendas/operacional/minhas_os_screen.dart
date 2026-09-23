@@ -13,8 +13,18 @@ import '../ordem_servico/widgets.dart';
 /// encerrar (entregue, ou refeita com justificativa). A OS em si nasce no
 /// app web (fonte única do cadastro); aqui só se lança o andamento em campo,
 /// mesmo padrão de Confinamento (`operacional/meus_currais_screen.dart`).
+///
+/// Também é a tela inicial do perfil Operacional (primeira aba da navbar,
+/// "OSs", em `/fazendas/operacional`): ali roda com [embedded], dentro da
+/// folha de conteúdo do shell, que já traz saudação, busca e fazenda ativa.
 class MinhasOsScreen extends ConsumerStatefulWidget {
-  const MinhasOsScreen({super.key});
+  const MinhasOsScreen({super.key, this.embedded = false});
+
+  /// `true` quando montada dentro do `AppContentSheet` do shell (tela
+  /// inicial): sem a faixa de "Voltar" e sem uma segunda folha — o título
+  /// vira cabeçalho de seção. O padrão mantém a tela autocontida para a rota
+  /// funda `/fazendas/campo/minhas-os` (busca global e catálogo).
+  final bool embedded;
 
   @override
   ConsumerState<MinhasOsScreen> createState() => _MinhasOsScreenState();
@@ -23,15 +33,23 @@ class MinhasOsScreen extends ConsumerStatefulWidget {
 class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
   int _tab = 0;
 
-  static const _labels = ['Aguardando', 'Em execução', 'Finalizadas'];
+  /// "Todas" abre a tela com o panorama do dia; os demais filtros separam
+  /// por andamento (pausada conta como em execução — ainda é trabalho aberto).
+  static const _labels = ['Todas', 'Aguardando', 'Em execução', 'Finalizadas'];
 
   List<OrdemServico> _filtrar(List<OrdemServico> ordens) {
     return switch (_tab) {
-      0 => ordens.where((o) => o.status == OrdemServicoStatus.aguardando).toList(),
-      1 => ordens
-          .where((o) =>
-              o.status == OrdemServicoStatus.emExecucao || o.status == OrdemServicoStatus.pausada)
-          .toList(),
+      0 => ordens,
+      1 =>
+        ordens.where((o) => o.status == OrdemServicoStatus.aguardando).toList(),
+      2 =>
+        ordens
+            .where(
+              (o) =>
+                  o.status == OrdemServicoStatus.emExecucao ||
+                  o.status == OrdemServicoStatus.pausada,
+            )
+            .toList(),
       _ => ordens.where((o) => o.status.encerrada).toList(),
     };
   }
@@ -40,6 +58,60 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
   Widget build(BuildContext context) {
     final ordens = ref.watch(ordemServicoStoreProvider.select((s) => s.ordens));
     final filtradas = _filtrar(ordens);
+
+    final tabs = AppSegmentedTabs(
+      labels: _labels,
+      selectedIndex: _tab,
+      onChanged: (i) => setState(() => _tab = i),
+      scrollable: true,
+    );
+    final list = filtradas.isEmpty
+        ? const Center(
+            child: AppEmptyState(
+              icon: AppIcons.fileText,
+              title: 'Nenhuma OS neste filtro',
+              description:
+                  'Ordens de serviço atribuídas ao funcionário e à fazenda ativa aparecem aqui.',
+            ),
+          )
+        : ListView.separated(
+            padding: const EdgeInsets.all(AppSpacing.space4),
+            itemCount: filtradas.length,
+            separatorBuilder: (context, _) =>
+                const SizedBox(height: AppSpacing.space3),
+            itemBuilder: (context, index) {
+              final os = filtradas[index];
+              return OsSummaryCard(
+                os: os,
+                onTap: () => _abrirDetalhe(context, os),
+              );
+            },
+          );
+
+    if (widget.embedded) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.space4,
+              AppSpacing.space4,
+              AppSpacing.space4,
+              0,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const AppHeading(child: Text('Ordens de serviço')),
+                const SizedBox(height: AppSpacing.space3),
+                tabs,
+              ],
+            ),
+          ),
+          Expanded(child: list),
+        ],
+      );
+    }
 
     return Column(
       children: [
@@ -51,34 +123,9 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
             AppSpacing.space4,
             0,
           ),
-          child: AppSegmentedTabs(
-            labels: _labels,
-            selectedIndex: _tab,
-            onChanged: (i) => setState(() => _tab = i),
-          ),
+          child: tabs,
         ),
-        Expanded(
-          child: AppContentSheet(
-            padded: false,
-            child: filtradas.isEmpty
-                ? const Center(
-                    child: AppEmptyState(
-                      icon: AppIcons.fileText,
-                      title: 'Nenhuma OS nesta aba',
-                      description: 'Ordens de serviço atribuídas ao funcionário e à fazenda ativa aparecem aqui.',
-                    ),
-                  )
-                : ListView.separated(
-                    padding: const EdgeInsets.all(AppSpacing.space4),
-                    itemCount: filtradas.length,
-                    separatorBuilder: (context, _) => const SizedBox(height: AppSpacing.space3),
-                    itemBuilder: (context, index) {
-                      final os = filtradas[index];
-                      return OsSummaryCard(os: os, onTap: () => _abrirDetalhe(context, os));
-                    },
-                  ),
-          ),
-        ),
+        Expanded(child: AppContentSheet(padded: false, child: list)),
       ],
     );
   }
@@ -126,11 +173,15 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
               ),
             );
           }
-          if (atual.status == OrdemServicoStatus.emExecucao || atual.status == OrdemServicoStatus.pausada) {
+          if (atual.status == OrdemServicoStatus.emExecucao ||
+              atual.status == OrdemServicoStatus.pausada) {
             actions.add(
               AppButton(
                 onPressed: () {
-                  notifier.marcarEntregue(atual.id, autor: atual.responsavelExecucao);
+                  notifier.marcarEntregue(
+                    atual.id,
+                    autor: atual.responsavelExecucao,
+                  );
                   setSheetState(() {});
                 },
                 child: const Text('Marcar como entregue'),
@@ -165,7 +216,10 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
           AppFormField(
             label: 'Motivo da pausa',
             required: true,
-            child: AppTextarea(controller: controller, placeholder: 'Ex.: falta de insumo, condição climática...'),
+            child: AppTextarea(
+              controller: controller,
+              placeholder: 'Ex.: falta de insumo, condição climática...',
+            ),
           ),
           const SizedBox(height: AppSpacing.space5),
           AppButton(
@@ -174,7 +228,11 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
               final motivo = controller.text.trim();
               if (motivo.isEmpty) return;
               final atual = notifier.byId(osId);
-              notifier.pausar(osId, autor: atual.responsavelExecucao, motivo: motivo);
+              notifier.pausar(
+                osId,
+                autor: atual.responsavelExecucao,
+                motivo: motivo,
+              );
               Navigator.of(context)
                 ..pop()
                 ..pop();
@@ -201,7 +259,10 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
             label: 'Justificativa',
             required: true,
             hint: 'Explique por que o serviço precisa ser refeito.',
-            child: AppTextarea(controller: controller, placeholder: 'Descreva o que impediu a conclusão...'),
+            child: AppTextarea(
+              controller: controller,
+              placeholder: 'Descreva o que impediu a conclusão...',
+            ),
           ),
           const SizedBox(height: AppSpacing.space5),
           AppButton(
@@ -211,7 +272,11 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
               final justificativa = controller.text.trim();
               if (justificativa.isEmpty) return;
               final atual = notifier.byId(osId);
-              notifier.marcarRefeita(osId, autor: atual.responsavelExecucao, justificativa: justificativa);
+              notifier.marcarRefeita(
+                osId,
+                autor: atual.responsavelExecucao,
+                justificativa: justificativa,
+              );
               Navigator.of(context)
                 ..pop()
                 ..pop();

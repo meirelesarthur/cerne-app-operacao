@@ -31,16 +31,23 @@ void main() {
       expect(find.text('Procurando por algo?'), findsOneWidget);
       expect(find.text('O que fazer hoje'), findsNothing);
       expect(find.byType(AppContextTabs), findsNothing);
-      expect(find.text('Home'), findsOneWidget);
-      expect(find.text('Agricultura'), findsWidgets);
-      expect(find.text('Sincronizar aplicativo'), findsOneWidget);
+      // A tela inicial é a de ordens de serviço, separada por andamento.
+      expect(find.text('Ordens de serviço'), findsOneWidget);
+      expect(find.text('Aguardando'), findsWidgets);
+      expect(find.text('Em execução'), findsWidgets);
+      expect(find.text('Finalizadas'), findsOneWidget);
+      expect(find.text('OSs'), findsOneWidget);
+      expect(find.byType(AppModuleTile), findsNothing);
     });
 
     testWidgets(
-      'grupo com uma única funcionalidade pula direto para o destino',
+      'grupo com uma única funcionalidade abre direto pelo menu lateral',
       (tester) async {
         await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.byTooltip('Menu'));
         await tester.pumpAndSettle();
 
         // "Sincronização" só tem uma funcionalidade — a tela de listagem do
@@ -51,22 +58,30 @@ void main() {
         expect(find.text('Sincronização de dados'), findsNothing);
         expect(find.text('SINCRONIZAR'), findsOneWidget);
         expect(tester.takeException(), isNull);
+
+        // Empilhada: o "Voltar" da funcionalidade retorna à tela inicial.
+        expect(harness.router.canPop(), isTrue);
       },
     );
 
     testWidgets(
-      'navbar operacional de Fazendas troca o Menu por Confinamento (uso mais frequente)',
+      'navbar operacional: OSs, Pecuária, Agricultura e Menu lateral',
       (tester) async {
+        await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        // fidelidade-esteira: o Menu (RevealMenu) saiu da navbar operacional
-        // de Fazendas — redundante com a grade de módulos da própria Home —
-        // e deu lugar a Confinamento, o grupo de uso diário mais frequente.
-        expect(find.byTooltip('Menu'), findsNothing);
-        expect(find.byTooltip('Confinamento'), findsOneWidget);
+        expect(find.byTooltip('Confinamento'), findsNothing);
+        expect(find.byTooltip('Pecuária'), findsOneWidget);
+        expect(find.byTooltip('Agricultura'), findsOneWidget);
 
-        await tester.tap(find.byTooltip('Confinamento'));
+        // O Menu abre o menu lateral com os grupos que saíram da tela
+        // inicial; Confinamento, antes aba própria, agora vive ali.
+        await tester.tap(find.byTooltip('Menu'));
+        await tester.pumpAndSettle();
+
+        expect(find.text('LANÇAMENTOS'), findsOneWidget);
+        await tester.tap(find.text('Confinamento'));
         await tester.pumpAndSettle();
 
         expect(find.byType(AppContextTabs), findsNothing);

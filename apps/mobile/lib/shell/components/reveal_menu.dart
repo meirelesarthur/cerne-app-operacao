@@ -39,6 +39,7 @@ class AppRevealMenu extends ConsumerStatefulWidget {
     super.key,
     required this.module,
     required this.onNavigate,
+    this.onPush,
     this.activeRoute,
   });
 
@@ -46,6 +47,11 @@ class AppRevealMenu extends ConsumerStatefulWidget {
 
   /// Recebe a rota absoluta de destino (ex.: `/perfil`, `/notificacoes`, `/login`).
   final ValueChanged<String> onNavigate;
+
+  /// Destinos marcados com [ModuleMenuItem.push] (telas fundas com "Voltar"
+  /// próprio) chegam aqui em vez de [onNavigate], para quem monta o menu
+  /// empilhar a rota. Ausente, cai em [onNavigate].
+  final ValueChanged<String>? onPush;
 
   /// Rota atual do app, usada só para destacar o item correspondente no menu.
   final String? activeRoute;
@@ -120,6 +126,7 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
                             activeRoute: widget.activeRoute,
                             semantic: semantic,
                             onNavigate: widget.onNavigate,
+                            onPush: widget.onPush ?? widget.onNavigate,
                             onToggleTheme: () => ref
                                 .read(themeVariantProvider.notifier)
                                 .toggle(),
@@ -154,6 +161,7 @@ class _MenuContent extends StatelessWidget {
     required this.activeRoute,
     required this.semantic,
     required this.onNavigate,
+    required this.onPush,
     required this.onToggleTheme,
     required this.onToggleOnline,
     required this.onLogout,
@@ -166,6 +174,7 @@ class _MenuContent extends StatelessWidget {
   final String? activeRoute;
   final AppSemanticColors semantic;
   final ValueChanged<String> onNavigate;
+  final ValueChanged<String> onPush;
   final VoidCallback onToggleTheme;
   final VoidCallback onToggleOnline;
   final VoidCallback onLogout;
@@ -237,6 +246,46 @@ class _MenuContent extends StatelessWidget {
       ),
       const SizedBox(height: AppSpacing.space3),
 
+      // funcionalidades do módulo atual
+      for (final section in sections) ...[
+        _stagger(
+          next(),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.space3,
+              AppSpacing.space2,
+              AppSpacing.space3,
+              AppSpacing.space1,
+            ),
+            child: Text(
+              section.title.toUpperCase(),
+              style: TextStyle(
+                fontSize: AppTypography.xs,
+                fontWeight: AppTypography.weightSemibold,
+                letterSpacing: 0.4,
+                color: semantic.inkSubtle,
+              ),
+            ),
+          ),
+        ),
+        for (final item in section.items) ...[
+          _stagger(
+            next(),
+            AppMenuItem(
+              variant: AppMenuItemVariant.onDark,
+              icon: item.icon,
+              label: item.label,
+              active: activeRoute == item.route,
+              onTap: () =>
+                  item.push ? onPush(item.route) : onNavigate(item.route),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.space1),
+        ],
+      ],
+
+      const SizedBox(height: AppSpacing.space2),
+
       // Módulos-pai do superapp. A barra inferior reserva apenas as entradas
       // mais frequentes; o restante continua acessível aqui, antes da seção
       // de conta.
@@ -272,52 +321,13 @@ class _MenuContent extends StatelessWidget {
             icon: parentModule.icon,
             label: parentModule.label,
             active: parentModule.id == module.id,
-            onTap: () => onNavigate(
-              moduleHomeRoute(parentModule, profile),
-            ),
+            onTap: () => onNavigate(moduleHomeRoute(parentModule, profile)),
           ),
         ),
         const SizedBox(height: AppSpacing.space1),
       ],
 
       const SizedBox(height: AppSpacing.space2),
-
-      // funcionalidades do módulo atual
-      for (final section in sections) ...[
-        _stagger(
-          next(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.space3,
-              AppSpacing.space2,
-              AppSpacing.space3,
-              AppSpacing.space1,
-            ),
-            child: Text(
-              section.title.toUpperCase(),
-              style: TextStyle(
-                fontSize: AppTypography.xs,
-                fontWeight: AppTypography.weightSemibold,
-                letterSpacing: 0.4,
-                color: semantic.inkSubtle,
-              ),
-            ),
-          ),
-        ),
-        for (final item in section.items) ...[
-          _stagger(
-            next(),
-            AppMenuItem(
-              variant: AppMenuItemVariant.onDark,
-              icon: item.icon,
-              label: item.label,
-              active: activeRoute == item.route,
-              onTap: () => onNavigate(item.route),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.space1),
-        ],
-      ],
 
       _stagger(
         next(),
