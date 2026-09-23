@@ -66,7 +66,10 @@ void main() {
         expect(find.text('Silvio Ventura'), findsOneWidget);
         // O título da seção é exibido em caixa alta (equivalente ao `uppercase`
         // do Tailwind no React — transformação puramente visual).
-        expect(find.text('OPERAÇÃO'), findsOneWidget);
+        // Grupo único "MENU" (caixa alta visual), sem subtítulos de seção.
+        expect(find.text('MENU'), findsOneWidget);
+        expect(find.text('OPERAÇÃO'), findsNothing);
+        expect(find.text('Unidades'), findsOneWidget);
         expect(find.text('Sair'), findsOneWidget);
         expect(tester.takeException(), isNull);
 
@@ -133,7 +136,7 @@ void main() {
       expect(container.read(shellStoreProvider).isOnline, isFalse);
     });
 
-    testWidgets('operacional encontra todos os módulos no menu lateral', (
+    testWidgets('operacional encontra tudo num grupo único no menu lateral', (
       tester,
     ) async {
       final container = ProviderContainer();
@@ -154,10 +157,15 @@ void main() {
       );
       await tester.pump(const Duration(milliseconds: 900));
 
-      expect(find.text('MÓDULOS'), findsOneWidget);
-      for (final module in modules) {
-        expect(find.text(module.label), findsOneWidget);
-      }
+      // Tudo num grupo só: sem "LANÇAMENTOS"/"MÓDULOS".
+      expect(find.text('MENU'), findsOneWidget);
+      expect(find.text('LANÇAMENTOS'), findsNothing);
+      expect(find.text('MÓDULOS'), findsNothing);
+      expect(find.text('Ordens de serviço'), findsOneWidget);
+      expect(find.text('Início'), findsOneWidget);
+      expect(find.text('Armazém'), findsOneWidget);
+      // Fazendas abriria a mesma tela de "Ordens de serviço": não se repete.
+      expect(find.text('Fazendas'), findsNothing);
     });
   });
 }

@@ -108,7 +108,7 @@ class ModuleDef {
 ///
 /// O "Menu" (RevealMenu) voltou no lugar de Confinamento: a grade de grupos
 /// saiu da tela inicial — que agora é a de OS — e todos os grupos passaram a
-/// morar no menu lateral, em "Lançamentos" ([operationalMenuSections]).
+/// morar no menu lateral, no grupo único "Menu" ([operationalMenuSections]).
 const List<BottomTab> operationalBottomTabs = [
   BottomTab(
     id: 'os',
@@ -137,7 +137,7 @@ const List<BottomTab> operationalBottomTabs = [
   ),
 ];
 
-/// Seção "Lançamentos" do menu lateral do Operacional: um item por grupo do
+/// Itens do menu lateral do Operacional: um item por grupo do
 /// catálogo, na ordem de produto. O menu é o índice completo das rotinas —
 /// repete de propósito o que já está na navbar (OSs, Pecuária, Agricultura).
 ///
@@ -150,7 +150,7 @@ List<ModuleMenuSection> operationalMenuSections() {
   final os = entries.where((e) => e.group == osGroup);
   return [
     ModuleMenuSection(
-      title: 'Lançamentos',
+      title: 'Menu',
       items: [
         if (os.isNotEmpty)
           ModuleMenuItem(
@@ -269,7 +269,7 @@ const List<ModuleDef> modules = [
       ),
     ],
     // Os grupos do catálogo operacional (antes a grade da tela inicial)
-    // entram aqui como "Lançamentos" — ver [operationalMenuSections].
+    // entram no grupo único "Menu" — ver [operationalMenuSections].
     menuSectionsBuilder: operationalMenuSections,
   ),
   ModuleDef(

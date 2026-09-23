@@ -187,6 +187,22 @@ class _MenuContent extends StatelessWidget {
     final isGbMode = themeVariant == AppThemeVariant.gbMode;
     final roleLabel = profile?.roleLabel ?? 'Sessão não iniciada';
     final sections = getMenuSections(module, profile: profile);
+    final sectionItems = [for (final section in sections) ...section.items];
+    final listedRoutes = {for (final item in sectionItems) item.route};
+    // O dock operacional oferece apenas atalhos de rotina, mas o menu
+    // lateral é o índice completo do app. Não reutilize `visibleModulesFor`
+    // aqui: ela expressa exclusivamente a regra do dock.
+    final menuItems = [
+      ...sectionItems,
+      for (final parentModule in modules)
+        if (!listedRoutes.contains(moduleHomeRoute(parentModule, profile)))
+          ModuleMenuItem(
+            id: parentModule.id,
+            label: parentModule.label,
+            icon: parentModule.icon,
+            route: moduleHomeRoute(parentModule, profile),
+          ),
+    ];
 
     var idx = 0;
     int next() => idx++;
@@ -246,60 +262,24 @@ class _MenuContent extends StatelessWidget {
       ),
       const SizedBox(height: AppSpacing.space3),
 
-      // funcionalidades do módulo atual
-      for (final section in sections) ...[
-        _stagger(
-          next(),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.space3,
-              AppSpacing.space2,
-              AppSpacing.space3,
-              AppSpacing.space1,
-            ),
-            child: Text(
-              section.title.toUpperCase(),
-              style: TextStyle(
-                fontSize: AppTypography.xs,
-                fontWeight: AppTypography.weightSemibold,
-                letterSpacing: 0.4,
-                color: semantic.inkSubtle,
-              ),
-            ),
-          ),
-        ),
-        for (final item in section.items) ...[
-          _stagger(
-            next(),
-            AppMenuItem(
-              variant: AppMenuItemVariant.onDark,
-              icon: item.icon,
-              label: item.label,
-              active: activeRoute == item.route,
-              onTap: () =>
-                  item.push ? onPush(item.route) : onNavigate(item.route),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.space1),
-        ],
-      ],
-
-      const SizedBox(height: AppSpacing.space2),
-
-      // Módulos-pai do superapp. A barra inferior reserva apenas as entradas
-      // mais frequentes; o restante continua acessível aqui, antes da seção
-      // de conta.
+      // Um único grupo "MENU": as funcionalidades do módulo atual e os
+      // módulos-pai, sem subtítulos entre eles. O público é a equipe de
+      // campo — divisões como "Lançamentos"/"Módulos" são vocabulário de
+      // sistema, não da rotina; uma lista só, com rótulos claros, é mais
+      // fácil de percorrer. O índice é completo (repete o que a navbar já
+      // mostra); só não repete um destino idêntico — o módulo cuja tela
+      // inicial já é um dos itens acima (ex.: Fazendas = Ordens de serviço).
       _stagger(
         next(),
         Padding(
           padding: const EdgeInsets.fromLTRB(
             AppSpacing.space3,
-            0,
+            AppSpacing.space2,
             AppSpacing.space3,
             AppSpacing.space1,
           ),
           child: Text(
-            'MÓDULOS',
+            'MENU',
             style: TextStyle(
               fontSize: AppTypography.xs,
               fontWeight: AppTypography.weightSemibold,
@@ -309,19 +289,16 @@ class _MenuContent extends StatelessWidget {
           ),
         ),
       ),
-      // O dock operacional oferece apenas atalhos de rotina, mas o menu
-      // lateral é o índice completo do app. Não reutilize
-      // `visibleModulesFor` aqui: ela expressa exclusivamente a regra do
-      // dock.
-      for (final parentModule in modules) ...[
+      for (final item in menuItems) ...[
         _stagger(
           next(),
           AppMenuItem(
             variant: AppMenuItemVariant.onDark,
-            icon: parentModule.icon,
-            label: parentModule.label,
-            active: parentModule.id == module.id,
-            onTap: () => onNavigate(moduleHomeRoute(parentModule, profile)),
+            icon: item.icon,
+            label: item.label,
+            active: activeRoute == item.route,
+            onTap: () =>
+                item.push ? onPush(item.route) : onNavigate(item.route),
           ),
         ),
         const SizedBox(height: AppSpacing.space1),

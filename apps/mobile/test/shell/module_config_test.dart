@@ -91,11 +91,11 @@ void main() {
     );
 
     test(
-      'menu lateral de Fazendas lista os grupos do catálogo em Lançamentos',
+      'menu lateral de Fazendas lista os grupos do catálogo num grupo só',
       () {
         final sections = getMenuSections(getModule('fazendas')!);
 
-        expect(sections.map((s) => s.title), ['Lançamentos']);
+        expect(sections.map((s) => s.title), ['Menu']);
         final labels = sections.single.items.map((i) => i.label).toList();
         // O menu é o índice completo: repete o que está na navbar, com a
         // tela inicial de OS em primeiro.

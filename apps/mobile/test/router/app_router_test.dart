@@ -104,7 +104,7 @@ void main() {
         await tester.tap(find.byTooltip('Menu'));
         await tester.pumpAndSettle();
 
-        expect(find.text('LANÇAMENTOS'), findsOneWidget);
+        expect(find.text('MENU'), findsOneWidget);
         await tester.tap(find.text('Confinamento'));
         await tester.pumpAndSettle();
 
