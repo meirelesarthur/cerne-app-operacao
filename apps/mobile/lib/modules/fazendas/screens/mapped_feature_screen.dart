@@ -200,6 +200,23 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
               _FeatureFieldControl(
                 field: collection.fields[index],
                 value: values[collection.fields[index].id] ?? '',
+                options: effectiveFieldOptions(
+                  collection.fields[index],
+                  values,
+                ),
+                locked: isFieldLockedByDerivation(
+                  collection.fields[index],
+                  values,
+                ),
+                hint: fieldDerivationHint(
+                  collection.fields[index],
+                  collection.fields,
+                  values,
+                ),
+                refreshToken: _refreshTokenFor(
+                  collection.fields[index],
+                  values,
+                ),
                 isRequired: isCollectionItemFieldRequired(
                   _journey.feature,
                   collection,
@@ -217,7 +234,16 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                       )
                     : null,
                 onChanged: (value) => setSheetState(() {
-                  values[collection.fields[index].id] = value;
+                  final fieldId = collection.fields[index].id;
+                  values[fieldId] = value;
+                  final derived = applyFieldDerivations(
+                    collection.fields,
+                    values,
+                    fieldId,
+                  );
+                  values
+                    ..clear()
+                    ..addAll(derived);
                 }),
               ),
               if (index < collection.fields.length - 1)
@@ -1158,6 +1184,23 @@ class _FeatureForm extends StatelessWidget {
                 _FeatureFieldControl(
                   field: visibleFields[index],
                   value: journey.form.values[visibleFields[index].id] ?? '',
+                  options: effectiveFieldOptions(
+                    visibleFields[index],
+                    journey.form.values,
+                  ),
+                  locked: isFieldLockedByDerivation(
+                    visibleFields[index],
+                    journey.form.values,
+                  ),
+                  hint: fieldDerivationHint(
+                    visibleFields[index],
+                    feature.fields,
+                    journey.form.values,
+                  ),
+                  refreshToken: _refreshTokenFor(
+                    visibleFields[index],
+                    journey.form.values,
+                  ),
                   isRequired: isFeatureFieldRequired(
                     feature,
                     visibleFields[index],
@@ -1318,6 +1361,15 @@ AppHardwareSimulationKind _simulationKind(HardwareSimulationKind kind) =>
 /// resolvidos porque serve dois contextos: o formulário do cadastro (onde eles
 /// vêm do `FunctionalJourneyController`) e o formulário de **um item de
 /// coleção** na folha inferior, que não tem jornada por trás.
+/// Chave de remontagem de um campo derivado: muda quando a fonte muda, para
+/// que um `AppTextInput` (que só lê `initialValue` no primeiro build) mostre o
+/// valor novo que o cadastro respondeu. Campo sem derivação não remonta.
+String? _refreshTokenFor(FeatureField field, Map<String, String> values) {
+  final derivation = field.derivedFrom;
+  if (derivation == null) return null;
+  return '${field.id}<-${values[derivation.source] ?? ''}';
+}
+
 class _FeatureFieldControl extends StatelessWidget {
   const _FeatureFieldControl({
     required this.field,
@@ -1326,6 +1378,10 @@ class _FeatureFieldControl extends StatelessWidget {
     required this.onChanged,
     this.error,
     this.enabled = true,
+    this.options,
+    this.locked = false,
+    this.hint,
+    this.refreshToken,
   });
 
   final FeatureField field;
@@ -1334,6 +1390,20 @@ class _FeatureFieldControl extends StatelessWidget {
   final String? error;
   final ValueChanged<String> onChanged;
 
+  /// Opções efetivas (já filtradas por [FeatureField.optionsFrom]). Ausente,
+  /// usa [FeatureField.options].
+  final List<String>? options;
+
+  /// Valor travado pelo cadastro de outro campo ([FeatureFieldDerivation]):
+  /// o controle aparece desabilitado com o valor dentro.
+  final bool locked;
+
+  /// De onde o valor derivado veio — sob o campo, como no [AppFormField].
+  final String? hint;
+
+  /// Ver [_refreshTokenFor].
+  final String? refreshToken;
+
   /// `false` na visualização de um registro já gravado: o mesmo controle do
   /// cadastro, com o valor gravado dentro, desabilitado — não uma lista de
   /// texto à parte. Ver `_recordFieldGroups`/`_recordFieldWidgets`.
@@ -1341,119 +1411,131 @@ class _FeatureFieldControl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final enabled = this.enabled && !locked;
+    // Valor derivado de cadastro fora da lista de opções (ex.: produto em
+    // litro num campo que só listava kg) entra na lista — um `DropdownButton`
+    // com valor fora dos itens quebra a tela.
+    final baseOptions = this.options ?? field.options;
+    final options =
+        value.isNotEmpty &&
+            field.selectOptions.isEmpty &&
+            !baseOptions.contains(value)
+        ? [...baseOptions, value]
+        : baseOptions;
+    final control = switch (field.type) {
+      FeatureFieldType.select => AppFormSelect(
+        value: value.isEmpty ? null : value,
+        placeholder: 'Selecione',
+        options: field.selectOptions.isNotEmpty
+            ? [
+                for (final option in field.selectOptions)
+                  AppFormSelectOption(value: option.value, label: option.label),
+              ]
+            : [
+                for (final option in options)
+                  AppFormSelectOption(value: option, label: option),
+              ],
+        enabled: enabled,
+        onChanged: (next) => onChanged(next ?? ''),
+      ),
+      // fidelidade-esteira: todo campo de domínio massivo (lote, produto,
+      // armazém, centro de custo...) é dropdown com busca em dock, não
+      // select simples — `AppSearchSelect` em vez de `AppFormSelect`.
+      FeatureFieldType.searchSelect => IgnorePointer(
+        ignoring: !enabled,
+        child: Opacity(
+          opacity: enabled ? 1 : 0.5,
+          child: AppSearchSelect(
+            value: value.isEmpty ? null : value,
+            label: field.label,
+            options: field.selectOptions.isNotEmpty
+                ? [
+                    for (final option in field.selectOptions)
+                      AppSearchSelectOption(
+                        value: option.value,
+                        label: option.label,
+                      ),
+                  ]
+                : [
+                    for (final option in options)
+                      AppSearchSelectOption(value: option, label: option),
+                  ],
+            onChanged: onChanged,
+          ),
+        ),
+      ),
+      FeatureFieldType.textarea => AppTextarea(
+        initialValue: value,
+        placeholder: field.placeholder,
+        enabled: enabled,
+        onChanged: onChanged,
+      ),
+      FeatureFieldType.number => AppTextInput(
+        initialValue: value,
+        placeholder: field.placeholder,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        invalid: error != null,
+        enabled: enabled,
+        onChanged: onChanged,
+      ),
+      // Inteiro: teclado sem casas decimais; a validação do motor recusa
+      // valores não-inteiros (ex. `mileage`/hodômetro do SupplyRequest).
+      FeatureFieldType.integer => AppTextInput(
+        initialValue: value,
+        placeholder: field.placeholder,
+        keyboardType: TextInputType.number,
+        invalid: error != null,
+        enabled: enabled,
+        onChanged: onChanged,
+      ),
+      FeatureFieldType.date => AppDateInput(
+        initialValue: value.isEmpty ? null : value,
+        invalid: error != null,
+        enabled: enabled,
+        onChanged: onChanged,
+      ),
+      FeatureFieldType.color => AppColorInput(
+        initialValue: value.isEmpty ? null : value,
+        palette: field.colorPalette.isEmpty
+            ? null
+            : [
+                for (final option in field.colorPalette)
+                  AppColorOption(value: option.value, label: option.label),
+              ],
+        invalid: error != null,
+        enabled: enabled,
+        onChanged: onChanged,
+      ),
+      // fidelidade-esteira (onda 15): switch de verdade — `value` guarda
+      // 'true'/'false' como qualquer outro campo (o motor só conhece
+      // `Map<String, String>`), não um booleano nativo.
+      FeatureFieldType.boolean => Align(
+        alignment: Alignment.centerLeft,
+        child: AppToggleSwitch(
+          checked: value == 'true',
+          onChanged: enabled
+              ? (checked) => onChanged(checked.toString())
+              : (_) {},
+          label: field.label,
+          disabled: !enabled,
+        ),
+      ),
+      FeatureFieldType.text || null => AppTextInput(
+        initialValue: value,
+        placeholder: field.placeholder,
+        invalid: error != null,
+        enabled: enabled,
+        onChanged: onChanged,
+      ),
+    };
     return AppFormField(
       label: field.label,
       required: isRequired,
       error: error,
-      child: switch (field.type) {
-        FeatureFieldType.select => AppFormSelect(
-          value: value.isEmpty ? null : value,
-          placeholder: 'Selecione',
-          options: field.selectOptions.isNotEmpty
-              ? [
-                  for (final option in field.selectOptions)
-                    AppFormSelectOption(
-                      value: option.value,
-                      label: option.label,
-                    ),
-                ]
-              : [
-                  for (final option in field.options)
-                    AppFormSelectOption(value: option, label: option),
-                ],
-          enabled: enabled,
-          onChanged: (next) => onChanged(next ?? ''),
-        ),
-        // fidelidade-esteira: todo campo de domínio massivo (lote, produto,
-        // armazém, centro de custo...) é dropdown com busca em dock, não
-        // select simples — `AppSearchSelect` em vez de `AppFormSelect`.
-        FeatureFieldType.searchSelect => IgnorePointer(
-          ignoring: !enabled,
-          child: Opacity(
-            opacity: enabled ? 1 : 0.5,
-            child: AppSearchSelect(
-              value: value.isEmpty ? null : value,
-              label: field.label,
-              options: field.selectOptions.isNotEmpty
-                  ? [
-                      for (final option in field.selectOptions)
-                        AppSearchSelectOption(
-                          value: option.value,
-                          label: option.label,
-                        ),
-                    ]
-                  : [
-                      for (final option in field.options)
-                        AppSearchSelectOption(value: option, label: option),
-                    ],
-              onChanged: onChanged,
-            ),
-          ),
-        ),
-        FeatureFieldType.textarea => AppTextarea(
-          initialValue: value,
-          placeholder: field.placeholder,
-          enabled: enabled,
-          onChanged: onChanged,
-        ),
-        FeatureFieldType.number => AppTextInput(
-          initialValue: value,
-          placeholder: field.placeholder,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          invalid: error != null,
-          enabled: enabled,
-          onChanged: onChanged,
-        ),
-        // Inteiro: teclado sem casas decimais; a validação do motor recusa
-        // valores não-inteiros (ex. `mileage`/hodômetro do SupplyRequest).
-        FeatureFieldType.integer => AppTextInput(
-          initialValue: value,
-          placeholder: field.placeholder,
-          keyboardType: TextInputType.number,
-          invalid: error != null,
-          enabled: enabled,
-          onChanged: onChanged,
-        ),
-        FeatureFieldType.date => AppDateInput(
-          initialValue: value.isEmpty ? null : value,
-          invalid: error != null,
-          enabled: enabled,
-          onChanged: onChanged,
-        ),
-        FeatureFieldType.color => AppColorInput(
-          initialValue: value.isEmpty ? null : value,
-          palette: field.colorPalette.isEmpty
-              ? null
-              : [
-                  for (final option in field.colorPalette)
-                    AppColorOption(value: option.value, label: option.label),
-                ],
-          invalid: error != null,
-          enabled: enabled,
-          onChanged: onChanged,
-        ),
-        // fidelidade-esteira (onda 15): switch de verdade — `value` guarda
-        // 'true'/'false' como qualquer outro campo (o motor só conhece
-        // `Map<String, String>`), não um booleano nativo.
-        FeatureFieldType.boolean => Align(
-          alignment: Alignment.centerLeft,
-          child: AppToggleSwitch(
-            checked: value == 'true',
-            onChanged: enabled
-                ? (checked) => onChanged(checked.toString())
-                : (_) {},
-            label: field.label,
-            disabled: !enabled,
-          ),
-        ),
-        FeatureFieldType.text || null => AppTextInput(
-          initialValue: value,
-          placeholder: field.placeholder,
-          invalid: error != null,
-          enabled: enabled,
-          onChanged: onChanged,
-        ),
-      },
+      hint: error == null ? hint : null,
+      child: refreshToken == null
+          ? control
+          : KeyedSubtree(key: ValueKey(refreshToken), child: control),
     );
   }
 }

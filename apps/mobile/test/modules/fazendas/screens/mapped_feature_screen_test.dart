@@ -426,13 +426,18 @@ void main() {
         'Ração Engorda 18% — Lote 2026-07-A',
       );
       await _enterFieldText(tester, 'Quantidade', '20');
-      await _selectFieldOption(tester, 'Unidade', 'kg');
+      // banco-real (onda 5): unidade e armazém vêm do item de estoque —
+      // travados, com a origem no hint; ninguém escolhe de novo.
+      expect(
+        find.text('Preenchido pelo cadastro de “Item de estoque”.'),
+        findsNWidgets(2),
+      );
       await tester.ensureVisible(find.text('Adicionar').last);
       await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
 
       expect(find.text('Ração Engorda 18%'), findsOneWidget);
-      expect(find.text('20 · kg'), findsOneWidget);
+      expect(find.text('20 · kg · Armazém A'), findsOneWidget);
       expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
 
       // Etapa 5 — revisão: a coleção aparece por extenso, item a item, na
@@ -442,7 +447,7 @@ void main() {
       expect(find.text('Revisão'), findsWidgets);
       expect(find.text('Insumos'), findsOneWidget);
       expect(find.text('Ração Engorda 18%'), findsOneWidget);
-      expect(find.text('20 · kg'), findsOneWidget);
+      expect(find.text('20 · kg · Armazém A'), findsOneWidget);
       expect(find.text('Roçada'), findsOneWidget);
 
       await tester.tap(findCta('Salvar pastagem'));

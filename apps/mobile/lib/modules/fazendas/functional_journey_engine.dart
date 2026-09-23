@@ -62,8 +62,14 @@ class FunctionalJourneyController {
     editingRecordId = record.id;
   }
 
+  /// Grava o campo e propaga o cadastro dele para os campos derivados
+  /// ([applyFieldDerivations]) — escolher o equipamento já preenche o
+  /// combustível e a leitura do medidor, por exemplo.
   void setValue(String fieldId, String value) {
-    form = form.setValue(fieldId, value);
+    final next = form.setValue(fieldId, value);
+    form = next.withValues(
+      applyFieldDerivations(feature.fields, next.values, fieldId),
+    );
   }
 
   /// Acrescenta um item à coleção. Sem [item], entra um item vazio — é o
@@ -155,6 +161,13 @@ class FunctionalFormState {
         attempted: attempted,
       );
 
+  FunctionalFormState withValues(Map<String, String> next) =>
+      FunctionalFormState(
+        values: next,
+        groupItems: groupItems,
+        attempted: attempted,
+      );
+
   FunctionalFormState addGroupItem(
     String group, [
     Map<String, String> item = const {},
@@ -201,6 +214,101 @@ class FunctionalFormState {
 
   FunctionalFormState clearAttempted() =>
       FunctionalFormState(values: values, groupItems: groupItems);
+}
+
+/// banco-real (onda 5 — cadastros vinculados): propaga a mudança de
+/// [changedFieldId] para os campos do mesmo escopo que dependem dele.
+///
+/// - [FeatureField.derivedFrom]: o campo recebe o valor que o cadastro da
+///   fonte responde. Fonte sem resposta limpa o campo travado (o valor antigo
+///   era de outro cadastro) e mantém a sugestão editável como está.
+/// - [FeatureField.optionsFrom]: se o valor atual saiu das opções permitidas
+///   pela nova fonte, é limpo — o lote de estoque de outro produto não pode
+///   continuar escolhido.
+///
+/// Encadeia: um campo derivado que muda também propaga (ex.: veículo →
+/// combustível → unidade).
+Map<String, String> applyFieldDerivations(
+  List<FeatureField> fields,
+  Map<String, String> values,
+  String changedFieldId,
+) {
+  final result = {...values};
+  final pending = [changedFieldId];
+  final visited = <String>{};
+  while (pending.isNotEmpty) {
+    final sourceId = pending.removeLast();
+    if (!visited.add(sourceId)) continue;
+    final sourceValue = result[sourceId]?.trim() ?? '';
+    for (final field in fields) {
+      final before = result[field.id] ?? '';
+      if (field.derivedFrom case final derivation?
+          when derivation.source == sourceId) {
+        final derived = derivation.values[sourceValue];
+        if (derived != null) {
+          result[field.id] = derived;
+        } else if (derivation.locked) {
+          result.remove(field.id);
+        }
+      }
+      if (field.optionsFrom case final filter? when filter.source == sourceId) {
+        final allowed = effectiveFieldOptions(field, result);
+        final current = result[field.id] ?? '';
+        if (current.isNotEmpty && !allowed.contains(current)) {
+          result.remove(field.id);
+        }
+      }
+      if ((result[field.id] ?? '') != before) pending.add(field.id);
+    }
+  }
+  return result;
+}
+
+/// O campo está travado pelo cadastro da fonte: derivação `locked` com a
+/// fonte preenchida e respondida no mapa.
+bool isFieldLockedByDerivation(FeatureField field, Map<String, String> values) {
+  final derivation = field.derivedFrom;
+  if (derivation == null || !derivation.locked) return false;
+  final sourceValue = values[derivation.source]?.trim() ?? '';
+  return derivation.values.containsKey(sourceValue);
+}
+
+/// Opções efetivas de um `select`/`searchSelect` — as de
+/// [FeatureField.optionsFrom] quando a fonte está preenchida e mapeada; as
+/// [FeatureField.options] completas caso contrário.
+List<String> effectiveFieldOptions(
+  FeatureField field,
+  Map<String, String> values,
+) {
+  final filter = field.optionsFrom;
+  if (filter == null) return field.options;
+  final sourceValue = values[filter.source]?.trim() ?? '';
+  return filter.options[sourceValue] ?? field.options;
+}
+
+/// Frase de origem do valor derivado, para o `hint` do campo — diz de qual
+/// cadastro o valor veio, sem jargão de banco.
+String? fieldDerivationHint(
+  FeatureField field,
+  List<FeatureField> scope,
+  Map<String, String> values,
+) {
+  final derivation = field.derivedFrom;
+  if (derivation == null) return null;
+  final sourceValue = values[derivation.source]?.trim() ?? '';
+  if (!derivation.values.containsKey(sourceValue)) return null;
+  final sourceLabel = scope
+      .where((candidate) => candidate.id == derivation.source)
+      .map((candidate) => candidate.label)
+      .firstOrNull;
+  // Rótulo entre aspas em vez de "pelo/pela": a fonte pode ser "Matéria-prima"
+  // ou "Veículo / equipamento", e a concordância não é do motor.
+  final origem = sourceLabel == null
+      ? 'pelo cadastro'
+      : 'pelo cadastro de “$sourceLabel”';
+  return derivation.locked
+      ? 'Preenchido $origem.'
+      : 'Sugerido $origem — ajuste se necessário.';
 }
 
 /// Campos de uma etapa, na ordem declarada. Campos citados na etapa que não

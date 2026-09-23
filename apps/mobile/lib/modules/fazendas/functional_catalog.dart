@@ -4,6 +4,11 @@
 // 960fe54. A partir da M1, mudanças funcionais entram primeiro neste contrato
 // Dart; o catálogo React permanece apenas como evidência histórica até M13.
 
+import 'cadastros_vinculados.dart';
+
+export 'cadastros_vinculados.dart'
+    show catalogoEquipamentos, catalogoItensEstoque, catalogoProdutos;
+
 enum FeatureProfile { operational }
 
 enum FeatureStatus { ready, mapped, hardware }
@@ -50,6 +55,8 @@ class FeatureField {
     this.options = const [],
     this.colorPalette = const [],
     this.selectOptions = const [],
+    this.derivedFrom,
+    this.optionsFrom,
   });
 
   final String id;
@@ -72,6 +79,53 @@ class FeatureField {
   /// `AreaColor`/`MarkingColorEnum`) e submete o `value` hex EXATO — vazia
   /// mantém o comportamento de hex livre.
   final List<({String value, String label})> colorPalette;
+
+  /// Valor que vem do cadastro de outro campo do mesmo formulário (ou do
+  /// mesmo item de coleção) — ver [FeatureFieldDerivation].
+  final FeatureFieldDerivation? derivedFrom;
+
+  /// Opções que dependem do valor de outro campo — ver [FeatureOptionsFilter].
+  final FeatureOptionsFilter? optionsFrom;
+}
+
+/// banco-real (onda 5 — cadastros vinculados): o valor de um campo que o
+/// cadastro de outro campo já responde. Escolher o produto responde a
+/// unidade; escolher o item de estoque responde o armazém; escolher o
+/// equipamento responde a última leitura do medidor.
+///
+/// Com [locked] (padrão), o campo é **do cadastro**: o motor preenche, trava
+/// o controle e mostra de onde veio — a pessoa não digita o que o sistema já
+/// sabe. Sem [locked], é uma **sugestão**: o motor preenche ao escolher a
+/// fonte, mas o campo continua editável (ex.: combustível habitual do
+/// equipamento, leitura atual do horímetro).
+///
+/// A fonte é sempre do mesmo escopo: campo do cabeçalho deriva de campo do
+/// cabeçalho; campo de item deriva de campo do mesmo item.
+class FeatureFieldDerivation {
+  const FeatureFieldDerivation({
+    required this.source,
+    required this.values,
+    this.locked = true,
+  });
+
+  /// `id` do campo-fonte.
+  final String source;
+
+  /// Valor da fonte → valor deste campo. Fonte fora do mapa não deriva nada
+  /// (o campo volta a ser de preenchimento livre).
+  final Map<String, String> values;
+  final bool locked;
+}
+
+/// Opções de um `select`/`searchSelect` restritas pelo valor de outro campo —
+/// o item de estoque só lista os lotes do produto escolhido; a atividade só
+/// lista as atividades da operação escolhida (`operation_activities`). Sem
+/// valor na fonte, o campo mostra todas as [FeatureField.options].
+class FeatureOptionsFilter {
+  const FeatureOptionsFilter({required this.source, required this.options});
+
+  final String source;
+  final Map<String, List<String>> options;
 }
 
 /// Rótulo de exibição de um valor armazenado: resolve
@@ -313,24 +367,14 @@ class FeatureDefinition {
   /// longos, onde a rolagem única escondia o fim do preenchimento. Ver
   /// docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 0.
   final List<FeatureFormStep> steps;
-
 }
 
-// banco-real: única fonte de nomes de produto para todo o catálogo — espelha
-// o cadastro real de `consulta-produtos` (fonte: `products`, 543.983 linhas no
-// dump gbcerne). Todo campo "produto"/"matéria-prima" abaixo busca aqui; só a
-// tela Produtos cria um item novo em campo livre. Ver
-// docs/ajustes-banco-real/03-ajustes-ponto-a-ponto.md.
-const catalogoProdutos = <String>[
-  'Ração Engorda 18%',
-  'Sal Mineral Proteinado',
-  'Vacina Aftosa',
-  'Vermífugo Injetável',
-  'Diesel S10',
-  'Semente de Braquiária',
-  'Fertilizante NPK 20-05-20',
-  'Filtro de óleo — trator',
-];
+// banco-real: `catalogoProdutos`, `catalogoItensEstoque` e
+// `catalogoEquipamentos` moram em `cadastros_vinculados.dart` desde a onda 5 —
+// junto dos atributos que cada opção carrega (unidade, armazém, medidor...).
+// Todo campo "produto"/"matéria-prima" abaixo busca lá; só a tela Produtos
+// cria um item novo em campo livre. Ver
+// docs/ajustes-banco-real/05-cadastros-vinculados.md.
 
 // Onda 8 — domínios compartilhados pelos **itens** de coleção. Mesmo critério
 // de `catalogoProdutos` acima: quando o mesmo domínio real aparece em mais de
@@ -339,7 +383,12 @@ const catalogoProdutos = <String>[
 // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 8.
 const catalogoUnidades = <String>['kg', 't', 'L', 'Saco', 'Unidade'];
 
-const catalogoArmazens = <String>['Armazém A', 'Depósito B', 'Farmácia'];
+const catalogoArmazens = <String>[
+  'Armazém A',
+  'Depósito B',
+  'Farmácia',
+  'Tanque Diesel',
+];
 
 const catalogoCentrosCusto = <String>[
   'Centro Agrícola',
@@ -360,20 +409,7 @@ const catalogoIdentificacaoAnimal = <String>[
   'Tatuagem',
 ];
 
-const catalogoCategoriasAnimais = <String>[
-  'Bezerro',
-  'Novilha',
-  'Vaca',
-  'Boi',
-];
-
-const catalogoEquipamentos = <String>[
-  'Trator John Deere 6110',
-  'Colheitadeira CR7',
-  'Caminhão Boiadeiro',
-  'Pulverizador',
-  'Grade Aradora',
-];
+const catalogoCategoriasAnimais = <String>['Bezerro', 'Novilha', 'Vaca', 'Boi'];
 
 // fidelidade-campos (onda 9 — re-auditoria 11/09): `stock_uuid` é o lote de
 // estoque de um produto já recebido (o `ItemEstoque` do módulo Armazém), não
@@ -381,12 +417,6 @@ const catalogoEquipamentos = <String>[
 // `catalogoProdutos`. Compartilhado por `pastagens.inputs[]`,
 // `sanitario.items[]` e `monta-natural.simplified_animals[]`. Ver
 // docs/ESTEIRA-FIDELIDADE-CAMPOS.md, Onda 9.
-const catalogoItensEstoque = <String>[
-  'Ração Engorda 18% — Lote 2026-07-A',
-  'Sal Mineral Proteinado — Lote 2026-06-C',
-  'Vermífugo Injetável — Lote 2026-05-B',
-  'Diesel S10 — Lote 2026-08-A',
-];
 
 // fidelidade-contrato (onda 3): categoria C da re-auditoria de 14/09 — o
 // contrato exige UUID de catálogo (`exists` tenant-scoped) onde o protótipo
@@ -416,11 +446,7 @@ const catalogoAreas = <String>[
   'Pasto Sul',
   'Reserva Legal',
 ];
-const catalogoModulos = <String>[
-  'Módulo A',
-  'Módulo B',
-  'Módulo C',
-];
+const catalogoModulos = <String>['Módulo A', 'Módulo B', 'Módulo C'];
 const catalogoEstacoesMonta = <String>[
   'Estação 2025/2026',
   'Estação 2026/2027',
@@ -823,14 +849,20 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Área de recreio',
         type: FeatureFieldType.select,
         isRequired: true,
-        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
+        selectOptions: [
+          (value: 'true', label: 'Sim'),
+          (value: 'false', label: 'Não'),
+        ],
       ),
       FeatureField(
         id: 'ativo',
         label: 'Ativa',
         type: FeatureFieldType.select,
         isRequired: true,
-        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
+        selectOptions: [
+          (value: 'true', label: 'Sim'),
+          (value: 'false', label: 'Não'),
+        ],
       ),
       // fidelidade-campos (onda 9 — re-auditoria 11/09): `farm_uuid` é
       // required no POST de `/areas` (a fazenda dona da área) e `coordinates`
@@ -856,7 +888,8 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Coordenadas (polígono — mapa)',
         type: FeatureFieldType.textarea,
         isRequired: true,
-        placeholder: 'Polígono desenhado no mapa (captura simulada no protótipo)',
+        placeholder:
+            'Polígono desenhado no mapa (captura simulada no protótipo)',
       ),
       FeatureField(
         id: 'observacao',
@@ -938,7 +971,10 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Ativo',
         type: FeatureFieldType.select,
         isRequired: true,
-        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
+        selectOptions: [
+          (value: 'true', label: 'Sim'),
+          (value: 'false', label: 'Não'),
+        ],
       ),
       FeatureField(
         id: 'produto',
@@ -959,6 +995,10 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.select,
         isRequired: true,
         options: ['kg', 't', 'L'],
+        derivedFrom: FeatureFieldDerivation(
+          source: 'produto',
+          values: unidadePorProduto,
+        ),
       ),
       // fidelidade-esteira (onda 16): rótulo confirmado pelo usuário —
       // `FoodTypeEnum` (`P`/`U`) é `P` = "Porcentagem", `U` = "Unidade". O
@@ -1062,6 +1102,10 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Unidade',
             type: FeatureFieldType.select,
             options: catalogoUnidades,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'materia-prima',
+              values: unidadePorProduto,
+            ),
           ),
           FeatureField(
             id: 'materia-seca',
@@ -1072,6 +1116,11 @@ const operationalFeatures = <FeatureDefinition>[
             id: 'custo',
             label: 'Custo (R\$)',
             type: FeatureFieldType.number,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'materia-prima',
+              values: custoMedioPorProduto,
+              locked: false,
+            ),
           ),
         ],
       ),
@@ -1348,7 +1397,10 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Controle por tempo (carência)',
         type: FeatureFieldType.select,
         isRequired: true,
-        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
+        selectOptions: [
+          (value: 'true', label: 'Sim'),
+          (value: 'false', label: 'Não'),
+        ],
       ),
       FeatureField(
         id: 'observacao',
@@ -1410,6 +1462,10 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             isRequired: true,
             options: catalogoItensEstoque,
+            optionsFrom: FeatureOptionsFilter(
+              source: 'produto',
+              options: estoquesPorProduto,
+            ),
           ),
           FeatureField(
             id: 'quantidade',
@@ -1423,6 +1479,10 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             isRequired: true,
             options: catalogoUnidades,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: unidadePorProduto,
+            ),
           ),
           FeatureField(
             id: 'armazem',
@@ -1430,6 +1490,10 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoArmazens,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'estoque',
+              values: armazemPorItemEstoque,
+            ),
           ),
           FeatureField(
             id: 'centro-custo',
@@ -1485,10 +1549,7 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Unidade',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'Hora',
-              'Dia',
-            ],
+            options: ['Hora', 'Dia'],
           ),
         ],
       ),
@@ -1589,6 +1650,10 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.select,
         isRequired: true,
         options: ['kg', 't', 'L'],
+        derivedFrom: FeatureFieldDerivation(
+          source: 'produto',
+          values: unidadePorProduto,
+        ),
       ),
       // fidelidade-campos (onda 5): a tela misturava dois recursos reais
       // (DietBeat × FoodBeat). `tipo` e `armazem` acima pertencem ao FoodBeat
@@ -1599,11 +1664,7 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Dieta',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: [
-          'Dieta Adaptação',
-          'Dieta Crescimento',
-          'Dieta Terminação',
-        ],
+        options: ['Dieta Adaptação', 'Dieta Crescimento', 'Dieta Terminação'],
       ),
       FeatureField(
         id: 'equipamento',
@@ -1648,6 +1709,11 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoArmazens,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: armazemPadraoPorProduto,
+              locked: false,
+            ),
           ),
           FeatureField(
             id: 'quantidade',
@@ -1674,6 +1740,10 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             isRequired: true,
             options: catalogoUnidades,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: unidadePorProduto,
+            ),
           ),
           FeatureField(
             id: 'materia-seca',
@@ -1686,6 +1756,11 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Custo (R\$)',
             type: FeatureFieldType.number,
             isRequired: true,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: custoMedioPorProduto,
+              locked: false,
+            ),
           ),
           FeatureField(
             id: 'porcentagem',
@@ -1764,7 +1839,10 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Mesmo lote para todos',
         type: FeatureFieldType.select,
         isRequired: true,
-        selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
+        selectOptions: [
+          (value: 'true', label: 'Sim'),
+          (value: 'false', label: 'Não'),
+        ],
       ),
     ],
     // fidelidade-esteira (onda 13): `animal_transfer_animal_farm` no dump é
@@ -1833,10 +1911,7 @@ const operationalFeatures = <FeatureDefinition>[
       // fidelidade-contrato (re-auditoria 3ª avaliação): 'local-atual' não
       // existe no contrato (o Request não tem origem) — deixa de ser required
       // para não exigir um campo não-contratual.
-      FeatureField(
-        id: 'local-atual',
-        label: 'Área / módulo atual',
-      ),
+      FeatureField(id: 'local-atual', label: 'Área / módulo atual'),
       // fidelidade-contrato (onda 6): o contrato exige **exatamente um**
       // destino — área, módulo ou curral — nunca área e módulo ao mesmo
       // tempo (como o form obrigava fixo até aqui) nem nenhum dos três. Este
@@ -2051,16 +2126,21 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Unidade',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'Hora',
-              'Dia',
-              'km',
-            ],
+            options: ['Hora', 'Dia', 'km'],
+            derivedFrom: FeatureFieldDerivation(
+              source: 'equipamento',
+              values: unidadeUsoPorEquipamento,
+            ),
           ),
           FeatureField(
             id: 'horimetro-inicial',
             label: 'Horímetro inicial',
             type: FeatureFieldType.number,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'equipamento',
+              values: horimetroAtualPorEquipamento,
+              locked: false,
+            ),
           ),
           FeatureField(
             id: 'horimetro-final',
@@ -2095,6 +2175,10 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             isRequired: true,
             options: catalogoItensEstoque,
+            optionsFrom: FeatureOptionsFilter(
+              source: 'produto',
+              options: estoquesPorProduto,
+            ),
           ),
           FeatureField(
             id: 'quantidade',
@@ -2108,12 +2192,20 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             isRequired: true,
             options: catalogoUnidades,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'estoque',
+              values: unidadePorItemEstoque,
+            ),
           ),
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
             type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'estoque',
+              values: armazemPorItemEstoque,
+            ),
           ),
         ],
       ),
@@ -2142,12 +2234,21 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             isRequired: true,
             options: catalogoUnidades,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: unidadePorProduto,
+            ),
           ),
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
             type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: armazemPadraoPorProduto,
+              locked: false,
+            ),
           ),
         ],
       ),
@@ -2393,7 +2494,10 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Tipo',
         type: FeatureFieldType.select,
         isRequired: true,
-        selectOptions: [(value: '1', label: 'Recria'), (value: '2', label: 'Venda')],
+        selectOptions: [
+          (value: '1', label: 'Recria'),
+          (value: '2', label: 'Venda'),
+        ],
       ),
       // fidelidade-contrato (onda 3): `lote` referencia um `batch_uuid` real
       // no contrato — texto livre não referencia nada. Vira `select` sobre
@@ -3142,10 +3246,7 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Tipo',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'Produto',
-              'Serviço',
-            ],
+            options: ['Produto', 'Serviço'],
           ),
           FeatureField(
             id: 'produto',
@@ -3176,6 +3277,10 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Unidade',
             type: FeatureFieldType.select,
             options: catalogoUnidades,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: unidadePorProduto,
+            ),
           ),
           FeatureField(
             id: 'quantidade',
@@ -3188,6 +3293,11 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Armazém',
             type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: armazemPadraoPorProduto,
+              locked: false,
+            ),
           ),
         ],
       ),
@@ -3322,6 +3432,11 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Armazém',
             type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: armazemPadraoPorProduto,
+              locked: false,
+            ),
           ),
           // fidelidade-esteira: fica de fora da regra "todo campo Produto é
           // dropdown com busca" de propósito — aqui "Produto" é a
@@ -3530,6 +3645,10 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.searchSelect,
             isRequired: true,
             options: catalogoArmazens,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'estoque',
+              values: armazemPorItemEstoque,
+            ),
           ),
           FeatureField(
             id: 'estoque',
@@ -3544,6 +3663,10 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             isRequired: true,
             options: catalogoUnidades,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'estoque',
+              values: unidadePorItemEstoque,
+            ),
           ),
           FeatureField(
             id: 'quantidade',
@@ -3684,11 +3807,7 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Técnica de diagnóstico',
         type: FeatureFieldType.select,
         isRequired: true,
-        options: [
-          'Palpação retal',
-          'Ultrassonografia',
-          'Dosagem hormonal',
-        ],
+        options: ['Palpação retal', 'Ultrassonografia', 'Dosagem hormonal'],
       ),
       FeatureField(
         id: 'dias-gestacao',
@@ -3723,22 +3842,14 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Técnica',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'Palpação retal',
-              'Ultrassonografia',
-              'Dosagem hormonal',
-            ],
+            options: ['Palpação retal', 'Ultrassonografia', 'Dosagem hormonal'],
           ),
           FeatureField(
             id: 'resultado',
             label: 'Resultado',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'Prenhe',
-              'Vazia',
-              'Reavaliar',
-            ],
+            options: ['Prenhe', 'Vazia', 'Reavaliar'],
           ),
           // fidelidade-contrato (re-auditoria 3ª avaliação): dias_gestation é
           // integer|min:0 no PregnancyDiagnosisRequest.
@@ -3747,10 +3858,7 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Dias de gestação',
             type: FeatureFieldType.integer,
           ),
-          FeatureField(
-            id: 'touro',
-            label: 'Touro atribuído',
-          ),
+          FeatureField(id: 'touro', label: 'Touro atribuído'),
           // fidelidade-contrato (onda 4): `provider_uuid` é required **por
           // item** no contrato — cada linha tem seu próprio veterinário, não
           // um só no cabeçalho. O campo `veterinario` do cabeçalho permanece
@@ -3771,7 +3879,10 @@ const operationalFeatures = <FeatureDefinition>[
             id: 'resync',
             label: 'Ressincronizar',
             type: FeatureFieldType.select,
-            selectOptions: [(value: 'true', label: 'Sim'), (value: 'false', label: 'Não')],
+            selectOptions: [
+              (value: 'true', label: 'Sim'),
+              (value: 'false', label: 'Não'),
+            ],
           ),
           FeatureField(
             id: 'lote',
@@ -3779,10 +3890,7 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.searchSelect,
             options: catalogoLotes,
           ),
-          FeatureField(
-            id: 'observacao',
-            label: 'Observação',
-          ),
+          FeatureField(id: 'observacao', label: 'Observação'),
         ],
       ),
     ],
@@ -3847,12 +3955,7 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Veículo / equipamento',
         type: FeatureFieldType.searchSelect,
         isRequired: true,
-        options: [
-          'Trator John Deere 6110',
-          'Colheitadeira CR7',
-          'Caminhão Boiadeiro',
-          'Pulverizador',
-        ],
+        options: catalogoEquipamentosMotorizados,
       ),
       FeatureField(
         id: 'combustivel',
@@ -3860,6 +3963,11 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.select,
         isRequired: true,
         options: ['Diesel S10', 'Diesel S500', 'Gasolina', 'Etanol'],
+        derivedFrom: FeatureFieldDerivation(
+          source: 'veiculo',
+          values: combustivelPorEquipamento,
+          locked: false,
+        ),
       ),
       FeatureField(
         id: 'quantidade',
@@ -3878,6 +3986,10 @@ const operationalFeatures = <FeatureDefinition>[
         type: FeatureFieldType.select,
         isRequired: true,
         options: ['L', 'kg'],
+        derivedFrom: FeatureFieldDerivation(
+          source: 'combustivel',
+          values: unidadePorCombustivel,
+        ),
       ),
       FeatureField(
         id: 'origem',
@@ -3907,19 +4019,19 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Veículo / equipamento',
             type: FeatureFieldType.searchSelect,
             isRequired: true,
-            options: catalogoEquipamentos,
+            options: catalogoEquipamentosMotorizados,
           ),
           FeatureField(
             id: 'combustivel',
             label: 'Combustível',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'Diesel S10',
-              'Diesel S500',
-              'Gasolina',
-              'Etanol',
-            ],
+            options: ['Diesel S10', 'Diesel S500', 'Gasolina', 'Etanol'],
+            derivedFrom: FeatureFieldDerivation(
+              source: 'veiculo',
+              values: combustivelPorEquipamento,
+              locked: false,
+            ),
           ),
           FeatureField(
             id: 'quantidade',
@@ -3932,10 +4044,11 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Unidade',
             type: FeatureFieldType.select,
             isRequired: true,
-            options: [
-              'L',
-              'kg',
-            ],
+            options: ['L', 'kg'],
+            derivedFrom: FeatureFieldDerivation(
+              source: 'combustivel',
+              values: unidadePorCombustivel,
+            ),
           ),
           // fidelidade-contrato (re-auditoria 3ª avaliação): `items.*.hour_meter`
           // (numeric) e `items.*.mileage` (integer) são POR item no
@@ -3945,16 +4058,23 @@ const operationalFeatures = <FeatureDefinition>[
             id: 'horimetro',
             label: 'Horímetro',
             type: FeatureFieldType.number,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'veiculo',
+              values: horimetroAtualPorEquipamento,
+              locked: false,
+            ),
           ),
           FeatureField(
             id: 'hodometro',
             label: 'Hodômetro',
             type: FeatureFieldType.integer,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'veiculo',
+              values: hodometroAtualPorEquipamento,
+              locked: false,
+            ),
           ),
-          FeatureField(
-            id: 'observacao',
-            label: 'Observação',
-          ),
+          FeatureField(id: 'observacao', label: 'Observação'),
         ],
       ),
     ],
@@ -3991,12 +4111,7 @@ const operationalFeatures = <FeatureDefinition>[
         label: 'Veículo / equipamento',
         type: FeatureFieldType.searchSelect,
         isRequired: true,
-        options: [
-          'Trator John Deere 6110',
-          'Colheitadeira CR7',
-          'Caminhão Boiadeiro',
-          'Pulverizador',
-        ],
+        options: catalogoEquipamentosMotorizados,
       ),
       FeatureField(
         id: 'tipo',
@@ -4035,11 +4150,21 @@ const operationalFeatures = <FeatureDefinition>[
         id: 'horimetro',
         label: 'Horímetro',
         type: FeatureFieldType.number,
+        derivedFrom: FeatureFieldDerivation(
+          source: 'equipamento',
+          values: horimetroAtualPorEquipamento,
+          locked: false,
+        ),
       ),
       FeatureField(
         id: 'hodometro',
         label: 'Hodômetro',
         type: FeatureFieldType.number,
+        derivedFrom: FeatureFieldDerivation(
+          source: 'equipamento',
+          values: hodometroAtualPorEquipamento,
+          locked: false,
+        ),
       ),
       FeatureField(
         id: 'horas-mao-de-obra',
@@ -4073,12 +4198,7 @@ const operationalFeatures = <FeatureDefinition>[
             label: 'Veículo / equipamento',
             type: FeatureFieldType.searchSelect,
             isRequired: true,
-            options: [
-              'Trator John Deere 6110',
-              'Colheitadeira CR7',
-              'Caminhão Boiadeiro',
-              'Pulverizador',
-            ],
+            options: catalogoEquipamentosMotorizados,
           ),
           FeatureField(
             id: 'produto',
@@ -4099,17 +4219,31 @@ const operationalFeatures = <FeatureDefinition>[
             type: FeatureFieldType.select,
             isRequired: true,
             options: catalogoUnidades,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: unidadePorProduto,
+            ),
           ),
           FeatureField(
             id: 'armazem',
             label: 'Armazém',
             type: FeatureFieldType.searchSelect,
             options: catalogoArmazens,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: armazemPadraoPorProduto,
+              locked: false,
+            ),
           ),
           FeatureField(
             id: 'valor',
             label: 'Valor (R\$)',
             type: FeatureFieldType.number,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'produto',
+              values: custoMedioPorProduto,
+              locked: false,
+            ),
           ),
           // fidelidade-contrato (onda 4): `hour_meter`/`mileage` são leituras
           // **por item** no contrato real. re-auditoria 3ª avaliação:
@@ -4118,11 +4252,21 @@ const operationalFeatures = <FeatureDefinition>[
             id: 'horimetro',
             label: 'Horímetro',
             type: FeatureFieldType.number,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'equipamento',
+              values: horimetroAtualPorEquipamento,
+              locked: false,
+            ),
           ),
           FeatureField(
             id: 'hodometro',
             label: 'Hodômetro',
             type: FeatureFieldType.integer,
+            derivedFrom: FeatureFieldDerivation(
+              source: 'equipamento',
+              values: hodometroAtualPorEquipamento,
+              locked: false,
+            ),
           ),
           // fidelidade-contrato (re-auditoria pós-fix): o contrato tem UM
           // `items[]` que combina peça + leituras + EXECUTOR na mesma linha
@@ -4172,7 +4316,8 @@ const operationalFeatures = <FeatureDefinition>[
       ),
       FeatureFormStep(
         title: 'Medidores e peças',
-        hint: 'Leitura do equipamento e o que será consumido (peça + executor por item).',
+        hint:
+            'Leitura do equipamento e o que será consumido (peça + executor por item).',
         fields: ['horimetro', 'hodometro', 'horas-mao-de-obra', 'observacao'],
         sections: ['Peças / Insumos'],
       ),
