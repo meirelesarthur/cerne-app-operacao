@@ -97,7 +97,10 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
                 const SizedBox(height: AppSpacing.space3),
             itemBuilder: (context, index) {
               final os = filtradas[index];
+              // Mesmo card do destaque da Início: nome grande, metas com
+              // ícone e situação ao lado da ação — a lista lê igual ao atalho.
               return OsSummaryCard(
+                variant: AppStatusCardVariant.featured,
                 os: os,
                 agora: agora,
                 onTap: () => abrirDetalheOs(context, ref, os),

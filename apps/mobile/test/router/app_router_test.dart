@@ -196,7 +196,7 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.text('OS #2201'), findsOneWidget);
+        expect(find.textContaining('OS #2201'), findsOneWidget);
 
         await tester.tap(find.text('Todas'));
         await tester.pumpAndSettle();
@@ -210,8 +210,8 @@ void main() {
 
         expect(find.text('Status da OS'), findsNothing);
         expect(find.text('Finalizadas'), findsOneWidget);
-        expect(find.text('OS #2201'), findsNothing);
-        expect(find.text('OS #2170'), findsOneWidget);
+        expect(find.textContaining('OS #2201'), findsNothing);
+        expect(find.textContaining('OS #2170'), findsOneWidget);
       },
     );
 

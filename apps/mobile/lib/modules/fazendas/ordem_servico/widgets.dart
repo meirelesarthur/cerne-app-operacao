@@ -218,16 +218,15 @@ class OsSummaryCard extends StatelessWidget {
     final urgente =
         os.prioridade == PrioridadeOs.alta ||
         os.prioridade == PrioridadeOs.urgente;
-    final destaque = variant != AppStatusCardVariant.standard;
+    // O nome da tarefa é o que se lê primeiro em toda variante — é o que
+    // diz o que fazer; o número da OS fica na linha de apoio, para conferir.
     return AppStatusCard(
       variant: variant,
       statusLabel: os.status.label,
       statusTone: osStatusTone(os.status),
-      title: destaque ? os.titulo : os.codigo,
-      subtitle: destaque ? os.areaOuTalhao : os.titulo,
-      caption: destaque
-          ? '${os.responsavelExecucao} · ${os.codigo}'
-          : os.areaOuTalhao,
+      title: os.titulo,
+      subtitle: os.areaOuTalhao,
+      caption: '${os.responsavelExecucao} · ${os.codigo}',
       meta: [
         AppStatusCardMeta(
           label: 'Prazo',
