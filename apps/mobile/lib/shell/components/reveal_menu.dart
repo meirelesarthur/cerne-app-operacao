@@ -127,12 +127,6 @@ class _AppRevealMenuState extends ConsumerState<AppRevealMenu> {
                             semantic: semantic,
                             onNavigate: widget.onNavigate,
                             onPush: widget.onPush ?? widget.onNavigate,
-                            onToggleTheme: () => ref
-                                .read(themeVariantProvider.notifier)
-                                .toggle(),
-                            onToggleOnline: () => ref
-                                .read(shellStoreProvider.notifier)
-                                .toggleOnline(),
                             onLogout: () {
                               ref
                                   .read(prototypeSessionProvider.notifier)
@@ -162,8 +156,6 @@ class _MenuContent extends StatelessWidget {
     required this.semantic,
     required this.onNavigate,
     required this.onPush,
-    required this.onToggleTheme,
-    required this.onToggleOnline,
     required this.onLogout,
   });
 
@@ -175,16 +167,11 @@ class _MenuContent extends StatelessWidget {
   final AppSemanticColors semantic;
   final ValueChanged<String> onNavigate;
   final ValueChanged<String> onPush;
-  final VoidCallback onToggleTheme;
-  final VoidCallback onToggleOnline;
   final VoidCallback onLogout;
 
   @override
   Widget build(BuildContext context) {
     final user = state.user;
-    final unread = state.unreadCount;
-    final isOnline = state.isOnline;
-    final isGbMode = themeVariant == AppThemeVariant.gbMode;
     final roleLabel = profile?.roleLabel ?? 'Sessão não iniciada';
     final sections = getMenuSections(module, profile: profile);
     final menuItems = [for (final section in sections) ...section.items];
@@ -323,10 +310,9 @@ class _MenuContent extends StatelessWidget {
         next(),
         AppMenuItem(
           variant: AppMenuItemVariant.onDark,
-          icon: AppIcons.bell,
-          label: 'Notificações',
-          trailing: unread > 0 ? AppBadge(child: Text('$unread')) : null,
-          onTap: () => onPush('/notificacoes'),
+          icon: AppIcons.user,
+          label: 'Perfil',
+          onTap: () => onPush('/perfil'),
         ),
       ),
       const SizedBox(height: AppSpacing.space1),
@@ -337,44 +323,6 @@ class _MenuContent extends StatelessWidget {
           icon: AppIcons.settings,
           label: 'Configurações',
           onTap: () => onPush('/perfil'),
-        ),
-      ),
-      const SizedBox(height: AppSpacing.space1),
-      _stagger(
-        next(),
-        AppMenuItem(
-          variant: AppMenuItemVariant.onDark,
-          icon: AppIcons.moon,
-          label: 'Modo GB',
-          description: 'Tema escuro para campo e baixa luz',
-          trailing: Text(
-            isGbMode ? 'Ativo' : 'Inativo',
-            style: TextStyle(
-              fontSize: AppTypography.xs,
-              fontWeight: AppTypography.weightSemibold,
-              color: semantic.inkMuted,
-            ),
-          ),
-          onTap: onToggleTheme,
-        ),
-      ),
-      const SizedBox(height: AppSpacing.space1),
-      _stagger(
-        next(),
-        AppMenuItem(
-          variant: AppMenuItemVariant.onDark,
-          icon: isOnline ? AppIcons.wifi : AppIcons.wifiOff,
-          label: 'Conexão',
-          description: 'Simula a sincronização em campo sem sinal',
-          trailing: Text(
-            isOnline ? 'Online' : 'Offline',
-            style: TextStyle(
-              fontSize: AppTypography.xs,
-              fontWeight: AppTypography.weightSemibold,
-              color: semantic.inkMuted,
-            ),
-          ),
-          onTap: onToggleOnline,
         ),
       ),
     ];

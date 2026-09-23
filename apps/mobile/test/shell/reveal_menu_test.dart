@@ -79,61 +79,39 @@ void main() {
       },
     );
 
-    testWidgets('toca "Modo GB" e alterna o themeVariantProvider', (
-      tester,
-    ) async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      container.read(shellStoreProvider.notifier).openMenu();
-      // O painel é rolável (ListView) — aumenta a viewport de teste para que
-      // todos os itens sejam montados, sem precisar simular scroll.
-      tester.view.physicalSize = const Size(800, 2400);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
+    testWidgets(
+      'seção Conta tem Perfil e Configurações, sem Modo GB e Conexão',
+      (tester) async {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        container.read(shellStoreProvider.notifier).openMenu();
+        tester.view.physicalSize = const Size(800, 2400);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
 
-      await tester.pumpWidget(
-        _wrap(
-          container,
-          AppRevealMenu(module: getModule('fazendas')!, onNavigate: (_) {}),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 600));
+        String? navigatedTo;
+        await tester.pumpWidget(
+          _wrap(
+            container,
+            AppRevealMenu(
+              module: getModule('fazendas')!,
+              onNavigate: (route) => navigatedTo = route,
+            ),
+          ),
+        );
+        await tester.pump(const Duration(milliseconds: 600));
 
-      expect(find.text('Inativo'), findsOneWidget);
+        expect(find.text('Configurações'), findsOneWidget);
+        expect(find.text('Notificações'), findsNothing);
+        expect(find.text('Modo GB'), findsNothing);
+        expect(find.text('Conexão'), findsNothing);
 
-      await tester.tap(find.text('Modo GB'));
-      await tester.pump();
+        await tester.tap(find.text('Perfil'));
+        await tester.pump();
 
-      expect(find.text('Ativo'), findsOneWidget);
-    });
-
-    testWidgets('toca "Conexão" e alterna isOnline no shellStoreProvider', (
-      tester,
-    ) async {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-      container.read(shellStoreProvider.notifier).openMenu();
-      // O painel é rolável (ListView) — aumenta a viewport de teste para que
-      // todos os itens sejam montados, sem precisar simular scroll.
-      tester.view.physicalSize = const Size(800, 2400);
-      tester.view.devicePixelRatio = 1.0;
-      addTearDown(tester.view.resetPhysicalSize);
-
-      await tester.pumpWidget(
-        _wrap(
-          container,
-          AppRevealMenu(module: getModule('fazendas')!, onNavigate: (_) {}),
-        ),
-      );
-      await tester.pump(const Duration(milliseconds: 600));
-
-      expect(container.read(shellStoreProvider).isOnline, isTrue);
-
-      await tester.tap(find.text('Conexão'));
-      await tester.pump();
-
-      expect(container.read(shellStoreProvider).isOnline, isFalse);
-    });
+        expect(navigatedTo, '/perfil');
+      },
+    );
 
     testWidgets('operacional encontra tudo num grupo único no menu lateral', (
       tester,
