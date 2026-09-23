@@ -306,14 +306,19 @@ class _AddPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Em cards muito estreitos o botão encolhe inteiro em vez de estourar.
     return IgnorePointer(
       child: ExcludeSemantics(
-        child: AppButton(
-          size: AppButtonSize.sm,
-          variant: AppButtonVariant.secondary,
-          leftIcon: const AppIcon(AppIcons.plus, size: AppSize.iconSm),
-          onPressed: onAdd,
-          child: const Text('Adicionar'),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: AppButton(
+            size: AppButtonSize.sm,
+            variant: AppButtonVariant.secondary,
+            leftIcon: const AppIcon(AppIcons.plus, size: AppSize.iconSm),
+            onPressed: onAdd,
+            child: const Text('Adicionar'),
+          ),
         ),
       ),
     );
@@ -355,12 +360,16 @@ class _SeeItems extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'Ver itens',
-            style: TextStyle(
-              fontSize: AppTypography.sm,
-              fontWeight: AppTypography.weightSemibold,
-              color: semantic.accentDefault,
+          Flexible(
+            child: Text(
+              'Ver itens',
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: AppTypography.sm,
+                fontWeight: AppTypography.weightSemibold,
+                color: semantic.accentDefault,
+              ),
             ),
           ),
           AppIcon(

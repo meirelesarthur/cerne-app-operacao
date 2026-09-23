@@ -112,6 +112,38 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('tela estreita (320px) não estoura cards vazios nem cheios', (
+      tester,
+    ) async {
+      await tester.binding.setSurfaceSize(const Size(320, 900));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      await tester.pumpWidget(
+        _wrap(
+          AppSquareGroupGrid(
+            groups: const [
+              AppSquareGroup(
+                name: 'Máquinas / Implementos',
+                icon: AppIcons.tractor,
+                count: 12,
+                summary: r'48 h · R$ 4.800,00',
+              ),
+              AppSquareGroup(name: 'Produção', icon: AppIcons.wheat),
+              AppSquareGroup(
+                name: 'Ocorrências',
+                icon: AppIcons.triangleAlert,
+                count: 2,
+                summary: 'Prioridade alta',
+                wide: true,
+              ),
+            ],
+            onAdd: (_) {},
+            onOpen: (_) {},
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('grupo largo ocupa a linha inteira', (tester) async {
       await tester.pumpWidget(
         _wrap(
