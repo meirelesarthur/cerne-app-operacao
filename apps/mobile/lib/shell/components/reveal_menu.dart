@@ -215,7 +215,7 @@ class _MenuContent extends StatelessWidget {
                       Text(
                         '$roleLabel · GB CERNE',
                         style: TextStyle(
-                          fontSize: AppTypography.xs,
+                          fontSize: AppTypography.sm,
                           color: semantic.inkMuted,
                         ),
                       ),
@@ -251,7 +251,7 @@ class _MenuContent extends StatelessWidget {
           child: Text(
             'MENU',
             style: TextStyle(
-              fontSize: AppTypography.xs,
+              fontSize: AppTypography.sm,
               fontWeight: AppTypography.weightSemibold,
               letterSpacing: 0.4,
               color: semantic.inkSubtle,
@@ -298,7 +298,7 @@ class _MenuContent extends StatelessWidget {
           child: Text(
             'CONTA',
             style: TextStyle(
-              fontSize: AppTypography.xs,
+              fontSize: AppTypography.sm,
               fontWeight: AppTypography.weightSemibold,
               letterSpacing: 0.4,
               color: semantic.inkSubtle,

@@ -123,7 +123,7 @@ class AppNotificationTile extends StatelessWidget {
                   child: Text(
                     timeLabel,
                     style: TextStyle(
-                      fontSize: AppTypography.xs,
+                      fontSize: AppTypography.sm,
                       fontWeight: AppTypography.weightMedium,
                       color: semantic.fgSubtle,
                     ),

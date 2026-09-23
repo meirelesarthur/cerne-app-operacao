@@ -658,7 +658,7 @@ WidgetbookComponent buildAppIconWidgetbookComponent() {
                       const SizedBox(height: AppSpacing.space2),
                       Text(
                         entry.$1,
-                        style: const TextStyle(fontSize: AppTypography.xs),
+                        style: const TextStyle(fontSize: AppTypography.sm),
                       ),
                     ],
                   ),
@@ -696,7 +696,7 @@ WidgetbookComponent buildAppIconWidgetbookComponent() {
                       Text(
                         entry.$1,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: AppTypography.xs),
+                        style: const TextStyle(fontSize: AppTypography.sm),
                       ),
                     ],
                   ),
@@ -729,7 +729,7 @@ WidgetbookComponent buildAppIconWidgetbookComponent() {
                       Text(
                         entry.$1,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: AppTypography.xs),
+                        style: const TextStyle(fontSize: AppTypography.sm),
                       ),
                     ],
                   ),

@@ -191,7 +191,7 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
               size: 200,
               tone: AppGaugeTone.positive,
               valueFontSize: AppTypography.xl2 * 2,
-              labelFontSize: AppTypography.xs * 2,
+              labelFontSize: AppTypography.sm * 2,
               label: '$doneItems/$totalItems',
             ),
           ),
@@ -207,7 +207,7 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
               Text(
                 finished ? 'MÓDULOS SINCRONIZADOS' : 'ENVIANDO PARA A NUVEM',
                 style: TextStyle(
-                  fontSize: AppTypography.xs,
+                  fontSize: AppTypography.sm,
                   fontWeight: AppTypography.weightSemibold,
                   letterSpacing: 0.4,
                   color: semantic.fgMuted,

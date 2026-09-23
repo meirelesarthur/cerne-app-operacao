@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.12.0';
+const kWidgetbookVersion = '2.13.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,30 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.13.0',
+    date: '2026-09-23',
+    summary:
+        'Auditoria de UX do operador: contraste AA, piso de 12px e toque 48dp.',
+    changes: [
+      (
+        'Mudou',
+        'Tokens: fg.muted/subtle/quiet, erro e aviso (700) e tons âmbar/vermelho '
+            'em AA (4,5:1) também sobre o canvas; CTA do modo GB com texto '
+            'escuro (7,6:1 no lugar de 2,5:1); borda forte visível nos campos.',
+      ),
+      (
+        'Removido',
+        'Tamanhos de fonte 2xs (10px) e xs (11px): 12px é o piso do sistema; '
+            'o corpo de leitura fica em 14px.',
+      ),
+      (
+        'Mudou',
+        'Alvos de toque: control, btn e iconBtn em 48dp (CTA grande 52); '
+            'traço dos ícones em 1.5.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.12.0',
     date: '2026-09-23',

@@ -177,7 +177,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
                   'Informe um peso maior que zero.',
                   style: TextStyle(
                     fontFamily: AppTypography.fontFamily,
-                    fontSize: AppTypography.xs,
+                    fontSize: AppTypography.sm,
                     fontWeight: AppTypography.weightMedium,
                     color: AppColors.red600,
                   ),

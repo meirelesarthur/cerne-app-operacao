@@ -41,7 +41,7 @@ class DocPage extends StatelessWidget {
                   Text(
                     eyebrow.toUpperCase(),
                     style: TextStyle(
-                      fontSize: AppTypography.xs,
+                      fontSize: AppTypography.sm,
                       fontWeight: AppTypography.weightSemibold,
                       color: semantic.accentDefault,
                     ),

@@ -119,7 +119,7 @@ class PerfilConfigPage extends ConsumerWidget {
                           Text(
                             'Complete seus dados para liberar todos os recursos.',
                             style: TextStyle(
-                              fontSize: AppTypography.xs,
+                              fontSize: AppTypography.sm,
                               color: semantic.fgMuted,
                             ),
                           ),

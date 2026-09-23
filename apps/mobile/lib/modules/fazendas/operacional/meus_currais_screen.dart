@@ -147,7 +147,7 @@ class _CurralCard extends ConsumerWidget {
                           ? '1 ordem pendente do escritório para este curral'
                           : '${ordensPendentes.length} ordens pendentes do escritório para este curral',
                       style: TextStyle(
-                        fontSize: AppTypography.xs,
+                        fontSize: AppTypography.sm,
                         color: semantic.fgMuted,
                       ),
                     ),

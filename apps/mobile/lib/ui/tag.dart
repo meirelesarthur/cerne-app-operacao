@@ -70,7 +70,7 @@ class AppTag extends StatelessWidget {
           ],
           DefaultTextStyle(
             style: TextStyle(
-              fontSize: AppTypography.xs2,
+              fontSize: AppTypography.sm,
               fontWeight: AppTypography.weightMedium,
               color: color,
             ),

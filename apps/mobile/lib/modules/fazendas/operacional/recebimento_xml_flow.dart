@@ -145,7 +145,7 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
                   '$_totalConferidos/${nfeItens.length} conferidos',
                   style: TextStyle(
                     fontFamily: AppTypography.fontFamily,
-                    fontSize: AppTypography.xs,
+                    fontSize: AppTypography.sm,
                     color: semantic.fgMuted,
                   ),
                 ),

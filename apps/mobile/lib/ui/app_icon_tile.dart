@@ -100,7 +100,7 @@ class AppAppIconTile extends StatelessWidget {
                 maxLines: labelMaxLines,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: AppTypography.xs,
+                  fontSize: AppTypography.sm,
                   fontWeight: AppTypography.weightSemibold,
                   color: labelColor ?? semantic.fgInverse,
                 ),

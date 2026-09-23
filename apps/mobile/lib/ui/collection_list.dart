@@ -186,7 +186,7 @@ class _CollectionRow extends StatelessWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: AppTypography.xs,
+                        fontSize: AppTypography.sm,
                         color: semantic.fgMuted,
                       ),
                     ),
