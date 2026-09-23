@@ -111,7 +111,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AppNotificationTile), findsNothing);
-      expect(find.text('Minhas OS'), findsOneWidget);
+      expect(find.text('Ver todas'), findsOneWidget);
     });
   });
 }

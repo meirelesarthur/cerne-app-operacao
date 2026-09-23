@@ -1,6 +1,6 @@
 import 'models.dart';
 
-/// Cinco OS de amostra cobrindo os cinco estados do ciclo de vida e variando
+/// Nove OS de amostra cobrindo os seis estados do ciclo de vida e variando
 /// tipo de serviço, fazenda, prioridade e recursos internamente cadastrados
 /// — mesmo padrão de fidelidade dos mocks de Confinamento
 /// (`confinamento/mocks.dart`), para o Operacional ver
@@ -223,6 +223,141 @@ final List<OrdemServico> ordensServico = [
         autor: 'João Oliveira',
         acao: 'OS marcada como refeita',
         observacao: 'Cerca provisória não resistiu à chuva — necessário refazer com fixação reforçada.',
+      ),
+    ],
+  ),
+
+  // 6) Aguardando — urgente, a próxima da fila depois das já iniciadas.
+  OrdemServico(
+    id: 'os-2207',
+    codigo: 'OS #2207',
+    titulo: 'Vazamento na caixa d’água do Curral 12',
+    tipo: TipoServicoOs.infraestrutura,
+    fazenda: 'Fazenda São Pedro',
+    areaOuTalhao: 'Curral 12',
+    solicitante: 'João Oliveira — Encarregado',
+    dataSolicitacao: DateTime(2026, 9, 22, 6, 40),
+    autorizador: 'Carlos Menezes — Gerente Operacional',
+    dataAutorizacao: DateTime(2026, 9, 22, 7, 5),
+    prioridade: PrioridadeOs.urgente,
+    prazo: DateTime(2026, 9, 24),
+    descricao:
+        'Boia travada e trinca na base da caixa d’água de 5.000 L que abastece '
+        'os bebedouros do Curral 12. Trocar a boia e vedar a trinca.',
+    instrucoesSeguranca:
+        'Fechar o registro geral antes de subir. Escada presa na estrutura e '
+        'um colaborador segurando embaixo o tempo todo.',
+    maoDeObra: const ['Pedro Alves — Auxiliar de campo', 'Sérgio Nunes — Mecânico'],
+    maquinas: const ['Escada extensível 7 m'],
+    insumos: const ['Boia 3/4" — 1 un.', 'Massa epóxi para vedação — 2 un.'],
+    epis: const ['Cinto de segurança', 'Luva de raspa', 'Bota de segurança'],
+    status: OrdemServicoStatus.aguardando,
+    responsavelExecucao: 'Pedro Alves',
+    historico: [
+      EventoOs(dataHora: DateTime(2026, 9, 22, 6, 40), autor: 'João Oliveira', acao: 'OS solicitada'),
+      EventoOs(dataHora: DateTime(2026, 9, 22, 7, 5), autor: 'Carlos Menezes', acao: 'OS autorizada'),
+    ],
+  ),
+
+  // 7) Aguardando — média.
+  OrdemServico(
+    id: 'os-2204',
+    codigo: 'OS #2204',
+    titulo: 'Roçada do Piquete 03',
+    tipo: TipoServicoOs.agricola,
+    fazenda: 'Fazenda Boa Vista',
+    areaOuTalhao: 'Piquete 03',
+    solicitante: 'Maria Fernandes — Supervisora de Campo',
+    dataSolicitacao: DateTime(2026, 9, 19, 10),
+    autorizador: 'Carlos Menezes — Gerente Operacional',
+    dataAutorizacao: DateTime(2026, 9, 19, 16, 20),
+    prioridade: PrioridadeOs.media,
+    prazo: DateTime(2026, 9, 27),
+    descricao:
+        'Roçar 6 ha de pasto com excesso de capim-colonião antes da entrada '
+        'do Lote 04. Manter a altura de corte em 20 cm.',
+    instrucoesSeguranca:
+        'Retirar o gado do piquete antes de iniciar. Ninguém a menos de 30 m '
+        'da roçadeira em funcionamento.',
+    maoDeObra: const ['Pedro Alves — Operador de máquinas'],
+    maquinas: const ['Trator MF 4275', 'Roçadeira hidráulica 1,7 m'],
+    insumos: const ['Óleo diesel — 60 L'],
+    epis: const ['Protetor auricular', 'Óculos de proteção', 'Bota de segurança'],
+    status: OrdemServicoStatus.aguardando,
+    responsavelExecucao: 'Pedro Alves',
+    historico: [
+      EventoOs(dataHora: DateTime(2026, 9, 19, 10), autor: 'Maria Fernandes', acao: 'OS solicitada'),
+      EventoOs(dataHora: DateTime(2026, 9, 19, 16, 20), autor: 'Carlos Menezes', acao: 'OS autorizada'),
+    ],
+  ),
+
+  // 8) Aguardando — baixa, prazo folgado.
+  OrdemServico(
+    id: 'os-2209',
+    codigo: 'OS #2209',
+    titulo: 'Limpeza das calhas do galpão de insumos',
+    tipo: TipoServicoOs.manutencao,
+    fazenda: 'Fazenda São Pedro',
+    areaOuTalhao: 'Galpão de insumos',
+    solicitante: 'Ana Beatriz — Gerente Administrativa',
+    dataSolicitacao: DateTime(2026, 9, 21, 14),
+    autorizador: 'Carlos Menezes — Gerente Operacional',
+    dataAutorizacao: DateTime(2026, 9, 22, 8),
+    prioridade: PrioridadeOs.baixa,
+    prazo: DateTime(2026, 10, 3),
+    descricao:
+        'Retirar folhas e barro das calhas antes do período de chuva para '
+        'evitar infiltração sobre os sacos de ração.',
+    instrucoesSeguranca:
+        'Trabalho em altura: usar cinto preso à linha de vida. Não subir com '
+        'telhado molhado.',
+    maoDeObra: const ['Fabiana Rocha — Auxiliar'],
+    maquinas: const ['Escada extensível 7 m'],
+    insumos: const ['Sacos de lixo — 10 un.'],
+    epis: const ['Cinto de segurança', 'Luva de raspa', 'Capacete'],
+    status: OrdemServicoStatus.aguardando,
+    responsavelExecucao: 'Fabiana Rocha',
+    historico: [
+      EventoOs(dataHora: DateTime(2026, 9, 21, 14), autor: 'Ana Beatriz', acao: 'OS solicitada'),
+      EventoOs(dataHora: DateTime(2026, 9, 22, 8), autor: 'Carlos Menezes', acao: 'OS autorizada'),
+    ],
+  ),
+
+  // 9) Cancelada — o escritório cancelou antes do início.
+  OrdemServico(
+    id: 'os-2192',
+    codigo: 'OS #2192',
+    titulo: 'Aplicação de herbicida no Talhão 09',
+    tipo: TipoServicoOs.agricola,
+    fazenda: 'Fazenda Santa Rita',
+    areaOuTalhao: 'Talhão 09',
+    solicitante: 'Maria Fernandes — Supervisora de Campo',
+    dataSolicitacao: DateTime(2026, 9, 10, 9),
+    autorizador: 'Carlos Menezes — Gerente Operacional',
+    dataAutorizacao: DateTime(2026, 9, 10, 11),
+    prioridade: PrioridadeOs.media,
+    prazo: DateTime(2026, 9, 16),
+    descricao:
+        'Aplicação de herbicida pré-emergente em 22 ha antes do plantio do '
+        'milho safrinha.',
+    instrucoesSeguranca:
+        'Aplicar só com vento abaixo de 10 km/h. Máscara com filtro químico e '
+        'macacão impermeável durante todo o preparo da calda.',
+    maoDeObra: const ['Pedro Alves — Operador de máquinas'],
+    maquinas: const ['Trator MF 4275', 'Pulverizador Jacto 2000 L'],
+    insumos: const ['Herbicida pré-emergente — 44 L'],
+    epis: const ['Máscara com filtro químico', 'Macacão impermeável', 'Luva nitrílica'],
+    status: OrdemServicoStatus.cancelada,
+    responsavelExecucao: 'Pedro Alves',
+    motivoCancelamento: 'Chuva prevista para a semana toda; aplicação remarcada em nova OS.',
+    historico: [
+      EventoOs(dataHora: DateTime(2026, 9, 10, 9), autor: 'Maria Fernandes', acao: 'OS solicitada'),
+      EventoOs(dataHora: DateTime(2026, 9, 10, 11), autor: 'Carlos Menezes', acao: 'OS autorizada'),
+      EventoOs(
+        dataHora: DateTime(2026, 9, 12, 8),
+        autor: 'Carlos Menezes',
+        acao: 'OS cancelada',
+        observacao: 'Chuva prevista para a semana toda.',
       ),
     ],
   ),

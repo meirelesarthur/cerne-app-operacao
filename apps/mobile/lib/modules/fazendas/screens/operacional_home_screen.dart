@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_spacing.dart';
-import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/module_config.dart';
 import '../../../ui/ui.dart';
 import '../ordem_servico/models.dart';
@@ -16,14 +15,16 @@ import '../ordem_servico/widgets.dart';
 ///
 /// Duas seções, de cima para baixo:
 ///
-/// 1. **Minhas OS** — até [maxOrdens] ordens em andamento, a que está sendo
-///    executada primeiro, e "Ver todas" para a lista completa com filtro.
-///    Some quando não há OS em andamento: fazendas que quase não usam OS
-///    abrem direto nos atalhos, sem uma lista vazia no topo.
-/// 2. **Atalhos** — as rotinas do menu lateral em grade de quatro colunas,
-///    ícone em quadrado com o nome embaixo, como ícones de aplicativo no
-///    celular. A lista vem de [operationalMenuSections] (fonte única com o
-///    menu), sem o próprio "Início".
+/// 1. **Ordens de serviço** — no máximo [maxOrdens]: a primeira (a que está
+///    em execução, quando houver) em card de destaque com a ação rápida; logo
+///    abaixo, a próxima a fazer em card compacto. O que sobra aparece só como
+///    contagem ("+ 3 ordens para fazer"), que leva — como o "Ver todas" — à
+///    lista completa com filtros. Some quando não há OS em andamento: a home
+///    vira só o menu.
+/// 2. **Menu** — as rotinas do menu lateral em ladrilhos de três colunas
+///    ([AppModuleTileGrid]), ícone no topo e nome na base. A lista vem de
+///    [operationalMenuSections] (fonte única com o menu), sem o próprio
+///    "Início".
 ///
 /// A ordem das OS fica **estável sob o dedo**: iniciar uma OS pelo botão do
 /// card faria ela subir para o topo na hora, e um card que muda de lugar logo
@@ -33,7 +34,7 @@ import '../ordem_servico/widgets.dart';
 class OperacionalHomeScreen extends ConsumerStatefulWidget {
   const OperacionalHomeScreen({super.key});
 
-  static const int maxOrdens = 3;
+  static const int maxOrdens = 2;
 
   static const String todasAsOrdensRoute = '/fazendas/campo/minhas-os';
 
@@ -81,13 +82,14 @@ class _OperacionalHomeScreenState extends ConsumerState<OperacionalHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final ordens = ref.watch(ordemServicoStoreProvider.select((s) => s.ordens));
     final agora = ref.watch(osRelogioProvider)();
     final emAndamento = _ordemEstavel(ordens);
+    final restantes = emAndamento.length - OperacionalHomeScreen.maxOrdens;
     final atalhos = [
       for (final section in operationalMenuSections()) ...section.items,
     ].where((item) => item.route != operationalHomeRoute).toList();
+    void verTodas() => context.push(OperacionalHomeScreen.todasAsOrdensRoute);
 
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.space4),
@@ -95,51 +97,58 @@ class _OperacionalHomeScreenState extends ConsumerState<OperacionalHomeScreen> {
         if (emAndamento.isNotEmpty) ...[
           Row(
             children: [
-              const Expanded(child: AppHeading(child: Text('Minhas OS'))),
+              const Expanded(
+                child: AppHeading(child: Text('Ordens de serviço')),
+              ),
               AppButton(
-                variant: AppButtonVariant.ghost,
+                variant: AppButtonVariant.soft,
                 size: AppButtonSize.sm,
                 rightIcon: const AppIcon(
-                  AppIcons.arrowRight,
+                  AppIcons.chevronRight,
                   size: AppSize.iconXs,
                 ),
-                onPressed: () =>
-                    context.push(OperacionalHomeScreen.todasAsOrdensRoute),
+                onPressed: verTodas,
                 child: const Text('Ver todas'),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.space3),
-          for (final os in emAndamento.take(
-            OperacionalHomeScreen.maxOrdens,
-          )) ...[
-            OsSummaryCard(
-              os: os,
-              agora: agora,
-              onTap: () => abrirDetalheOs(context, ref, os),
-              onAcaoRapida: () => executarAcaoRapidaOs(context, ref, os),
-            ),
+          OsSummaryCard(
+            variant: AppStatusCardVariant.featured,
+            os: emAndamento.first,
+            agora: agora,
+            onTap: () => abrirDetalheOs(context, ref, emAndamento.first),
+            onAcaoRapida: () =>
+                executarAcaoRapidaOs(context, ref, emAndamento.first),
+          ),
+          if (emAndamento.length > 1) ...[
             const SizedBox(height: AppSpacing.space3),
+            OsSummaryCard(
+              variant: AppStatusCardVariant.compact,
+              os: emAndamento[1],
+              agora: agora,
+              onTap: () => abrirDetalheOs(context, ref, emAndamento[1]),
+            ),
           ],
-          const SizedBox(height: AppSpacing.space3),
+          if (restantes > 0) ...[
+            const SizedBox(height: AppSpacing.space3),
+            AppLabeledDivider(
+              label: restantes == 1
+                  ? '+ 1 ordem para fazer'
+                  : '+ $restantes ordens para fazer',
+              onTap: verTodas,
+            ),
+          ],
+          const SizedBox(height: AppSpacing.space4),
         ],
-        const AppHeading(child: Text('Atalhos')),
-        const SizedBox(height: AppSpacing.space4),
-        GridView.count(
-          crossAxisCount: 4,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: AppSpacing.space4,
-          crossAxisSpacing: AppSpacing.space2,
-          // Quadrado de 64 + rótulo de até duas linhas.
-          childAspectRatio: 0.72,
-          children: [
+        AppModuleTileGrid(
+          columns: 3,
+          tiles: [
             for (final item in atalhos)
-              AppAppIconTile(
+              AppModuleTile(
                 icon: item.icon,
                 label: item.label,
-                labelColor: semantic.fgDefault,
-                labelMaxLines: 2,
+                dense: true,
                 onTap: () => item.push
                     ? context.push(item.route)
                     : context.go(item.route),

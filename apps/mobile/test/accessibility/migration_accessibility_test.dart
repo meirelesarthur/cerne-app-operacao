@@ -198,7 +198,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('Atalhos'), findsOneWidget);
+      expect(find.text('Ver todas'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

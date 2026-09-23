@@ -7,10 +7,10 @@ import 'package:cerne_app/modules/fazendas/ordem_servico/widgets.dart';
 import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
 import 'package:cerne_app/shell/components/reveal_menu.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
-import 'package:cerne_app/ui/app_icon_tile.dart';
 import 'package:cerne_app/ui/module_tile.dart';
 import 'package:cerne_app/ui/page_scaffold.dart';
 import 'package:cerne_app/ui/search_field.dart';
+import 'package:cerne_app/ui/status_card.dart';
 
 import '../support/router_test_harness.dart';
 import '../support/test_viewport.dart';
@@ -41,27 +41,30 @@ void main() {
       expect(find.text('Fazenda São Pedro'), findsOneWidget);
       expect(find.text('Procurando por algo?'), findsOneWidget);
       expect(find.text('O que fazer hoje'), findsNothing);
-      // Tela inicial: OS em andamento no topo e atalhos logo abaixo.
-      expect(find.text('Minhas OS'), findsOneWidget);
+      // Tela inicial: até duas OS no topo, o resto como contagem, e o menu
+      // em ladrilhos logo abaixo.
       expect(find.text('Ver todas'), findsOneWidget);
-      expect(find.text('Atalhos'), findsOneWidget);
+      expect(find.text('+ 4 ordens para fazer'), findsOneWidget);
       expect(find.byTooltip('Início'), findsOneWidget);
-      expect(find.byType(AppModuleTile), findsNothing);
+      expect(find.byType(AppModuleTile), findsWidgets);
     });
 
-    testWidgets('tela inicial mostra até 3 OS, a em execução primeiro', (
-      tester,
-    ) async {
-      await setTallSurface(tester);
-      await tester.pumpWidget(harness.buildApp());
-      await tester.pumpAndSettle();
+    testWidgets(
+      'tela inicial mostra até 2 OS: a em execução em destaque e a próxima',
+      (tester) async {
+        await setTallSurface(tester);
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
 
-      expect(find.byType(OsSummaryCard), findsNWidgets(3));
-      final primeira = tester.widget<OsSummaryCard>(
-        find.byType(OsSummaryCard).first,
-      );
-      expect(primeira.os.status, OrdemServicoStatus.emExecucao);
-    });
+        final cards = tester
+            .widgetList<OsSummaryCard>(find.byType(OsSummaryCard))
+            .toList();
+        expect(cards, hasLength(2));
+        expect(cards.first.os.status, OrdemServicoStatus.emExecucao);
+        expect(cards.first.variant, AppStatusCardVariant.featured);
+        expect(cards.last.variant, AppStatusCardVariant.compact);
+      },
+    );
 
     testWidgets('sem OS em andamento, a seção some e ficam só os atalhos', (
       tester,
@@ -75,10 +78,9 @@ void main() {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      expect(find.text('Minhas OS'), findsNothing);
+      expect(find.text('Ver todas'), findsNothing);
       expect(find.byType(OsSummaryCard), findsNothing);
-      expect(find.text('Atalhos'), findsOneWidget);
-      expect(find.byType(AppAppIconTile), findsWidgets);
+      expect(find.byType(AppModuleTile), findsWidgets);
     });
 
     testWidgets('tocar numa OS abre o detalhe em tela cheia com as ações', (
@@ -120,7 +122,7 @@ void main() {
           profile: UserAccessProfile.operational,
           overrides: [
             osRelogioProvider.overrideWithValue(
-              () => DateTime(2026, 9, 15, 10),
+              () => DateTime(2026, 9, 23, 10),
             ),
           ],
         );
@@ -129,10 +131,17 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        OrdemServicoStatus status() => harness.container
-            .read(ordemServicoStoreProvider.notifier)
-            .byId('os-2201')
-            .status;
+        // Sem a em execução e a pausada, a primeira da fila é a aguardando
+        // mais urgente — em destaque, com o botão Iniciar.
+        final store = harness.container.read(
+          ordemServicoStoreProvider.notifier,
+        );
+        for (final id in ['os-2198', 'os-2185']) {
+          store.cancelar(id, autor: 'Teste', motivo: 'Fora do teste');
+        }
+        await tester.pumpAndSettle();
+
+        OrdemServicoStatus status() => store.byId('os-2207').status;
         List<String> ordem() => [
           for (final card in tester.widgetList<OsSummaryCard>(
             find.byType(OsSummaryCard),
@@ -140,15 +149,14 @@ void main() {
             card.os.id,
         ];
 
-        // Situação e ação rápida de cada card.
-        expect(find.text('Liberada há 2 dias'), findsOneWidget);
-        expect(find.text('Em execução há 1 dia'), findsOneWidget);
+        // Situação e ação rápida do card em destaque.
+        expect(find.text('Vence amanhã'), findsOneWidget);
         final antes = ordem();
-        expect(antes.last, 'os-2201');
+        expect(antes, ['os-2207', 'os-2201']);
 
         await tester.tap(find.text('Iniciar'));
         await tester.pumpAndSettle();
-        expect(find.text('Iniciar a OS #2201?'), findsOneWidget);
+        expect(find.text('Iniciar a OS #2207?'), findsOneWidget);
 
         await tester.tap(find.text('Cancelar'));
         await tester.pumpAndSettle();
@@ -163,7 +171,7 @@ void main() {
         // A OS iniciada não pula para o topo sob o dedo.
         expect(ordem(), antes);
         expect(find.text('Iniciar'), findsNothing);
-        expect(find.text('Pausar'), findsNWidgets(2));
+        expect(find.text('Pausar'), findsOneWidget);
       },
     );
 

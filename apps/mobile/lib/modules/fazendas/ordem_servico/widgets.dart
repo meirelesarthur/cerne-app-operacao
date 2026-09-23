@@ -179,10 +179,18 @@ AppStatusCardSituation osSituacao(OrdemServico os, DateTime agora) {
   _ => null,
 };
 
-/// Card resumido da OS para as listas: o `AppStatusCard` do catálogo com o
-/// status no topo, o código em destaque, o título do serviço e o local
-/// abaixo, prazo e prioridade à direita, e no rodapé a situação do momento
-/// ([osSituacao]) com a ação rápida do status ([osAcaoRapida]).
+/// Card resumido da OS: o `AppStatusCard` do catálogo.
+///
+/// - [AppStatusCardVariant.standard] (listas, "Minhas OS"): status no topo,
+///   código em destaque, título e local abaixo, prazo e prioridade à direita
+///   e no rodapé a situação do momento ([osSituacao]) com a ação rápida
+///   ([osAcaoRapida]).
+/// - [AppStatusCardVariant.featured] (destaque da Início): o título do
+///   serviço é o que se lê primeiro; local, responsável e código abaixo;
+///   status, prazo e prioridade com ícone à direita; situação em faixa
+///   tingida ao lado da ação.
+/// - [AppStatusCardVariant.compact] (o próximo da fila na Início): título,
+///   local e status, sem ação — tocar abre o detalhe.
 class OsSummaryCard extends StatelessWidget {
   const OsSummaryCard({
     super.key,
@@ -190,6 +198,7 @@ class OsSummaryCard extends StatelessWidget {
     required this.agora,
     required this.onTap,
     this.onAcaoRapida,
+    this.variant = AppStatusCardVariant.standard,
   });
 
   final OrdemServico os;
@@ -201,23 +210,35 @@ class OsSummaryCard extends StatelessWidget {
   /// Disparada pelo botão do rodapé; sem ela, o card não mostra botão.
   final VoidCallback? onAcaoRapida;
 
+  final AppStatusCardVariant variant;
+
   @override
   Widget build(BuildContext context) {
     final acao = onAcaoRapida == null ? null : osAcaoRapida(os.status);
+    final urgente =
+        os.prioridade == PrioridadeOs.alta ||
+        os.prioridade == PrioridadeOs.urgente;
+    final destaque = variant != AppStatusCardVariant.standard;
     return AppStatusCard(
+      variant: variant,
       statusLabel: os.status.label,
       statusTone: osStatusTone(os.status),
-      title: os.codigo,
-      subtitle: os.titulo,
-      caption: os.areaOuTalhao,
+      title: destaque ? os.titulo : os.codigo,
+      subtitle: destaque ? os.areaOuTalhao : os.titulo,
+      caption: destaque
+          ? '${os.responsavelExecucao} · ${os.codigo}'
+          : os.areaOuTalhao,
       meta: [
-        AppStatusCardMeta(label: 'Prazo', value: _fmtDataCurta(os.prazo)),
+        AppStatusCardMeta(
+          label: 'Prazo',
+          value: _fmtDataCurta(os.prazo),
+          icon: AppIcons.calendar,
+        ),
         AppStatusCardMeta(
           label: 'Prioridade',
           value: os.prioridade.label,
-          highlight:
-              os.prioridade == PrioridadeOs.alta ||
-              os.prioridade == PrioridadeOs.urgente,
+          highlight: urgente,
+          icon: AppIcons.alertCircle,
         ),
       ],
       situation: osSituacao(os, agora),
