@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.3.0';
+const kWidgetbookVersion = '2.4.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,20 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.4.0',
+    date: '2026-09-23',
+    summary: 'Rodapé fixo sem faixa cinza: botões flutuam sobre a folha.',
+    changes: [
+      (
+        'Mudou',
+        'ActionBar (AppActionBar) perde fundo e sombra próprios em todas as '
+            'variantes — cadastro, fluxo com resumo e detalhe de OS agora '
+            'seguem o CTA flutuante de listagem, com os botões sobre o fundo '
+            'da tela.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.3.0',
     date: '2026-09-23',
