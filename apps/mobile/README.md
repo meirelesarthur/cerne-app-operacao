@@ -18,4 +18,4 @@ flutter test
 
 Estrutura principal em `lib/`: `design/` (temas e tokens gerados), `ui/` (catálogo component-first),
 `router/` (rotas e política de acesso), `shell/` (shell global e sessão demonstrativa),
-`modules/` (Início, Fazendas, Armazém).
+`modules/` (Início, Fazendas).

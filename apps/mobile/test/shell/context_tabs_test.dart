@@ -12,7 +12,7 @@ Widget _wrap(Widget child) => MaterialApp(
 
 void main() {
   group('AppContextTabs', () {
-    final module = getModule('armazem')!;
+    final module = getModule('inicio')!;
 
     testWidgets(
       'renderiza as abas navegáveis (sem a ação "Mais") sem exceção',
@@ -28,7 +28,7 @@ void main() {
         );
 
         expect(find.text('Início'), findsOneWidget);
-        expect(find.text('Estoque'), findsOneWidget);
+        expect(find.text('Apps'), findsOneWidget);
         expect(find.text('Mais'), findsNothing);
         expect(tester.takeException(), isNull);
       },
@@ -48,10 +48,10 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('Estoque'));
+      await tester.tap(find.text('Apps'));
       await tester.pump();
 
-      expect(selected, 'estoque');
+      expect(selected, 'apps');
     });
   });
 }

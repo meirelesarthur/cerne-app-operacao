@@ -29,7 +29,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           container,
-          AppRevealMenu(module: getModule('armazem')!, onNavigate: (_) {}),
+          AppRevealMenu(module: getModule('fazendas')!, onNavigate: (_) {}),
         ),
       );
       await tester.pump();
@@ -55,7 +55,7 @@ void main() {
           _wrap(
             container,
             AppRevealMenu(
-              module: getModule('armazem')!,
+              module: getModule('fazendas')!,
               onNavigate: (route) => navigatedTo = route,
             ),
           ),
@@ -68,8 +68,7 @@ void main() {
         // do Tailwind no React — transformação puramente visual).
         // Grupo único "MENU" (caixa alta visual), sem subtítulos de seção.
         expect(find.text('MENU'), findsOneWidget);
-        expect(find.text('OPERAÇÃO'), findsNothing);
-        expect(find.text('Unidades'), findsOneWidget);
+        expect(find.text('Ordens de serviço'), findsOneWidget);
         expect(find.text('Sair'), findsOneWidget);
         expect(tester.takeException(), isNull);
 
@@ -95,7 +94,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           container,
-          AppRevealMenu(module: getModule('armazem')!, onNavigate: (_) {}),
+          AppRevealMenu(module: getModule('fazendas')!, onNavigate: (_) {}),
         ),
       );
       await tester.pump(const Duration(milliseconds: 600));
@@ -123,7 +122,7 @@ void main() {
       await tester.pumpWidget(
         _wrap(
           container,
-          AppRevealMenu(module: getModule('armazem')!, onNavigate: (_) {}),
+          AppRevealMenu(module: getModule('fazendas')!, onNavigate: (_) {}),
         ),
       );
       await tester.pump(const Duration(milliseconds: 600));
@@ -163,7 +162,8 @@ void main() {
       expect(find.text('MÓDULOS'), findsNothing);
       expect(find.text('Ordens de serviço'), findsOneWidget);
       expect(find.text('Início'), findsOneWidget);
-      expect(find.text('Armazém'), findsOneWidget);
+      // Armazém saiu do app.
+      expect(find.text('Armazém'), findsNothing);
       // Fazendas abriria a mesma tela de "Ordens de serviço": não se repete.
       expect(find.text('Fazendas'), findsNothing);
     });

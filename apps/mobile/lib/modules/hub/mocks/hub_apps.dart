@@ -29,13 +29,6 @@ const List<HubApp> hubApps = [
     description: 'Gestão da operação e lançamentos de campo',
     route: '/fazendas',
   ),
-  HubApp(
-    id: 'armazem',
-    icon: AppIcons.warehouse,
-    name: 'Armazém',
-    description: 'Estoque, movimentações e logística',
-    route: '/armazem',
-  ),
 ];
 
 const List<HubApp> appsEmBreve = [

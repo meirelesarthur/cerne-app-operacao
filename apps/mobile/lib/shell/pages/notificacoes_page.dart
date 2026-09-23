@@ -14,7 +14,6 @@ import 'package:cerne_app/design/generated/app_typography.dart';
 
 const Map<String, AppIconData> _moduleIcon = {
   'fazendas': AppIcons.sprout,
-  'armazem': AppIcons.warehouse,
 };
 
 /// Notificações agregadas de todos os módulos (spec §3.1) — espelha `Notificacoes.tsx`.

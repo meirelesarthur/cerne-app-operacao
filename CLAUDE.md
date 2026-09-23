@@ -34,7 +34,7 @@ npm run smoke:deploy       # rotas e fallbacks do Worker
 - `apps/mobile/lib/design/`: temas e arquivos Dart gerados.
 - `apps/mobile/lib/router/`: roteamento e política de acesso.
 - `apps/mobile/lib/shell/`: shell, sessão demonstrativa e navegação global.
-- `apps/mobile/lib/modules/`: Início, Fazendas e Armazém — os únicos módulos do app.
+- `apps/mobile/lib/modules/`: Início e Fazendas — os únicos módulos do app.
 - `design/tokens.ts`: fonte única neutra dos tokens.
 - `tokens/tokens.json`: exportação W3C DTCG.
 - `workers/index.js`: fallbacks separados do app e Widgetbook.

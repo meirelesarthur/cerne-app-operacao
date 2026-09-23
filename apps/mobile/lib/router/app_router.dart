@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../modules/armazem/armazem_module.dart';
 import '../modules/fazendas/fazendas_module.dart';
 import '../modules/fazendas/screens/busca_global_screen.dart';
 import '../modules/hub/hub_module.dart';
@@ -61,7 +60,6 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         routes: [
           buildHubModuleRoute(),
           buildFazendasModuleRoute(),
-          buildArmazemModuleRoute(),
           for (final module in modules.where(
             (m) => !_wiredModules.contains(m.id),
           ))
@@ -145,7 +143,6 @@ String? redirectForSession(String path, PrototypeSessionState session) {
 const _wiredModules = {
   'inicio',
   'fazendas',
-  'armazem',
 };
 
 String _tabLabel(ModuleDef module, String tabPath) {

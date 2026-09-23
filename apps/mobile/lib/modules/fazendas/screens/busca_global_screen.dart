@@ -268,9 +268,9 @@ List<_SearchShortcut> _productsFor(UserAccessProfile? profile) {
       route: '/fazendas/operacional',
     ),
     _SearchShortcut(
-      label: 'Gestão de Estoque',
-      icon: AppIcons.boxes,
-      route: '/armazem/estoque',
+      label: 'Pecuária',
+      icon: AppIcons.pecuaria,
+      route: '/fazendas/operacional/grupo/pecuaria',
     ),
     _SearchShortcut(
       label: 'Confinamento',
@@ -303,9 +303,9 @@ List<_SearchShortcut> _recentFor(UserAccessProfile? profile) {
       route: '/fazendas/operacional',
     ),
     _SearchShortcut(
-      label: 'Gestão de Estoque',
-      icon: AppIcons.boxes,
-      route: '/armazem/estoque',
+      label: 'Pecuária',
+      icon: AppIcons.pecuaria,
+      route: '/fazendas/operacional/grupo/pecuaria',
     ),
   ];
 }

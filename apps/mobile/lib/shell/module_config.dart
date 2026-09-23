@@ -276,60 +276,6 @@ const List<ModuleDef> modules = [
     // entram no grupo único "Menu" — ver [operationalMenuSections].
     menuSectionsBuilder: operationalMenuSections,
   ),
-  ModuleDef(
-    id: 'armazem',
-    label: 'Armazém',
-    icon: AppIcons.warehouse,
-    homeRoute: '/armazem',
-    bottomTabs: [
-      BottomTab(id: 'inicio', label: 'Início', icon: AppIcons.home, path: ''),
-      BottomTab(
-        id: 'estoque',
-        label: 'Estoque',
-        icon: AppIcons.boxes,
-        path: 'estoque',
-      ),
-      BottomTab(
-        id: 'movimentacoes',
-        label: 'Movimentações',
-        icon: AppIcons.arrowLeftRight,
-        path: 'movimentacoes',
-      ),
-      BottomTab(
-        id: 'mais',
-        label: 'Mais',
-        icon: AppIcons.moreHorizontal,
-        path: 'mais',
-        action: 'menu',
-      ),
-    ],
-    menuSections: [
-      // Estoque e Movimentações saíram: já são abas de contexto no topo.
-      // Unidades não é aba — fica.
-      ModuleMenuSection(
-        title: 'Operação',
-        items: [
-          ModuleMenuItem(
-            id: 'unidades',
-            label: 'Unidades',
-            icon: AppIcons.warehouse,
-            route: '/armazem/unidades',
-          ),
-        ],
-      ),
-      ModuleMenuSection(
-        title: 'Gestão',
-        items: [
-          ModuleMenuItem(
-            id: 'relatorios',
-            label: 'Relatórios',
-            icon: AppIcons.barChart3,
-            route: '/armazem/relatorios',
-          ),
-        ],
-      ),
-    ],
-  ),
 ];
 
 final Map<String, ModuleDef> moduleMap = {for (final m in modules) m.id: m};
@@ -337,6 +283,6 @@ final Map<String, ModuleDef> moduleMap = {for (final m in modules) m.id: m};
 ModuleDef? getModule(String? id) => id == null ? null : moduleMap[id];
 
 /// Módulos exibidos no dock global (ver plano de melhorias de UX): o app tem
-/// só o perfil operacional (mão de obra de campo), que usa Início, Fazendas e
-/// Armazém como atalhos persistentes — os únicos módulos do app.
+/// só o perfil operacional (mão de obra de campo), que usa Início e Fazendas
+/// como atalhos persistentes — os únicos módulos do app.
 List<ModuleDef> visibleModulesFor(UserAccessProfile? profile) => modules;

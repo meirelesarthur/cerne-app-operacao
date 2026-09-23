@@ -6,8 +6,8 @@ import 'package:cerne_app/ui/app_icon.dart';
 
 void main() {
   group('module_config', () {
-    test('todos os 3 módulos existem com bottomTabs não vazios', () {
-      expect(modules.length, 3);
+    test('todos os 2 módulos existem com bottomTabs não vazios', () {
+      expect(modules.length, 2);
       for (final m in modules) {
         expect(m.bottomTabs, isNotEmpty);
       }
@@ -24,15 +24,15 @@ void main() {
         visibleModulesFor(
           UserAccessProfile.operational,
         ).map((module) => module.id),
-        ['inicio', 'fazendas', 'armazem'],
+        ['inicio', 'fazendas'],
       );
-      expect(modules.map((module) => module.id), hasLength(3));
+      expect(modules.map((module) => module.id), hasLength(2));
     });
 
     test(
       'getMenuSections cai no fallback derivado das bottomTabs quando ausente',
       () {
-        // Nenhum dos 3 módulos reais deixa `menuSections` ausente hoje (ver
+        // Nenhum dos 2 módulos reais deixa `menuSections` ausente hoje (ver
         // teste abaixo) — o fallback só existe como rede de segurança para um
         // módulo futuro sem seção própria. Testado aqui com um `ModuleDef`
         // sintético, não com um módulo real.

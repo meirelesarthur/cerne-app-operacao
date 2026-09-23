@@ -29,7 +29,6 @@ um toque na grade de módulos.
 - **Ordem de Serviço** — minhas OS, ordens pendentes e apontamentos agrícolas por OS.
 - **Gestão de Frota** — abastecimentos e manutenção de veículos/equipamentos.
 - **Sincronização** — fila de envio para quando a conexão cair; banner de offline no shell.
-- **Armazém** — estoque, movimentações, unidades e relatórios.
 
 Todo cadastro segue o mesmo desenho: farm switcher fixo, formulário em etapas com revisão final e
 confirmação, e bloqueios de negócio simulados na própria UI (ex.: transferência de lote exige

@@ -9,7 +9,7 @@ import '../mocks/hub_apps.dart';
 
 /// Home do hub agregador — espelha `HubHome.tsx`. Único perfil do app
 /// (Operacional): a porta de entrada mostra direto o grid de apps
-/// (Fazendas/Armazém) injetável via catálogo.
+/// (Fazendas) injetável via catálogo.
 class HubHomeScreen extends StatelessWidget {
   const HubHomeScreen({super.key});
 

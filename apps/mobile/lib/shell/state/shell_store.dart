@@ -48,9 +48,9 @@ const _mockNotifications = [
   ),
   AppNotification(
     id: 'n2',
-    moduleId: 'armazem',
-    title: 'Movimentação de estoque registrada',
-    detail: 'Entrada · Armazém A',
+    moduleId: 'fazendas',
+    title: 'Nova ordem de serviço atribuída',
+    detail: 'OS #2201 · Reparo de cerca do Talhão 04',
     time: 'há 1 h',
     read: false,
   ),

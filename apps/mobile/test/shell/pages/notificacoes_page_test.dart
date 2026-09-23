@@ -22,7 +22,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Pesagem registrada'), findsOneWidget);
-      expect(find.text('Movimentação de estoque registrada'), findsOneWidget);
+      expect(find.text('Nova ordem de serviço atribuída'), findsOneWidget);
       expect(find.text('Marcar lidas'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
