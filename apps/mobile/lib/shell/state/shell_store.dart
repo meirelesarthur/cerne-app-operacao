@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-/// Store do Shell — espelha `shellStore.ts` (spec §7.3). Estado de nível superapp,
+/// Store do Shell — espelha `shellStore.ts` (spec §7.3). Estado global do app,
 /// tudo em memória (sem persistência local, restrição do protótipo).
 
 class UserProfile {

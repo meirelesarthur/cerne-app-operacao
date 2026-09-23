@@ -15,7 +15,7 @@ import '../shell/state/prototype_session_store.dart';
 /// aninhadas, espelhando a navegação de 2 níveis do protótipo React
 /// (`react-router-dom`, `ShellLayout` + `Outlet` implícito).
 ///
-/// Cada rota de módulo usa um segmento literal (`/bank`, não `/:moduleId`) —
+/// A rota do módulo usa um segmento literal (`/fazendas`, não `/:moduleId`) —
 /// por isso o `moduleId`/`tab` ativos são derivados de `state.uri.pathSegments`
 /// dentro do builder do `ShellRoute`, não de `state.pathParameters` (não há
 /// parâmetro nomeado `:moduleId` em nenhuma rota).

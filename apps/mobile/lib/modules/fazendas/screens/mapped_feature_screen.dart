@@ -369,9 +369,8 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     final isRecordsList =
         feature.listMode && _journey.mode == FunctionalJourneyMode.list;
     final showingForm = feature.auditExport == null && !isRecordsList;
-    // banco-real: administração pode criar quando a própria tela declara
-    // campos (ex.: Produtos) — deixou de ser exclusivo do perfil
-    // operacional. `readOnly` bloqueia mesmo com `fields` preenchidos —
+    // banco-real: cria quando a própria tela declara campos (ex.: Produtos).
+    // `readOnly` bloqueia mesmo com `fields` preenchidos —
     // cadastro estruturante ou decisão que pertence ao desktop, o app só
     // consulta. Ver docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1.
     final canCreateRecords = feature.fields.isNotEmpty && !feature.readOnly;
@@ -384,8 +383,8 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
 
     // Título e voltar vivem na faixa de 64 px sobre o canvas, a régua de
     // etapas dentro da folha branca e o rodapé colado na base: a anatomia
-    // inteira vem de [AppPageBody] — a mesma peça dos fluxos operacionais e do
-    // Bank —, sem `Scaffold` porque o shell já resolveu a área segura.
+    // inteira vem de [AppPageBody] — a mesma peça dos fluxos operacionais —,
+    // sem `Scaffold` porque o shell já resolveu a área segura.
     final isEditing = isForm && _journey.editingRecordId != null;
 
     return AppPageBody(
@@ -470,11 +469,9 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                     .recordsFor(dataSourceId),
                 canCreate: canCreateRecords,
                 onCreate: _startForm,
-                // RBAC da visualização: só o perfil operacional edita um
-                // registro já gravado — administração consulta em modo
-                // somente leitura, sem ação de editar na ficha do registro.
-                // Mesma condição de `canCreate`, porque só há campo para
-                // editar quando também há campo para criar.
+                // Edição do registro já gravado: mesma condição de
+                // `canCreate`, porque só há campo para editar quando também
+                // há campo para criar.
                 canEdit:
                     ref.watch(prototypeSessionProvider).profile ==
                         UserAccessProfile.operational &&
@@ -580,9 +577,9 @@ const _livestockAuditRows = <Map<String, String>>[
 
 /// Abertura da função dentro da folha: o objetivo em uma linha.
 ///
-/// As chips de perfil ("Operação"/"Administração") e de status ("Funcional no
-/// protótipo") já tinham saído daqui — a primeira repetia o ambiente em que a
-/// pessoa entrou, a segunda é informação de desenvolvimento. Os detalhes de
+/// As chips de perfil e de status ("Funcional no protótipo") já tinham saído
+/// daqui — a primeira repetia o perfil, a segunda é informação de
+/// desenvolvimento. Os detalhes de
 /// fonte/premissa também são internos e não aparecem na jornada. Agora o título
 /// e o voltar também saíram: viraram a barra superior fixa do padrão global,
 /// acima da folha.
@@ -618,9 +615,9 @@ class _RecordsList extends StatefulWidget {
   final bool canCreate;
   final VoidCallback onCreate;
 
-  /// Perfil operacional em funcionalidade editável: a visualização do
-  /// registro ganha a ação "Editar" no cabeçalho. Administração, ou uma
-  /// funcionalidade sem campo próprio, mantém a ficha somente leitura.
+  /// Funcionalidade editável: a visualização do registro ganha a ação
+  /// "Editar" no cabeçalho. Uma funcionalidade sem campo próprio mantém a
+  /// ficha somente leitura.
   final bool canEdit;
   final ValueChanged<PrototypeRecord> onEdit;
 

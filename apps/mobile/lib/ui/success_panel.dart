@@ -12,7 +12,7 @@ import 'heading.dart';
 import '../design/generated/app_layout.dart';
 
 /// Espelha `SuccessPanel.tsx` — painel de sucesso genérico pós-operação, no
-/// padrão da SuccessScreen de Fazendas (NEW_UI_SUPERAPP.md). A navegação de
+/// padrão da SuccessScreen de Fazendas. A navegação de
 /// saída é responsabilidade da tela chamadora, passada via [actions]
 /// (botões de `ui/`), equivalente ao `children` do React.
 class AppSuccessPanel extends StatelessWidget {

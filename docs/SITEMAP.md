@@ -1,178 +1,65 @@
-# GB CERNE — Site Map de Funcionalidades
+# GB CERNE Operação — Mapa do app
 
-Mapa completo do protótipo navegável (estado pós-esteira de navegabilidade, Fases A–E do
-`PLANO-NAVEGABILIDADE.md`). Foco no módulo **Fazendas** (o Cerne do app), com os demais mapeados.
+Mapa do protótipo navegável do **CERNE Operação** (perfil único: Operacional). Fonte das rotas:
+`apps/mobile/lib/router/app_router.dart`, `apps/mobile/lib/modules/fazendas/fazendas_module.dart`
+e o catálogo `apps/mobile/lib/modules/fazendas/functional_catalog.dart`.
 
-**Legenda:** `[rota]` tela real com URL · `[sheet]` BottomSheet (overlay, sem rota) · `[menu]`
-RevealMenu · `[placeholder]` honesto/rotulado por recorte · `⚖` regra de negócio na UI.
-
----
-
-## Shell do Superapp — `/:moduleId/*`
-
-Camada persistente: header global (saudação + notificações), Barra de Módulos, Bottom Tab Bar
-genérica e RevealMenu. Raiz `/` → redirect `/inicio`.
-
-```
-/login          [rota]  entrada mock · "Conhecer o app" → onboarding
-/onboarding     [rota]  voltar → login · "Começar" → /fazendas
-/notificacoes   [rota]  cada item deep-linka ao módulo de origem
-/perfil         [rota]  configurações · tema GB Mode · sair → login
-RevealMenu      [menu]  seções contextuais do módulo ativo (menuSections)
-                        + Conta (notificações, config, GB Mode, sair)
-DevToolbar              botão flutuante dev: alterna offline e tema
-```
+**Legenda:** `[rota]` tela com URL · `[dock]` folha inferior (sem rota) · `[tela cheia]`
+visualização empilhada sem URL própria · `[menu]` menu lateral.
 
 ---
 
-## 🌱 Fazendas — `/fazendas` (CERNE DO APP)
+## Entrada e shell
 
-Gestão agro multi-tenant com **duas visões**: Gerencial (leitura) e Campo (lançamentos).
-
-### Acesso por responsabilidade
 ```
-/login                         [rota]  Login Administração → /fazendas/administracao
-                                      Login Operacional → /fazendas/operacional
-/fazendas/administracao       [rota]  12 funções de gestão, consulta e auditoria
-/fazendas/administracao/:id   [rota]  detalhe mapeado administrativo
-/fazendas/operacional         [rota]  41 funções de entrada e campo
-/fazendas/operacional/:id     [rota]  formulário/estado mapeado operacional
-⚖ rotas dashboards            somente Administração
-⚖ rotas campo/sync            somente Operacional
+/login          [rota]  login mock → /fazendas/operacional · "Tour pelo app" → onboarding
+/onboarding     [rota]  3 telas de campo · "Pular"/"Começar" → login
+/               [rota]  redirect → /fazendas/operacional
+/notificacoes   [rota]  cada item leva ao módulo de origem
+/perfil         [rota]  configurações · Modo GB · sair
+/busca          [rota]  busca global no catálogo funcional (tela cheia)
 ```
 
-### Contexto do módulo (header)
-```
-Farm Switcher                [sheet]  troca a fazenda ativa (tenant)
-"Lançando em: {fazenda}"     ⚖        badge fixo em toda tela operacional (mitigação IDOR)
-Perfil Administração/Operação [shell] definido no login e protegido nas rotas do módulo
-Banner crédito pré-aprovado           deep-link → /credito
-```
+Shell das telas rasas: seletor de fazenda no topo, saudação, campo de busca e a navbar flutuante
+**Início · Pecuária · Agricultura · Menu**. Telas fundas (cadastros e fluxos) escondem a navbar e
+mostram só a faixa de 64 px com título e "Voltar".
 
-### Home — `/fazendas` [rota]
-```
-Visão Gerencial   atalhos p/ dashboards · 2 cards de indicadores c/ sparkline
-                  atividades recentes → Detalhe de Atividade [sheet]
-Visão Campo       grid bento com os 6 lançamentos + card da fila de sync
-```
-
-### Abas
-```
-/fazendas/fazendas     [rota]  lista das fazendas do usuário
-/fazendas/atividades   [rota]  histórico completo · Detalhe de Atividade [sheet]
-/fazendas/financeiro   [rota]  atalho ao dashboard Financeiro
-/fazendas/mais         [rota]  hub de links
-/fazendas/mais/sync    [rota]  fila de sincronização: pendências c/ status,
-                               banner offline, "Sincronizar agora"
-```
-
-### Visão Gerencial — 7 dashboards `/fazendas/dashboards/:dashId`
-```
-financeiro    [rota]  KPIs + despesas por centro de custo
-                      (nota de fragilidade do legado: grouper_id=7, comentada no mock)
-pecuaria      [rota]  ⚖ bloco produtivo/reprodutivo DESATIVADO c/ cadeado
-                      (LACUNA no legado — não simular dado) · atividades [sheet]
-confinamento  [rota]  grid de currais por ocupação · detalhe do curral [sheet]
-ativos        [rota]  equipamentos · detalhe c/ depreciação acumulada [sheet]
-suprimentos   [rota]  cotações filtráveis · ⚖ selo "Dados de exemplo"
-                      · detalhe da cotação c/ mini-histórico [sheet]
-uso           [rota]  multi-tenant · "Acesso restrito" · ⚖ indisponível offline
-consultas     [rota]  ⚖ 100% read-only: lotes, estoque, pesagens
-                      · localização: esquema ilustrativo dos lotes (mock, sem GPS)
-```
-
-### Visão Campo — 6 fluxos `/fazendas/campo/:flowId`
-Todos com FlowShell (contexto + rodapé fixo) e tela de sucesso com efeitos no sistema web.
-```
-pesagem       [rota]  input manual grande (balança fica p/ nativo)
-                      · ⚖ registra a "pesagem do dia"
-ciclo         [rota]  form dinâmico: nascimento · desmame · transferência · morte
-                      · ⚖ TRANSFERÊNCIA EXIGE PESAGEM DO DIA (bloqueio funcional real)
-arracoamento  [rota]  lote → dieta → quantidade → depósito
-                      · ⚖ sem tela de rateio (LACUNA documentada)
-venda         [rota]  ⚖ mês congelado bloqueia edição (cadeado + tooltip)
-                      · ⚖ contagem e total > 0 validados
-recebimento   [rota]  upload XML NF-e + conferência item a item
-insumos       [rota]  talhão, data, tipo (validação mínima, fiel ao legado)
-```
-
-### Estados transversais (offline-first simulado)
-```
-⚖ lançamento offline → fila → SyncBanner c/ contagem → "Sincronizar" → fila limpa
-⚖ por tela: loading (skeleton) · vazio (EmptyState) · offline (banner+timestamp) · erro (retry)
-```
+**Menu lateral** `[menu]` (aba Menu): grupo único **MENU** — Início, Ordens de serviço,
+Confinamento, Pecuária, Agricultura, Reprodução, Consultas, Gestão de Frota, Sincronizar
+aplicativo — e a seção **CONTA** (Notificações, Configurações, Modo GB, Conexão, Sair).
 
 ---
 
-## 🏠 Início (Hub) — `/inicio`
+## Início — `/fazendas/operacional`
 
-Porta de entrada; agrega mini-apps com o GB Bank no centro. Leitura — transações no Bank.
-```
-/inicio           [rota]  saldo (toggle privacidade) · ações rápidas → Bank
-                          · banner crédito → /credito · "Seus apps"
-                          · movimentações → comprovante [sheet]
-/inicio/apps      [rota]  catálogo completo (disponíveis + "Em breve" desabilitados)
-/inicio/carteira  [rota]  resumo Banking (leitura) + CTA "Abrir GB Bank"
-```
+- **Minhas OS**: até 3 OS em andamento (em execução primeiro), com linha de situação (atrasada,
+  pausada há X, vence hoje, em execução há X…) e ação rápida (Iniciar, Pausar, Retomar), sempre
+  com confirmação. Some quando não há OS em andamento. "Ver todas" → `/fazendas/campo/minhas-os`.
+- **Atalhos**: grade 4 colunas com os mesmos itens do menu lateral.
+- Tocar numa OS abre o **detalhe da OS** `[tela cheia]` com as ações no rodapé.
 
-## 🏦 Bank — `/bank`
-```
-/bank             [rota]  saldo · ações rápidas · card "Meu cartão" → /bank/cartoes
-                          · movimentações [sheet]
-/bank/extrato     [rota]  filtros · comprovante [sheet]
-/bank/pagamentos  [rota]  hub: Pix · Pagar boleto · Transferir · Cobrar
-/bank/pix         [rota]  fluxo completo: chave/contato → valor → revisão → sucesso
-/bank/cartoes     [rota]  cartão visual · limite · bloqueio (toggle)
-                          · 2ª via / ajustar limite [placeholder]
-/bank/limites     [rota]  faixas de limite com uso/teto
-/bank/ajuda       [placeholder]
-```
+## Grupos — `/fazendas/operacional/grupo/:slug`
 
-## 💰 Crédito — `/credito`
-```
-/credito               [rota]  simulador funcional (valor × prazo)
-                               · linhas → detalhe [sheet] + CTA "Simular esta linha"
-/credito/simular       [rota]  Home com scroll automático ao simulador
-/credito/propostas     [rota]  lista → detalhe
-/credito/proposta/:id  [rota]  timeline de status (enviada → análise → aprovada/recusada)
-                               · documentos · CTA contextual por status
-/credito/contratos     [rota]  parcelas pagas/total · resumo [sheet]
-/credito/ajuda         [rota]  FAQ + "Fale com seu gerente"
-```
+Grupos com mais de uma função abrem a central do grupo; grupos de uma função só abrem a
+funcionalidade direto.
 
-## 🛒 Marketplace — `/marketplace`
-```
-/marketplace              [rota]  busca + filtro por categoria + grid
-/marketplace/produto/:id  [rota]  PDP: preço, vendedor, specs, "Adicionar ao pedido"
-/marketplace/categorias   [rota]  grade → Home já filtrada
-/marketplace/pedidos      [rota]  status por pedido · itens [sheet]
-/marketplace/favoritos    [rota]
-/marketplace/ajuda        [placeholder]
-```
+| Grupo | Funcionalidades (rota) |
+|---|---|
+| **Confinamento** | Trato diário (`/fazendas/campo/trato-diario`) · Leitura de cocho (`campo/leitura-cocho`) · Meus currais (`campo/meus-currais`) · Produzir batelada (`campo/batelada`) · Ordens pendentes (`campo/ordens-pendentes`) · Configurações do misturador · Conexão de aparelhos |
+| **Pecuária** | Pesagens (`campo/pesagem`) · Sanitário · Arraçoamento (`campo/arracoamento`) · Transferência animal/lote · Transferência lote/área · Localizar animal · Pastagens · Apartação · Nascimentos e Mortes (`campo/ciclo`) · Desmama · Registrar animal · Perdas · Rebanho inicial · Scanner SISBOV · Conexão de aparelhos |
+| **Agricultura** | Apontamento agrícola (`campo/apontamento`) · Marcação |
+| **Ordem de serviço** | Minhas OS (`campo/minhas-os`): lista completa com filtro de status em dock (Todas, Aguardando, Em execução, Finalizadas) |
+| **Reprodução** | Acasalamento · Diagnóstico de gestação |
+| **Consultas** (somente leitura) | Lote de animais · Áreas · Formulações · Batida · Estação de monta · Protocolos/estação · Touros/sêmen/embrião |
+| **Gestão de frota** | Abastecimentos · Manutenção |
+| **Sincronização** | Sincronização de dados (`campo/sincronizacao`) |
 
-## 🏗 Armazém — `/armazem`
-```
-/armazem                [rota]  KPIs, alertas · unidades [sheet] · movimentações [sheet]
-                                · deep-link → /marketplace
-/armazem/estoque        [rota]  itens c/ ocupação · filtro por unidade (?unidade=)
-/armazem/movimentacoes  [rota]  entradas/saídas · detalhe (nota, responsável, veículo) [sheet]
-/armazem/unidades       [rota]  capacidade/ocupação · CTA "Ver estoque da unidade"
-/armazem/relatorios     [rota]  relatórios disponíveis (mock)
-```
+Funcionalidades sem rota própria abrem no motor genérico em `/fazendas/operacional/:featureId`.
 
 ---
 
-## Deep-links entre módulos
-```
-Hub / Fazendas / Bank  →  Crédito      (banner "crédito pré-aprovado")
-Hub                    →  Bank         (ações rápidas, extrato, carteira)
-Armazém                →  Marketplace  (reposição de insumos)
-Notificações (Shell)   →  módulo de origem de cada aviso
-```
+## Fora do escopo deste repositório
 
----
-
-> **Escopo:** protótipo frontend de alta fidelidade — dados mockados, sem backend.
-> Fiscal, RBAC, hardware de balança e sincronização real são decisões do MVP (backlog técnico).
-> Placeholders remanescentes são honestos e rotulados: `/bank/ajuda`, `/marketplace/ajuda`,
-> mapa de localização (Consultas) e 2ª via/ajustar limite (Cartões).
+Perfil Administração, Bank, Crédito, Marketplace, Armazém e o hub "Início"/"Seus apps" foram
+removidos. Cadastros estruturantes (pátios, currais, dietas, OS) nascem no app web do escritório;
+o mobile só lança o que acontece em campo.

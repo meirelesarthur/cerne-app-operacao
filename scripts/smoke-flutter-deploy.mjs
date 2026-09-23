@@ -60,7 +60,6 @@ assert(
 const cases = [
   { path: '/', base: '<base href="/">' },
   { path: '/login', base: '<base href="/">', shell: 'app' },
-  { path: '/fazendas/administracao', base: '<base href="/">', shell: 'app' },
   { path: '/fazendas/operacional', base: '<base href="/">', shell: 'app' },
   { path: '/storybook/', base: '<base href="/storybook/">' },
   { path: '/storybook/components/button', base: '<base href="/storybook/">', shell: 'widgetbook' },

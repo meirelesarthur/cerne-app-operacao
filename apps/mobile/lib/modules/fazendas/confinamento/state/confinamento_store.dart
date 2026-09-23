@@ -8,8 +8,8 @@ import '../models.dart';
 /// leituras de cocho, confirmação de ordens). Sem backend: mesmo padrão de
 /// `fazendas_store.dart`/`prototype_records_store.dart` (protótipo frontend).
 ///
-/// O ADM (dashboard único, `admin/dash_confinamento.dart`) só lê este estado —
-/// nunca escreve nele.
+/// O que o escritório cadastra no web chega aqui como dado de leitura; o
+/// store só guarda o que o campo lança.
 class ConfinamentoState {
   const ConfinamentoState({
     required this.currais,
@@ -134,7 +134,7 @@ class ConfinamentoStoreNotifier extends Notifier<ConfinamentoState> {
     state = state.copyWith(leiturasCocho: [...state.leiturasCocho, leitura]);
   }
 
-  /// Confirma a execução de uma ordem criada pelo ADM (transferência de lote
+  /// Confirma a execução de uma ordem criada pelo escritório (transferência de lote
   /// ou troca de dieta) — o Operacional nunca decide essas duas ações
   /// livremente, só confirma (decisão de perfil, ver `models.dart`).
   void confirmarOrdemPendente(String ordemId) {

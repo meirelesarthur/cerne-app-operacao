@@ -85,10 +85,9 @@ class PerfilConfigPage extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.space3),
-                    // fidelidade-esteira: mesma linguagem de "Evolua seu
-                    // crédito" da home administrativa (fração + barra +
-                    // próximo passo) — não o anel da referência, para manter
-                    // um único idioma de "progresso de cadastro" no app.
+                    // fidelidade-esteira: fração + barra + próximo passo —
+                    // não o anel da referência, para manter um único idioma
+                    // de "progresso de cadastro" no app.
                     AppCard(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

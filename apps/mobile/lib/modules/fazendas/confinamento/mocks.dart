@@ -344,7 +344,7 @@ final leituraCochoRecente = LeituraCocho(
   ],
 );
 
-/// Ordens criadas pelo ADM no app web (banco compartilhado) — o Operacional só
+/// Ordens criadas pelo escritório no app web (banco compartilhado) — o Operacional só
 /// confirma a execução (decisão de perfil confirmada com o time).
 const ordensPendentes = <OrdemPendente>[
   OrdemPendente(

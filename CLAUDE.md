@@ -4,9 +4,9 @@ O Flutter em `apps/mobile` é a única aplicação oficial deste repositório. O
 removido na M13 e existe apenas na tag de rollback `react-rollback-final-2026-08-17`.
 
 Este repositório é o **CERNE Operação**: só o perfil Operacional existe aqui. O perfil
-Administração e os módulos Bank, Crédito e Marketplace (exclusivos daquele perfil) foram removidos
-por completo — login, rotas, catálogo funcional, testes e Widgetbook conhecem só o perfil
-Operacional.
+Administração, os módulos Bank, Crédito, Marketplace e Armazém e o hub de superapp ("Início"/"Seus
+apps") foram removidos por completo — login, rotas, catálogo funcional, testes e Widgetbook
+conhecem só o perfil Operacional.
 
 ## Stack oficial
 
@@ -34,7 +34,7 @@ npm run smoke:deploy       # rotas e fallbacks do Worker
 - `apps/mobile/lib/design/`: temas e arquivos Dart gerados.
 - `apps/mobile/lib/router/`: roteamento e política de acesso.
 - `apps/mobile/lib/shell/`: shell, sessão demonstrativa e navegação global.
-- `apps/mobile/lib/modules/`: Início e Fazendas — os únicos módulos do app.
+- `apps/mobile/lib/modules/`: Fazendas — o único módulo do app (Início, OS e rotinas de campo).
 - `design/tokens.ts`: fonte única neutra dos tokens.
 - `tokens/tokens.json`: exportação W3C DTCG.
 - `workers/index.js`: fallbacks separados do app e Widgetbook.

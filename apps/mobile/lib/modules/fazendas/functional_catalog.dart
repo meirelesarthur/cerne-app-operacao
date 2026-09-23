@@ -4365,9 +4365,8 @@ const operationalFeatures = <FeatureDefinition>[
   ),
   // confinamento (onda 1): submódulo de Confinamento (Cadastro + Nutrição),
   // separado por perfil a partir de Especificacao_Funcional_Confinamento_AGRO365.docx
-  // (ago/2026). Cadastro/Dieta/Fases são só leitura no dashboard ADM
-  // (`/fazendas/dashboards/confinamento`) — feitos pelo app web, que divide o
-  // banco. As telas dedicadas do Operacional deste grupo (Confinamento) não
+  // (ago/2026). Cadastro/Dieta/Fases são feitos pelo escritório no app web,
+  // que divide o banco. As telas dedicadas do Operacional deste grupo (Confinamento) não
   // têm `fields` porque o formulário real vive na tela, não no motor
   // genérico (mesmo padrão de `pesagem`/`nutricoes`). Trato diário e Leitura
   // de cocho — a tarefa mais repetida da equipe de campo — abrem o grupo

@@ -8,10 +8,9 @@ import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 import 'models.dart';
 
-/// Peças visuais compartilhadas por `MinhasOsScreen` (Operacional) e
-/// `DashOrdemServico` (Administrativo) — Lei 2 do CLAUDE.md: as duas telas
-/// mostram a mesma OS com a mesma fidelidade, só a lista de ações muda por
-/// perfil.
+/// Peças visuais da OS compartilhadas pela tela Início, pela lista "Minhas OS"
+/// e pelo detalhe em tela cheia — Lei 2 do CLAUDE.md: todas mostram a mesma
+/// OS com a mesma fidelidade.
 
 AppChipTone osStatusTone(OrdemServicoStatus status) => switch (status) {
   OrdemServicoStatus.aguardando => AppChipTone.neutral,

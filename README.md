@@ -4,7 +4,7 @@
 
 # GB CERNE Operação
 
-App de campo do superapp **GB CERNE**: cadastros e rotinas do dia a dia da fazenda para a equipe
+App de campo do **GB CERNE**: cadastros e rotinas do dia a dia da fazenda para a equipe
 operacional. Protótipo frontend navegável (Flutter Web), dados simulados, sem backend.
 
 ## Stack
@@ -13,9 +13,10 @@ Flutter 3.44.6 + Dart 3 · Riverpod · go_router · Widgetbook · Cloudflare Wor
 
 ## Funcionalidades e fluxos
 
-Login único (sem seleção de perfil) leva direto à Home operacional, com o farm switcher no topo e
-navegação primária por **Home · Confinamento · Pecuária · Agricultura**. As demais rotinas ficam a
-um toque na grade de módulos.
+Login único (sem seleção de perfil) leva direto à tela **Início**: as OS em andamento no topo (com
+situação e ação rápida confirmada) e os atalhos das rotinas logo abaixo. O farm switcher fica no
+topo e a navbar é **Início · Pecuária · Agricultura · Menu**; o menu lateral lista todas as rotinas.
+Mapa completo em [`docs/SITEMAP.md`](docs/SITEMAP.md).
 
 - **Confinamento** — trato diário (distribuição de batelada por curral), arraçoamento, leitura de
   cocho (sobras e ocorrências sanitárias/estruturais/ambientais), meus currais, produção de

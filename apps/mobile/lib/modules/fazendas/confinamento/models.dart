@@ -3,12 +3,12 @@
 /// do artefato de decisão por perfil ("Confinamento por Perfil").
 ///
 /// Divisão de responsabilidade confirmada com o time:
-/// - ADM enxerga só leitura (um único dashboard, `admin/dash_confinamento.dart`)
-///   — cadastros (Pátio/Setor/Curral, Dieta, Fases) são feitos pelo app **web**,
-///   que divide o mesmo banco; o app mobile nunca cria/edita essas entidades.
+/// - O escritório faz os cadastros (Pátio/Setor/Curral, Dieta, Fases) pelo app
+///   **web**, que divide o mesmo banco; o app mobile nunca cria/edita essas
+///   entidades.
 /// - Operacional lança o que acontece em campo (situação do curral, batelada,
 ///   trato diário, leitura de cocho, pesagem, sanitário, óbito) e confirma
-///   ordens que o ADM já criou no web (transferência de lote, troca de dieta) —
+///   ordens que o escritório já criou no web (transferência de lote, troca de dieta) —
 ///   nunca decide essas duas ações livremente.
 ///
 /// Cada model comenta a tabela real equivalente, quando mapeada em
@@ -499,7 +499,7 @@ class LeituraCocho {
   final List<AvaliacaoCurral> avaliacoes;
 }
 
-/// Ordem criada pelo ADM (no app web, que divide o banco com o mobile) para
+/// Ordem criada pelo escritório (no app web, que divide o banco com o mobile) para
 /// uma ação que a spec marca como compartilhada: o Operacional não decide,
 /// só confirma a execução em campo (decisão de perfil confirmada com o time).
 enum OrdemTipo { transferenciaLote, trocaDieta }

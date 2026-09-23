@@ -19,15 +19,11 @@ import '../state/fazendas_store.dart';
 /// Tela cheia, fora do `ShellRoute`: conserva apenas o contexto da fazenda,
 /// enquanto troca o cabeçalho de perfil por descoberta de produtos, acessos
 /// recentes e histórico. Ao digitar, a curadoria dá lugar aos resultados do
-/// catálogo funcional dos dois perfis.
+/// catálogo funcional.
 ///
-/// **Procura nos dois perfis**, por decisão de produto: o catálogo funcional é
-/// um só e a pessoa não deveria precisar saber em qual ambiente uma função
-/// mora para encontrá-la. Mas a política de acesso do protótipo continua
-/// valendo — uma função do outro perfil aparece marcada e **não é tocável**,
-/// porque abri-la só levaria a um desvio silencioso de volta para a home
-/// (`redirectForSession`). Achar é diferente de poder abrir, e a tela diz qual
-/// dos dois está acontecendo.
+/// O app tem só o perfil Operacional, então todo resultado é tocável. A marca
+/// de "função de outro perfil" continua no código como rede de segurança
+/// caso o catálogo volte a ter perfis, mas não aparece hoje.
 class BuscaGlobalScreen extends ConsumerStatefulWidget {
   const BuscaGlobalScreen({super.key});
 
@@ -372,11 +368,10 @@ String normalizeForSearch(String value) {
   return buffer.toString();
 }
 
-/// Busca no catálogo inteiro — os dois perfis.
+/// Busca no catálogo inteiro.
 ///
 /// Casa por nome, objetivo e módulo. Resultados que a sessão pode abrir vêm
-/// primeiro: quem está no chão de fazenda não deveria rolar por funções
-/// administrativas para chegar à sua.
+/// primeiro.
 ///
 /// [sessionProfile] é obrigatório de propósito — `null` é uma resposta válida
 /// (sessão sem perfil, em que nada é abrível), e não um descuido de chamada.

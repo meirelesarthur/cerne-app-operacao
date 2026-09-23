@@ -3,11 +3,10 @@ import '../modules/fazendas/operational_groups.dart';
 import '../ui/ui.dart';
 import 'state/prototype_session_store.dart';
 
-/// Registro central de módulos do superapp — espelha `moduleConfig.ts` (spec §3.4/§7.3).
-/// O Shell itera este registro para montar o dock de módulos (`AppBottomTabBar`) e injeta os
-/// `bottomTabs` do módulo ativo nas `AppContextTabs` do topo. A entrada operacional possui uma
-/// navegação primária própria, declarada em [operationalBottomTabs].
-/// Nenhuma navegação de módulo é hardcodada fora daqui.
+/// Registro central de navegação — espelha `moduleConfig.ts` (spec §3.4/§7.3).
+/// O app tem um módulo (Fazendas). A navbar vem de [operationalBottomTabs] e o
+/// menu lateral de [operationalMenuSections]; nenhuma navegação é hardcodada
+/// fora daqui.
 
 class BottomTab {
   const BottomTab({

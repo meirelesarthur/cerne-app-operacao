@@ -4,8 +4,7 @@ import '../mocks/fazendas.dart';
 import '../types.dart';
 
 /// Store do módulo Fazendas (spec §7.3) — espelha `fazendasStore.ts`. Isolada
-/// do Shell. Guarda a fazenda ativa (tenant) e a fila de sync mockada. A
-/// responsabilidade administrativa/operacional pertence à sessão do Shell.
+/// do Shell. Guarda a fazenda ativa (tenant) e a fila de sync mockada.
 ///
 /// NOTA (F4 core): este arquivo substitui uma versão mínima temporária que
 /// havia sido criada em paralelo pelos fluxos operacionais (F5) com uma API

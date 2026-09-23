@@ -13,7 +13,7 @@ import '../confinamento/state/confinamento_store.dart';
 import '../../../design/generated/app_layout.dart';
 
 /// "Meus currais" (spec §4.6/§5) — o que o Operacional lança curral a curral:
-/// alterar situação, pesagem, sanitário, óbito, e confirmar ordens que o ADM
+/// alterar situação, pesagem, sanitário, óbito, e confirmar ordens que o escritório
 /// já criou no web (transferência de lote, troca de dieta — decisão de
 /// perfil: o Operacional nunca decide essas duas ações livremente).
 ///

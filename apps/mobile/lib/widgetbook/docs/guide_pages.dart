@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.5.0';
+const kWidgetbookVersion = '2.6.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -34,7 +34,7 @@ class WidgetbookRelease {
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
   WidgetbookRelease(
-    version: '2.5.0',
+    version: '2.6.0',
     date: '2026-09-23',
     summary: 'Limpeza dos restos do perfil Administração e do superapp.',
     changes: [
@@ -367,8 +367,12 @@ class WidgetbookChangelogPage extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: AppSpacing.space20,
+                      // Largura mínima alinha os textos; "Removido" é mais
+                      // largo que a coluna e empurra só a própria linha.
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minWidth: AppSpacing.space20,
+                        ),
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: AppChip(

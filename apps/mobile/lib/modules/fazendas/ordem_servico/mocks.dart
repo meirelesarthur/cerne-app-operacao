@@ -3,10 +3,10 @@ import 'models.dart';
 /// Cinco OS de amostra cobrindo os cinco estados do ciclo de vida e variando
 /// tipo de serviço, fazenda, prioridade e recursos internamente cadastrados
 /// — mesmo padrão de fidelidade dos mocks de Confinamento
-/// (`confinamento/mocks.dart`), para o Operacional e o Administrativo verem
+/// (`confinamento/mocks.dart`), para o Operacional ver
 /// dados equivalentes ao que a OS carregaria vindo do app web.
 final List<OrdemServico> ordensServico = [
-  // 1) Aguardando — ainda não iniciada, elegível a avaliação/cancelamento do ADM.
+  // 1) Aguardando — ainda não iniciada, elegível a avaliação/cancelamento do escritório.
   OrdemServico(
     id: 'os-2201',
     codigo: 'OS #2201',
@@ -47,7 +47,7 @@ final List<OrdemServico> ordensServico = [
     ],
   ),
 
-  // 2) Em execução — já avaliada pelo ADM em campo (checkpoint), ainda cancelável.
+  // 2) Em execução — já avaliada pelo escritório (checkpoint), ainda cancelável.
   OrdemServico(
     id: 'os-2198',
     codigo: 'OS #2198',
@@ -147,7 +147,7 @@ final List<OrdemServico> ordensServico = [
     ],
   ),
 
-  // 4) Entregue — encerrada com sucesso pelo Operacional; ADM só visualiza.
+  // 4) Entregue — encerrada com sucesso pelo Operacional; escritório só visualiza.
   OrdemServico(
     id: 'os-2170',
     codigo: 'OS #2170',

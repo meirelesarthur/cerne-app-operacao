@@ -50,7 +50,6 @@ O build falha se qualquer uma destas rotas deixar de entregar o shell correto:
 
 - `/`;
 - `/login`;
-- `/fazendas/administracao`;
 - `/fazendas/operacional`;
 - `/storybook/`;
 - `/storybook/components/button`.
@@ -60,8 +59,8 @@ O build falha se qualquer uma destas rotas deixar de entregar o shell correto:
 Antes de promover a versão Flutter para produção:
 
 1. abrir a URL de preview criada por `wrangler versions upload`;
-2. conferir as seis rotas do smoke test no navegador;
-3. validar login Administração e Operacional;
+2. conferir as cinco rotas do smoke test no navegador;
+3. validar o login e a tela Início do Operacional;
 4. conferir temas Light e GB Mode nas jornadas críticas;
 5. somente então promover a versão no dashboard ou executar `wrangler deploy` na branch de produção.
 

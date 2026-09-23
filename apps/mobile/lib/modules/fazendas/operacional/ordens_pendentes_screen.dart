@@ -11,7 +11,7 @@ import '../confinamento/models.dart';
 import '../confinamento/state/confinamento_store.dart';
 
 /// Ordens pendentes (spec §4.6, ações "Alterar Dieta"/"Transferir Lote") —
-/// o ADM cria a ordem no app web (banco compartilhado); o Operacional só
+/// o escritório cria a ordem no app web (banco compartilhado); o Operacional só
 /// confirma a execução em campo, nunca decide essas duas ações livremente
 /// (decisão de perfil confirmada com o time).
 class OrdensPendentesScreen extends ConsumerWidget {

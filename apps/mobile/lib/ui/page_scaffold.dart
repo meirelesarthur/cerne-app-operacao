@@ -82,7 +82,7 @@ class AppPageHeaderBand extends StatelessWidget {
 /// branco é a folha: encosta nas duas laterais, desce até a borda inferior e
 /// o raio de cima aparece contra o cinza do canvas.
 ///
-/// Vale para *todo* cadastro — administrativo e operacional — e também para as
+/// Vale para *todo* cadastro e também para as
 /// visualizações de registro, que deixaram de ser folha inferior e passaram a
 /// abrir aqui (ver [showAppDetailPage]): a tela cheia tem espaço para o dado
 /// inteiro, sem os 15% de viewport que o modelo de deck reservava ao barrier.
@@ -92,10 +92,8 @@ class AppPageHeaderBand extends StatelessWidget {
 /// alguns fluxos colocavam o progresso acima do card branco, e a régua lia como
 /// parte do cromo de navegação em vez de parte do formulário.
 ///
-/// Substitui a estrutura que `FlowShell` (Fazendas), `BankFlowShell` (Bank) e
-/// `MappedFeatureScreen` mantinham triplicada. Enquanto eram três cópias, uma
-/// correção de espaçamento pegava um módulo e deixava os outros dois para trás
-/// — exatamente o que a Lei 2 existe para impedir.
+/// Substitui a estrutura que `FlowShell` e `MappedFeatureScreen` mantinham
+/// duplicada — exatamente o que a Lei 2 existe para impedir.
 class AppPageScaffold extends StatelessWidget {
   const AppPageScaffold({
     super.key,

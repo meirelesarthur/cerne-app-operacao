@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../ui/ui.dart';
 
 /// Cabeçalho das páginas secundárias do shell e dos fluxos de módulo (Perfil,
-/// Notificações, Pedidos, fluxos do Bank, etc.).
+/// Notificações, fluxos de campo, etc.).
 ///
 /// Hoje é só o ponto de entrada do shell para [AppPageHeaderBand], a faixa de
 /// 64 px do catálogo: a anatomia (altura travada em `AppLayout.headerH`,
@@ -13,7 +13,7 @@ import '../../ui/ui.dart';
 /// composição e o 64 px era garantia de um arquivo isolado do catálogo.
 ///
 /// Continua existindo porque telas que não usam o [AppPageScaffold] inteiro
-/// (listas do Marketplace, dashboards) só precisam da faixa, e o nome já está
+/// (listas, consultas) só precisam da faixa, e o nome já está
 /// no vocabulário do shell.
 ///
 /// Não confundir com `AppScreenHeader`: aquele é cabeçalho de página (título à

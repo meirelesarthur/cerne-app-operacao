@@ -1366,7 +1366,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
       },
     ),
   ],
-  // banco-real (Onda 1): "Vendas" subiu para decisão ADM — cliente, valor e
+  // banco-real (Onda 1): "Vendas" subiu para decisão do escritório — cliente, valor e
   // condição de pagamento são decisão comercial (ver
   // docs/ESTEIRA-FRONTEIRA-OPERACIONAL.md, Onda 1). A tela não declara
   // `fields` (mesmo padrão de `minhas-os`), então a amostra usa apenas
