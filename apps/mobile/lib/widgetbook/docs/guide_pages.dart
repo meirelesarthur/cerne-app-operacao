@@ -36,6 +36,25 @@ const widgetbookChangelog = <WidgetbookRelease>[
   WidgetbookRelease(
     version: '2.4.0',
     date: '2026-09-23',
+    summary: 'Situação e ação rápida no StatusCard; confirmação de ação.',
+    changes: [
+      (
+        'Mudou',
+        'StatusCard ganha situation (linha com ícone e tom: neutro, info, '
+            'alerta, perigo, sucesso) e action (um botão por card, alvo de '
+            'toque próprio).',
+      ),
+      (
+        'Novo',
+        'showAppConfirm: confirmação explícita com botões grandes e verbo da '
+            'ação, para o que gera histórico (iniciar, retomar, entregar).',
+      ),
+      ('Novo', 'Ícones play e pause no catálogo.'),
+    ],
+  ),
+  WidgetbookRelease(
+    version: '2.4.0',
+    date: '2026-09-23',
     summary: 'Rodapé fixo sem faixa cinza: botões flutuam sobre a folha.',
     changes: [
       (
