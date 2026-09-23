@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.0.0';
+const kWidgetbookVersion = '2.1.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,29 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.1.0',
+    date: '2026-09-23',
+    summary: 'Card de status para listas de ordens e filtros roláveis.',
+    changes: [
+      (
+        'Novo',
+        'StatusCard (AppStatusCard): chip de status no topo, identificador '
+            'em destaque, descrição e legenda, pares rótulo/valor à direita. '
+            'Usado na tela inicial de Ordens de Serviço.',
+      ),
+      (
+        'Mudou',
+        'SegmentedTabs ganha scrollable: segmentos do tamanho do rótulo num '
+            'trilho que rola na horizontal, para filtros de listagem.',
+      ),
+      (
+        'Mudou',
+        'MenuItem onDark (menu lateral) vira linha plana: sem cápsula, sem '
+            'bolha de ícone e sem chevron, alvo de 48 px.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.0.0',
     date: '2026-09-23',

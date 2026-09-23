@@ -70,6 +70,7 @@ export 'spinner.dart';
 export 'square_group_grid.dart';
 export 'step_progress.dart';
 export 'stacked_bar.dart';
+export 'status_card.dart';
 export 'stepper.dart';
 export 'success_panel.dart';
 export 'tag.dart';
