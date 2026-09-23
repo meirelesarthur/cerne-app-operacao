@@ -90,12 +90,19 @@ class _FarmPickerBodyState extends State<_FarmPickerBody> {
           for (final farm in filtered)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.space2),
+              // Linha cinza (`subtle`) sobre a folha branca: o card branco com
+              // sombra quase sumia na folha e a área de toque não se lia.
               child: AppMenuItem(
+                surface: AppMenuItemSurface.subtle,
+                showShadow: false,
                 icon: AppIcons.mapPin,
                 label: farm.name,
                 description: '${farm.city} · ${farm.uf}',
                 trailing: farm.id == widget.activeFarmId
-                    ? const AppChip(child: Text('Ativa'))
+                    ? const AppChip(
+                        tone: AppChipTone.brand,
+                        child: Text('Ativa'),
+                      )
                     : null,
                 onTap: () => widget.onSelect(farm.id),
               ),
