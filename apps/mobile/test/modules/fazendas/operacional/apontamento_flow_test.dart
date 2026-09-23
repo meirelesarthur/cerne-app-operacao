@@ -38,11 +38,8 @@ Future<void> _selectOption(
 /// `AppSearchSelect` (campos Produto — fidelidade-esteira: dropdown com
 /// busca) abre um dock em bottom sheet: toca o campo para abrir e só então
 /// toca a opção já visível na lista.
-Future<void> _selectSearchOption(
-  WidgetTester tester,
-  String option,
-) async {
-  final field = find.byType(AppSearchSelect).first;
+Future<void> _selectSearchOption(WidgetTester tester, String option) async {
+  final field = find.byType(AppSearchSelect).last;
   await tester.ensureVisible(field);
   await tester.tap(field);
   await tester.pumpAndSettle();
@@ -70,10 +67,8 @@ Future<void> _enterText(WidgetTester tester, String label, String value) async {
 Finder _cardForGroup(String group) =>
     find.ancestor(of: find.text(group), matching: find.byType(Column)).first;
 
-Finder _addButtonForGroup(String group) => find.descendant(
-  of: _cardForGroup(group),
-  matching: find.text('Adicionar'),
-);
+Finder _addButtonForGroup(String group) =>
+    find.descendant(of: _cardForGroup(group), matching: find.text('Adicionar'));
 
 /// Contador do card — "editar" só liga quando o grupo tem ao menos 1 item,
 /// então a listagem serve tanto para conferir a contagem quanto para abrir a
@@ -94,17 +89,31 @@ Future<void> _avancar(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+const _loteSoja = '0001 — Soja Verão 25/26';
+
+/// Texto dentro do campo (controle desabilitado ou não) de rótulo [label].
+String _valorDoCampo(WidgetTester tester, String label) {
+  final editable = find.descendant(
+    of: _fieldByLabel(label),
+    matching: find.byType(EditableText),
+  );
+  return tester.widget<EditableText>(editable.first).controller.text;
+}
+
 Future<void> _preencherIdentificacao(WidgetTester tester) async {
   await _selectOption(tester, 'Responsável', 'João Oliveira');
-  await _selectOption(tester, 'Área', 'Talhão 01');
+  // banco-real (onda 5): o lote (ciclo de produção) substitui a "Área" solta
+  // — ele traz cultura, safra, centro de custo e os talhões.
+  await _selectSearchOption(tester, _loteSoja);
+  await _selectOption(tester, 'Talhão', 'Talhão 01');
   await _selectOption(tester, 'Operação', 'Colheita');
   await _selectOption(tester, 'Atividade', 'Colheita Mecanizada');
   await _enterText(tester, 'Data do apontamento', '10/03/2026');
 }
 
+/// Área total, área utilizada, cultura e safra vêm do lote/talhão — sobra só
+/// o armazém de produção para escolher.
 Future<void> _preencherOperacao(WidgetTester tester) async {
-  await _enterText(tester, 'Área total', '120');
-  await _enterText(tester, 'Área utilizada', '120');
   await _selectOption(tester, 'Armazém de produção', 'Armazém A');
 }
 
@@ -118,9 +127,9 @@ Future<void> _irParaLancamentos(WidgetTester tester) async {
 Future<void> _adicionarInsumo(WidgetTester tester) async {
   await tester.tap(_addButtonForGroup('Insumos'));
   await tester.pumpAndSettle();
+  // Produto com um único lote de estoque: o item de estoque já vem escolhido
+  // e traz armazém e unidade — só a dose por hectare é da pessoa.
   await _selectSearchOption(tester, 'Ração Engorda 18%');
-  await _selectOption(tester, 'Armazém de origem', 'Armazém A');
-  await _selectOption(tester, 'Unidade', 'kg');
   await tester.ensureVisible(find.text('Adicionar').last);
   await tester.tap(find.text('Adicionar').last);
   await tester.pumpAndSettle();
@@ -156,6 +165,7 @@ void main() {
       await _avancar(tester);
 
       expect(find.text('Selecione o responsável.'), findsOneWidget);
+      expect(find.text('Selecione o lote.'), findsOneWidget);
       expect(find.text('Selecione a operação.'), findsOneWidget);
       expect(find.text('Área total'), findsNothing);
       expect(tester.takeException(), isNull);
@@ -201,10 +211,7 @@ void main() {
         expect(find.byType(AppSquareGroupGrid), findsOneWidget);
         expect(find.text('Nenhum item'), findsNWidgets(5));
         // Sem itens lançados, "editar" ainda não aparece habilitado.
-        expect(
-          find.byTooltip('Ver e editar itens de Insumos'),
-          findsOneWidget,
-        );
+        expect(find.byTooltip('Ver e editar itens de Insumos'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );
@@ -241,15 +248,16 @@ void main() {
 
         expect(find.text('Insumo'), findsOneWidget);
         expect(find.text('Produto'), findsOneWidget);
-        expect(find.text('Unidade'), findsOneWidget);
-        // fidelidade-contrato (re-auditoria 3ª avaliação): `stock_items.*`
-        // exige `warehouse_uuid` por item (`required_with:stock_items`) — o
-        // armazém volta a ser campo por item.
-        expect(find.text('Armazém de origem'), findsOneWidget);
+        expect(find.text('Item de estoque'), findsOneWidget);
+        // fidelidade-contrato: `stock_items.*` exige `warehouse_uuid` por item
+        // — na onda 5 ele vem do item de estoque, então só aparece depois que
+        // o estoque é escolhido.
+        expect(find.text('Armazém de origem'), findsNothing);
 
         await _selectSearchOption(tester, 'Ração Engorda 18%');
-        await _selectOption(tester, 'Armazém de origem', 'Armazém A');
-        await _selectOption(tester, 'Unidade', 'kg');
+        // Armazém e unidade vêm do item de estoque/produto — travados.
+        expect(_valorDoCampo(tester, 'Armazém de origem'), 'Armazém A');
+        expect(_valorDoCampo(tester, 'Unidade'), 'kg');
         await tester.ensureVisible(find.text('Adicionar').last);
         await tester.tap(find.text('Adicionar').last);
         await tester.pumpAndSettle();
@@ -271,40 +279,42 @@ void main() {
       },
     );
 
-    testWidgets(
-      'gerenciar um grupo permite editar e excluir o item lançado',
-      (tester) async {
-        await setTallSurface(tester, height: 3200);
-        await tester.pumpWidget(_wrap(const ApontamentoFlow()));
-        await tester.pumpAndSettle();
+    testWidgets('gerenciar um grupo permite editar e excluir o item lançado', (
+      tester,
+    ) async {
+      await setTallSurface(tester, height: 3200);
+      await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+      await tester.pumpAndSettle();
 
-        await _irParaLancamentos(tester);
-        await _adicionarInsumo(tester);
-        await _abrirGerenciador(tester, 'Insumos');
+      await _irParaLancamentos(tester);
+      await _adicionarInsumo(tester);
+      await _abrirGerenciador(tester, 'Insumos');
 
-        // Editar reabre o formulário pré-preenchido — troca a unidade e
-        // salva sem reabrir a busca de produto.
-        await tester.tap(find.byTooltip('Editar item'));
-        await tester.pumpAndSettle();
+      // Editar reabre o formulário pré-preenchido — troca a dose e salva
+      // sem reabrir a busca de produto.
+      await tester.tap(find.byTooltip('Editar item'));
+      await tester.pumpAndSettle();
 
-        expect(find.text('Editar insumo'), findsOneWidget);
-        await _selectOption(tester, 'Unidade', 'Saco');
-        await tester.ensureVisible(find.text('Salvar'));
-        await tester.tap(find.text('Salvar'));
-        await tester.pumpAndSettle();
+      expect(find.text('Editar insumo'), findsOneWidget);
+      await _enterText(tester, 'Dose por hectare (kg/ha)', '2');
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('Salvar'));
+      await tester.tap(find.text('Salvar'));
+      await tester.pumpAndSettle();
 
-        await _abrirGerenciador(tester, 'Insumos');
-        expect(find.textContaining('Saco'), findsOneWidget);
+      await _abrirGerenciador(tester, 'Insumos');
+      // 2 kg/ha × 41,50 ha (área produtiva do Talhão 01) = 83 kg.
+      expect(find.textContaining('2 kg/ha'), findsOneWidget);
+      expect(find.textContaining('total 83 kg'), findsOneWidget);
 
-        // Excluir tira o item da listagem, sem fechar o sheet.
-        await tester.tap(find.byTooltip('Remover item'));
-        await tester.pumpAndSettle();
+      // Excluir tira o item da listagem, sem fechar o sheet.
+      await tester.tap(find.byTooltip('Remover item'));
+      await tester.pumpAndSettle();
 
-        expect(find.text('Ração Engorda 18%'), findsNothing);
-        expect(find.text('Nenhum item adicionado'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-      },
-    );
+      expect(find.text('Ração Engorda 18%'), findsNothing);
+      expect(find.text('Nenhum item adicionado'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
 
     testWidgets('a coleção de produção registra o que a operação gerou', (
       tester,
@@ -324,7 +334,8 @@ void main() {
       expect(find.text('Armazém de destino'), findsNothing);
 
       await _selectSearchOption(tester, 'Semente de Braquiária');
-      await _selectOption(tester, 'Unidade', 'Saco');
+      // A unidade é do produto (`product_um`), não de quem lança.
+      expect(_valorDoCampo(tester, 'Unidade'), 'kg');
       await tester.ensureVisible(find.text('Adicionar').last);
       await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
@@ -362,6 +373,8 @@ void main() {
       expect(_fieldByLabel('Função exercida'), findsOneWidget);
       await _selectOption(tester, 'Função exercida', 'Tratorista Agrícola');
       await _selectOption(tester, 'Unidade', 'Dia');
+      // Valor sugerido pelo custo-hora da função (R$ 26/h × 8 h por dia).
+      expect(_valorDoCampo(tester, 'Valor unitário (R\$)'), '208,00');
       await _enterText(tester, 'Valor unitário (R\$)', '150');
       await tester.ensureVisible(find.text('Adicionar').last);
       await tester.tap(find.text('Adicionar').last);
@@ -372,6 +385,98 @@ void main() {
       expect(find.text('Função: Tratorista Agrícola'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
+
+    testWidgets('o lote preenche cultura, safra, centro de custo e áreas', (
+      tester,
+    ) async {
+      await setTallSurface(tester, height: 2400);
+      await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+      await tester.pumpAndSettle();
+
+      await _preencherIdentificacao(tester);
+      await _avancar(tester);
+
+      expect(_valorDoCampo(tester, 'Cultura / variedade'), 'Soja — TMG 2383');
+      expect(_valorDoCampo(tester, 'Safra'), '2025/2026');
+      expect(_valorDoCampo(tester, 'Centro de custo'), 'Centro Agrícola');
+      expect(_valorDoCampo(tester, 'Área total'), '42,35 ha');
+      // Área utilizada nasce com a área produtiva do talhão, editável.
+      expect(_valorDoCampo(tester, 'Área utilizada'), '41,50');
+
+      // Não pode passar da área total do talhão.
+      await _enterText(tester, 'Área utilizada', '50');
+      await tester.pumpAndSettle();
+      expect(
+        find.textContaining('não pode passar da área total'),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('lote de talhão único já seleciona o talhão', (tester) async {
+      await setTallSurface(tester, height: 2000);
+      await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+      await tester.pumpAndSettle();
+
+      await _selectSearchOption(tester, '0002 — Milho Safrinha 2026');
+
+      expect(
+        find.text('Único talhão do lote — já selecionado.'),
+        findsOneWidget,
+      );
+      expect(find.text('Talhão 03'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('a operação restringe as atividades possíveis', (tester) async {
+      await setTallSurface(tester, height: 2000);
+      await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+      await tester.pumpAndSettle();
+
+      await _selectOption(tester, 'Operação', 'Colheita');
+      final dropdown = find.descendant(
+        of: _fieldByLabel('Atividade'),
+        matching: find.byType(DropdownButtonFormField<String>),
+      );
+      await tester.tap(dropdown);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Colheita Mecanizada'), findsWidgets);
+      expect(find.text('Aração'), findsNothing);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets(
+      'o equipamento traz medidor e custo e a quantidade vem da leitura',
+      (tester) async {
+        await setTallSurface(tester, height: 3200);
+        await tester.pumpWidget(_wrap(const ApontamentoFlow()));
+        await tester.pumpAndSettle();
+
+        await _irParaLancamentos(tester);
+        await tester.tap(_addButtonForGroup('Máquinas / Implementos'));
+        await tester.pumpAndSettle();
+
+        await _selectSearchOption(tester, 'Colheitadeira CR7');
+
+        expect(_valorDoCampo(tester, 'Medidor'), 'Horímetro');
+        expect(_valorDoCampo(tester, 'Custo por hora'), 'R\$ 620,00');
+        expect(_valorDoCampo(tester, 'Horímetro inicial'), '540');
+        // Leitura final igual à inicial ainda não é trabalho nenhum.
+        expect(find.text('Precisa ser maior que a inicial.'), findsOneWidget);
+
+        final leituraFinal = find.descendant(
+          of: _fieldByLabel('Horímetro final'),
+          matching: find.byType(EditableText),
+        );
+        await tester.enterText(leituraFinal, '548');
+        await tester.pumpAndSettle();
+
+        expect(_valorDoCampo(tester, 'Quantidade'), '8 Hora');
+        expect(find.text('R\$ 4.960,00'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
 
     testWidgets('apontamento sem nenhum lançamento não salva', (tester) async {
       await setTallSurface(tester, height: 3200);

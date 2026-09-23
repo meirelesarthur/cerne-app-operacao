@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Apontamento já lançado — o que `ApontamentoFlow` grava ao salvar. Guarda
-/// os mesmos 12 campos de cabeçalho do formulário (rótulos já resolvidos,
+/// os mesmos campos de cabeçalho do formulário (rótulos já resolvidos,
 /// não os `value` de dropdown) mais a contagem de cada uma das 5 coleções,
 /// para a consulta administrativa (`DashApontamentos`) mostrar exatamente o
 /// que o cadastro perguntou — sem campos genéricos que não existem lá.
@@ -17,6 +17,8 @@ class ApontamentoRegistro {
     required this.areaUtilizada,
     required this.armazemProducao,
     required this.registradoEm,
+    this.lote,
+    this.centroCusto,
     this.cultura,
     this.safra,
     this.armazemInsumo,
@@ -39,6 +41,10 @@ class ApontamentoRegistro {
   final String armazemProducao;
   final DateTime registradoEm;
 
+  /// Lote agrícola (`production_cycles`) — de onde vêm cultura, safra, centro
+  /// de custo e os talhões. `area` é o talhão escolhido dentro dele.
+  final String? lote;
+  final String? centroCusto;
   final String? cultura;
   final String? safra;
   final String? armazemInsumo;
@@ -66,39 +72,43 @@ final _seed = <ApontamentoRegistro>[
   ApontamentoRegistro(
     id: 'apt-seed-1',
     responsavel: 'João Oliveira',
+    lote: '0001 — Soja Verão 25/26',
+    centroCusto: 'Centro Agrícola',
     area: 'Talhão 01',
     operacao: 'Tratos Culturais',
     atividade: 'Aplicação de Herbicida',
     data: '10/09/2026',
-    areaTotal: '42',
-    areaUtilizada: '42',
+    areaTotal: '42,35',
+    areaUtilizada: '41,50',
     armazemProducao: 'Armazém A',
-    cultura: 'Soja',
+    cultura: 'Soja — TMG 2383',
     safra: '2025/2026',
     armazemInsumo: 'Armazém A',
     descricao: 'Aplicação preventiva pós-chuva.',
     registradoEm: DateTime(2026, 9, 10, 16, 20),
     maoDeObra: const ['Tratorista: Carlos Dias — 1 dia-homem · R\$ 180'],
     maquinas: const ['Pulverizador — 3 hora · horímetro 210→213'],
-    insumos: const ['Herbicida XPTO — 40 L · Armazém A'],
+    insumos: const ['Herbicida Glifosato 480 SL — 124,50 L · Armazém A'],
   ),
   ApontamentoRegistro(
     id: 'apt-seed-2',
     responsavel: 'Maria Souza',
-    area: 'Talhão 02',
+    lote: '0002 — Milho Safrinha 2026',
+    centroCusto: 'Centro Agrícola',
+    area: 'Talhão 03',
     operacao: 'Colheita',
     atividade: 'Colheita Mecanizada',
     data: '08/09/2026',
-    areaTotal: '65',
-    areaUtilizada: '65',
+    areaTotal: '38,40',
+    areaUtilizada: '37,90',
     armazemProducao: 'Depósito B',
-    cultura: 'Milho',
+    cultura: 'Milho — DKB 360 PRO3',
     safra: '2025/2026',
     descricao: 'Colheita concluída sem intercorrências.',
     registradoEm: DateTime(2026, 9, 8, 18, 45),
     maoDeObra: const ['Operador de Máquinas: João Oliveira — 8 hora · R\$ 45'],
     maquinas: const ['Colheitadeira CR7 — 8 hora · horímetro 540→548'],
-    producoes: const ['Milho — 3.900 sc'],
+    producoes: const ['Milho em grão — 3.900 Saco'],
   ),
 ];
 
@@ -113,9 +123,10 @@ class ApontamentoRegistroState {
 }
 
 final apontamentoRegistroStoreProvider =
-    NotifierProvider<ApontamentoRegistroStoreNotifier, ApontamentoRegistroState>(
-      ApontamentoRegistroStoreNotifier.new,
-    );
+    NotifierProvider<
+      ApontamentoRegistroStoreNotifier,
+      ApontamentoRegistroState
+    >(ApontamentoRegistroStoreNotifier.new);
 
 class ApontamentoRegistroStoreNotifier
     extends Notifier<ApontamentoRegistroState> {
