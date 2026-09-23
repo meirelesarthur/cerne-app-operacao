@@ -3,6 +3,7 @@ import 'package:widgetbook/widgetbook.dart';
 
 import 'app_icon.dart';
 import 'bottom_sheet.dart';
+import 'empty_state.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
@@ -218,15 +219,26 @@ class _SearchSelectDockContentState extends State<_SearchSelectDockContent> {
         const SizedBox(height: AppSpacing.space3),
         Expanded(
           child: filtered.isEmpty
+              // Duas variações: a busca zerou a lista, ou a lista já chegou
+              // vazia (ex.: só produtos com estoque e nenhum tem saldo).
               ? Center(
-                  child: Text(
-                    'Nada encontrado',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontFamily: AppTypography.fontFamily,
-                      fontSize: AppTypography.sm,
-                      color: semantic.fgSubtle,
-                    ),
+                  child: SingleChildScrollView(
+                    child: widget.options.isEmpty
+                        ? const AppEmptyState(
+                            size: AppEmptyStateSize.compact,
+                            icon: AppIcons.inbox,
+                            title: 'Nenhuma opção disponível',
+                            description:
+                                'Não há itens cadastrados para esta escolha.',
+                          )
+                        : const AppEmptyState(
+                            size: AppEmptyStateSize.compact,
+                            icon: AppIcons.search,
+                            badgeIcon: AppIcons.x,
+                            tone: AppEmptyStateTone.info,
+                            title: 'Nada encontrado',
+                            description: 'Tente outro termo de busca.',
+                          ),
                   ),
                 )
               : ListView.separated(

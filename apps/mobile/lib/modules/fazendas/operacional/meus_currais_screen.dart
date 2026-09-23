@@ -38,26 +38,37 @@ class MeusCurraisScreen extends ConsumerWidget {
         Expanded(
           child: AppContentSheet(
             padded: false,
-            child: ListView.separated(
-              padding: const EdgeInsets.all(AppSpacing.space4),
-              itemCount: currais.length,
-              separatorBuilder: (context, _) =>
-                  const SizedBox(height: AppSpacing.space3),
-              itemBuilder: (context, index) {
-                final curral = currais[index];
-                final ordemPendente = ordens
-                    .where(
-                      (o) =>
-                          o.status == OrdemStatus.pendente &&
-                          o.curralOrigemId == curral.id,
-                    )
-                    .toList();
-                return _CurralCard(
-                  curral: curral,
-                  ordensPendentes: ordemPendente,
-                );
-              },
-            ),
+            child: currais.isEmpty
+                ? const Center(
+                    child: AppEmptyState(
+                      icon: AppIcons.barns,
+                      tone: AppEmptyStateTone.brand,
+                      title: 'Nenhum curral por aqui',
+                      description:
+                          'Os currais da fazenda ativa aparecem aqui assim que '
+                          'forem sincronizados com o escritório.',
+                    ),
+                  )
+                : ListView.separated(
+                    padding: const EdgeInsets.all(AppSpacing.space4),
+                    itemCount: currais.length,
+                    separatorBuilder: (context, _) =>
+                        const SizedBox(height: AppSpacing.space3),
+                    itemBuilder: (context, index) {
+                      final curral = currais[index];
+                      final ordemPendente = ordens
+                          .where(
+                            (o) =>
+                                o.status == OrdemStatus.pendente &&
+                                o.curralOrigemId == curral.id,
+                          )
+                          .toList();
+                      return _CurralCard(
+                        curral: curral,
+                        ordensPendentes: ordemPendente,
+                      );
+                    },
+                  ),
           ),
         ),
       ],

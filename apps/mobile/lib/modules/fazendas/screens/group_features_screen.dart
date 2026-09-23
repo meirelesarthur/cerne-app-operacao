@@ -76,7 +76,7 @@ class GroupFeaturesScreen extends StatelessWidget {
         const SizedBox(height: AppSpacing.space4),
         if (allFeatures.isEmpty)
           const AppEmptyState(
-            icon: AppIcons.inbox,
+            icon: AppIcons.layoutGrid,
             title: 'Nada por aqui',
             description: 'Este módulo ainda não tem funções mapeadas.',
           )

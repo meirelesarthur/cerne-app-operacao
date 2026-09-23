@@ -578,6 +578,19 @@ export const component = {
     /** diâmetro dos botões circulares internos */
     itemSize: '48px',
   },
+  /** Arte do estado vazio (`AppEmptyState`): halo com o ícone Hugeicons grande
+   *  no tom do cenário e um selo sólido no canto (check, x, lupa…) que diz o
+   *  "porquê" do vazio. `compact` é a versão para folhas, seletores e cards. */
+  emptyState: {
+    art: '112px',
+    artIcon: '56px',
+    badge: '36px',
+    badgeIcon: '18px',
+    artCompact: '64px',
+    artIconCompact: '32px',
+    badgeCompact: '24px',
+    badgeIconCompact: '14px',
+  },
 } as const
 
 /* ------------------------------------------------------------------ *

@@ -80,6 +80,9 @@ class _FarmPickerBodyState extends State<_FarmPickerBody> {
         if (filtered.isEmpty)
           const AppEmptyState(
             icon: AppIcons.search,
+            badgeIcon: AppIcons.x,
+            tone: AppEmptyStateTone.info,
+            size: AppEmptyStateSize.compact,
             title: 'Nenhuma fazenda encontrada',
             description: 'Ajuste a busca para encontrar outra fazenda.',
           )

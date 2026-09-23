@@ -161,6 +161,7 @@ const dtcg = {
     },
     hero: { angle: number(component.hero.angle) },
     tabbar: mapDimensions(component.tabbar),
+    emptyState: mapDimensions(component.emptyState),
   },
 } as const
 

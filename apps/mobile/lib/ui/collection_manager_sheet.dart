@@ -5,6 +5,7 @@ import 'app_icon.dart';
 import 'bottom_sheet.dart';
 import 'button.dart';
 import 'collection_list.dart';
+import 'empty_state.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -178,14 +179,17 @@ class _EmptyHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.space4),
       decoration: BoxDecoration(
         color: semantic.bgCanvas,
         borderRadius: BorderRadius.circular(AppRadius.xl2),
       ),
-      child: Text(
-        'Nenhum item incluído. Use "Adicionar" para incluir o primeiro.',
-        style: TextStyle(fontSize: AppTypography.sm, color: semantic.fgMuted),
+      child: const AppEmptyState(
+        size: AppEmptyStateSize.compact,
+        icon: AppIcons.layers,
+        badgeIcon: AppIcons.plus,
+        tone: AppEmptyStateTone.brand,
+        title: 'Nenhum item incluído',
+        description: 'Use "Adicionar" para incluir o primeiro.',
       ),
     );
   }

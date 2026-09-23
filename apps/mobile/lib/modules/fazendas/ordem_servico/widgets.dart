@@ -342,7 +342,17 @@ class _OsDetailBodyState extends State<OsDetailBody> {
           selectedIndex: _aba,
           onChanged: (i) => setState(() => _aba = i),
         ),
-        if (_aba == 1) ...[
+        if (_aba == 1 && os.historico.isEmpty) ...[
+          const SizedBox(height: AppSpacing.space5),
+          const AppEmptyState(
+            size: AppEmptyStateSize.compact,
+            icon: AppIcons.clock,
+            title: 'Sem histórico ainda',
+            description:
+                'Início, pausas, retomadas e a entrega da OS ficam registrados '
+                'aqui.',
+          ),
+        ] else if (_aba == 1) ...[
           const SizedBox(height: AppSpacing.space5),
           AppDetailSection(
             icon: AppIcons.clock,

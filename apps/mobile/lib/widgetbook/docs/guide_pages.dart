@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.9.0';
+const kWidgetbookVersion = '2.10.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,33 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.10.0',
+    date: '2026-09-23',
+    summary: 'Estado vazio ilustrado e as variações por cenário.',
+    changes: [
+      (
+        'Mudou',
+        'EmptyState (AppEmptyState): arte com halo no tom, ícone Hugeicons de '
+            '56 px e selo opcional (badgeIcon); tone (neutral, brand, success, '
+            'info, warning, danger); size compact para folhas, seletores e '
+            'abas; hint + link de ajuda ("Ver histórico"). Título sobe para h2.',
+      ),
+      (
+        'Novo',
+        'Padrões → Estados vazios: uma referência por variação encontrada no '
+            'app (notificações, busca, seletor, filtro, concluído, primeiro '
+            'uso, somente leitura, regra, coleção, histórico da OS, acesso '
+            'restrito) e duas propostas (sem conexão, gráfico sem dados).',
+      ),
+      (
+        'Mudou',
+        'SearchSelect e o gerenciador de coleção trocam o texto solto pelo '
+            'AppEmptyState compacto; SearchSelect distingue "nada encontrado" '
+            'de "sem opções".',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.9.0',
     date: '2026-09-23',

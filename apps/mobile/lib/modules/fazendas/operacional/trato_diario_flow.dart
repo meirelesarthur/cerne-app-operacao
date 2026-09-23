@@ -144,6 +144,10 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
             const SizedBox(height: AppSpacing.space4),
             if (elegiveis.isEmpty)
               const AppEmptyState(
+                icon: AppIcons.barns,
+                badgeIcon: AppIcons.x,
+                tone: AppEmptyStateTone.warning,
+                size: AppEmptyStateSize.compact,
                 title: 'Nenhum curral elegível',
                 description:
                     'Nenhum curral ocupado está, hoje, na fase que corresponde a esta dieta.',

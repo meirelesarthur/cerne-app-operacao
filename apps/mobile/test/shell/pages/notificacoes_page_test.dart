@@ -63,6 +63,19 @@ void main() {
       expect(find.text('Marcar lidas'), findsNothing);
     });
 
+    testWidgets('em dia oferece o atalho para o Histórico', (tester) async {
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Marcar lidas'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Ver histórico de notificações'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(AppNotificationTile), findsWidgets);
+      expect(find.text('Você está em dia'), findsNothing);
+    });
+
     testWidgets('tocar marca como lida e abre a tela de origem', (
       tester,
     ) async {

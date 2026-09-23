@@ -33,7 +33,9 @@ class OrdensPendentesScreen extends ConsumerWidget {
             child: ordens.isEmpty
                 ? const Center(
                     child: AppEmptyState(
-                      icon: AppIcons.inbox,
+                      icon: AppIcons.clipboardCheck,
+                      badgeIcon: AppIcons.check,
+                      tone: AppEmptyStateTone.success,
                       title: 'Nenhuma ordem pendente',
                       description:
                           'Transferências de lote e trocas de dieta criadas pelo escritório aparecem aqui.',

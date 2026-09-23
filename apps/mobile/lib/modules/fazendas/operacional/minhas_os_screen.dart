@@ -83,6 +83,8 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
         ? const Center(
             child: AppEmptyState(
               icon: AppIcons.fileText,
+              badgeIcon: AppIcons.filter,
+              tone: AppEmptyStateTone.brand,
               title: 'Nenhuma OS neste filtro',
               description:
                   'Ordens de serviço atribuídas ao funcionário e à fazenda ativa aparecem aqui.',

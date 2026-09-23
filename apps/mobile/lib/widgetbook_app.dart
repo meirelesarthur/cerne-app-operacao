@@ -12,6 +12,7 @@ import 'ui/ui.dart';
 import 'widgetbook/docs/guide_pages.dart';
 import 'widgetbook/patterns/collection_pattern.dart';
 import 'widgetbook/patterns/crud_pattern.dart';
+import 'widgetbook/patterns/empty_state_pattern.dart';
 import 'widgetbook/patterns/listing_pattern.dart';
 import 'widgetbook/patterns/login_pattern.dart';
 import 'widgetbook/patterns/menu_pattern.dart';
@@ -124,6 +125,7 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
       buildMenuPatternWidgetbookComponent(),
       buildCrudPatternWidgetbookComponent(),
       buildCollectionPatternWidgetbookComponent(),
+      buildEmptyStatePatternWidgetbookComponent(),
     ],
   ),
   WidgetbookFolder(

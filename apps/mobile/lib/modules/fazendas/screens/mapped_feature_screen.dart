@@ -31,7 +31,9 @@ class MappedFeatureScreen extends StatelessWidget {
 
     if (feature == null || feature.profile != profile) {
       return AppEmptyState(
-        icon: AppIcons.shieldAlert,
+        icon: AppIcons.shield,
+        badgeIcon: AppIcons.lock,
+        tone: AppEmptyStateTone.danger,
         title: 'Funcionalidade fora deste perfil',
         description:
             'Volte ao ambiente correspondente para acessar esta responsabilidade.',
@@ -732,7 +734,19 @@ class _RecordsListState extends State<_RecordsList> {
           // `mapped_feature_screen_test.dart`, "Áreas mostra estado
           // vazio honesto...".
           AppEmptyState(
-            icon: query.isNotEmpty ? AppIcons.search : AppIcons.clipboardCheck,
+            icon: query.isNotEmpty ? AppIcons.search : AppIcons.clipboardList,
+            badgeIcon: query.isNotEmpty
+                ? AppIcons.x
+                : widget.canCreate
+                ? AppIcons.plus
+                : widget.feature.readOnly
+                ? AppIcons.cloudSync
+                : null,
+            tone: query.isNotEmpty
+                ? AppEmptyStateTone.info
+                : widget.canCreate
+                ? AppEmptyStateTone.brand
+                : AppEmptyStateTone.neutral,
             title: widget.feature.emptyLabel ?? 'Nenhum registro encontrado',
             description: query.isNotEmpty
                 ? 'Ajuste a busca para encontrar outro cadastro.'

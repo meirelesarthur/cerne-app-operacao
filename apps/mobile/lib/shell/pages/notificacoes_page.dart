@@ -33,6 +33,49 @@ class _NotificacoesPageState extends ConsumerState<NotificacoesPage> {
     if (route != null) context.push(route);
   }
 
+  /// Três variações de vazio, conforme o que existe fora da aba atual:
+  /// nunca chegou nada; tudo lido (com atalho para o Histórico); Histórico
+  /// vazio (com atalho de volta para as novas, quando houver).
+  Widget _vazio(List<AppNotification> todas) {
+    if (todas.isEmpty) {
+      return const AppEmptyState(
+        icon: AppIcons.inbox,
+        badgeIcon: AppIcons.check,
+        tone: AppEmptyStateTone.brand,
+        title: 'Nenhuma notificação ainda',
+        description:
+            'Suas notificações aparecem aqui assim que você recebê-las.',
+      );
+    }
+    if (_aba == 0) {
+      return AppEmptyState(
+        icon: AppIcons.bell,
+        badgeIcon: AppIcons.check,
+        tone: AppEmptyStateTone.success,
+        title: 'Você está em dia',
+        description:
+            'Nenhuma notificação nova. As próximas aparecem aqui assim que '
+            'chegarem.',
+        hint: 'Procurando uma notificação antiga?',
+        hintActionLabel: 'Ver histórico de notificações',
+        onHintAction: () => setState(() => _aba = 1),
+      );
+    }
+    final naoLidas = todas.where((n) => !n.read).length;
+    return AppEmptyState(
+      icon: AppIcons.clock,
+      title: 'Histórico vazio',
+      description: 'As notificações que você abrir ficam guardadas aqui.',
+      hint: naoLidas == 0
+          ? null
+          : naoLidas == 1
+          ? 'Você tem 1 notificação nova.'
+          : 'Você tem $naoLidas notificações novas.',
+      hintActionLabel: naoLidas == 0 ? null : 'Ver novidades',
+      onHintAction: naoLidas == 0 ? null : () => setState(() => _aba = 0),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
@@ -121,19 +164,9 @@ class _NotificacoesPageState extends ConsumerState<NotificacoesPage> {
                     Expanded(
                       child: itens.isEmpty
                           ? Center(
-                              child: novidades
-                                  ? const AppEmptyState(
-                                      icon: AppIcons.bellOff,
-                                      title: 'Você está em dia',
-                                      description:
-                                          'Nenhuma notificação nova por aqui.',
-                                    )
-                                  : const AppEmptyState(
-                                      icon: AppIcons.bell,
-                                      title: 'Histórico vazio',
-                                      description:
-                                          'As notificações lidas aparecem aqui.',
-                                    ),
+                              child: SingleChildScrollView(
+                                child: _vazio(notifications),
+                              ),
                             )
                           : ListView(
                               padding: const EdgeInsets.fromLTRB(
