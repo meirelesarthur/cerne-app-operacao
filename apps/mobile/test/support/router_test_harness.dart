@@ -7,14 +7,17 @@ import 'package:cerne_app/router/app_router.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 
 class RouterTestHarness {
-  RouterTestHarness({UserAccessProfile? profile}) {
+  RouterTestHarness({
+    UserAccessProfile? profile,
+    List<Override> overrides = const [],
+  }) : container = ProviderContainer(overrides: overrides) {
     if (profile != null) {
       container.read(prototypeSessionProvider.notifier).loginAs(profile);
     }
     router = container.read(appRouterProvider);
   }
 
-  final ProviderContainer container = ProviderContainer();
+  final ProviderContainer container;
   late final GoRouter router;
 
   Widget buildApp() => UncontrolledProviderScope(

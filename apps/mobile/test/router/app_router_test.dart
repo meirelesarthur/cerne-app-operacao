@@ -104,9 +104,82 @@ void main() {
       await tester.tap(find.text('MARCAR COMO ENTREGUE'));
       await tester.pumpAndSettle();
 
+      // Encerrar exige confirmação explícita.
+      expect(find.text('Marcar a OS #2198 como entregue?'), findsOneWidget);
+      await tester.tap(find.text('Marcar como entregue'));
+      await tester.pumpAndSettle();
+
       // Continua na tela, agora sem ações (OS encerrada).
       expect(find.text('Detalhe da OS'), findsOneWidget);
       expect(find.text('MARCAR COMO ENTREGUE'), findsNothing);
+    });
+
+    testWidgets(
+      'botão Iniciar do card pede confirmação, e cancelar não registra nada',
+      (tester) async {
+        harness.dispose();
+        harness = RouterTestHarness(
+          profile: UserAccessProfile.operational,
+          overrides: [
+            osRelogioProvider.overrideWithValue(
+              () => DateTime(2026, 9, 15, 10),
+            ),
+          ],
+        );
+        harness.router.go('/fazendas/operacional');
+        await setTallSurface(tester);
+        await tester.pumpWidget(harness.buildApp());
+        await tester.pumpAndSettle();
+
+        OrdemServicoStatus status() => harness.container
+            .read(ordemServicoStoreProvider.notifier)
+            .byId('os-2201')
+            .status;
+        List<String> ordem() => [
+          for (final card in tester.widgetList<OsSummaryCard>(
+            find.byType(OsSummaryCard),
+          ))
+            card.os.id,
+        ];
+
+        // Situação e ação rápida de cada card.
+        expect(find.text('Liberada há 2 dias'), findsOneWidget);
+        expect(find.text('Em execução há 1 dia'), findsOneWidget);
+        final antes = ordem();
+        expect(antes.last, 'os-2201');
+
+        await tester.tap(find.text('Iniciar'));
+        await tester.pumpAndSettle();
+        expect(find.text('Iniciar a OS #2201?'), findsOneWidget);
+
+        await tester.tap(find.text('Cancelar'));
+        await tester.pumpAndSettle();
+        expect(status(), OrdemServicoStatus.aguardando);
+
+        await tester.tap(find.text('Iniciar'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Iniciar execução'));
+        await tester.pumpAndSettle();
+        expect(status(), OrdemServicoStatus.emExecucao);
+
+        // A OS iniciada não pula para o topo sob o dedo.
+        expect(ordem(), antes);
+        expect(find.text('Iniciar'), findsNothing);
+        expect(find.text('Pausar'), findsNWidgets(2));
+      },
+    );
+
+    testWidgets('botão Pausar do card abre a dock do motivo', (tester) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Pausar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Pausar a OS #2198?'), findsOneWidget);
+      expect(find.text('Motivo da pausa'), findsOneWidget);
+      expect(find.text('Confirmar pausa'), findsOneWidget);
     });
 
     testWidgets(

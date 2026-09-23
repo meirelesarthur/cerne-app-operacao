@@ -57,6 +57,7 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
   Widget build(BuildContext context) {
     final ordens = ref.watch(ordemServicoStoreProvider.select((s) => s.ordens));
     final filtradas = _filtrar(ordens);
+    final agora = ref.watch(osRelogioProvider)();
 
     // Contagem à esquerda, filtro discreto à direita: o status escolhido
     // abre na dock inferior, sem um trilho de abas ocupando uma faixa inteira.
@@ -96,7 +97,9 @@ class _MinhasOsScreenState extends ConsumerState<MinhasOsScreen> {
               final os = filtradas[index];
               return OsSummaryCard(
                 os: os,
+                agora: agora,
                 onTap: () => abrirDetalheOs(context, ref, os),
+                onAcaoRapida: () => executarAcaoRapidaOs(context, ref, os),
               );
             },
           );

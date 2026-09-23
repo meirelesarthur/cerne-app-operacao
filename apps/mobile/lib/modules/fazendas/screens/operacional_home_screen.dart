@@ -24,7 +24,13 @@ import '../ordem_servico/widgets.dart';
 ///    ícone em quadrado com o nome embaixo, como ícones de aplicativo no
 ///    celular. A lista vem de [operationalMenuSections] (fonte única com o
 ///    menu), sem o próprio "Início".
-class OperacionalHomeScreen extends ConsumerWidget {
+///
+/// A ordem das OS fica **estável sob o dedo**: iniciar uma OS pelo botão do
+/// card faria ela subir para o topo na hora, e um card que muda de lugar logo
+/// depois do toque parece erro. A ordem é calculada ao abrir a tela; depois
+/// só saem as que encerraram e entram as novas no fim. Na próxima visita a
+/// tela volta a ordenar do zero.
+class OperacionalHomeScreen extends ConsumerStatefulWidget {
   const OperacionalHomeScreen({super.key});
 
   static const int maxOrdens = 3;
@@ -49,10 +55,36 @@ class OperacionalHomeScreen extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<OperacionalHomeScreen> createState() =>
+      _OperacionalHomeScreenState();
+}
+
+class _OperacionalHomeScreenState extends ConsumerState<OperacionalHomeScreen> {
+  /// Ordem fixada dos ids em destaque (ver doc da classe).
+  List<String>? _ordem;
+
+  List<OrdemServico> _ordemEstavel(List<OrdemServico> ordens) {
+    final destaque = OperacionalHomeScreen.emDestaque(ordens);
+    final porId = {for (final os in destaque) os.id: os};
+    final anterior = _ordem;
+    final ids = anterior == null
+        ? destaque.map((os) => os.id).toList()
+        : [
+            ...anterior.where(porId.containsKey),
+            ...destaque
+                .map((os) => os.id)
+                .where((id) => !anterior.contains(id)),
+          ];
+    _ordem = ids;
+    return [for (final id in ids) porId[id]!];
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final ordens = ref.watch(ordemServicoStoreProvider.select((s) => s.ordens));
-    final emAndamento = emDestaque(ordens);
+    final agora = ref.watch(osRelogioProvider)();
+    final emAndamento = _ordemEstavel(ordens);
     final atalhos = [
       for (final section in operationalMenuSections()) ...section.items,
     ].where((item) => item.route != operationalHomeRoute).toList();
@@ -71,16 +103,21 @@ class OperacionalHomeScreen extends ConsumerWidget {
                   AppIcons.arrowRight,
                   size: AppSize.iconXs,
                 ),
-                onPressed: () => context.push(todasAsOrdensRoute),
+                onPressed: () =>
+                    context.push(OperacionalHomeScreen.todasAsOrdensRoute),
                 child: const Text('Ver todas'),
               ),
             ],
           ),
           const SizedBox(height: AppSpacing.space3),
-          for (final os in emAndamento.take(maxOrdens)) ...[
+          for (final os in emAndamento.take(
+            OperacionalHomeScreen.maxOrdens,
+          )) ...[
             OsSummaryCard(
               os: os,
+              agora: agora,
               onTap: () => abrirDetalheOs(context, ref, os),
+              onAcaoRapida: () => executarAcaoRapidaOs(context, ref, os),
             ),
             const SizedBox(height: AppSpacing.space3),
           ],

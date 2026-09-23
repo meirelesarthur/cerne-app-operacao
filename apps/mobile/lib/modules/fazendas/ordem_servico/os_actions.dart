@@ -38,9 +38,7 @@ class OsDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(ordemServicoStoreProvider.select((s) => s.ordens));
-    final notifier = ref.read(ordemServicoStoreProvider.notifier);
-    final os = notifier.byId(osId);
-    final autor = os.responsavelExecucao;
+    final os = ref.read(ordemServicoStoreProvider.notifier).byId(osId);
 
     Widget alternativa(String label, VoidCallback onPressed) => AppButton(
       variant: AppButtonVariant.secondary,
@@ -52,27 +50,27 @@ class OsDetailPage extends ConsumerWidget {
     final actionBar = switch (os.status) {
       OrdemServicoStatus.aguardando => AppActionBar(
         primaryLabel: 'Iniciar execução',
-        onPrimary: () => notifier.iniciar(os.id, autor: autor),
+        onPrimary: () => confirmarIniciarOs(context, ref, os),
       ),
       OrdemServicoStatus.emExecucao => AppActionBar(
         summary: alternativa(
           'Pausar execução',
-          () => _abrirPausar(context, ref, os.id),
+          () => abrirPausarOs(context, ref, os.id),
         ),
         primaryLabel: 'Marcar como entregue',
-        onPrimary: () => notifier.marcarEntregue(os.id, autor: autor),
+        onPrimary: () => confirmarEntregarOs(context, ref, os),
         secondaryLabel: 'Marcar como refeita',
-        onSecondary: () => _abrirRefazer(context, ref, os.id),
+        onSecondary: () => abrirRefazerOs(context, ref, os.id),
       ),
       OrdemServicoStatus.pausada => AppActionBar(
         summary: alternativa(
           'Marcar como entregue',
-          () => notifier.marcarEntregue(os.id, autor: autor),
+          () => confirmarEntregarOs(context, ref, os),
         ),
         primaryLabel: 'Retomar execução',
-        onPrimary: () => notifier.retomar(os.id, autor: autor),
+        onPrimary: () => confirmarRetomarOs(context, ref, os),
         secondaryLabel: 'Marcar como refeita',
-        onSecondary: () => _abrirRefazer(context, ref, os.id),
+        onSecondary: () => abrirRefazerOs(context, ref, os.id),
       ),
       _ => null,
     };
@@ -89,13 +87,13 @@ class OsDetailPage extends ConsumerWidget {
   }
 }
 
-void _abrirPausar(BuildContext context, WidgetRef ref, String osId) {
+void abrirPausarOs(BuildContext context, WidgetRef ref, String osId) {
   final notifier = ref.read(ordemServicoStoreProvider.notifier);
   final controller = TextEditingController();
 
   showAppBottomSheet<void>(
     context,
-    title: 'Pausar execução',
+    title: 'Pausar a ${notifier.byId(osId).codigo}?',
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,6 +101,7 @@ void _abrirPausar(BuildContext context, WidgetRef ref, String osId) {
         AppFormField(
           label: 'Motivo da pausa',
           required: true,
+          hint: _registroHistorico,
           child: AppTextarea(
             controller: controller,
             placeholder: 'Ex.: falta de insumo, condição climática...',
@@ -131,13 +130,13 @@ void _abrirPausar(BuildContext context, WidgetRef ref, String osId) {
   );
 }
 
-void _abrirRefazer(BuildContext context, WidgetRef ref, String osId) {
+void abrirRefazerOs(BuildContext context, WidgetRef ref, String osId) {
   final notifier = ref.read(ordemServicoStoreProvider.notifier);
   final controller = TextEditingController();
 
   showAppBottomSheet<void>(
     context,
-    title: 'Marcar como refeita',
+    title: 'Marcar a ${notifier.byId(osId).codigo} como refeita?',
     child: Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,7 +144,9 @@ void _abrirRefazer(BuildContext context, WidgetRef ref, String osId) {
         AppFormField(
           label: 'Justificativa',
           required: true,
-          hint: 'Explique por que o serviço precisa ser refeito.',
+          hint:
+              'Explique por que o serviço precisa ser refeito. '
+              '$_registroHistorico',
           child: AppTextarea(
             controller: controller,
             placeholder: 'Descreva o que impediu a conclusão...',
@@ -173,4 +174,82 @@ void _abrirRefazer(BuildContext context, WidgetRef ref, String osId) {
       ],
     ),
   );
+}
+
+const _registroHistorico =
+    'Fica registrado no histórico da OS com data, hora e o seu nome.';
+
+/// Confirmação obrigatória antes de iniciar: a ação gera histórico e o
+/// trabalho é braçal — toque acidental é esperado, não exceção.
+Future<void> confirmarIniciarOs(
+  BuildContext context,
+  WidgetRef ref,
+  OrdemServico os,
+) async {
+  final ok = await showAppConfirm(
+    context,
+    title: 'Iniciar a ${os.codigo}?',
+    message: '${os.titulo}.\n\n$_registroHistorico',
+    confirmLabel: 'Iniciar execução',
+  );
+  if (!ok) return;
+  ref
+      .read(ordemServicoStoreProvider.notifier)
+      .iniciar(os.id, autor: os.responsavelExecucao);
+}
+
+Future<void> confirmarRetomarOs(
+  BuildContext context,
+  WidgetRef ref,
+  OrdemServico os,
+) async {
+  final ok = await showAppConfirm(
+    context,
+    title: 'Retomar a ${os.codigo}?',
+    message: '${os.titulo}.\n\n$_registroHistorico',
+    confirmLabel: 'Retomar execução',
+  );
+  if (!ok) return;
+  ref
+      .read(ordemServicoStoreProvider.notifier)
+      .retomar(os.id, autor: os.responsavelExecucao);
+}
+
+Future<void> confirmarEntregarOs(
+  BuildContext context,
+  WidgetRef ref,
+  OrdemServico os,
+) async {
+  final ok = await showAppConfirm(
+    context,
+    title: 'Marcar a ${os.codigo} como entregue?',
+    message:
+        '${os.titulo}.\n\nIsso encerra a OS e não dá para desfazer pelo '
+        'aplicativo. $_registroHistorico',
+    confirmLabel: 'Marcar como entregue',
+  );
+  if (!ok) return;
+  ref
+      .read(ordemServicoStoreProvider.notifier)
+      .marcarEntregue(os.id, autor: os.responsavelExecucao);
+}
+
+/// Ação rápida do card ([osAcaoRapida]): sempre passa pela confirmação —
+/// iniciar e retomar abrem a caixa de confirmação; pausar abre a dock do
+/// motivo, que só registra com "Confirmar pausa".
+void executarAcaoRapidaOs(
+  BuildContext context,
+  WidgetRef ref,
+  OrdemServico os,
+) {
+  switch (os.status) {
+    case OrdemServicoStatus.aguardando:
+      confirmarIniciarOs(context, ref, os);
+    case OrdemServicoStatus.emExecucao:
+      abrirPausarOs(context, ref, os.id);
+    case OrdemServicoStatus.pausada:
+      confirmarRetomarOs(context, ref, os);
+    default:
+      break;
+  }
 }

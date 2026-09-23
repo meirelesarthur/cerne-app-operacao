@@ -17,6 +17,11 @@ class OrdemServicoState {
   }
 }
 
+/// Relógio das telas de OS ("em execução há 2h15", "atrasada há 3 dias").
+/// Provider para os testes fixarem o "agora" em vez de depender da data da
+/// máquina.
+final osRelogioProvider = Provider<DateTime Function()>((ref) => DateTime.now);
+
 final ordemServicoStoreProvider =
     NotifierProvider<OrdemServicoStoreNotifier, OrdemServicoState>(
       OrdemServicoStoreNotifier.new,
@@ -103,14 +108,22 @@ class OrdemServicoStoreNotifier extends Notifier<OrdemServicoState> {
         dataEntrega: agora,
         historico: [
           ...o.historico,
-          EventoOs(dataHora: agora, autor: autor, acao: 'OS marcada como entregue'),
+          EventoOs(
+            dataHora: agora,
+            autor: autor,
+            acao: 'OS marcada como entregue',
+          ),
         ],
       ),
     );
   }
 
   /// Ação do Operacional: encerra a OS sinalizando retrabalho, com justificativa.
-  void marcarRefeita(String id, {required String autor, required String justificativa}) {
+  void marcarRefeita(
+    String id, {
+    required String autor,
+    required String justificativa,
+  }) {
     final agora = DateTime.now();
     _update(
       id,
