@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
-import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -130,18 +129,18 @@ class AppStatusCard extends StatelessWidget {
   Color _toneColor(AppSemanticColors semantic, AppStatusCardTone tone) =>
       switch (tone) {
         AppStatusCardTone.neutral => semantic.fgMuted,
-        AppStatusCardTone.info => AppColors.feedbackInfoText,
-        AppStatusCardTone.warning => AppColors.feedbackWarningText,
-        AppStatusCardTone.danger => AppColors.feedbackErrorText,
+        AppStatusCardTone.info => semantic.toneBlueFg,
+        AppStatusCardTone.warning => semantic.toneAmberFg,
+        AppStatusCardTone.danger => semantic.toneRedFg,
         AppStatusCardTone.success => semantic.accentDefault,
       };
 
   Color _toneBg(AppSemanticColors semantic, AppStatusCardTone tone) =>
       switch (tone) {
         AppStatusCardTone.neutral => semantic.bgSheet,
-        AppStatusCardTone.info => AppColors.feedbackInfoBg,
-        AppStatusCardTone.warning => AppColors.feedbackWarningBg,
-        AppStatusCardTone.danger => AppColors.feedbackErrorBg,
+        AppStatusCardTone.info => semantic.toneBlueBg,
+        AppStatusCardTone.warning => semantic.toneAmberBg,
+        AppStatusCardTone.danger => semantic.toneRedBg,
         AppStatusCardTone.success => semantic.accentSubtle,
       };
 
@@ -280,7 +279,7 @@ class AppStatusCard extends StatelessWidget {
                                 item.icon!,
                                 size: AppSize.iconSm,
                                 color: item.highlight
-                                    ? AppColors.feedbackErrorText
+                                    ? semantic.toneRedFg
                                     : semantic.fgMuted,
                               ),
                               const SizedBox(width: AppSpacing.space1),
@@ -298,7 +297,7 @@ class AppStatusCard extends StatelessWidget {
                                 fontSize: AppTypography.md,
                                 fontWeight: AppTypography.weightMedium,
                                 color: item.highlight
-                                    ? AppColors.feedbackErrorText
+                                    ? semantic.toneRedFg
                                     : semantic.fgDefault,
                               ),
                             ),

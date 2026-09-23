@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'app_icon.dart';
-import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -39,9 +38,9 @@ class AppTag extends StatelessWidget {
 
   Color _color(AppSemanticColors semantic) => switch (tone) {
     AppTagTone.neutral => semantic.fgMuted,
-    AppTagTone.success => AppColors.feedbackSuccessText,
-    AppTagTone.warning => AppColors.feedbackWarningText,
-    AppTagTone.danger => AppColors.feedbackErrorText,
+    AppTagTone.success => semantic.toneBrandFg,
+    AppTagTone.warning => semantic.toneAmberFg,
+    AppTagTone.danger => semantic.toneRedFg,
   };
 
   @override

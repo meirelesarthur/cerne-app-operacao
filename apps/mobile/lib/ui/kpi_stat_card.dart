@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
-import '../design/generated/app_colors.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_shadows.dart';
 import '../design/generated/app_spacing.dart';
@@ -36,9 +35,9 @@ class AppKpiStatCard extends StatelessWidget {
 
   Color _valueColor(AppSemanticColors s) => switch (tone) {
     AppKpiStatTone.neutral => s.fgDefault,
-    AppKpiStatTone.positive => AppColors.feedbackSuccessText,
-    AppKpiStatTone.negative => AppColors.feedbackErrorText,
-    AppKpiStatTone.warning => AppColors.feedbackWarningText,
+    AppKpiStatTone.positive => s.toneBrandFg,
+    AppKpiStatTone.negative => s.toneRedFg,
+    AppKpiStatTone.warning => s.toneAmberFg,
   };
 
   @override

@@ -5,7 +5,6 @@ import 'addable_group_list.dart';
 import 'app_icon.dart';
 import 'icon_button.dart';
 import 'pressable.dart';
-import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -202,10 +201,10 @@ class _CollectionRow extends StatelessWidget {
             ),
           if (onRemove case final remove?)
             AppIconButton(
-              icon: const AppIcon(
+              icon: AppIcon(
                 AppIcons.trash2,
                 size: AppSize.iconSm,
-                color: AppColors.feedbackErrorText,
+                color: semantic.toneRedFg,
               ),
               label: removeLabel,
               onPressed: remove,

@@ -55,6 +55,23 @@ const widgetbookChangelog = <WidgetbookRelease>[
         'Alvos de toque: control, btn e iconBtn em 48dp (CTA grande 52); '
             'traço dos ícones em 1.5.',
       ),
+      (
+        'Mudou',
+        'Button: rótulo herda a Outfit (DefaultTextStyle.merge), mínimo 14px, '
+            'até 2 linhas com altura mínima, desabilitado com visual próprio, '
+            'Semantics de botão e vibração curta no toque.',
+      ),
+      (
+        'Mudou',
+        'Tag, Banner, StatusCard, KpiStatCard, FormField, FieldCapsule, '
+            'CollectionList, MenuItem, ErrorState, SuccessPanel e FileUpload '
+            'usam os tokens de tom theme-aware — sem blocos pastel no modo GB.',
+      ),
+      (
+        'Mudou',
+        'FieldCapsule: borda forte em repouso para o campo não sumir na folha '
+            'branca.',
+      ),
     ],
   ),
   WidgetbookRelease(

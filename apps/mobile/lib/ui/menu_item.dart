@@ -88,21 +88,21 @@ class AppMenuItem extends StatelessWidget {
                     : semantic.bgSurface));
 
     final labelColor = _isDanger
-        ? (_isOnDark ? AppColors.red400 : AppColors.feedbackErrorText)
+        ? (_isOnDark ? AppColors.red400 : semantic.toneRedFg)
         : active
         ? (_isOnDark ? semantic.inkFg : semantic.accentDefault)
         : (_isOnDark ? semantic.inkFg : semantic.fgDefault);
 
     final descriptionColor = _isOnDark ? semantic.inkMuted : semantic.fgMuted;
     final iconBubbleColor = _isDanger
-        ? AppColors.red500.withValues(alpha: 0.1)
+        ? semantic.toneRedBg
         : (_isOnDark
               ? AppColors.transparent
               : (surface == AppMenuItemSurface.subtle
                     ? AppColors.transparent
                     : semantic.bgSubtle));
     final iconColor = _isDanger
-        ? AppColors.red500
+        ? semantic.toneRedFg
         : (_isOnDark ? semantic.inkFg : semantic.fgMuted);
     final chevronBubbleColor = _isOnDark
         ? semantic.inkBubble
