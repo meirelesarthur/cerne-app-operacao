@@ -46,6 +46,7 @@ export 'kpi_stat_card.dart';
 export 'menu_item.dart';
 export 'modal.dart';
 export 'module_tile.dart';
+export 'notification_tile.dart';
 export 'page_dots.dart';
 export 'page_scaffold.dart';
 export 'pagination.dart';
