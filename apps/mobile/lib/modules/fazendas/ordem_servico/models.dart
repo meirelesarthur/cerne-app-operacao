@@ -2,8 +2,7 @@
 /// funcional web (levantamento de 16/09/2026): planejar, autorizar, executar
 /// e acompanhar serviços de campo (agrícolas/pecuários), cobrindo o ciclo
 /// solicitação → detalhamento técnico/segurança → alocação de recursos (mão
-/// de obra, máquinas, insumos, EPIs) → execução com evidências → conclusão →
-/// avaliação.
+/// de obra, máquinas, insumos, EPIs) → execução com evidências → conclusão.
 ///
 /// LACUNA (premissa de protótipo): a OS nasce no app **web** — o app mobile
 /// nunca cadastra uma OS nova, só recebe o que já foi solicitado/autorizado
@@ -15,10 +14,9 @@
 /// - Operacional inicia, pausa/retoma e encerra a própria OS (entregue, ou
 ///   refeita com justificativa quando o serviço não pôde ser concluído como
 ///   planejado).
-/// - O escritório (no app web) pode avaliar (checkpoint de qualidade, sem
-///   mudar o andamento) ou cancelar, mas só enquanto a OS ainda não foi
-///   encerrada pelo Operacional (aguardando/em execução/pausada) — nunca uma
-///   já entregue ou refeita. O mobile só exibe esses dados.
+/// - O escritório (no app web) pode cancelar, mas só enquanto a OS ainda não
+///   foi encerrada pelo Operacional (aguardando/em execução/pausada) — nunca
+///   uma já entregue ou refeita. O mobile só exibe esse dado.
 library;
 
 enum TipoServicoOs { agricola, pecuario, manutencao, infraestrutura }
@@ -46,7 +44,14 @@ extension PrioridadeOsLabel on PrioridadeOs {
 /// Ciclo de vida da OS. `entregue` e `refeita` são os dois encerramentos que
 /// só o Operacional decide; `cancelada` só o escritório decide — e só
 /// antes de um desses dois encerramentos.
-enum OrdemServicoStatus { aguardando, emExecucao, pausada, entregue, refeita, cancelada }
+enum OrdemServicoStatus {
+  aguardando,
+  emExecucao,
+  pausada,
+  entregue,
+  refeita,
+  cancelada,
+}
 
 extension OrdemServicoStatusLabel on OrdemServicoStatus {
   String get label => switch (this) {
@@ -59,31 +64,13 @@ extension OrdemServicoStatusLabel on OrdemServicoStatus {
   };
 
   /// Só nesses três estados o Operacional ainda pode agir (iniciar, pausar,
-  /// retomar, entregar, refazer) e o escritório pode avaliar/cancelar.
-  bool get emAndamento => this == OrdemServicoStatus.aguardando ||
+  /// retomar, entregar, refazer) e o escritório pode cancelar.
+  bool get emAndamento =>
+      this == OrdemServicoStatus.aguardando ||
       this == OrdemServicoStatus.emExecucao ||
       this == OrdemServicoStatus.pausada;
 
   bool get encerrada => !emAndamento;
-}
-
-/// Checkpoint de qualidade que o escritório pode registrar (no web) enquanto a OS
-/// ainda está em andamento — não é a "nota final" de uma OS entregue, é um
-/// acompanhamento (regra confirmada com o usuário: nunca incide sobre OS já
-/// finalizada).
-class AvaliacaoOs {
-  const AvaliacaoOs({
-    required this.nota,
-    required this.comentario,
-    required this.avaliador,
-    required this.dataHora,
-  });
-
-  /// 1 a 5.
-  final int nota;
-  final String comentario;
-  final String avaliador;
-  final DateTime dataHora;
 }
 
 /// Evidência registrada pelo Operacional durante a execução (spec: "execução
@@ -97,7 +84,7 @@ class EvidenciaOs {
 }
 
 /// Linha do histórico/timeline da OS — cada ação (iniciar, pausar, entregar,
-/// refazer, avaliar, cancelar) fica registrada aqui, auditável.
+/// refazer, cancelar) fica registrada aqui, auditável.
 class EventoOs {
   const EventoOs({
     required this.dataHora,
@@ -141,7 +128,6 @@ class OrdemServico {
     this.dataEntrega,
     this.evidencias = const [],
     this.justificativaRefazer,
-    this.avaliacao,
     this.motivoCancelamento,
   });
 
@@ -179,7 +165,6 @@ class OrdemServico {
   final List<EvidenciaOs> evidencias;
   final String? justificativaRefazer;
 
-  final AvaliacaoOs? avaliacao;
   final String? motivoCancelamento;
 
   final List<EventoOs> historico;
@@ -193,7 +178,6 @@ class OrdemServico {
     DateTime? dataEntrega,
     List<EvidenciaOs>? evidencias,
     String? justificativaRefazer,
-    AvaliacaoOs? avaliacao,
     String? motivoCancelamento,
     List<EventoOs>? historico,
   }) {
@@ -224,7 +208,6 @@ class OrdemServico {
       dataEntrega: dataEntrega ?? this.dataEntrega,
       evidencias: evidencias ?? this.evidencias,
       justificativaRefazer: justificativaRefazer ?? this.justificativaRefazer,
-      avaliacao: avaliacao ?? this.avaliacao,
       motivoCancelamento: motivoCancelamento ?? this.motivoCancelamento,
       historico: historico ?? this.historico,
     );

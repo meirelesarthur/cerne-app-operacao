@@ -6,7 +6,7 @@ import 'models.dart';
 /// (`confinamento/mocks.dart`), para o Operacional ver
 /// dados equivalentes ao que a OS carregaria vindo do app web.
 final List<OrdemServico> ordensServico = [
-  // 1) Aguardando — ainda não iniciada, elegível a avaliação/cancelamento do escritório.
+  // 1) Aguardando — ainda não iniciada, elegível a cancelamento pelo escritório.
   OrdemServico(
     id: 'os-2201',
     codigo: 'OS #2201',
@@ -47,7 +47,7 @@ final List<OrdemServico> ordensServico = [
     ],
   ),
 
-  // 2) Em execução — já avaliada pelo escritório (checkpoint), ainda cancelável.
+  // 2) Em execução, com evidências registradas — ainda cancelável.
   OrdemServico(
     id: 'os-2198',
     codigo: 'OS #2198',
@@ -84,24 +84,10 @@ final List<OrdemServico> ordensServico = [
         dataHora: DateTime(2026, 9, 14, 7, 25),
       ),
     ],
-    avaliacao: AvaliacaoOs(
-      nota: 4,
-      comentario:
-          'Ritmo de aplicação dentro do esperado; reforçar o registro por '
-          'brinco para não atrasar o fechamento do boletim.',
-      avaliador: 'Ana Beatriz',
-      dataHora: DateTime(2026, 9, 14, 12),
-    ),
     historico: [
       EventoOs(dataHora: DateTime(2026, 9, 8, 7), autor: 'Roberto Lima', acao: 'OS solicitada'),
       EventoOs(dataHora: DateTime(2026, 9, 8, 9, 15), autor: 'Ana Beatriz', acao: 'OS autorizada'),
       EventoOs(dataHora: DateTime(2026, 9, 14, 7, 20), autor: 'João Oliveira', acao: 'Execução iniciada'),
-      EventoOs(
-        dataHora: DateTime(2026, 9, 14, 12),
-        autor: 'Ana Beatriz',
-        acao: 'Avaliação registrada — nota 4',
-        observacao: 'Reforçar o registro por brinco para não atrasar o fechamento do boletim.',
-      ),
     ],
   ),
 
