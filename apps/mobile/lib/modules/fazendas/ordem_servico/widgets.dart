@@ -258,8 +258,8 @@ class OsSummaryCard extends StatelessWidget {
 /// solicitação/autorização, alocação de recursos, execução e histórico.
 /// `actions` é a lista de botões específica de cada perfil.
 ///
-/// Hierarquia pensada para quem lê no campo: cabeçalho com status e
-/// prioridade em chips, o título grande, e cada grupo de dados numa
+/// Hierarquia pensada para quem lê no campo: número e título grande no topo,
+/// status e prioridade em chips logo abaixo do título, e cada grupo de dados numa
 /// [AppDetailSection] com ícone próprio e bloco cinza — o olho acha o grupo
 /// pelo ícone antes de ler. Instruções de segurança vêm em tom de atenção
 /// logo depois dos dados do serviço.
@@ -290,21 +290,6 @@ class _OsDetailBodyState extends State<OsDetailBody> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Wrap(
-          spacing: AppSpacing.space2,
-          runSpacing: AppSpacing.space2,
-          children: [
-            AppChip(
-              tone: osStatusTone(os.status),
-              child: Text(os.status.label),
-            ),
-            AppChip(
-              tone: osPrioridadeTone(os.prioridade),
-              child: Text('Prioridade ${os.prioridade.label.toLowerCase()}'),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppSpacing.space3),
         Text(
           os.codigo,
           style: TextStyle(
@@ -326,7 +311,22 @@ class _OsDetailBodyState extends State<OsDetailBody> {
             ),
           ),
         ),
-        const SizedBox(height: AppSpacing.space2),
+        const SizedBox(height: AppSpacing.space3),
+        Wrap(
+          spacing: AppSpacing.space2,
+          runSpacing: AppSpacing.space2,
+          children: [
+            AppChip(
+              tone: osStatusTone(os.status),
+              child: Text(os.status.label),
+            ),
+            AppChip(
+              tone: osPrioridadeTone(os.prioridade),
+              child: Text('Prioridade ${os.prioridade.label.toLowerCase()}'),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.space3),
         Text(
           os.descricao,
           style: TextStyle(
