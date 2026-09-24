@@ -44,7 +44,7 @@ void main() {
       // Tela inicial: até duas OS no topo, o resto como contagem, e o menu
       // em ladrilhos logo abaixo.
       expect(find.text('Ver todas'), findsOneWidget);
-      expect(find.text('Ver mais'), findsOneWidget);
+      expect(find.text('+ 4 ordens aguardando'), findsOneWidget);
       expect(
         find.descendant(
           of: find.byType(AppBottomTabBar),
