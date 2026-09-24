@@ -19,6 +19,12 @@ import '../design/theme/app_theme_extension.dart';
 /// [AppKpiStatTone.neutral].
 enum AppKpiStatTone { neutral, positive, negative, warning }
 
+/// `raised` é a superfície branca elevada padrão (Figma `54347:967`).
+/// `inset` troca para o mesmo bloco cinza sem sombra de [AppCardVariant.inset]
+/// — usar quando os KPIs dividem a folha com cards inset (ex.: os currais em
+/// Trato diário), para não brigar de destaque com o conteúdo abaixo.
+enum AppKpiStatSurface { raised, inset }
+
 class AppKpiStatCard extends StatelessWidget {
   const AppKpiStatCard({
     super.key,
@@ -26,12 +32,14 @@ class AppKpiStatCard extends StatelessWidget {
     required this.value,
     this.caption,
     this.tone = AppKpiStatTone.neutral,
+    this.surface = AppKpiStatSurface.raised,
   });
 
   final String label;
   final String value;
   final String? caption;
   final AppKpiStatTone tone;
+  final AppKpiStatSurface surface;
 
   Color _valueColor(AppSemanticColors s) => switch (tone) {
     AppKpiStatTone.neutral => s.fgDefault,
@@ -43,6 +51,7 @@ class AppKpiStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    final isInset = surface == AppKpiStatSurface.inset;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -50,9 +59,9 @@ class AppKpiStatCard extends StatelessWidget {
         vertical: AppSpacing.space4,
       ),
       decoration: BoxDecoration(
-        color: semantic.bgRaised,
+        color: isInset ? semantic.bgInset : semantic.bgRaised,
         borderRadius: BorderRadius.circular(AppRadius.tile),
-        boxShadow: AppShadows.tile,
+        boxShadow: isInset ? null : AppShadows.tile,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,6 +69,8 @@ class AppKpiStatCard extends StatelessWidget {
         children: [
           Text(
             label,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontSize: AppTypography.md,
               fontWeight: AppTypography.weightSemibold,

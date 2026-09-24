@@ -129,16 +129,22 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
               physics: const NeverScrollableScrollPhysics(),
               mainAxisSpacing: AppSpacing.space2,
               crossAxisSpacing: AppSpacing.space2,
-              childAspectRatio: 1.2,
+              childAspectRatio: 0.95,
               children: [
-                AppKpiStatCard(label: 'Progresso', value: '$progresso%'),
+                AppKpiStatCard(
+                  label: 'Progresso',
+                  value: '$progresso%',
+                  surface: AppKpiStatSurface.inset,
+                ),
                 AppKpiStatCard(
                   label: 'Fornecido',
                   value: '${totalFornecido.toStringAsFixed(0)} kg',
+                  surface: AppKpiStatSurface.inset,
                 ),
                 AppKpiStatCard(
                   label: 'Currais concluídos',
                   value: '$concluidos/${elegiveis.length}',
+                  surface: AppKpiStatSurface.inset,
                 ),
               ],
             ),
