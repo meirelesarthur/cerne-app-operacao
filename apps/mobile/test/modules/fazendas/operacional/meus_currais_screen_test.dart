@@ -51,7 +51,7 @@ void main() {
       await tester.pumpWidget(_wrap(const MeusCurraisScreen()));
       await tester.pumpAndSettle();
 
-      expect(find.text('Meus currais'), findsOneWidget);
+      expect(find.text('Currais'), findsOneWidget);
       expect(find.text('Curral 01'), findsOneWidget);
       expect(
         find.text('1 ordem pendente do escritório para este curral'),
@@ -85,14 +85,14 @@ void main() {
       await _esperaDestinoReal(tester, 'Sanitário');
     });
 
-    testWidgets('ação rápida "Registrar Evento" abre uma tela real', (
+    testWidgets('ação rápida "Registrar evento" abre uma tela real', (
       tester,
     ) async {
-      await _esperaDestinoReal(tester, 'Registrar Evento');
+      await _esperaDestinoReal(tester, 'Registrar evento');
     });
 
     testWidgets(
-      'voltar a partir de "Pesagem" retorna para Meus currais (não pula para Rotinas)',
+      'voltar a partir de "Pesagem" retorna para Currais (não pula para Rotinas)',
       (tester) async {
         // Regressão do bug relatado: as ações rápidas usavam `context.go()`
         // para uma rota-irmã fora da própria linhagem — o botão voltar do
@@ -116,7 +116,7 @@ void main() {
         harness.router.pop();
         await tester.pumpAndSettle();
 
-        expect(find.text('Meus currais'), findsOneWidget);
+        expect(find.text('Currais'), findsOneWidget);
         expect(find.text('O que fazer hoje'), findsNothing);
       },
     );

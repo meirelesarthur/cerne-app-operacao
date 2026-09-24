@@ -70,7 +70,7 @@ void main() {
         // mesmas).
         expect(find.text('Conexão de aparelhos'), findsOneWidget);
         expect(find.text('Configurações'), findsOneWidget);
-        expect(find.text('Meus currais'), findsOneWidget);
+        expect(find.text('Currais'), findsOneWidget);
         expect(find.text('Produzir batelada'), findsOneWidget);
         expect(find.text('Trato diário'), findsOneWidget);
         expect(find.text('Leitura de cocho'), findsOneWidget);
