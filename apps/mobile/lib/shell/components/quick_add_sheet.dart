@@ -120,8 +120,8 @@ class _QuickAddHeading extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            width: 48,
-            height: 48,
+            width: 52,
+            height: 52,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: AppColors.neutral0.withValues(alpha: 0.08),
@@ -132,7 +132,7 @@ class _QuickAddHeading extends StatelessWidget {
             child: const Center(
               child: AppIcon(
                 AppIcons.zap,
-                size: AppSize.iconLg,
+                size: AppSize.iconXl,
                 color: AppColors.neutral0,
               ),
             ),
@@ -201,7 +201,7 @@ class _QuickAddHexTile extends StatelessWidget {
               children: [
                 AppIcon(
                   item.icon,
-                  size: AppSize.iconLg,
+                  size: AppSize.iconXl,
                   color: AppColors.brand700,
                 ),
                 const SizedBox(height: AppSpacing.space2),
@@ -212,7 +212,7 @@ class _QuickAddHexTile extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
                     color: AppColors.neutral800,
-                    fontSize: AppTypography.sm,
+                    fontSize: AppTypography.base,
                     fontWeight: AppTypography.weightMedium,
                     height: AppTypography.lineHeightTight,
                   ),
@@ -245,8 +245,8 @@ class _QuickAddCloseButton extends StatelessWidget {
         onPressed: onTap,
         child: Center(
           child: Container(
-            width: 38,
-            height: 38,
+            width: 40,
+            height: 40,
             decoration: const BoxDecoration(
               color: AppColors.neutral0,
               shape: BoxShape.circle,
@@ -321,7 +321,7 @@ class _QuickAddGeometry {
 
   factory _QuickAddGeometry.from(Size size) {
     final tileSize = math
-        .min(104.0, math.min(size.width * 0.28, size.height * 0.15))
+        .min(108.0, math.min(size.width * 0.29, size.height * 0.16))
         .toDouble();
     final centerX = size.width / 2;
     final sideOffset = math
@@ -331,7 +331,7 @@ class _QuickAddGeometry {
         )
         .toDouble();
     final headingTop = size.height * 0.215;
-    final centerButtonSize = math.min(88.0, tileSize * 0.82).toDouble();
+    final centerButtonSize = math.min(92.0, tileSize * 0.86).toDouble();
 
     return _QuickAddGeometry(
       canvasSize: size,
@@ -345,7 +345,10 @@ class _QuickAddGeometry {
         Offset(centerX - sideOffset * 0.94, size.height * 0.705),
         Offset(centerX + sideOffset * 0.94, size.height * 0.705),
       ],
-      centerButtonCenter: Offset(centerX, size.height * 0.855),
+      centerButtonCenter: Offset(
+        centerX,
+        size.height - centerButtonSize / 2 - AppSpacing.space2,
+      ),
     );
   }
 }
