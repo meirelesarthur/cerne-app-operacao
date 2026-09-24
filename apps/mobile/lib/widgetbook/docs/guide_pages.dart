@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.13.0';
+const kWidgetbookVersion = '2.14.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,24 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.14.0',
+    date: '2026-09-24',
+    summary: 'Campos de detalhe tocáveis, com o registro completo em dock.',
+    changes: [
+      (
+        'Novo',
+        'AppDetailField.onTap: a linha ganha chevron, valor e apoio ficam em '
+            'até duas linhas e o toque abre o conteúdo inteiro — caso '
+            '"Campos tocáveis (histórico)" em DetailSection.',
+      ),
+      (
+        'Mudou',
+        'Histórico da OS: cada evento abre uma dock com data e hora, quem '
+            'registrou e a observação completa.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.13.0',
     date: '2026-09-23',

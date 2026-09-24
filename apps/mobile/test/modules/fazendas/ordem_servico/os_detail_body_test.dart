@@ -41,4 +41,36 @@ void main() {
     final antigo = tester.getTopLeft(find.text(os.historico.first.acao));
     expect(recente.dy, lessThan(antigo.dy));
   });
+
+  testWidgets('tocar num evento abre a dock com o registro completo', (
+    tester,
+  ) async {
+    final os = ordensServico.firstWhere(
+      (o) => o.historico.any((e) => e.observacao != null),
+    );
+    final evento = os.historico.lastWhere((e) => e.observacao != null);
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: buildAppTheme(AppThemeVariant.light),
+        home: Scaffold(
+          body: SingleChildScrollView(child: OsDetailBody(os: os)),
+        ),
+      ),
+    );
+    await tester.tap(find.text('Histórico (${os.historico.length})'));
+    await tester.pumpAndSettle();
+
+    final linha = find.text('${evento.autor} · ${evento.observacao}');
+    await tester.ensureVisible(linha);
+    await tester.tap(linha);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Registrado por'), findsOneWidget);
+    expect(find.text('Observação'), findsOneWidget);
+    expect(find.text(evento.observacao!), findsOneWidget);
+
+    await tester.tap(find.text('Fechar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Registrado por'), findsNothing);
+  });
 }

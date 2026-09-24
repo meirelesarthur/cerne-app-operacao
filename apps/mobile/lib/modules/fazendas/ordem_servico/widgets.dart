@@ -53,6 +53,44 @@ String osPrazoRelativo(DateTime prazo, DateTime agora) {
 String _fmtDataHora(DateTime d) =>
     '${_fmtData(d)} às ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
+/// Registro completo de um evento do histórico numa dock: na lista a
+/// observação é cortada em duas linhas; aqui ela aparece inteira.
+Future<void> _abrirEvento(BuildContext context, EventoOs evento) {
+  return showAppBottomSheet<void>(
+    context,
+    title: evento.acao,
+    footer: AppButton(
+      variant: AppButtonVariant.secondary,
+      fullWidth: true,
+      onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+      child: const Text('Fechar'),
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        AppDetailFields(
+          fields: [
+            AppDetailField(
+              label: 'Data e hora',
+              value: _fmtDataHora(evento.dataHora),
+            ),
+            AppDetailField(label: 'Registrado por', value: evento.autor),
+          ],
+        ),
+        if (evento.observacao case final observacao?) ...[
+          const SizedBox(height: AppSpacing.space3),
+          AppDetailSection(
+            icon: AppIcons.messageCircle,
+            title: 'Observação',
+            child: AppDetailText(observacao),
+          ),
+        ],
+      ],
+    ),
+  );
+}
+
 /// Duração legível para a linha de situação: "40 min", "2h15", "3 dias".
 String osDuracao(Duration d) {
   if (d.isNegative) return '0 min';
@@ -385,6 +423,7 @@ class _OsDetailBodyState extends State<OsDetailBody> {
                     caption: evento.observacao == null
                         ? evento.autor
                         : '${evento.autor} · ${evento.observacao}',
+                    onTap: () => _abrirEvento(context, evento),
                   ),
               ],
             ),

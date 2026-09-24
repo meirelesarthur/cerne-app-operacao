@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:widgetbook/widgetbook.dart';
 
 import 'app_icon.dart';
+import 'bottom_sheet.dart';
 import 'chip.dart';
 import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
@@ -128,16 +129,23 @@ class AppDetailSection extends StatelessWidget {
 
 /// Um par rótulo/valor dentro de [AppDetailFields]: rótulo pequeno acima,
 /// valor grande abaixo e, opcionalmente, uma linha de apoio (data e hora).
+///
+/// Com `onTap`, o campo vira uma linha tocável (chevron à direita): valor e
+/// apoio ficam limitados a duas linhas com reticências, e o toque abre o
+/// registro completo — em geral uma dock ([showAppBottomSheet]). É o caso de
+/// listas de eventos com observações longas, como o histórico da OS.
 class AppDetailField {
   const AppDetailField({
     required this.label,
     required this.value,
     this.caption,
+    this.onTap,
   });
 
   final String label;
   final String value;
   final String? caption;
+  final VoidCallback? onTap;
 }
 
 /// Campos de leitura empilhados dentro de uma [AppDetailSection], separados
@@ -163,17 +171,14 @@ class AppDetailFields extends StatelessWidget {
       children: [
         for (var r = 0; r < rows.length; r++) ...[
           if (r > 0) Divider(height: 1, color: semantic.borderDefault),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.space3),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                for (var c = 0; c < rows[r].length; c++) ...[
-                  if (c > 0) const SizedBox(width: AppSpacing.space4),
-                  Expanded(child: _FieldCell(field: rows[r][c])),
-                ],
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (var c = 0; c < rows[r].length; c++) ...[
+                if (c > 0) const SizedBox(width: AppSpacing.space4),
+                Expanded(child: _FieldCell(field: rows[r][c])),
               ],
-            ),
+            ],
           ),
         ],
       ],
@@ -189,7 +194,12 @@ class _FieldCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-    return Column(
+    final onTap = field.onTap;
+    // Tocável: o texto é resumo (2 linhas) — o conteúdo inteiro fica no que o
+    // toque abre.
+    final maxLines = onTap == null ? null : 2;
+    final overflow = onTap == null ? null : TextOverflow.ellipsis;
+    final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -203,6 +213,8 @@ class _FieldCell extends StatelessWidget {
         const SizedBox(height: AppSpacing.half),
         Text(
           field.value,
+          maxLines: maxLines,
+          overflow: overflow,
           style: TextStyle(
             fontSize: AppTypography.xl,
             fontWeight: AppTypography.weightSemibold,
@@ -214,6 +226,8 @@ class _FieldCell extends StatelessWidget {
           const SizedBox(height: AppSpacing.half),
           Text(
             field.caption!,
+            maxLines: maxLines,
+            overflow: overflow,
             style: TextStyle(
               fontSize: AppTypography.base,
               color: semantic.fgMuted,
@@ -221,6 +235,31 @@ class _FieldCell extends StatelessWidget {
           ),
         ],
       ],
+    );
+
+    const padding = EdgeInsets.symmetric(vertical: AppSpacing.space3);
+    if (onTap == null) return Padding(padding: padding, child: content);
+
+    return Semantics(
+      button: true,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        child: Padding(
+          padding: padding,
+          child: Row(
+            children: [
+              Expanded(child: content),
+              const SizedBox(width: AppSpacing.space2),
+              AppIcon(
+                AppIcons.chevronRight,
+                size: AppSize.iconSm,
+                color: semantic.fgMuted,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -364,6 +403,45 @@ WidgetbookComponent buildDetailSectionWidgetbookComponent() {
             ),
           ),
         ),
+      ),
+      WidgetbookUseCase(
+        name: 'Campos tocáveis (histórico)',
+        builder: (context) {
+          const observacao =
+              'Cerca provisória não resistiu à chuva — necessário refazer com '
+              'fixação reforçada nos mourões de canto e trocar os 40 m de '
+              'arame liso que cederam perto da porteira.';
+          void abrir(BuildContext context) => showAppBottomSheet<void>(
+            context,
+            title: 'OS marcada como refeita',
+            child: const AppDetailText(observacao),
+          );
+          return sheet(
+            Builder(
+              builder: (context) => AppDetailSection(
+                icon: AppIcons.clock,
+                title: 'Histórico',
+                count: 2,
+                child: AppDetailFields(
+                  fields: [
+                    AppDetailField(
+                      label: '03/09/2026 às 06:30',
+                      value: 'OS marcada como refeita',
+                      caption: 'João Oliveira · $observacao',
+                      onTap: () => abrir(context),
+                    ),
+                    const AppDetailField(
+                      label: '02/09/2026 às 07:20',
+                      value: 'Execução iniciada',
+                      // Sem onTap: linha de leitura, texto inteiro.
+                      caption: 'João Oliveira',
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
       WidgetbookUseCase(
         name: 'Lista com contagem',
