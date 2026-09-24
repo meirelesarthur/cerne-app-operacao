@@ -406,9 +406,11 @@ class _QuickAddConnectorPainter extends CustomPainter {
       final end = destinations[index];
       final side = end.dx < centerX ? -1.0 : 1.0;
       final verticalDistance = start.dy - end.dy;
-      final path = Path()
-        ..moveTo(start.dx, start.dy)
-        ..cubicTo(
+      final path = Path()..moveTo(start.dx, start.dy);
+      if (index == 0) {
+        path.lineTo(end.dx, end.dy);
+      } else {
+        path.cubicTo(
           start.dx + side * verticalDistance * 0.16,
           start.dy - verticalDistance * 0.38,
           end.dx - side * verticalDistance * 0.12,
@@ -416,6 +418,7 @@ class _QuickAddConnectorPainter extends CustomPainter {
           end.dx,
           end.dy,
         );
+      }
 
       final metric = path.computeMetrics().first;
       for (var t = 0.035; t < 1; t += 0.065) {
