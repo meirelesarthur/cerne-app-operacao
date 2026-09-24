@@ -23,7 +23,8 @@ void main() {
         ),
       );
 
-      // Todas as abas mostram o nome escrito — não só a ativa.
+      // Todas as abas existem e são anunciadas pelo nome; só a ativa escreve
+      // o nome, na pílula ao lado do ícone.
       for (final label in [
         'Início',
         'Pecuária',
@@ -31,8 +32,10 @@ void main() {
         'Confinamento',
         'Menu',
       ]) {
-        expect(find.text(label), findsOneWidget);
+        expect(find.bySemanticsLabel(label), findsOneWidget);
       }
+      expect(find.text('Início'), findsOneWidget);
+      expect(find.text('Pecuária'), findsNothing);
       expect(tester.takeException(), isNull);
     });
 
@@ -48,7 +51,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('Pecuária'));
+      await tester.tap(find.bySemanticsLabel('Pecuária'));
       await tester.pump();
 
       expect(selected?.id, 'pecuaria');
