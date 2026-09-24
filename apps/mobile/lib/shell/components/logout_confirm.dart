@@ -23,7 +23,6 @@ Future<bool> confirmLogout(BuildContext context, WidgetRef ref) {
     title: 'Sair do aplicativo?',
     message: message,
     confirmLabel: 'Sair',
-    cancelLabel: 'Continuar no aplicativo',
     danger: pending > 0,
   );
 }

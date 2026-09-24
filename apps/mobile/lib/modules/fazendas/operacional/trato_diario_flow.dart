@@ -246,7 +246,7 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
                 'Se já terminou, finalize mesmo assim.'
           : 'Todo o vagão foi distribuído nos currais.',
       confirmLabel: 'Finalizar trato',
-      cancelLabel: 'Voltar e conferir',
+      cancelLabel: 'Conferir',
     );
     if (ok && mounted) _finalizar(elegiveis, batelada);
   }

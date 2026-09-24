@@ -130,12 +130,11 @@ class _OrdemCard extends StatelessWidget {
                   message:
                       '$descricao.\n\nConfirme só depois de terminar o '
                       'serviço no curral.',
-                  confirmLabel: 'Sim, já fiz',
-                  cancelLabel: 'Ainda não',
+                  confirmLabel: 'Concluir',
                 );
                 if (ok) onConfirmar(ordem.id);
               },
-              child: const Text('Já fiz no curral'),
+              child: const Text('Concluir ordem'),
             ),
           ],
         ],

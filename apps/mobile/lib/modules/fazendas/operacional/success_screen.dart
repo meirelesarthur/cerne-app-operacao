@@ -33,9 +33,9 @@ class SuccessScreen extends ConsumerWidget {
   /// Verdadeiro quando o lançamento foi para a fila offline.
   final bool queued;
 
-  /// Ação principal de repetição ("Pesar próximo animal"): em lançamentos
+  /// Ação principal de repetição ("Pesar outro"): em lançamentos
   /// feitos em série, voltar ao início a cada item obrigava a reabrir o fluxo.
-  /// Com ela, "Voltar ao início" desce para ação secundária.
+  /// Com ela, "Concluir" desce para ação secundária.
   final String? nextLabel;
   final VoidCallback? onNext;
 
@@ -80,7 +80,7 @@ class SuccessScreen extends ConsumerWidget {
                       ? AppButtonVariant.subtle
                       : AppButtonVariant.primary,
                   onPressed: () => context.go('/fazendas'),
-                  child: const Text('Voltar ao início'),
+                  child: const Text('Concluir'),
                 ),
               ],
             ),

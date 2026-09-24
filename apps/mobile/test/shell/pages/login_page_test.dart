@@ -27,13 +27,13 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('"Ver como o app funciona" navega para o onboarding', (
+    testWidgets('"Ver apresentação" navega para o onboarding', (
       tester,
     ) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      final tour = find.text('Ver como o app funciona');
+      final tour = find.text('Ver apresentação');
       await tester.ensureVisible(tour);
       await tester.pumpAndSettle();
       await tester.tap(tour);

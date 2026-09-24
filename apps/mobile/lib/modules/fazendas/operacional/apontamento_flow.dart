@@ -265,8 +265,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   int _step = 0;
   static const _totalSteps = 3;
 
-  /// Nome de cada etapa, mostrado ao lado de "Etapa N de 3" e no botão de
-  /// avançar — "Continuar" sozinho não dizia para onde ia.
+  /// Nome de cada etapa, mostrado ao lado de "Etapa N de 3".
   static const _nomesEtapas = ['Identificação', 'Operação', 'Lançamentos'];
 
   /// Algo já foi escolhido ou lançado: voltar da 1ª etapa pergunta antes.
@@ -434,7 +433,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
       hasUnsavedChanges: _temDadosPreenchidos,
       onBack: _step == 0 ? null : _voltar,
       primaryLabel: _step < _totalSteps - 1
-          ? 'Próximo: ${_nomesEtapas[_step + 1]}'
+          ? 'Avançar'
           : 'Salvar apontamento',
       onPrimary: _avancar,
       summary: lancamentoPendente

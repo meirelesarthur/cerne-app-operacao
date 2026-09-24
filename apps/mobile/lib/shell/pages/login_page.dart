@@ -217,7 +217,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           variant: AppButtonVariant.onDark,
                           fullWidth: true,
                           onPressed: () => context.go('/onboarding'),
-                          child: const Text('Ver como o app funciona'),
+                          child: const Text('Ver apresentação'),
                         ),
                         // Indicação do ambiente — informação de protótipo, fora
                         // do card de login: fica no rodapé, na mesma voz

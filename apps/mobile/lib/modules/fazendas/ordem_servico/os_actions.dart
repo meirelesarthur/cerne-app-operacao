@@ -28,8 +28,8 @@ void abrirDetalheOs(BuildContext context, WidgetRef ref, OrdemServico os) {
 ///
 /// As ações ficam no rodapé fixo (`AppActionBar`), não no fim do conteúdo — o
 /// detalhe é longo e o próximo passo (iniciar, entregar, retomar) não pode
-/// depender de rolar até o fim. O CTA é o avanço natural do ciclo; "Precisa
-/// refazer" é a saída em contorno vermelho; a alternativa não destrutiva
+/// depender de rolar até o fim. O CTA é o avanço natural do ciclo; "Refazer
+/// serviço" é a saída em contorno vermelho; a alternativa não destrutiva
 /// (pausar, ou entregar direto de uma pausa) vai na faixa acima do CTA.
 class OsDetailPage extends ConsumerWidget {
   const OsDetailPage({super.key, required this.osId});
@@ -51,7 +51,7 @@ class OsDetailPage extends ConsumerWidget {
         onAlternative: () => abrirPausarOs(context, ref, os.id),
         primaryLabel: 'Entregar serviço',
         onPrimary: () => confirmarEntregarOs(context, ref, os),
-        secondaryLabel: 'Precisa refazer',
+        secondaryLabel: 'Refazer serviço',
         onSecondary: () => abrirRefazerOs(context, ref, os.id),
       ),
       OrdemServicoStatus.pausada => AppActionBar(
@@ -59,7 +59,7 @@ class OsDetailPage extends ConsumerWidget {
         onAlternative: () => confirmarEntregarOs(context, ref, os),
         primaryLabel: 'Retomar execução',
         onPrimary: () => confirmarRetomarOs(context, ref, os),
-        secondaryLabel: 'Precisa refazer',
+        secondaryLabel: 'Refazer serviço',
         onSecondary: () => abrirRefazerOs(context, ref, os.id),
       ),
       _ => null,
@@ -112,7 +112,7 @@ void abrirRefazerOs(BuildContext context, WidgetRef ref, String osId) {
       rotuloOutro: 'Por que precisa refazer?',
       placeholderOutro: 'Ex.: a cerca ficou torta no trecho perto da porteira',
       erroOutroVazio: 'Escreva por que o serviço precisa ser refeito.',
-      confirmar: 'Confirmar: precisa refazer',
+      confirmar: 'Confirmar',
       perigo: true,
       onConfirmar: (justificativa) {
         final atual = notifier.byId(osId);

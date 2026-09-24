@@ -12,8 +12,8 @@ Future<bool> confirmAppLeave(
   BuildContext context, {
   String title = 'Sair sem salvar?',
   String message = 'O que você preencheu nesta tela será perdido.',
-  String confirmLabel = 'Sair sem salvar',
-  String cancelLabel = 'Continuar preenchendo',
+  String confirmLabel = 'Descartar',
+  String cancelLabel = 'Continuar',
 }) => showAppConfirm(
   context,
   title: title,
@@ -37,8 +37,8 @@ class AppLeaveGuard extends StatelessWidget {
     required this.child,
     this.title = 'Sair sem salvar?',
     this.message = 'O que você preencheu nesta tela será perdido.',
-    this.confirmLabel = 'Sair sem salvar',
-    this.cancelLabel = 'Continuar preenchendo',
+    this.confirmLabel = 'Descartar',
+    this.cancelLabel = 'Continuar',
   });
 
   /// `true` quando há algo preenchido que ainda não foi salvo.

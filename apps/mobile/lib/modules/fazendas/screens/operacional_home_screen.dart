@@ -132,12 +132,7 @@ class _OperacionalHomeScreenState extends ConsumerState<OperacionalHomeScreen> {
           ],
           if (restantes > 0) ...[
             const SizedBox(height: AppSpacing.space3),
-            AppLabeledDivider(
-              label: restantes == 1
-                  ? 'Ver mais 1 ordem'
-                  : 'Ver mais $restantes ordens',
-              onTap: verTodas,
-            ),
+            AppLabeledDivider(label: 'Ver mais', onTap: verTodas),
           ],
           const SizedBox(height: AppSpacing.space4),
         ] else ...[

@@ -201,7 +201,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
                   size: AppButtonSize.sm,
                   variant: AppButtonVariant.secondary,
                   onPressed: () => context.push('/fazendas/campo/pesagem'),
-                  child: const Text('Fazer pesagem agora'),
+                  child: const Text('Pesar lote'),
                 ),
                 child: const Text('Pese o lote hoje antes de transferir.'),
               ),

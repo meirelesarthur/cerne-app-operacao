@@ -69,7 +69,7 @@ void main() {
 
       await tester.tap(find.text('Marcar lidas'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Ver histórico de notificações'));
+      await tester.tap(find.text('Ver histórico'));
       await tester.pumpAndSettle();
 
       expect(find.byType(AppNotificationTile), findsWidgets);

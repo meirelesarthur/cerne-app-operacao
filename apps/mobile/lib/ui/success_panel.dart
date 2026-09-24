@@ -109,7 +109,7 @@ WidgetbookComponent buildSuccessPanelWidgetbookComponent() {
                   variant: AppButtonVariant.secondary,
                   fullWidth: true,
                   onPressed: () {},
-                  child: const Text('Voltar ao início'),
+                  child: const Text('Concluir'),
                 ),
               ],
             ),

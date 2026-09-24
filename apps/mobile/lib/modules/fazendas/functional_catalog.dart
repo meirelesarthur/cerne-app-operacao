@@ -3082,7 +3082,7 @@ const operationalFeatures = <FeatureDefinition>[
     objective: 'Capturar a identificação do animal usando a câmera.',
     status: FeatureStatus.hardware,
     capabilities: ['Câmera', 'Área de enquadramento', 'Reiniciar leitura'],
-    primaryAction: 'Usar identificação capturada',
+    primaryAction: 'Usar identificação',
     simulation: HardwareSimulationKind.scanner,
     successTitle: 'Identificação SISBOV capturada',
     successDescription:

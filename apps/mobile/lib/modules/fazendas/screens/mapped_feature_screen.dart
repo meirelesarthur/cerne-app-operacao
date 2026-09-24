@@ -39,7 +39,7 @@ class MappedFeatureScreen extends StatelessWidget {
             'Volte ao ambiente correspondente para acessar esta responsabilidade.',
         action: AppButton(
           onPressed: () => context.go(resolvedCenterRoute),
-          child: const Text('Voltar ao ambiente'),
+          child: const Text('Voltar'),
         ),
       );
     }
@@ -134,6 +134,18 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   });
 
   void _showList() => setState(_journey.showList);
+
+  /// Botão de criar da listagem no imperativo, em até duas palavras: o
+  /// `createAction` do catálogo é um título ("Nova transferência de animal"),
+  /// então "Novo/Nova X" vira "Adicionar X".
+  static String _rotuloCriar(String? createAction) {
+    if (createAction == null) return 'Adicionar';
+    final palavras = createAction.split(' ');
+    if ({'Novo', 'Nova'}.contains(palavras.first)) {
+      return palavras.length > 1 ? 'Adicionar ${palavras[1]}' : 'Adicionar';
+    }
+    return palavras.take(2).join(' ');
+  }
 
   /// CTA do rodapé em formulário com etapas: avança enquanto houver etapa e
   /// só salva na última. Sem etapas declaradas, salva direto — o botão do
@@ -374,7 +386,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
               fullWidth: true,
               variant: AppButtonVariant.secondary,
               onPressed: () => context.go(widget.centerRoute),
-              child: const Text('Voltar à central'),
+              child: const Text('Voltar'),
             ),
           ],
         ),
@@ -445,7 +457,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
               primaryLabel: _journey.isLastStep
                   ? isEditing
                         ? 'Salvar alterações'
-                        : feature.primaryAction ?? 'Salvar registro'
+                        : feature.primaryAction ?? 'Salvar'
                   : 'Continuar',
               primaryIcon: _journey.isLastStep
                   ? AppIcons.saveAll
@@ -464,7 +476,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
             )
           : isRecordsList && canCreateRecords
           ? AppActionBar(
-              primaryLabel: feature.createAction ?? 'Novo registro',
+              primaryLabel: _rotuloCriar(feature.createAction),
               primaryIcon: AppIcons.plus,
               primarySize: AppButtonSize.xl,
               onPrimary: _startForm,

@@ -77,7 +77,7 @@ class PerfilConfigPage extends ConsumerWidget {
                                 AppButton(
                                   variant: AppButtonVariant.link,
                                   onPressed: () => context.go('/perfil'),
-                                  child: const Text('Ver perfil completo'),
+                                  child: const Text('Ver perfil'),
                                 ),
                               ],
                             ),

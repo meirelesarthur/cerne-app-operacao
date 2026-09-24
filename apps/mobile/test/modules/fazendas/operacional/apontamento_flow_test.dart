@@ -84,8 +84,8 @@ Future<void> _abrirGerenciador(WidgetTester tester, String group) async {
 /// (Identificação, Operação, Lançamentos) — cada teste que precisa das
 /// coleções atravessa as duas primeiras antes.
 Future<void> _avancar(WidgetTester tester) async {
-  // O CTA diz para qual etapa vai ("Próximo: Operação").
-  await tester.tap(find.textContaining('PRÓXIMO: '));
+  // CTA curto no imperativo; o nome da etapa fica na régua.
+  await tester.tap(findCta('Avançar'));
   await tester.pumpAndSettle();
 }
 

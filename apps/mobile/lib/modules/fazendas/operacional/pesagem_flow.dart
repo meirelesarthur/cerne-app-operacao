@@ -85,7 +85,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
         queued: _queued!,
         effects: 'O peso foi salvo na ficha do animal.',
         // Pesagem é em série: mantém lote e armazém e já abre o próximo.
-        nextLabel: 'Pesar próximo animal',
+        nextLabel: 'Pesar outro',
         onNext: () => setState(() {
           _queued = null;
           _animal = null;
