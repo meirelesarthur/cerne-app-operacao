@@ -32,6 +32,23 @@ AppIconData featureIcon(String featureId, String group) => switch (featureId) {
   'ordens-pendentes' => AppIcons.clock,
   'conexao-aparelhos' || 'conexao-aparelhos-pecuaria' => AppIcons.bluetooth,
   'configuracoes-misturador' => AppIcons.settings,
+  // Pecuária: cada função com um traço próprio, em vez de todas herdarem o
+  // boi do grupo (`groupIcon`).
+  'pesagem' => AppIcons.scale,
+  'sanitario' => AppIcons.shieldCheck,
+  'nutricoes' => AppIcons.wheat,
+  'transferencia-animal' => AppIcons.arrowLeftRight,
+  'transferencia-lote-area' => AppIcons.mapPinned,
+  'localizar-animal' => AppIcons.mapPin,
+  'pastagens' => AppIcons.leaf,
+  'apartacao' => AppIcons.filter,
+  'nascimentos' => AppIcons.baby,
+  'desmama' => AppIcons.milk,
+  'mortes' => AppIcons.heartCrack,
+  'registrar-animal' => AppIcons.clipboardCheck,
+  'perdas' => AppIcons.triangleAlert,
+  'rebanho-inicial' => AppIcons.barns,
+  'scanner-sisbov' => AppIcons.qrCode,
   _ => groupIcon(group),
 };
 
