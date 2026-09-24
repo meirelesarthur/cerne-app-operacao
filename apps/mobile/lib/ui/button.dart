@@ -37,6 +37,10 @@ enum AppButtonVariant {
   /// par visualmente (ex.: "Pular" ao lado de "Próximo" no onboarding).
   subtle,
 
+  /// Contorno e rótulo na cor da marca sobre fundo transparente — a ação
+  /// secundária ao lado do CTA na tela de resultado ("Nova pesagem").
+  outline,
+
   /// Cinza um tom acima da folha (`bgTrack`) — para uma ação de navegação
   /// sobre a folha cinza das homes ("Ver todas"), onde `subtle` (`bgCanvas`)
   /// some por ser quase o mesmo cinza da folha.
@@ -160,6 +164,11 @@ class AppButton extends StatelessWidget {
           border: null,
         ),
         AppButtonVariant.soft => (bg: s.bgTrack, fg: s.fgDefault, border: null),
+        AppButtonVariant.outline => (
+          bg: AppColors.transparent,
+          fg: s.accentDefault,
+          border: s.accentDefault,
+        ),
       };
 
   @override
@@ -350,6 +359,7 @@ AppButton(
 AppButton(variant: AppButtonVariant.ghost, ...)
 AppButton(variant: AppButtonVariant.subtle, ...)
 AppButton(variant: AppButtonVariant.soft, ...)
+AppButton(variant: AppButtonVariant.outline, ...)
 AppButton(variant: AppButtonVariant.danger, ...)
 AppButton(variant: AppButtonVariant.link, ...)''',
             child: Wrap(
@@ -376,6 +386,11 @@ AppButton(variant: AppButtonVariant.link, ...)''',
                   variant: AppButtonVariant.soft,
                   onPressed: () {},
                   child: const Text('Soft'),
+                ),
+                AppButton(
+                  variant: AppButtonVariant.outline,
+                  onPressed: () {},
+                  child: const Text('Outline'),
                 ),
                 AppButton(
                   variant: AppButtonVariant.danger,

@@ -346,10 +346,10 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Trator John Deere 6110 salvo'), findsOneWidget);
-        expect(find.text('Ver registros'), findsOneWidget);
+        expect(find.text('VER TODOS'), findsOneWidget);
         expect(tester.takeException(), isNull);
 
-        await tester.tap(find.text('Ver registros'));
+        await tester.tap(find.text('VER TODOS'));
         await tester.pumpAndSettle();
 
         expect(find.text('Trator John Deere 6110'), findsWidgets);

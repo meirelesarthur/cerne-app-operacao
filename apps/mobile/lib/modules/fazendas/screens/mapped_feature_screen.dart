@@ -361,7 +361,11 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   Widget build(BuildContext context) {
     if (_journey.mode == FunctionalJourneyMode.success) {
       final wasEditing = _lastEditedTitle != null;
+      final canCreate = feature.fields.isNotEmpty && !feature.readOnly;
+      // Tela de resultado padrão: inclusão em verde, alteração em azul.
+      // Repetir (contorno) em cima, ver a lista (CTA) embaixo.
       return AppSuccessPanel(
+        kind: wasEditing ? AppResultKind.updated : AppResultKind.created,
         title: wasEditing
             ? '${_lastEditedTitle ?? feature.title} atualizado'
             : feature.successTitle ??
@@ -373,20 +377,25 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
         ),
         actions: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (feature.listMode) ...[
+            if (feature.listMode && canCreate) ...[
               AppButton(
                 fullWidth: true,
-                onPressed: _showList,
-                child: const Text('Ver registros'),
+                size: AppButtonSize.lg,
+                variant: AppButtonVariant.outline,
+                onPressed: _startForm,
+                child: Text(_rotuloCriar(feature.createAction).toUpperCase()),
               ),
-              const SizedBox(height: AppSpacing.space2),
+              const SizedBox(height: AppSpacing.space3),
             ],
             AppButton(
               fullWidth: true,
-              variant: AppButtonVariant.secondary,
-              onPressed: () => context.go(widget.centerRoute),
-              child: const Text('Voltar'),
+              size: AppButtonSize.lg,
+              onPressed: feature.listMode
+                  ? _showList
+                  : () => context.go(widget.centerRoute),
+              child: Text(feature.listMode ? 'VER TODOS' : 'CONCLUIR'),
             ),
           ],
         ),

@@ -105,6 +105,29 @@ class AppIcons {
   static const AppIconData circle = AppIconData.glyph(
     HugeIcons.strokeRoundedCircle,
   );
+
+  // Selos quadrados da tela de resultado (AppSuccessPanel): um por situação.
+  static const AppIconData checkSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedCheckmarkSquare02,
+  );
+  static const AppIconData editSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedPencilEdit02,
+  );
+  static const AppIconData deleteSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedDelete02,
+  );
+  static const AppIconData alertSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedAlertSquare,
+  );
+  static const AppIconData cancelSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedCancelSquare,
+  );
+  static const AppIconData infoSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedInformationSquare,
+  );
+  static const AppIconData cloudSaved = AppIconData.glyph(
+    HugeIcons.strokeRoundedCloudSavingDone01,
+  );
   static const AppIconData circleAlert = AppIconData.glyph(
     HugeIcons.strokeRoundedAlertCircle,
   );

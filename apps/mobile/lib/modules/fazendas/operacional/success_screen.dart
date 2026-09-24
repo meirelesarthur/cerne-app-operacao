@@ -46,44 +46,47 @@ class SuccessScreen extends ConsumerWidget {
       fazendasStoreProvider.select((s) => s.syncQueue.length),
     );
 
+    // Tela de resultado padrão (faixa colorida + selo): verde quando foi
+    // para o sistema, âmbar quando ficou guardado no aparelho sem internet.
+    // A faixa sobe por trás da barra de status, então só o rodapé respeita a
+    // área segura.
     return Scaffold(
-      backgroundColor: semantic.bgCanvas,
+      backgroundColor: semantic.bgSurface,
       body: SafeArea(
-        child: AppContentSheet(
-          child: AppSuccessPanel(
-            title: queued ? 'Salvo no aparelho' : title,
-            icon: queued ? AppIcons.refreshCw : AppIcons.checkCircle2,
-            description: Text(
-              queued
-                  ? 'Vai subir sozinho quando o celular pegar sinal de novo — '
-                        '$pendentes ${pendentes == 1 ? 'lançamento está' : 'lançamentos estão'} '
-                        'esperando para sincronizar. $effects'
-                  : effects,
-            ),
-            actions: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (nextLabel != null && onNext != null) ...[
-                  AppButton(
-                    fullWidth: true,
-                    size: AppButtonSize.lg,
-                    onPressed: onNext,
-                    child: Text(nextLabel!),
-                  ),
-                  const SizedBox(height: AppSpacing.space2),
-                ],
+        top: false,
+        child: AppSuccessPanel(
+          kind: queued ? AppResultKind.pending : AppResultKind.created,
+          title: queued ? 'Salvo no celular' : title,
+          description: Text(
+            queued
+                ? 'Sem internet agora. Fica guardado e é enviado quando o '
+                      'sinal voltar — '
+                      '$pendentes ${pendentes == 1 ? 'lançamento esperando' : 'lançamentos esperando'}. '
+                      '$effects'
+                : effects,
+          ),
+          // Repetir (contorno) em cima e seguir (CTA) embaixo, como no padrão.
+          actions: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (nextLabel != null && onNext != null) ...[
                 AppButton(
                   fullWidth: true,
                   size: AppButtonSize.lg,
-                  variant: nextLabel != null
-                      ? AppButtonVariant.subtle
-                      : AppButtonVariant.primary,
-                  onPressed: () => context.go('/fazendas'),
-                  child: const Text('Concluir'),
+                  variant: AppButtonVariant.outline,
+                  onPressed: onNext,
+                  child: Text(nextLabel!.toUpperCase()),
                 ),
+                const SizedBox(height: AppSpacing.space3),
               ],
-            ),
+              AppButton(
+                fullWidth: true,
+                size: AppButtonSize.lg,
+                onPressed: () => context.go('/fazendas'),
+                child: const Text('CONCLUIR'),
+              ),
+            ],
           ),
         ),
       ),
