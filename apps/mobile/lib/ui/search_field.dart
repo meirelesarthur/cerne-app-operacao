@@ -4,6 +4,7 @@ import 'package:widgetbook/widgetbook.dart';
 import 'app_icon.dart';
 import 'field_capsule.dart';
 import 'pressable.dart';
+import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -46,7 +47,6 @@ class AppSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final inputColors = appInputColors(context);
 
     final content = Text(
@@ -74,14 +74,14 @@ class AppSearchField extends StatelessWidget {
             width: _actionSize,
             height: _actionSize,
             alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: semantic.accentSubtle,
+            decoration: const BoxDecoration(
+              color: AppColors.brand700,
               shape: BoxShape.circle,
             ),
-            child: AppIcon(
-              AppIcons.aiSearch,
+            child: const AppIcon(
+              AppIcons.search,
               size: AppSize.iconLg,
-              color: semantic.accentDefault,
+              color: AppColors.neutral0,
             ),
           ),
         ],
