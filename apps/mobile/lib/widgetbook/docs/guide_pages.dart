@@ -92,8 +92,9 @@ const widgetbookChangelog = <WidgetbookRelease>[
       ),
       (
         'Mudou',
-        'FieldCapsule: borda forte em repouso para o campo não sumir na folha '
-            'branca.',
+        'FieldCapsule: sem contorno em repouso (verde só com foco, vermelho '
+            'com erro). TextInput com obscureText ganha o olho de mostrar/'
+            'ocultar senha.',
       ),
       (
         'Novo',
