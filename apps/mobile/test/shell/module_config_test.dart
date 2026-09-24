@@ -104,15 +104,19 @@ void main() {
       },
     );
 
-    test('navbar operacional: Início, Pecuária, Agricultura e Menu', () {
-      expect(operationalBottomTabs.map((t) => t.label), [
-        'Início',
-        'Pecuária',
-        'Agricultura',
-        'Menu',
-      ]);
-      expect(operationalBottomTabs.last.action, 'menu');
-    });
+    test(
+      'navbar operacional: Início, Pecuária, Agricultura, Confinamento e Menu',
+      () {
+        expect(operationalBottomTabs.map((t) => t.label), [
+          'Início',
+          'Pecuária',
+          'Agricultura',
+          'Confinamento',
+          'Menu',
+        ]);
+        expect(operationalBottomTabs.last.action, 'menu');
+      },
+    );
 
     test('Fazendas só entrega a aba operacional (perfil único do app)', () {
       final fazendas = getModule('fazendas')!;

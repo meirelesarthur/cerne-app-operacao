@@ -45,7 +45,13 @@ void main() {
       // em ladrilhos logo abaixo.
       expect(find.text('Ver todas'), findsOneWidget);
       expect(find.text('Ver mais'), findsOneWidget);
-      expect(find.byTooltip('Início'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AppBottomTabBar),
+          matching: find.bySemanticsLabel('Início'),
+        ),
+        findsOneWidget,
+      );
       expect(find.byType(AppModuleTile), findsWidgets);
     });
 
@@ -263,7 +269,7 @@ void main() {
     );
 
     testWidgets(
-      'navbar operacional: Início, Pecuária, Agricultura e Menu lateral',
+      'navbar operacional: Início, Pecuária, Agricultura, Confinamento e Menu',
       (tester) async {
         await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
@@ -273,12 +279,11 @@ void main() {
           of: find.byType(AppBottomTabBar),
           matching: find.bySemanticsLabel(label),
         );
-        expect(aba('Confinamento'), findsNothing);
         expect(aba('Pecuária'), findsOneWidget);
         expect(aba('Agricultura'), findsOneWidget);
-
-        // O Menu abre o menu lateral com os grupos que saíram da tela
-        // inicial; Confinamento, antes aba própria, agora vive ali.
+        // Confinamento voltou a ser aba, depois de Agricultura, e continua
+        // também no menu lateral.
+        expect(aba('Confinamento'), findsOneWidget);
         await tester.tap(find.bySemanticsLabel('Menu'));
         await tester.pumpAndSettle();
 

@@ -52,6 +52,11 @@ const widgetbookChangelog = <WidgetbookRelease>[
       ),
       (
         'Mudou',
+        'Ícone oficial de confinamento (contorno vetorizado) em AppIcons.'
+            'confinamento.',
+      ),
+      (
+        'Mudou',
         'Alvos de toque: control, btn e iconBtn em 48dp (CTA grande 52); '
             'traço dos ícones em 1.5.',
       ),

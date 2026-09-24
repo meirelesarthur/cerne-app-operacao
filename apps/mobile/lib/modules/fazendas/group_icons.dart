@@ -33,6 +33,23 @@ AppIconData featureIcon(String featureId, String group) => switch (featureId) {
   _ => groupIcon(group),
 };
 
+/// O que dá para fazer no módulo, numa frase curta — fica sob o título da
+/// tela do grupo, no lugar da antiga contagem de funções: saber *para que*
+/// serve o módulo orienta mais do que saber quantos itens ele tem.
+String? groupSummary(String group) => switch (group) {
+  'Pecuária' =>
+    'Pesagem, vacinas, nascimentos, mortes e transferência de animais.',
+  'Confinamento' =>
+    'Trato do dia, leitura de cocho, batida de ração e currais.',
+  'Agricultura' => 'Apontamento de serviços e marcações nos talhões.',
+  'Consultas' => 'Lotes, áreas, dietas e estações de monta.',
+  'Reprodução' => 'Acasalamento e diagnóstico de prenhez.',
+  'Gestão de frota' => 'Abastecimento e manutenção de máquinas.',
+  'Ordem de serviço' => 'As ordens de serviço mandadas para você.',
+  'Sincronização' => 'Envio dos lançamentos feitos sem internet.',
+  _ => null,
+};
+
 /// Rótulo de apresentação dos módulos na entrada operacional. O catálogo
 /// mantém o nome de domínio para chaves, slugs e auditoria; a home usa o
 /// vocabulário curto que aparece no layout de referência.

@@ -311,6 +311,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
 String _operationalTabFor(String path) {
   if (path.contains('/grupo/pecuaria')) return 'pecuaria';
   if (path.contains('/grupo/agricultura')) return 'agricultura';
+  if (path.contains('/grupo/confinamento')) return 'confinamento';
   if (path.contains('/grupo/')) return '';
   return 'inicio';
 }

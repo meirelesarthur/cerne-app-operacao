@@ -128,6 +128,12 @@ const List<BottomTab> operationalBottomTabs = [
     path: 'operacional/grupo/agricultura',
   ),
   BottomTab(
+    id: 'confinamento',
+    label: 'Confinamento',
+    icon: AppIcons.confinamento,
+    path: 'operacional/grupo/confinamento',
+  ),
+  BottomTab(
     id: 'menu',
     label: 'Menu',
     icon: AppIcons.menu,

@@ -12,7 +12,7 @@ Widget _wrap(Widget child) => MaterialApp(
 
 void main() {
   group('AppBottomTabBar', () {
-    testWidgets('renderiza as 4 abas operacionais sem exceção', (tester) async {
+    testWidgets('renderiza as 5 abas operacionais sem exceção', (tester) async {
       await tester.pumpWidget(
         _wrap(
           AppBottomTabBar(
@@ -24,7 +24,13 @@ void main() {
       );
 
       // Todas as abas mostram o nome escrito — não só a ativa.
-      for (final label in ['Início', 'Pecuária', 'Agricultura', 'Menu']) {
+      for (final label in [
+        'Início',
+        'Pecuária',
+        'Agricultura',
+        'Confinamento',
+        'Menu',
+      ]) {
         expect(find.text(label), findsOneWidget);
       }
       expect(tester.takeException(), isNull);

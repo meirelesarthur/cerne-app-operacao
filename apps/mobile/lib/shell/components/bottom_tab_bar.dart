@@ -10,8 +10,8 @@ import 'package:cerne_app/design/generated/app_spacing.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
 
 /// Navbar flutuante do app (Nova UI — referência Força Agro): cápsula
-/// **opaca** (sem blur); a aba ativa vira pílula expandida (ícone + rótulo)
-/// em verde de marca sólido, as demais mostram o ícone com o nome embaixo. As abas vêm de `operationalBottomTabs` (`module_config.dart`).
+/// **opaca** (sem blur); toda aba mostra o ícone com o nome embaixo, e a
+/// ativa se distingue pela cor de marca. As abas vêm de `operationalBottomTabs` (`module_config.dart`).
 ///
 /// Autocontido (`Row`/`Container`) — este widget NÃO se posiciona sozinho na
 /// base da tela, para ser reutilizável em testes/Widgetbook sem depender de
@@ -47,8 +47,8 @@ class AppBottomTabBar extends StatelessWidget {
           border: Border.all(color: semantic.navBorder),
           boxShadow: semantic.shadowModal,
         ),
-        // Rede de segurança: com a pílula ativa expandida, a Row poderia
-        // estourar a largura de um Android estreito (360dp) sem avisar.
+        // Rede de segurança: com cinco abas nomeadas, a Row poderia estourar
+        // a largura de um Android estreito (360dp) sem avisar.
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           physics: const ClampingScrollPhysics(),
@@ -88,79 +88,45 @@ class _ModuleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+    // Toda aba no mesmo formato — ícone em cima, nome embaixo. A ativa muda
+    // só a cor (verde de marca) e o peso do nome: nada de pílula que
+    // reorganiza a barra ao trocar de aba.
+    final color = active ? semantic.navActive : semantic.navFg;
 
-    // Aba inativa com o nome sempre visível embaixo do ícone (auditoria de
-    // UX): só o ícone — com o nome escondido num tooltip de toque longo —
-    // não dizia para onde a aba levava.
-    if (!active) {
-      return Material(
-        color: AppColors.transparent,
+    return Material(
+      color: AppColors.transparent,
+      borderRadius: BorderRadius.circular(AppRadius.full),
+      child: AppPressable(
+        semanticLabel: label,
+        selected: active,
+        onPressed: onTap,
+        minTouchTarget: false,
         borderRadius: BorderRadius.circular(AppRadius.full),
-        child: AppPressable(
-          semanticLabel: label,
-          onPressed: onTap,
-          minTouchTarget: false,
-          borderRadius: BorderRadius.circular(AppRadius.full),
-          child: Container(
-            height: AppComponentMetrics.tabbarItemSize,
-            constraints: const BoxConstraints(
-              minWidth: AppComponentMetrics.tabbarItemSize,
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space2),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppIcon(icon, size: AppSize.iconMd, color: semantic.navFg),
-                const SizedBox(height: AppSpacing.half),
-                Text(
-                  label,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontSize: AppTypography.sm,
-                    fontWeight: AppTypography.weightMedium,
-                    height: AppTypography.lineHeightTight,
-                    color: semantic.navFg,
-                  ),
-                ),
-              ],
-            ),
+        child: Container(
+          height: AppComponentMetrics.tabbarItemSize,
+          constraints: const BoxConstraints(
+            minWidth: AppComponentMetrics.tabbarItemSize,
           ),
-        ),
-      );
-    }
-
-    // Item ativo: pílula expandida (ícone + rótulo) em verde sólido de marca —
-    // mesmo tratamento do CTA primário (`AppSemanticColors.cta*`).
-    return Tooltip(
-      message: label,
-      child: Material(
-        color: semantic.ctaBg,
-        borderRadius: BorderRadius.circular(AppRadius.full),
-        child: AppPressable(
-          semanticLabel: label,
-          selected: true,
-          onPressed: onTap,
-          minTouchTarget: false,
-          borderRadius: BorderRadius.circular(AppRadius.full),
-          child: Container(
-            height: AppComponentMetrics.tabbarItemSize,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space4),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                AppIcon(icon, size: AppSize.iconMd, color: semantic.ctaFg),
-                const SizedBox(width: AppSpacing.space2),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: AppTypography.md,
-                    fontWeight: AppTypography.weightSemibold,
-                    color: semantic.ctaFg,
-                  ),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space2),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AppIcon(icon, size: AppSize.iconMd, color: color),
+              const SizedBox(height: AppSpacing.half),
+              Text(
+                label,
+                maxLines: 1,
+                style: TextStyle(
+                  fontSize: AppTypography.sm,
+                  fontWeight: active
+                      ? AppTypography.weightSemibold
+                      : AppTypography.weightMedium,
+                  height: AppTypography.lineHeightTight,
+                  color: color,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
