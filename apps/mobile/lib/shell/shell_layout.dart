@@ -107,7 +107,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
   Future<void> _openQuickAdd(BuildContext context, WidgetRef ref) async {
     ref.read(shellStoreProvider.notifier).closeMenu();
     setState(() => _quickAddOpen = true);
-    final picked = await showQuickAddSheet(
+    final picked = await showQuickAddOverlay(
       context,
       items: operationalQuickAdds(),
     );
