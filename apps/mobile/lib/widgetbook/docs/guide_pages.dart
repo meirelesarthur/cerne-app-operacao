@@ -57,6 +57,24 @@ const widgetbookChangelog = <WidgetbookRelease>[
       ),
       (
         'Mudou',
+        'Ícones autorais de pecuária, agricultura e frota (AppIcons.pecuaria, '
+            'agricultura e gestaoFrota), usados na navbar, menu e busca.',
+      ),
+      (
+        'Mudou',
+        'SuccessPanel vira a tela de resultado padrão: faixa colorida com '
+            'curva, selo animado e AppResultKind (inclusão, alteração, '
+            'exclusão, salvo sem internet, aviso, erro, informação), com um '
+            'caso no Widgetbook para cada.',
+      ),
+      (
+        'Novo',
+        'Button: variante outline (contorno da marca). Ícones checkSquare, '
+            'editSquare, deleteSquare, alertSquare, cancelSquare, infoSquare '
+            'e cloudSaved.',
+      ),
+      (
+        'Mudou',
         'Alvos de toque: control, btn e iconBtn em 48dp (CTA grande 52); '
             'traço dos ícones em 1.5.',
       ),

@@ -19,8 +19,9 @@ import '../design/theme/app_theme_extension.dart';
 /// congelaria a espessura no binário e não teria essa folga.
 ///
 /// **Vetores autorais** ([AppIconData.asset]) cobrem o que o set não tem. Não
-/// existe bovino no Hugeicons gratuito, e o desenho de confinamento é próprio
-/// do GB CERNE: os dois vivem em `assets/icons/` como contorno vetorizado
+/// existe bovino no Hugeicons gratuito, e pecuária, confinamento, agricultura
+/// e frota têm desenho próprio do GB CERNE: vivem em `assets/icons/` como
+/// contorno vetorizado
 /// (espessura desenhada na geometria) e chegam à tela pela mesma [AppIcon].
 /// Quem consome não sabe — nem precisa saber — de qual origem o ícone veio.
 ///
@@ -519,6 +520,16 @@ class AppIcons {
     'assets/icons/pecuaria.svg',
   );
 
+  /// Agricultura — desenho da marca.
+  static const AppIconData agriculturaAutoral = AppIconData.asset(
+    'assets/icons/agricultura.svg',
+  );
+
+  /// Gestão de frota — desenho da marca.
+  static const AppIconData frotaAutoral = AppIconData.asset(
+    'assets/icons/frota.svg',
+  );
+
   // --- Apelidos de domínio -----------------------------------------------
   // Nomeiam o conceito do agronegócio, não o desenho. São os nomes que as telas
   // de Fazendas e o padrão global do Figma devem usar: quando o desenho de um
@@ -531,7 +542,7 @@ class AppIcons {
   static const AppIconData pecuaria = pecuariaAutoral;
 
   /// Agricultura.
-  static const AppIconData agricultura = sprout;
+  static const AppIconData agricultura = agriculturaAutoral;
 
   /// Ordem de serviço.
   static const AppIconData ordemServico = fileText;
@@ -546,7 +557,7 @@ class AppIcons {
   static const AppIconData consultas = bookSearch;
 
   /// Gestão de frota.
-  static const AppIconData gestaoFrota = tractor;
+  static const AppIconData gestaoFrota = frotaAutoral;
 
   /// Sincronizar aplicativo.
   static const AppIconData sincronizar = cloudSync;

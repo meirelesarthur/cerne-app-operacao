@@ -183,7 +183,12 @@ void main() {
       // espessura está embutida na geometria e não acompanha
       // `AppSize.iconStroke`. Se um dia vier uma versão traçada, este teste
       // falha e avisa que a ressalva pode sair da documentação.
-      for (final icon in [AppIcons.confinamento, AppIcons.pecuaria]) {
+      for (final icon in [
+        AppIcons.confinamento,
+        AppIcons.pecuaria,
+        AppIcons.agricultura,
+        AppIcons.gestaoFrota,
+      ]) {
         final svg = await File(icon.asset!).readAsString();
 
         expect(svg.contains('stroke-width'), isFalse, reason: icon.asset);
