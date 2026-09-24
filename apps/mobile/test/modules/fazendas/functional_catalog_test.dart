@@ -317,4 +317,16 @@ void main() {
       expect(featureById('nota-cocho'), isNull);
     });
   });
+
+  test('estação de monta é escolhida do cadastro WEB, nunca digitada', () {
+    // Acasalamento e material reprodutivo vinculam a estação cadastrada no
+    // sistema WEB — o campo é busca na lista, como nos protocolos.
+    for (final id in ['monta-natural', 'material-reprodutivo']) {
+      final campo = featureById(
+        id,
+      )!.fields.firstWhere((f) => f.id == 'estacao-monta');
+      expect(campo.type, FeatureFieldType.searchSelect, reason: id);
+      expect(campo.options, catalogoEstacoesMonta, reason: id);
+    }
+  });
 }

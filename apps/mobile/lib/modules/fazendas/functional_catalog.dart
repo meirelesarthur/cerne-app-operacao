@@ -447,7 +447,10 @@ const catalogoAreas = <String>[
   'Reserva Legal',
 ];
 const catalogoModulos = <String>['Módulo A', 'Módulo B', 'Módulo C'];
+/// Estações de monta cadastradas no sistema WEB (o app só escolhe, nunca
+/// digita — ver `estacao-monta`, que aqui é só consulta).
 const catalogoEstacoesMonta = <String>[
+  'Estação Primavera 2026',
   'Estação 2025/2026',
   'Estação 2026/2027',
 ];
@@ -3373,10 +3376,13 @@ const operationalFeatures = <FeatureDefinition>[
         isRequired: true,
       ),
       FeatureField(id: 'descricao', label: 'Descrição', isRequired: true),
+      // Estação vem do cadastro WEB: escolha na lista, não texto livre.
       FeatureField(
         id: 'estacao-monta',
         label: 'Estação de monta',
+        type: FeatureFieldType.searchSelect,
         isRequired: true,
+        options: catalogoEstacoesMonta,
       ),
     ],
     // `products[]` — cada palheta/dose tem armazém e produto próprios.
@@ -3561,7 +3567,14 @@ const operationalFeatures = <FeatureDefinition>[
           (value: '2', label: 'Animal por animal'),
         ],
       ),
-      FeatureField(id: 'estacao-monta', label: 'Estação de monta'),
+      // Estação vem do cadastro WEB (banco de dados): escolha na lista das
+      // estações já cadastradas, nunca digitada no campo.
+      FeatureField(
+        id: 'estacao-monta',
+        label: 'Estação de monta',
+        type: FeatureFieldType.searchSelect,
+        options: catalogoEstacoesMonta,
+      ),
       FeatureField(
         id: 'material-reprodutivo',
         label: 'Material reprodutivo',
