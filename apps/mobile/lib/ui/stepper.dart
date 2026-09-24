@@ -77,14 +77,15 @@ class _AppStepperState extends State<AppStepper> {
         label: label,
         child: InkWell(
           onTap: onTap,
-          // 56 de largura e glifo de 20: o +/- é tocado dezenas de vezes por
-          // lançamento, muitas vezes de luva.
+          // 56 de largura e glifo de 16: o alvo de toque continua grande (para
+          // luva), mas o glifo não precisa competir em peso com o valor
+          // central.
           child: SizedBox(
             width: AppSpacing.space14,
             height: height,
             child: AppIcon(
               icon,
-              size: AppSize.iconMd,
+              size: AppSize.iconSm,
               color: onTap == null ? semantic.fgSubtle : semantic.fgMuted,
             ),
           ),
