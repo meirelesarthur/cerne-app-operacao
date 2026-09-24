@@ -266,15 +266,25 @@ class _FieldCell extends StatelessWidget {
 
 /// Lista simples dentro de uma [AppDetailSection] — um item por linha, com
 /// marcador e separador, no lugar de "· item" em texto corrido.
+///
+/// `captions` põe uma linha de apoio sob cada item (quantidade, função…) e
+/// `onItemTap` torna as linhas tocáveis (chevron à direita) para abrir o
+/// item inteiro — em geral numa dock ([showAppBottomSheet]).
 class AppDetailList extends StatelessWidget {
   const AppDetailList({
     super.key,
     required this.items,
     this.emptyLabel = 'Nada informado.',
-  });
+    this.captions,
+    this.onItemTap,
+  }) : assert(captions == null || captions.length == items.length);
 
   final List<String> items;
   final String emptyLabel;
+
+  /// Mesmo tamanho de `items`; `null` numa posição = item sem apoio.
+  final List<String?>? captions;
+  final ValueChanged<int>? onItemTap;
 
   @override
   Widget build(BuildContext context) {
@@ -292,29 +302,75 @@ class AppDetailList extends StatelessWidget {
       );
     }
 
+    Widget row(int i) {
+      final caption = captions?[i];
+      final onTap = onItemTap;
+      final content = Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.space3),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.threeQuarter),
+              child: AppIcon(
+                AppIcons.checkCircle2,
+                size: AppSize.iconSm,
+                color: semantic.accentDefault,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.space3),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(items[i], style: style),
+                  if (caption != null) ...[
+                    const SizedBox(height: AppSpacing.half),
+                    Text(
+                      caption,
+                      maxLines: onTap == null ? null : 2,
+                      overflow: onTap == null ? null : TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: AppTypography.base,
+                        color: semantic.fgMuted,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            if (onTap != null) ...[
+              const SizedBox(width: AppSpacing.space2),
+              Padding(
+                padding: const EdgeInsets.only(top: AppSpacing.threeQuarter),
+                child: AppIcon(
+                  AppIcons.chevronRight,
+                  size: AppSize.iconSm,
+                  color: semantic.fgMuted,
+                ),
+              ),
+            ],
+          ],
+        ),
+      );
+      if (onTap == null) return content;
+      return Semantics(
+        button: true,
+        child: InkWell(
+          onTap: () => onTap(i),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          child: content,
+        ),
+      );
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (var i = 0; i < items.length; i++) ...[
           if (i > 0) Divider(height: 1, color: semantic.borderDefault),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppSpacing.space3),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: AppSpacing.threeQuarter),
-                  child: AppIcon(
-                    AppIcons.checkCircle2,
-                    size: AppSize.iconSm,
-                    color: semantic.accentDefault,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.space3),
-                Expanded(child: Text(items[i], style: style)),
-              ],
-            ),
-          ),
+          row(i),
         ],
       ],
     );
@@ -452,6 +508,33 @@ WidgetbookComponent buildDetailSectionWidgetbookComponent() {
             count: 2,
             child: AppDetailList(
               items: ['Trator John Deere 6110J', 'Pulverizador Jacto 2000 L'],
+            ),
+          ),
+        ),
+      ),
+      WidgetbookUseCase(
+        name: 'Lista tocável com apoio',
+        builder: (context) => sheet(
+          Builder(
+            builder: (context) => AppDetailSection(
+              icon: AppIcons.flaskConical,
+              title: 'Insumos',
+              count: 2,
+              child: AppDetailList(
+                items: const ['Herbicida pré-emergente', 'Óleo diesel S10'],
+                captions: const ['44 L · 2 L/ha', '90 L · 4,09 L/ha'],
+                onItemTap: (i) => showAppBottomSheet<void>(
+                  context,
+                  title: i == 0 ? 'Herbicida pré-emergente' : 'Óleo diesel S10',
+                  child: const AppDetailFields(
+                    columns: 2,
+                    fields: [
+                      AppDetailField(label: 'Un. medida', value: 'L'),
+                      AppDetailField(label: 'Estoque', value: '7,02'),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),

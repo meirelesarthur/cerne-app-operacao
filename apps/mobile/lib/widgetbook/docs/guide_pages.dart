@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.14.0';
+const kWidgetbookVersion = '2.15.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,27 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.15.0',
+    date: '2026-09-24',
+    summary: 'Recursos da OS com detalhe por item, como nas abas do WEB.',
+    changes: [
+      (
+        'Novo',
+        'AppDetailList.captions e onItemTap: linha de apoio por item e linhas '
+            'tocáveis com chevron — caso "Lista tocável com apoio" em '
+            'DetailSection.',
+      ),
+      (
+        'Mudou',
+        'Detalhe da OS: mão de obra, máquinas e implementos, insumos, '
+            'produção (nova seção), EPI e evidências abrem uma dock com os '
+            'campos do WEB — insumo com un. medida, estoque, qtd/ha, qtd '
+            'total e armazém; produção com un. medida, qtde, armazém e '
+            'observação.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.14.0',
     date: '2026-09-24',

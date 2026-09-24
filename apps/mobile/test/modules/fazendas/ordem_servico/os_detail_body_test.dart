@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/mocks.dart';
+import 'package:cerne_app/modules/fazendas/ordem_servico/models.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/widgets.dart';
 
 void main() {
@@ -40,6 +41,93 @@ void main() {
     final recente = tester.getTopLeft(find.text(os.historico.last.acao));
     final antigo = tester.getTopLeft(find.text(os.historico.first.acao));
     expect(recente.dy, lessThan(antigo.dy));
+  });
+
+  Future<void> pumpOs(WidgetTester tester, OrdemServico os) =>
+      tester.pumpWidget(
+        MaterialApp(
+          theme: buildAppTheme(AppThemeVariant.light),
+          home: Scaffold(
+            body: SingleChildScrollView(child: OsDetailBody(os: os)),
+          ),
+        ),
+      );
+
+  Future<void> abrir(WidgetTester tester, String texto) async {
+    // Só linhas tocáveis: "João Oliveira" também aparece como responsável.
+    final alvo = find
+        .descendant(of: find.byType(InkWell), matching: find.text(texto))
+        .first;
+    await tester.ensureVisible(alvo);
+    await tester.tap(alvo);
+    await tester.pumpAndSettle();
+  }
+
+  testWidgets('cada insumo abre a dock com os campos da aba do WEB', (
+    tester,
+  ) async {
+    final insumo = os.insumos.first;
+    await pumpOs(tester, os);
+    await abrir(tester, insumo.produto);
+
+    for (final rotulo in [
+      'Un. medida',
+      'Estoque',
+      'Qtd/ha',
+      'Qtd total',
+      'Armazém de insumos',
+    ]) {
+      expect(find.text(rotulo), findsOneWidget, reason: rotulo);
+    }
+    expect(find.text(os.armazemInsumos!), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('produção lista o que o serviço gera e abre o detalhe', (
+    tester,
+  ) async {
+    final comProducao = ordensServico.firstWhere((o) => o.producao.isNotEmpty);
+    final item = comProducao.producao.first;
+    await pumpOs(tester, comProducao);
+    await abrir(tester, item.produto);
+
+    expect(find.text('Qtde'), findsOneWidget);
+    expect(find.text('Armazém de produção'), findsOneWidget);
+    expect(find.text(comProducao.armazemProducao!), findsOneWidget);
+    expect(find.text(item.observacao!), findsOneWidget);
+  });
+
+  testWidgets('sem produção, a seção avisa em vez de sumir', (tester) async {
+    await pumpOs(tester, os);
+    expect(os.producao, isEmpty);
+    expect(find.text('Este serviço não gera produção.'), findsOneWidget);
+  });
+
+  testWidgets('mão de obra, máquina, EPI e evidência abrem o detalhe', (
+    tester,
+  ) async {
+    await pumpOs(tester, os);
+    Future<void> fechar() async {
+      await tester.tap(find.text('Fechar'));
+      await tester.pumpAndSettle();
+    }
+
+    await abrir(tester, os.maoDeObra.first.nome);
+    expect(find.text('Função'), findsOneWidget);
+    await fechar();
+
+    await abrir(tester, os.maquinas.first.nome);
+    expect(find.text('Uso previsto'), findsOneWidget);
+    await fechar();
+
+    await abrir(tester, os.epis.first.nome);
+    expect(find.text('CA'), findsOneWidget);
+    await fechar();
+
+    final ev = os.evidencias.first;
+    await abrir(tester, ev.legenda);
+    expect(find.text('Registrado por'), findsOneWidget);
+    expect(find.text(ev.observacao!), findsOneWidget);
   });
 
   testWidgets('tocar num evento abre a dock com o registro completo', (

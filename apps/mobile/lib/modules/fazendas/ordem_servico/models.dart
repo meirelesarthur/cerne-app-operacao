@@ -74,14 +74,147 @@ extension OrdemServicoStatusLabel on OrdemServicoStatus {
   bool get encerrada => !emAndamento;
 }
 
+// --- Recursos alocados na autorização -------------------------------------
+// Cada aba da OS no WEB (MO/Serviços, Máq/Implementos, Insumos, Produção,
+// Proteções/EPI) vira uma lista de itens estruturados: a tela mostra um
+// resumo por linha e o toque abre o item inteiro numa dock.
+
+enum TipoMaoDeObraOs { funcionario, funcao, prestador }
+
+extension TipoMaoDeObraOsLabel on TipoMaoDeObraOs {
+  String get label => switch (this) {
+    TipoMaoDeObraOs.funcionario => 'Funcionário',
+    TipoMaoDeObraOs.funcao => 'Função',
+    TipoMaoDeObraOs.prestador => 'Prestador de serviço',
+  };
+}
+
+/// Linha da aba MO/Serviços.
+class MaoDeObraOs {
+  const MaoDeObraOs({
+    required this.tipo,
+    required this.nome,
+    required this.funcao,
+    required this.quantidade,
+    required this.unidade,
+  });
+
+  final TipoMaoDeObraOs tipo;
+
+  /// Funcionário/prestador (ou a função, quando `tipo` é função).
+  final String nome;
+  final String funcao;
+
+  /// Previsto na autorização (ex.: 8 h, 2 diárias).
+  final num quantidade;
+  final String unidade;
+}
+
+enum TipoMaquinaOs { maquina, implemento }
+
+extension TipoMaquinaOsLabel on TipoMaquinaOs {
+  String get label => switch (this) {
+    TipoMaquinaOs.maquina => 'Máquina',
+    TipoMaquinaOs.implemento => 'Implemento',
+  };
+}
+
+/// Linha da aba Máq/Implementos.
+class MaquinaOs {
+  const MaquinaOs({
+    required this.tipo,
+    required this.nome,
+    required this.quantidade,
+    required this.unidade,
+    this.identificacao,
+    this.operador,
+  });
+
+  final TipoMaquinaOs tipo;
+  final String nome;
+
+  /// Código interno ou placa do cadastro de equipamentos (ex.: TR-03).
+  final String? identificacao;
+  final String? operador;
+
+  /// Uso previsto (h ou km, conforme o medidor do equipamento).
+  final num quantidade;
+  final String unidade;
+}
+
+/// Linha da aba Insumos — o armazém é da aba inteira
+/// ([OrdemServico.armazemInsumos]); `estoque` é o saldo do produto nesse
+/// armazém, que o WEB traz do cadastro (campo só leitura).
+class InsumoOs {
+  const InsumoOs({
+    required this.produto,
+    required this.unidadeMedida,
+    required this.estoque,
+    required this.quantidadeTotal,
+    this.quantidadePorHa,
+  });
+
+  final String produto;
+  final String unidadeMedida;
+  final num estoque;
+
+  /// QTD/HA — só em serviços por área; `null` quando não se aplica.
+  final num? quantidadePorHa;
+  final num quantidadeTotal;
+}
+
+/// Linha da aba Produção — o que o serviço gera e entra no armazém de
+/// produção ([OrdemServico.armazemProducao]).
+class ProducaoOs {
+  const ProducaoOs({
+    required this.produto,
+    required this.unidadeMedida,
+    required this.quantidade,
+    this.observacao,
+  });
+
+  final String produto;
+  final String unidadeMedida;
+  final num quantidade;
+  final String? observacao;
+}
+
+/// Linha da aba Proteções (EPI).
+class EpiOs {
+  const EpiOs({
+    required this.nome,
+    required this.quantidade,
+    this.certificadoAprovacao,
+    this.uso,
+  });
+
+  final String nome;
+
+  /// Número do CA (Certificado de Aprovação do MTE) do cadastro do EPI.
+  final String? certificadoAprovacao;
+
+  /// Pares/unidades por colaborador na OS.
+  final int quantidade;
+
+  /// Quando usar (ex.: "Durante o preparo da calda").
+  final String? uso;
+}
+
 /// Evidência registrada pelo Operacional durante a execução (spec: "execução
 /// em campo com registro de evidências"). Sem upload real no protótipo —
 /// `legenda` descreve o que a foto mostraria.
 class EvidenciaOs {
-  const EvidenciaOs({required this.legenda, required this.dataHora});
+  const EvidenciaOs({
+    required this.legenda,
+    required this.dataHora,
+    this.autor,
+    this.observacao,
+  });
 
   final String legenda;
   final DateTime dataHora;
+  final String? autor;
+  final String? observacao;
 }
 
 /// Linha do histórico/timeline da OS — cada ação (iniciar, pausar, entregar,
@@ -128,6 +261,9 @@ class OrdemServico {
     this.motivoPausa,
     this.dataEntrega,
     this.evidencias = const [],
+    this.armazemInsumos,
+    this.producao = const [],
+    this.armazemProducao,
     this.justificativaRefazer,
     this.motivoCancelamento,
   });
@@ -150,11 +286,18 @@ class OrdemServico {
   final String instrucoesSeguranca;
 
   /// Alocação de recursos definida na autorização (spec: mão de obra,
-  /// máquinas, insumos, EPIs).
-  final List<String> maoDeObra;
-  final List<String> maquinas;
-  final List<String> insumos;
-  final List<String> epis;
+  /// máquinas, insumos, EPIs) — as abas da OS no WEB.
+  final List<MaoDeObraOs> maoDeObra;
+  final List<MaquinaOs> maquinas;
+  final List<InsumoOs> insumos;
+  final List<EpiOs> epis;
+
+  /// Armazém de onde saem os insumos (um por OS, como no WEB).
+  final String? armazemInsumos;
+
+  /// O que o serviço gera (colheita, lenha, feno…) e o armazém de destino.
+  final List<ProducaoOs> producao;
+  final String? armazemProducao;
 
   final OrdemServicoStatus status;
   final String responsavelExecucao;
@@ -201,6 +344,9 @@ class OrdemServico {
       maquinas: maquinas,
       insumos: insumos,
       epis: epis,
+      armazemInsumos: armazemInsumos,
+      producao: producao,
+      armazemProducao: armazemProducao,
       status: status ?? this.status,
       responsavelExecucao: responsavelExecucao,
       dataInicio: dataInicio ?? this.dataInicio,

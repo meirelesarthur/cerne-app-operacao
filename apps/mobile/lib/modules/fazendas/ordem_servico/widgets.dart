@@ -4,6 +4,7 @@ import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../cadastros_vinculados.dart';
 import 'models.dart';
 
 /// Peças visuais da OS compartilhadas pela tela Início, pela lista "Minhas OS"
@@ -53,12 +54,22 @@ String osPrazoRelativo(DateTime prazo, DateTime agora) {
 String _fmtDataHora(DateTime d) =>
     '${_fmtData(d)} às ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
-/// Registro completo de um evento do histórico numa dock: na lista a
-/// observação é cortada em duas linhas; aqui ela aparece inteira.
-Future<void> _abrirEvento(BuildContext context, EventoOs evento) {
+/// Quantidade sem ",00" quando inteira (12 un., 7,02 L).
+String _qtd(num v) => formatarNumero(v, casas: v % 1 == 0 ? 0 : 2);
+
+/// Dock de leitura de um item da OS: os campos do registro (os mesmos do
+/// WEB) e, quando houver, a observação inteira — na lista ela é cortada em
+/// duas linhas.
+Future<void> _abrirDetalhe(
+  BuildContext context, {
+  required String title,
+  required List<AppDetailField> fields,
+  int columns = 1,
+  String? observacao,
+}) {
   return showAppBottomSheet<void>(
     context,
-    title: evento.acao,
+    title: title,
     footer: AppButton(
       variant: AppButtonVariant.secondary,
       fullWidth: true,
@@ -69,16 +80,8 @@ Future<void> _abrirEvento(BuildContext context, EventoOs evento) {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        AppDetailFields(
-          fields: [
-            AppDetailField(
-              label: 'Data e hora',
-              value: _fmtDataHora(evento.dataHora),
-            ),
-            AppDetailField(label: 'Registrado por', value: evento.autor),
-          ],
-        ),
-        if (evento.observacao case final observacao?) ...[
+        AppDetailFields(columns: columns, fields: fields),
+        if (observacao != null) ...[
           const SizedBox(height: AppSpacing.space3),
           AppDetailSection(
             icon: AppIcons.messageCircle,
@@ -90,6 +93,123 @@ Future<void> _abrirEvento(BuildContext context, EventoOs evento) {
     ),
   );
 }
+
+Future<void> _abrirEvento(BuildContext context, EventoOs evento) =>
+    _abrirDetalhe(
+      context,
+      title: evento.acao,
+      fields: [
+        AppDetailField(
+          label: 'Data e hora',
+          value: _fmtDataHora(evento.dataHora),
+        ),
+        AppDetailField(label: 'Registrado por', value: evento.autor),
+      ],
+      observacao: evento.observacao,
+    );
+
+Future<void> _abrirMaoDeObra(BuildContext context, MaoDeObraOs item) =>
+    _abrirDetalhe(
+      context,
+      title: item.nome,
+      columns: 2,
+      fields: [
+        AppDetailField(label: 'Tipo', value: item.tipo.label),
+        AppDetailField(label: 'Função', value: item.funcao),
+        AppDetailField(
+          label: 'Previsto',
+          value: '${_qtd(item.quantidade)} ${item.unidade}',
+        ),
+      ],
+    );
+
+Future<void> _abrirMaquina(BuildContext context, MaquinaOs item) =>
+    _abrirDetalhe(
+      context,
+      title: item.nome,
+      columns: 2,
+      fields: [
+        AppDetailField(label: 'Tipo', value: item.tipo.label),
+        AppDetailField(
+          label: 'Identificação',
+          value: item.identificacao ?? '—',
+        ),
+        AppDetailField(label: 'Operador', value: item.operador ?? '—'),
+        AppDetailField(
+          label: 'Uso previsto',
+          value: '${_qtd(item.quantidade)} ${item.unidade}',
+        ),
+      ],
+    );
+
+Future<void> _abrirInsumo(
+  BuildContext context,
+  OrdemServico os,
+  InsumoOs item,
+) => _abrirDetalhe(
+  context,
+  title: item.produto,
+  columns: 2,
+  fields: [
+    AppDetailField(label: 'Un. medida', value: item.unidadeMedida),
+    AppDetailField(label: 'Estoque', value: _qtd(item.estoque)),
+    AppDetailField(
+      label: 'Qtd/ha',
+      value: item.quantidadePorHa == null
+          ? 'Não se aplica'
+          : _qtd(item.quantidadePorHa!),
+    ),
+    AppDetailField(label: 'Qtd total', value: _qtd(item.quantidadeTotal)),
+    AppDetailField(
+      label: 'Armazém de insumos',
+      value: os.armazemInsumos ?? '—',
+    ),
+  ],
+);
+
+Future<void> _abrirProducao(
+  BuildContext context,
+  OrdemServico os,
+  ProducaoOs item,
+) => _abrirDetalhe(
+  context,
+  title: item.produto,
+  columns: 2,
+  fields: [
+    AppDetailField(label: 'Un. medida', value: item.unidadeMedida),
+    AppDetailField(label: 'Qtde', value: _qtd(item.quantidade)),
+    AppDetailField(
+      label: 'Armazém de produção',
+      value: os.armazemProducao ?? '—',
+    ),
+  ],
+  observacao: item.observacao,
+);
+
+Future<void> _abrirEpi(BuildContext context, EpiOs item) => _abrirDetalhe(
+  context,
+  title: item.nome,
+  columns: 2,
+  fields: [
+    AppDetailField(label: 'CA', value: item.certificadoAprovacao ?? '—'),
+    AppDetailField(label: 'Por colaborador', value: '${item.quantidade}'),
+    if (item.uso != null)
+      AppDetailField(label: 'Quando usar', value: item.uso!),
+  ],
+);
+
+Future<void> _abrirEvidencia(BuildContext context, EvidenciaOs ev) =>
+    _abrirDetalhe(
+      context,
+      title: ev.legenda,
+      fields: [
+        const AppDetailField(label: 'Tipo', value: 'Foto'),
+        AppDetailField(label: 'Data e hora', value: _fmtDataHora(ev.dataHora)),
+        if (ev.autor != null)
+          AppDetailField(label: 'Registrado por', value: ev.autor!),
+      ],
+      observacao: ev.observacao,
+    );
 
 /// Duração legível para a linha de situação: "40 min", "2h15", "3 dias".
 String osDuracao(Duration d) {
@@ -479,28 +599,75 @@ class _OsDetailBodyState extends State<OsDetailBody> {
             icon: AppIcons.users,
             title: 'Mão de obra',
             count: os.maoDeObra.length,
-            child: AppDetailList(items: os.maoDeObra),
+            child: AppDetailList(
+              items: [for (final m in os.maoDeObra) m.nome],
+              captions: [
+                for (final m in os.maoDeObra)
+                  '${m.funcao} · ${_qtd(m.quantidade)} ${m.unidade}',
+              ],
+              onItemTap: (i) => _abrirMaoDeObra(context, os.maoDeObra[i]),
+            ),
           ),
           _gap,
           AppDetailSection(
             icon: AppIcons.tractor,
-            title: 'Máquinas',
+            title: 'Máquinas e implementos',
             count: os.maquinas.length,
-            child: AppDetailList(items: os.maquinas),
+            child: AppDetailList(
+              items: [for (final m in os.maquinas) m.nome],
+              captions: [
+                for (final m in os.maquinas)
+                  [
+                    if (m.identificacao != null) m.identificacao!,
+                    '${_qtd(m.quantidade)} ${m.unidade}',
+                  ].join(' · '),
+              ],
+              onItemTap: (i) => _abrirMaquina(context, os.maquinas[i]),
+            ),
           ),
           _gap,
           AppDetailSection(
             icon: AppIcons.flaskConical,
             title: 'Insumos',
             count: os.insumos.length,
-            child: AppDetailList(items: os.insumos),
+            child: AppDetailList(
+              items: [for (final ins in os.insumos) ins.produto],
+              captions: [
+                for (final ins in os.insumos)
+                  [
+                    '${_qtd(ins.quantidadeTotal)} ${ins.unidadeMedida}',
+                    if (ins.quantidadePorHa != null)
+                      '${_qtd(ins.quantidadePorHa!)} ${ins.unidadeMedida}/ha',
+                  ].join(' · '),
+              ],
+              onItemTap: (i) => _abrirInsumo(context, os, os.insumos[i]),
+            ),
+          ),
+          _gap,
+          AppDetailSection(
+            icon: AppIcons.package,
+            title: 'Produção',
+            count: os.producao.isEmpty ? null : os.producao.length,
+            child: AppDetailList(
+              emptyLabel: 'Este serviço não gera produção.',
+              items: [for (final p in os.producao) p.produto],
+              captions: [
+                for (final p in os.producao)
+                  '${_qtd(p.quantidade)} ${p.unidadeMedida}',
+              ],
+              onItemTap: (i) => _abrirProducao(context, os, os.producao[i]),
+            ),
           ),
           _gap,
           AppDetailSection(
             icon: AppIcons.shieldCheck,
             title: 'Equipamentos de proteção (EPI)',
             count: os.epis.length,
-            child: AppDetailList(items: os.epis),
+            child: AppDetailList(
+              items: [for (final e in os.epis) e.nome],
+              captions: [for (final e in os.epis) e.certificadoAprovacao],
+              onItemTap: (i) => _abrirEpi(context, os.epis[i]),
+            ),
           ),
           if (os.evidencias.isNotEmpty) ...[
             _gap,
@@ -515,6 +682,7 @@ class _OsDetailBodyState extends State<OsDetailBody> {
                       label: 'Foto',
                       value: ev.legenda,
                       caption: _fmtDataHora(ev.dataHora),
+                      onTap: () => _abrirEvidencia(context, ev),
                     ),
                 ],
               ),
