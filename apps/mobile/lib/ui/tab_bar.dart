@@ -286,6 +286,9 @@ class _TabBarFrame extends StatelessWidget {
           semanticLabel: item.label,
           selected: active,
           minTouchTarget: false,
+          // O retorno do toque é o hexágono andando (ou o "+" girando): o
+          // realce retangular do InkWell brigaria com a ondulação.
+          showVisualFeedback: false,
           onPressed: () => onSelected(item),
           child: const SizedBox.expand(),
         ),
@@ -312,6 +315,9 @@ class _TabBarFrame extends StatelessWidget {
             semanticLabel: item.label,
             selected: actionOpen,
             minTouchTarget: false,
+            // O retorno do toque é o hexágono andando (ou o "+" girando): o
+            // realce retangular do InkWell brigaria com a ondulação.
+            showVisualFeedback: false,
             onPressed: () => onSelected(item),
             child: AppHexagon(
               size: size,
