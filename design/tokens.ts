@@ -568,8 +568,9 @@ export const layout = {
   gutter: '16px',
   /** folga inferior dos scrollers para o conteúdo não morrer sob a tab bar flutuante.
    * Reduzido de 104 (ver plano de melhorias de UX): a folga anterior era maior que o
-   * necessário — dock (68px) + respiro (14px) já cobrem a cápsula flutuante. */
-  tabBarClearance: '88px',
+   * necessário — dock (68px) + respiro (14px) já cobrem a cápsula flutuante.
+   * Voltou a 112 com o item ativo flutuante: o hexágono sobe 24px acima da barra. */
+  tabBarClearance: '112px',
 } as const
 
 // paleta categórica para gráficos SVG próprios
@@ -631,6 +632,13 @@ export const component = {
     inset: '14px',
     /** diâmetro dos botões circulares internos */
     itemSize: '48px',
+    /** caixa hexagonal do item ativo (ícone destacado) e do "+" central */
+    hexSize: '52px',
+    /** quanto o hexágono do item ativo sobe acima da borda da barra */
+    lift: '24px',
+    /** largura e profundidade da ondulação que a barra faz sob o item ativo */
+    notchWidth: '96px',
+    notchDepth: '20px',
   },
   /** Arte do estado vazio (`AppEmptyState`): halo com o ícone Hugeicons grande
    *  no tom do cenário e um selo sólido no canto (check, x, lupa…) que diz o
