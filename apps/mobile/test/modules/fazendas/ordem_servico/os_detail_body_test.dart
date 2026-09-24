@@ -25,7 +25,14 @@ void main() {
 
     expect(find.text('Serviço'), findsOneWidget);
     expect(find.text('Solicitação e autorização'), findsOneWidget);
-    expect(find.text('Instruções de segurança'), findsOneWidget);
+    expect(find.text('Segurança e sustentabilidade'), findsOneWidget);
+    for (final secao in [
+      'Execução',
+      'Condições e restrições',
+      'Instruções detalhadas',
+    ]) {
+      expect(find.text(secao), findsOneWidget, reason: secao);
+    }
     expect(find.text('OS solicitada'), findsNothing);
     expect(tester.takeException(), isNull);
   });
@@ -79,7 +86,7 @@ void main() {
     ]) {
       expect(find.text(rotulo), findsOneWidget, reason: rotulo);
     }
-    expect(find.text(os.armazemInsumos!), findsOneWidget);
+    expect(find.text(os.armazemInsumos), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -112,16 +119,17 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    await abrir(tester, os.maoDeObra.first.nome);
-    expect(find.text('Função'), findsOneWidget);
+    await abrir(tester, os.maoDeObra.first.executor);
+    expect(find.text('Função no cadastro'), findsOneWidget);
     await fechar();
 
-    await abrir(tester, os.maquinas.first.nome);
-    expect(find.text('Uso previsto'), findsOneWidget);
+    await abrir(tester, os.maquinas.first.equipamento);
+    expect(find.text('Máq/Equipamento/Veículo'), findsOneWidget);
+    expect(find.text(os.maquinas.first.observacao!), findsWidgets);
     await fechar();
 
-    await abrir(tester, os.epis.first.nome);
-    expect(find.text('CA'), findsOneWidget);
+    await abrir(tester, os.epis.first.produto);
+    expect(find.text('Proteção (EPI)'), findsOneWidget);
     await fechar();
 
     final ev = os.evidencias.first;

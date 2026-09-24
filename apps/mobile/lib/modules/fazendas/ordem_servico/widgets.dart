@@ -111,35 +111,23 @@ Future<void> _abrirEvento(BuildContext context, EventoOs evento) =>
 Future<void> _abrirMaoDeObra(BuildContext context, MaoDeObraOs item) =>
     _abrirDetalhe(
       context,
-      title: item.nome,
+      title: item.executor,
       columns: 2,
       fields: [
         AppDetailField(label: 'Tipo', value: item.tipo.label),
-        AppDetailField(label: 'Função', value: item.funcao),
-        AppDetailField(
-          label: 'Previsto',
-          value: '${_qtd(item.quantidade)} ${item.unidade}',
-        ),
+        if (item.funcao case final funcao?)
+          AppDetailField(label: 'Função no cadastro', value: funcao),
       ],
     );
 
 Future<void> _abrirMaquina(BuildContext context, MaquinaOs item) =>
     _abrirDetalhe(
       context,
-      title: item.nome,
-      columns: 2,
-      fields: [
-        AppDetailField(label: 'Tipo', value: item.tipo.label),
-        AppDetailField(
-          label: 'Identificação',
-          value: item.identificacao ?? '—',
-        ),
-        AppDetailField(label: 'Operador', value: item.operador ?? '—'),
-        AppDetailField(
-          label: 'Uso previsto',
-          value: '${_qtd(item.quantidade)} ${item.unidade}',
-        ),
+      title: item.equipamento,
+      fields: const [
+        AppDetailField(label: 'Tipo', value: 'Máq/Equipamento/Veículo'),
       ],
+      observacao: item.observacao,
     );
 
 Future<void> _abrirInsumo(
@@ -153,17 +141,9 @@ Future<void> _abrirInsumo(
   fields: [
     AppDetailField(label: 'Un. medida', value: item.unidadeMedida),
     AppDetailField(label: 'Estoque', value: _qtd(item.estoque)),
-    AppDetailField(
-      label: 'Qtd/ha',
-      value: item.quantidadePorHa == null
-          ? 'Não se aplica'
-          : _qtd(item.quantidadePorHa!),
-    ),
+    AppDetailField(label: 'Qtd/ha', value: _qtd(item.quantidadePorHa)),
     AppDetailField(label: 'Qtd total', value: _qtd(item.quantidadeTotal)),
-    AppDetailField(
-      label: 'Armazém de insumos',
-      value: os.armazemInsumos ?? '—',
-    ),
+    AppDetailField(label: 'Armazém de insumos', value: os.armazemInsumos),
   ],
 );
 
@@ -188,14 +168,9 @@ Future<void> _abrirProducao(
 
 Future<void> _abrirEpi(BuildContext context, EpiOs item) => _abrirDetalhe(
   context,
-  title: item.nome,
-  columns: 2,
-  fields: [
-    AppDetailField(label: 'CA', value: item.certificadoAprovacao ?? '—'),
-    AppDetailField(label: 'Por colaborador', value: '${item.quantidade}'),
-    if (item.uso != null)
-      AppDetailField(label: 'Quando usar', value: item.uso!),
-  ],
+  title: item.produto,
+  fields: const [AppDetailField(label: 'Tipo', value: 'Proteção (EPI)')],
+  observacao: item.observacao,
 );
 
 Future<void> _abrirEvidencia(BuildContext context, EvidenciaOs ev) =>
@@ -407,7 +382,7 @@ class OsSummaryCard extends StatelessWidget {
       meta: [
         AppStatusCardMeta(
           label: 'Local',
-          value: os.areaOuTalhao,
+          value: os.lote ?? os.area,
           icon: AppIcons.mapPin,
         ),
         AppStatusCardMeta(
@@ -571,20 +546,103 @@ class _OsDetailBodyState extends State<OsDetailBody> {
             child: AppDetailFields(
               columns: 2,
               fields: [
-                AppDetailField(label: 'Prazo', value: _fmtData(os.prazo)),
+                AppDetailField(label: 'Uso', value: os.uso.label),
+                AppDetailField(label: 'Operação', value: os.operacao),
+                AppDetailField(label: 'Atividade', value: os.atividade),
                 AppDetailField(label: 'Prioridade', value: os.prioridade.label),
+                AppDetailField(
+                  label: 'Dt. execução',
+                  value: _fmtData(os.dataExecucao),
+                ),
+                AppDetailField(label: 'Prazo final', value: _fmtData(os.prazo)),
+              ],
+            ),
+          ),
+          _gap,
+          AppDetailSection(
+            icon: AppIcons.mapPin,
+            title: 'Execução',
+            child: AppDetailFields(
+              columns: 2,
+              fields: [
                 AppDetailField(label: 'Fazenda', value: os.fazenda),
-                AppDetailField(label: 'Área / talhão', value: os.areaOuTalhao),
-                AppDetailField(label: 'Tipo de serviço', value: os.tipo.label),
+                AppDetailField(label: 'Área', value: os.area),
+                if (os.uso.usaCultura && os.culturaVariedade != null)
+                  AppDetailField(
+                    label: 'Cultura/Variedade',
+                    value: os.culturaVariedade!,
+                  ),
+                if (os.uso.usaLote && os.lote != null)
+                  AppDetailField(label: 'Lote', value: os.lote!),
+                if (os.uso.usaLote && os.categoria != null)
+                  AppDetailField(label: 'Categoria', value: os.categoria!),
+              ],
+            ),
+          ),
+          _gap,
+          AppDetailSection(
+            icon: AppIcons.cloudSun,
+            title: 'Condições e restrições',
+            child: AppDetailFields(
+              columns: 2,
+              fields: [
+                AppDetailField(
+                  label: 'Temperatura',
+                  value:
+                      '${_qtd(os.condicoes.temperaturaMinima)} a '
+                      '${_qtd(os.condicoes.temperaturaMaxima)} °C',
+                ),
+                AppDetailField(
+                  label: 'Horário permitido',
+                  value:
+                      '${os.condicoes.horarioInicio} às '
+                      '${os.condicoes.horarioFim}',
+                ),
+                AppDetailField(
+                  label: 'Requisitos climáticos',
+                  value: os.condicoes.requisitosClimaticos,
+                ),
+              ],
+            ),
+          ),
+          _gap,
+          AppDetailSection(
+            icon: AppIcons.listOrdered,
+            title: 'Instruções detalhadas',
+            child: AppDetailFields(
+              fields: [
+                AppDetailField(
+                  label: 'Resultados esperados',
+                  value: os.instrucoes.resultadosEsperados,
+                ),
+                AppDetailField(
+                  label: 'Critérios de sucesso',
+                  value: os.instrucoes.criteriosSucesso,
+                ),
+                AppDetailField(
+                  label: 'Roteiro/Planejamento',
+                  value: os.instrucoes.roteiro,
+                ),
               ],
             ),
           ),
           _gap,
           AppDetailSection(
             icon: AppIcons.shieldAlert,
-            title: 'Instruções de segurança',
+            title: 'Segurança e sustentabilidade',
             tone: AppDetailSectionTone.warning,
-            child: AppDetailText(os.instrucoesSeguranca),
+            child: AppDetailFields(
+              fields: [
+                AppDetailField(
+                  label: 'Restrições ambientais',
+                  value: os.seguranca.restricoesAmbientais,
+                ),
+                AppDetailField(
+                  label: 'Conformidade legal',
+                  value: os.seguranca.conformidadeLegal,
+                ),
+              ],
+            ),
           ),
           _gap,
           AppDetailSection(
@@ -595,7 +653,7 @@ class _OsDetailBodyState extends State<OsDetailBody> {
                 AppDetailField(
                   label: 'Solicitado por',
                   value: os.solicitante,
-                  caption: _fmtDataHora(os.dataSolicitacao),
+                  caption: 'Emitida em ${_fmtDataHora(os.dataEmissao)}',
                 ),
                 AppDetailField(
                   label: 'Autorizado por',
@@ -615,10 +673,10 @@ class _OsDetailBodyState extends State<OsDetailBody> {
             title: 'Mão de obra',
             count: os.maoDeObra.length,
             child: AppDetailList(
-              items: [for (final m in os.maoDeObra) m.nome],
+              items: [for (final m in os.maoDeObra) m.executor],
               captions: [
                 for (final m in os.maoDeObra)
-                  '${m.funcao} · ${_qtd(m.quantidade)} ${m.unidade}',
+                  [m.tipo.label, ?m.funcao].join(' · '),
               ],
               onItemTap: (i) => _abrirMaoDeObra(context, os.maoDeObra[i]),
             ),
@@ -629,14 +687,8 @@ class _OsDetailBodyState extends State<OsDetailBody> {
             title: 'Máquinas e implementos',
             count: os.maquinas.length,
             child: AppDetailList(
-              items: [for (final m in os.maquinas) m.nome],
-              captions: [
-                for (final m in os.maquinas)
-                  [
-                    if (m.identificacao != null) m.identificacao!,
-                    '${_qtd(m.quantidade)} ${m.unidade}',
-                  ].join(' · '),
-              ],
+              items: [for (final m in os.maquinas) m.equipamento],
+              captions: [for (final m in os.maquinas) m.observacao],
               onItemTap: (i) => _abrirMaquina(context, os.maquinas[i]),
             ),
           ),
@@ -651,8 +703,8 @@ class _OsDetailBodyState extends State<OsDetailBody> {
                 for (final ins in os.insumos)
                   [
                     '${_qtd(ins.quantidadeTotal)} ${ins.unidadeMedida}',
-                    if (ins.quantidadePorHa != null)
-                      '${_qtd(ins.quantidadePorHa!)} ${ins.unidadeMedida}/ha',
+                    if (ins.quantidadePorHa > 0)
+                      '${_qtd(ins.quantidadePorHa)} ${ins.unidadeMedida}/ha',
                   ].join(' · '),
               ],
               onItemTap: (i) => _abrirInsumo(context, os, os.insumos[i]),
@@ -679,8 +731,8 @@ class _OsDetailBodyState extends State<OsDetailBody> {
             title: 'Equipamentos de proteção (EPI)',
             count: os.epis.length,
             child: AppDetailList(
-              items: [for (final e in os.epis) e.nome],
-              captions: [for (final e in os.epis) e.certificadoAprovacao],
+              items: [for (final e in os.epis) e.produto],
+              captions: [for (final e in os.epis) e.observacao],
               onItemTap: (i) => _abrirEpi(context, os.epis[i]),
             ),
           ),
