@@ -118,10 +118,10 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     }
   }
 
-  /// Corpo do módulo: faixa de offline (quando aplicável) e a tela em si, com
-  /// o respiro do dock flutuante. É o mesmo em rota rasa e funda — só muda se
-  /// a folha de conteúdo vem do shell ou da própria tela.
-  Widget _content(ShellState state, {required bool reserveTabBar}) {
+  /// Corpo do módulo: faixa de offline (quando aplicável) e a tela em si.
+  /// Ocupa toda a altura disponível; o dock flutuante é desenhado por cima na
+  /// Stack do shell, sem encurtar nem recortar o viewport do conteúdo.
+  Widget _content(ShellState state) {
     return NotificationListener<ScrollNotification>(
       onNotification: _handleScrollNotification,
       child: Column(
@@ -134,14 +134,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                 'Você está offline — os lançamentos serão sincronizados quando a conexão voltar.',
               ),
             ),
-          Expanded(
-            child: Padding(
-              padding: reserveTabBar
-                  ? const EdgeInsets.only(bottom: AppLayout.tabBarClearance)
-                  : EdgeInsets.zero,
-              child: widget.child,
-            ),
-          ),
+          Expanded(child: widget.child),
         ],
       ),
     );
@@ -222,7 +215,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                           // abre a folha aqui, com o cabeçalho e as abas
                           // dentro — como nas duas homes da referência.
                           child: hideChrome
-                              ? _content(state, reserveTabBar: false)
+                              ? _content(state)
                               : AppContentSheet(
                                   padded: false,
                                   header: showGlobalContext
@@ -271,12 +264,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                                             ],
                                           ),
                                         ),
-                                      Expanded(
-                                        child: _content(
-                                          state,
-                                          reserveTabBar: !hideChrome,
-                                        ),
-                                      ),
+                                      Expanded(child: _content(state)),
                                     ],
                                   ),
                                 ),
