@@ -316,7 +316,7 @@ class _CurralCard extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(AppSpacing.space2),
               decoration: BoxDecoration(
-                color: semantic.bgSubtle,
+                color: semantic.bgInset,
                 borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Row(
