@@ -342,8 +342,14 @@ class _QuickAddGeometry {
         Offset(centerX, size.height * 0.49),
         Offset(centerX - sideOffset, size.height * 0.575),
         Offset(centerX + sideOffset, size.height * 0.575),
-        Offset(centerX - sideOffset * 0.94, size.height * 0.705),
-        Offset(centerX + sideOffset * 0.94, size.height * 0.705),
+        Offset(
+          centerX - sideOffset * 0.94,
+          size.height * 0.705 + AppSpacing.space4,
+        ),
+        Offset(
+          centerX + sideOffset * 0.94,
+          size.height * 0.705 + AppSpacing.space4,
+        ),
       ],
       centerButtonCenter: Offset(
         centerX,
