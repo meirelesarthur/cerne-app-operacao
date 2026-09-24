@@ -42,17 +42,11 @@ void main() {
       expect(find.text('Sua fazenda na palma da mão'), findsOneWidget);
     });
 
-    testWidgets('alterna "Manter conectado" ao tocar', (tester) async {
+    testWidgets('não exibe a opção "Manter conectado"', (tester) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
-      final keepConnected = find.text('Manter conectado');
-      await tester.ensureVisible(keepConnected);
-      await tester.pumpAndSettle();
-      await tester.tap(keepConnected);
-      await tester.pump();
-
-      expect(tester.takeException(), isNull);
+      expect(find.text('Manter conectado'), findsNothing);
     });
 
     testWidgets(

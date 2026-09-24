@@ -24,7 +24,6 @@ class LoginPage extends ConsumerStatefulWidget {
 class _LoginPageState extends ConsumerState<LoginPage> {
   final _emailController = TextEditingController();
   final _senhaController = TextEditingController();
-  bool _manterConectado = true;
 
   @override
   void dispose() {
@@ -172,16 +171,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                   ),
                                   child: const Text('Esqueceu a senha?'),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              AppCheckbox(
-                                checked: _manterConectado,
-                                onChanged: (v) =>
-                                    setState(() => _manterConectado = v),
-                                label: 'Manter conectado',
                               ),
                             ],
                           ),
