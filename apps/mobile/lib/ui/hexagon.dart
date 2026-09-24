@@ -176,7 +176,23 @@ WidgetbookComponent buildHexagonWidgetbookComponent() {
         },
       ),
       WidgetbookUseCase(
-        name: 'Contorno (adição rápida)',
+        name: 'Preenchido (adição rápida)',
+        builder: (context) {
+          final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+          return stage(
+            AppHexagon(
+              color: semantic.ctaBg,
+              child: AppIcon(
+                AppIcons.plus,
+                size: AppSize.iconMd,
+                color: semantic.ctaFg,
+              ),
+            ),
+          );
+        },
+      ),
+      WidgetbookUseCase(
+        name: 'Contorno',
         builder: (context) {
           final semantic = Theme.of(context).extension<AppSemanticColors>()!;
           return stage(

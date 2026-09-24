@@ -192,8 +192,11 @@ class _TabBarFrame extends StatelessWidget {
             ),
           ),
         ),
-        // Hexágono ativo: um só, que desliza e gira 60° por aba — como um
-        // hexágono rolando, que chega de pé em cada posição.
+        // Hexágono ativo: um só, que desliza e gira uma volta completa por
+        // aba percorrida — a 60° (um sexto de volta) a forma cai de novo
+        // num ângulo simétrico do hexágono e o giro fica invisível; a volta
+        // inteira é o que faz ler como uma roda rolando de verdade, e ainda
+        // assim chega de pé (0° ≡ 360°) em cada posição.
         if (presence > 0)
           Positioned(
             left: hexX - _hex / 2,
@@ -205,7 +208,7 @@ class _TabBarFrame extends StatelessWidget {
                 child: AppHexagon(
                   color: semantic.ctaBg,
                   shadows: semantic.shadowModal,
-                  rotation: reduceMotion ? 0 : position * math.pi / 3,
+                  rotation: reduceMotion ? 0 : position * 2 * math.pi,
                 ),
               ),
             ),
@@ -224,18 +227,17 @@ class _TabBarFrame extends StatelessWidget {
 
   Widget _icon(AppSemanticColors semantic, AppTabBarItem item, int i) {
     final a = _activation(i);
-    final size = AppSize.iconMd;
+    // Maior parado (era iconMd/20) e cresce mais um tanto sobre o hexágono
+    // ativo, em vez do zoom sutil de 8% de antes.
+    final size = lerpDouble(AppSize.iconLg, AppSize.iconXl, a)!;
     return Positioned(
       left: _centerX(i.toDouble()) - size / 2,
       top: lerpDouble(_restY, _liftY, a)! - size / 2,
       child: IgnorePointer(
-        child: Transform.scale(
-          scale: lerpDouble(1, 1.08, a)!,
-          child: AppIcon(
-            item.icon,
-            size: size,
-            color: Color.lerp(semantic.navFg, semantic.ctaFg, a),
-          ),
+        child: AppIcon(
+          item.icon,
+          size: size,
+          color: Color.lerp(semantic.navFg, semantic.ctaFg, a),
         ),
       ),
     );
@@ -321,8 +323,10 @@ class _TabBarFrame extends StatelessWidget {
             onPressed: () => onSelected(item),
             child: AppHexagon(
               size: size,
-              color: semantic.navBg,
-              borderColor: semantic.ctaBg,
+              color: semantic.ctaBg,
+              // Sem sombra: ele fica no plano da barra, não flutuando acima
+              // dela como o hexágono ativo — a sombra do modal, sem recorte,
+              // vazava num borrão cinza atrás do "+".
               child: AnimatedRotation(
                 // "+" girado 45° vira "×".
                 turns: actionOpen ? 0.125 : 0,
@@ -330,8 +334,8 @@ class _TabBarFrame extends StatelessWidget {
                 curve: AppMotion.easingOut,
                 child: AppIcon(
                   item.icon,
-                  size: AppSize.iconMd,
-                  color: semantic.ctaBg,
+                  size: AppSize.iconLg,
+                  color: semantic.ctaFg,
                 ),
               ),
             ),
