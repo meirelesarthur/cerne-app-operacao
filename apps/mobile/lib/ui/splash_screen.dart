@@ -100,17 +100,23 @@ class _AppSplashScreenState extends State<AppSplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
-      label: 'Carregando CERNE',
-      liveRegion: true,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: _finish,
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) => _SplashFrame(
-            t: _controller.value * _total,
-            tagline: widget.tagline,
+    // `Material` transparente: aberta numa rota própria (showAppSplash), a
+    // splash não tem Scaffold por baixo e o Flutter sublinhava os textos
+    // com o aviso amarelo de "texto sem Material".
+    return Material(
+      type: MaterialType.transparency,
+      child: Semantics(
+        label: 'Carregando CERNE',
+        liveRegion: true,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _finish,
+          child: AnimatedBuilder(
+            animation: _controller,
+            builder: (context, _) => _SplashFrame(
+              t: _controller.value * _total,
+              tagline: widget.tagline,
+            ),
           ),
         ),
       ),

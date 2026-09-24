@@ -27,6 +27,30 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('textos sem o sublinhado de "texto sem Material"', (
+      tester,
+    ) async {
+      // Aberta fora de um Scaffold, sem Material o Flutter pinta o aviso
+      // amarelo (sublinhado duplo) nos textos.
+      await tester.pumpWidget(
+        MaterialApp(home: AppSplashScreen(onDone: () {})),
+      );
+      for (final texto in ['CERNE', 'OPERAÇÃO DE CAMPO']) {
+        final rich = tester.widget<RichText>(
+          find.descendant(
+            of: find.text(texto),
+            matching: find.byType(RichText),
+          ),
+        );
+        expect(
+          rich.text.style?.decoration,
+          isNot(TextDecoration.underline),
+          reason: texto,
+        );
+      }
+      await tester.pumpAndSettle();
+    });
+
     testWidgets('tocar pula a abertura e avisa uma vez só', (tester) async {
       var done = 0;
       await tester.pumpWidget(_wrap(AppSplashScreen(onDone: () => done++)));
@@ -42,10 +66,7 @@ void main() {
     testWidgets('sem animações mostra o quadro final e segue', (tester) async {
       var done = 0;
       await tester.pumpWidget(
-        _wrap(
-          AppSplashScreen(onDone: () => done++),
-          disableAnimations: true,
-        ),
+        _wrap(AppSplashScreen(onDone: () => done++), disableAnimations: true),
       );
       expect(done, 0);
 
