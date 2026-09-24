@@ -305,7 +305,7 @@ void main() {
       await tester.tap(find.bySemanticsLabel('Adicionar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('O que você quer lançar?'), findsOneWidget);
+      expect(find.text('Lançamentos rápidos'), findsOneWidget);
       for (final atalho in operationalQuickAdds()) {
         expect(find.text(atalho.label), findsOneWidget, reason: atalho.label);
       }
@@ -313,7 +313,7 @@ void main() {
       await tester.tap(find.text('Pesagem'));
       await tester.pumpAndSettle();
 
-      expect(find.text('O que você quer lançar?'), findsNothing);
+      expect(find.text('Lançamentos rápidos'), findsNothing);
       expect(find.byType(PesagemFlow), findsOneWidget);
       expect(harness.router.canPop(), isTrue);
       expect(tester.takeException(), isNull);

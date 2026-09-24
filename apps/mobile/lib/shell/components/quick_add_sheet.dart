@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import '../../design/generated/app_colors.dart';
 import '../../design/generated/app_layout.dart';
+import '../../design/generated/app_motion.dart';
 import '../../design/generated/app_spacing.dart';
 import '../../design/generated/app_typography.dart';
 import '../../ui/ui.dart';
@@ -18,22 +19,99 @@ Future<ModuleMenuItem?> showQuickAddOverlay(
   BuildContext context, {
   required List<ModuleMenuItem> items,
 }) {
+  final reduceMotion = MediaQuery.disableAnimationsOf(context);
   return showGeneralDialog<ModuleMenuItem>(
     context: context,
     barrierLabel: 'Lançamentos rápidos',
-    barrierColor: Colors.transparent,
-    transitionDuration: const Duration(milliseconds: 220),
+    barrierColor: AppColors.transparent,
+    transitionDuration: reduceMotion ? Duration.zero : AppMotion.base,
     pageBuilder: (context, animation, secondaryAnimation) =>
-        _QuickAddOverlay(items: items),
+        _QuickAddOverlay(items: items, reduceMotion: reduceMotion),
     transitionBuilder: (context, animation, secondaryAnimation, child) =>
         FadeTransition(opacity: animation, child: child),
   );
 }
 
-class _QuickAddOverlay extends StatelessWidget {
-  const _QuickAddOverlay({required this.items});
+class _QuickAddOverlay extends StatefulWidget {
+  const _QuickAddOverlay({required this.items, required this.reduceMotion});
 
   final List<ModuleMenuItem> items;
+  final bool reduceMotion;
+
+  @override
+  State<_QuickAddOverlay> createState() => _QuickAddOverlayState();
+}
+
+class _QuickAddOverlayState extends State<_QuickAddOverlay>
+    with TickerProviderStateMixin {
+  late final AnimationController _entryController;
+  late final AnimationController _exitController;
+  bool _isClosing = false;
+  List<double>? _progressAtClose;
+
+  Duration get _entryDuration =>
+      widget.reduceMotion ? Duration.zero : AppMotion.slower + AppMotion.base;
+  Duration get _exitDuration =>
+      widget.reduceMotion ? Duration.zero : AppMotion.slower + AppMotion.fast;
+
+  @override
+  void initState() {
+    super.initState();
+    _entryController = AnimationController(
+      vsync: this,
+      duration: _entryDuration,
+    )..forward();
+    _exitController = AnimationController(vsync: this, duration: _exitDuration);
+  }
+
+  @override
+  void dispose() {
+    _entryController.dispose();
+    _exitController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _close(ModuleMenuItem? result, List<int> rankByItemIndex) async {
+    if (_isClosing) return;
+    if (widget.reduceMotion) {
+      Navigator.of(context, rootNavigator: true).pop(result);
+      return;
+    }
+
+    _progressAtClose = [
+      for (final rank in rankByItemIndex) _entryProgress(rank),
+    ];
+    setState(() => _isClosing = true);
+    await _exitController.forward();
+    if (mounted) Navigator.of(context, rootNavigator: true).pop(result);
+  }
+
+  double _entryProgress(int rank) {
+    const firstStart = 0.08;
+    const stagger = 0.13;
+    const span = 0.53;
+    final start = firstStart + rank * stagger;
+    final end = math.min(1.0, start + span);
+    return Interval(
+      start,
+      end,
+      curve: Curves.easeOutCubic,
+    ).transform(_entryController.value);
+  }
+
+  double _tileProgress(int itemIndex, int rank) {
+    if (!_isClosing) return _entryProgress(rank);
+    const stagger = 0.11;
+    const span = 0.30;
+    final start = rank * stagger;
+    final end = math.min(1.0, start + span);
+    final returnToPlus = Interval(
+      start,
+      end,
+      curve: Curves.easeInCubic,
+    ).transform(_exitController.value);
+    return (_progressAtClose?[itemIndex] ?? 0) * (1 - returnToPlus);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,53 +122,87 @@ class _QuickAddOverlay extends StatelessWidget {
           final geometry = _QuickAddGeometry.from(
             Size(constraints.maxWidth, constraints.maxHeight),
           );
-          final arrangedItems = _arrangeItems(items);
+          final arrangedItems = _arrangeItems(widget.items);
+          final rankByItemIndex = _leftToRightRanks(geometry.optionCenters);
 
-          return Semantics(
-            namesRoute: true,
-            label: 'Lançamentos rápidos',
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                Positioned.fill(
-                  child: BackdropFilter(
-                    filter: ui.ImageFilter.blur(sigmaX: 7, sigmaY: 7),
-                    child: ColoredBox(
-                      // Verde escuro e chapado: dá contexto ao overlay sem
-                      // acrescentar glow ou competir com as opções.
-                      color: AppColors.brand900.withValues(alpha: 0.88),
-                    ),
-                  ),
-                ),
-                CustomPaint(
-                  painter: _QuickAddConnectorPainter(
-                    geometry: geometry,
-                    color: AppColors.neutral0.withValues(alpha: 0.62),
-                  ),
-                  child: const SizedBox.expand(),
-                ),
-                _QuickAddHeading(geometry: geometry),
+          return AnimatedBuilder(
+            animation: Listenable.merge([_entryController, _exitController]),
+            builder: (context, _) {
+              final itemProgress = [
                 for (var index = 0; index < arrangedItems.length; index++)
-                  _QuickAddHexTile(
-                    item: arrangedItems[index],
-                    center: geometry.optionCenters[index],
-                    size: geometry.tileSize,
-                    onTap: () => Navigator.of(
-                      context,
-                      rootNavigator: true,
-                    ).pop(arrangedItems[index]),
+                  _tileProgress(index, rankByItemIndex[index]),
+              ];
+              final entryHubProgress = const Interval(
+                0,
+                0.22,
+                curve: Curves.easeOutBack,
+              ).transform(_entryController.value);
+              final centerScale = _isClosing
+                  ? 1 +
+                        0.26 *
+                            Curves.easeOutCubic.transform(_exitController.value)
+                  : 0.46 + 0.54 * entryHubProgress;
+
+              return Semantics(
+                namesRoute: true,
+                label: 'Lançamentos rápidos',
+                child: IgnorePointer(
+                  ignoring: _isClosing,
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Positioned.fill(
+                        child: AppPressable(
+                          semanticLabel: 'Fechar lançamentos rápidos',
+                          minTouchTarget: false,
+                          showVisualFeedback: false,
+                          onPressed: () => _close(null, rankByItemIndex),
+                          child: BackdropFilter(
+                            filter: ui.ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+                            child: ColoredBox(
+                              // Verde escuro e chapado: dá contexto ao overlay
+                              // sem acrescentar glow ou competir com as opções.
+                              color: AppColors.brand900.withValues(alpha: 0.88),
+                            ),
+                          ),
+                        ),
+                      ),
+                      CustomPaint(
+                        painter: _QuickAddConnectorPainter(
+                          geometry: geometry,
+                          color: AppColors.neutral0.withValues(alpha: 0.62),
+                          progress: itemProgress,
+                        ),
+                        child: const SizedBox.expand(),
+                      ),
+                      _QuickAddHeading(geometry: geometry),
+                      for (var index = 0; index < arrangedItems.length; index++)
+                        _QuickAddHexTile(
+                          item: arrangedItems[index],
+                          center: geometry.optionCenters[index],
+                          source: geometry.centerButtonCenter,
+                          size: geometry.tileSize,
+                          progress: itemProgress[index],
+                          onTap: () =>
+                              _close(arrangedItems[index], rankByItemIndex),
+                        ),
+                      _QuickAddCloseButton(
+                        top:
+                            MediaQuery.paddingOf(context).top +
+                            AppSpacing.space2,
+                        onTap: () => _close(null, rankByItemIndex),
+                      ),
+                      _QuickAddCenterButton(
+                        center: geometry.centerButtonCenter,
+                        size: geometry.centerButtonSize,
+                        scale: centerScale,
+                        onTap: () => _close(null, rankByItemIndex),
+                      ),
+                    ],
                   ),
-                _QuickAddCloseButton(
-                  top: MediaQuery.paddingOf(context).top + AppSpacing.space2,
-                  onTap: () => Navigator.of(context, rootNavigator: true).pop(),
                 ),
-                _QuickAddCenterButton(
-                  center: geometry.centerButtonCenter,
-                  size: geometry.centerButtonSize,
-                  onTap: () => Navigator.of(context, rootNavigator: true).pop(),
-                ),
-              ],
-            ),
+              );
+            },
           );
         },
       ),
@@ -102,6 +214,23 @@ class _QuickAddOverlay extends StatelessWidget {
   List<ModuleMenuItem> _arrangeItems(List<ModuleMenuItem> items) {
     if (items.length != 5) return items;
     return [items[1], items[0], items[2], items[3], items[4]];
+  }
+
+  /// A ordem visual de entrada segue a posição dos cartões, da esquerda para
+  /// a direita; em cada coluna, o cartão de cima sai primeiro.
+  List<int> _leftToRightRanks(List<Offset> centers) {
+    final order = List<int>.generate(centers.length, (index) => index)
+      ..sort((a, b) {
+        final horizontal = centers[a].dx.compareTo(centers[b].dx);
+        return horizontal != 0
+            ? horizontal
+            : centers[a].dy.compareTo(centers[b].dy);
+      });
+    final ranks = List<int>.filled(centers.length, 0);
+    for (var rank = 0; rank < order.length; rank++) {
+      ranks[order[rank]] = rank;
+    }
+    return ranks;
   }
 }
 
@@ -168,13 +297,17 @@ class _QuickAddHexTile extends StatelessWidget {
   const _QuickAddHexTile({
     required this.item,
     required this.center,
+    required this.source,
     required this.size,
+    required this.progress,
     required this.onTap,
   });
 
   final ModuleMenuItem item;
   final Offset center;
+  final Offset source;
   final double size;
+  final double progress;
   final VoidCallback onTap;
 
   @override
@@ -184,40 +317,51 @@ class _QuickAddHexTile extends StatelessWidget {
       top: center.dy - size / 2,
       width: size,
       height: size,
-      child: AppPressable(
-        semanticLabel: 'Adicionar ${item.label}',
-        minTouchTarget: false,
-        onPressed: onTap,
-        child: AppHexagon(
-          size: size,
-          color: AppColors.neutral0,
-          borderColor: AppColors.neutral0.withValues(alpha: 0.92),
-          borderWidth: 1,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.space2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                AppIcon(
-                  item.icon,
-                  size: AppSize.iconXl,
-                  color: AppColors.brand700,
-                ),
-                const SizedBox(height: AppSpacing.space2),
-                Text(
-                  item.label,
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: AppColors.neutral800,
-                    fontSize: AppTypography.base,
-                    fontWeight: AppTypography.weightMedium,
-                    height: AppTypography.lineHeightTight,
+      child: Transform.translate(
+        offset: (source - center) * (1 - progress),
+        child: Transform.scale(
+          scale: 0.42 + progress * 0.58,
+          child: Opacity(
+            opacity: progress.clamp(0.0, 1.0),
+            child: AppPressable(
+              semanticLabel: 'Adicionar ${item.label}',
+              minTouchTarget: false,
+              onPressed: progress >= 0.98 ? onTap : null,
+              child: AppHexagon(
+                size: size,
+                color: AppColors.neutral0,
+                borderColor: AppColors.neutral0.withValues(alpha: 0.92),
+                borderWidth: 1,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.space2,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      AppIcon(
+                        item.icon,
+                        size: AppSize.iconXl,
+                        color: AppColors.brand700,
+                      ),
+                      const SizedBox(height: AppSpacing.space2),
+                      Text(
+                        item.label,
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: AppColors.neutral800,
+                          fontSize: AppTypography.base,
+                          fontWeight: AppTypography.weightMedium,
+                          height: AppTypography.lineHeightTight,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -269,11 +413,13 @@ class _QuickAddCenterButton extends StatelessWidget {
   const _QuickAddCenterButton({
     required this.center,
     required this.size,
+    required this.scale,
     required this.onTap,
   });
 
   final Offset center;
   final double size;
+  final double scale;
   final VoidCallback onTap;
 
   @override
@@ -287,14 +433,17 @@ class _QuickAddCenterButton extends StatelessWidget {
         semanticLabel: 'Fechar opções de lançamento',
         minTouchTarget: false,
         onPressed: onTap,
-        child: AppHexagon(
-          size: size,
-          color: AppColors.brand700,
-          borderColor: AppColors.neutral0.withValues(alpha: 0.9),
-          child: const AppIcon(
-            AppIcons.plus,
-            size: AppSize.iconXxl,
-            color: AppColors.neutral0,
+        child: Transform.scale(
+          scale: scale,
+          child: AppHexagon(
+            size: size,
+            color: AppColors.brand700,
+            borderColor: AppColors.neutral0.withValues(alpha: 0.9),
+            child: const AppIcon(
+              AppIcons.plus,
+              size: AppSize.iconXxl,
+              color: AppColors.neutral0,
+            ),
           ),
         ),
       ),
@@ -363,14 +512,16 @@ class _QuickAddConnectorPainter extends CustomPainter {
   const _QuickAddConnectorPainter({
     required this.geometry,
     required this.color,
+    required this.progress,
   });
 
   final _QuickAddGeometry geometry;
   final Color color;
+  final List<double> progress;
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (geometry.optionCenters.length < 5) return;
+    if (geometry.optionCenters.length < 5 || progress.length < 5) return;
 
     final paint = Paint()..color = color;
     final startY =
@@ -427,7 +578,8 @@ class _QuickAddConnectorPainter extends CustomPainter {
       }
 
       final metric = path.computeMetrics().first;
-      for (var t = 0.035; t < 1; t += 0.065) {
+      final visibleTo = progress[index].clamp(0.0, 1.0);
+      for (var t = 0.035; t < visibleTo; t += 0.065) {
         final tangent = metric.getTangentForOffset(metric.length * t);
         if (tangent != null) canvas.drawCircle(tangent.position, 1.15, paint);
       }
@@ -439,5 +591,6 @@ class _QuickAddConnectorPainter extends CustomPainter {
       oldDelegate.geometry.canvasSize != geometry.canvasSize ||
       oldDelegate.geometry.tileSize != geometry.tileSize ||
       oldDelegate.geometry.centerButtonSize != geometry.centerButtonSize ||
-      oldDelegate.color != color;
+      oldDelegate.color != color ||
+      oldDelegate.progress != progress;
 }

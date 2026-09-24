@@ -39,6 +39,7 @@ class AppModuleTile extends StatelessWidget {
     this.layout = AppModuleTileLayout.home,
     this.onTap,
     this.dense = false,
+    this.background,
   });
 
   /// Grade de três colunas (Início do Operacional): respiro lateral de 8 px
@@ -60,6 +61,12 @@ class AppModuleTile extends StatelessWidget {
   final AppModuleTileLayout layout;
 
   final VoidCallback? onTap;
+
+  /// Sobrescreve `bgSubtle` (padrão). A home e a central de módulo assentam
+  /// sobre `bgSheet` cinza — aí o branco de `bgSubtle` já é o contraste. Uma
+  /// dock cuja folha **é** `bgSurface` branca (a de adição rápida) precisa de
+  /// um cinza de verdade aqui, ou o ladrilho some contra o fundo.
+  final Color? background;
 
   /// Altura do Figma. Fixa de propósito: a grade da home alinha ladrilhos de
   /// rótulos com 1 e 2 linhas, e altura por conteúdo desalinharia as fileiras.
@@ -162,7 +169,7 @@ class AppModuleTile extends StatelessWidget {
         // por baixo, `bgSubtle` volta a se destacar como na referência, sem
         // depender só da sombra.
         decoration: BoxDecoration(
-          color: semantic.bgSubtle,
+          color: background ?? semantic.bgSubtle,
           borderRadius: BorderRadius.circular(AppRadius.tile),
           boxShadow: AppShadows.row,
         ),
@@ -374,6 +381,35 @@ WidgetbookComponent buildModuleTileWidgetbookComponent() {
             ),
           ),
         ),
+      ),
+      WidgetbookUseCase(
+        name: 'Sobre folha branca (adição rápida)',
+        builder: (context) {
+          final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+          return ColoredBox(
+            color: semantic.bgSurface,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.space4),
+              child: AppModuleTileGrid(
+                columns: 3,
+                tiles: [
+                  for (final (icon, label) in const [
+                    (AppIcons.tractor, 'Apontamento'),
+                    (AppIcons.scale, 'Pesagem'),
+                    (AppIcons.wheat, 'Trato diário'),
+                  ])
+                    AppModuleTile(
+                      icon: icon,
+                      label: label,
+                      dense: true,
+                      background: semantic.bgInset,
+                      onTap: () {},
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     ],
   );
