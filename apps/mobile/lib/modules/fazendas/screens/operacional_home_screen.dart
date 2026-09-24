@@ -90,9 +90,18 @@ class _OperacionalHomeScreenState extends ConsumerState<OperacionalHomeScreen> {
       for (final section in operationalMenuSections()) ...section.items,
     ].where((item) => item.route != operationalHomeRoute).toList();
     void verTodas() => context.push(OperacionalHomeScreen.todasAsOrdensRoute);
+    final scrollEndPadding =
+        AppSpacing.space4 +
+        AppLayout.tabBarClearance +
+        MediaQuery.paddingOf(context).bottom;
 
     return ListView(
-      padding: const EdgeInsets.all(AppSpacing.space4),
+      padding: EdgeInsets.fromLTRB(
+        AppSpacing.space4,
+        AppSpacing.space4,
+        AppSpacing.space4,
+        scrollEndPadding,
+      ),
       children: [
         if (emAndamento.isNotEmpty) ...[
           Row(
