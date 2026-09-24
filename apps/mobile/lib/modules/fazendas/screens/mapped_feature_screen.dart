@@ -11,6 +11,7 @@ import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
 import '../functional_journey_engine.dart';
 import '../group_icons.dart';
+import '../record_meta.dart';
 import '../state/prototype_records_store.dart';
 
 class MappedFeatureScreen extends StatelessWidget {
@@ -834,13 +835,12 @@ class _RecordsListState extends State<_RecordsList> {
           )
         else
           for (var index = 0; index < visibleRecords.length; index++) ...[
-            AppMenuItem(
-              icon: AppIcons.fileCheck2,
-              label: visibleRecords[index].title,
-              description: visibleRecords[index].description,
-              surface: AppMenuItemSurface.subtle,
-              showShadow: false,
-              trailing: AppChip(
+            AppRecordTile(
+              title: visibleRecords[index].title,
+              meta: recordMetaFromDescription(
+                visibleRecords[index].description,
+              ),
+              status: AppChip(
                 tone:
                     visibleRecords[index].status ==
                         PrototypeRecordStatus.scheduled

@@ -86,8 +86,30 @@ class _OrdemCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Text(
+            descricao,
+            style: TextStyle(
+              fontSize: AppTypography.xl,
+              fontWeight: AppTypography.weightMedium,
+              color: semantic.fgDefault,
+            ),
+          ),
+          if (ordem.observacao != null) ...[
+            const SizedBox(height: AppSpacing.space1),
+            AppRecordMetaGrid(
+              meta: [
+                AppRecordMeta(
+                  icon: AppIcons.messageCircle,
+                  label: ordem.observacao!,
+                ),
+              ],
+            ),
+          ],
+          // Tipo e situação embaixo do texto (padrão de listagem).
+          const SizedBox(height: AppSpacing.space2),
+          Wrap(
+            spacing: AppSpacing.space2,
+            runSpacing: AppSpacing.space2,
             children: [
               AppChip(
                 tone: ordem.tipo == OrdemTipo.transferenciaLote
@@ -105,18 +127,6 @@ class _OrdemCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.space2),
-          Text(descricao, style: TextStyle(color: semantic.fgDefault)),
-          if (ordem.observacao != null) ...[
-            const SizedBox(height: AppSpacing.space1),
-            Text(
-              ordem.observacao!,
-              style: TextStyle(
-                fontSize: AppTypography.sm,
-                color: semantic.fgMuted,
-              ),
-            ),
-          ],
           if (!confirmada) ...[
             const SizedBox(height: AppSpacing.space3),
             AppButton(

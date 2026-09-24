@@ -402,9 +402,14 @@ class OsSummaryCard extends StatelessWidget {
       statusLabel: os.status.label,
       statusTone: osStatusTone(os.status),
       title: os.titulo,
-      subtitle: os.areaOuTalhao,
-      caption: '${os.responsavelExecucao} · ${os.codigo}',
+      // Dois por linha, na ordem do que se procura: onde e até quando;
+      // prioridade e quem executa; o número da OS para conferir.
       meta: [
+        AppStatusCardMeta(
+          label: 'Local',
+          value: os.areaOuTalhao,
+          icon: AppIcons.mapPin,
+        ),
         AppStatusCardMeta(
           label: 'Prazo',
           value: osPrazoRelativo(os.prazo, agora),
@@ -415,6 +420,16 @@ class OsSummaryCard extends StatelessWidget {
           value: os.prioridade.label,
           highlight: urgente,
           icon: AppIcons.alertCircle,
+        ),
+        AppStatusCardMeta(
+          label: 'Responsável',
+          value: os.responsavelExecucao,
+          icon: AppIcons.user,
+        ),
+        AppStatusCardMeta(
+          label: 'Código',
+          value: os.codigo,
+          icon: AppIcons.ordemServico,
         ),
       ],
       situation: osSituacao(os, agora),

@@ -91,40 +91,40 @@ class _CurralCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                curral.nome,
-                style: TextStyle(
-                  fontWeight: AppTypography.weightSemibold,
-                  color: semantic.fgDefault,
-                ),
-              ),
-              AppChip(
-                tone: switch (curral.situacao) {
-                  CurralSituacao.ocupado => AppChipTone.brand,
-                  CurralSituacao.vazio => AppChipTone.neutral,
-                  CurralSituacao.vazioSanitario ||
-                  CurralSituacao.limpeza => AppChipTone.blue,
-                  CurralSituacao.manutencao ||
-                  CurralSituacao.enfermaria => AppChipTone.amber,
-                  CurralSituacao.interditado => AppChipTone.red,
-                },
-                child: Text(curral.situacao.label),
-              ),
-            ],
+          Text(
+            curral.nome,
+            style: TextStyle(
+              fontSize: AppTypography.xl,
+              fontWeight: AppTypography.weightSemibold,
+              color: semantic.fgDefault,
+            ),
           ),
           if (curral.ocupado && curral.indicadores != null) ...[
             const SizedBox(height: AppSpacing.space1),
-            Text(
-              '${curral.indicadores!.totalAnimais}/${curral.capacidade} cabeças',
-              style: TextStyle(
-                fontSize: AppTypography.sm,
-                color: semantic.fgMuted,
-              ),
+            AppRecordMetaGrid(
+              meta: [
+                AppRecordMeta(
+                  icon: AppIcons.beef,
+                  label:
+                      '${curral.indicadores!.totalAnimais}/${curral.capacidade} cabeças',
+                ),
+              ],
             ),
           ],
+          // Situação embaixo do nome, nunca ao lado (padrão de listagem).
+          const SizedBox(height: AppSpacing.space2),
+          AppChip(
+            tone: switch (curral.situacao) {
+              CurralSituacao.ocupado => AppChipTone.brand,
+              CurralSituacao.vazio => AppChipTone.neutral,
+              CurralSituacao.vazioSanitario ||
+              CurralSituacao.limpeza => AppChipTone.blue,
+              CurralSituacao.manutencao ||
+              CurralSituacao.enfermaria => AppChipTone.amber,
+              CurralSituacao.interditado => AppChipTone.red,
+            },
+            child: Text(curral.situacao.label),
+          ),
           if (ordensPendentes.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.space2),
             Container(

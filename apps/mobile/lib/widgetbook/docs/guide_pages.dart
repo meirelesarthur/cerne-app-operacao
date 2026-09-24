@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.16.0';
+const kWidgetbookVersion = '2.17.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,31 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.17.0',
+    date: '2026-09-24',
+    summary:
+        'Padrão global de listagem: título largo, dados com ícone, tag embaixo.',
+    changes: [
+      (
+        'Novo',
+        'RecordTile (AppRecordTile + AppRecordMetaGrid): linha de registro sem '
+            'ícone à esquerda, dados de apoio com ícone no tamanho do texto '
+            '(no máximo 2 por linha) e a situação embaixo do texto.',
+      ),
+      (
+        'Mudou',
+        'StatusCard: título na largura inteira, metas com ícone 2 por linha e '
+            'o chip de status embaixo, nas três variantes.',
+      ),
+      (
+        'Mudou',
+        'Listagens do app (registros das rotinas, OS, Meus currais, Ordens '
+            'pendentes) no padrão novo; recordMetaFromDescription escolhe o '
+            'ícone de cada dado (data, lote, local, peso, animais, custo…).',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.16.0',
     date: '2026-09-24',

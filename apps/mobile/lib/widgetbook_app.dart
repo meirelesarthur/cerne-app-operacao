@@ -151,6 +151,7 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
           buildStatusCardWidgetbookComponent(),
           buildNotificationTileWidgetbookComponent(),
           buildDetailSectionWidgetbookComponent(),
+          buildRecordTileWidgetbookComponent(),
         ],
       ),
       WidgetbookFolder(
