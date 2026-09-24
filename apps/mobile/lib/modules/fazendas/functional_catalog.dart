@@ -4389,7 +4389,7 @@ const operationalFeatures = <FeatureDefinition>[
     id: 'meus-currais',
     profile: FeatureProfile.operational,
     group: 'Confinamento',
-    title: 'Meus currais',
+    title: 'Currais',
     objective:
         'Consultar a situação dos currais e acionar pesagem, sanitário e óbito.',
     status: FeatureStatus.ready,

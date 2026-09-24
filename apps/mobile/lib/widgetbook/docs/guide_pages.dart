@@ -52,7 +52,7 @@ const widgetbookChangelog = <WidgetbookRelease>[
       ),
       (
         'Mudou',
-        'Listagens do app (registros das rotinas, OS, Meus currais, Ordens '
+        'Listagens do app (registros das rotinas, OS, Currais, Ordens '
             'pendentes) no padrão novo; recordMetaFromDescription escolhe o '
             'ícone de cada dado (data, lote, local, peso, animais, custo…).',
       ),

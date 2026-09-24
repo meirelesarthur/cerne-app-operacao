@@ -322,7 +322,7 @@ WidgetbookComponent buildModuleTileWidgetbookComponent() {
               tiles: [
                 AppModuleTile(
                   icon: AppIcons.warehouse,
-                  label: 'Meus Currais',
+                  label: 'Currais',
                   description: 'Ações realizadas nos currais',
                   layout: AppModuleTileLayout.module,
                   onTap: () {},

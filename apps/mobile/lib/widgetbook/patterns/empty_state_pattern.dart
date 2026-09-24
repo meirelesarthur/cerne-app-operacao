@@ -195,7 +195,7 @@ WidgetbookComponent buildEmptyStatePatternWidgetbookComponent() {
       ),
       caso(
         'Lista nunca preenchida',
-        tela: 'Meus currais',
+        tela: 'Currais',
         origem: 'operacional/meus_currais_screen.dart',
         vazio: const AppEmptyState(
           icon: AppIcons.barns,
