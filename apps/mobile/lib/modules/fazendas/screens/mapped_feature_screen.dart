@@ -10,6 +10,7 @@ import '../../../shell/state/prototype_session_store.dart';
 import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
 import '../functional_journey_engine.dart';
+import '../group_icons.dart';
 import '../state/prototype_records_store.dart';
 
 class MappedFeatureScreen extends StatelessWidget {
@@ -190,34 +191,61 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
   /// para a coleção deixar de ser um contador: cada "Adicionar" abre os campos
   /// que o contrato define para o item e a linha entra na lista com o dado
   /// verdadeiro. Coleção sem campos declarados continua só contando.
-  void _addCollectionItem(BuildContext context, FeatureCollection collection) {
-    _openCollectionItemSheet(context, collection);
-  }
+  Future<void> _addCollectionItem(
+    BuildContext context,
+    FeatureCollection collection,
+  ) => _openCollectionItemSheet(context, collection);
 
   /// Mesma folha de [_addCollectionItem], pré-preenchida com o item em
   /// [index] — "Editar" no lugar de "Adicionar", substitui o item ao salvar
   /// em vez de acrescentar um novo. Coleção sem campos declarados não tem o
   /// que editar (o item é `{}`), então o ícone de editar nem aparece nesse
   /// caso — ver o `onEdit` condicional no `AppCollectionList`.
-  void _editCollectionItem(
+  Future<void> _editCollectionItem(
     BuildContext context,
     FeatureCollection collection,
     int index,
-  ) {
-    _openCollectionItemSheet(
+  ) => _openCollectionItemSheet(
+    context,
+    collection,
+    editIndex: index,
+    initialValues: _journey.form.itemsOf(collection.name)[index],
+  );
+
+  /// O "dentro" do card-gaveta, como no apontamento agrícola: lista os itens
+  /// da coleção, edita tocando na linha, remove com "Desfazer" e mantém
+  /// "Adicionar" fixo no rodapé; depois de salvar, volta à lista.
+  void _manageCollection(BuildContext context, FeatureCollection collection) {
+    showAppCollectionManager(
       context,
-      collection,
-      editIndex: index,
-      initialValues: _journey.form.itemsOf(collection.name)[index],
+      title: collection.name,
+      items: () => [
+        for (final item in _journey.form.itemsOf(collection.name))
+          AppCollectionItemView(
+            title: collectionItemTitle(collection, item),
+            subtitle: collectionItemSubtitle(collection, item),
+          ),
+      ],
+      onAdd: () => _addCollectionItem(context, collection),
+      onEdit: collection.fields.isEmpty
+          ? null
+          : (index) => _editCollectionItem(context, collection, index),
+      onRemove: (index) {
+        final item = _journey.form.itemsOf(collection.name)[index];
+        setState(() => _journey.removeGroupItem(collection.name, index));
+        return () => setState(
+          () => _journey.insertGroupItem(collection.name, index, item),
+        );
+      },
     );
   }
 
-  void _openCollectionItemSheet(
+  Future<void> _openCollectionItemSheet(
     BuildContext context,
     FeatureCollection collection, {
     int? editIndex,
     Map<String, String>? initialValues,
-  }) {
+  }) async {
     if (collection.fields.isEmpty) {
       setState(() => _journey.addGroupItem(collection.name));
       return;
@@ -227,7 +255,7 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
     var attempted = false;
     final isEditing = editIndex != null;
 
-    showAppBottomSheet<void>(
+    await showAppBottomSheet<void>(
       context,
       title: collection.itemLabel ?? collection.name,
       child: StatefulBuilder(
@@ -537,6 +565,8 @@ class _MappedFeatureJourneyState extends ConsumerState<_MappedFeatureJourney> {
                 onEditCollectionItem: (collection, index) =>
                     _editCollectionItem(context, collection, index),
                 onRemoveCollectionItem: _removeCollectionItem,
+                onOpenCollection: (collection) =>
+                    _manageCollection(context, collection),
                 onCaptureCollectionItem: _captureCollectionItem,
               ),
           ],
@@ -1146,6 +1176,7 @@ class _FeatureForm extends StatelessWidget {
     required this.onAddCollectionItem,
     required this.onEditCollectionItem,
     required this.onRemoveCollectionItem,
+    required this.onOpenCollection,
     required this.onCaptureCollectionItem,
   });
 
@@ -1156,6 +1187,9 @@ class _FeatureForm extends StatelessWidget {
   final void Function(FeatureCollection collection, int index)
   onEditCollectionItem;
   final void Function(String group, int index) onRemoveCollectionItem;
+
+  /// Abre o gerenciador de uma coleção que já tem itens (card-gaveta cheio).
+  final ValueChanged<FeatureCollection> onOpenCollection;
   final void Function(String collectionName, String fieldId, String value)
   onCaptureCollectionItem;
 
@@ -1291,33 +1325,32 @@ class _FeatureForm extends StatelessWidget {
             error: journey.form.attempted
                 ? _sectionError(feature, journey, sections)
                 : null,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (var index = 0; index < sections.length; index++) ...[
-                  if (index > 0) const SizedBox(height: AppSpacing.space4),
+            // Cards-gaveta, o mesmo padrão do apontamento agrícola: vazio
+            // abre o formulário, com itens abre o gerenciador. A sobra da
+            // grade 2x2 (quantidade ímpar) ocupa a linha inteira.
+            child: AppSquareGroupGrid(
+              groups: [
+                for (var index = 0; index < sections.length; index++)
                   if (feature.collectionByName(sections[index])
                       case final collection?)
-                    AppCollectionList(
+                    AppSquareGroup(
                       name: collection.name,
-                      items: [
-                        for (final item in journey.form.itemsOf(
-                          collection.name,
-                        ))
-                          AppCollectionItemView(
-                            title: collectionItemTitle(collection, item),
-                            subtitle: collectionItemSubtitle(collection, item),
-                          ),
-                      ],
-                      onAdd: () => onAddCollectionItem(collection),
-                      onEdit: collection.fields.isEmpty
-                          ? null
-                          : (item) => onEditCollectionItem(collection, item),
-                      onRemove: (item) =>
-                          onRemoveCollectionItem(collection.name, item),
+                      icon: collectionIcon(collection.name),
+                      count: journey.form.itemsOf(collection.name).length,
+                      wide:
+                          sections.length.isOdd && index == sections.length - 1,
                     ),
-                ],
               ],
+              onAdd: (name) {
+                if (feature.collectionByName(name) case final collection?) {
+                  onAddCollectionItem(collection);
+                }
+              },
+              onOpen: (name) {
+                if (feature.collectionByName(name) case final collection?) {
+                  onOpenCollection(collection);
+                }
+              },
             ),
           ),
         ],

@@ -171,7 +171,8 @@ void main() {
         find.text('Capture ao menos um animal para continuar.'),
         findsNothing,
       );
-      expect(find.text('BRINCO 2048'), findsOneWidget);
+      // A leitura entra no card-gaveta da coleção.
+      expect(find.text('1 item incluído'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 

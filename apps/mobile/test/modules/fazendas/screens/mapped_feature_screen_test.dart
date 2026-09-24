@@ -290,10 +290,12 @@ void main() {
         // fidelidade-contrato (re-auditoria 3ª avaliação): items é min:1 no
         // SupplyRequest — adiciona um item de abastecimento (finders escopados
         // ao sheet, já que item e cabeçalho compartilham rótulos).
+        // Card-gaveta vazio: tocar abre o formulário do item.
+        await tester.ensureVisible(find.byType(AppSquareGroupGrid));
         await tester.tap(
           find.descendant(
-            of: find.byType(AppAddableGroupList).first,
-            matching: find.text('Adicionar'),
+            of: find.byType(AppSquareGroupGrid),
+            matching: find.text('Nenhum item'),
           ),
         );
         await tester.pumpAndSettle();
@@ -410,17 +412,13 @@ void main() {
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
 
-      // Etapa 4 — as cinco coleções de `/pastures`, ainda vazias.
+      // Etapa 4 — as cinco coleções de `/pastures`, ainda vazias, como
+      // cards-gaveta (mesmo padrão do apontamento).
       expect(find.text('Itens vinculados'), findsOneWidget);
-      expect(find.text('Nenhum item adicionado'), findsNWidgets(5));
+      expect(find.text('Nenhum item'), findsNWidgets(5));
 
-      // Insumos é a segunda coleção; cada uma compõe um AppAddableGroupList.
-      await tester.tap(
-        find.descendant(
-          of: find.byType(AppAddableGroupList).at(1),
-          matching: find.text('Adicionar'),
-        ),
-      );
+      // Card vazio: tocar em qualquer lugar abre o formulário do item.
+      await tester.tap(find.text('Insumos'));
       await tester.pumpAndSettle();
 
       // A folha abre com o rótulo do item, não com o nome da coleção.
@@ -444,9 +442,14 @@ void main() {
       await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
 
+      // O card vira gaveta cheia; o item em si fica no gerenciador.
+      expect(find.text('1 item incluído'), findsOneWidget);
+      await tester.tap(find.text('Insumos'));
+      await tester.pumpAndSettle();
       expect(find.text('Ração Engorda 18%'), findsOneWidget);
       expect(find.text('20 · kg · Armazém A'), findsOneWidget);
-      expect(find.text('1 item(ns) adicionado(s)'), findsOneWidget);
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
 
       // Etapa 5 — revisão: a coleção aparece por extenso, item a item, na
       // mesma caixa da etapa de preenchimento — não mais um resumo achatado.
@@ -502,12 +505,7 @@ void main() {
       await tester.tap(findCta('Continuar'));
       await tester.pumpAndSettle();
 
-      await tester.tap(
-        find.descendant(
-          of: find.byType(AppAddableGroupList).at(1),
-          matching: find.text('Adicionar'),
-        ),
-      );
+      await tester.tap(find.text('Insumos'));
       await tester.pumpAndSettle();
       await _selectSearchFieldOption(tester, 'Produto', 'Ração Engorda 18%');
       await _selectFieldOption(
@@ -520,13 +518,18 @@ void main() {
       await tester.ensureVisible(find.text('Adicionar').last);
       await tester.tap(find.text('Adicionar').last);
       await tester.pumpAndSettle();
-      expect(find.text('Ração Engorda 18%'), findsOneWidget);
 
+      // Remover acontece dentro do gerenciador, com "Desfazer".
+      await tester.tap(find.text('Insumos'));
+      await tester.pumpAndSettle();
+      expect(find.text('Ração Engorda 18%'), findsOneWidget);
       await tester.tap(find.byTooltip('Remover item'));
       await tester.pumpAndSettle();
-
       expect(find.text('Ração Engorda 18%'), findsNothing);
-      expect(find.text('Nenhum item adicionado'), findsNWidgets(5));
+      await tester.tapAt(const Offset(10, 10));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Nenhum item'), findsNWidgets(5));
       expect(tester.takeException(), isNull);
     });
   });

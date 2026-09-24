@@ -96,6 +96,14 @@ const widgetbookChangelog = <WidgetbookRelease>[
             'branca.',
       ),
       (
+        'Mudou',
+        'SquareGroupGrid (cards-gaveta) vira o padrão de itens vinculados em '
+            'todos os cadastros do catálogo e na Leitura de cocho: vazio abre '
+            'o formulário, com itens abre o gerenciador (editar, remover com '
+            'Desfazer, Adicionar fixo). collectionIcon() dá o ícone por '
+            'coleção.',
+      ),
+      (
         'Novo',
         'Token bg.inset (AppSemanticColors.bgInset): bloco cinza sobre a folha '
             'no claro e verde elevado no Modo GB. DetailSection, Card inset, '

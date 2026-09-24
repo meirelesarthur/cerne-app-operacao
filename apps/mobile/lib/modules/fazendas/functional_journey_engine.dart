@@ -108,6 +108,11 @@ class FunctionalJourneyController {
     form = form.removeGroupItem(group, index);
   }
 
+  /// Devolve [item] à posição [index] — o "Desfazer" da lixeira.
+  void insertGroupItem(String group, int index, Map<String, String> item) {
+    form = form.insertGroupItem(group, index, item);
+  }
+
   void updateGroupItem(String group, int index, Map<String, String> item) {
     form = form.updateGroupItem(group, index, item);
   }
@@ -205,6 +210,20 @@ class FunctionalFormState {
     },
     attempted: attempted,
   );
+
+  FunctionalFormState insertGroupItem(
+    String group,
+    int index,
+    Map<String, String> item,
+  ) {
+    final atuais = [...itemsOf(group)];
+    atuais.insert(index.clamp(0, atuais.length), item);
+    return FunctionalFormState(
+      values: values,
+      groupItems: {...groupItems, group: atuais},
+      attempted: attempted,
+    );
+  }
 
   FunctionalFormState removeGroupItem(String group, int index) {
     final atuais = [...itemsOf(group)];

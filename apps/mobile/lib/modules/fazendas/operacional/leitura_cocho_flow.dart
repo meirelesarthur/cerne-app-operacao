@@ -422,51 +422,71 @@ class _AvaliacaoCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.space3),
-          AppAddableGroupList(
-            groups: const ['Ocorrências'],
-            counts: {'Ocorrências': draft.ocorrencias.length},
-            onAdd: (_) => _adicionarOcorrencia(context, draft, onChanged),
-          ),
-          for (final o in draft.ocorrencias)
-            Padding(
-              padding: const EdgeInsets.only(top: AppSpacing.space2),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppChip(
-                    tone: switch (o.prioridade) {
-                      OcorrenciaPrioridade.alta => AppChipTone.red,
-                      OcorrenciaPrioridade.media => AppChipTone.amber,
-                      OcorrenciaPrioridade.baixa => AppChipTone.neutral,
-                    },
-                    // Rótulo em português ("Média"), não o nome interno do
-                    // enum ("media").
-                    child: Text(
-                      _prioridades
-                          .firstWhere((p) => p.value == o.prioridade.name)
-                          .label,
-                    ),
-                  ),
-                  const SizedBox(width: AppSpacing.space2),
-                  Expanded(
-                    child: Text(
-                      o.descricao,
-                      style: TextStyle(
-                        fontSize: AppTypography.sm,
-                        color: semantic.fgDefault,
-                      ),
-                    ),
-                  ),
-                ],
+          // Card-gaveta, o mesmo padrão do apontamento: vazio abre o
+          // formulário; com itens abre o gerenciador (lista, remover com
+          // "Desfazer" e "Adicionar" fixo no rodapé).
+          AppSquareGroupGrid(
+            groups: [
+              AppSquareGroup(
+                name: _grupoOcorrencias,
+                icon: AppIcons.triangleAlert,
+                count: draft.ocorrencias.length,
+                summary: _resumoOcorrencias(draft),
+                wide: true,
               ),
-            ),
+            ],
+            onAdd: (_) => _adicionarOcorrencia(context, draft, onChanged),
+            onOpen: (_) => _gerenciarOcorrencias(context, draft, onChanged),
+          ),
         ],
       ),
     );
   }
 }
 
-void _adicionarOcorrencia(
+const _grupoOcorrencias = 'Ocorrências';
+
+String _prioridadeLabel(OcorrenciaPrioridade p) =>
+    _prioridades.firstWhere((o) => o.value == p.name).label;
+
+/// Resumo do card: a maior prioridade registrada (nunca o nome de um item).
+String? _resumoOcorrencias(_AvaliacaoDraft draft) {
+  if (draft.ocorrencias.isEmpty) return null;
+  final maior = draft.ocorrencias
+      .map((o) => o.prioridade)
+      .reduce((a, b) => a.index >= b.index ? a : b);
+  return 'Prioridade ${_prioridadeLabel(maior).toLowerCase()}';
+}
+
+void _gerenciarOcorrencias(
+  BuildContext context,
+  _AvaliacaoDraft draft,
+  VoidCallback onChanged,
+) {
+  showAppCollectionManager(
+    context,
+    title: _grupoOcorrencias,
+    items: () => [
+      for (final o in draft.ocorrencias)
+        AppCollectionItemView(
+          title: _prioridadeLabel(o.prioridade),
+          subtitle: o.descricao,
+        ),
+    ],
+    summary: () => _resumoOcorrencias(draft),
+    onAdd: () => _adicionarOcorrencia(context, draft, onChanged),
+    onRemove: (index) {
+      final removida = draft.ocorrencias.removeAt(index);
+      onChanged();
+      return () {
+        draft.ocorrencias.insert(index, removida);
+        onChanged();
+      };
+    },
+  );
+}
+
+Future<void> _adicionarOcorrencia(
   BuildContext context,
   _AvaliacaoDraft draft,
   VoidCallback onChanged,
@@ -476,7 +496,7 @@ void _adicionarOcorrencia(
   var descricao = '';
   String? foto;
 
-  showAppBottomSheet<void>(
+  return showAppBottomSheet<void>(
     context,
     title: 'Nova ocorrência',
     child: StatefulBuilder(

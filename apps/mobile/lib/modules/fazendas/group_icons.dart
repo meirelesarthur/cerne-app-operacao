@@ -50,6 +50,40 @@ String? groupSummary(String group) => switch (group) {
   _ => null,
 };
 
+/// Ícone do card-gaveta de uma coleção de itens do cadastro (ex.: "Animais
+/// alvo", "Itens de estoque"). Casa por palavra-chave do nome — o catálogo
+/// não carrega UI — e cai numa camada genérica quando não reconhece.
+AppIconData collectionIcon(String name) {
+  final n = name.toLowerCase();
+  if (n.contains('mão de obra')) return AppIcons.users;
+  if (n.contains('máquina') || n.contains('equipamento')) {
+    return AppIcons.tractor;
+  }
+  if (n.contains('ocorr')) return AppIcons.triangleAlert;
+  if (n.contains('produção')) return AppIcons.wheat;
+  if (n.contains('serviço')) return AppIcons.wrench;
+  if (n.contains('etapa')) return AppIcons.listOrdered;
+  if (n.contains('identifica')) return AppIcons.qrCode;
+  if (n.contains('infraestrutura')) return AppIcons.barns;
+  if (n.contains('categoria')) return AppIcons.layers;
+  if (n.contains('lote')) return AppIcons.boxes;
+  if (n.contains('vaca') ||
+      n.contains('animal') ||
+      n.contains('animais') ||
+      n.contains('touro')) {
+    return AppIcons.pecuaria;
+  }
+  if (n.contains('estoque') ||
+      n.contains('insumo') ||
+      n.contains('produto') ||
+      n.contains('peça') ||
+      n.contains('matéria') ||
+      n.contains('itens')) {
+    return AppIcons.package;
+  }
+  return AppIcons.layers;
+}
+
 /// Rótulo de apresentação dos módulos na entrada operacional. O catálogo
 /// mantém o nome de domínio para chaves, slugs e auditoria; a home usa o
 /// vocabulário curto que aparece no layout de referência.
