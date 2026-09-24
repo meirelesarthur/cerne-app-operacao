@@ -103,7 +103,9 @@ List<AppNotification> _mockNotifications(DateTime agora) => [
     tipo: TipoNotificacao.sincronizacao,
     title: 'Lançamentos sincronizados',
     detail: '12 registros enviados ao servidor',
-    dataHora: agora.subtract(const Duration(days: 1, hours: 2)),
+    // Ancorada em ontem, 14:20 — "agora − 1 dia − N h" caía anteontem logo
+    // depois da meia-noite e o grupo "Ontem" sumia.
+    dataHora: DateTime(agora.year, agora.month, agora.day - 1, 14, 20),
     read: true,
     route: '/fazendas/campo/sincronizacao',
   ),
@@ -112,7 +114,7 @@ List<AppNotification> _mockNotifications(DateTime agora) => [
     tipo: TipoNotificacao.cancelamento,
     title: 'OS cancelada pelo escritório',
     detail: 'OS #2160 · Contenção de gado solto',
-    dataHora: agora.subtract(const Duration(days: 1, hours: 5)),
+    dataHora: DateTime(agora.year, agora.month, agora.day - 1, 11, 5),
     read: true,
     route: '/fazendas/campo/minhas-os',
   ),
