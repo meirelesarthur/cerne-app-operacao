@@ -1,11 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/modules/fazendas/components/context_badge.dart';
+import 'package:cerne_app/modules/fazendas/operacional/pesagem_flow.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/models.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/state/ordem_servico_store.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/widgets.dart';
 import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
 import 'package:cerne_app/shell/components/reveal_menu.dart';
+import 'package:cerne_app/shell/module_config.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/ui/module_tile.dart';
 import 'package:cerne_app/ui/page_scaffold.dart';
@@ -269,7 +271,7 @@ void main() {
     );
 
     testWidgets(
-      'navbar operacional: Início, Pecuária, Agricultura, Confinamento e Menu',
+      'navbar operacional: Início, Pecuária, [+], Agricultura e Menu',
       (tester) async {
         await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
@@ -280,10 +282,10 @@ void main() {
           matching: find.bySemanticsLabel(label),
         );
         expect(aba('Pecuária'), findsOneWidget);
+        expect(aba('Adicionar'), findsOneWidget);
         expect(aba('Agricultura'), findsOneWidget);
-        // Confinamento voltou a ser aba, depois de Agricultura, e continua
-        // também no menu lateral.
-        expect(aba('Confinamento'), findsOneWidget);
+        // Confinamento saiu da barra para o "+"; continua no menu lateral.
+        expect(aba('Confinamento'), findsNothing);
         await tester.tap(find.bySemanticsLabel('Menu'));
         await tester.pumpAndSettle();
 
@@ -293,6 +295,30 @@ void main() {
         expect(find.byType(AppModuleTile), findsNWidgets(7));
       },
     );
+
+    testWidgets('o "+" abre a adição rápida e o atalho empilha a rotina', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.bySemanticsLabel('Adicionar'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('O que você quer lançar?'), findsOneWidget);
+      for (final atalho in operationalQuickAdds()) {
+        expect(find.text(atalho.label), findsOneWidget, reason: atalho.label);
+      }
+
+      await tester.tap(find.text('Pesagem'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('O que você quer lançar?'), findsNothing);
+      expect(find.byType(PesagemFlow), findsOneWidget);
+      expect(harness.router.canPop(), isTrue);
+      expect(tester.takeException(), isNull);
+    });
 
     testWidgets(
       'central interna mantém fazenda e navbar, mas remove o perfil e as abas',

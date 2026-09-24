@@ -637,8 +637,8 @@ export const component = {
     /** quanto o hexágono do item ativo sobe acima da borda da barra */
     lift: '24px',
     /** largura e profundidade da ondulação que a barra faz sob o item ativo */
-    notchWidth: '96px',
-    notchDepth: '20px',
+    notchWidth: '104px',
+    notchDepth: '32px',
   },
   /** Arte do estado vazio (`AppEmptyState`): halo com o ícone Hugeicons grande
    *  no tom do cenário e um selo sólido no canto (check, x, lupa…) que diz o

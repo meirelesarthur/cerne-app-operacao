@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
+import 'package:cerne_app/modules/fazendas/operational_groups.dart';
 import 'package:cerne_app/shell/module_config.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/ui/app_icon.dart';
@@ -104,19 +106,37 @@ void main() {
       },
     );
 
-    test(
-      'navbar operacional: Início, Pecuária, Agricultura, Confinamento e Menu',
-      () {
-        expect(operationalBottomTabs.map((t) => t.label), [
-          'Início',
-          'Pecuária',
-          'Agricultura',
-          'Confinamento',
-          'Menu',
-        ]);
-        expect(operationalBottomTabs.last.action, 'menu');
-      },
-    );
+    test('navbar operacional: Início, Pecuária, [+], Agricultura e Menu', () {
+      expect(operationalBottomTabs.map((t) => t.label), [
+        'Início',
+        'Pecuária',
+        'Adicionar',
+        'Agricultura',
+        'Menu',
+      ]);
+      // O "+" fica no centro e é ação, não aba.
+      expect(operationalBottomTabs[2].action, quickAddAction);
+      expect(operationalBottomTabs.last.action, 'menu');
+    });
+
+    test('adição rápida: até cinco rotinas, com destino do catálogo', () {
+      final atalhos = operationalQuickAdds();
+      expect(atalhos.map((a) => a.label), [
+        'Apontamento',
+        'Pesagem',
+        'Trato diário',
+        'Leitura de cocho',
+        'Manejo sanitário',
+      ]);
+      expect(atalhos.length, lessThanOrEqualTo(5));
+      for (final atalho in atalhos) {
+        final feature = operationalFeatures.firstWhere(
+          (f) => f.id == atalho.id,
+        );
+        expect(atalho.route, operationalFeatureRoute(feature));
+        expect(atalho.push, isTrue, reason: atalho.label);
+      }
+    });
 
     test('Fazendas só entrega a aba operacional (perfil único do app)', () {
       final fazendas = getModule('fazendas')!;

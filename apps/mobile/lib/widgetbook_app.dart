@@ -189,6 +189,8 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
           buildSearchFieldWidgetbookComponent(),
           buildDiscoveryTileWidgetbookComponent(),
           buildModuleTileWidgetbookComponent(),
+          buildHexagonWidgetbookComponent(),
+          buildTabBarWidgetbookComponent(),
           buildActionBarWidgetbookComponent(),
           buildStepProgressWidgetbookComponent(),
           buildLeaveGuardWidgetbookComponent(),

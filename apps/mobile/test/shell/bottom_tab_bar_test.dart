@@ -7,12 +7,19 @@ import 'package:cerne_app/shell/module_config.dart';
 
 Widget _wrap(Widget child) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
-  home: Scaffold(body: Center(child: child)),
+  home: Scaffold(
+    body: Align(
+      alignment: Alignment.bottomCenter,
+      child: SizedBox(width: 375, child: child),
+    ),
+  ),
 );
 
 void main() {
   group('AppBottomTabBar', () {
-    testWidgets('renderiza as 5 abas operacionais sem exceção', (tester) async {
+    testWidgets('anuncia as 4 abas e o "+", e só a ativa escreve o nome', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         _wrap(
           AppBottomTabBar(
@@ -22,39 +29,42 @@ void main() {
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
-      // Todas as abas existem e são anunciadas pelo nome; só a ativa escreve
-      // o nome, na pílula ao lado do ícone.
       for (final label in [
         'Início',
         'Pecuária',
+        'Adicionar',
         'Agricultura',
-        'Confinamento',
         'Menu',
       ]) {
-        expect(find.bySemanticsLabel(label), findsOneWidget);
+        expect(find.bySemanticsLabel(label), findsOneWidget, reason: label);
       }
       expect(find.text('Início'), findsOneWidget);
       expect(find.text('Pecuária'), findsNothing);
+      expect(find.text('Adicionar'), findsNothing);
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('dispara onSelected com a aba tocada', (tester) async {
-      BottomTab? selected;
+    testWidgets('devolve a aba tocada e o "+" como ação', (tester) async {
+      final tocadas = <BottomTab>[];
       await tester.pumpWidget(
         _wrap(
           AppBottomTabBar(
             tabs: operationalBottomTabs,
             activeId: 'inicio',
-            onSelected: (tab) => selected = tab,
+            onSelected: tocadas.add,
           ),
         ),
       );
+      await tester.pumpAndSettle();
 
       await tester.tap(find.bySemanticsLabel('Pecuária'));
+      await tester.tap(find.bySemanticsLabel('Adicionar'));
       await tester.pump();
 
-      expect(selected?.id, 'pecuaria');
+      expect(tocadas.map((t) => t.id), ['pecuaria', 'adicionar']);
+      expect(tocadas.last.action, quickAddAction);
     });
   });
 }

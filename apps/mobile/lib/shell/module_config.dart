@@ -1,3 +1,4 @@
+import '../modules/fazendas/functional_catalog.dart';
 import '../modules/fazendas/group_icons.dart';
 import '../modules/fazendas/operational_groups.dart';
 import '../ui/ui.dart';
@@ -101,13 +102,13 @@ class ModuleDef {
   final List<ModuleMenuSection> Function()? menuSectionsBuilder;
 }
 
-/// Navegação primária da entrada operacional: a tela inicial (OS em
-/// andamento + atalhos), os dois grupos de lançamento mais amplos e o menu
-/// lateral.
+/// Navegação primária da entrada operacional: duas abas de cada lado e, no
+/// centro, o "+" de adição rápida ([quickAddAction]), que abre
+/// [operationalQuickAdds] em vez de navegar.
 ///
-/// O "Menu" (RevealMenu) voltou no lugar de Confinamento: a grade de grupos
-/// saiu da tela inicial — que agora é a de OS — e todos os grupos passaram a
-/// morar no menu lateral, no grupo único "Menu" ([operationalMenuSections]).
+/// Confinamento saiu da barra para dar lugar ao "+": o grupo continua no
+/// menu lateral ([operationalMenuSections]) e as duas rotinas diárias dele
+/// (trato e leitura de cocho) estão na adição rápida.
 const List<BottomTab> operationalBottomTabs = [
   BottomTab(
     id: 'inicio',
@@ -122,16 +123,17 @@ const List<BottomTab> operationalBottomTabs = [
     path: 'operacional/grupo/pecuaria',
   ),
   BottomTab(
+    id: 'adicionar',
+    label: 'Adicionar',
+    icon: AppIcons.plus,
+    path: '',
+    action: quickAddAction,
+  ),
+  BottomTab(
     id: 'agricultura',
     label: 'Agricultura',
     icon: AppIcons.agricultura,
     path: 'operacional/grupo/agricultura',
-  ),
-  BottomTab(
-    id: 'confinamento',
-    label: 'Confinamento',
-    icon: AppIcons.confinamento,
-    path: 'operacional/grupo/confinamento',
   ),
   BottomTab(
     id: 'menu',
@@ -141,6 +143,34 @@ const List<BottomTab> operationalBottomTabs = [
     action: 'menu',
   ),
 ];
+
+/// Ação do "+" central da navbar.
+const String quickAddAction = 'quick-add';
+
+/// Adição rápida (o "+" da navbar): as rotinas de lançamento mais usadas no
+/// dia a dia de campo, no máximo cinco. O destino vem do catálogo funcional
+/// pelo id — a mesma rota do menu e dos atalhos —, só o rótulo é mais curto.
+List<ModuleMenuItem> operationalQuickAdds() {
+  const atalhos = [
+    ('apontamento', 'Apontamento', AppIcons.tractor),
+    ('pesagem', 'Pesagem', AppIcons.scale),
+    ('trato-diario', 'Trato diário', AppIcons.wheat),
+    ('leitura-cocho-confinamento', 'Leitura de cocho', AppIcons.clipboardCheck),
+    ('sanitario', 'Manejo sanitário', AppIcons.heartPulse),
+  ];
+  return [
+    for (final (id, label, icon) in atalhos)
+      ModuleMenuItem(
+        id: id,
+        label: label,
+        icon: icon,
+        route: operationalFeatureRoute(
+          operationalFeatures.firstWhere((f) => f.id == id),
+        ),
+        push: true,
+      ),
+  ];
+}
 
 /// Itens do menu lateral do Operacional — e, sem o "Início", os atalhos da
 /// tela inicial (`OperacionalHomeScreen`): um item por grupo do catálogo, na

@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.15.0';
+const kWidgetbookVersion = '2.16.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,30 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.16.0',
+    date: '2026-09-24',
+    summary: 'Navbar só de ícones com item ativo flutuante e adição rápida.',
+    changes: [
+      (
+        'Novo',
+        'Hexagon: caixa hexagonal (preenchida, contorno, rotação) e '
+            'appHexagonPath como fonte única do formato.',
+      ),
+      (
+        'Novo',
+        'TabBar: o item ativo sobe num hexágono verde, a barra ondula sob '
+            'ele e o nome aparece embaixo; ao trocar, o hexágono desliza '
+            'girando até a nova aba. "+" central de ação (vira "×" aberto).',
+      ),
+      (
+        'Mudou',
+        'Navbar do app: Início, Pecuária, +, Agricultura e Menu. O "+" abre '
+            'a adição rápida (apontamento, pesagem, trato diário, leitura de '
+            'cocho, manejo sanitário); Confinamento segue no menu lateral.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.15.0',
     date: '2026-09-24',

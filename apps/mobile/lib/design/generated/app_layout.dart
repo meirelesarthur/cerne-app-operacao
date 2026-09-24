@@ -59,8 +59,8 @@ class AppComponentMetrics {
   static const double tabbarItemSize = 48;
   static const double tabbarHexSize = 52;
   static const double tabbarLift = 24;
-  static const double tabbarNotchWidth = 96;
-  static const double tabbarNotchDepth = 20;
+  static const double tabbarNotchWidth = 104;
+  static const double tabbarNotchDepth = 32;
   static const double emptyStateArt = 112;
   static const double emptyStateArtIcon = 56;
   static const double emptyStateBadge = 36;

@@ -11,6 +11,7 @@ import '../modules/fazendas/components/farm_picker.dart';
 import '../modules/fazendas/state/fazendas_store.dart';
 import '../ui/ui.dart';
 import 'components/bottom_tab_bar.dart';
+import 'components/quick_add_sheet.dart';
 import 'components/reveal_menu.dart';
 import 'components/shell_header.dart';
 import 'module_config.dart';
@@ -99,6 +100,23 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
 
   void _openSearch(BuildContext context, WidgetRef ref) =>
       _push(context, ref, '/busca');
+
+  /// Dock do "+" aberta — o "+" da navbar vira "×" enquanto isso.
+  bool _quickAddOpen = false;
+
+  Future<void> _openQuickAdd(BuildContext context, WidgetRef ref) async {
+    ref.read(shellStoreProvider.notifier).closeMenu();
+    setState(() => _quickAddOpen = true);
+    final picked = await showQuickAddSheet(
+      context,
+      items: operationalQuickAdds(),
+    );
+    if (!mounted) return;
+    setState(() => _quickAddOpen = false);
+    if (picked != null && context.mounted) {
+      _push(context, ref, picked.route);
+    }
+  }
 
   /// Corpo do módulo: faixa de offline (quando aplicável) e a tela em si, com
   /// o respiro do dock flutuante. É o mesmo em rota rasa e funda — só muda se
@@ -265,8 +283,8 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                         ),
                         if (!hideChrome)
                           Positioned(
-                            left: 0,
-                            right: 0,
+                            left: AppComponentMetrics.tabbarInset,
+                            right: AppComponentMetrics.tabbarInset,
                             // soma o respiro do token à safe-area inferior real do
                             // aparelho (home indicator/gesture bar) — sem isso a
                             // cápsula flutuante fica colada/sobreposta pela área do
@@ -277,11 +295,14 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
                             child: Center(
                               child: AppBottomTabBar(
                                 tabs: operationalBottomTabs,
+                                quickAddOpen: _quickAddOpen,
                                 activeId: menuOpen
                                     ? 'menu'
                                     : _operationalTabFor(currentPath),
                                 onSelected: (tab) {
-                                  if (tab.action == 'menu') {
+                                  if (tab.action == quickAddAction) {
+                                    _openQuickAdd(context, ref);
+                                  } else if (tab.action == 'menu') {
                                     ref
                                         .read(shellStoreProvider.notifier)
                                         .toggleMenu();
@@ -311,7 +332,6 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
 String _operationalTabFor(String path) {
   if (path.contains('/grupo/pecuaria')) return 'pecuaria';
   if (path.contains('/grupo/agricultura')) return 'agricultura';
-  if (path.contains('/grupo/confinamento')) return 'confinamento';
   if (path.contains('/grupo/')) return '';
   return 'inicio';
 }
