@@ -96,6 +96,13 @@ const widgetbookChangelog = <WidgetbookRelease>[
             'branca.',
       ),
       (
+        'Novo',
+        'SplashScreen (AppSplashScreen + showAppSplash): abertura pós-login '
+            'inspirada no CERNE desktop — o "C" se monta gomo a gomo, encolhe '
+            'e o nome entra, com anéis orbitais. ~3,8 s, toque pula, respeita '
+            'remover animações. Tokens component.splash.{bg,mark}.',
+      ),
+      (
         'Mudou',
         'SquareGroupGrid (cards-gaveta) vira o padrão de itens vinculados em '
             'todos os cadastros do catálogo e na Leitura de cocho: vazio abre '

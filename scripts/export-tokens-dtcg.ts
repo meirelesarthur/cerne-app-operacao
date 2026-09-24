@@ -163,6 +163,10 @@ const dtcg = {
       bg: color(component.revealMenu.bg),
       itemStagger: duration(component.revealMenu.itemStagger),
     },
+    splash: {
+      bg: color(component.splash.bg),
+      mark: dimension(component.splash.mark),
+    },
     hero: { angle: number(component.hero.angle) },
     tabbar: mapDimensions(component.tabbar),
     emptyState: mapDimensions(component.emptyState),

@@ -271,4 +271,5 @@ class AppComponentColors {
   static const Color loginHeroScrimTo = Color(0x00065F46);
   static const Color loginCardFill = Color(0xCCFFFFFF);
   static const Color revealMenuBg = Color(0xFF0B2E1E);
+  static const Color splashBg = Color(0xFF081A12);
 }

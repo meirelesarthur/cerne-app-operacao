@@ -65,6 +65,7 @@ export 'segmented_tabs.dart';
 export 'skeleton.dart';
 export 'sparkline_area.dart';
 export 'spinner.dart';
+export 'splash_screen.dart';
 export 'square_group_grid.dart';
 export 'step_progress.dart';
 export 'stacked_bar.dart';

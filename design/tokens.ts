@@ -607,6 +607,13 @@ export const component = {
     bg: '#0b2e1e', // verde floresta profundo — lê como verde, não preto (gbMode segue padrão)
     itemStagger: '30ms',
   },
+  /** Splash pós-login (espelho da SplashScreen do desktop): fundo verde
+   *  profundo onde o "C" em abertura se monta gomo a gomo e encolhe até
+   *  `mark`; os anéis orbitais usam a rampa brand. */
+  splash: {
+    bg: '#081a12',
+    mark: '84px',
+  },
   /** cartão-herói do padrão global: só o ângulo do gradiente (as cores vivem em themePalette.hero) */
   hero: {
     angle: 233.92,

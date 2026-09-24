@@ -182,6 +182,7 @@ List<WidgetbookNode> buildWidgetbookDirectories() => [
           buildContentSheetWidgetbookComponent(),
           buildPageScaffoldWidgetbookComponent(),
           buildBrandLogoWidgetbookComponent(),
+          buildSplashScreenWidgetbookComponent(),
           buildTopBarWidgetbookComponent(),
           buildGreetingHeaderWidgetbookComponent(),
           buildFarmSelectorWidgetbookComponent(),
