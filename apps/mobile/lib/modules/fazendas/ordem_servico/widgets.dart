@@ -382,7 +382,7 @@ class OsSummaryCard extends StatelessWidget {
       meta: [
         AppStatusCardMeta(
           label: 'Local',
-          value: os.lote ?? os.area,
+          value: os.area,
           icon: AppIcons.mapPin,
         ),
         AppStatusCardMeta(
