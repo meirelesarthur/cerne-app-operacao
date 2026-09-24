@@ -217,7 +217,7 @@ class _FieldCell extends StatelessWidget {
           overflow: overflow,
           style: TextStyle(
             fontSize: AppTypography.xl,
-            fontWeight: AppTypography.weightSemibold,
+            fontWeight: AppTypography.weightMedium,
             height: AppTypography.lineHeightSnug,
             color: semantic.fgDefault,
           ),
