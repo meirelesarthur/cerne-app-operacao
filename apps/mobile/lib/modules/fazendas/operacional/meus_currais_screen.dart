@@ -277,13 +277,33 @@ class _CurralCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            curral.nome,
-            style: TextStyle(
-              fontSize: AppTypography.xl,
-              fontWeight: AppTypography.weightSemibold,
-              color: semantic.fgDefault,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  curral.nome,
+                  style: TextStyle(
+                    fontSize: AppTypography.xl,
+                    fontWeight: AppTypography.weightSemibold,
+                    color: semantic.fgDefault,
+                  ),
+                ),
+              ),
+              const SizedBox(width: AppSpacing.space2),
+              AppChip(
+                tone: switch (curral.situacao) {
+                  CurralSituacao.ocupado => AppChipTone.brand,
+                  CurralSituacao.vazio => AppChipTone.neutral,
+                  CurralSituacao.vazioSanitario ||
+                  CurralSituacao.limpeza => AppChipTone.blue,
+                  CurralSituacao.manutencao ||
+                  CurralSituacao.enfermaria => AppChipTone.amber,
+                  CurralSituacao.interditado => AppChipTone.red,
+                },
+                child: Text(curral.situacao.label),
+              ),
+            ],
           ),
           const SizedBox(height: AppSpacing.space1),
           AppRecordMetaGrid(
@@ -297,19 +317,6 @@ class _CurralCard extends ConsumerWidget {
                 label: '${curral.capacidade} vagas',
               ),
             ],
-          ),
-          const SizedBox(height: AppSpacing.space2),
-          AppChip(
-            tone: switch (curral.situacao) {
-              CurralSituacao.ocupado => AppChipTone.brand,
-              CurralSituacao.vazio => AppChipTone.neutral,
-              CurralSituacao.vazioSanitario ||
-              CurralSituacao.limpeza => AppChipTone.blue,
-              CurralSituacao.manutencao ||
-              CurralSituacao.enfermaria => AppChipTone.amber,
-              CurralSituacao.interditado => AppChipTone.red,
-            },
-            child: Text(curral.situacao.label),
           ),
           if (ordensPendentes.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.space3),
