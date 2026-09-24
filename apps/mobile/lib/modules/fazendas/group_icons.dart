@@ -30,6 +30,8 @@ AppIconData featureIcon(String featureId, String group) => switch (featureId) {
   'trato-diario' => AppIcons.heartPulse,
   'leitura-cocho-confinamento' => AppIcons.scanLine,
   'ordens-pendentes' => AppIcons.clock,
+  'conexao-aparelhos' || 'conexao-aparelhos-pecuaria' => AppIcons.bluetooth,
+  'configuracoes-misturador' => AppIcons.settings,
   _ => groupIcon(group),
 };
 
