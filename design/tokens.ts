@@ -162,8 +162,12 @@ export interface ThemePalette {
    * `sheet` é a folha de conteúdo do Figma (`action-card`): superfície levemente
    * distinta do branco puro, com raio 24 no topo, que cobre o canvas em toda tela.
    * `track` é o trilho do segmented control.
+   * `inset` é o bloco cinza que agrupa conteúdo *sobre* a folha branca
+   * (seções do detalhe, card inset, menu sutil). No claro é o cinza da folha;
+   * no Modo GB precisa ser o verde elevado — ali `sheet` é igual à folha e o
+   * bloco sumia.
    */
-  bg: { canvas: string; sheet: string; surface: string; subtle: string; raised: string; track: string; kpi: string }
+  bg: { canvas: string; sheet: string; surface: string; subtle: string; raised: string; track: string; kpi: string; inset: string }
   /**
    * Preenchimento dos campos de formulário (`AppFieldCapsule`), que precisa
    * contrastar com a superfície em que o campo está — não com um branco fixo.
@@ -253,6 +257,7 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       raised: primitive.neutral[0],
       track: '#e6e6e6',
       kpi: primitive.neutral[0],
+      inset: '#f0f0f0',
     },
     // Sobre o branco de `bg.surface`, o campo precisa de um cinza próprio
     // para se destacar (neutral[100]) — `bg.subtle`/`bg.raised` são brancos
@@ -330,7 +335,7 @@ export const themePalette: Record<'light' | 'gbMode', ThemePalette> = {
       placeholder: 'rgba(226,240,232,0.54)',
       inverse: '#051008',
     },
-    bg: { canvas: '#051008', sheet: '#0e2a1d', surface: '#0e2a1d', subtle: '#0a2016', raised: '#123a28', track: 'rgba(255,255,255,0.10)', kpi: '#0e2a1d' },
+    bg: { canvas: '#051008', sheet: '#0e2a1d', surface: '#0e2a1d', subtle: '#0a2016', raised: '#123a28', track: 'rgba(255,255,255,0.10)', kpi: '#0e2a1d', inset: '#123a28' },
     // Nenhuma superfície de gbMode é branca — os dois papéis convergem para
     // `bg.raised` (o mesmo verde elevado dos cards), corrigindo o campo que
     // antes virava branco puro sobre o tema escuro (quebra de contraste

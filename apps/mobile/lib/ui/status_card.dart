@@ -137,7 +137,7 @@ class AppStatusCard extends StatelessWidget {
 
   Color _toneBg(AppSemanticColors semantic, AppStatusCardTone tone) =>
       switch (tone) {
-        AppStatusCardTone.neutral => semantic.bgSheet,
+        AppStatusCardTone.neutral => semantic.bgInset,
         AppStatusCardTone.info => semantic.toneBlueBg,
         AppStatusCardTone.warning => semantic.toneAmberBg,
         AppStatusCardTone.danger => semantic.toneRedBg,

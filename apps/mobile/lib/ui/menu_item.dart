@@ -84,7 +84,7 @@ class AppMenuItem extends StatelessWidget {
               // cinza real (#F0F0F0) já usado como fundo de página, por
               // isso é ele que dá contraste contra a folha branca aqui.
               : (surface == AppMenuItemSurface.subtle
-                    ? semantic.bgSheet
+                    ? semantic.bgInset
                     : semantic.bgSurface));
 
     final labelColor = _isDanger

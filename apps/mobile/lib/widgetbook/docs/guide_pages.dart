@@ -97,6 +97,13 @@ const widgetbookChangelog = <WidgetbookRelease>[
       ),
       (
         'Novo',
+        'Token bg.inset (AppSemanticColors.bgInset): bloco cinza sobre a folha '
+            'no claro e verde elevado no Modo GB. DetailSection, Card inset, '
+            'StatusCard neutro, EmptyState e MenuItem sutil deixam de sumir '
+            'no escuro.',
+      ),
+      (
+        'Novo',
         'LeaveGuard (AppLeaveGuard): pergunta "Sair sem salvar?" ao voltar com '
             'dados preenchidos; PageScaffold/PageBody ganham hasUnsavedChanges; '
             'confirmAppLeave() para saídas dentro da mesma rota.',

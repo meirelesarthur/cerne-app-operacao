@@ -118,6 +118,7 @@ class AppColorsLight {
   static const Color bgRaised = Color(0xFFFFFFFF);
   static const Color bgTrack = Color(0xFFE6E6E6);
   static const Color bgKpi = Color(0xFFFFFFFF);
+  static const Color bgInset = Color(0xFFF0F0F0);
   static const Color fieldOnSurface = Color(0xFFF5F5F5);
   static const Color fieldOnCanvas = Color(0xFFFFFFFF);
   static const Color borderDefault = Color(0xFFE8E9E1);
@@ -199,6 +200,7 @@ class AppColorsGbMode {
   static const Color bgRaised = Color(0xFF123A28);
   static const Color bgTrack = Color(0x1AFFFFFF);
   static const Color bgKpi = Color(0xFF0E2A1D);
+  static const Color bgInset = Color(0xFF123A28);
   static const Color fieldOnSurface = Color(0xFF123A28);
   static const Color fieldOnCanvas = Color(0xFF123A28);
   static const Color borderDefault = Color(0x1AFFFFFF);
