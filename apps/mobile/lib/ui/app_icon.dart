@@ -19,10 +19,11 @@ import '../design/theme/app_theme_extension.dart';
 /// congelaria a espessura no binário e não teria essa folga.
 ///
 /// **Vetores autorais** ([AppIconData.asset]) cobrem o que o set não tem. Não
-/// existe bovino no Hugeicons gratuito, e o desenho de confinamento é próprio
-/// do GB CERNE: os dois vivem em `assets/icons/`, normalizados ao traço do
-/// sistema, e chegam à tela pela mesma [AppIcon]. Quem consome não sabe — nem
-/// precisa saber — de qual origem o ícone veio.
+/// existe bovino no Hugeicons gratuito, e pecuária, confinamento, agricultura
+/// e frota têm desenho próprio do GB CERNE: vivem em `assets/icons/` como
+/// contorno vetorizado
+/// (espessura desenhada na geometria) e chegam à tela pela mesma [AppIcon].
+/// Quem consome não sabe — nem precisa saber — de qual origem o ícone veio.
 ///
 /// A classe existe para que o tipo do pacote não vaze na assinatura de nenhum
 /// componente do catálogo (Lei 2): componentes e telas falam `AppIconData`.
@@ -104,6 +105,29 @@ class AppIcons {
   );
   static const AppIconData circle = AppIconData.glyph(
     HugeIcons.strokeRoundedCircle,
+  );
+
+  // Selos quadrados da tela de resultado (AppSuccessPanel): um por situação.
+  static const AppIconData checkSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedCheckmarkSquare02,
+  );
+  static const AppIconData editSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedPencilEdit02,
+  );
+  static const AppIconData deleteSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedDelete02,
+  );
+  static const AppIconData alertSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedAlertSquare,
+  );
+  static const AppIconData cancelSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedCancelSquare,
+  );
+  static const AppIconData infoSquare = AppIconData.glyph(
+    HugeIcons.strokeRoundedInformationSquare,
+  );
+  static const AppIconData cloudSaved = AppIconData.glyph(
+    HugeIcons.strokeRoundedCloudSavingDone01,
   );
   static const AppIconData circleAlert = AppIconData.glyph(
     HugeIcons.strokeRoundedAlertCircle,
@@ -496,6 +520,16 @@ class AppIcons {
     'assets/icons/pecuaria.svg',
   );
 
+  /// Agricultura — desenho da marca.
+  static const AppIconData agriculturaAutoral = AppIconData.asset(
+    'assets/icons/agricultura.svg',
+  );
+
+  /// Gestão de frota — desenho da marca.
+  static const AppIconData frotaAutoral = AppIconData.asset(
+    'assets/icons/frota.svg',
+  );
+
   // --- Apelidos de domínio -----------------------------------------------
   // Nomeiam o conceito do agronegócio, não o desenho. São os nomes que as telas
   // de Fazendas e o padrão global do Figma devem usar: quando o desenho de um
@@ -508,7 +542,7 @@ class AppIcons {
   static const AppIconData pecuaria = pecuariaAutoral;
 
   /// Agricultura.
-  static const AppIconData agricultura = sprout;
+  static const AppIconData agricultura = agriculturaAutoral;
 
   /// Ordem de serviço.
   static const AppIconData ordemServico = fileText;
@@ -523,7 +557,7 @@ class AppIcons {
   static const AppIconData consultas = bookSearch;
 
   /// Gestão de frota.
-  static const AppIconData gestaoFrota = tractor;
+  static const AppIconData gestaoFrota = frotaAutoral;
 
   /// Sincronizar aplicativo.
   static const AppIconData sincronizar = cloudSync;
@@ -596,17 +630,15 @@ class AppIcon extends StatelessWidget {
         strokeWidth: AppSize.iconStroke,
       );
     } else if (icon?.asset case final path?) {
-      // O vetor autoral já nasce normalizado ao traço do sistema no próprio
-      // arquivo (ver `assets/icons/`), então aqui só resta pintá-lo: `srcIn`
-      // recolore preenchimento e traço de uma vez. Ressalva registrada na
-      // esteira: o que o designer exportou como contorno vetorizado, e não
-      // como traço, tem a espessura fixada no desenho e não segue o token.
+      // O vetor autoral chega pronto em `assets/icons/`, então aqui só resta
+      // pintá-lo: `srcIn` recolore preenchimento e traço de uma vez. Ressalva
+      // registrada na esteira: os desenhos oficiais são contorno vetorizado,
+      // e não traço — a espessura fica fixada no desenho e não segue o token.
       drawing = SvgPicture.asset(
         path,
-        // `fit` fica no padrão (`contain`): o vetor autoral é mais largo que
-        // alto (34×28), então encaixá-lo na caixa quadrada do ícone preserva a
-        // proporção do desenho — é o que faz o traço de 1.7 na fonte cair
-        // exatamente em 1.2 na tela.
+        // `fit` fica no padrão (`contain`): encaixar o vetor autoral na caixa
+        // quadrada do ícone preserva a proporção do desenho, qualquer que
+        // seja o viewBox exportado.
         width: resolvedSize,
         height: resolvedSize,
         colorFilter: ColorFilter.mode(resolvedColor, BlendMode.srcIn),
@@ -658,7 +690,7 @@ WidgetbookComponent buildAppIconWidgetbookComponent() {
                       const SizedBox(height: AppSpacing.space2),
                       Text(
                         entry.$1,
-                        style: const TextStyle(fontSize: AppTypography.xs),
+                        style: const TextStyle(fontSize: AppTypography.sm),
                       ),
                     ],
                   ),
@@ -696,7 +728,7 @@ WidgetbookComponent buildAppIconWidgetbookComponent() {
                       Text(
                         entry.$1,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: AppTypography.xs),
+                        style: const TextStyle(fontSize: AppTypography.sm),
                       ),
                     ],
                   ),
@@ -729,7 +761,7 @@ WidgetbookComponent buildAppIconWidgetbookComponent() {
                       Text(
                         entry.$1,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: AppTypography.xs),
+                        style: const TextStyle(fontSize: AppTypography.sm),
                       ),
                     ],
                   ),

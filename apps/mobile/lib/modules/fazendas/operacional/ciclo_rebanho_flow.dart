@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
@@ -7,6 +8,7 @@ import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
+import '../cadastros_vinculados.dart';
 import '../mocks/operacional.dart';
 import '../state/fazendas_store.dart';
 import '../types.dart';
@@ -72,8 +74,9 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
 
   String? _lote;
   String? _loteDestino;
-  String _data = '';
+  String _data = hojeFormatado();
   String _qtd = '';
+  String _peso = '';
   String? _causa;
   String _obs = '';
   bool _attempted = false;
@@ -90,6 +93,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
         'Ciclo do rebanho',
         if (_lote != null) 'Lote $_lote',
         if (_loteDestino != null) 'destino $_loteDestino',
+        if (_peso.isNotEmpty) 'peso ao nascer $_peso kg',
         if (_obs.isNotEmpty) _obs,
       ].join(' · ');
       ref
@@ -97,7 +101,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
           .enqueueSync(
             SyncItem(
               id: 'evt-${_type!.name}',
-              label: 'Evento: ${_type!.name}',
+              label: _events.firstWhere((e) => e.type == _type).label,
               detail: detalhe,
               kind: ActivityKind.evento,
             ),
@@ -112,8 +116,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
       return SuccessScreen(
         title: 'Evento registrado',
         queued: _queued!,
-        effects:
-            'Isso vai atualizar a máquina de estados do animal e a base de venda/SISBOV.',
+        effects: 'O evento foi salvo na ficha do animal.',
       );
     }
 
@@ -126,7 +129,7 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
           children: [
             const Padding(
               padding: EdgeInsets.only(bottom: AppSpacing.space3),
-              child: Text('Escolha o tipo de evento a registrar.'),
+              child: Text('O que aconteceu com o animal?'),
             ),
             GridView.count(
               crossAxisCount: 2,
@@ -182,23 +185,33 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Diz o que fazer e leva até lá — a regra (pesar antes de
+          // transferir) vem do backend; o código do chamado não é para o
+          // operador.
           if (transferBlocked)
-            const Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.space4),
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppSpacing.space4),
               child: AppBanner(
                 tone: AppBannerTone.error,
-                icon: AppIcon(AppIcons.alertTriangle, size: AppSize.iconXs),
-                child: Text(
-                  'Transferência bloqueada: é necessário registrar a pesagem do dia antes de transferir o lote (DUV-179).',
+                icon: const AppIcon(
+                  AppIcons.alertTriangle,
+                  size: AppSize.iconXs,
                 ),
+                action: AppButton(
+                  size: AppButtonSize.sm,
+                  variant: AppButtonVariant.secondary,
+                  onPressed: () => context.push('/fazendas/campo/pesagem'),
+                  child: const Text('Pesar lote'),
+                ),
+                child: const Text('Pese o lote hoje antes de transferir.'),
               ),
             ),
           AppFormField(
             label: isTransfer
                 ? 'Lote de origem'
                 : (_type == _EventType.nascimento
-                      ? 'Animal-mãe / lote'
-                      : 'Animal / lote'),
+                      ? 'Lote da mãe'
+                      : 'Lote do animal'),
             required: true,
             error: _attempted && _lote == null ? 'Selecione o lote.' : null,
             child: AppSearchSelect(
@@ -207,8 +220,8 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               label: isTransfer
                   ? 'Lote de origem'
                   : (_type == _EventType.nascimento
-                        ? 'Animal-mãe / lote'
-                        : 'Animal / lote'),
+                        ? 'Lote da mãe'
+                        : 'Lote do animal'),
               onChanged: (v) => setState(() => _lote = v),
             ),
           ),
@@ -249,9 +262,9 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
               label: 'Data',
               required: true,
               error: _attempted && _data.isEmpty ? 'Informe a data.' : null,
-              child: AppTextInput(
+              child: AppDateInput(
+                initialValue: _data,
                 onChanged: (v) => setState(() => _data = v),
-                placeholder: 'dd/mm/aaaa',
                 invalid: _attempted && _data.isEmpty,
               ),
             ),
@@ -259,14 +272,16 @@ class _CicloRebanhoFlowState extends ConsumerState<CicloRebanhoFlow> {
           if (_type == _EventType.nascimento) ...[
             const SizedBox(height: AppSpacing.space4),
             AppFormField(
-              label: 'Peso ao nascer',
+              label: 'Peso ao nascer (kg)',
               hint: 'Opcional',
               child: AppTextInput(
                 keyboardType: const TextInputType.numberWithOptions(
                   decimal: true,
                 ),
-                onChanged: (v) => setState(() => _qtd = v),
-                placeholder: 'kg',
+                // Variável própria: antes gravava em `_qtd` (a quantidade da
+                // transferência) e o peso não chegava ao registro.
+                onChanged: (v) => setState(() => _peso = v),
+                placeholder: 'Ex.: 32',
               ),
             ),
           ],

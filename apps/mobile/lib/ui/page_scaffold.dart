@@ -4,6 +4,7 @@ import 'package:widgetbook/widgetbook.dart';
 import 'action_bar.dart';
 import 'app_icon.dart';
 import 'content_sheet.dart';
+import 'leave_guard.dart';
 import 'review_list.dart';
 import 'step_progress.dart';
 import 'top_bar.dart';
@@ -107,6 +108,8 @@ class AppPageScaffold extends StatelessWidget {
     this.headerAction,
     this.totalSteps,
     this.currentStep = 0,
+    this.stepLabel,
+    this.hasUnsavedChanges = false,
     this.actionBar,
     this.scrollable = true,
     this.bodyPadding,
@@ -131,6 +134,13 @@ class AppPageScaffold extends StatelessWidget {
   /// Quantidade de etapas do fluxo. Presente, desenha a régua no topo da folha.
   final int? totalSteps;
   final int currentStep;
+
+  /// Nome da etapa atual, mostrado ao lado de "Etapa N de M".
+  final String? stepLabel;
+
+  /// Com algo preenchido e não salvo, voltar pergunta antes de descartar
+  /// ([AppLeaveGuard]).
+  final bool hasUnsavedChanges;
 
   /// Rodapé fixo — normalmente um [AppActionBar]. Fica dentro da folha, colado
   /// na base, e não rola com o corpo.
@@ -172,6 +182,8 @@ class AppPageScaffold extends StatelessWidget {
           headerAction: headerAction,
           totalSteps: totalSteps,
           currentStep: currentStep,
+          stepLabel: stepLabel,
+          hasUnsavedChanges: hasUnsavedChanges,
           actionBar: actionBar,
           scrollable: scrollable,
           bodyPadding: padding,
@@ -203,6 +215,8 @@ class AppPageBody extends StatelessWidget {
     this.headerAction,
     this.totalSteps,
     this.currentStep = 0,
+    this.stepLabel,
+    this.hasUnsavedChanges = false,
     this.actionBar,
     this.scrollable = true,
     this.bodyPadding,
@@ -219,6 +233,13 @@ class AppPageBody extends StatelessWidget {
   final Widget? headerAction;
   final int? totalSteps;
   final int currentStep;
+
+  /// Nome da etapa atual, mostrado ao lado de "Etapa N de M".
+  final String? stepLabel;
+
+  /// Com algo preenchido e não salvo, voltar pergunta antes de descartar
+  /// ([AppLeaveGuard]).
+  final bool hasUnsavedChanges;
   final Widget? actionBar;
   final bool scrollable;
   final EdgeInsetsGeometry? bodyPadding;
@@ -229,49 +250,53 @@ class AppPageBody extends StatelessWidget {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final padding = bodyPadding ?? const EdgeInsets.all(AppSpacing.space4);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        AppPageHeaderBand(
-          title: title,
-          onBack: onBack,
-          backLabel: backLabel,
-          actionIcon: actionIcon,
-          actionLabel: actionLabel,
-          onAction: onAction,
-          action: headerAction,
-        ),
-        Expanded(
-          child: AppContentSheet(
-            padded: false,
-            color: sheetColor ?? semantic.bgSurface,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (totalSteps != null)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(
-                      AppSpacing.space4,
-                      AppSpacing.space5,
-                      AppSpacing.space4,
-                      0,
+    return AppLeaveGuard(
+      active: hasUnsavedChanges,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AppPageHeaderBand(
+            title: title,
+            onBack: onBack,
+            backLabel: backLabel,
+            actionIcon: actionIcon,
+            actionLabel: actionLabel,
+            onAction: onAction,
+            action: headerAction,
+          ),
+          Expanded(
+            child: AppContentSheet(
+              padded: false,
+              color: sheetColor ?? semantic.bgSurface,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (totalSteps != null)
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppSpacing.space4,
+                        AppSpacing.space5,
+                        AppSpacing.space4,
+                        0,
+                      ),
+                      child: AppStepProgress(
+                        total: totalSteps!,
+                        current: currentStep,
+                        label: stepLabel,
+                      ),
                     ),
-                    child: AppStepProgress(
-                      total: totalSteps!,
-                      current: currentStep,
-                    ),
+                  Expanded(
+                    child: scrollable
+                        ? SingleChildScrollView(padding: padding, child: child)
+                        : Padding(padding: padding, child: child),
                   ),
-                Expanded(
-                  child: scrollable
-                      ? SingleChildScrollView(padding: padding, child: child)
-                      : Padding(padding: padding, child: child),
-                ),
-                ?actionBar,
-              ],
+                  ?actionBar,
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

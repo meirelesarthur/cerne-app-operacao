@@ -121,8 +121,20 @@ class _OrdemCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.space3),
             AppButton(
               fullWidth: true,
-              onPressed: () => onConfirmar(ordem.id),
-              child: const Text('Confirmar execução'),
+              // Confirmação explícita: a ordem some da lista e o escritório
+              // passa a contar com o curral mudado.
+              onPressed: () async {
+                final ok = await showAppConfirm(
+                  context,
+                  title: 'Você já fez isso no curral?',
+                  message:
+                      '$descricao.\n\nConfirme só depois de terminar o '
+                      'serviço no curral.',
+                  confirmLabel: 'Concluir',
+                );
+                if (ok) onConfirmar(ordem.id);
+              },
+              child: const Text('Concluir ordem'),
             ),
           ],
         ],

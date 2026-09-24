@@ -4,10 +4,12 @@ import 'package:widgetbook/widgetbook.dart';
 import 'app_icon.dart';
 import 'bottom_sheet.dart';
 import 'empty_state.dart';
+import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
 import '../design/theme/app_theme_extension.dart';
 import 'field_capsule.dart';
+import 'pressable.dart';
 import 'package:cerne_app/design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 
@@ -65,20 +67,25 @@ class AppSearchSelect extends StatelessWidget {
     final inputColors = appInputColors(context);
     final selected = _selected;
 
-    return AppFieldCapsule(
-      leading: AppIcon(
-        AppIcons.search,
-        size: AppSize.iconSm,
-        color: inputColors.placeholder,
-      ),
-      trailing: AppIcon(
-        AppIcons.chevronDown,
-        size: AppSize.iconSm,
-        color: inputColors.placeholder,
-      ),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => _open(context),
+    // A cápsula inteira é o alvo de toque (antes só o texto respondia: o ícone
+    // de busca e a seta eram zonas mortas nas bordas).
+    return AppPressable(
+      semanticLabel:
+          '${label ?? placeholder}: ${selected?.label ?? 'nada escolhido'}',
+      onPressed: () => _open(context),
+      borderRadius: BorderRadius.circular(AppRadius.tile),
+      minTouchTarget: false,
+      child: AppFieldCapsule(
+        leading: AppIcon(
+          AppIcons.search,
+          size: AppSize.iconSm,
+          color: inputColors.placeholder,
+        ),
+        trailing: AppIcon(
+          AppIcons.chevronDown,
+          size: AppSize.iconSm,
+          color: inputColors.placeholder,
+        ),
         child: Text(
           selected?.label ?? placeholder,
           maxLines: 1,

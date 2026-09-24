@@ -130,7 +130,7 @@ void main() {
       expect(back.bottom, greaterThan(title.top));
 
       // O padrão antigo era um botão fantasma rotulado, numa linha acima.
-      expect(find.text('Voltar ao ambiente'), findsNothing);
+      expect(find.text('Voltar'), findsNothing);
     });
 
     testWidgets('o topo não mostra as chips de perfil e de status', (
@@ -246,9 +246,9 @@ void main() {
         // fidelidade-esteira: o CTA de criar migrou para o rodapé flutuante
         // fixo (`AppActionBar`), que espelha o rótulo em caixa alta — mesma
         // regra do resto do app (formulários), agora também nas listagens.
-        expect(find.text('NOVO ABASTECIMENTO'), findsOneWidget);
+        expect(find.text('ADICIONAR ABASTECIMENTO'), findsOneWidget);
 
-        await tester.tap(find.text('NOVO ABASTECIMENTO'));
+        await tester.tap(find.text('ADICIONAR ABASTECIMENTO'));
         await tester.pumpAndSettle();
 
         expect(find.text('Dados do registro'), findsOneWidget);
@@ -262,8 +262,16 @@ void main() {
         // fidelidade-contrato (re-auditoria 3ª avaliação): horímetro/hodômetro
         // saíram do cabeçalho para a coleção "Itens do abastecimento"
         // (contrato `SupplyRequest`, `items.*`); os 7 obrigatórios do
-        // cabeçalho seguem iguais (os medidores sempre foram opcionais).
-        expect(find.text('Campo obrigatório.'), findsNWidgets(7));
+        // cabeçalho seguem iguais (os medidores sempre foram opcionais). A
+        // data já vem com hoje, então só 6 dos 7 acusam erro.
+        expect(
+          find.textContaining(
+            RegExp(
+              r'^(Preencha o campo|Escolha uma opção em|Informe a data em) "',
+            ),
+          ),
+          findsNWidgets(6),
+        );
         expect(tester.takeException(), isNull);
 
         await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
@@ -338,10 +346,10 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.text('Trator John Deere 6110 salvo'), findsOneWidget);
-        expect(find.text('Ver registros'), findsOneWidget);
+        expect(find.text('VER TODOS'), findsOneWidget);
         expect(tester.takeException(), isNull);
 
-        await tester.tap(find.text('Ver registros'));
+        await tester.tap(find.text('VER TODOS'));
         await tester.pumpAndSettle();
 
         expect(find.text('Trator John Deere 6110'), findsWidgets);
@@ -372,7 +380,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // fidelidade-esteira: CTA no rodapé flutuante fixo, rótulo em caixa alta.
-      await tester.tap(find.text('NOVO MANEJO DE PASTAGEM'));
+      await tester.tap(find.text('ADICIONAR MANEJO'));
       await tester.pumpAndSettle();
 
       // Etapa 1 — identificação. A área é escolhida antes do destino: com o
@@ -473,7 +481,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // fidelidade-esteira: CTA no rodapé flutuante fixo, rótulo em caixa alta.
-      await tester.tap(find.text('NOVO MANEJO DE PASTAGEM'));
+      await tester.tap(find.text('ADICIONAR MANEJO'));
       await tester.pumpAndSettle();
       await _selectFieldOption(tester, 'Responsável', 'João Oliveira');
       await _enterFieldText(tester, 'Data do manejo', '2026-09-08');

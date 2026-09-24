@@ -6,6 +6,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../cadastros_vinculados.dart';
 import '../confinamento/mocks.dart' as confinamento_mocks;
 import '../confinamento/models.dart';
 import '../confinamento/state/confinamento_store.dart';
@@ -48,7 +49,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
   String? _armazemCabecalho;
   // fidelidade-contrato (re-auditoria 3ª avaliação): `DietBeatRequest` exige
   // `date` e `measurement_uuid` no cabeçalho — ambos faltavam no fluxo.
-  String _data = '';
+  String _data = hojeFormatado();
   String? _unidadeMedida;
   num _quantidadeProduzida = 1000;
 
@@ -71,7 +72,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
       for (final ing in dieta.ingredientes)
         ItemBatelada(
           produto: ing.produto,
-          armazem: _armazens[ing.produto] ?? '',
+          armazem: _armazemDe(ing.produto) ?? '',
           quantidadePrevista: ing.quantidade * escala,
           quantidadeRealizada: _realizados[ing.produto]?.toDouble(),
           // Campos required do item no contrato, derivados da formulação da
@@ -83,6 +84,10 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
     ];
   }
 
+  /// O ingrediente herda o armazém do cabeçalho — quase sempre sai tudo do
+  /// mesmo lugar; a pessoa só troca por exceção.
+  String? _armazemDe(String produto) => _armazens[produto] ?? _armazemCabecalho;
+
   bool get _valid =>
       _dietaId != null &&
       _vagao != null &&
@@ -92,7 +97,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
       _quantidadeProduzida > 0 &&
       _dieta!.ingredientes.every(
         (ing) =>
-            _armazens[ing.produto] != null && _realizados[ing.produto] != null,
+            _armazemDe(ing.produto) != null && _realizados[ing.produto] != null,
       );
 
   void _confirmar() {
@@ -134,8 +139,7 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
       return SuccessScreen(
         title: 'Batelada registrada',
         queued: _queued!,
-        effects:
-            'O estoque dos armazéns informados será baixado pelas quantidades realizadas.',
+        effects: 'Os ingredientes usados saíram do estoque dos armazéns.',
       );
     }
 
@@ -165,6 +169,14 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
                 _dietaId = v;
                 _armazens.clear();
                 _realizados.clear();
+                // A unidade vem da dieta: escolher outra deixava o campo
+                // incoerente com as quantidades mostradas.
+                final unidade = confinamento_mocks.dietas
+                    .firstWhere((d) => d.id == v)
+                    .unidade;
+                if (_medidas.any((m) => m.value == unidade)) {
+                  _unidadeMedida = unidade;
+                }
               }),
             ),
           ),
@@ -251,14 +263,14 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
                       ),
                       const SizedBox(height: AppSpacing.space1),
                       Text(
-                        'Previsto: ${(ing.quantidade * _quantidadeProduzida / dieta.quantidadeReferencia).toStringAsFixed(1)} ${dieta.unidade}'
+                        'Previsto: ${formatarNumero(ing.quantidade * _quantidadeProduzida / dieta.quantidadeReferencia, casas: 1)} ${dieta.unidade}'
                         // fidelidade-contrato (re-auditoria 3ª avaliação): o
                         // item exige `dry_matter`, `cost_value` e `percentage`
                         // no payload (`DietBeatRequest`). Todos derivam da
                         // formulação da dieta e são transportados no
                         // `ItemBatelada` (não pedem novo dado da pessoa);
                         // aqui a proporção também é exibida.
-                        ' · ${(ing.quantidade / dieta.quantidadeReferencia * 100).toStringAsFixed(1)}% da dieta',
+                        ' · ${formatarNumero(ing.quantidade / dieta.quantidadeReferencia * 100, casas: 1)}% da dieta',
                         style: TextStyle(
                           fontSize: AppTypography.sm,
                           color: semantic.fgMuted,
@@ -268,12 +280,15 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
                       AppFormField(
                         label: 'Armazém de retirada',
                         required: true,
-                        error: _attempted && _armazens[ing.produto] == null
+                        hint:
+                            'Já vem o armazém do topo. Troque só se saiu '
+                            'de outro lugar.',
+                        error: _attempted && _armazemDe(ing.produto) == null
                             ? 'Selecione o armazém.'
                             : null,
                         child: AppFormSelect(
                           options: depositos,
-                          value: _armazens[ing.produto],
+                          value: _armazemDe(ing.produto),
                           placeholder: 'Selecione o armazém',
                           onChanged: (v) =>
                               setState(() => _armazens[ing.produto] = v),
@@ -281,8 +296,13 @@ class _BateladaFlowState extends ConsumerState<BateladaFlow> {
                       ),
                       const SizedBox(height: AppSpacing.space3),
                       AppFormField(
-                        label: 'Quantidade realizada',
+                        label: 'Quantidade colocada',
                         required: true,
+                        // Sem este erro, deixar em 0 só impedia salvar — sem
+                        // dizer por quê.
+                        error: _attempted && _realizados[ing.produto] == null
+                            ? 'Informe quanto foi colocado de ${ing.produto}.'
+                            : null,
                         child: AppStepper(
                           value: _realizados[ing.produto] ?? 0,
                           onChanged: (v) =>

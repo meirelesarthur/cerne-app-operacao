@@ -65,7 +65,7 @@ class AppQuickAction extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: AppTypography.xs,
+                fontSize: AppTypography.sm,
                 fontWeight: AppTypography.weightSemibold,
                 height: AppTypography.lineHeightTight,
                 color: semantic.fgMuted,

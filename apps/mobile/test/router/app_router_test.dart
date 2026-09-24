@@ -44,8 +44,14 @@ void main() {
       // Tela inicial: até duas OS no topo, o resto como contagem, e o menu
       // em ladrilhos logo abaixo.
       expect(find.text('Ver todas'), findsOneWidget);
-      expect(find.text('+ 4 ordens para fazer'), findsOneWidget);
-      expect(find.byTooltip('Início'), findsOneWidget);
+      expect(find.text('Ver mais'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AppBottomTabBar),
+          matching: find.bySemanticsLabel('Início'),
+        ),
+        findsOneWidget,
+      );
       expect(find.byType(AppModuleTile), findsWidgets);
     });
 
@@ -94,24 +100,24 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byType(AppPageScaffold), findsOneWidget);
-      expect(find.text('Detalhe da OS'), findsOneWidget);
+      expect(find.text('Ordem de serviço'), findsOneWidget);
       // Em execução: entregar é o CTA; pausar e refazer ficam no rodapé.
-      expect(find.text('MARCAR COMO ENTREGUE'), findsOneWidget);
+      expect(find.text('ENTREGAR SERVIÇO'), findsOneWidget);
       expect(find.text('PAUSAR EXECUÇÃO'), findsOneWidget);
       // Tela cheia cobre a navbar.
       expect(find.byType(AppBottomTabBar), findsNothing);
 
-      await tester.tap(find.text('MARCAR COMO ENTREGUE'));
+      await tester.tap(find.text('ENTREGAR SERVIÇO'));
       await tester.pumpAndSettle();
 
       // Encerrar exige confirmação explícita.
-      expect(find.text('Marcar a OS #2198 como entregue?'), findsOneWidget);
-      await tester.tap(find.text('Marcar como entregue'));
+      expect(find.text('Entregar a OS #2198?'), findsOneWidget);
+      await tester.tap(find.text('Entregar serviço'));
       await tester.pumpAndSettle();
 
       // Continua na tela, agora sem ações (OS encerrada).
-      expect(find.text('Detalhe da OS'), findsOneWidget);
-      expect(find.text('MARCAR COMO ENTREGUE'), findsNothing);
+      expect(find.text('Ordem de serviço'), findsOneWidget);
+      expect(find.text('ENTREGAR SERVIÇO'), findsNothing);
     });
 
     testWidgets(
@@ -184,8 +190,31 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Pausar a OS #2198?'), findsOneWidget);
-      expect(find.text('Motivo da pausa'), findsOneWidget);
+      expect(find.text('Por que vai pausar?'), findsOneWidget);
       expect(find.text('Confirmar pausa'), findsOneWidget);
+
+      // Confirmar sem motivo explica o que falta em vez de não fazer nada.
+      await tester.tap(find.text('Confirmar pausa'));
+      await tester.pumpAndSettle();
+      expect(
+        find.text('Escolha o motivo da pausa para continuar.'),
+        findsOneWidget,
+      );
+
+      // Motivo pronto: um toque e confirma, sem digitar.
+      await tester.tap(find.text('Chuva ou tempo ruim'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Confirmar pausa'));
+      await tester.pumpAndSettle();
+      expect(find.text('Pausar a OS #2198?'), findsNothing);
+      expect(
+        harness.container
+            .read(ordemServicoStoreProvider)
+            .ordens
+            .firstWhere((o) => o.codigo == 'OS #2198')
+            .status,
+        OrdemServicoStatus.pausada,
+      );
     });
 
     testWidgets(
@@ -203,13 +232,13 @@ void main() {
 
         expect(find.text('Status da OS'), findsOneWidget);
         expect(find.text('Aguardando'), findsWidgets);
-        expect(find.text('Em execução'), findsWidgets);
+        expect(find.text('Em andamento'), findsWidgets);
 
-        await tester.tap(find.text('Finalizadas'));
+        await tester.tap(find.text('Encerradas'));
         await tester.pumpAndSettle();
 
         expect(find.text('Status da OS'), findsNothing);
-        expect(find.text('Finalizadas'), findsOneWidget);
+        expect(find.text('Encerradas'), findsOneWidget);
         expect(find.textContaining('OS #2201'), findsNothing);
         expect(find.textContaining('OS #2170'), findsOneWidget);
       },
@@ -222,7 +251,7 @@ void main() {
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        await tester.tap(find.byTooltip('Menu'));
+        await tester.tap(find.bySemanticsLabel('Menu'));
         await tester.pumpAndSettle();
 
         // "Sincronização" só tem uma funcionalidade — a tela de listagem do
@@ -240,19 +269,22 @@ void main() {
     );
 
     testWidgets(
-      'navbar operacional: Início, Pecuária, Agricultura e Menu lateral',
+      'navbar operacional: Início, Pecuária, Agricultura, Confinamento e Menu',
       (tester) async {
         await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
         await tester.pumpAndSettle();
 
-        expect(find.byTooltip('Confinamento'), findsNothing);
-        expect(find.byTooltip('Pecuária'), findsOneWidget);
-        expect(find.byTooltip('Agricultura'), findsOneWidget);
-
-        // O Menu abre o menu lateral com os grupos que saíram da tela
-        // inicial; Confinamento, antes aba própria, agora vive ali.
-        await tester.tap(find.byTooltip('Menu'));
+        Finder aba(String label) => find.descendant(
+          of: find.byType(AppBottomTabBar),
+          matching: find.bySemanticsLabel(label),
+        );
+        expect(aba('Pecuária'), findsOneWidget);
+        expect(aba('Agricultura'), findsOneWidget);
+        // Confinamento voltou a ser aba, depois de Agricultura, e continua
+        // também no menu lateral.
+        expect(aba('Confinamento'), findsOneWidget);
+        await tester.tap(find.bySemanticsLabel('Menu'));
         await tester.pumpAndSettle();
 
         expect(find.text('MENU'), findsOneWidget);

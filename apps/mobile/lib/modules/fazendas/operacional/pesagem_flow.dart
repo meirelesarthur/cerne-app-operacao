@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../design/generated/app_colors.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -34,8 +33,12 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
   /// nascem "errados" antes de a pessoa tentar enviar (ver plano de UX).
   bool _attempted = false;
 
-  bool get _pesoValido =>
-      (double.tryParse(_peso.replaceAll(',', '.')) ?? 0) > 0;
+  double get _pesoKg => double.tryParse(_peso.replaceAll(',', '.')) ?? 0;
+  bool get _pesoValido => _pesoKg > 0;
+
+  /// Acima disso quase sempre é erro de digitação (um zero a mais). Avisa,
+  /// sem bloquear — o operador confere e confirma.
+  static const _pesoMaximoEsperado = 1200;
   bool get _valid =>
       _lote != null && _animal != null && _pesoValido && _deposito != null;
 
@@ -80,8 +83,15 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
       return SuccessScreen(
         title: 'Pesagem registrada',
         queued: _queued!,
-        effects:
-            'Isso vai atualizar o estoque e pode gerar NF-e/transferência.',
+        effects: 'O peso foi salvo na ficha do animal.',
+        // Pesagem é em série: mantém lote e armazém e já abre o próximo.
+        nextLabel: 'Pesar outro',
+        onNext: () => setState(() {
+          _queued = null;
+          _animal = null;
+          _peso = '';
+          _attempted = false;
+        }),
       );
     }
 
@@ -96,13 +106,13 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
         mainAxisSize: MainAxisSize.min,
         children: [
           AppFormField(
-            label: 'Lote / carga',
+            label: 'Lote',
             required: true,
             error: _attempted && _lote == null ? 'Selecione o lote.' : null,
             child: AppSearchSelect(
               options: lotesOpcoes,
               value: _lote,
-              label: 'Lote / carga',
+              label: 'Lote',
               onChanged: (v) => setState(() {
                 _lote = v;
                 _animal = null;
@@ -123,7 +133,7 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
                 value: _animal,
                 label: 'Animal',
                 onChanged: (v) => setState(() => _animal = v),
-                placeholder: 'Buscar animal (brinco ou RFID)...',
+                placeholder: 'Número do brinco',
               ),
             ),
           ],
@@ -165,38 +175,47 @@ class _PesagemFlowState extends ConsumerState<PesagemFlow> {
           ),
           if (_attempted && !_pesoValido) ...[
             const SizedBox(height: AppSpacing.space2),
-            const Row(
+            Row(
               children: [
                 AppIcon(
                   AppIcons.alertCircle,
                   size: AppSize.iconXs,
-                  color: AppColors.red600,
+                  color: semantic.toneRedFg,
                 ),
-                SizedBox(width: AppSpacing.space1),
+                const SizedBox(width: AppSpacing.space1),
                 Text(
                   'Informe um peso maior que zero.',
                   style: TextStyle(
                     fontFamily: AppTypography.fontFamily,
-                    fontSize: AppTypography.xs,
+                    fontSize: AppTypography.sm,
                     fontWeight: AppTypography.weightMedium,
-                    color: AppColors.red600,
+                    color: semantic.toneRedFg,
                   ),
                 ),
               ],
             ),
+          ] else if (_pesoKg > _pesoMaximoEsperado) ...[
+            const SizedBox(height: AppSpacing.space2),
+            const AppBanner(
+              tone: AppBannerTone.warning,
+              icon: AppIcon(AppIcons.alertTriangle, size: AppSize.iconXs),
+              child: Text(
+                'Peso acima de 1.200 kg. Confira se não sobrou um zero.',
+              ),
+            ),
           ],
           const SizedBox(height: AppSpacing.space4),
           AppFormField(
-            label: 'Depósito de destino',
+            label: 'Armazém de destino',
             required: true,
             error: _attempted && _deposito == null
-                ? 'Selecione o depósito.'
+                ? 'Selecione o armazém.'
                 : null,
             child: AppFormSelect(
               options: depositos,
               value: _deposito,
               onChanged: (v) => setState(() => _deposito = v),
-              placeholder: 'Selecione o depósito',
+              placeholder: 'Selecione o armazém',
             ),
           ),
         ],

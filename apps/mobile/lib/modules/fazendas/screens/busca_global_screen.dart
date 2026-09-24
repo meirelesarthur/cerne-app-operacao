@@ -272,12 +272,12 @@ List<_SearchShortcut> _productsFor(UserAccessProfile? profile) {
     ),
     _SearchShortcut(
       label: 'Confinamento',
-      icon: AppIcons.warehouse,
+      icon: AppIcons.confinamento,
       route: '/fazendas/operacional/grupo/confinamento',
     ),
     _SearchShortcut(
       label: 'Agricultura',
-      icon: AppIcons.sprout,
+      icon: AppIcons.agricultura,
       route: '/fazendas/operacional/grupo/agricultura',
     ),
   ];
@@ -287,12 +287,12 @@ List<_SearchShortcut> _recentFor(UserAccessProfile? profile) {
   return const [
     _SearchShortcut(
       label: 'Confinamento',
-      icon: AppIcons.warehouse,
+      icon: AppIcons.confinamento,
       route: '/fazendas/operacional/grupo/confinamento',
     ),
     _SearchShortcut(
       label: 'Agricultura',
-      icon: AppIcons.sprout,
+      icon: AppIcons.agricultura,
       route: '/fazendas/operacional/grupo/agricultura',
     ),
     _SearchShortcut(

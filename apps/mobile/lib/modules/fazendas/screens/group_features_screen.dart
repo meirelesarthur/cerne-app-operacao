@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_spacing.dart';
+import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../functional_catalog.dart';
 import '../group_icons.dart';
@@ -44,6 +45,7 @@ class GroupFeaturesScreen extends StatelessWidget {
         ? const <FeatureDefinition>[]
         : operationalFeatures.where((f) => f.group == group).toList();
     final title = group ?? groupSlug;
+    final resumo = group == null ? null : groupSummary(group);
 
     final content = ListView(
       padding: const EdgeInsets.fromLTRB(
@@ -58,21 +60,22 @@ class GroupFeaturesScreen extends StatelessWidget {
         AppSectionTitle(
           leading: AppIcons.chevronLeft,
           onTap: () => context.go(centerRoute),
-          semanticLabel: 'Voltar à central',
+          semanticLabel: 'Voltar ao Início',
           child: Text(title),
         ),
-        // A contagem sobrevive à troca de cabeçalho: era a descrição do
-        // `AppScreenHeader` e vira o metadado de 12px do padrão global. Saber
-        // o tamanho da lista antes de rolar é informação de produto, não
-        // enfeite do componente antigo.
-        Padding(
-          padding: const EdgeInsets.only(top: AppSpacing.space1),
-          child: Text(
-            '${allFeatures.length} '
-            '${allFeatures.length == 1 ? 'função' : 'funções'} neste módulo',
-            style: Theme.of(context).textTheme.labelMedium,
+        // Resumo do que se faz no módulo (no lugar da contagem de funções).
+        if (resumo != null)
+          Padding(
+            padding: const EdgeInsets.only(top: AppSpacing.space1),
+            child: Text(
+              resumo,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(
+                  context,
+                ).extension<AppSemanticColors>()!.fgSecondary,
+              ),
+            ),
           ),
-        ),
         const SizedBox(height: AppSpacing.space4),
         if (allFeatures.isEmpty)
           const AppEmptyState(
@@ -97,9 +100,7 @@ class GroupFeaturesScreen extends StatelessWidget {
       ],
     );
 
-    return embedded
-        ? content
-        : AppContentSheet(padded: false, child: content);
+    return embedded ? content : AppContentSheet(padded: false, child: content);
   }
 
   String _destination(FeatureDefinition feature, String segment) {

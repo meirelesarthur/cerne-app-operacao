@@ -265,6 +265,22 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
   int _step = 0;
   static const _totalSteps = 3;
 
+  /// Nome de cada etapa, mostrado ao lado de "Etapa N de 3".
+  static const _nomesEtapas = ['Identificação', 'Operação', 'Lançamentos'];
+
+  /// Algo já foi escolhido ou lançado: voltar da 1ª etapa pergunta antes.
+  bool get _temDadosPreenchidos =>
+      _responsavel != null ||
+      _lote != null ||
+      _talhao != null ||
+      _operacao != null ||
+      _atividade != null ||
+      _maoDeObra.isNotEmpty ||
+      _maquinas.isNotEmpty ||
+      _insumos.isNotEmpty ||
+      _producoes.isNotEmpty ||
+      _ocorrencias.isNotEmpty;
+
   LoteAgricolaCadastro? get _loteCadastro => loteAgricolaPorRotulo(_lote);
 
   TalhaoCadastro? get _talhaoCadastro {
@@ -401,9 +417,8 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
         title: 'Apontamento registrado',
         queued: _queued!,
         effects:
-            'Mão de obra, máquinas e insumos caem no centro de custo do lote; '
-            'os insumos baixam do estoque de origem e a produção lançada entra '
-            'no armazém de destino.',
+            'Os insumos usados saíram do estoque e a produção entrou no '
+            'armazém de destino.',
       );
     }
 
@@ -414,9 +429,11 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
       title: 'Apontamento agrícola',
       totalSteps: _totalSteps,
       currentStep: _step + 1,
+      stepLabel: _nomesEtapas[_step],
+      hasUnsavedChanges: _temDadosPreenchidos,
       onBack: _step == 0 ? null : _voltar,
       primaryLabel: _step < _totalSteps - 1
-          ? 'Continuar'
+          ? 'Avançar'
           : 'Salvar apontamento',
       onPrimary: _avancar,
       summary: lancamentoPendente

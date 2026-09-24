@@ -37,6 +37,8 @@ class FlowShell extends ConsumerWidget {
     this.onAction,
     this.totalSteps,
     this.currentStep = 0,
+    this.stepLabel,
+    this.hasUnsavedChanges = false,
     this.summary,
   });
 
@@ -64,6 +66,12 @@ class FlowShell extends ConsumerWidget {
   final int? totalSteps;
   final int currentStep;
 
+  /// Nome da etapa atual, ao lado de "Etapa N de M".
+  final String? stepLabel;
+
+  /// Com dados preenchidos, voltar pergunta antes de descartar.
+  final bool hasUnsavedChanges;
+
   /// Resumo acima do CTA (o "Fornecido / Faltam" do frame *bottom fixed*).
   final Widget? summary;
 
@@ -77,7 +85,7 @@ class FlowShell extends ConsumerWidget {
             alignment: Alignment.centerLeft,
             child: AppChip(
               tone: AppChipTone.amber,
-              child: Text('Sem conexão — será enfileirado para sincronização'),
+              child: Text('Sem internet: fica guardado e é enviado depois'),
             ),
           );
 
@@ -107,6 +115,8 @@ class FlowShell extends ConsumerWidget {
       onAction: onAction,
       totalSteps: totalSteps,
       currentStep: currentStep,
+      stepLabel: stepLabel,
+      hasUnsavedChanges: hasUnsavedChanges,
       actionBar: primaryLabel == null
           ? null
           : AppActionBar(

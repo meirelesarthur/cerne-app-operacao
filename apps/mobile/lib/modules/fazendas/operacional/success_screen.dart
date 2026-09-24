@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import '../state/fazendas_store.dart';
@@ -20,6 +21,8 @@ class SuccessScreen extends ConsumerWidget {
     required this.title,
     required this.effects,
     this.queued = false,
+    this.nextLabel,
+    this.onNext,
   });
 
   final String title;
@@ -30,6 +33,12 @@ class SuccessScreen extends ConsumerWidget {
   /// Verdadeiro quando o lançamento foi para a fila offline.
   final bool queued;
 
+  /// Ação principal de repetição ("Pesar outro"): em lançamentos
+  /// feitos em série, voltar ao início a cada item obrigava a reabrir o fluxo.
+  /// Com ela, "Concluir" desce para ação secundária.
+  final String? nextLabel;
+  final VoidCallback? onNext;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
@@ -37,26 +46,47 @@ class SuccessScreen extends ConsumerWidget {
       fazendasStoreProvider.select((s) => s.syncQueue.length),
     );
 
+    // Tela de resultado padrão (faixa colorida + selo): verde quando foi
+    // para o sistema, âmbar quando ficou guardado no aparelho sem internet.
+    // A faixa sobe por trás da barra de status, então só o rodapé respeita a
+    // área segura.
     return Scaffold(
-      backgroundColor: semantic.bgCanvas,
+      backgroundColor: semantic.bgSurface,
       body: SafeArea(
-        child: AppContentSheet(
-          child: AppSuccessPanel(
-            title: queued ? 'Salvo no aparelho' : title,
-            icon: queued ? AppIcons.refreshCw : AppIcons.checkCircle2,
-            description: Text(
-              queued
-                  ? 'Vai subir sozinho quando o celular pegar sinal de novo — '
-                        '$pendentes ${pendentes == 1 ? 'lançamento está' : 'lançamentos estão'} '
-                        'esperando para sincronizar. $effects'
-                  : effects,
-            ),
-            actions: AppButton(
-              fullWidth: true,
-              size: AppButtonSize.lg,
-              onPressed: () => context.go('/fazendas'),
-              child: const Text('Voltar ao início'),
-            ),
+        top: false,
+        child: AppSuccessPanel(
+          kind: queued ? AppResultKind.pending : AppResultKind.created,
+          title: queued ? 'Salvo no celular' : title,
+          description: Text(
+            queued
+                ? 'Sem internet agora. Fica guardado e é enviado quando o '
+                      'sinal voltar — '
+                      '$pendentes ${pendentes == 1 ? 'lançamento esperando' : 'lançamentos esperando'}. '
+                      '$effects'
+                : effects,
+          ),
+          // Repetir (contorno) em cima e seguir (CTA) embaixo, como no padrão.
+          actions: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (nextLabel != null && onNext != null) ...[
+                AppButton(
+                  fullWidth: true,
+                  size: AppButtonSize.lg,
+                  variant: AppButtonVariant.outline,
+                  onPressed: onNext,
+                  child: Text(nextLabel!.toUpperCase()),
+                ),
+                const SizedBox(height: AppSpacing.space3),
+              ],
+              AppButton(
+                fullWidth: true,
+                size: AppButtonSize.lg,
+                onPressed: () => context.go('/fazendas'),
+                child: const Text('CONCLUIR'),
+              ),
+            ],
           ),
         ),
       ),

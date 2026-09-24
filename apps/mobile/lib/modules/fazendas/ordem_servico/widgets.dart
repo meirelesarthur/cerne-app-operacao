@@ -32,6 +32,24 @@ String _fmtData(DateTime d) =>
 String _fmtDataCurta(DateTime d) =>
     '${d.day.toString().padLeft(2, '0')}/${d.month.toString().padLeft(2, '0')}';
 
+const _diasSemana = ['seg', 'ter', 'qua', 'qui', 'sex', 'sáb', 'dom'];
+
+/// Prazo lido de relance: "Hoje", "Amanhã", "Ontem" ou "sex, 26/09" — o dia
+/// da semana orienta mais que a data solta para quem planeja a semana.
+String osPrazoRelativo(DateTime prazo, DateTime agora) {
+  final dias = DateTime(
+    prazo.year,
+    prazo.month,
+    prazo.day,
+  ).difference(DateTime(agora.year, agora.month, agora.day)).inDays;
+  return switch (dias) {
+    0 => 'Hoje',
+    1 => 'Amanhã',
+    -1 => 'Ontem',
+    _ => '${_diasSemana[prazo.weekday - 1]}, ${_fmtDataCurta(prazo)}',
+  };
+}
+
 String _fmtDataHora(DateTime d) =>
     '${_fmtData(d)} às ${d.hour.toString().padLeft(2, '0')}:${d.minute.toString().padLeft(2, '0')}';
 
@@ -63,7 +81,7 @@ DateTime _dia(DateTime d) => DateTime(d.year, d.month, d.day);
 /// 5. Pausada há X · motivo.
 /// 6. Vence hoje / Vence amanhã.
 /// 7. Em execução há X.
-/// 8. Liberada há X — aguardando início desde a autorização.
+/// 8. Esperando início há X — aguardando início desde a autorização.
 AppStatusCardSituation osSituacao(OrdemServico os, DateTime agora) {
   final hoje = _dia(agora);
   final prazo = _dia(os.prazo);
@@ -82,8 +100,8 @@ AppStatusCardSituation osSituacao(OrdemServico os, DateTime agora) {
       return AppStatusCardSituation(
         icon: AppIcons.alertCircle,
         label: os.justificativaRefazer == null
-            ? 'Precisa ser refeita'
-            : 'Refeita · ${os.justificativaRefazer}',
+            ? 'Precisa refazer'
+            : 'Precisa refazer · ${os.justificativaRefazer}',
         tone: AppStatusCardTone.danger,
       );
     case OrdemServicoStatus.entregue:
@@ -151,7 +169,8 @@ AppStatusCardSituation osSituacao(OrdemServico os, DateTime agora) {
   }
   return AppStatusCardSituation(
     icon: AppIcons.clock,
-    label: 'Liberada há ${osDuracao(agora.difference(os.dataAutorizacao))}',
+    label:
+        'Esperando início há ${osDuracao(agora.difference(os.dataAutorizacao))}',
   );
 }
 
@@ -230,7 +249,7 @@ class OsSummaryCard extends StatelessWidget {
       meta: [
         AppStatusCardMeta(
           label: 'Prazo',
-          value: _fmtDataCurta(os.prazo),
+          value: osPrazoRelativo(os.prazo, agora),
           icon: AppIcons.calendar,
         ),
         AppStatusCardMeta(
@@ -440,7 +459,7 @@ class _OsDetailBodyState extends State<OsDetailBody> {
           _gap,
           AppDetailSection(
             icon: AppIcons.shieldCheck,
-            title: 'EPIs obrigatórios',
+            title: 'Equipamentos de proteção (EPI)',
             count: os.epis.length,
             child: AppDetailList(items: os.epis),
           ),
@@ -475,7 +494,7 @@ class _OsDetailBodyState extends State<OsDetailBody> {
             _gap,
             AppDetailSection(
               icon: AppIcons.rotateCw,
-              title: 'Justificativa do retrabalho',
+              title: 'Por que precisa refazer',
               tone: AppDetailSectionTone.danger,
               child: AppDetailText(os.justificativaRefazer!),
             ),

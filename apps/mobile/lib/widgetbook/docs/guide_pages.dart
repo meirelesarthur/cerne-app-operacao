@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.12.0';
+const kWidgetbookVersion = '2.13.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,99 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.13.0',
+    date: '2026-09-23',
+    summary:
+        'Auditoria de UX do operador: contraste AA, piso de 12px e toque 48dp.',
+    changes: [
+      (
+        'Mudou',
+        'Tokens: fg.muted/subtle/quiet, erro e aviso (700) e tons âmbar/vermelho '
+            'em AA (4,5:1) também sobre o canvas; CTA do modo GB com texto '
+            'escuro (7,6:1 no lugar de 2,5:1); borda forte visível nos campos.',
+      ),
+      (
+        'Removido',
+        'Tamanhos de fonte 2xs (10px) e xs (11px): 12px é o piso do sistema; '
+            'o corpo de leitura fica em 14px.',
+      ),
+      (
+        'Mudou',
+        'Ícone oficial de confinamento (contorno vetorizado) em AppIcons.'
+            'confinamento.',
+      ),
+      (
+        'Mudou',
+        'Ícones autorais de pecuária, agricultura e frota (AppIcons.pecuaria, '
+            'agricultura e gestaoFrota), usados na navbar, menu e busca.',
+      ),
+      (
+        'Mudou',
+        'SuccessPanel vira a tela de resultado padrão: faixa colorida com '
+            'curva, selo animado e AppResultKind (inclusão, alteração, '
+            'exclusão, salvo sem internet, aviso, erro, informação), com um '
+            'caso no Widgetbook para cada.',
+      ),
+      (
+        'Novo',
+        'Button: variante outline (contorno da marca). Ícones checkSquare, '
+            'editSquare, deleteSquare, alertSquare, cancelSquare, infoSquare '
+            'e cloudSaved.',
+      ),
+      (
+        'Mudou',
+        'Alvos de toque: control, btn e iconBtn em 48dp (CTA grande 52); '
+            'traço dos ícones em 1.5.',
+      ),
+      (
+        'Mudou',
+        'Button: rótulo herda a Outfit (DefaultTextStyle.merge), mínimo 14px, '
+            'até 2 linhas com altura mínima, desabilitado com visual próprio, '
+            'Semantics de botão e vibração curta no toque.',
+      ),
+      (
+        'Mudou',
+        'Tag, Banner, StatusCard, KpiStatCard, FormField, FieldCapsule, '
+            'CollectionList, MenuItem, ErrorState, SuccessPanel e FileUpload '
+            'usam os tokens de tom theme-aware — sem blocos pastel no modo GB.',
+      ),
+      (
+        'Mudou',
+        'FieldCapsule: borda forte em repouso para o campo não sumir na folha '
+            'branca.',
+      ),
+      (
+        'Novo',
+        'LeaveGuard (AppLeaveGuard): pergunta "Sair sem salvar?" ao voltar com '
+            'dados preenchidos; PageScaffold/PageBody ganham hasUnsavedChanges; '
+            'confirmAppLeave() para saídas dentro da mesma rota.',
+      ),
+      (
+        'Mudou',
+        'StepProgress: "Etapa 2 de 4 · Nome" em texto acima da régua (label); '
+            'PageScaffold/PageBody repassam stepLabel.',
+      ),
+      (
+        'Mudou',
+        'BottomSheet: sobe com o teclado e aceita dismissible: false para '
+            'sheets com texto digitado.',
+      ),
+      (
+        'Mudou',
+        'Toque: SearchSelect clicável na cápsula inteira, remover arquivo e '
+            'calendário em AppIconButton 48dp, Stepper com botões de 56 e sem '
+            'saltar para o mínimo ao apagar, respiro entre editar e excluir.',
+      ),
+      (
+        'Mudou',
+        'IconButton desabilitado apagado; ToggleSwitch com trilho desligado '
+            'visível; FormField mostra erro e dica juntos; MenuItem e título '
+            'do StatusCard em até 2 linhas; StatusCard anuncia situação e '
+            'metas e mantém a ação rápida acessível.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.12.0',
     date: '2026-09-23',

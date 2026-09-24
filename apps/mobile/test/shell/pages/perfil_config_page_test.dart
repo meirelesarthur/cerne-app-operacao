@@ -48,12 +48,17 @@ void main() {
       );
     });
 
-    testWidgets('tocar em "Sair" navega para o login', (tester) async {
+    testWidgets('"Sair" pergunta antes e, confirmado, navega para o login', (
+      tester,
+    ) async {
       await setTallSurface(tester);
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Sair'));
+      await tester.pumpAndSettle();
+      expect(find.text('Sair do aplicativo?'), findsOneWidget);
+      await tester.tap(find.text('Sair').last);
       await tester.pumpAndSettle();
 
       expect(find.text('Bem-vindo de volta!'), findsOneWidget);

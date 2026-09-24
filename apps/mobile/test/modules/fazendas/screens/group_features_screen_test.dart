@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:cerne_app/modules/fazendas/group_icons.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 
 import '../../../support/router_test_harness.dart';
@@ -33,7 +34,7 @@ void main() {
         harness.router.pop();
         await tester.pumpAndSettle();
 
-        expect(find.textContaining('neste módulo'), findsOneWidget);
+        expect(find.text(groupSummary('Pecuária')!), findsOneWidget);
         expect(find.text('Pesagens'), findsOneWidget);
       },
     );

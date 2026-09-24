@@ -5,7 +5,6 @@ import 'addable_group_list.dart';
 import 'app_icon.dart';
 import 'icon_button.dart';
 import 'pressable.dart';
-import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
@@ -186,7 +185,7 @@ class _CollectionRow extends StatelessWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: AppTypography.xs,
+                        fontSize: AppTypography.sm,
                         color: semantic.fgMuted,
                       ),
                     ),
@@ -200,12 +199,16 @@ class _CollectionRow extends StatelessWidget {
               label: editLabel,
               onPressed: edit,
             ),
+          // Respiro entre editar e excluir: lado a lado sem folga, o toque de
+          // luva acertava a lixeira querendo o lápis.
+          if (onEdit != null && onRemove != null)
+            const SizedBox(width: AppSpacing.space2),
           if (onRemove case final remove?)
             AppIconButton(
-              icon: const AppIcon(
+              icon: AppIcon(
                 AppIcons.trash2,
                 size: AppSize.iconSm,
-                color: AppColors.feedbackErrorText,
+                color: semantic.toneRedFg,
               ),
               label: removeLabel,
               onPressed: remove,

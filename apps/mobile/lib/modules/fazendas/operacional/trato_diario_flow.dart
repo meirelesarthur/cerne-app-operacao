@@ -6,6 +6,7 @@ import '../../../design/theme/app_theme_extension.dart';
 import '../../../shell/state/shell_store.dart';
 import '../../../ui/ui.dart';
 import 'package:cerne_app/design/generated/app_typography.dart';
+import '../cadastros_vinculados.dart';
 import '../confinamento/models.dart';
 import '../confinamento/state/confinamento_store.dart';
 import '../state/fazendas_store.dart';
@@ -84,14 +85,14 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
       primaryLabel: elegiveis.isEmpty ? null : 'Finalizar trato',
       onPrimary: elegiveis.isEmpty
           ? null
-          : () => _finalizar(elegiveis, batelada!),
+          : () => _confirmarFinalizar(elegiveis, batelada!, faltante),
       summary: batelada == null
           ? null
           : AppActionBarSummary(
               leadingLabel: 'Fornecido',
-              leadingValue: '${totalFornecido.toStringAsFixed(0)}kg',
+              leadingValue: '${formatarNumero(totalFornecido, casas: 0)} kg',
               trailingLabel: 'Faltam',
-              trailingValue: '${faltante.toStringAsFixed(0)}kg',
+              trailingValue: '${formatarNumero(faltante, casas: 0)} kg',
               value: totalFornecido.toDouble(),
               max: batelada.quantidadeProduzida.toDouble(),
             ),
@@ -184,7 +185,7 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
                           ],
                         ),
                         Text(
-                          'Planejado: ${planejadaPorCurral.toStringAsFixed(1)} kg',
+                          'Planejado: ${formatarNumero(planejadaPorCurral, casas: 1)} kg',
                           style: TextStyle(
                             fontSize: AppTypography.sm,
                             color: semantic.fgMuted,
@@ -228,6 +229,26 @@ class _TratoDiarioFlowState extends ConsumerState<TratoDiarioFlow> {
         'O resumo no rodapé mostra o saldo restante antes de finalizar.',
       ),
     );
+  }
+
+  /// Finalizar grava o trato do dia: confirma antes, com o saldo do vagão —
+  /// é aqui que o erro de "esqueci um curral" aparece.
+  Future<void> _confirmarFinalizar(
+    List<CurralInfo> elegiveis,
+    Batelada batelada,
+    num faltante,
+  ) async {
+    final ok = await showAppConfirm(
+      context,
+      title: 'Finalizar o trato de hoje?',
+      message: faltante > 0
+          ? 'Ainda faltam ${formatarNumero(faltante, casas: 0)} kg no vagão. '
+                'Se já terminou, finalize mesmo assim.'
+          : 'Todo o vagão foi distribuído nos currais.',
+      confirmLabel: 'Finalizar trato',
+      cancelLabel: 'Conferir',
+    );
+    if (ok && mounted) _finalizar(elegiveis, batelada);
   }
 
   void _finalizar(List<CurralInfo> elegiveis, Batelada batelada) {

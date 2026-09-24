@@ -84,7 +84,7 @@ void main() {
         expect(find.text('Conexão de aparelhos'), findsNothing);
         expect(_gauge(tester).label, '37/37');
         expect(find.text('CONCLUÍDO'), findsOneWidget);
-        expect(find.text('MÓDULOS SINCRONIZADOS'), findsOneWidget);
+        expect(find.text('TUDO ENVIADO'), findsOneWidget);
         expect(tester.takeException(), isNull);
       },
     );

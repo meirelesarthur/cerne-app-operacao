@@ -251,7 +251,7 @@ class _StatusText extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: AppTypography.xs,
+              fontSize: AppTypography.sm,
               fontWeight: filled
                   ? AppTypography.weightSemibold
                   : AppTypography.weightNormal,
@@ -264,7 +264,7 @@ class _StatusText extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                fontSize: AppTypography.xs,
+                fontSize: AppTypography.sm,
                 color: semantic.fgMuted,
               ),
             ),

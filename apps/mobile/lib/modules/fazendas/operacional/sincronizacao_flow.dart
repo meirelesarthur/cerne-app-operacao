@@ -179,8 +179,11 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
         children: [
           Text(
             finished
-                ? 'Todos os lançamentos foram enviados para a nuvem.'
-                : 'Mantenha o app aberto até o envio terminar.',
+                ? 'Todos os lançamentos foram enviados para o escritório.'
+                : isOnline
+                ? 'Mantenha o app aberto até o envio terminar.'
+                : 'Sem internet agora. Seus lançamentos estão guardados '
+                      'neste celular. Volte aqui quando tiver sinal.',
             style: TextStyle(color: semantic.fgMuted),
           ),
           const SizedBox(height: AppSpacing.space5),
@@ -191,7 +194,7 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
               size: 200,
               tone: AppGaugeTone.positive,
               valueFontSize: AppTypography.xl2 * 2,
-              labelFontSize: AppTypography.xs * 2,
+              labelFontSize: AppTypography.sm * 2,
               label: '$doneItems/$totalItems',
             ),
           ),
@@ -205,9 +208,9 @@ class _SincronizacaoFlowState extends ConsumerState<SincronizacaoFlow> {
               ),
               const SizedBox(width: AppSpacing.space2),
               Text(
-                finished ? 'MÓDULOS SINCRONIZADOS' : 'ENVIANDO PARA A NUVEM',
+                finished ? 'TUDO ENVIADO' : 'ENVIANDO PARA O ESCRITÓRIO',
                 style: TextStyle(
-                  fontSize: AppTypography.xs,
+                  fontSize: AppTypography.sm,
                   fontWeight: AppTypography.weightSemibold,
                   letterSpacing: 0.4,
                   color: semantic.fgMuted,
@@ -338,10 +341,12 @@ class _ModuleCard extends StatelessWidget {
                             child: Row(
                               children: [
                                 _ItemStatusIcon(
-                                  done: status == _ModuleStatus.done ||
+                                  done:
+                                      status == _ModuleStatus.done ||
                                       (status == _ModuleStatus.active &&
                                           i < currentItemIndex),
-                                  active: status == _ModuleStatus.active &&
+                                  active:
+                                      status == _ModuleStatus.active &&
                                       i == currentItemIndex,
                                 ),
                                 const SizedBox(width: AppSpacing.space2),

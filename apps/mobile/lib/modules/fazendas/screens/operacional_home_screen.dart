@@ -132,13 +132,22 @@ class _OperacionalHomeScreenState extends ConsumerState<OperacionalHomeScreen> {
           ],
           if (restantes > 0) ...[
             const SizedBox(height: AppSpacing.space3),
-            AppLabeledDivider(
-              label: restantes == 1
-                  ? '+ 1 ordem para fazer'
-                  : '+ $restantes ordens para fazer',
-              onTap: verTodas,
-            ),
+            AppLabeledDivider(label: 'Ver mais', onTap: verTodas),
           ],
+          const SizedBox(height: AppSpacing.space4),
+        ] else ...[
+          // Sem OS a seção não some: a pessoa precisa saber que não tem nada
+          // para ela hoje, e não achar que a tela não carregou.
+          const AppHeading(child: Text('Ordens de serviço')),
+          const SizedBox(height: AppSpacing.space3),
+          const AppEmptyState(
+            size: AppEmptyStateSize.compact,
+            icon: AppIcons.fileText,
+            tone: AppEmptyStateTone.brand,
+            title: 'Nenhuma ordem para você agora',
+            description:
+                'Quando o escritório mandar uma ordem de serviço, ela aparece aqui.',
+          ),
           const SizedBox(height: AppSpacing.space4),
         ],
         AppModuleTileGrid(

@@ -47,6 +47,15 @@ String formatarNumero(num valor, {int casas = 2}) {
   return '${negativo ? '-' : ''}$milhares$decimal';
 }
 
+/// Data no padrão do campo `AppDateInput` (`DD/MM/AAAA`).
+String formatarData(DateTime d) =>
+    '${d.day.toString().padLeft(2, '0')}/'
+    '${d.month.toString().padLeft(2, '0')}/${d.year}';
+
+/// Hoje em `DD/MM/AAAA` — valor inicial dos campos de data de evento: quase
+/// sempre o lançamento é do próprio dia, e digitar data é o passo mais lento.
+String hojeFormatado() => formatarData(DateTime.now());
+
 /// Lê um número digitado em campo (`12,5` ou `12.5`). `null` se inválido.
 num? lerNumero(String texto) =>
     num.tryParse(texto.trim().replaceAll('.', '').replaceAll(',', '.')) ??

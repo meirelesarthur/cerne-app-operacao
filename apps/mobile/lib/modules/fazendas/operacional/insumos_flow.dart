@@ -73,7 +73,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
         title: 'Lançamento registrado',
         queued: _queued!,
         effects:
-            'A ocorrência/aplicação será vinculada ao talhão e ciclo de produção.',
+            'A aplicação foi salva no talhão.',
       );
     }
 

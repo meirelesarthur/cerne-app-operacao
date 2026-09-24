@@ -57,7 +57,7 @@ class _NotificacoesPageState extends ConsumerState<NotificacoesPage> {
             'Nenhuma notificação nova. As próximas aparecem aqui assim que '
             'chegarem.',
         hint: 'Procurando uma notificação antiga?',
-        hintActionLabel: 'Ver histórico de notificações',
+        hintActionLabel: 'Ver histórico',
         onHintAction: () => setState(() => _aba = 1),
       );
     }

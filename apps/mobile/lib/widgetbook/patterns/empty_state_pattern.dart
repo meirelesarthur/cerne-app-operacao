@@ -334,7 +334,7 @@ class _Referencia extends StatelessWidget {
                       'Origem: $origem',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: AppTypography.xs,
+                        fontSize: AppTypography.sm,
                         color: semantic.fgSubtle,
                       ),
                     ),

@@ -12,7 +12,7 @@ Widget _wrap(Widget child) => MaterialApp(
 
 void main() {
   group('AppBottomTabBar', () {
-    testWidgets('renderiza as 4 abas operacionais sem exceção', (tester) async {
+    testWidgets('renderiza as 5 abas operacionais sem exceção', (tester) async {
       await tester.pumpWidget(
         _wrap(
           AppBottomTabBar(
@@ -23,11 +23,16 @@ void main() {
         ),
       );
 
-      for (final label in ['Início', 'Pecuária', 'Agricultura', 'Menu']) {
-        expect(find.byTooltip(label), findsOneWidget);
+      // Todas as abas mostram o nome escrito — não só a ativa.
+      for (final label in [
+        'Início',
+        'Pecuária',
+        'Agricultura',
+        'Confinamento',
+        'Menu',
+      ]) {
+        expect(find.text(label), findsOneWidget);
       }
-      // A aba ativa mostra o rótulo na pílula.
-      expect(find.text('Início'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
@@ -43,7 +48,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byTooltip('Pecuária'));
+      await tester.tap(find.text('Pecuária'));
       await tester.pump();
 
       expect(selected?.id, 'pecuaria');

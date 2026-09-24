@@ -141,7 +141,7 @@ void main() {
       await tester.pumpAndSettle();
 
       // fidelidade-esteira: CTA no rodapé flutuante fixo, rótulo em caixa alta.
-      await tester.tap(find.text('NOVA TRANSFERÊNCIA DE ANIMAL'));
+      await tester.tap(find.text('ADICIONAR TRANSFERÊNCIA'));
       await tester.pumpAndSettle();
       expect(find.byType(AppHardwareSimulator), findsOneWidget);
       expect(find.text('ou informe manualmente'), findsOneWidget);
@@ -199,7 +199,7 @@ void main() {
 
       // `findCta` (não `find.text`) porque este é o CTA da `AppActionBar` —
       // renderiza em caixa alta. Ver docs/ESTEIRA-FIDELIDADE-CONTRATO.md.
-      await tester.tap(findCta('Usar identificação capturada'));
+      await tester.tap(findCta('Usar identificação'));
       await tester.pumpAndSettle();
       expect(find.text('Identificação SISBOV capturada'), findsOneWidget);
       expect(tester.takeException(), isNull);
