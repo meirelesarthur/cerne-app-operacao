@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../design/generated/app_layout.dart';
 import '../../../design/generated/app_spacing.dart';
+import '../../../design/generated/app_typography.dart';
+import '../../../design/theme/app_theme_extension.dart';
 import '../../../ui/ui.dart';
 import 'models.dart';
 import 'state/ordem_servico_store.dart';
@@ -82,12 +84,11 @@ void abrirPausarOs(BuildContext context, WidgetRef ref, String osId) {
 
   showAppBottomSheet<void>(
     context,
-    title: 'Pausar a ${notifier.byId(osId).codigo}?',
+    title: 'Por que vai pausar?',
     // Com motivo sendo digitado, tocar fora não descarta o texto.
     dismissible: false,
     child: _MotivoSheet(
       opcoes: motivosPausa,
-      rotuloCampo: 'Por que vai pausar?',
       rotuloOutro: 'Conte o motivo',
       placeholderOutro: 'Ex.: chegou uma ordem mais urgente',
       erroSemEscolha: 'Escolha o motivo da pausa para continuar.',
@@ -127,15 +128,16 @@ void abrirRefazerOs(BuildContext context, WidgetRef ref, String osId) {
 }
 
 /// Motivos prontos da pausa: tocar é mais rápido e mais seguro que digitar de
-/// luva. "Outro motivo" abre o campo de texto.
+/// luva. Cada um leva um ícone para reconhecer o motivo de relance, sem ler o
+/// texto todo. "Outro motivo" abre o campo de texto.
 const motivosPausa = [
-  'Chuva ou tempo ruim',
-  'Falta de insumo ou material',
-  'Máquina ou equipamento quebrado',
-  'Parada para refeição',
+  (label: 'Chuva ou tempo ruim', icon: AppIcons.cloudRain),
+  (label: 'Falta de insumo ou material', icon: AppIcons.package),
+  (label: 'Máquina ou equipamento quebrado', icon: AppIcons.wrench),
+  (label: 'Parada para refeição', icon: AppIcons.coffee),
 ];
 
-const _outroMotivo = 'Outro motivo';
+const _outroMotivo = (label: 'Outro motivo', icon: AppIcons.moreHorizontal);
 
 /// Corpo das docks de motivo (pausar e refazer). Com [opcoes], a pessoa toca
 /// num motivo pronto e só digita em "Outro motivo"; sem [opcoes], o texto é o
@@ -144,7 +146,6 @@ const _outroMotivo = 'Outro motivo';
 class _MotivoSheet extends StatefulWidget {
   const _MotivoSheet({
     this.opcoes = const [],
-    this.rotuloCampo,
     required this.rotuloOutro,
     required this.placeholderOutro,
     this.erroSemEscolha,
@@ -154,8 +155,7 @@ class _MotivoSheet extends StatefulWidget {
     this.perigo = false,
   });
 
-  final List<String> opcoes;
-  final String? rotuloCampo;
+  final List<({String label, AppIconData icon})> opcoes;
   final String rotuloOutro;
   final String placeholderOutro;
   final String? erroSemEscolha;
@@ -175,7 +175,7 @@ class _MotivoSheetState extends State<_MotivoSheet> {
   String? _erroTexto;
 
   bool get _comOpcoes => widget.opcoes.isNotEmpty;
-  bool get _digita => !_comOpcoes || _escolha == _outroMotivo;
+  bool get _digita => !_comOpcoes || _escolha == _outroMotivo.label;
 
   @override
   void dispose() {
@@ -201,37 +201,56 @@ class _MotivoSheetState extends State<_MotivoSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (_comOpcoes)
-          AppFormField(
-            label: widget.rotuloCampo ?? '',
-            required: true,
-            error: _erroEscolha,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (final opcao in [...widget.opcoes, _outroMotivo]) ...[
-                  AppMenuItem(
-                    label: opcao,
-                    active: _escolha == opcao,
-                    surface: AppMenuItemSurface.subtle,
-                    showShadow: false,
-                    trailing: _escolha == opcao
-                        ? const AppIcon(AppIcons.check, size: AppSize.iconMd)
-                        : const SizedBox.shrink(),
-                    onTap: () => setState(() {
-                      _escolha = opcao;
-                      _erroEscolha = null;
-                    }),
-                  ),
-                  const SizedBox(height: AppSpacing.space2),
-                ],
-              ],
+        if (_comOpcoes) ...[
+          for (final opcao in [...widget.opcoes, _outroMotivo]) ...[
+            AppMenuItem(
+              icon: opcao.icon,
+              label: opcao.label,
+              active: _escolha == opcao.label,
+              surface: AppMenuItemSurface.subtle,
+              showShadow: false,
+              trailing: _escolha == opcao.label
+                  ? const AppIcon(AppIcons.check, size: AppSize.iconMd)
+                  : const SizedBox.shrink(),
+              onTap: () => setState(() {
+                _escolha = opcao.label;
+                _erroEscolha = null;
+              }),
             ),
-          ),
+            const SizedBox(height: AppSpacing.space2),
+          ],
+          if (_erroEscolha != null)
+            Padding(
+              padding: const EdgeInsets.only(top: AppSpacing.space1),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AppIcon(
+                    AppIcons.alertCircle,
+                    size: AppSize.iconXs,
+                    color: semantic.toneRedFg,
+                  ),
+                  const SizedBox(width: AppSpacing.space1),
+                  Flexible(
+                    child: Text(
+                      _erroEscolha!,
+                      style: TextStyle(
+                        fontSize: AppTypography.sm,
+                        fontWeight: AppTypography.weightMedium,
+                        color: semantic.toneRedFg,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
         if (_digita) ...[
           const SizedBox(height: AppSpacing.space3),
           AppFormField(
@@ -277,7 +296,7 @@ class _MotivoSheetState extends State<_MotivoSheet> {
 }
 
 const _registroHistorico =
-    'Fica registrado no histórico da OS com data, hora e o seu nome.';
+    'Sem problema — isso fica registrado no histórico da OS com data, hora e o seu nome.';
 
 /// Confirmação obrigatória antes de iniciar: a ação gera histórico e o
 /// trabalho é braçal — toque acidental é esperado, não exceção.

@@ -406,6 +406,9 @@ class AppIcons {
   static const AppIconData flaskConical = AppIconData.glyph(
     HugeIcons.strokeRoundedTestTube01,
   );
+  static const AppIconData coffee = AppIconData.glyph(
+    HugeIcons.strokeRoundedCoffee02,
+  );
 
   // --- Operacao, hardware e conectividade ----------------------------------
   static const AppIconData wrench = AppIconData.glyph(
@@ -456,6 +459,9 @@ class AppIcons {
   );
   static const AppIconData cloudSun = AppIconData.glyph(
     HugeIcons.strokeRoundedSunCloud01,
+  );
+  static const AppIconData cloudRain = AppIconData.glyph(
+    HugeIcons.strokeRoundedCloudMidRain,
   );
   static const AppIconData sun = AppIconData.glyph(
     HugeIcons.strokeRoundedSun01,

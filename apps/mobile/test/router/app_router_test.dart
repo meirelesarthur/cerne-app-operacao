@@ -191,7 +191,6 @@ void main() {
       await tester.tap(find.text('Pausar'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Pausar a OS #2198?'), findsOneWidget);
       expect(find.text('Por que vai pausar?'), findsOneWidget);
       expect(find.text('Confirmar pausa'), findsOneWidget);
 
@@ -208,7 +207,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Confirmar pausa'));
       await tester.pumpAndSettle();
-      expect(find.text('Pausar a OS #2198?'), findsNothing);
+      expect(find.text('Por que vai pausar?'), findsNothing);
       expect(
         harness.container
             .read(ordemServicoStoreProvider)
