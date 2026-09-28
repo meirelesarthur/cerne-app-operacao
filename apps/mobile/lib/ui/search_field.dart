@@ -9,7 +9,6 @@ import '../design/generated/app_layout.dart';
 import '../design/generated/app_radius.dart';
 import '../design/generated/app_spacing.dart';
 import '../design/generated/app_typography.dart';
-import '../design/theme/app_theme_extension.dart';
 
 /// Campo de busca global do cabeçalho (Figma `54300-2458`) — presente nas duas
 /// homes e no topo de cada módulo.
