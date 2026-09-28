@@ -11,22 +11,16 @@ void main() {
 
       final state = container.read(shellStoreProvider);
       expect(state.isOnline, isTrue);
-      expect(state.menuOpen, isFalse);
       expect(state.unreadCount, 3);
     });
 
-    test('toggleOnline/toggleMenu invertem o estado', () {
+    test('toggleOnline inverte o estado', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       final notifier = container.read(shellStoreProvider.notifier);
 
       notifier.toggleOnline();
       expect(container.read(shellStoreProvider).isOnline, isFalse);
-
-      notifier.toggleMenu();
-      expect(container.read(shellStoreProvider).menuOpen, isTrue);
-      notifier.closeMenu();
-      expect(container.read(shellStoreProvider).menuOpen, isFalse);
     });
 
     test('markAllRead zera o unreadCount', () {

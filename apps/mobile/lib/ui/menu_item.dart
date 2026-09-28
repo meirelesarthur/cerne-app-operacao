@@ -17,7 +17,7 @@ enum AppMenuItemTone { standard, danger }
 
 /// Espelha `MenuItemVariant` (`'light' | 'onDark'`) de `MenuItem.tsx`.
 ///
-/// `onDark` é a linha plana do menu lateral (fundo `revealMenuBg`): sem
+/// `onDark` é a linha plana sobre fundo escuro (`revealMenuBg`): sem
 /// cápsula, sem bolha de ícone e sem chevron — só ícone e rótulo, com 48 px
 /// de alvo de toque. O menu lista um índice longo (grupos, módulos e conta)
 /// e a cápsula de cada linha o transformava numa pilha de cartões.

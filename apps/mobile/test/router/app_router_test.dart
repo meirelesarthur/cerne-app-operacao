@@ -6,7 +6,6 @@ import 'package:cerne_app/modules/fazendas/ordem_servico/models.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/state/ordem_servico_store.dart';
 import 'package:cerne_app/modules/fazendas/ordem_servico/widgets.dart';
 import 'package:cerne_app/shell/components/bottom_tab_bar.dart';
-import 'package:cerne_app/shell/components/reveal_menu.dart';
 import 'package:cerne_app/shell/module_config.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
 import 'package:cerne_app/ui/module_tile.dart';
@@ -19,10 +18,9 @@ import '../support/test_viewport.dart';
 
 late RouterTestHarness harness;
 
-/// Rótulo dentro do menu lateral — os atalhos da tela inicial repetem os
-/// mesmos nomes atrás dele.
-Finder _noMenu(String label) =>
-    find.descendant(of: find.byType(AppRevealMenu), matching: find.text(label));
+/// Atalho da tela inicial pelo rótulo (a navbar pode repetir o nome).
+Finder _atalho(String label) =>
+    find.descendant(of: find.byType(AppModuleTile), matching: find.text(label));
 
 void main() {
   setUp(() {
@@ -245,32 +243,31 @@ void main() {
       },
     );
 
+    testWidgets('grupo com uma única funcionalidade abre direto pelo atalho', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      // "Sincronização" só tem uma funcionalidade — a tela de listagem do
+      // grupo (que mostraria só esse card) fica de fora da navegação.
+      final atalho = _atalho('Sincronizar aplicativo');
+      await tester.ensureVisible(atalho);
+      await tester.pumpAndSettle();
+      await tester.tap(atalho);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sincronização de dados'), findsNothing);
+      expect(find.text('SINCRONIZAR'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+
+      // Empilhada: o "Voltar" da funcionalidade retorna à tela inicial.
+      expect(harness.router.canPop(), isTrue);
+    });
+
     testWidgets(
-      'grupo com uma única funcionalidade abre direto pelo menu lateral',
-      (tester) async {
-        await setTallSurface(tester);
-        await tester.pumpWidget(harness.buildApp());
-        await tester.pumpAndSettle();
-
-        await tester.tap(find.bySemanticsLabel('Menu'));
-        await tester.pumpAndSettle();
-
-        // "Sincronização" só tem uma funcionalidade — a tela de listagem do
-        // grupo (que mostraria só esse card) fica de fora da navegação.
-        await tester.tap(_noMenu('Sincronizar aplicativo'));
-        await tester.pumpAndSettle();
-
-        expect(find.text('Sincronização de dados'), findsNothing);
-        expect(find.text('SINCRONIZAR'), findsOneWidget);
-        expect(tester.takeException(), isNull);
-
-        // Empilhada: o "Voltar" da funcionalidade retorna à tela inicial.
-        expect(harness.router.canPop(), isTrue);
-      },
-    );
-
-    testWidgets(
-      'navbar operacional: Início, Pecuária, [+], Agricultura e Menu',
+      'navbar operacional: Início, Pecuária, [+], Agricultura e Confinamento',
       (tester) async {
         await setTallSurface(tester);
         await tester.pumpWidget(harness.buildApp());
@@ -283,14 +280,14 @@ void main() {
         expect(aba('Pecuária'), findsOneWidget);
         expect(aba('Adicionar'), findsOneWidget);
         expect(aba('Agricultura'), findsOneWidget);
-        // Confinamento saiu da barra para o "+"; continua no menu lateral.
-        expect(aba('Confinamento'), findsNothing);
-        await tester.tap(find.bySemanticsLabel('Menu'));
+        // Sem menu lateral: a última posição é o atalho de Confinamento.
+        expect(aba('Menu'), findsNothing);
+        await tester.tap(aba('Confinamento'));
         await tester.pumpAndSettle();
-
-        expect(find.text('MENU'), findsOneWidget);
-        await tester.tap(_noMenu('Confinamento'));
-        await tester.pumpAndSettle();
+        expect(
+          harness.router.routerDelegate.currentConfiguration.uri.path,
+          '/fazendas/operacional/grupo/confinamento',
+        );
         expect(find.byType(AppModuleTile), findsNWidgets(7));
       },
     );

@@ -21,10 +21,9 @@ import '../ordem_servico/widgets.dart';
 ///    contagem ("+ 3 ordens para fazer"), que leva — como o "Ver todas" — à
 ///    lista completa com filtros. Some quando não há OS em andamento: a home
 ///    vira só o menu.
-/// 2. **Menu** — as rotinas do menu lateral em ladrilhos de três colunas
+/// 2. **Menu** — o índice das rotinas em ladrilhos de três colunas
 ///    ([AppModuleTileGrid]), ícone no topo e nome na base. A lista vem de
-///    [operationalMenuSections] (fonte única com o menu), sem o próprio
-///    "Início".
+///    [operationalMenuSections], sem o próprio "Início".
 ///
 /// A ordem das OS fica **estável sob o dedo**: iniciar uma OS pelo botão do
 /// card faria ela subir para o topo na hora, e um card que muda de lugar logo

@@ -16,8 +16,8 @@ import '../state/prototype_session_store.dart';
 /// O bloco de identidade — avatar, saudação, nome e sino — deixou de ser
 /// desenhado aqui: é o único bloco que as duas homes do Figma compartilham
 /// (§4 da esteira do padrão global) e por isso mora no catálogo. O que sobrou
-/// neste widget é o que a referência não tem: o menu "reveal", o modo consulta
-/// e o rótulo do ambiente da sessão.
+/// neste widget é o que a referência não tem: a troca de tema e o rótulo do
+/// ambiente da sessão.
 ///
 /// Decisão de porte: as rotas `/perfil` e `/notificacoes` ainda não existem no
 /// `go_router` (isso é F3.1, feito por outro processo depois). Por isso este
@@ -37,7 +37,6 @@ class AppShellHeader extends ConsumerWidget {
     this.onOpenProfile,
     this.onOpenNotifications,
     this.collapsed = false,
-    this.showMenu = true,
     this.showProfileSubtitle = true,
     this.child,
   });
@@ -51,10 +50,6 @@ class AppShellHeader extends ConsumerWidget {
   /// Modo compacto (ver nota de classe acima): esconde avatar/saudação/nome e
   /// o slot [child], mantendo só as bolhas de ação à direita.
   final bool collapsed;
-
-  /// O menu operacional vive na barra inferior; nesse modo o cabeçalho mantém
-  /// apenas o sino no extremo direito, como na referência da entrada de campo.
-  final bool showMenu;
 
   /// A referência da entrada operacional não repete o ambiente sob o nome do
   /// usuário: a fazenda já governa o app na faixa superior.
@@ -71,7 +66,6 @@ class AppShellHeader extends ConsumerWidget {
     final profile = ref.watch(prototypeSessionProvider).profile;
     final user = state.user;
     final unread = state.unreadCount;
-    final menuOpen = state.menuOpen;
     final themeVariant = ref.watch(themeVariantProvider);
     final isGbMode = themeVariant == AppThemeVariant.gbMode;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
@@ -83,30 +77,14 @@ class AppShellHeader extends ConsumerWidget {
         ? 'Bom dia'
         : (hour < 18 ? 'Boa tarde' : 'Boa noite');
 
-    final actionWidgets = <Widget>[
-      if (showMenu)
-        _headerBubble(
-          icon: const AppIcon(AppIcons.menu, size: AppSize.iconMd),
-          label: 'Mais',
-          active: menuOpen,
-          onPressed: () => ref.read(shellStoreProvider.notifier).openMenu(),
-        ),
-    ];
-    final actions = actionWidgets.isEmpty
-        ? null
-        : Row(mainAxisSize: MainAxisSize.min, children: actionWidgets);
-
     final content = collapsed
-        ? Padding(
-            key: const ValueKey('collapsed'),
-            padding: const EdgeInsets.symmetric(
+        ? const Padding(
+            key: ValueKey('collapsed'),
+            padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.space4,
               vertical: AppSpacing.space2,
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [?actions],
-            ),
+            child: Row(mainAxisAlignment: MainAxisAlignment.end),
           )
         : Padding(
             key: const ValueKey('expanded'),
@@ -143,7 +121,6 @@ class AppShellHeader extends ConsumerWidget {
                     onPressed: () =>
                         ref.read(themeVariantProvider.notifier).toggle(),
                   ),
-                  trailing: actions,
                 ),
                 if (child != null)
                   Padding(
@@ -165,29 +142,6 @@ class AppShellHeader extends ConsumerWidget {
       curve: AppMotion.easingOut,
       alignment: Alignment.topCenter,
       child: content,
-    );
-  }
-
-  /// Bolha do header com estado "ativo" (modo consulta ligado / menu aberto).
-  /// No React o estado ativo usa `bg-ink text-ink-fg` sólido; o catálogo
-  /// `AppIconButton` não tem essa variante exata (só `ghost`/`solid`/`onDark`,
-  /// onde `onDark` usa `inkBubble` semitransparente). Usamos `onDark` como a
-  /// aproximação mais próxima disponível sem editar `icon_button.dart`
-  /// (fora do escopo desta tarefa) — desvio documentado.
-  Widget _headerBubble({
-    required Widget icon,
-    required String label,
-    required bool active,
-    required VoidCallback? onPressed,
-  }) {
-    return AppIconButton(
-      icon: icon,
-      label: label,
-      size: AppIconButtonSize.lg,
-      variant: active
-          ? AppIconButtonVariant.onDark
-          : AppIconButtonVariant.solid,
-      onPressed: onPressed,
     );
   }
 }

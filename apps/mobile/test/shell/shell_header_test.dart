@@ -5,7 +5,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/design/theme/theme_provider.dart';
 import 'package:cerne_app/shell/components/shell_header.dart';
-import 'package:cerne_app/shell/state/shell_store.dart';
 import 'package:cerne_app/ui/app_icon.dart';
 
 import '../helpers/app_icon_finder.dart';
@@ -87,9 +86,7 @@ void main() {
       expect(findAppIcon(AppIcons.sun), findsOneWidget);
     });
 
-    testWidgets('toca "Mais" e abre o menu global via shellStoreProvider', (
-      tester,
-    ) async {
+    testWidgets('não mostra botão de menu (sem menu lateral)', (tester) async {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
@@ -103,12 +100,7 @@ void main() {
         ),
       );
 
-      expect(container.read(shellStoreProvider).menuOpen, isFalse);
-
-      await tester.tap(findAppIcon(AppIcons.menu));
-      await tester.pump();
-
-      expect(container.read(shellStoreProvider).menuOpen, isTrue);
+      expect(findAppIcon(AppIcons.menu), findsNothing);
     });
 
     testWidgets('renderiza o slot de contexto (child) quando informado', (

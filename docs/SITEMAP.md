@@ -5,7 +5,7 @@ Mapa do protótipo navegável do **CERNE Operação** (perfil único: Operaciona
 e o catálogo `apps/mobile/lib/modules/fazendas/functional_catalog.dart`.
 
 **Legenda:** `[rota]` tela com URL · `[dock]` folha inferior (sem rota) · `[tela cheia]`
-visualização empilhada sem URL própria · `[menu]` menu lateral.
+visualização empilhada sem URL própria.
 
 ---
 
@@ -21,12 +21,9 @@ visualização empilhada sem URL própria · `[menu]` menu lateral.
 ```
 
 Shell das telas rasas: seletor de fazenda no topo, saudação, campo de busca e a navbar flutuante
-**Início · Pecuária · Agricultura · Menu**. Telas fundas (cadastros e fluxos) escondem a navbar e
-mostram só a faixa de 64 px com título e "Voltar".
-
-**Menu lateral** `[menu]` (aba Menu): grupo único **MENU** — Início, Ordens de serviço,
-Confinamento, Pecuária, Agricultura, Reprodução, Consultas, Gestão de Frota, Sincronizar
-aplicativo — e a seção **CONTA** (Notificações, Configurações, Modo GB, Conexão, Sair).
+**Início · Pecuária · + · Agricultura · Confinamento** (o "+" abre a adição rápida). Não há
+menu lateral: perfil, tema, notificações e sair ficam no cabeçalho e em `/perfil`. Telas fundas
+(cadastros e fluxos) escondem a navbar e mostram só a faixa de 64 px com título e "Voltar".
 
 ---
 
@@ -35,7 +32,8 @@ aplicativo — e a seção **CONTA** (Notificações, Configurações, Modo GB, 
 - **Minhas OS**: até 3 OS em andamento (em execução primeiro), com linha de situação (atrasada,
   pausada há X, vence hoje, em execução há X…) e ação rápida (Iniciar, Pausar, Retomar), sempre
   com confirmação. Some quando não há OS em andamento. "Ver todas" → `/fazendas/campo/minhas-os`.
-- **Atalhos**: grade 4 colunas com os mesmos itens do menu lateral.
+- **Atalhos**: grade com todos os grupos — Ordens de serviço, Confinamento, Pecuária,
+  Agricultura, Reprodução, Consultas, Gestão de Frota, Sincronizar aplicativo.
 - Tocar numa OS abre o **detalhe da OS** `[tela cheia]` com as ações no rodapé.
 
 ## Grupos — `/fazendas/operacional/grupo/:slug`

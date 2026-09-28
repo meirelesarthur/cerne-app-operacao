@@ -2,29 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../design/generated/app_colors.dart';
 import '../design/generated/app_layout.dart';
 import '../design/generated/app_motion.dart';
-import '../design/generated/app_radius.dart';
 import '../design/theme/app_theme_extension.dart';
 import '../modules/fazendas/components/farm_picker.dart';
 import '../modules/fazendas/state/fazendas_store.dart';
 import '../ui/ui.dart';
 import 'components/bottom_tab_bar.dart';
 import 'components/quick_add_sheet.dart';
-import 'components/reveal_menu.dart';
 import 'components/shell_header.dart';
 import 'module_config.dart';
 import 'state/shell_store.dart';
 import 'state/prototype_session_store.dart';
 
 /// Layout do Shell (spec §3.1) — espelha `ShellLayout.tsx`: header global fixo +
-/// abas de contexto + conteúdo do módulo ativo + dock de módulos flutuante +
-/// menu "reveal". Trocar de módulo troca só o conteúdo, o header persiste.
-///
-/// Com o menu aberto, o app inteiro encolhe (scale+translateX) revelando o
-/// `AppRevealMenu` à direita — únicas responsabilidades deste widget que os
-/// componentes filhos documentaram como "de quem monta o shell".
+/// abas de contexto + conteúdo do módulo ativo + navbar flutuante. Trocar de
+/// módulo troca só o conteúdo, o header persiste. Não há menu lateral: a
+/// navegação é a navbar e os atalhos da tela inicial.
 class ShellLayout extends ConsumerStatefulWidget {
   const ShellLayout({
     super.key,
@@ -88,24 +82,12 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     return false;
   }
 
-  void _go(BuildContext context, WidgetRef ref, String route) {
-    ref.read(shellStoreProvider.notifier).closeMenu();
-    context.go(route);
-  }
-
-  void _push(BuildContext context, WidgetRef ref, String route) {
-    ref.read(shellStoreProvider.notifier).closeMenu();
-    context.push(route);
-  }
-
-  void _openSearch(BuildContext context, WidgetRef ref) =>
-      _push(context, ref, '/busca');
+  void _openSearch(BuildContext context) => context.push('/busca');
 
   /// Dock do "+" aberta — o "+" da navbar vira "×" enquanto isso.
   bool _quickAddOpen = false;
 
-  Future<void> _openQuickAdd(BuildContext context, WidgetRef ref) async {
-    ref.read(shellStoreProvider.notifier).closeMenu();
+  Future<void> _openQuickAdd(BuildContext context) async {
     setState(() => _quickAddOpen = true);
     final picked = await showQuickAddOverlay(
       context,
@@ -114,7 +96,7 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
     if (!mounted) return;
     setState(() => _quickAddOpen = false);
     if (picked != null && context.mounted) {
-      _push(context, ref, picked.route);
+      context.push(picked.route);
     }
   }
 
@@ -142,172 +124,90 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
 
   @override
   Widget build(BuildContext context) {
-    final moduleId = widget.moduleId;
-    final hideChrome = widget.hideChrome;
-    final compactChrome = widget.compactChrome;
-    final module = getModule(moduleId) ?? modules.first;
     final state = ref.watch(shellStoreProvider);
     final profile = ref.watch(prototypeSessionProvider).profile;
     final activeFarm = ref.watch(fazendasStoreProvider).activeFarm;
-    final menuOpen = state.menuOpen;
     final semantic = Theme.of(context).extension<AppSemanticColors>()!;
     final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final hideChrome = widget.hideChrome;
+    final compactChrome = widget.compactChrome;
     final showGlobalContext = !hideChrome && profile != null;
     final currentPath = GoRouterState.of(context).uri.path;
 
     return Scaffold(
+      backgroundColor: semantic.bgCanvas,
       body: Stack(
         children: [
-          Positioned.fill(
-            child: ColoredBox(
-              color: menuOpen
-                  ? AppComponentColors.revealMenuBg
-                  : semantic.bgCanvas,
-            ),
-          ),
-          // menu revelado — fica atrás do app encolhido, à direita.
-          Positioned.fill(
-            child: AppRevealMenu(
-              module: module,
-              activeRoute: GoRouterState.of(context).uri.toString(),
-              onNavigate: (route) => _go(context, ref, route),
-              onPush: (route) => _push(context, ref, route),
-            ),
-          ),
-          // o app inteiro — encolhe como cartão quando o menu abre.
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final shiftX =
-                  constraints.maxWidth *
-                  (AppComponentMetrics.revealMenuAppShiftX / 100);
-              final scale = AppComponentMetrics.revealMenuAppScale;
-
-              return AnimatedContainer(
-                duration: reduceMotion ? Duration.zero : AppMotion.slow,
-                curve: AppMotion.easingSpring,
-                transform: menuOpen
-                    ? (Matrix4.identity()
-                        ..translateByDouble(shiftX, 0, 0, 1)
-                        ..scaleByDouble(scale, scale, scale, 1))
-                    : Matrix4.identity(),
-                transformAlignment: Alignment.centerLeft,
-                clipBehavior: menuOpen ? Clip.antiAlias : Clip.none,
-                decoration: menuOpen
-                    ? BoxDecoration(
-                        borderRadius: BorderRadius.circular(AppRadius.xl3),
-                        boxShadow: semantic.shadowModal,
-                      )
-                    : null,
-                child: _ShrunkAppTapToClose(
-                  menuOpen: menuOpen,
-                  onClose: () =>
-                      ref.read(shellStoreProvider.notifier).closeMenu(),
-                  child: ColoredBox(
-                    color: semantic.bgCanvas,
-                    child: Stack(
+          SafeArea(
+            bottom: false,
+            // Rotas fundas mantêm o topo sobre o canvas: nos frames de
+            // cadastro do Figma a barra superior fica *acima* da folha, e é a
+            // própria tela que abre a folha logo abaixo dela. Nas rotas rasas
+            // o shell abre a folha aqui, com o cabeçalho e as abas dentro —
+            // como nas duas homes da referência.
+            child: hideChrome
+                ? _content(state)
+                : AppContentSheet(
+                    padded: false,
+                    header: showGlobalContext
+                        ? AppFarmSelector(
+                            farmName: activeFarm.name,
+                            onTap: () => openFarmPicker(context, ref),
+                          )
+                        : null,
+                    child: Column(
                       children: [
-                        SafeArea(
-                          bottom: false,
-                          // Rotas fundas mantêm o topo sobre o canvas: nos
-                          // frames de cadastro do Figma a barra superior fica
-                          // *acima* da folha, e é a própria tela que abre a
-                          // folha logo abaixo dela. Nas rotas rasas o shell
-                          // abre a folha aqui, com o cabeçalho e as abas
-                          // dentro — como nas duas homes da referência.
-                          child: hideChrome
-                              ? _content(state)
-                              : AppContentSheet(
-                                  padded: false,
-                                  header: showGlobalContext
-                                      ? AppFarmSelector(
-                                          farmName: activeFarm.name,
-                                          onTap: () =>
-                                              openFarmPicker(context, ref),
-                                        )
-                                      : null,
-                                  child: Column(
-                                    children: [
-                                      if (!compactChrome)
-                                        AnimatedSize(
-                                          duration: reduceMotion
-                                              ? Duration.zero
-                                              : AppMotion.base,
-                                          curve: AppMotion.easingOut,
-                                          alignment: Alignment.topCenter,
-                                          child: Column(
-                                            children: [
-                                              AppShellHeader(
-                                                collapsed: _headerCollapsed,
-                                                showMenu: false,
-                                                showProfileSubtitle: false,
-                                                onOpenProfile: () => _push(
-                                                  context,
-                                                  ref,
-                                                  '/perfil',
-                                                ),
-                                                onOpenNotifications: () =>
-                                                    _push(
-                                                      context,
-                                                      ref,
-                                                      '/notificacoes',
-                                                    ),
-                                                child: showGlobalContext
-                                                    ? AppSearchField(
-                                                        onTap: () =>
-                                                            _openSearch(
-                                                              context,
-                                                              ref,
-                                                            ),
-                                                      )
-                                                    : null,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      Expanded(child: _content(state)),
-                                    ],
-                                  ),
-                                ),
-                        ),
-                        if (!hideChrome)
-                          Positioned(
-                            left: AppComponentMetrics.tabbarInset,
-                            right: AppComponentMetrics.tabbarInset,
-                            // soma o respiro do token à safe-area inferior real do
-                            // aparelho (home indicator/gesture bar) — sem isso a
-                            // cápsula flutuante fica colada/sobreposta pela área do
-                            // sistema em telas com esse recurso.
-                            bottom:
-                                AppComponentMetrics.tabbarInset +
-                                MediaQuery.of(context).padding.bottom,
-                            child: Center(
-                              child: AppBottomTabBar(
-                                tabs: operationalBottomTabs,
-                                quickAddOpen: _quickAddOpen,
-                                activeId: menuOpen
-                                    ? 'menu'
-                                    : _operationalTabFor(currentPath),
-                                onSelected: (tab) {
-                                  if (tab.action == quickAddAction) {
-                                    _openQuickAdd(context, ref);
-                                  } else if (tab.action == 'menu') {
-                                    ref
-                                        .read(shellStoreProvider.notifier)
-                                        .toggleMenu();
-                                  } else {
-                                    _go(context, ref, '/fazendas/${tab.path}');
-                                  }
-                                },
-                              ),
+                        if (!compactChrome)
+                          AnimatedSize(
+                            duration: reduceMotion
+                                ? Duration.zero
+                                : AppMotion.base,
+                            curve: AppMotion.easingOut,
+                            alignment: Alignment.topCenter,
+                            child: AppShellHeader(
+                              collapsed: _headerCollapsed,
+                              showProfileSubtitle: false,
+                              onOpenProfile: () => context.push('/perfil'),
+                              onOpenNotifications: () =>
+                                  context.push('/notificacoes'),
+                              child: showGlobalContext
+                                  ? AppSearchField(
+                                      onTap: () => _openSearch(context),
+                                    )
+                                  : null,
                             ),
                           ),
+                        Expanded(child: _content(state)),
                       ],
                     ),
                   ),
-                ),
-              );
-            },
           ),
+          if (!hideChrome)
+            Positioned(
+              left: AppComponentMetrics.tabbarInset,
+              right: AppComponentMetrics.tabbarInset,
+              // soma o respiro do token à safe-area inferior real do aparelho
+              // (home indicator/gesture bar) — sem isso a cápsula flutuante
+              // fica colada/sobreposta pela área do sistema em telas com esse
+              // recurso.
+              bottom:
+                  AppComponentMetrics.tabbarInset +
+                  MediaQuery.of(context).padding.bottom,
+              child: Center(
+                child: AppBottomTabBar(
+                  tabs: operationalBottomTabs,
+                  quickAddOpen: _quickAddOpen,
+                  activeId: _operationalTabFor(currentPath),
+                  onSelected: (tab) {
+                    if (tab.action == quickAddAction) {
+                      _openQuickAdd(context);
+                    } else {
+                      context.go('/fazendas/${tab.path}');
+                    }
+                  },
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -315,43 +215,13 @@ class _ShellLayoutState extends ConsumerState<ShellLayout> {
 }
 
 /// Aba da navbar operacional destacada para a rota atual. Grupos que só
-/// existem no menu lateral (Confinamento, Reprodução…) não acendem nenhuma
-/// aba — destacar "Início" ali diria que a pessoa está na tela inicial.
+/// existem nos atalhos da tela inicial (Reprodução, Máquinas…) não acendem
+/// nenhuma aba — destacar "Início" ali diria que a pessoa está na tela
+/// inicial.
 String _operationalTabFor(String path) {
   if (path.contains('/grupo/pecuaria')) return 'pecuaria';
   if (path.contains('/grupo/agricultura')) return 'agricultura';
+  if (path.contains('/grupo/confinamento')) return 'confinamento';
   if (path.contains('/grupo/')) return '';
   return 'inicio';
-}
-
-/// Com o menu aberto, tocar em área vazia do app encolhido fecha o menu —
-/// espelha o botão-overlay invisível do React (`absolute inset-0` ATRÁS do
-/// conteúdo). Envolver o conteúdo inteiro (em vez de um overlay separado por
-/// cima de tudo) é necessário no Flutter: um overlay `Positioned.fill`
-/// desenhado por cima bloquearia também os toques no `AppRevealMenu` ao lado,
-/// já que ambos ocupam a Stack inteira. Botões internos (header, tabs, dock)
-/// continuam recebendo seus próprios toques normalmente — a arena de gestos
-/// do Flutter prioriza o `AppPressable` mais interno.
-class _ShrunkAppTapToClose extends StatelessWidget {
-  const _ShrunkAppTapToClose({
-    required this.menuOpen,
-    required this.onClose,
-    required this.child,
-  });
-
-  final bool menuOpen;
-  final VoidCallback onClose;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    if (!menuOpen) return child;
-    return AppPressable(
-      semanticLabel: 'Fechar menu',
-      onPressed: onClose,
-      minTouchTarget: false,
-      showVisualFeedback: false,
-      child: child,
-    );
-  }
 }

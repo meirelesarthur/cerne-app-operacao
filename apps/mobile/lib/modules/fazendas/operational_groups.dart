@@ -4,8 +4,8 @@ import 'group_icons.dart';
 /// Entrada de um grupo do catálogo operacional na navegação: o rótulo de
 /// apresentação, o ícone e para onde o toque leva.
 ///
-/// Fonte única da regra "grupo → destino", consumida pelo menu lateral
-/// (`AppRevealMenu`, via `module_config.dart`) e pela grade de grupos
+/// Fonte única da regra "grupo → destino", consumida pelos atalhos da tela
+/// inicial (via `module_config.dart`) e pela grade de grupos
 /// (`ResponsibilityWorkspace`) — Lei 2: as duas superfícies abrem o mesmo
 /// destino para o mesmo grupo.
 class OperationalGroupEntry {

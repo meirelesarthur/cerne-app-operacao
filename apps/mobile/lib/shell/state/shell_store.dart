@@ -133,7 +133,6 @@ class ShellState {
     required this.user,
     required this.notifications,
     required this.isOnline,
-    required this.menuOpen,
   });
 
   final UserProfile user;
@@ -142,22 +141,17 @@ class ShellState {
   /// Toggle de dev — simula perda de conexão para demonstrar banners de sync.
   final bool isOnline;
 
-  /// Menu "reveal" global (aba Mais/Menu).
-  final bool menuOpen;
-
   int get unreadCount => notifications.where((n) => !n.read).length;
 
   ShellState copyWith({
     UserProfile? user,
     List<AppNotification>? notifications,
     bool? isOnline,
-    bool? menuOpen,
   }) {
     return ShellState(
       user: user ?? this.user,
       notifications: notifications ?? this.notifications,
       isOnline: isOnline ?? this.isOnline,
-      menuOpen: menuOpen ?? this.menuOpen,
     );
   }
 }
@@ -173,7 +167,6 @@ class ShellStoreNotifier extends Notifier<ShellState> {
       user: const UserProfile(name: 'Silvio Ventura', initials: 'SV'),
       notifications: _mockNotifications(DateTime.now()),
       isOnline: true,
-      menuOpen: false,
     );
   }
 
@@ -197,10 +190,4 @@ class ShellStoreNotifier extends Notifier<ShellState> {
       ],
     );
   }
-
-  void openMenu() => state = state.copyWith(menuOpen: true);
-
-  void closeMenu() => state = state.copyWith(menuOpen: false);
-
-  void toggleMenu() => state = state.copyWith(menuOpen: !state.menuOpen);
 }

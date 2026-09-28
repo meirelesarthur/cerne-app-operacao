@@ -4,7 +4,6 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/operational_groups.dart';
 import 'package:cerne_app/shell/module_config.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
-import 'package:cerne_app/ui/app_icon.dart';
 
 void main() {
   group('module_config', () {
@@ -22,65 +21,13 @@ void main() {
     });
 
     test(
-      'getMenuSections cai no fallback derivado das bottomTabs quando ausente',
+      'índice das rotinas de Fazendas lista os grupos do catálogo num grupo só',
       () {
-        // O módulo real não deixa `menuSections` ausente hoje (ver
-        // teste abaixo) — o fallback só existe como rede de segurança para um
-        // módulo futuro sem seção própria. Testado aqui com um `ModuleDef`
-        // sintético, não com um módulo real.
-        const synthetic = ModuleDef(
-          id: 'sintetico',
-          label: 'Sintético',
-          icon: AppIcons.circle,
-          homeRoute: '/sintetico',
-          bottomTabs: [
-            BottomTab(
-              id: 'home',
-              label: 'Início',
-              icon: AppIcons.home,
-              path: '',
-            ),
-            BottomTab(
-              id: 'apps',
-              label: 'Apps',
-              icon: AppIcons.layoutGrid,
-              path: 'apps',
-            ),
-            BottomTab(
-              id: 'estoque',
-              label: 'Estoque',
-              icon: AppIcons.boxes,
-              path: 'estoque',
-            ),
-            BottomTab(
-              id: 'menu',
-              label: 'Menu',
-              icon: AppIcons.menu,
-              path: 'menu',
-              action: 'menu',
-            ),
-          ],
-        );
-        final sections = getMenuSections(synthetic);
-        expect(sections, hasLength(1));
-        expect(sections.first.title, 'Funcionalidades');
-        // 'menu' tem action e é excluído; '' (home) também é excluído por path vazio.
-        expect(
-          sections.first.items.map((i) => i.id),
-          containsAll(['apps', 'estoque']),
-        );
-        expect(sections.first.items.map((i) => i.id), isNot(contains('menu')));
-      },
-    );
-
-    test(
-      'menu lateral de Fazendas lista os grupos do catálogo num grupo só',
-      () {
-        final sections = getMenuSections(getModule('fazendas')!);
+        final sections = operationalMenuSections();
 
         expect(sections.map((s) => s.title), ['Menu']);
         final labels = sections.single.items.map((i) => i.label).toList();
-        // O menu é o índice completo: repete o que está na navbar, com o
+        // O índice é completo: repete o que está na navbar, com o
         // Início primeiro e a lista completa de OS logo depois.
         final items = sections.single.items;
         expect(labels.first, 'Início');
@@ -106,18 +53,26 @@ void main() {
       },
     );
 
-    test('navbar operacional: Início, Pecuária, [+], Agricultura e Menu', () {
-      expect(operationalBottomTabs.map((t) => t.label), [
-        'Início',
-        'Pecuária',
-        'Adicionar',
-        'Agricultura',
-        'Menu',
-      ]);
-      // O "+" fica no centro e é ação, não aba.
-      expect(operationalBottomTabs[2].action, quickAddAction);
-      expect(operationalBottomTabs.last.action, 'menu');
-    });
+    test(
+      'navbar operacional: Início, Pecuária, [+], Agricultura e Confinamento',
+      () {
+        expect(operationalBottomTabs.map((t) => t.label), [
+          'Início',
+          'Pecuária',
+          'Adicionar',
+          'Agricultura',
+          'Confinamento',
+        ]);
+        // O "+" fica no centro e é ação, não aba.
+        expect(operationalBottomTabs[2].action, quickAddAction);
+        // Sem menu lateral: a última posição navega para o Confinamento.
+        expect(operationalBottomTabs.last.action, isNull);
+        expect(
+          operationalBottomTabs.last.path,
+          'operacional/grupo/confinamento',
+        );
+      },
+    );
 
     test('adição rápida: até cinco rotinas, com destino do catálogo', () {
       final atalhos = operationalQuickAdds();

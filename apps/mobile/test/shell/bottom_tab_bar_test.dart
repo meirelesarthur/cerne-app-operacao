@@ -36,7 +36,7 @@ void main() {
         'Pecuária',
         'Adicionar',
         'Agricultura',
-        'Menu',
+        'Confinamento',
       ]) {
         expect(find.bySemanticsLabel(label), findsOneWidget, reason: label);
       }

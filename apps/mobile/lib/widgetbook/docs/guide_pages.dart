@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.17.0';
+const kWidgetbookVersion = '2.18.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,31 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.18.0',
+    date: '2026-09-28',
+    summary: 'Menu lateral removido; Confinamento volta para a navbar.',
+    changes: [
+      (
+        'Mudou',
+        'Navbar do app: Início, Pecuária, +, Agricultura e Confinamento. O '
+            'último item deixa de abrir o menu lateral e leva à central de '
+            'Confinamento.',
+      ),
+      (
+        'Mudou',
+        'TabBar: o nome da aba ativa tem a largura do texto e desliza para '
+            'dentro da barra nas pontas, em vez de ser cortado na largura da '
+            'aba.',
+      ),
+      (
+        'Removido',
+        'Menu lateral (reveal): os grupos seguem nos atalhos da tela inicial '
+            'e perfil, tema, notificações e sair ficam no cabeçalho e em '
+            'Perfil.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.17.0',
     date: '2026-09-24',
