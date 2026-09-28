@@ -218,7 +218,7 @@ class _TabBarFrame extends StatelessWidget {
             _actionButton(context, semantic, items[i], i)
           else ...[
             _icon(semantic, items[i], i),
-            _label(semantic, items[i], i),
+            _label(context, semantic, items[i], i),
             _hitArea(items[i], i),
           ],
       ],
@@ -243,13 +243,46 @@ class _TabBarFrame extends StatelessWidget {
     );
   }
 
-  Widget _label(AppSemanticColors semantic, AppTabBarItem item, int i) {
+  Widget _label(
+    BuildContext context,
+    AppSemanticColors semantic,
+    AppTabBarItem item,
+    int i,
+  ) {
     // Só aparece na chegada: de passagem o nome não pisca.
     final opacity = ((_activation(i) - 0.5) * 2).clamp(0.0, 1.0);
     if (opacity == 0) return const SizedBox.shrink();
+    final style = TextStyle(
+      fontSize: AppTypography.sm,
+      fontWeight: AppTypography.weightSemibold,
+      height: AppTypography.lineHeightTight,
+      color: semantic.accentDefault,
+    );
+    // O nome ocupa a largura do próprio texto, centrado sob o ícone — um
+    // rótulo mais largo que a aba ("Confinamento") invade as vizinhas, que
+    // estão sem nome, em vez de ser cortado. Nas pontas ele só desliza o
+    // bastante para não sair da barra.
+    final painter = TextPainter(
+      // Mede com o estilo efetivo (herda a família do tema), o mesmo que o
+      // `Text` abaixo vai usar.
+      text: TextSpan(
+        text: item.label,
+        style: DefaultTextStyle.of(context).style.merge(style),
+      ),
+      maxLines: 1,
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout();
+    final maxWidth = width - _padding * 2;
+    final labelWidth = math.min(painter.width.ceilToDouble(), maxWidth);
+    painter.dispose();
+    final left = (_centerX(i.toDouble()) - labelWidth / 2).clamp(
+      _padding,
+      width - _padding - labelWidth,
+    );
     return Positioned(
-      left: _centerX(i.toDouble()) - _slot / 2,
-      width: _slot,
+      left: left,
+      width: labelWidth,
       top: _labelY - AppTypography.sm + (1 - opacity) * AppSpacing.space1,
       child: IgnorePointer(
         child: Opacity(
@@ -260,12 +293,7 @@ class _TabBarFrame extends StatelessWidget {
             softWrap: false,
             overflow: TextOverflow.fade,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: AppTypography.sm,
-              fontWeight: AppTypography.weightSemibold,
-              height: AppTypography.lineHeightTight,
-              color: semantic.accentDefault,
-            ),
+            style: style,
           ),
         ),
       ),
@@ -447,7 +475,11 @@ WidgetbookComponent buildTabBarWidgetbookComponent() {
       label: 'Agricultura',
       icon: AppIcons.agricultura,
     ),
-    AppTabBarItem(id: 'menu', label: 'Menu', icon: AppIcons.menu),
+    AppTabBarItem(
+      id: 'confinamento',
+      label: 'Confinamento',
+      icon: AppIcons.confinamento,
+    ),
   ];
 
   Widget stage(Widget child) => ColoredBox(

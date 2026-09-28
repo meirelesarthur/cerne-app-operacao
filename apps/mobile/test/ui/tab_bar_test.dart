@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/generated/app_layout.dart';
@@ -18,7 +19,11 @@ const _items = [
   AppTabBarItem(id: 'd', label: 'Delta', icon: AppIcons.menu),
 ];
 
-Widget _bar(String activeId, {bool reduceMotion = false}) => MaterialApp(
+Widget _bar(
+  String activeId, {
+  bool reduceMotion = false,
+  List<AppTabBarItem> items = _items,
+}) => MaterialApp(
   theme: buildAppTheme(AppThemeVariant.light),
   home: MediaQuery(
     data: MediaQueryData(
@@ -31,7 +36,7 @@ Widget _bar(String activeId, {bool reduceMotion = false}) => MaterialApp(
         child: SizedBox(
           width: 375,
           child: AppTabBar(
-            items: _items,
+            items: items,
             activeId: activeId,
             onSelected: (_) {},
           ),
@@ -51,6 +56,29 @@ double _centerOf(WidgetTester tester, String label) =>
 
 void main() {
   group('AppTabBar', () {
+    testWidgets('nome longo na última aba aparece inteiro dentro da barra', (
+      tester,
+    ) async {
+      const label = 'Confinamento';
+      final items = [
+        ..._items.take(4),
+        const AppTabBarItem(id: 'd', label: label, icon: AppIcons.menu),
+      ];
+      await tester.pumpWidget(_bar('d', items: items));
+      await tester.pumpAndSettle();
+
+      final text = find.text(label);
+      final paragraph = tester.renderObject<RenderParagraph>(text);
+
+      // Não é cortado à largura da aba (1/5 da barra): sem o fade de overflow…
+      expect(paragraph.debugHasOverflowShader, isFalse);
+      // …e desliza para dentro em vez de sair pela borda.
+      final rect = tester.getRect(text);
+      final bar = tester.getRect(find.byType(AppTabBar));
+      expect(rect.right, lessThanOrEqualTo(bar.right));
+      expect(rect.left, greaterThanOrEqualTo(bar.left));
+    });
+
     testWidgets('o hexágono termina sobre a aba ativa, acima da barra', (
       tester,
     ) async {
