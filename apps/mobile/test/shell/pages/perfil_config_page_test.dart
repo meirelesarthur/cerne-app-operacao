@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:cerne_app/design/theme/theme_provider.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
+import 'package:cerne_app/shell/state/shell_store.dart';
 
 import '../../support/router_test_harness.dart';
 import '../../support/test_viewport.dart';
@@ -25,7 +27,63 @@ void main() {
       expect(find.text('Informações pessoais'), findsOneWidget);
       expect(find.text('Notificações'), findsOneWidget);
       expect(find.text('Sair'), findsOneWidget);
+      expect(find.text('Ver perfil'), findsNothing);
+      expect(find.text('Perfil completo'), findsNothing);
+      expect(find.textContaining('%'), findsNothing);
       expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('"Informações pessoais" abre os dados pessoais', (
+      tester,
+    ) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Informações pessoais'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Dados pessoais'), findsOneWidget);
+      expect(find.text('Alterar foto'), findsOneWidget);
+      expect(find.text('Salvar alterações'), findsOneWidget);
+      expect(find.text('Descartar alterações'), findsOneWidget);
+
+      await tester.enterText(find.byType(TextField).first, 'Silvio V. Souza');
+      await tester.pump();
+      await tester.tap(find.text('Salvar alterações'));
+      await tester.pumpAndSettle();
+      expect(
+        harness.container.read(shellStoreProvider).user.name,
+        'Silvio V. Souza',
+      );
+    });
+
+    testWidgets('"Segurança" abre a troca de senha e valida', (tester) async {
+      await setTallSurface(tester);
+      await tester.pumpWidget(harness.buildApp());
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Segurança'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Senha atual'), findsOneWidget);
+      expect(find.text('Nova senha'), findsOneWidget);
+      expect(find.text('Confirmar nova senha'), findsOneWidget);
+
+      final campos = find.byType(TextField);
+      await tester.enterText(campos.at(0), 'antiga1');
+      await tester.enterText(campos.at(1), 'novasenha');
+      await tester.enterText(campos.at(2), 'outra');
+      await tester.pump();
+      await tester.tap(find.text('Alterar senha'));
+      await tester.pump();
+      expect(find.textContaining('não confere'), findsOneWidget);
+
+      await tester.enterText(campos.at(2), 'novasenha');
+      await tester.pump();
+      await tester.tap(find.text('Alterar senha'));
+      await tester.pump();
+      expect(find.text('Senha alterada.'), findsOneWidget);
     });
 
     testWidgets('tocar em "Tema" alterna o themeVariantProvider', (

@@ -8,6 +8,8 @@ import '../shell/pages/login_page.dart';
 import '../shell/pages/notificacoes_page.dart';
 import '../shell/pages/onboarding_page.dart';
 import '../shell/pages/perfil_config_page.dart';
+import '../shell/pages/perfil_dados_page.dart';
+import '../shell/pages/perfil_seguranca_page.dart';
 import '../shell/shell_layout.dart';
 import '../shell/state/prototype_session_store.dart';
 
@@ -62,6 +64,16 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/perfil',
         builder: (context, state) => const PerfilConfigPage(),
+        routes: [
+          GoRoute(
+            path: 'dados',
+            builder: (context, state) => const PerfilDadosPage(),
+          ),
+          GoRoute(
+            path: 'seguranca',
+            builder: (context, state) => const PerfilSegurancaPage(),
+          ),
+        ],
       ),
       GoRoute(
         path: '/notificacoes',

@@ -1,13 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../ui/ui.dart';
 
 /// Store do Shell — espelha `shellStore.ts` (spec §7.3). Estado global do app,
 /// tudo em memória (sem persistência local, restrição do protótipo).
 
 class UserProfile {
-  const UserProfile({required this.name, required this.initials});
+  const UserProfile({
+    required this.name,
+    required this.initials,
+    this.email = '',
+  });
 
   final String name;
   final String initials;
+
+  /// E-mail de acesso — só leitura no app: quem altera é o cadastro no WEB.
+  final String email;
 }
 
 /// Tipo da notificação — decide ícone e cor na tela (`NotificacoesPage`).
@@ -164,9 +172,26 @@ class ShellStoreNotifier extends Notifier<ShellState> {
   @override
   ShellState build() {
     return ShellState(
-      user: const UserProfile(name: 'Silvio Ventura', initials: 'SV'),
+      user: const UserProfile(
+        name: 'Silvio Ventura',
+        initials: 'SV',
+        email: 'silvio.ventura@gbcerne.app',
+      ),
       notifications: _mockNotifications(DateTime.now()),
       isOnline: true,
+    );
+  }
+
+  /// Grava o nome editado em "Informações pessoais" (protótipo: só em memória).
+  void updateUserName(String name) {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return;
+    state = state.copyWith(
+      user: UserProfile(
+        name: trimmed,
+        initials: AppAvatar.deriveInitials(trimmed),
+        email: state.user.email,
+      ),
     );
   }
 
