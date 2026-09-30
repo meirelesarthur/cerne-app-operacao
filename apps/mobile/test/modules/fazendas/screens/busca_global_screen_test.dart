@@ -6,7 +6,6 @@ import 'package:cerne_app/design/theme/app_theme.dart';
 import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 import 'package:cerne_app/modules/fazendas/screens/busca_global_screen.dart';
 import 'package:cerne_app/shell/state/prototype_session_store.dart';
-import 'package:cerne_app/ui/discovery_tile.dart';
 import 'package:cerne_app/ui/menu_item.dart';
 
 Widget _app(WidgetTester tester, UserAccessProfile? profile) {
@@ -104,6 +103,26 @@ void main() {
     });
   });
 
+  group('featuresByDailyPriority', () {
+    test('traz todas as funcionalidades, sem repetir', () {
+      final ids = featuresByDailyPriority().map((f) => f.id).toList();
+
+      expect(ids.toSet().length, ids.length);
+      expect(ids.length, allFeatures.length);
+    });
+
+    test('uso diário do operacional vem primeiro', () {
+      final ids = featuresByDailyPriority().map((f) => f.id).toList();
+
+      expect(ids.take(4), [
+        'minhas-os',
+        'trato-diario',
+        'leitura-cocho-confinamento',
+        'pesagem',
+      ]);
+    });
+  });
+
   group('featureDestination', () {
     test('respeita a rota própria quando existe', () {
       final comRota = allFeatures.firstWhere((f) => f.existingRoute != null);
@@ -124,17 +143,18 @@ void main() {
   });
 
   group('BuscaGlobalScreen', () {
-    testWidgets('abre com produtos, acessos recentes e histórico', (
+    testWidgets('abre com a lista de funcionalidades, sem histórico', (
       tester,
     ) async {
       await tester.pumpWidget(_app(tester, UserAccessProfile.operational));
       await tester.pump();
 
-      expect(find.text('Seus Produtos'), findsOneWidget);
-      expect(find.text('Mais acessados'), findsOneWidget);
-      expect(find.text('Histórico'), findsOneWidget);
-      expect(find.byType(AppDiscoveryTile), findsNWidgets(8));
-      expect(find.byType(AppMenuItem), findsNothing);
+      expect(find.text('Funcionalidades'), findsOneWidget);
+      expect(find.text('Histórico'), findsNothing);
+      expect(find.text('Seus Produtos'), findsNothing);
+      expect(find.text('Mais acessados'), findsNothing);
+      expect(find.text('Minhas OS'), findsOneWidget);
+      expect(find.byType(AppMenuItem), findsWidgets);
     });
 
     testWidgets('lista o que encontrou com o ícone do módulo', (tester) async {

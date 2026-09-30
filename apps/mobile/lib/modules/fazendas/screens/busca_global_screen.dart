@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../design/generated/app_layout.dart';
-import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/generated/app_typography.dart';
 import '../../../design/theme/app_theme_extension.dart';
@@ -17,9 +16,10 @@ import '../state/fazendas_store.dart';
 /// Busca global de funcionalidades — destino do `AppSearchField` do cabeçalho.
 ///
 /// Tela cheia, fora do `ShellRoute`: conserva apenas o contexto da fazenda,
-/// enquanto troca o cabeçalho de perfil por descoberta de produtos, acessos
-/// recentes e histórico. Ao digitar, a curadoria dá lugar aos resultados do
-/// catálogo funcional.
+/// enquanto troca o cabeçalho de perfil pela lista de todas as funcionalidades
+/// do menu. Não há API de acessos recentes nem de histórico, então a ordem é
+/// curada: o que o operacional mais faz no dia a dia vem primeiro
+/// ([featuresByDailyPriority]). Ao digitar, a lista dá lugar aos resultados.
 ///
 /// O app tem só o perfil Operacional, então todo resultado é tocável. A marca
 /// de "função de outro perfil" continua no código como rede de segurança
@@ -41,9 +41,7 @@ class _BuscaGlobalScreenState extends ConsumerState<BuscaGlobalScreen> {
     final activeFarm = ref.watch(fazendasStoreProvider).activeFarm;
     final results = searchFeatures(_query, sessionProfile: sessionProfile);
     final hasQuery = normalizeForSearch(_query).isNotEmpty;
-    final products = _productsFor(sessionProfile);
-    final recent = _recentFor(sessionProfile);
-    final history = _historyFor(sessionProfile);
+    final features = featuresByDailyPriority();
 
     return Scaffold(
       backgroundColor: semantic.bgCanvas,
@@ -83,21 +81,18 @@ class _BuscaGlobalScreenState extends ConsumerState<BuscaGlobalScreen> {
               ),
               const SizedBox(height: AppSpacing.space6),
               if (!hasQuery) ...[
-                const _SearchSectionHeader(title: 'Seus Produtos'),
+                const _SearchSectionHeader(title: 'Funcionalidades'),
                 const SizedBox(height: AppSpacing.space3),
-                _SearchDiscoveryRail(items: products),
-                const SizedBox(height: AppSpacing.space6),
-                const _SearchSectionHeader(title: 'Mais acessados'),
-                const SizedBox(height: AppSpacing.space3),
-                _SearchDiscoveryRail(items: recent),
-                const SizedBox(height: AppSpacing.space6),
-                const _SearchSectionHeader(title: 'Histórico'),
-                const SizedBox(height: AppSpacing.space2),
-                for (final item in history)
-                  _SearchHistoryItem(
-                    item: item,
-                    onTap: () => context.go(item.route),
+                for (final feature in features) ...[
+                  AppMenuItem(
+                    icon: groupIcon(feature.group),
+                    label: feature.title,
+                    description: feature.group,
+                    showShadow: false,
+                    onTap: () => context.push(featureDestination(feature)),
                   ),
+                  const SizedBox(height: AppSpacing.space2),
+                ],
               ] else if (results.isEmpty)
                 const AppEmptyState(
                   icon: AppIcons.search,
@@ -151,195 +146,43 @@ class _SearchSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-
-    return Semantics(
-      header: true,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          AppHeading(child: Text(title)),
-          AppIcon(
-            AppIcons.chevronRight,
-            size: AppSize.iconLg,
-            color: semantic.fgDefault,
-          ),
-        ],
-      ),
-    );
+    return Semantics(header: true, child: AppHeading(child: Text(title)));
   }
 }
 
-class _SearchDiscoveryRail extends StatelessWidget {
-  const _SearchDiscoveryRail({required this.items});
+/// Ids das funcionalidades que o operacional mais usa no dia a dia, na ordem
+/// em que aparecem no topo da busca. As demais seguem na ordem do catálogo.
+const _dailyPriorityIds = <String>[
+  'minhas-os',
+  'trato-diario',
+  'leitura-cocho-confinamento',
+  'pesagem',
+  'apontamento',
+  'sanitario',
+  'nutricoes',
+  'ordens-pendentes',
+  'meus-currais',
+  'producao-batelada',
+  'sincronizacao',
+  'marcacao',
+  'transferencia-animal',
+  'transferencia-lote-area',
+  'localizar-animal',
+  'nascimentos',
+  'mortes',
+  'abastecimentos',
+];
 
-  final List<_SearchShortcut> items;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 88,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        separatorBuilder: (context, index) =>
-            const SizedBox(width: AppSpacing.space2),
-        itemBuilder: (context, index) {
-          final item = items[index];
-          return AppDiscoveryTile(
-            icon: item.icon,
-            label: item.label,
-            onTap: () => context.go(item.route),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _SearchHistoryItem extends StatelessWidget {
-  const _SearchHistoryItem({required this.item, required this.onTap});
-
-  final _SearchShortcut item;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final semantic = Theme.of(context).extension<AppSemanticColors>()!;
-
-    return AppPressable(
-      semanticLabel: item.label,
-      onPressed: onTap,
-      minTouchTarget: false,
-      borderRadius: BorderRadius.circular(AppRadius.md),
-      child: SizedBox(
-        height: AppSpacing.space14,
-        child: Row(
-          children: [
-            AppIcon(
-              item.icon,
-              size: AppSize.iconLg,
-              color: semantic.fgDefault,
-            ),
-            const SizedBox(width: AppSpacing.space4),
-            Expanded(
-              child: Text(
-                item.label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: AppTypography.xl,
-                  color: semantic.fgDefault,
-                ),
-              ),
-            ),
-            const SizedBox(width: AppSpacing.space2),
-            AppIcon(
-              AppIcons.chevronRight,
-              size: AppSize.iconLg,
-              color: semantic.fgDefault,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SearchShortcut {
-  const _SearchShortcut({
-    required this.label,
-    required this.icon,
-    required this.route,
-  });
-
-  final String label;
-  final AppIconData icon;
-  final String route;
-}
-
-List<_SearchShortcut> _productsFor(UserAccessProfile? profile) {
-  return const [
-    _SearchShortcut(
-      label: 'Fazendas',
-      icon: AppIcons.sprout,
-      route: '/fazendas/operacional',
-    ),
-    _SearchShortcut(
-      label: 'Pecuária',
-      icon: AppIcons.pecuaria,
-      route: '/fazendas/operacional/grupo/pecuaria',
-    ),
-    _SearchShortcut(
-      label: 'Confinamento',
-      icon: AppIcons.confinamento,
-      route: '/fazendas/operacional/grupo/confinamento',
-    ),
-    _SearchShortcut(
-      label: 'Agricultura',
-      icon: AppIcons.agricultura,
-      route: '/fazendas/operacional/grupo/agricultura',
-    ),
+/// Todas as funcionalidades do menu, com as de uso diário primeiro.
+List<FeatureDefinition> featuresByDailyPriority() {
+  final priority = [
+    for (final id in _dailyPriorityIds) ?featureById(id),
   ];
-}
-
-List<_SearchShortcut> _recentFor(UserAccessProfile? profile) {
-  return const [
-    _SearchShortcut(
-      label: 'Confinamento',
-      icon: AppIcons.confinamento,
-      route: '/fazendas/operacional/grupo/confinamento',
-    ),
-    _SearchShortcut(
-      label: 'Agricultura',
-      icon: AppIcons.agricultura,
-      route: '/fazendas/operacional/grupo/agricultura',
-    ),
-    _SearchShortcut(
-      label: 'Fazendas',
-      icon: AppIcons.sprout,
-      route: '/fazendas/operacional',
-    ),
-    _SearchShortcut(
-      label: 'Pecuária',
-      icon: AppIcons.pecuaria,
-      route: '/fazendas/operacional/grupo/pecuaria',
-    ),
-  ];
-}
-
-List<_SearchShortcut> _historyFor(UserAccessProfile? profile) {
-  return const [
-    _SearchShortcut(
-      label: 'Trato diário',
-      icon: AppIcons.tractor,
-      route: '/fazendas/campo/trato-diario',
-    ),
-    _SearchShortcut(
-      label: 'Pesagens',
-      icon: AppIcons.scale,
-      route: '/fazendas/campo/pesagem',
-    ),
-    _SearchShortcut(
-      label: 'Leitura de cocho',
-      icon: AppIcons.scanLine,
-      route: '/fazendas/operacional/leitura-cocho-confinamento',
-    ),
-    _SearchShortcut(
-      label: 'Ordens pendentes',
-      icon: AppIcons.clock,
-      route: '/fazendas/operacional/ordens-pendentes',
-    ),
-    _SearchShortcut(
-      label: 'Sincronizar aplicativo',
-      icon: AppIcons.refreshCw,
-      route: '/fazendas/campo/sincronizacao',
-    ),
-    _SearchShortcut(
-      label: 'Consultas de campo',
-      icon: AppIcons.bookOpen,
-      route: '/fazendas/operacional',
-    ),
+  final ids = priority.map((f) => f.id).toSet();
+  return [
+    ...priority,
+    for (final feature in allFeatures)
+      if (!ids.contains(feature.id)) feature,
   ];
 }
 

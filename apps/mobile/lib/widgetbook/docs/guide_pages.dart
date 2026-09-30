@@ -11,7 +11,7 @@ import 'doc_page.dart';
 
 /// Versão do Widgetbook — sobe junto de cada entrada nova em
 /// [widgetbookChangelog] (o teste `widgetbook_catalog_test` confere).
-const kWidgetbookVersion = '2.19.0';
+const kWidgetbookVersion = '2.20.0';
 
 /// Uma entrada do changelog do catálogo.
 class WidgetbookRelease {
@@ -33,6 +33,24 @@ class WidgetbookRelease {
 /// Mais recente primeiro. Toda mudança visível no catálogo entra aqui na
 /// mesma unidade lógica (Lei 4) — é o que a equipe lê para saber o que mudou.
 const widgetbookChangelog = <WidgetbookRelease>[
+  WidgetbookRelease(
+    version: '2.20.0',
+    date: '2026-09-30',
+    summary: 'Busca global lista todas as funcionalidades, por prioridade.',
+    changes: [
+      (
+        'Mudou',
+        'Busca global: "Histórico" virou "Funcionalidades" e traz todas as '
+            'funções do menu, com as de uso diário do operacional primeiro '
+            '(OS, trato, cocho, pesagem, apontamento, sanitário…).',
+      ),
+      (
+        'Removido',
+        'Busca global: as trilhas "Seus Produtos" e "Mais acessados" — não '
+            'há API de acessos recentes nem de histórico.',
+      ),
+    ],
+  ),
   WidgetbookRelease(
     version: '2.19.0',
     date: '2026-09-30',
