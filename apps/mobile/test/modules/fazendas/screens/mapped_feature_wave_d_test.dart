@@ -92,14 +92,14 @@ void main() {
       }
     });
 
-    test('todas as 32 funcionalidades Ready têm destino executável', () {
+    test('todas as 31 funcionalidades Ready têm destino executável', () {
       final ready = allFeatures.where(
         (feature) => feature.status == FeatureStatus.ready,
       );
 
       // Catálogo só operacional (repo CERNE Operação) — ver
       // functional_catalog_test.dart.
-      expect(ready, hasLength(32));
+      expect(ready, hasLength(31));
       for (final feature in ready) {
         final handledByMappedScreen =
             feature.auditExport != null ||

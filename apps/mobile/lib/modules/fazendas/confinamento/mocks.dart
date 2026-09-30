@@ -343,24 +343,3 @@ final leituraCochoRecente = LeituraCocho(
     ),
   ],
 );
-
-/// Ordens criadas pelo escritório no app web (banco compartilhado) — o Operacional só
-/// confirma a execução (decisão de perfil confirmada com o time).
-const ordensPendentes = <OrdemPendente>[
-  OrdemPendente(
-    id: 'op1',
-    tipo: OrdemTipo.transferenciaLote,
-    curralOrigemId: 'c3',
-    curralDestinoId: 'c6',
-    status: OrdemStatus.pendente,
-    observacao: 'Curral 06 liberado da limpeza — mover lote antes da engorda.',
-  ),
-  OrdemPendente(
-    id: 'op2',
-    tipo: OrdemTipo.trocaDieta,
-    curralOrigemId: 'c5',
-    novaDietaId: 'd2',
-    status: OrdemStatus.pendente,
-    observacao: 'Antecipar troca para Crescimento por recomendação técnica.',
-  ),
-];

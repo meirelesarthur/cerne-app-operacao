@@ -288,7 +288,7 @@ void main() {
           harness.router.routerDelegate.currentConfiguration.uri.path,
           '/fazendas/operacional/grupo/confinamento',
         );
-        expect(find.byType(AppModuleTile), findsNWidgets(7));
+        expect(find.byType(AppModuleTile), findsNWidgets(6));
       },
     );
 
@@ -327,8 +327,8 @@ void main() {
         expect(find.text('Fazenda São Pedro'), findsOneWidget);
         expect(find.byType(AppSearchField), findsOneWidget);
         // confinamento (onda 2): o Confinamento absorveu `conexao-aparelhos`
-        // e `configuracoes-misturador` do extinto grupo Misturador — 5+2=7.
-        expect(find.byType(AppModuleTile), findsNWidgets(7));
+        // e `configuracoes-misturador` do extinto grupo Misturador — 4+2=6.
+        expect(find.byType(AppModuleTile), findsNWidgets(6));
         expect(find.text('Boa tarde,'), findsNothing);
       },
     );

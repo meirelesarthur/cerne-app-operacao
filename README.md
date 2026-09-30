@@ -27,7 +27,7 @@ Mapa completo em [`docs/SITEMAP.md`](docs/SITEMAP.md).
 - **Agricultura** — apontamento agrícola (operação + recursos utilizados) e marcação de áreas.
 - **Reprodução** — estação de monta, protocolos reprodutivos, gestão de material (touros/sêmen/
   embrião), acasalamento e diagnóstico de gestação.
-- **Ordem de Serviço** — minhas OS, ordens pendentes e apontamentos agrícolas por OS.
+- **Ordem de Serviço** — minhas OS e apontamentos agrícolas por OS.
 - **Gestão de Frota** — abastecimentos e manutenção de veículos/equipamentos.
 - **Sincronização** — fila de envio para quando a conexão cair; banner de offline no shell.
 

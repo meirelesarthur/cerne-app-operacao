@@ -44,7 +44,7 @@ Future<void> _esperaDestinoReal(WidgetTester tester, String acao) async {
 
 void main() {
   group('MeusCurraisScreen', () {
-    testWidgets('renderiza sem exceção e mostra o aviso de ordem pendente', (
+    testWidgets('renderiza sem exceção', (
       tester,
     ) async {
       await setTallSurface(tester);
@@ -53,10 +53,6 @@ void main() {
 
       expect(find.text('Currais'), findsOneWidget);
       expect(find.text('Curral 01'), findsOneWidget);
-      expect(
-        find.text('1 ordem pendente do escritório para este curral'),
-        findsWidgets,
-      );
       expect(tester.takeException(), isNull);
     });
 

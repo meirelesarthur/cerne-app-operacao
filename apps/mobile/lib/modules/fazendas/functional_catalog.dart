@@ -4405,16 +4405,6 @@ const operationalFeatures = <FeatureDefinition>[
     status: FeatureStatus.ready,
     existingRoute: '/fazendas/campo/batelada',
   ),
-  FeatureDefinition(
-    id: 'ordens-pendentes',
-    profile: FeatureProfile.operational,
-    group: 'Confinamento',
-    title: 'Ordens pendentes',
-    objective:
-        'Confirmar a execução de transferências de lote e trocas de dieta criadas pelo escritório.',
-    status: FeatureStatus.ready,
-    existingRoute: '/fazendas/campo/ordens-pendentes',
-  ),
   // confinamento (onda 2): o Confinamento absorveu as funções restantes do
   // extinto grupo "Misturador" — `carga`, `descarga` e `balanca` deixaram de
   // existir como funcionalidades próprias (a produção física e a distribuição

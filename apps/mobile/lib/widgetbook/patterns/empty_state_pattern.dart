@@ -134,20 +134,6 @@ WidgetbookComponent buildEmptyStatePatternWidgetbookComponent() {
         ),
       ),
       caso(
-        'Tudo concluído',
-        tela: 'Ordens pendentes',
-        origem: 'operacional/ordens_pendentes_screen.dart',
-        vazio: const AppEmptyState(
-          icon: AppIcons.clipboardCheck,
-          badgeIcon: AppIcons.check,
-          tone: AppEmptyStateTone.success,
-          title: 'Nenhuma ordem pendente',
-          description:
-              'Transferências de lote e trocas de dieta criadas pelo '
-              'escritório aparecem aqui.',
-        ),
-      ),
-      caso(
         'Primeiro uso — com ação',
         tela: 'Rotina de campo',
         origem: 'screens/mapped_feature_screen.dart',

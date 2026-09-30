@@ -160,7 +160,6 @@ const _dailyPriorityIds = <String>[
   'apontamento',
   'sanitario',
   'nutricoes',
-  'ordens-pendentes',
   'meus-currais',
   'producao-batelada',
   'sincronizacao',

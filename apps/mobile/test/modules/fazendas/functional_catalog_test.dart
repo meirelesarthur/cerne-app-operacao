@@ -4,12 +4,12 @@ import 'package:cerne_app/modules/fazendas/functional_catalog.dart';
 
 void main() {
   group('catálogo funcional AGRO365', () {
-    test('preserva as 38 funcionalidades, todas do perfil operacional', () {
+    test('preserva as 37 funcionalidades, todas do perfil operacional', () {
       // Repo CERNE Operação: o perfil Administração e o catálogo
       // `adminFeatures` (17 funcionalidades administrativas) foram removidos
       // por completo — só resta o catálogo operacional.
-      expect(operationalFeatures, hasLength(38));
-      expect(allFeatures, hasLength(38));
+      expect(operationalFeatures, hasLength(37));
+      expect(allFeatures, hasLength(37));
       expect(allFeatures, same(operationalFeatures));
 
       expect(
@@ -30,12 +30,12 @@ void main() {
       expect(featureById('funcionalidade-inexistente'), isNull);
     });
 
-    test('preserva a maturidade 32 ready, 6 hardware e zero mapped', () {
-      // Catálogo só operacional (repo CERNE Operação): 32 funcionalidades
+    test('preserva a maturidade 31 ready, 6 hardware e zero mapped', () {
+      // Catálogo só operacional (repo CERNE Operação): 31 funcionalidades
       // `ready`, 6 `hardware`, nenhuma `mapped`.
       expect(
         allFeatures.where((feature) => feature.status == FeatureStatus.ready),
-        hasLength(32),
+        hasLength(31),
       );
       expect(
         allFeatures.where(
@@ -57,7 +57,7 @@ void main() {
       expect(allFeatures.where((feature) => feature.listMode), hasLength(23));
       expect(
         allFeatures.where((feature) => feature.existingRoute != null),
-        hasLength(12),
+        hasLength(11),
       );
       expect(allFeatures.expand((feature) => feature.sections), hasLength(27));
       expect(

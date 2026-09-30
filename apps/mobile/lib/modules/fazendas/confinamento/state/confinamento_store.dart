@@ -16,28 +16,24 @@ class ConfinamentoState {
     required this.bateladas,
     required this.tratosDiarios,
     required this.leiturasCocho,
-    required this.ordensPendentes,
   });
 
   final List<CurralInfo> currais;
   final List<Batelada> bateladas;
   final List<TratoDiario> tratosDiarios;
   final List<LeituraCocho> leiturasCocho;
-  final List<OrdemPendente> ordensPendentes;
 
   ConfinamentoState copyWith({
     List<CurralInfo>? currais,
     List<Batelada>? bateladas,
     List<TratoDiario>? tratosDiarios,
     List<LeituraCocho>? leiturasCocho,
-    List<OrdemPendente>? ordensPendentes,
   }) {
     return ConfinamentoState(
       currais: currais ?? this.currais,
       bateladas: bateladas ?? this.bateladas,
       tratosDiarios: tratosDiarios ?? this.tratosDiarios,
       leiturasCocho: leiturasCocho ?? this.leiturasCocho,
-      ordensPendentes: ordensPendentes ?? this.ordensPendentes,
     );
   }
 }
@@ -55,7 +51,6 @@ class ConfinamentoStoreNotifier extends Notifier<ConfinamentoState> {
       bateladas: [mocks.bateladaConcluida],
       tratosDiarios: [mocks.tratoDiarioEmAndamento],
       leiturasCocho: [mocks.leituraCochoRecente],
-      ordensPendentes: List.of(mocks.ordensPendentes),
     );
   }
 
@@ -132,54 +127,5 @@ class ConfinamentoStoreNotifier extends Notifier<ConfinamentoState> {
   /// currais e ocorrências incluídos na sessão de leitura).
   void registrarLeituraCocho(LeituraCocho leitura) {
     state = state.copyWith(leiturasCocho: [...state.leiturasCocho, leitura]);
-  }
-
-  /// Confirma a execução de uma ordem criada pelo escritório (transferência de lote
-  /// ou troca de dieta) — o Operacional nunca decide essas duas ações
-  /// livremente, só confirma (decisão de perfil, ver `models.dart`).
-  void confirmarOrdemPendente(String ordemId) {
-    final ordem = state.ordensPendentes.firstWhere((o) => o.id == ordemId);
-
-    var currais = state.currais;
-    switch (ordem.tipo) {
-      case OrdemTipo.transferenciaLote:
-        final origem = currais.firstWhere((c) => c.id == ordem.curralOrigemId);
-        final destinoId = ordem.curralDestinoId!;
-        currais = [
-          for (final c in currais)
-            if (c.id == ordem.curralOrigemId)
-              c.copyWith(
-                situacao: CurralSituacao.vazioSanitario,
-                clearIndicadores: true,
-              )
-            else if (c.id == destinoId)
-              c.copyWith(
-                situacao: CurralSituacao.ocupado,
-                indicadores: origem.indicadores,
-                dietaAtualId: origem.dietaAtualId,
-              )
-            else
-              c,
-        ];
-      case OrdemTipo.trocaDieta:
-        currais = [
-          for (final c in currais)
-            if (c.id == ordem.curralOrigemId)
-              c.copyWith(dietaAtualId: ordem.novaDietaId)
-            else
-              c,
-        ];
-    }
-
-    state = state.copyWith(
-      currais: currais,
-      ordensPendentes: [
-        for (final o in state.ordensPendentes)
-          if (o.id == ordemId)
-            o.copyWith(status: OrdemStatus.confirmada)
-          else
-            o,
-      ],
-    );
   }
 }

@@ -20,7 +20,7 @@ Widget _app({ProviderContainer? container}) => UncontrolledProviderScope(
 AppGauge _gauge(WidgetTester tester) =>
     tester.widget<AppGauge>(find.byType(AppGauge));
 
-/// Avança tempo suficiente para as 37 funcionalidades operacionais do
+/// Avança tempo suficiente para as 36 funcionalidades operacionais do
 /// catálogo terminarem — um item por tique (180ms) — bombeando o widget em
 /// vez de `pumpAndSettle`: o progresso roda em `Timer`, não em
 /// `AnimationController`.
@@ -47,11 +47,12 @@ void main() {
       expect(find.text('Reprodução'), findsOneWidget);
       expect(find.text('Consultas'), findsOneWidget);
       expect(find.text('Gestão de Frota'), findsOneWidget);
-      // Confinamento e Consultas têm 7 funcionalidades cada — ainda pendentes.
-      expect(find.text('0/7'), findsNWidgets(2));
+      // Confinamento (6) e Consultas (7) — ainda pendentes.
+      expect(find.text('0/6'), findsOneWidget);
+      expect(find.text('0/7'), findsOneWidget);
       // Recolhido: a funcionalidade interna não aparece antes de sincronizar.
       expect(find.text('Conexão de aparelhos'), findsNothing);
-      expect(_gauge(tester).label, '0/37');
+      expect(_gauge(tester).label, '0/36');
       expect(find.text('SINCRONIZAR'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
@@ -65,7 +66,7 @@ void main() {
         await tester.tap(find.text('SINCRONIZAR'));
         await tester.pump();
 
-        // Confinamento é o primeiro módulo e vira ativo sozinho — mesmas 7
+        // Confinamento é o primeiro módulo e vira ativo sozinho — mesmas
         // funcionalidades do catálogo (GroupFeaturesScreen mostra as
         // mesmas).
         expect(find.text('Conexão de aparelhos'), findsOneWidget);
@@ -74,7 +75,6 @@ void main() {
         expect(find.text('Produzir batelada'), findsOneWidget);
         expect(find.text('Trato diário'), findsOneWidget);
         expect(find.text('Leitura de cocho'), findsOneWidget);
-        expect(find.text('Ordens pendentes'), findsOneWidget);
 
         await _runSyncToEnd(tester);
         await tester.pumpAndSettle();
@@ -82,7 +82,7 @@ void main() {
         // Ao concluir, cada módulo fecha — nenhuma funcionalidade interna
         // fica visível por padrão.
         expect(find.text('Conexão de aparelhos'), findsNothing);
-        expect(_gauge(tester).label, '37/37');
+        expect(_gauge(tester).label, '36/36');
         expect(find.text('CONCLUÍDO'), findsOneWidget);
         expect(find.text('TUDO ENVIADO'), findsOneWidget);
         expect(tester.takeException(), isNull);

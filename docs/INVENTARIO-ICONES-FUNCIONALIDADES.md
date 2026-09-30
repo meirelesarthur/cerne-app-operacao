@@ -30,7 +30,6 @@ Este documento reúne os itens do levantamento para orientar a criação de íco
 | Leitura de cocho | Avaliar sobras por curral e registrar ocorrências sanitárias, estruturais e ambientais. | `scanLine` | `leitura-cocho-confinamento` |
 | Meus currais | Consultar a situação dos currais e acionar pesagem, sanitário e óbito. | `warehouse` | `meus-currais` |
 | Produzir batelada | Registrar a produção física de uma mistura de dieta, ingrediente a ingrediente. | `misturador` | `producao-batelada` |
-| Ordens pendentes | Confirmar a execução de transferências de lote e trocas de dieta criadas pelo ADM. | `clock` | `ordens-pendentes` |
 | Configurações | Parametrizar recursos do misturador. | `confinamento` | `configuracoes-misturador` |
 | Conexão de aparelhos | Conectar balança e equipamentos externos por Bluetooth. | `confinamento` | `conexao-aparelhos` |
 

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../design/generated/app_radius.dart';
 import '../../../design/generated/app_spacing.dart';
 import '../../../design/theme/app_theme_extension.dart';
 import '../../../design/generated/app_typography.dart';
@@ -28,9 +27,6 @@ class _MeusCurraisScreenState extends ConsumerState<MeusCurraisScreen> {
   Widget build(BuildContext context) {
     final currais = ref.watch(
       confinamentoStoreProvider.select((s) => s.currais),
-    );
-    final ordens = ref.watch(
-      confinamentoStoreProvider.select((s) => s.ordensPendentes),
     );
     final totalCabecas = currais.fold<int>(
       0,
@@ -138,14 +134,6 @@ class _MeusCurraisScreenState extends ConsumerState<MeusCurraisScreen> {
                             const SizedBox(height: AppSpacing.space3),
                           _CurralCard(
                             curral: filtrados[index],
-                            ordensPendentes: ordens
-                                .where(
-                                  (ordem) =>
-                                      ordem.status == OrdemStatus.pendente &&
-                                      ordem.curralOrigemId ==
-                                          filtrados[index].id,
-                                )
-                                .toList(),
                           ),
                         ],
                     ],
@@ -260,10 +248,9 @@ class _OcupacaoResumo extends StatelessWidget {
 }
 
 class _CurralCard extends ConsumerWidget {
-  const _CurralCard({required this.curral, required this.ordensPendentes});
+  const _CurralCard({required this.curral});
 
   final CurralInfo curral;
-  final List<OrdemPendente> ordensPendentes;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -318,44 +305,6 @@ class _CurralCard extends ConsumerWidget {
               ),
             ],
           ),
-          if (ordensPendentes.isNotEmpty) ...[
-            const SizedBox(height: AppSpacing.space3),
-            Container(
-              padding: const EdgeInsets.all(AppSpacing.space2),
-              decoration: BoxDecoration(
-                color: semantic.bgInset,
-                borderRadius: BorderRadius.circular(AppRadius.md),
-              ),
-              child: Row(
-                children: [
-                  AppIcon(
-                    AppIcons.bellRing,
-                    size: AppSpacing.space4,
-                    color: semantic.fgMuted,
-                  ),
-                  const SizedBox(width: AppSpacing.space2),
-                  Expanded(
-                    child: Text(
-                      ordensPendentes.length == 1
-                          ? '1 ordem pendente do escritório para este curral'
-                          : '${ordensPendentes.length} ordens pendentes do escritório para este curral',
-                      style: TextStyle(
-                        fontSize: AppTypography.sm,
-                        color: semantic.fgMuted,
-                      ),
-                    ),
-                  ),
-                  AppButton(
-                    size: AppButtonSize.sm,
-                    variant: AppButtonVariant.secondary,
-                    onPressed: () =>
-                        context.push('/fazendas/campo/ordens-pendentes'),
-                    child: const Text('Ver'),
-                  ),
-                ],
-              ),
-            ),
-          ],
           const SizedBox(height: AppSpacing.space4),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,

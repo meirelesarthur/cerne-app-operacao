@@ -29,7 +29,6 @@ AppIconData featureIcon(String featureId, String group) => switch (featureId) {
   'producao-batelada' => AppIcons.misturador,
   'trato-diario' => AppIcons.heartPulse,
   'leitura-cocho-confinamento' => AppIcons.scanLine,
-  'ordens-pendentes' => AppIcons.clock,
   'conexao-aparelhos' || 'conexao-aparelhos-pecuaria' => AppIcons.bluetooth,
   'configuracoes-misturador' => AppIcons.settings,
   // Pecuária: cada função com um traço próprio, em vez de todas herdarem o

@@ -9,7 +9,6 @@ import 'insumos_flow.dart';
 import 'leitura_cocho_flow.dart';
 import 'meus_currais_screen.dart';
 import 'minhas_os_screen.dart';
-import 'ordens_pendentes_screen.dart';
 import 'pesagem_flow.dart';
 import 'recebimento_xml_flow.dart';
 import 'sincronizacao_flow.dart';
@@ -31,7 +30,6 @@ Widget buildCampoFlow(String flowId) {
     'batelada' => const BateladaFlow(),
     'trato-diario' => const TratoDiarioFlow(),
     'leitura-cocho' => const LeituraCochoFlow(),
-    'ordens-pendentes' => const OrdensPendentesScreen(),
     'sincronizacao' => const SincronizacaoFlow(),
     'apontamento' => const ApontamentoFlow(),
     _ => const Scaffold(

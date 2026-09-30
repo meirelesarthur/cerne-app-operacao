@@ -43,7 +43,7 @@ funcionalidade direto.
 
 | Grupo | Funcionalidades (rota) |
 |---|---|
-| **Confinamento** | Trato diário (`/fazendas/campo/trato-diario`) · Leitura de cocho (`campo/leitura-cocho`) · Meus currais (`campo/meus-currais`) · Produzir batelada (`campo/batelada`) · Ordens pendentes (`campo/ordens-pendentes`) · Configurações do misturador · Conexão de aparelhos |
+| **Confinamento** | Trato diário (`/fazendas/campo/trato-diario`) · Leitura de cocho (`campo/leitura-cocho`) · Meus currais (`campo/meus-currais`) · Produzir batelada (`campo/batelada`) · Configurações do misturador · Conexão de aparelhos |
 | **Pecuária** | Pesagens (`campo/pesagem`) · Sanitário · Arraçoamento (`campo/arracoamento`) · Transferência animal/lote · Transferência lote/área · Localizar animal · Pastagens · Apartação · Nascimentos e Mortes (`campo/ciclo`) · Desmama · Registrar animal · Perdas · Rebanho inicial · Scanner SISBOV · Conexão de aparelhos |
 | **Agricultura** | Apontamento agrícola (`campo/apontamento`) · Marcação |
 | **Ordem de serviço** | Minhas OS (`campo/minhas-os`): lista completa com filtro de status em dock (Todas, Aguardando, Em execução, Finalizadas) |
