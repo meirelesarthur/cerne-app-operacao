@@ -177,7 +177,10 @@ void main() {
         // instável aqui porque cada rolagem pode disparar `setState` (mais
         // itens entram na árvore) no meio do próprio gesto. Um arrasto
         // único + settle evita conferir o finder num frame intermediário.
-        await tester.drag(find.byType(Scrollable).first, const Offset(0, -2000));
+        await tester.drag(
+          find.byType(Scrollable).first,
+          const Offset(0, -2000),
+        );
         await tester.pumpAndSettle();
         expect(find.text('Sanitário · Registro 6'), findsOneWidget);
 

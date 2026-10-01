@@ -72,8 +72,7 @@ class _InsumosFlowState extends ConsumerState<InsumosFlow> {
       return SuccessScreen(
         title: 'Lançamento registrado',
         queued: _queued!,
-        effects:
-            'A aplicação foi salva no talhão.',
+        effects: 'A aplicação foi salva no talhão.',
       );
     }
 

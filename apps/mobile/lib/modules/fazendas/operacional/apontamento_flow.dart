@@ -432,9 +432,7 @@ class _ApontamentoFlowState extends ConsumerState<ApontamentoFlow> {
       stepLabel: _nomesEtapas[_step],
       hasUnsavedChanges: _temDadosPreenchidos,
       onBack: _step == 0 ? null : _voltar,
-      primaryLabel: _step < _totalSteps - 1
-          ? 'Avançar'
-          : 'Salvar apontamento',
+      primaryLabel: _step < _totalSteps - 1 ? 'Avançar' : 'Salvar apontamento',
       onPrimary: _avancar,
       summary: lancamentoPendente
           ? const Align(

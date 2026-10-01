@@ -123,11 +123,9 @@ class AppTopBar extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
-          trailing: trailing ?? slot(
-            icon: actionIcon,
-            label: actionLabel,
-            onPressed: onAction,
-          ),
+          trailing:
+              trailing ??
+              slot(icon: actionIcon, label: actionLabel, onPressed: onAction),
         ),
       ),
     );

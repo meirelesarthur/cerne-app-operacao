@@ -101,7 +101,8 @@ class AppColorInput extends StatefulWidget {
 
 class _AppColorInputState extends State<AppColorInput> {
   late final TextEditingController _controller =
-      widget.controller ?? TextEditingController(text: _strip(widget.initialValue));
+      widget.controller ??
+      TextEditingController(text: _strip(widget.initialValue));
   FocusNode? _internalFocusNode;
   bool _focused = false;
 
@@ -219,7 +220,9 @@ class _AppColorInputState extends State<AppColorInput> {
             style: TextStyle(
               fontFamily: AppTypography.fontFamily,
               fontSize: AppTypography.xl,
-              color: widget.enabled ? inputColors.muted : inputColors.placeholder,
+              color: widget.enabled
+                  ? inputColors.muted
+                  : inputColors.placeholder,
             ),
           ),
           Expanded(
@@ -238,7 +241,9 @@ class _AppColorInputState extends State<AppColorInput> {
               style: TextStyle(
                 fontFamily: AppTypography.fontFamily,
                 fontSize: AppTypography.xl,
-                color: widget.enabled ? inputColors.foreground : inputColors.muted,
+                color: widget.enabled
+                    ? inputColors.foreground
+                    : inputColors.muted,
               ),
               decoration: InputDecoration(
                 isCollapsed: true,
@@ -419,7 +424,8 @@ class _ClosedPaletteSheet extends StatelessWidget {
                         width: AppSize.iconMd,
                         height: AppSize.iconMd,
                         decoration: BoxDecoration(
-                          color: _hexToColor(option.value) ??
+                          color:
+                              _hexToColor(option.value) ??
                               AppColors.transparent,
                           shape: BoxShape.circle,
                           border: Border.all(color: AppColors.neutral200),

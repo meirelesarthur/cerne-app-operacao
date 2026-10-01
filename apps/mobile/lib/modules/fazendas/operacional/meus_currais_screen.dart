@@ -132,9 +132,7 @@ class _MeusCurraisScreenState extends ConsumerState<MeusCurraisScreen> {
                         ) ...[
                           if (index > 0)
                             const SizedBox(height: AppSpacing.space3),
-                          _CurralCard(
-                            curral: filtrados[index],
-                          ),
+                          _CurralCard(curral: filtrados[index]),
                         ],
                     ],
                   ),

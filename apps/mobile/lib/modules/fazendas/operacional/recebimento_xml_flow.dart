@@ -58,8 +58,7 @@ class _RecebimentoXmlFlowState extends ConsumerState<RecebimentoXmlFlow> {
       return SuccessScreen(
         title: 'Entrada processada',
         queued: _queued!,
-        effects:
-            'A entrada foi salva e os produtos já contam no estoque.',
+        effects: 'A entrada foi salva e os produtos já contam no estoque.',
       );
     }
 

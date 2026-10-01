@@ -44,9 +44,7 @@ Future<void> _esperaDestinoReal(WidgetTester tester, String acao) async {
 
 void main() {
   group('MeusCurraisScreen', () {
-    testWidgets('renderiza sem exceção', (
-      tester,
-    ) async {
+    testWidgets('renderiza sem exceção', (tester) async {
       await setTallSurface(tester);
       await tester.pumpWidget(_wrap(const MeusCurraisScreen()));
       await tester.pumpAndSettle();

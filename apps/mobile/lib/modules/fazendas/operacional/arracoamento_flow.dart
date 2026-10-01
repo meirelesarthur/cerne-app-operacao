@@ -61,8 +61,7 @@ class _ArracoamentoFlowState extends ConsumerState<ArracoamentoFlow> {
       return SuccessScreen(
         title: 'Arraçoamento registrado',
         queued: _queued!,
-        effects:
-            'A ração saiu do estoque do armazém escolhido.',
+        effects: 'A ração saiu do estoque do armazém escolhido.',
       );
     }
 

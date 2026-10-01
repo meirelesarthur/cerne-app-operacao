@@ -114,9 +114,10 @@ class _AppHardwareSimulatorState extends State<AppHardwareSimulator> {
   String get _captureValue => switch (widget.kind) {
     AppHardwareSimulationKind.devices => 'Balança BT-42 + Leitor RFID CERNE',
     AppHardwareSimulationKind.scale => '482,6 kg',
-    AppHardwareSimulationKind.rfid => widget.multiCapture
-        ? 'RFID 982 ${(100123456789 + _captureCount)}'
-        : 'RFID 982 000123456789',
+    AppHardwareSimulationKind.rfid =>
+      widget.multiCapture
+          ? 'RFID 982 ${(100123456789 + _captureCount)}'
+          : 'RFID 982 000123456789',
     AppHardwareSimulationKind.scanner => 'SISBOV BR 105 621 784 003',
   };
 

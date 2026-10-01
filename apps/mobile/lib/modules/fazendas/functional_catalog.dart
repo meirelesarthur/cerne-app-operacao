@@ -447,6 +447,7 @@ const catalogoAreas = <String>[
   'Reserva Legal',
 ];
 const catalogoModulos = <String>['Módulo A', 'Módulo B', 'Módulo C'];
+
 /// Estações de monta cadastradas no sistema WEB (o app só escolhe, nunca
 /// digita — ver `estacao-monta`, que aqui é só consulta).
 const catalogoEstacoesMonta = <String>[

@@ -27,9 +27,7 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('"Ver apresentação" navega para o onboarding', (
-      tester,
-    ) async {
+    testWidgets('"Ver apresentação" navega para o onboarding', (tester) async {
       await tester.pumpWidget(harness.buildApp());
       await tester.pumpAndSettle();
 

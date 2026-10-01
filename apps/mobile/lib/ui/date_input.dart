@@ -93,8 +93,7 @@ class _AppDateInputState extends State<AppDateInput> {
     final month = int.parse(match.group(2)!);
     final year = int.parse(match.group(3)!);
     final date = DateTime(year, month, day);
-    final isValid =
-        date.day == day && date.month == month && date.year == year;
+    final isValid = date.day == day && date.month == month && date.year == year;
     return isValid ? date : null;
   }
 

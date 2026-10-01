@@ -312,8 +312,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Lote': 'Lote Recria 02',
         'Armazém de insumos': 'Depósito B',
         'Armazém de produção': 'Armazém A',
-        'Observação':
-            'Piquete vedado para rebrota antes da próxima entrada.',
+        'Observação': 'Piquete vedado para rebrota antes da próxima entrada.',
         'Máquinas / Equipamentos': '0 item(ns)',
         'Insumos': '0 item(ns)',
         'Produção': '1 item(ns)',
@@ -396,8 +395,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Preço da arroba (vivo)': '270,00',
         'Valor unitário (R\$)': '14.400,00',
         'Unidade animal (UA)': '1,20',
-        'Observação':
-            'Matriz prenha, cobertura de monta natural com TOU-018.',
+        'Observação': 'Matriz prenha, cobertura de monta natural com TOU-018.',
         'Identificações': '3 item(ns)',
       },
     ),
@@ -517,8 +515,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
             'Touro TOU-018 do estoque de material reprodutivo',
         'Touro / sêmen da estação': 'BSS-2026-012',
         'Quantidade de fêmeas': '212',
-        'Observação':
-            'Monta natural em campo com um touro por 60 fêmeas.',
+        'Observação': 'Monta natural em campo com um touro por 60 fêmeas.',
         'Vacas do acasalamento': '212 item(ns)',
         'Animais (lançamento simplificado)': '0 item(ns)',
         'Animais do protocolo': '0 item(ns)',
@@ -665,8 +662,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         'Custo estimado (R\$)': '4.200,00',
         'Horímetro': '3180',
         'Horas de mão de obra': '8',
-        'Observação':
-            'Vazamento identificado na inspeção de pré-colheita.',
+        'Observação': 'Vazamento identificado na inspeção de pré-colheita.',
         'Peças / Insumos': '3 item(ns)',
         'Mão de obra': '2 item(ns)',
       },
@@ -1035,8 +1031,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         '% PIS': '0',
         '% COFINS': '0',
         '% IPI': '0',
-        'Origem da mercadoria':
-            '5 — Nacional, conteúdo de importação até 40%',
+        'Origem da mercadoria': '5 — Nacional, conteúdo de importação até 40%',
         'CEST': '10.003.00',
         'CST IBS/CBS': '200 — Alíquota reduzida',
         '% IBS (UF)': '4,41',
@@ -1084,8 +1079,7 @@ const initialPrototypeRecords = <String, List<PrototypeRecord>>{
         '% PIS': '1,65',
         '% COFINS': '7,60',
         '% IPI': '3,25',
-        'Origem da mercadoria':
-            '2 — Estrangeira, adquirida no mercado interno',
+        'Origem da mercadoria': '2 — Estrangeira, adquirida no mercado interno',
         'CEST': '11.008.00',
         'CST IBS/CBS': '000 — Tributação integral',
         '% IBS (UF)': '14,10',

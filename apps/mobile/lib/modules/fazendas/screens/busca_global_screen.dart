@@ -174,9 +174,7 @@ const _dailyPriorityIds = <String>[
 
 /// Todas as funcionalidades do menu, com as de uso diário primeiro.
 List<FeatureDefinition> featuresByDailyPriority() {
-  final priority = [
-    for (final id in _dailyPriorityIds) ?featureById(id),
-  ];
+  final priority = [for (final id in _dailyPriorityIds) ?featureById(id)];
   final ids = priority.map((f) => f.id).toSet();
   return [
     ...priority,
