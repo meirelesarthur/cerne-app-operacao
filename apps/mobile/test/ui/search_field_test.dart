@@ -35,7 +35,7 @@ void main() {
       );
 
       expect(find.text('Buscar em Confinamento'), findsOneWidget);
-      expect(findAppIcon(AppIcons.aiSearch), findsOneWidget);
+      expect(findAppIcon(AppIcons.search), findsOneWidget);
       expect(
         tester.getSize(find.byType(AppSearchField)).height,
         AppSearchField.height,

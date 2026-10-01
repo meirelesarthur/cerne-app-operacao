@@ -75,7 +75,7 @@ void main() {
       await tester.pumpWidget(_wrap(const AppSearchField()));
 
       expect(find.text('Procurando por algo?'), findsOneWidget);
-      expect(findAppIcon(AppIcons.aiSearch), findsOneWidget);
+      expect(findAppIcon(AppIcons.search), findsOneWidget);
     });
 
     testWidgets('mantém a altura do padrão global', (tester) async {
