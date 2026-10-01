@@ -105,9 +105,14 @@ class AppStatusCard extends StatelessWidget {
     this.action,
     this.onTap,
     this.variant = AppStatusCardVariant.standard,
+    this.statusBesideTitle = false,
   });
 
   final AppStatusCardVariant variant;
+
+  /// `true` põe o chip de status na extremidade direita da linha do título
+  /// (para títulos curtos, como o número da OS) em vez de embaixo.
+  final bool statusBesideTitle;
 
   final String statusLabel;
   final AppChipTone statusTone;
@@ -308,6 +313,20 @@ class AppStatusCard extends StatelessWidget {
     final visibleMeta = compact ? meta.take(2).toList() : meta;
     final hasFooter = !compact && (situation != null || action != null);
 
+    final titleText = Text(
+      title,
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+      style: TextStyle(
+        fontSize: compact ? AppTypography.xl : AppTypography.xl2,
+        fontWeight: AppTypography.weightMedium,
+        height: compact
+            ? AppTypography.lineHeightSnug
+            : AppTypography.lineHeightTight,
+        color: semantic.fgHeading,
+      ),
+    );
+
     final content = Container(
       padding: const EdgeInsets.all(AppSpacing.space4),
       decoration: BoxDecoration(color: semantic.bgRaised, borderRadius: radius),
@@ -315,21 +334,18 @@ class AppStatusCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
-          // O título usa a largura inteira: status e dados ficam embaixo,
-          // nunca na lateral disputando espaço com o texto.
-          Text(
-            title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              fontSize: compact ? AppTypography.xl : AppTypography.xl2,
-              fontWeight: AppTypography.weightMedium,
-              height: compact
-                  ? AppTypography.lineHeightSnug
-                  : AppTypography.lineHeightTight,
-              color: semantic.fgHeading,
-            ),
-          ),
+          // Por padrão o título usa a largura inteira e o status fica embaixo;
+          // com [statusBesideTitle] o chip vai à direita do título curto.
+          if (statusBesideTitle)
+            Row(
+              children: [
+                Expanded(child: titleText),
+                const SizedBox(width: AppSpacing.space3),
+                AppChip(tone: statusTone, child: Text(statusLabel)),
+              ],
+            )
+          else
+            titleText,
           if (subtitle != null) ...[
             const SizedBox(height: AppSpacing.space1),
             Text(
@@ -359,11 +375,13 @@ class AppStatusCard extends StatelessWidget {
             const SizedBox(height: AppSpacing.space2),
             _metaGrid(semantic, visibleMeta),
           ],
-          const SizedBox(height: AppSpacing.space2),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: AppChip(tone: statusTone, child: Text(statusLabel)),
-          ),
+          if (!statusBesideTitle) ...[
+            const SizedBox(height: AppSpacing.space2),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: AppChip(tone: statusTone, child: Text(statusLabel)),
+            ),
+          ],
           if (hasFooter) ...[
             SizedBox(height: featured ? AppSpacing.space4 : AppSpacing.space3),
             _footer(semantic, featured: featured),

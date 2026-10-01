@@ -379,6 +379,7 @@ class OsSummaryCard extends StatelessWidget {
         statusLabel: os.status.label,
         statusTone: osStatusTone(os.status),
         title: os.codigo,
+        statusBesideTitle: true,
         meta: [
           AppStatusCardMeta(
             label: 'Lote',
