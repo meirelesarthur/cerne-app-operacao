@@ -370,6 +370,54 @@ class OsSummaryCard extends StatelessWidget {
     final urgente =
         os.prioridade == PrioridadeOs.alta ||
         os.prioridade == PrioridadeOs.urgente;
+    if (variant == AppStatusCardVariant.standard) {
+      // Na listagem o título é só o número da OS; os dados vêm na ordem em
+      // que se confere o serviço: lote, prazo final, operação, atividade e
+      // executor (dois por linha).
+      return AppStatusCard(
+        variant: variant,
+        statusLabel: os.status.label,
+        statusTone: osStatusTone(os.status),
+        title: os.codigo,
+        meta: [
+          AppStatusCardMeta(
+            label: 'Lote',
+            value: os.lote ?? os.culturaVariedade ?? os.area,
+            icon: AppIcons.mapPin,
+          ),
+          AppStatusCardMeta(
+            label: 'Prazo final',
+            value: osPrazoRelativo(os.prazo, agora),
+            icon: AppIcons.calendar,
+          ),
+          AppStatusCardMeta(
+            label: 'Operação',
+            value: os.operacao,
+            icon: AppIcons.ordemServico,
+          ),
+          AppStatusCardMeta(
+            label: 'Atividade',
+            value: os.atividade,
+            icon: AppIcons.listOrdered,
+          ),
+          AppStatusCardMeta(
+            label: 'Executor',
+            value: os.responsavelExecucao,
+            icon: AppIcons.user,
+          ),
+        ],
+        situation: osSituacao(os, agora),
+        action: acao == null
+            ? null
+            : AppStatusCardAction(
+                label: acao.label,
+                icon: acao.icon,
+                primary: acao.primary,
+                onPressed: onAcaoRapida!,
+              ),
+        onTap: onTap,
+      );
+    }
     // O nome da tarefa é o que se lê primeiro em toda variante — é o que
     // diz o que fazer; o número da OS fica na linha de apoio, para conferir.
     return AppStatusCard(
